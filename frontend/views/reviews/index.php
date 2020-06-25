@@ -661,6 +661,7 @@ color: initial;
 .twitter-typeahead
 {
 width:100%;
+display:block !important;
 }
 .benifit-bttn a{
   border:2px solid #00a0e3;

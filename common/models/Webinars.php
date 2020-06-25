@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%webinars}}".
  *
@@ -9,11 +11,12 @@ namespace common\models;
  * @property string $webinar_enc_id Webinar Encrypted Encrypted ID
  * @property string $title Webinar Title
  * @property string $start_datetime
- * @property string $end_datetime
+ * @property int $duration Duration save as minutes
  * @property string $image
  * @property string $image_location
  * @property string $availability
  * @property string $description
+ * @property int $session_for 1 as EY, 2 as Colleges
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -21,7 +24,6 @@ namespace common\models;
  * @property int $is_deleted 0 as False, 1 as True
  *
  * @property AssignedWebinarTo[] $assignedWebinarTos
- * @property AssignedWebinarTopics[] $assignedWebinarTopics
  * @property WebinarRegistrations[] $webinarRegistrations
  * @property WebinarSpeakers[] $webinarSpeakers
  * @property Users $lastUpdatedBy
@@ -43,10 +45,10 @@ class Webinars extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['webinar_enc_id', 'title', 'start_datetime', 'availability', 'description', 'created_by'], 'required'],
-            [['start_datetime', 'end_datetime', 'created_on', 'last_updated_on'], 'safe'],
+            [['webinar_enc_id', 'title', 'start_datetime', 'duration', 'description', 'session_for', 'created_by'], 'required'],
+            [['start_datetime', 'created_on', 'last_updated_on'], 'safe'],
+            [['duration', 'session_for', 'is_deleted'], 'integer'],
             [['availability', 'description'], 'string'],
-            [['is_deleted'], 'integer'],
             [['webinar_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['title'], 'string', 'max' => 255],
             [['webinar_enc_id'], 'unique'],
@@ -66,17 +68,17 @@ class Webinars extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedWebinarTopics()
+    public function getWebinarRegistrations()
     {
-        return $this->hasMany(AssignedWebinarTopics::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasMany(WebinarRegistrations::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinarRegistrations()
+    public function getWebinarSpeakers()
     {
-        return $this->hasMany(WebinarRegistrations::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasMany(WebinarSpeakers::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
@@ -93,13 +95,5 @@ class Webinars extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getWebinarSpeakers()
-    {
-        return $this->hasMany(WebinarSpeakers::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 }

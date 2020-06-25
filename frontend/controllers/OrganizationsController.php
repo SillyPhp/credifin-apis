@@ -2,7 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
+use common\models\EmployerApplications;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -20,6 +24,7 @@ use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
 use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
+use frontend\models\reviews\ReviewCardsMod;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -71,27 +76,23 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
-            $keyword = Yii::$app->request->post('keyword');
-            $organization = Organizations::find()
-                ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'CONCAT(a.slug, "' . $referral . '") as slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
-                ->joinWith(['businessActivityEnc b'], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
-            if (!empty($keyword)) {
-                $organization->andWhere([
-                    'or',
-                    ['like', 'a.name', $keyword],
-                    ['like', 'a.slug', $keyword],
-                ]);
+            $get = new ReviewCardsMod();
+            $options = [];
+            $options = Yii::$app->request->post('params');
+            if (Yii::$app->request->get('keyword')){
+                $options['keyword'] = trim(Yii::$app->request->get('keyword'));
             }
-            $with_logo = $organization->orderBy(['a.logo' => SORT_DESC])->asArray()->all();
-
-            if ($with_logo) {
+            if (Yii::$app->request->get('sortBy')){
+                $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
+            }
+            $options['limit'] = 27;
+            $cards = $get->getAllCompanies($options);
+            if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
-                    'message' => 'Success',
-                    'organization' => $with_logo,
+                    'title' => 'Success',
+                    'total' => $cards['total'],
+                    'cards' => $cards['cards'],
                 ];
             } else {
                 $response = [
@@ -125,7 +126,6 @@ class OrganizationsController extends Controller
         }
 
     }
-
     public function actionProfile($slug)
     {
         $organization = Organizations::find()
@@ -1264,7 +1264,7 @@ class OrganizationsController extends Controller
     {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1290,7 +1290,7 @@ class OrganizationsController extends Controller
     {
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
-            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'designation', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'designation', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
             ->where(['a.status' => 1])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1319,7 +1319,7 @@ class OrganizationsController extends Controller
                 WHEN a.reviewer_type = "3" THEN "Current"
                 ELSE "0"
                 END) as reviewer_type'
-                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.academics', 'a.faculty_teaching_quality', 'a.infrastructure', 'a.accomodation_food', 'a.placements_internships', 'a.social_life_extracurriculars', 'a.culture_diversity', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.academics', 'a.faculty_teaching_quality', 'a.infrastructure', 'a.accomodation_food', 'a.placements_internships', 'a.social_life_extracurriculars', 'a.culture_diversity', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
             ->where(['a.status' => 1])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1348,7 +1348,7 @@ class OrganizationsController extends Controller
                 WHEN a.reviewer_type = "7" THEN "Current"
                 ELSE "0"
                 END) as reviewer_type'
-                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.value_for_money', 'a.teaching_style', 'a.coverage_of_subject_matter', 'a.accessibility_of_faculty', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.value_for_money', 'a.teaching_style', 'a.coverage_of_subject_matter', 'a.accessibility_of_faculty', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
             ->where(['a.status' => 1])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1377,7 +1377,7 @@ class OrganizationsController extends Controller
                 WHEN a.reviewer_type = "5" THEN "Current"
                 ELSE "0"
                 END) as reviewer_type'
-                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.accessibility_of_faculty', 'a.co_curricular_activities', 'a.leadership_development', 'a.sports', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+                , 'e.name stream', 'educational_stream_enc_id', 'ROUND(a.average_rating) average', 'a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.accessibility_of_faculty', 'a.co_curricular_activities', 'a.leadership_development', 'a.sports', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
             ->where(['a.status' => 1])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1615,8 +1615,5 @@ class OrganizationsController extends Controller
             ->where("replace(name, '.', '') LIKE '%$q%'")
             ->andWhere(['is_deleted' => 0]);
         return $params1->limit(20)->all();
-
-
     }
-
 }

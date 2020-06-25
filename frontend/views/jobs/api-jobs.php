@@ -59,9 +59,24 @@ if (!Yii::$app->user->isGuest) {
                     </div>
                     <div class="job-title"><?= $get['title']; ?></div>
                     <div class="job-statistic">
-                        <div class="job-time"><?= $get['type'] ?></div>
-                        <div class="job-location"><i class="fas fa-map-marker-alt marg"></i> <?= $get['location'] ?>
+                        <?php if ($get['type']): ?>
+                        <div class="job-time"><?= ucwords($get['type']) ?></div>
+                        <?php endif; ?>
+                        <?php if ($get['location'])
+                        { ?>
+                            <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
+                                <?php if (is_array($get['location'])){
+                                    $p = '';
+                                    foreach ($get['location'] as $loc){
+                                        $p .= $loc['name'];
+                                    }
+                                    echo $p;
+                                }
+                                else{
+                                    echo $get['location'];
+                                }  ?>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -136,7 +151,6 @@ if (!Yii::$app->user->isGuest) {
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <div class="job-single-sec">
                     <div class="job-single-head2">
-
                     </div>
                     <div class="job-details">
                         <div class="d-head">Job Description</div>
@@ -161,8 +175,7 @@ if (!Yii::$app->user->isGuest) {
                         <h4><?= $get['company'] ?></h4>
                         <div class="organization-details">
                             <?php if ($get['company_url']): ?>
-                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
-                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
+                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>" target="_blank"><?= $get['company_url'] ?></a></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -173,14 +186,12 @@ if (!Yii::$app->user->isGuest) {
                                         class="fas fa-paper-plane"></i>Login to apply</a>
                         <?php else: ?>
                             <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
-                                        class="fas fa-paper-plane hvr-icon"></i>Apply
-                                On
-                                Website</a>
+                                        class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/' . $get['company'] . '/' . $get['id'], true); ?>
+                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, true); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
@@ -193,7 +204,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="#"

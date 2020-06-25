@@ -2,10 +2,12 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\ChangePassword;
 use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
+use common\models\ErexxSettings;
 use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
@@ -36,7 +38,8 @@ class AuthController extends ApiBaseController
                 'validate',
                 'username',
                 'find-user',
-                'teacher-signup'
+                'teacher-signup',
+                'validate-roll-number',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -50,6 +53,8 @@ class AuthController extends ApiBaseController
                 'username' => ['POST', 'OPTIONS'],
                 'find-user' => ['POST', 'OPTIONS'],
                 'teacher-signup' => ['POST', 'OPTIONS'],
+                'validate-roll-number' => ['POST', 'OPTIONS'],
+                'change-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -191,6 +196,21 @@ class AuthController extends ApiBaseController
         }
     }
 
+    public function actionValidateRollNumber()
+    {
+        $roll_no = Yii::$app->request->post('roll_number');
+        $roll_no_exists = UserOtherDetails::find()
+            ->where(['is_deleted' => 0, 'university_roll_number' => $roll_no])
+            ->exists();
+
+        if ($roll_no_exists) {
+            return $this->response(409, ['roll_number' => ['Roll Number already taken']]);
+        } else {
+            return $this->response(200, ['status' => 200]);
+        }
+
+    }
+
     private function getRef($model)
     {
         $ref = Referral::find()
@@ -301,8 +321,10 @@ class AuthController extends ApiBaseController
     private function newToken($user_id, $source)
     {
         $token = new UserAccessTokens();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $time_now = date('Y-m-d H:i:s', time('now'));
-        $token->access_token_enc_id = time() . mt_rand(10, 99);
+        $token->access_token_enc_id = $utilitiesModel->encrypt();
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
@@ -394,6 +416,13 @@ class AuthController extends ApiBaseController
             ->asArray()
             ->one();
 
+        $today_date = new \DateTime();
+        $today_date = $today_date->format('Y-m-d H:i:s');
+
+        if ($today_date > $find_user['access_token_expiration']) {
+            return false;
+        }
+
         if (!empty($find_user)) {
             $user_type = Users::find()
                 ->where(['!=', 'organization_enc_id', 'null'])
@@ -404,6 +433,7 @@ class AuthController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.user_enc_id', 'a.first_name',
                     'a.last_name',
+                    'a.organization_enc_id college_id',
                     'cc.college_enc_id',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                     'a.username', 'a.phone', 'a.email',
@@ -422,11 +452,69 @@ class AuthController extends ApiBaseController
                 ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
                 ->one();
+
+            $student_college_id = $user_detail['organization_enc_id'];
+            if ($student_college_id) {
+                $college_settings = ErexxSettings::find()
+                    ->alias('a')
+                    ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                    ->joinWith(['collegeSettings b' => function ($b) use ($student_college_id) {
+                        $b->onCondition(['b.college_enc_id' => $student_college_id]);
+                    }], false)
+                    ->where(['a.status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                $j = 0;
+                foreach ($college_settings as $c) {
+                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                        if ($c['value'] == null) {
+                            $college_settings[$j]['value'] = 2;
+                        }
+                    }
+                    $j++;
+                }
+
+                $settings = [];
+                foreach ($college_settings as $c) {
+                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+            }
+
+            $college_id = $user_detail['college_id'];
+            if ($college_id) {
+                $college_settings = ErexxSettings::find()
+                    ->alias('a')
+                    ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                    ->joinWith(['collegeSettings b' => function ($b) use ($college_id) {
+                        $b->onCondition(['b.college_enc_id' => $college_id]);
+                    }], false)
+                    ->where(['a.status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                $j = 0;
+                foreach ($college_settings as $c) {
+                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                        if ($c['value'] == null) {
+                            $college_settings[$j]['value'] = 2;
+                        }
+                    }
+                    $j++;
+                }
+
+                $settings = [];
+                foreach ($college_settings as $c) {
+                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+            }
+
         }
 
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
+            'college_settings' => $settings,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['course_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
@@ -499,28 +587,6 @@ class AuthController extends ApiBaseController
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-//        $e = EducationalRequirements::find()
-//            ->where([
-//                'educational_requirement' => $data['course_name']
-//            ])
-//            ->one();
-
-//        if ($e) {
-//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
-//        } else {
-//            $eduReq = new EducationalRequirements();
-//            $utilitiesModel = new \common\models\Utilities();
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
-//            $eduReq->educational_requirement = $data['course_name'];
-//            $eduReq->created_on = date('Y-m-d H:i:s');
-//            $eduReq->created_by = $user_id;
-//            if (!$eduReq->save()) {
-//                return false;
-//            }
-//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
-//        }
-
         $user_other_details->course_enc_id = $data['course_id'];
         $user_other_details->section_enc_id = $data['section_id'];
         $user_other_details->semester = $data['semester'];
@@ -549,6 +615,28 @@ class AuthController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
         } else {
             return $this->response(201, ['status' => 201, 'message' => 'successfully added']);
+        }
+    }
+
+    public function actionChangePassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ChangePassword();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    if ($model->changePassword($user->user_enc_id)) {
+                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    return $this->response(409, $model->getErrors());
+                }
+            } else {
+                return $this->response(422, ['message' => 'data not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }

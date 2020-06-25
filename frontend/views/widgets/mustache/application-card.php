@@ -19,7 +19,7 @@ switch ([$controller_id, $action_id]) {
                 <div class="app-box">
                     <div class="row">
                         <div class="application-card-img">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
+                            <a href="{{organization_link}}" target="_blank" title="{{organization_name}}">
                                 {{#logo}}
                                 <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                                 {{/logo}}
@@ -35,8 +35,8 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}" style="text-decoration:none;">
+                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
                         {{#city}}
@@ -49,7 +49,7 @@ switch ([$controller_id, $action_id]) {
                         <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
                               data-long="{{longitude}}"
                               data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
                         </span>
                         {{/city}}
                         </span>
@@ -72,15 +72,15 @@ switch ([$controller_id, $action_id]) {
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
-                                {{^experience}}
-                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
-                                {{/experience}}
+                                {{#sector}}
+                                <h5 class="salary"><i class="fas fa-puzzle-piece"></i>: {{sector}}</h5>
+                                {{/sector}}
                             </div>
                             <div class="clear"></div>
                         </div>
                     </div>
                     <div class="application-card-wrapper">
-                        <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View Detail</a>
                         <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                     </div>
                 </div>
@@ -362,7 +362,6 @@ $this->registerCss('
 text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 40%;
 }
 
 .application-card-description h5{

@@ -81,13 +81,15 @@ use yii\helpers\Url;
                                                                         <strong><?= $app['name']; ?></strong></div>
                                                                     <div class="job-location location">
                                                                         <i class="fa fa-map-marker"></i>
-                                                                        <?php
-                                                                        $lc = [];
-                                                                        foreach ($app['locations'] as $loc) {
-                                                                            array_push($lc, $loc['name']);
-                                                                        }
-                                                                        echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
-                                                                        ?>
+                                                                        <?php if($app['locations']) {
+                                                                            $lc = [];
+                                                                            foreach ($app['locations'] as $loc) {
+                                                                                array_push($lc, $loc['name']);
+                                                                            }
+                                                                            echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                        }else{
+                                                                            echo '<span title="Work From Home">Work From Home</span>';
+                                                                        }?>
                                                                     </div>
                                                                 </div>
                                                                 <div class="job-listing-meta meta">

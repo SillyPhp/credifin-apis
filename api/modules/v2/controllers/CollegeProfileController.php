@@ -12,6 +12,8 @@ use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
+use common\models\EmployerApplications;
+use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
@@ -395,81 +397,95 @@ class CollegeProfileController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
+
             $limit = Yii::$app->request->post('limit');
             $type = Yii::$app->request->post('type');
-            $jobs = ErexxEmployerApplications::find()
+
+            $rejected_companies = ErexxCollaborators::find()
+                ->select(['organization_enc_id'])
+                ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+                ->asArray()
+                ->all();
+
+            $ids = [];
+            foreach ($rejected_companies as $r) {
+                array_push($ids, $r['organization_enc_id']);
+            }
+
+            $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->distinct()
                 ->select([
+                    'a.application_enc_id',
+                    'a.slug',
+                    'a.last_date',
+                    'a.joining_date',
+                    'b.employer_application_enc_id',
+                    'b.is_college_approved',
+                    'y.interview_process_enc_id',
                     'bb.name',
                     'bb.slug org_slug',
                     'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
-                    'a.employer_application_enc_id',
-                    'a.is_college_approved',
-                    'b.slug',
-                    'b.last_date',
-                    'b.joining_date',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
                     'm.min_wage as min_salary',
                     'm.wage_duration as salary_duration',
                     'dd.designation',
-                    'z.name job_type'
+                    'z.name job_type',
+                    'b.is_deleted',
+                    'm.positions'
                 ])
-                ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb'], false);
-                    $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
-                    $b->joinWith(['interviewProcessEnc y' => function ($y) {
-                        $y->select(['y.interview_process_enc_id']);
-                        $y->joinWith(['interviewProcessFields yy' => function ($yy) {
-                            $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
-                        }]);
+                ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
+                    $b->onCondition(['b.college_enc_id' => $college_id]);
+                }], false)
+                ->joinWith(['organizationEnc bb'], false)
+                ->joinWith(['interviewProcessEnc y' => function ($y) {
+                    $y->select(['y.interview_process_enc_id']);
+                    $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+                        $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
                     }]);
-                    $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
-                        $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
-                        $bc->joinWith(['educationalRequirementEnc cb'], false);
-                    }]);
-                    $b->joinWith(['applicationSkills bbc' => function ($bbc) {
-                        $bbc->select(['bbc.application_enc_id', 'skill']);
-                        $bbc->joinWith(['skillEnc cbb'], false);
-                    }]);
-                    $b->joinWith(['designationEnc dd'], false);
-                    $b->joinWith(['title d' => function ($d) {
-                        $d->joinWith(['parentEnc e']);
-                        $d->joinWith(['categoryEnc ee']);
+                }])
+                ->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+                    $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+                    $bc->joinWith(['educationalRequirementEnc cb'], false);
+                }])
+                ->joinWith(['applicationSkills bbc' => function ($bbc) {
+                    $bbc->select(['bbc.application_enc_id', 'skill']);
+                    $bbc->joinWith(['skillEnc cbb'], false);
+                }])
+                ->joinWith(['designationEnc dd'], false)
+                ->joinWith(['title d' => function ($d) {
+                    $d->joinWith(['parentEnc e']);
+                    $d->joinWith(['categoryEnc ee']);
+                }], false)
+                ->joinWith(['applicationOptions m'], false)
+                ->joinWith(['applicationPlacementLocations f' => function ($f) {
+                    $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                    $f->joinWith(['locationEnc ff' => function ($z) {
+                        $z->joinWith(['cityEnc g']);
                     }], false);
-                    $b->joinWith(['applicationOptions m'], false);
-                    $b->joinWith(['applicationPlacementLocations f' => function ($f) {
-                        $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
-                        $f->joinWith(['locationEnc ff' => function ($z) {
-                            $z->joinWith(['cityEnc g']);
-                            $z->groupBy(['ff.city_enc_id']);
-                        }], false);
-                        $f->onCondition(['f.is_deleted' => 0]);
-                        $f->groupBy(['f.placement_location_enc_id']);
-                    }], true);
-                    $b->joinWith(['applicationTypeEnc z']);
+                    $f->onCondition(['f.is_deleted' => 0]);
                 }], true)
+                ->joinWith(['applicationTypeEnc z'])
                 ->where([
-                    'a.college_enc_id' => $college_id,
                     'a.is_deleted' => 0,
-                    'b.is_deleted' => 0,
-                    'bb.is_deleted' => 0,
                     'a.status' => 'Active',
+                    'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1
-                ]);
-            if ($type) {
-                $jobs->andWhere(['z.name' => $type]);
-            }
+                    'bb.has_placement_rights' => 1,
+                    'bb.is_deleted' => 0,
+                    'bb.status' => 'Active',
+                    'a.application_for' => [0, 2],
+                    'a.for_all_colleges' => 1,
+                ])
+                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if ($limit) {
                 $jobs->limit($limit);
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs->orderBy(['b.is_college_approved' => SORT_DESC])->asArray()
                 ->all();
 
 
@@ -532,7 +548,7 @@ class CollegeProfileController extends ApiBaseController
                         $f->innerJoinWith(['userOtherInfo g']);
                         $f->onCondition(['f.is_deleted' => 0]);
                     }], false)
-                    ->where(['a.application_enc_id' => $j['employerApplicationEnc']['application_enc_id'], 'a.is_deleted' => 0])
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'a.is_deleted' => 0])
                     ->asArray()
                     ->one();
 
@@ -542,6 +558,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
                 $data['org_slug'] = $j['org_slug'];
@@ -552,31 +569,40 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['salary'] = $j['salary'];
-                foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                foreach ($j['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {
                         array_push($locations, $l['name']);
                         $positions += $l['positions'];
                     }
                 }
 
-                foreach ($j['employerApplicationEnc']['applicationEducationalRequirements'] as $a) {
+                foreach ($j['applicationEducationalRequirements'] as $a) {
                     array_push($educational_requirement, $a['educational_requirement']);
                 }
 
-                foreach ($j['employerApplicationEnc']['applicationSkills'] as $s) {
+                foreach ($j['applicationSkills'] as $s) {
                     array_push($skills, $s['skill']);
                 }
 
-                $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
-                $data['location'] = implode(',', $locations);
-                $data['positions'] = $positions;
-                $data['education'] = implode(',', $educational_requirement);
-                $data['skills'] = implode(',', $skills);
+                $data['process'] = $j['interviewProcessEnc']['interviewProcessFields'];
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
+                $data['positions'] = $positions ? $positions : $j['positions'];
+                $data['education'] = implode(', ', $educational_requirement);
+                $data['skills'] = implode(', ', $skills);
                 $data['applied_count'] = $count['count'];
                 array_push($resultt, $data);
             }
 
-            return $this->response(200, ['status' => 200, 'jobs' => $resultt]);
+            $data = [];
+            $j = 0;
+            foreach ($resultt as $r) {
+                if ($r['is_deleted'] != 1) {
+                    array_push($data, $resultt[$j]);
+                }
+                $j++;
+            }
+
+            return $this->response(200, ['status' => 200, 'jobs' => $data]);
         } else {
             return $this->response(401);
         }
@@ -608,7 +634,8 @@ class CollegeProfileController extends ApiBaseController
                     'm.min_wage as min_salary',
                     'm.wage_duration as salary_duration',
                     'dd.designation',
-                    'z.name job_type'
+                    'z.name job_type',
+                    'm.positions'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -638,7 +665,6 @@ class CollegeProfileController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
-                        $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
@@ -760,8 +786,8 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
-                $data['location'] = implode(',', $locations);
-                $data['positions'] = $positions;
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
+                $data['positions'] = $positions ? $positions : $j['positions'];
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
@@ -803,7 +829,7 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name','(CASE
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', '(CASE
                         WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
@@ -852,7 +878,7 @@ class CollegeProfileController extends ApiBaseController
                     ->one();
 
 
-                if($user_data['skill'] != null) {
+                if ($user_data['skill'] != null) {
                     $user_data['skill'] = explode(',', $user_data['skill']);
                 }
                 $process[$i]['user_data'] = $user_data;
@@ -890,6 +916,5 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unathorized']);
         }
     }
-
 
 }
