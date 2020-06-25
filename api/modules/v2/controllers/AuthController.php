@@ -54,6 +54,7 @@ class AuthController extends ApiBaseController
                 'find-user' => ['POST', 'OPTIONS'],
                 'teacher-signup' => ['POST', 'OPTIONS'],
                 'validate-roll-number' => ['POST', 'OPTIONS'],
+                'change-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -617,7 +618,7 @@ class AuthController extends ApiBaseController
         }
     }
 
-    public function actionResetPassword()
+    public function actionChangePassword()
     {
         if ($user = $this->isAuthorized()) {
             $model = new ChangePassword();
