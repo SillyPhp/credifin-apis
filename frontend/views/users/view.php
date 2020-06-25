@@ -7,7 +7,7 @@ $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
                 <div class="left-side-container">
                     <div class="freelance-image">
                         <?php
@@ -51,7 +51,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4 bl-1 br-gary">
+            <div class="col-md-4 col-sm-6  br-gary">
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><span
@@ -321,6 +321,7 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+body{background-color:#f9f9f9;}
 //.detail-section{
 //    filter: blur(5px);
 //    -webkit-filter: blur(5px);
@@ -433,9 +434,10 @@ $this->registerCss('
     padding: 5px 25px;
     box-shadow: 0px 1px 12px 1px #a5a5a5;
     border-radius: 4px;
-    margin-top: 2px;
+    margin: 10px 5px 5px;
     font-size: 13px;
     display: inline-block;
+    font-family:roboto;
 }
 .edit-profile-btn:hover, .edit-profile-btn:focus{
     background-color:#0392ce;
@@ -443,40 +445,48 @@ $this->registerCss('
 }
 .freelance-image img{
     width:100%;
-    height:88%;
+    height:100%;
+    object-fit:fill;
 }
  .inner-header-page{
-    padding:150px 0 50px;
-	text-align:left;
-	background:#f5f6f7;
-    border-bottom:2px solid #00a0e3;	
+    padding:100px 0 0px;	
 }
 .left-side-container {
-    display: table;
-    width: 100%;
+	width: 100%;
+	background-color: #fff;
+	padding: 50px;
+	position: relative;
+	margin: auto;
+	border-radius: 8px;
+	margin-bottom: 25px;
+	min-height: 270px;
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
 }
 .inner-header-page .freelance-image {
-    height: 160px;
-    flex: 0 0 140px;
-    margin-right: 35px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.1);
-    display: inline-block;
-    padding: 0 20px;
-    line-height: 140px;
-    float: left;
+	height: 240px;
+	background: #fff;
+	border-radius: 100%;
+	box-shadow: 0 3px 12px rgba(0,0,0,.1);
+	padding: 2px;
+	position: absolute;
+	left: -19%;
+	top: 5%;
+	width: 240px;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
-	max-width:140px;
-	margin-top:10px;
+//	max-width:140px;
+//	margin-top:10px;
+}
+.header-details p{
+    font-size:16px;
+    font-family:roboto;
 }
 .header-details h4{
 	margin:0 0 5px 0;
-	font-size:24px;
+	font-size:34px;
+	font-family:lora;
 }
 .header-details h4 span{
 	font-size:17px;
@@ -492,6 +502,8 @@ $this->registerCss('
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 12px;
+    font-family:roboto;
+    font-size:16px;
 }
 .inner-header-page .header-details ul li img{
     height: 16px;
@@ -537,7 +549,7 @@ $this->registerCss('
     background-color: #0395d8;
 }
 .header-details {
-    margin-top: 20px;
+    padding-left: 100px;
 }
 .inner-header-page .header-details li .star-rating {
     position: relative;
@@ -562,6 +574,12 @@ $this->registerCss('
 }
 .inner-header-page .header-details li .star-rating .fa.fill {
     color:#febe42;
+}
+.right-side-detail {
+	background-color: #fff;
+	padding: 37px 20px;
+	border-radius: 8px;
+    min-height:270px;
 }
 .right-side-detail ul {
     padding: 0;
@@ -863,6 +881,16 @@ ul.status-detail li>strong {
     .header-details {
         margin-top: 0px;
         display: inherit;
+        padding-left:0;
+        text-align:center;
+    }
+    .inner-header-page .freelance-image {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin: auto;
+        width: 160px;
+        height: 160px;
     }
 }
 @media screen and (max-width: 991px) and (min-width: 768px) {
