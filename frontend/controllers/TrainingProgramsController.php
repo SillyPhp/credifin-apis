@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\TrainingAppliedForm;
 use frontend\models\applications\ApplicationCards;
 use Yii;
@@ -15,13 +16,25 @@ class TrainingProgramsController extends Controller
 {
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+
+        return $this->render('index', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionLoadCards(){
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -42,7 +55,6 @@ class TrainingProgramsController extends Controller
             }
             return $response;
         }
-        return $this->render('index');
     }
     public function actionFetchInstitutes()
     {

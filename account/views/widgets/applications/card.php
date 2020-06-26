@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 $total_applications = count($applications);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
@@ -21,42 +20,47 @@ if (!empty($total_applications)) {
         <?php
         for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
+                $tipvalue = explode('/',$applications[$next]['link'])[1];
                 ?>
                 <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-6'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
                             <?php if (!empty($applications[$next]['interview_process_enc_id'])): ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>"
-                                   target="_blank" data-toggle="tooltip" title="Edit Job"
-                                   class="j-edit">
+                                   target="_blank" data-toggle="tooltip" title="Edit <?= $tipvalue ?>"
+                                   class="j-edit tt">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>"
-                                   target="_blank" data-toggle="tooltip" title="Clone Job"
-                                   class="j-clone share_btn">
+                                   target="_blank" data-toggle="tooltip" title="Clone <?= $tipvalue ?>"
+                                   class="j-clone share_btn tt">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php else: ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-edit?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank" data-toggle="tooltip" title="Edit Job"
-                                   class="j-edit">
+                                   target="_blank" data-toggle="tooltip" title="Edit <?= $tipvalue ?>"
+                                   class="j-edit tt">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-clone?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank" data-toggle="tooltip" title="Clone Job"
-                                   class="j-clone share_btn">
+                                   target="_blank" data-toggle="tooltip" title="Clone <?= $tipvalue ?>"
+                                   class="j-clone share_btn tt">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php endif; ?>
-                            <button type="button" class="j-delete" data-toggle="tooltip" title="Delete Job"
+                            <button type="button" class="j-delete tt" data-toggle="tooltip" title="Delete <?= $tipvalue ?>"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="j-closed tt" data-toggle="tooltip" title="Close <?= $tipvalue ?>"
+                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn" type="button" >
                                 <i class="fa fa-twitter"></i>
                             </a>
@@ -66,7 +70,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-whatsapp share_btn" type="button">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
@@ -114,14 +118,15 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad" style="font-family: roboto;">
-                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
-                                    <?= sizeof($applications[$next]['appliedApplications']); ?>
-                                    Applications
+                            <div class="row">
+                            <div class="col-md-12" style="font-family: roboto;">
+                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'],true); ?>">
+                                    <?= sizeof($applications[$next]['appliedApplications']).' Applications'; ?>
                                 </a>
                             </div>
-                            <div class="col-md-6 minus-15-pad j-grid"><a
-                                        href="<?= Url::to($applications[$next]["link"]); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
+                            <div class="col-md-12 j-grid"><a
+                                        href="<?= Url::to($applications[$next]["link"],true); ?>"><?= Yii::t('account', 'VIEW '.strtoupper($applications[$next]['application_type'])); ?></a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -146,6 +151,7 @@ if (!empty($total_applications)) {
 Pjax::end();
 
 $this->registerCss("
+.tt + .tooltip > .tooltip-inner {width:115px;}
 .exp-soon-msg{
      box-shadow: 0 0 10px rgba(0,0,0,.2);
     padding: 5px;
@@ -231,6 +237,9 @@ $this->registerCss("
 .topic-con{
     position:relative;
 }
+.j-grid > a{ 
+    margin-top:0px;
+} 
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
@@ -256,5 +265,30 @@ $(document).on('click','.j-delete',function(e){
           });
     }
 });
+
+$(document).on('click','.j-closed',function(e){
+     e.preventDefault();
+     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+     if (window.confirm("Do you really want to Delete the current Application?")) { 
+        main_card.remove();
+        var data = $(this).attr('value');
+        var url = "/account/jobs/close-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            success:function(data){
+                $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                  if(data==true) {
+                      $.pjax.reload({container: "#pjax_closed_jobs", async: false});
+                      toastr.success('Closed Successfully', 'Success');
+                    }
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                   }
+                 }
+          });
+    }
+}); 
 JS;
 $this->registerJs($script);

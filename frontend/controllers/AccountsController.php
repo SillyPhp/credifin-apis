@@ -52,7 +52,7 @@ class AccountsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -67,6 +67,10 @@ class AccountsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                if (Yii::$app->user->identity->organization)
+                {
+                    return $this->redirect('/account/dashboard');
+                }
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',
@@ -86,6 +90,10 @@ class AccountsController extends Controller
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
+            }
+            if (Yii::$app->user->identity->organization)
+            {
+                Yii::$app->session->set("backURL", '/account/dashboard');
             }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
@@ -241,9 +249,13 @@ class AccountsController extends Controller
         }
         $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->forgotPassword()) {
+            if ($model->forgotPassword() === true) {
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
+                ]);
+            } elseif($model->forgotPassword() === 'User Not Exist') {
+                return $this->render('/site/message', [
+                    'message' => 'Enter Valid Email Address.'
                 ]);
             } else {
                 return $this->render('/site/message', [

@@ -9,7 +9,7 @@ class EmployerApplications extends \common\models\EmployerApplications {
     }
 
     public function getLocations() {
-        return $this->getApplicationPlacementLocations()->alias('aa')->select(['aa.application_enc_id','aa.location_enc_id','bb.city_enc_id','cc.name'])->innerJoinWith(["locationEnc bb" => function($b){$b->innerJoinWith(['cityEnc cc'],false);}],false)->asArray();
+        return $this->getApplicationPlacementLocations()->alias('aa')->select(['aa.application_enc_id','aa.location_enc_id','bb.city_enc_id','cc.name'])->joinWith(["locationEnc bb" => function($b){$b->joinWith(['cityEnc cc'],false);}],false)->asArray();
     }
 
 }

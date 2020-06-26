@@ -33,6 +33,12 @@ use frontend\models\profile\UserProfilePictureEdit;
 class UsersController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        return parent::beforeAction($action);
+    }
+
     public function getPreference($type, $id)
     {
 
@@ -87,19 +93,27 @@ class UsersController extends Controller
         $countries = [];
         $profiles_name = [];
         $industry = [];
-        foreach ($p['userPreferredIndustries'] as $i_slug) {
-            array_push($industry, $i_slug['industry']);
+        if($p['userPreferredIndustries']) {
+            foreach ($p['userPreferredIndustries'] as $i_slug) {
+                array_push($industry, $i_slug['industry']);
+            }
         }
-        foreach ($p['userPreferredJobProfiles'] as $p_slug) {
-            array_push($profiles_name, $p_slug['profile_name']);
+        if($p['userPreferredJobProfiles']) {
+            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
+                array_push($profiles_name, $p_slug['profile_name']);
+            }
         }
-        foreach ($p['userPreferredSkills'] as $s) {
-            array_push($skills, $s['skill']);
+        if($p['userPreferredSkills']) {
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
         }
-        foreach ($p['userPreferredLocations'] as $l) {
-            array_push($cities, $l['city_name']);
-            array_push($states, $l['state_name']);
-            array_push($countries, $l['country_name']);
+        if($p['userPreferredLocations']) {
+            foreach ($p['userPreferredLocations'] as $l) {
+                array_push($cities, $l['city_name']);
+                array_push($states, $l['state_name']);
+                array_push($countries, $l['country_name']);
+            }
         }
         return [
             'profiles_name' => implode(', ', array_unique($profiles_name)),
@@ -183,7 +197,7 @@ class UsersController extends Controller
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->select(['a.user_enc_id', 'a.city_enc_id','a.description','a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
             ->where(['a.user_enc_id' => $user['user_enc_id']])
             ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->orderBy(['created_on' => SORT_DESC])
@@ -228,19 +242,15 @@ class UsersController extends Controller
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {
-            $chkType = UserTypes::findOne(['user_type_enc_id' => Yii::$app->user->identity->user_type_enc_id])['user_type'];
-            switch ($chkType) {
-                case 'Organization Admin':
-                case 'Super Admin':
-                case 'admin' :
+            $orgId = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])['organization_enc_id'];
+            if ($orgId != null || $orgId != "") {
+                $page = 'view';
+            } else {
+                if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
                     $page = 'view';
-                    break;
-                default :
-                    if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
-                        $page = 'view';
-                    } else {
-                        $page = 'guest-view';
-                    }
+                } else {
+                    $page = 'guest-view';
+                }
             }
         }
         return $this->render($page, $dataProvider);

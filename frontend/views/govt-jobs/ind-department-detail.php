@@ -4,6 +4,9 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
+$this->title = $data['Value'];
+$keywords = $data["Value"] . ' Recruiment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ', ' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careersc';
+$description = '' . $data["Value"] . ' Recruiment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ',' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careersc';
 $this->title = $data['Value'] . " Jobs";
 $keywords = $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ', ' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careers';
 $description = '' . $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ',' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careers';
@@ -78,7 +81,7 @@ echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
 .application-card-main
 {
-height:210px;
+height:175px;
 }
 .align_btn
 {
@@ -127,16 +130,20 @@ margin:auto
     padding: 53px 10px 0px 8px;  
     }
 }
+.application-card-img {
+    margin-top: 25px;
+}
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
 $script = <<< JS
-var offset = 0;
 var dept_id = $('#dept_id').val();
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchDeptData(template=$('#cards'),limit=12,offset = offset+12,dept_id,loader=false,loader_btn=true);
+  fetchDeptData(template=$('#cards'),limit,offset+12,dept_id,loader=false,loader_btn=true);
 })
-fetchDeptData(template=$('#cards'),limit=12,offset=0,dept_id,loader=true,loader_btn=false);
+var limit =12;
+var offset = 0;
+fetchDeptData(template=$('#cards'),limit,offset,dept_id,loader=true,loader_btn=false);
 JS;
 
 $this->registerJs($script);

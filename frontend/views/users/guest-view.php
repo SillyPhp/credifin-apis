@@ -111,6 +111,19 @@ $this->params['header_dark'] = false;
                     </ul>
                 </div>
             </div>
+            <div class="log-btn1">
+                <?php
+                if (!Yii::$app->user->identity->user_enc_id) {
+                    ?>
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn btn-info new-set">Login to view complete profile</a>
+                    <?php
+                } else {
+                    ?>
+                    <div class="log-text1">You have to be an organization user to view the details</div>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
     </section>
     <section class="detail-section">
@@ -135,7 +148,10 @@ $this->params['header_dark'] = false;
                         ?>
                     </div>
                     <div class="apply-job-detail">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                            voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
                     </div>
                     <div class="apply-job-detail">
                         <h5>Skills</h5>
@@ -319,6 +335,32 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.log-btn1 a{
+    position: absolute;
+    left: 50%;
+    bottom: -20px;
+    z-index: 999;
+    transform: translate(-50%); 
+}
+.log-text1{
+    position: absolute;
+    left: 50%;
+    bottom: -20px; 
+    z-index: 999;
+    transform: translate(-50%); 
+    font-size: 18px;
+    font-family: roboto;
+    padding: 5px 20px !important;
+    color: red;
+    border: 1px solid;
+    background: #fff;
+}
+.new-set {
+    font-size: 18px;
+    font-family: roboto;
+    padding: 5px 20px !important;
+//    color: red;
+}
 .detail-section{
     filter: blur(5px);
     -webkit-filter: blur(5px);

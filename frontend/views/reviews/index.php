@@ -369,7 +369,7 @@ $this->registerCss('
     z-index: -1;
 }
 .cm-btns {
-    margin-top:10px;
+    margin-top:10px !important;
 }  
 .color-blue a:hover{
     color:#00a0e3;
@@ -661,6 +661,7 @@ color: initial;
 .twitter-typeahead
 {
 width:100%;
+display:block !important;
 }
 .benifit-bttn a{
   border:2px solid #00a0e3;

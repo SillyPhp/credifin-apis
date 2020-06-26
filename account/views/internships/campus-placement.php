@@ -75,12 +75,16 @@ use yii\helpers\Url;
                                                                     <div class="job-location location">
                                                                         <i class="fa fa-map-marker"></i>
                                                                         <?php
-                                                                        $lc = [];
-                                                                        foreach ($app['locations'] as $loc) {
-                                                                            array_push($lc, $loc['name']);
-                                                                        }
-                                                                        echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
-                                                                        ?>
+                                                                        if ($app['locations']) {
+                                                                            $lc = [];
+                                                                            foreach ($app['locations'] as $loc) {
+                                                                                array_push($lc, $loc['name']);
+                                                                            }
+                                                                            echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                        } else {
+                                                                            echo '<span title="Work From Home">Work From Home</span>';
+                                                                        } ?>
+
                                                                     </div>
                                                                 </div>
                                                                 <div class="job-listing-meta meta">
@@ -90,7 +94,7 @@ use yii\helpers\Url;
                                                                     <ul class="job-types">
                                                                         <li class="job-type full-time"> <?= $app['type']; ?></li>
                                                                     </ul>
-                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y',strtotime($app['last_date'])); ?></span>
+                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y', strtotime($app['last_date'])); ?></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -148,15 +152,18 @@ use yii\helpers\Url;
                                                         <div class="inner-list-main">
                                                             <div class="job-listing-company-logo">
                                                                 <?php
-                                                                if(!empty($clg['logo'])) {
+                                                                if (!empty($clg['logo'])) {
                                                                     ?>
                                                                     <img class="company_logo"
                                                                          src="<?= Url::to($clg['logo']); ?>"
                                                                          alt="<?= $clg['name']; ?>">
                                                                     <?php
-                                                                } else{
+                                                                } else {
                                                                     ?>
-                                                                    <canvas class="user-icon" name="<?= $clg['name']; ?>" width="80" height="80" color="<?= $clg['color']?>" font="39px"></canvas>
+                                                                    <canvas class="user-icon"
+                                                                            name="<?= $clg['name']; ?>" width="80"
+                                                                            height="80" color="<?= $clg['color'] ?>"
+                                                                            font="39px"></canvas>
                                                                     <?php
                                                                 }
                                                                 ?>

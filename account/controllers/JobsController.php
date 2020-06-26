@@ -44,7 +44,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -105,9 +105,9 @@ class JobsController extends Controller
                 ['a.application_for' => 1]
             ],
 
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -127,9 +127,9 @@ class JobsController extends Controller
                 'a.status' => 'Active',
                 'a.application_for' => 1
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -473,9 +473,9 @@ class JobsController extends Controller
                 ['a.application_for' => 0],
                 ['a.application_for' => 2]
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -492,11 +492,11 @@ class JobsController extends Controller
             'applicationType' => 'Jobs',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
+                'a.status' => 'Closed',
             ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '<', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -858,6 +858,22 @@ class JobsController extends Controller
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
                 ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
+                ->execute();
+            if ($update) {
+                Yii::$app->sitemap->generate();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionCloseApplication()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('data');
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['status' => 'Closed', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                 ->execute();
             if ($update) {
                 Yii::$app->sitemap->generate();
@@ -1541,9 +1557,10 @@ class JobsController extends Controller
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc z1']);
                 }], false)
                 ->joinWith(['applicationTypeEnc f'], false)
                 ->where(['f.name' => "Jobs"])
@@ -1637,6 +1654,15 @@ class JobsController extends Controller
                 $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
                 $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 $erexxCollaboratorsModel->save();
+            }
+        }
+    }
+    public function actionExtendsDate()
+    {
+        $model = new ExtendsJob();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->redirect(Yii::$app->request->referrer);
             }
         }
     }

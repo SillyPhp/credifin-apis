@@ -23,6 +23,7 @@ function random_color()
     <div class="row">
 
         <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+            <?= $this->render("@common/widgets/candidate-actions-navbar");?>
             <div class="col-md-12 col-sm-12">
                 <div class="row bg-lighter shadow round working">
                     <div class="col-md-8 col-sm-8">
@@ -201,8 +202,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1">
                         <?php
-                        if (!empty($education)) {
-                            foreach ($education as $e) { ?>
+                        if (!empty($resume_data['userEducations'])) {
+                            foreach ($resume_data['userEducations'] as $e) { ?>
                                 <div class="row" style="margin-top: 40px; margin-bottom: 40px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-3 col-xs-4">
@@ -507,8 +508,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1 col-sm-12">
                         <?php
-                        if (!empty($experience)) {
-                            foreach ((array)$experience as $ex) { ?>
+                        if (!empty($resume_data['userWorkExperiences'])) {
+                            foreach ($resume_data['userWorkExperiences'] as $ex) { ?>
                                 <div class="row" style="margin-top: 30px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
@@ -569,8 +570,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
 
                                         <?php
-                                        if (!empty($skills)) {
-                                            foreach ($skills as $skill) { ?>
+                                        if (!empty($resume_data['userSkills'])) {
+                                            foreach ($resume_data['userSkills'] as $skill) { ?>
                                                 <li class="addedTag"><?= $skill['skill'] ?>
                                                     <span id="<?= $skill['user_skill_enc_id'] ?>"
                                                           class="skill_remove">x</span>
@@ -615,8 +616,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($achievements)) {
-                                            foreach ($achievements as $achievement) { ?>
+                                        if (!empty($resume_data['userAchievements'])) {
+                                            foreach ($resume_data['userAchievements'] as $achievement) { ?>
                                                 <li class="addedTag"><?= $achievement['achievement'] ?>
                                                     <span id="<?= $achievement['user_achievement_enc_id'] ?>"
                                                           class="achievement_remove">x</span>
@@ -659,8 +660,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($hobbies)) {
-                                            foreach ($hobbies as $hobby) { ?>
+                                        if (!empty($resume_data['userHobbies'])) {
+                                            foreach ($resume_data['userHobbies'] as $hobby) { ?>
                                                 <li class="addedTag"><?= $hobby['hobby'] ?>
                                                     <span id="<?= $hobby['user_hobby_enc_id'] ?>"
                                                           class="hobby_remove">x</span>
@@ -702,8 +703,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($interests)) {
-                                            foreach ($interests as $interest) { ?>
+                                        if (!empty($resume_data['userInterests'])) {
+                                            foreach ($resume_data['userInterests'] as $interest) { ?>
                                                 <li class="addedTag"><?= $interest['interest'] ?>
                                                     <span id="<?= $interest['user_interest_enc_id'] ?>"
                                                           class="interest_remove">x</span>
@@ -724,6 +725,11 @@ function random_color()
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="pre-btn">
+                        <a href="/account/resume-builder/preview/">view templates</a>
                     </div>
                 </div>
             </div>
@@ -1480,6 +1486,20 @@ $('#update_school').typeahead(null, {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.pre-btn {
+    text-align: center;
+    padding-top: 10px;
+}
+.pre-btn a {
+    background: #00a0e3;
+    color:#fff;
+    padding: 10px 35px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight:bold;
+    text-transform:uppercase;
+    box-shadow: 0 3px 6px rgba(0,0,0,.2),0 3px 6px rgba(0,0,0,.26);
+}
 .info-icon {
     position: absolute;
     top: 32px;

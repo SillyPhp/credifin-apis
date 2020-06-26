@@ -41,6 +41,7 @@ class LocationForm extends Model {
     public function rules() {
         return [
             [['name', 'address', 'city','country','state', 'longitude', 'location_for'], 'required'],
+            [['name','address','email','phone'], 'trim'],
             ['email', 'email'],
             [['latitude'], 'required', 'message' => 'Get The Location First'],
             [['latitude', 'longitude'], 'number'],

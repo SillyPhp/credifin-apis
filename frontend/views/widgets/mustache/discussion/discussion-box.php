@@ -26,6 +26,12 @@
 <?php
 
 $this->registerCss('
+.comment-icon{
+    overflow:hidden !important;
+}
+comment-name{
+    text-transform:capitalize !important;
+}
 .chan-heading{
     font-size:18px;
     font-weight:bold;

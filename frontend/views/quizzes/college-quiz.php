@@ -39,7 +39,6 @@ $this->params['seo_tags'] = [
     ],
 ];
 
-
 if ($result == Null) {
     ?>
     <div class='m-cover'></div>

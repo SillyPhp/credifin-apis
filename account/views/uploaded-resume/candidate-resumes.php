@@ -179,7 +179,6 @@ use yii\helpers\Url;
                                         </div>
                                     <?php } ?>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
