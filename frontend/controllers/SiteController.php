@@ -14,6 +14,7 @@ use common\models\SocialGroups;
 use common\models\States;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
+use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
 use frontend\models\SubscribeNewsletterForm;
