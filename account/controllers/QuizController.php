@@ -1,6 +1,7 @@
 <?php
 
 namespace account\controllers;
+use account\models\bankDetails\BankDetailForm;
 use account\models\quiz\QuizModel;
 use common\models\Categories;
 use common\models\EmployerApplications;
@@ -32,6 +33,20 @@ class QuizController extends Controller
             'user_topics'=>$user_topics,
             'intros_Desc'=>$intros_Desc,
             ]);
+    }
+
+    public function actionCreateDummy(){
+        $categories = $this->_data('Groups');
+        $sub = $this->_data('Subject');
+        $rec_topics = $this->_topics($is_rec=true);
+        $user_topics = $this->_topics($is_rec=false);
+        $intros_Desc = $this->_desc();
+        return $this->render('create-quiz-dummy',['categories'=>$categories,
+            'subject'=>$sub,
+            'recommend_topics'=>$rec_topics,
+            'user_topics'=>$user_topics,
+            'intros_Desc'=>$intros_Desc,
+        ]);
     }
 
     public function actionAddGroups()
@@ -233,5 +248,13 @@ class QuizController extends Controller
             }
         }
     }
+
+    public function actionBankDetails(){
+        $model = new BankDetailForm();
+        return $this->render('bank-details',[
+            'model' => $model
+        ]);
+    }
+
 }
 
