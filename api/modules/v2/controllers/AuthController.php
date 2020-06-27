@@ -40,6 +40,7 @@ class AuthController extends ApiBaseController
                 'find-user',
                 'teacher-signup',
                 'validate-roll-number',
+                'change-password',
             ],
             'class' => HttpBearerAuth::className()
         ];

@@ -398,6 +398,8 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
 
+            $params = Yii::$app->request->post();
+
             $limit = Yii::$app->request->post('limit');
             $type = Yii::$app->request->post('type');
 
@@ -482,6 +484,9 @@ class CollegeProfileController extends ApiBaseController
                     'a.for_all_colleges' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
+            if (isset($params['slug']) && !empty($params['slug'])) {
+                $jobs->andWhere(['bb.slug' => $params['slug']]);
+            }
             if ($limit) {
                 $jobs->limit($limit);
             }
