@@ -35,6 +35,20 @@ class QuizController extends Controller
             ]);
     }
 
+    public function actionCreateDummy(){
+        $categories = $this->_data('Groups');
+        $sub = $this->_data('Subject');
+        $rec_topics = $this->_topics($is_rec=true);
+        $user_topics = $this->_topics($is_rec=false);
+        $intros_Desc = $this->_desc();
+        return $this->render('create-quiz-dummy',['categories'=>$categories,
+            'subject'=>$sub,
+            'recommend_topics'=>$rec_topics,
+            'user_topics'=>$user_topics,
+            'intros_Desc'=>$intros_Desc,
+        ]);
+    }
+
     public function actionAddGroups()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
