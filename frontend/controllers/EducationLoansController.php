@@ -10,7 +10,7 @@ use yii\web\Controller;
 class EducationLoansController extends Controller
 {
     public function actionIndex(){
-        return $this->render("index");
+        return $this->render("education-loan-index");
     }
     public function actionApply(){
         $model = new EducationalLoans();

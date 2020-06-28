@@ -36,7 +36,7 @@ use yii\helpers\Url;
         <!--                <a href="#">-->
         <!--                    <div class="box-des box2 mt">-->
         <!--                        <img src="-->
-        <?//= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
+        <? //= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
         <!--                        <span class="count">50</span>-->
         <!--                        <span class="box-text">Candidates Under Review</span>-->
         <!--                    </div>-->
@@ -96,31 +96,31 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <ul class="statusFilters">
                         <li>
-                            <input id="lists[all]" type="checkbox" name="lists[all]" />
+                            <input id="lists[all]" type="checkbox" name="lists[all]"/>
                             <label for="lists[all]">All</label>
                         </li>
                         <li>
-                            <input id="lists[new_lead]" type="checkbox" name="lists[new_lead]" />
+                            <input id="lists[new_lead]" type="checkbox" name="lists[new_lead]"/>
                             <label for="lists[new_lead]"> New Lead</label>
                         </li>
                         <li>
-                            <input id="lists[accepted]" type="checkbox" name="lists[accepted]" />
+                            <input id="lists[accepted]" type="checkbox" name="lists[accepted]"/>
                             <label for="lists[accepted]"> Accepted</label>
                         </li>
                         <li>
-                            <input id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]" />
+                            <input id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]"/>
                             <label for="lists[pre_verification]"> Pre Verification</label>
                         </li>
                         <li>
-                            <input id="lists[under_process]" type="checkbox" name="lists[under_process]" />
+                            <input id="lists[under_process]" type="checkbox" name="lists[under_process]"/>
                             <label for="lists[under_process]"> Under Process</label>
                         </li>
                         <li>
-                            <input id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]" />
+                            <input id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]"/>
                             <label for="lists[sanctioned]"> Sanctioned</label>
                         </li>
                         <li>
-                            <input id="lists[disbursed]" type="checkbox" name="lists[disbursed]" />
+                            <input id="lists[disbursed]" type="checkbox" name="lists[disbursed]"/>
                             <label for="lists[disbursed]"> Disbursed</label>
                         </li>
                     </ul>
@@ -132,9 +132,9 @@ use yii\helpers\Url;
                 <div class="tab-pane active pos-rel" id="tab_actions_pending">
                     <div id="overflowScroll">
                         <div class="row">
-                            <div class="mt-actions " style="">
+                            <div class="mt-actions mainTable" style="">
                                 <div class="col-md-12">
-                                    <table>
+                                    <table class="">
                                         <thead class="positionSticky">
                                         <tr>
                                             <th class="dateApplied">Date Applied</th>
@@ -173,17 +173,27 @@ use yii\helpers\Url;
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn"
+                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
                                                     </div>
                                                 </div>
                                                 <span class="currentState">Accepted</span>
-                                                <button class="nextState" onclick="nextPhase()"><i class="fa fa-arrow-circle-right"></i></button>
-                                                <button class="viewStatus">View Status</button>
+                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                        data-placement="top" title="Move to Next Phase">
+                                                    <i class="fa fa-arrow-circle-right"></i>
+                                                </button>
+                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
+                                                <button class="reconsider" onclick="reconsider()">Reconsider</button>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>5,00,000</td>
@@ -217,17 +227,130 @@ use yii\helpers\Url;
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Accepted</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Under Process</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Disbursed</button>
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
                                                 <span class="currentState">Accepted</span>
-                                                <button class="nextState" onclick="nextPhase()"><i class="fa fa-arrow-circle-right"></i></button>
-                                                <button class="viewStatus">View Status</button>
+                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                        data-placement="top" title="Move to Next Phase">
+                                                    <i class="fa fa-arrow-circle-right"></i>
+                                                </button>
+                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
+                                            </td>
+                                            <td>Shshank Vasisht</td>
+                                            <td>5,00,000</td>
+
+                                            <td>Professional Course</td>
+                                            <td>Charted Accountant</td>
+                                            <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>2</td>
+                                            <td>1</td>
+                                            <td>+91 7837394374</td>
+                                            <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
+                                            <td>Male</td>
+                                            <td>28-Sept-1993</td>
+                                            <td>Father</td>
+                                            <td>Ashiwini Kumar Vasisht</td>
+                                            <td>Salaried</td>
+                                            <td>13,00,000</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                        </tr>
+                                        <tr>
+                                            <td>22 Aug 2020</td>
+                                            <td class="actionColoum">
+                                                <div class="dropdown">
+                                                    <button onclick="actionStats(this)" class="dropbtn"><i
+                                                                class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-content myDropdown">
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Accepted</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Under Process</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                    </div>
+                                                </div>
+                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                        data-placement="top" title="Move to Next Phase">
+                                                    <i class="fa fa-arrow-circle-right"></i>
+                                                </button>
+                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
+                                            </td>
+                                            <td>Shshank Vasisht</td>
+                                            <td>5,00,000</td>
+                                            <td>Professional Course</td>
+                                            <td>Charted Accountant</td>
+                                            <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>6</td>
+                                            <td>3</td>
+                                            <td>+91 7837394374</td>
+                                            <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
+                                            <td>Male</td>
+                                            <td>28-Sept-1993</td>
+                                            <td>Father</td>
+                                            <td>Ashiwini Kumar Vasisht</td>
+                                            <td>Salaried</td>
+                                            <td>13,00,000</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                        </tr>
+                                        <tr>
+                                            <td>22 Aug 2020</td>
+                                            <td class="actionColoum">
+                                                <div class="dropdown">
+                                                    <button onclick="actionStats(this)" class="dropbtn"><i
+                                                                class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-content myDropdown">
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Accepted</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Under Process</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                    </div>
+                                                </div>
+                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                        data-placement="top" title="Move to Next Phase">
+                                                    <i class="fa fa-arrow-circle-right"></i>
+                                                </button>
+                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>5,00,000</td>
@@ -266,10 +389,74 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Installment Schedule</h2>
+        <div class="loanModalDetails">
+        <table>
+            <thead>
+            <tr>
+                <th class='tInstall'>S.No</th>
+                <th class='aInstall'>Due Date</th>
+                <th class='dueDate'>Amount</th>
+                <th class='installPaid'>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>01-08-2020</td>
+                <td>5726</td>
+                <td>Due</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>01-09-2020</td>
+                <td>5726</td>
+                <td>Due</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>01-10-2020</td>
+                <td>5726</td>
+                <td>Due</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>01-11-2020</td>
+                <td>5726</td>
+                <td>Due</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss('
-.viewStatus{
+.modal-content h2{
+    font-family: lora;
+    font-size: 20px;
+    text-align: center;
+}
+tr{
+    position: relative;
+}
+.viewStatus, .reconsider{
     display: none;
+    position: absolute;
+    border: none;
+    padding: 0;
+    bottom: 0;
+    right: 5px;
+    font-size: 12px;
+    background: transparent;
+}
+.viewStatus:hover, .reconsider:hover{
+    color: #00a0e3;
+    transition: .3s ease;
 }
 .statusFilters li{
     display:inline;
@@ -288,6 +475,10 @@ $this->registerCss('
     position: absolute;
     bottom: 0px;
     right: 0px;
+}
+.nextState:hover, .dropbtn:hover{
+    color:#00a0e3;
+    transition: .3s ease;
 }
 .ab-last-btn{
     border-bottom: none !important;
@@ -328,11 +519,15 @@ $this->registerCss('
     min-width:200px;
     max-width:200px;
 }
+.loanAction{
+    min-width:180px;
+    max-width:180px;
+}
 .startDate, .endDate, .applicantGender, .loanAmount, .country, .coApplicantWidth{
     min-width:100px;
     max-width:100px;
 }
-.dateApplied, .dobwidth, .degree, .phoneNumber, .coEmployment, .city, .loanAction, .moveToNext{
+.dateApplied, .dobwidth, .degree, .phoneNumber, .coEmployment, .city, .moveToNext{
     min-width:150px;
     max-width:150px;
 }
@@ -346,20 +541,21 @@ $this->registerCss('
     min-height:100vh;
 }
 
-table { 
-  width: 100%; 
+.mainTable table { 
   border-collapse: collapse; 
 }
 /* Zebra striping */
-tr:nth-of-type(odd) { 
+.mainTable tr:nth-of-type(odd),
+.loanModalDetails tr:nth-of-type(odd){ 
   background: #eee; 
 }
-th { 
+.mainTable th { 
   background: #333; 
   color: white; 
   font-weight: bold; 
 }
-td, th { 
+.mainTable td, .mainTable th,
+.loanModalDetails td, .loanModalDetails th { 
   padding: 6px; 
   border: 1px solid #ccc; 
   text-align: left; 
@@ -378,20 +574,20 @@ only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
 	/* Force table to not be like tables anymore */
-	table, thead, tbody, th, td, tr { 
+	.mainTable table, .mainTable thead, .mainTable tbody, .mainTable th, .mainTable td, .mainTable tr { 
 		display: block; 
 	}
 	
 	/* Hide table headers (but not display: none;, for accessibility) */
-	thead tr { 
+	.mainTable thead tr { 
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
 	
-	tr { border: 1px solid #ccc; }
+	.mainTable tr { border: 1px solid #ccc; }
 	
-	td { 
+	.mainTable td { 
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 
@@ -399,7 +595,7 @@ only screen and (max-width: 760px),
 		padding-left: 50%; 
 	}
 	
-	td:before { 
+	.mainTable td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
@@ -413,32 +609,32 @@ only screen and (max-width: 760px),
 	/*
 	Label the data
 	*/
-	td:nth-of-type(1):before { content: "Move To Next Phase "; }
-	td:nth-of-type(2):before { content: "Current Phase"; }
-	td:nth-of-type(3):before { content: "Applicant Name"; }
-	td:nth-of-type(4):before { content: "Date of Birth"; }
-	td:nth-of-type(5):before { content: "Country?"; }
-	td:nth-of-type(6):before { content: "City"; }
-	td:nth-of-type(7):before { content: "Degree"; }
-	td:nth-of-type(8):before { content: "Course Name"; }
-	td:nth-of-type(9):before { content: "College/University Name"; }
-	td:nth-of-type(10):before { content: "Start Date"; }
-	td:nth-of-type(11):before { content: "End Date"; }
-	td:nth-of-type(12):before { content: "Phone Number"; }
-	td:nth-of-type(13):before { content: "Email Address"; }
-	td:nth-of-type(14):before { content: "Loan Amount"; }
-	td:nth-of-type(15):before { content: "Co-Applicant"; }
-	td:nth-of-type(16):before { content: "Co-Applicant\'s Name"; }
-	td:nth-of-type(17):before { content: "Co-Applicant\'s employment type"; }
-	td:nth-of-type(18):before { content: "Co-Applicant\'s Annual Income"; }
-	td:nth-of-type(19):before { content: "2nd Co-Applicant"; }
-	td:nth-of-type(20):before { content: "2nd Co-Applicant\'s Name"; }
-	td:nth-of-type(21):before { content: "2nd Co-Applicant\'s employment type"; }
-	td:nth-of-type(22):before { content: "2nd Co-Applicant\'s Annual Income"; }
-    td:nth-of-type(23):before { content: "3rd Co-Applicant"; }
-	td:nth-of-type(24):before { content: "3rd Co-Applicant\'s Name"; }
-	td:nth-of-type(25):before { content: "3rd Co-Applicant\'s employment type"; }
-	td:nth-of-type(26):before { content: "3rd Co-Applicant\'s Annual Income"; }
+	.mainTable td:nth-of-type(1):before { content: "Move To Next Phase "; }
+	.mainTable td:nth-of-type(2):before { content: "Current Phase"; }
+	.mainTable td:nth-of-type(3):before { content: "Applicant Name"; }
+	.mainTable td:nth-of-type(4):before { content: "Date of Birth"; }
+	.mainTable td:nth-of-type(5):before { content: "Country?"; }
+	.mainTable td:nth-of-type(6):before { content: "City"; }
+	.mainTable td:nth-of-type(7):before { content: "Degree"; }
+	.mainTable td:nth-of-type(8):before { content: "Course Name"; }
+	.mainTable td:nth-of-type(9):before { content: "College/University Name"; }
+	.mainTable td:nth-of-type(10):before { content: "Start Date"; }
+	.mainTable td:nth-of-type(11):before { content: "End Date"; }
+	.mainTable td:nth-of-type(12):before { content: "Phone Number"; }
+	.mainTable td:nth-of-type(13):before { content: "Email Address"; }
+	.mainTable td:nth-of-type(14):before { content: "Loan Amount"; }
+	.mainTable td:nth-of-type(15):before { content: "Co-Applicant"; }
+	.mainTable td:nth-of-type(16):before { content: "Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(17):before { content: "Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(18):before { content: "Co-Applicant\'s Annual Income"; }
+	.mainTable td:nth-of-type(19):before { content: "2nd Co-Applicant"; }
+	.mainTable td:nth-of-type(20):before { content: "2nd Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(21):before { content: "2nd Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(22):before { content: "2nd Co-Applicant\'s Annual Income"; }
+    .mainTable td:nth-of-type(23):before { content: "3rd Co-Applicant"; }
+	.mainTable td:nth-of-type(24):before { content: "3rd Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(25):before { content: "3rd Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(26):before { content: "3rd Co-Applicant\'s Annual Income"; }
 }
  /*--- input checkbox ---*/
 label {
@@ -523,25 +719,126 @@ input.checkbox:checked + label:before {
    font-size: 30px;
    font-family: roboto;
 }
-                                       
+.installPaid, .installDue{
+    min-width: 125px;
+    max-width: 125px;
+} 
+.installPaid, .tInstall, .aInstall, .dueDate, .installBtn{
+    min-width: 100px;
+    max-width: 100px;
+}
+.loanDetails{
+    position: absolute;
+    z-index: 1;   
+}
+.loanDetails table{
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    position: relative;
+}
+.loanModalDetails table{
+    width:100%;
+    border: 1px;
+    position: relative
+} 
+.loanDetails table th,
+.loanModalDetails table th{
+   background: #f7f7f7;
+   color: #333;
+   padding: 5px; 
+}
+.loanModalDetails table th{
+    width: 25%;
+}
+.loanDetails table td,
+.loanModalDetails table td{
+    background: #fff;
+    color:#000;
+    padding: 5px; 
+}                                     
+.loanDetails table td button{
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+}
+
+.loanDetails table td button:hover{
+    color:#00a0e3;
+}
+.close-icon{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    z-index: 1;
+    color:#000;
+}
+.close-icon:hover{
+    color:#00a0e3;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60vw;
+  height: 60vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 ');
 
 $script = <<<JS
 
 var ps = new PerfectScrollbar('#overflowScroll');
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    window.onclick = function() {
+    window.onclick = function () {
         var x = document.querySelector('.show');
-        if( x.classList.contains('show')){
+        if (x.classList.contains('show')) {
             // x.classList.remove('show');
         }
     }
+
     function actionStats(ths) {
         let dropdownShow = ths.nextElementSibling.classList;
         if (dropdownShow.contains('show')) {
@@ -552,53 +849,91 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     }
 
     function nextRound(e) {
-        let currentRoundName = e.innerHTML;
+        let currentRoundName = e.value;
         let parElement = e.closest('.actionColoum');
         let currentState = parElement.querySelector('.currentState');
-        currentState.innerHTML = currentRoundName;
+        currentState.innerText = currentRoundName;
 
-        if(currentState.innerHTML == 'Disbursed'){
+        if (currentState.innerText == 'Disbursed') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
+            parElement.querySelector('.viewStatus').style.display = "block";
+        }
+
+        if (currentState.innerHTML == 'Rejected'){
+            parElement.querySelector('.nextState').style.display = "none";
+            parElement.querySelector('.dropdown').style.display = "none";
+            parElement.querySelector('.reconsider').style.display = "block";
         }
     }
 
-    function nextPhase(){
-        console.log(event);
+    function nextPhase() {
         let parElement = event.currentTarget.parentElement;
         let curElement = parElement.getElementsByClassName('currentState');
         let curPhase = curElement[0].innerHTML;
 
-
         let phases = parElement.getElementsByClassName('actionBtn');
         let pVal = [];
-        for (let i = 0; i < phases.length; i++){
+        for (let i = 0; i < phases.length; i++) {
             pVal.push(phases[i].innerHTML);
             let nextIndex = pVal.indexOf(curPhase) + 1;
             let nextElem = pVal[nextIndex];
             curElement[0].innerHTML = nextElem;
 
-            if(curElement[0].innerHTML == 'Disbursed'){
+            if (curElement[0].innerHTML == 'Disbursed') {
                 parElement.querySelector('.nextState').style.display = "none";
                 parElement.querySelector('.dropdown').style.display = "none";
                 parElement.querySelector('.viewStatus').style.display = "block";
             }
+
         }
 
     }
 
-    function countryHide() {
-        var z = document.getElementsByClassName('country');
-        for(var i = 0; i < z.length; i++){
+    function template() {
+        let temp = "<table><div onclick='closeDetail()' class='close-icon'><i class='fa fa-times'></div><thead><tr><th class='tInstall'>Total Installments</th><th class='aInstall'>Amount Per Installment</th><th class='dueDate'>Next Due Date</th><th class='installPaid'>Installments Paid</th><th class='installDue'>Installments Due</th><th class='installBtn'>View All</th></tr></thead><tbody><tr><td>15</td><td>5726</td><td>12-08-2020</td><td>10</td><td>5</td><td><button id='ld-btn' type='button'>View Complete Details</button></td></tr></tbody></table>";
+        return temp;
+    }
 
-            z[i].classList.toggle('hide');
+    function insertAfter(referenceNode, newNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+
+    function viewStatus() {
+        let parentElem = event.currentTarget.parentElement;
+        let rootTr = parentElem.parentElement;
+
+        let div = document.createElement('div');
+        div.setAttribute('class', 'loanDetails');
+        div.innerHTML = template();
+        insertAfter(rootTr, div);
+        showModal();
+    }
+
+    function closeDetail() {
+        let parElem = event.currentTarget.parentElement;
+        parElem.remove();
+    }
+
+    function showModal() {
+        var modal = document.getElementById("myModal");
+        var ldBtn = document.getElementById("ld-btn");
+            ldBtn.onclick = function () {
+                modal.style.display = "block";
+            }
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     }
 
-    function countryShow(){
-        var z = document.getElementsByClassName('country');
-        for(var i = 0; i < z.length; i++){
-            z[i].classList.remove('hide');
-        }
-    }
+
+
+
 </script>
