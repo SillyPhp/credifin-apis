@@ -93,19 +93,28 @@ class UsersController extends Controller
         $countries = [];
         $profiles_name = [];
         $industry = [];
-        foreach ($p['userPreferredIndustries'] as $i_slug) {
-            array_push($industry, $i_slug['industry']);
+        if (!empty($p['userPreferredIndustries'])){
+            foreach ($p['userPreferredIndustries'] as $i_slug) {
+                array_push($industry, $i_slug['industry']);
+            }
         }
-        foreach ($p['userPreferredJobProfiles'] as $p_slug) {
-            array_push($profiles_name, $p_slug['profile_name']);
+        if (!empty($p['userPreferredJobProfiles'])){
+            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
+                array_push($profiles_name, $p_slug['profile_name']);
+            }
         }
-        foreach ($p['userPreferredSkills'] as $s) {
-            array_push($skills, $s['skill']);
+        if (!empty($p['userPreferredSkills'])){
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
         }
-        foreach ($p['userPreferredLocations'] as $l) {
-            array_push($cities, $l['city_name']);
-            array_push($states, $l['state_name']);
-            array_push($countries, $l['country_name']);
+        if (!empty($p['userPreferredLocations']))
+        {
+            foreach ($p['userPreferredLocations'] as $l) {
+                array_push($cities, $l['city_name']);
+                array_push($states, $l['state_name']);
+                array_push($countries, $l['country_name']);
+            }
         }
         return [
             'profiles_name' => implode(', ', array_unique($profiles_name)),
