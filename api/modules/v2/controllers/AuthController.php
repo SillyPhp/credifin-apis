@@ -37,7 +37,8 @@ class AuthController extends ApiBaseController
                 'validate',
                 'username',
                 'find-user',
-                'teacher-signup'
+                'teacher-signup',
+                'validate-roll-number',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -51,6 +52,7 @@ class AuthController extends ApiBaseController
                 'username' => ['POST', 'OPTIONS'],
                 'find-user' => ['POST', 'OPTIONS'],
                 'teacher-signup' => ['POST', 'OPTIONS'],
+                'validate-roll-number' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -190,6 +192,21 @@ class AuthController extends ApiBaseController
                 return $this->response(409, $model->getErrors());
             }
         }
+    }
+
+    public function actionValidateRollNumber()
+    {
+        $roll_no = Yii::$app->request->post('roll_number');
+        $roll_no_exists = UserOtherDetails::find()
+            ->where(['is_deleted' => 0, 'university_roll_number' => $roll_no])
+            ->exists();
+
+        if ($roll_no_exists) {
+            return $this->response(409, ['roll_number' => ['Roll Number already taken']]);
+        } else {
+            return $this->response(200, ['status' => 200]);
+        }
+
     }
 
     private function getRef($model)
@@ -400,7 +417,7 @@ class AuthController extends ApiBaseController
         $today_date = new \DateTime();
         $today_date = $today_date->format('Y-m-d H:i:s');
 
-        if($today_date > $find_user['access_token_expiration']){
+        if ($today_date > $find_user['access_token_expiration']) {
             return false;
         }
 

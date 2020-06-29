@@ -202,6 +202,8 @@ $this->params['header_dark'] = false;
                                 <div class="s-time s-text"><i
                                             class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
                                 </div>
+                                <div class="s-time s-text"><i class="fas fa-align-center"></i><?= $exp['description'] ?>
+                                </div>
                             </div>
                             <?php
                         }

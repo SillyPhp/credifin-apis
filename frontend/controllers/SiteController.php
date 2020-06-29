@@ -815,7 +815,7 @@ class SiteController extends Controller
                     ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
                     ->groupBy('city_enc_id')
                     ->orderBy(['jobs' => SORT_DESC])
-                    ->limit(4)
+                    ->limit(3)
                     ->all();
                 return $this->renderAjax('/widgets/top-cities', [
                     'cities_jobs' => $cities_jobs

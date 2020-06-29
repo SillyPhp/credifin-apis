@@ -302,7 +302,7 @@ class JobsController extends Controller
             ->select(['city_name', 'SUM(job_count) as jobs'])
             ->groupBy('city_enc_id')
             ->orderBy(['jobs' => SORT_DESC])
-            ->limit(4)
+            ->limit(3)
             ->all();
 
         $tweets = $this->_getTweets(null, null, "Jobs", 4, "");
