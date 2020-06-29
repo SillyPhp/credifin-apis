@@ -16,6 +16,18 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="m20">
+                                <span class="timeQues">Q1</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="m20 text-right">
+                                <span class="timeQues">Time:</span> <span id="timer"></span>
+                            </p>
+                        </div>
+                    </div>
                     <div class="tab-content">
                         <div class="question-section tab-pane active" id="one">
                             <div class="ques">
@@ -316,6 +328,20 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.m20{
+    margin: 20px 30px 0 30px;
+}
+.timeQues{
+    padding: 5px 10px;
+    color:#000;
+    max-width: 180px; 
+    background: #00a0e3;
+    color: #fff;
+}
+#timer{   
+    padding: 5px 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+}
 .ans-option{
     display: flex;
 }
@@ -338,6 +364,7 @@ $this->registerCss('
     font-size: 16px;
     line-height: 22px;
     padding: 10px 15px;
+    text-align: justify;
 }
 .labl {
     display : block;
@@ -411,3 +438,27 @@ $script = <<<JS
 JS;
 $this->registerJS($script);
 ?>
+<script>
+    const stringMintus = 1;
+    let time = stringMintus * 60;
+
+    const timerEl = document.getElementById('timer');
+    setInterval(updateCountdown, 1000);
+    function updateCountdown() {
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        timerEl.innerHTML = minutes + ':' + seconds;
+        if (timerEl.innerHTML == "00:00"){
+           clearInterval(timerEl);
+           let activeLi = document.querySelectorAll('')
+
+        }else {
+            time--
+        }
+
+
+    }
+</script>

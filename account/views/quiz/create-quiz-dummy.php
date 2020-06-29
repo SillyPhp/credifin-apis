@@ -5,7 +5,7 @@ use yii\helpers\Url;
 ?>
 <section>
     <div class="row">
-        <div class="col-md-2" id="side-bar-main" style="padding: 0; height: 200vh;background-color: #f8f8f8;">
+        <div class="col-md-2" id="side-bar-main">
             <div class="w3-sidebar w3-bar-block w3-light-grey w3-card stepsList">
                 <h5 class="quiz-heading pl10">Steps To Create Quiz</h5>
                 <button class="w3-bar-item w3-button steps-btn tablink btn-primary active" value="#step-1">Group
@@ -242,8 +242,7 @@ use yii\helpers\Url;
                                             </label>
                                             <p class="ca-message"></p>
                                             <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()"><i
-                                                        class="fa fa-trash"></i></button>
+                                                    onclick="this.parentElement.remove()">Delete</button>
                                         </div>
                                         <div class="dis-flex">
                                             <textarea placeholder="Enter Option" id="input_answer4"
@@ -254,8 +253,7 @@ use yii\helpers\Url;
                                             </label>
                                             <p class="ca-message"></p>
                                             <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()"><i
-                                                        class="fa fa-trash"></i></button>
+                                                    onclick="this.parentElement.remove()">Delete</button>
                                         </div>
                                     </div>
                                     <div class="dis-flex">
@@ -443,18 +441,28 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
-.col-md-2.pos {
-    background-color: #f8f8f8;
-    padding:0;
+#side-bar-main,
+#integration-main,
+#side-bar-2{
+    height: calc(100vh - 105px);
+    margin-top: 40px;
 }
-.steps {
-    position: sticky;
-    top: 130px;
+#side-bar-2,
+#side-bar-main{
+    background-color: #f8f8f8;
+    padding:10px 0 0 0;
+}
+#integration-main{
+    padding-top:00px;
+    padding-bottom:30px;
+}
+.page-container-bg-solid .page-content{
+    margin-bottom: 0px;
 }
 .step {
     padding: 0 10px;
     text-align: center;
-    list-style:none;
+    list-style: decimal;
 }
 .step h3 {
     margin: 0 0 20px;
@@ -556,7 +564,6 @@ display:none;
 .quiz-heading{
     font-size: 20px;
     font-family: lora;
-    margin-top: 40px;
 }
 .dis-flex{
     display: flex;
@@ -590,7 +597,7 @@ display:none;
 .quiz-ques button{
     padding: 10px 15px;
 }
-.quiz-ques button, .pay-btns button{
+.pay-btns button{
     margin-bottom: 10px;
 }
 .pay-btns{
@@ -664,7 +671,7 @@ display:none;
     padding-right: 0px;
 }
 .page-content{
-    padding: 30px 15px !important;
+    padding: 0px 15px !important;
 }
 .position-rel{
     position: relative;
@@ -791,7 +798,18 @@ display:none;
     display:none;
 }
 .ca-message{
-    margin: 10px 0 0 20px;
+    margin: 0px 0 0 0px;
+    position: absolute;
+    bottom: -10px;
+}
+.ca-message-add{
+    background: #00a0e3;
+    color: #fff;
+    padding: 1px 5px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 0 0 5px 5px;
+
 }
 
 .card {
@@ -820,8 +838,8 @@ display:none;
 }
 .card-header i{      
     font-size:17px;
-    margin-top:15px;
-    margin-right:10px;
+//    margin-top:15px;
+    margin-left:10px;
 }
 .flex2{
     flex:2;
@@ -1048,15 +1066,19 @@ display:none;
     object-position: center;
     border-radius: 10px;
 }
-.font-weight-500{font-weight: 500 !important;}
+.font-weight-500{
+    font-weight: 500 !important;
+}
 .deleteBtn{
     position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 8px 6px !important;
-    background: transparent !important;
-    border:1px solid #00a0e3 !important;
-    color: #00a0e3 !important;   
+    bottom: -10px;
+    right: 23px;
+    padding: 1px 6px !important;
+    color: #fff !important;
+    font-size: 13px;
+    background: #00a0e3 !important;
+    font-weight: 600;
+    border-radius: 0 0 5px 5px;   
 }
 .deleteBtn:hover{
     background: #00a0e3 !important;
@@ -1080,12 +1102,15 @@ $('#input_t').mask("#000", {reverse: true});
 $('#input_cam').mask("#000", {reverse: true});
 $('#penelty_score').mask("#000", {reverse: true});
 
-function initializePosSticky() {
-  var mainHeight = $('#integration-main').height();
-  $('#side-bar-main').css('height',mainHeight);
-  $('#side-bar-2').css('height',mainHeight);
-}
-initializePosSticky();
+// function initializePosSticky() {
+//   var mainHeight = $('#integration-main').height();
+//   $('#side-bar-main').css('height',mainHeight);
+//   $('#side-bar-2').css('height',mainHeight);
+// }
+// initializePosSticky();
+var ps = new PerfectScrollbar('#integration-main');
+var ps = new PerfectScrollbar('#side-bar-2');
+
 $(document).on('click', '.scroll-to-sec', function(e) {
     e.preventDefault();
     var sectionId = $(this).attr('href');
@@ -1095,6 +1120,8 @@ $(document).on('click', '.scroll-to-sec', function(e) {
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/ey/quiz/quiz-nano.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1118,5 +1145,27 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
                 document.getElementById("second").innerHTML = "2. " + name;
             }
         }
+    }
+    let optionRadio = document.getElementsByClassName('ca-ans');
+    for (let i = 0; i < optionRadio.length; i++) {
+        optionRadio[i].addEventListener('click', function () {
+            let correctAnswer = document.querySelectorAll(".correctAnswer");
+
+            console.log(correctAnswer.length);
+            if (correctAnswer.length == 1) {
+                correctAnswer[0].classList.remove('correctAnswer');
+                let sParent = correctAnswer[0].parentElement;
+                sParent.querySelector('.ca-message').innerHTML = "";
+                sParent.querySelector('.ca-message').classList.remove('ca-message-add');
+            }
+            let checkRadio = document.querySelector('input[name="answer"]:checked');
+            let parentlabel = checkRadio.parentElement;
+            let rootParent = parentlabel.parentElement;
+            let correctInput = rootParent.querySelector('.ques-input');
+            let correctMessage = rootParent.querySelector('.ca-message');
+            correctInput.classList.add('correctAnswer');
+            correctMessage.innerHTML = "Correct Answer";
+            correctMessage.classList.add('ca-message-add');
+        })
     }
 </script>
