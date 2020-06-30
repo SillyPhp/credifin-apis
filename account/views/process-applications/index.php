@@ -296,7 +296,7 @@ li{list-style: none;}
   position:relative;
 }
 .pr-user-inner-main{
-  padding:20px 0px;
+  padding:20px 0px 0;
   padding-top: 0px;
   padding-left: 15px;
   width:calc(100% - 70px);

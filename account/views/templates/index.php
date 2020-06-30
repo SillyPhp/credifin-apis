@@ -187,8 +187,8 @@ $this->registerCss('
     transform: scale(1.2);
 }
 .actions > a > img {
-    height:20px;
-    margin-top:7px;
+    height:25px;
+//    margin-top:7px;
 }
 .tab-empty{
     padding:20px;

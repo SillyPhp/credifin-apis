@@ -321,6 +321,9 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.user-icon.img-circle.img-responsive {
+    width: 236px;
+}
 body{background-color:#f9f9f9;}
 //.detail-section{
 //    filter: blur(5px);
