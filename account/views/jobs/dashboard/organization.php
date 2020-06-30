@@ -225,11 +225,11 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 </div>
                                 <div class="actions">
                                     <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
-                                       title="Add New">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                       title="Create AI Job" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"></a>
                                     <?php if ($erexx_applications['total'] > 8): ?>
                                         <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
-                                           title="View All">
+                                           title="View All" class="ai">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                     <?php endif; ?>
                                 </div>
@@ -614,7 +614,8 @@ $this->registerCss('
     margin-right:10px;
 }
 .ai img, .view img{
-    height:31px;
+    height:31px !important;
+    margin: 0 !important;
 }
 .actions > a > img {
     height:22px;
