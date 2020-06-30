@@ -40,6 +40,7 @@ class AuthController extends ApiBaseController
                 'find-user',
                 'teacher-signup',
                 'validate-roll-number',
+                'change-password',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -624,16 +625,19 @@ class AuthController extends ApiBaseController
             $model = new ChangePassword();
             if ($model->load(Yii::$app->request->post(), '')) {
                 if ($model->validate()) {
-                    if ($model->changePassword($user->user_enc_id)) {
+                    if ($res = $model->changePassword($user->user_enc_id)) {
+                        if ($res === 403) {
+                            return $this->response(403, ['status' => 403, 'message' => 'password not match']);
+                        }
                         return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                     } else {
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
                 } else {
-                    return $this->response(409, $model->getErrors());
+                    return $this->response(409, ['status' => 409, $model->getErrors()]);
                 }
             } else {
-                return $this->response(422, ['message' => 'data not found']);
+                return $this->response(422, ['status' => 422, 'message' => 'data not found']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
