@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use common\models\AppliedApplications;
 use common\models\AssignedWebinarTo;
 use common\models\ClassNotes;
+use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
 use common\models\FollowedOrganizations;
 use common\models\OnlineClasses;
@@ -865,6 +866,40 @@ class CandhomeController extends ApiBaseController
         return WebinarRegistrations::find()
             ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
             ->exists();
+    }
+
+    public function actionCollegeCourses()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = UserOtherDetails::find()
+                ->select(['organization_enc_id'])
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($college_id) {
+                $courses = CollegeCourses::find()
+                    ->alias('a')
+                    ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                    ->joinWith(['collegeSections b' => function ($b) {
+                        $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                        $b->onCondition(['b.is_deleted' => 0]);
+                    }], false)
+                    ->where(['a.organization_enc_id' => $college_id['organization_enc_id']])
+                    ->groupBy(['a.course_name'])
+                    ->asArray()
+                    ->all();
+                if ($courses) {
+                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 //    public function actionGetCompanies()

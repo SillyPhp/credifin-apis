@@ -45,6 +45,14 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
            href="<?= Url::to('/forgot-password'); ?>"><?= Yii::t('frontend', 'Forgot Your Password?'); ?></a>
     </div>
     <div class="separator pb-10 text-black">
+        <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+    </div>
+    <div class="form-group mt-10">
+        <?=
+        \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+        ?>
+    </div>
+    <div class="separator pb-10 text-black">
         <span><?= Yii::t('frontend', 'Or Signup as'); ?></span>
     </div>
     <div class="row pt-20">
@@ -61,6 +69,10 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     </div>
 <?php ActiveForm::end();
 $this->registerCss('
+.auth-clients{
+    display: flex !important;
+    justify-content: center !important;
+    }  
 .text-theme-colored {
     color: #202C45 !important;
 }

@@ -49,7 +49,7 @@ use yii\helpers\Url;
                             {{/org_name}}
                             {{#description}}
                             <p>
-                                {{description}}
+                                {{{description}}}
                             </p>
                             {{/description}}
                             <span class="speakder-designation speaker-heading">Area Of Expertise</span>
