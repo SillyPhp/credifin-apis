@@ -293,9 +293,6 @@ $this->registerCss('
     padding:0;
     font-size:14px;
 }
-.wn-box-details{
-    min-height:100px !important;
-}
 .input-group-addon{
     font-size:15px;
     width:45px !important;
@@ -834,13 +831,6 @@ $this->registerCss('
 }
 .twitter-typeahead{
     float:left;
-}
-.wn-box-icon{
-    max-width: 100% !important;
-}
-.wn-box-icon img{
-    height: 200px !important;
-    object-fit: fill;
 }
 @media only screen and (max-width: 767px) and (min-width: 375px) {
     .form-inline .input-group{
