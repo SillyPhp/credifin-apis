@@ -440,7 +440,8 @@ class AuthController extends ApiBaseController
                     'a.username', 'a.phone', 'a.email',
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
-                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester'
+                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester',
+                    'e.has_loan_featured'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
@@ -516,6 +517,7 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
+            'education_loan' => $user_detail['has_loan_featured'],
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['course_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
