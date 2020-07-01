@@ -25,7 +25,7 @@ function creteGroup() {
             const groupRow = document.getElementById('group-row');
             let newDiv = document.createElement('div');
             let elem_c = Math.floor((Math.random() * 1000) + 1);
-            newDiv.setAttribute('class', 'col-md-2');
+            newDiv.setAttribute('class', 'col-md-3');
             let last_input = '<input type="radio" name="group" id="gp'+elem_c+'" txtValue="'+newGroupName+'" value="small" class="customRadio" checked>';
             newDiv.innerHTML = '<label class="radioLabel">'+last_input+'<div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
             groupRow.insertBefore(newDiv,groupRow.firstChild);
@@ -53,7 +53,7 @@ function creteSubject() {
             const groupRow = document.getElementById('subject-row');
             let newDiv = document.createElement('div');
             let elem_c = Math.floor((Math.random() * 1000) + 1);
-            newDiv.setAttribute('class', 'col-md-2');
+            newDiv.setAttribute('class', 'col-md-3');
             let last_input = '<input type="radio" name="subject" id="sb'+elem_c+'" txtValue="'+newGroupName+'" value="small" class="customRadio" checked>';
             newDiv.innerHTML = '<label class="radioLabel">'+last_input+'<div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
             groupRow.insertBefore(newDiv,groupRow.firstChild);
@@ -221,7 +221,7 @@ function create_question()
         }
         console.log(options_list);
         console.log(options_list.length);
-        $('.question_created_zone').prepend('<div class="card"><div class="card-header" role="tab"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2"><div class="q1"><span>Q:</span>'+q+'</div></a><span class="btndelete" value="collapse'+elem_no+'"><i class="fa fa-trash-o"></i></span><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a></div><div id="collapse'+elem_no+'" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false"><div class="card-block"><div class="q-ans"><ul>'+li_list+'</ul></div></div></div></div>');
+        $('.question_created_zone').prepend('<div class="card"><div class="card-header" role="tab"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2"><div class="q1"><span>Q:</span>'+q+'</div></a><span class="btndelete" value="collapse'+elem_no+'"><i class="fa fa-trash-o"></i></span><span class="btnedit"><i class="fa fa-pencil"></i></span> <a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a></div><div id="collapse'+elem_no+'" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false"><div class="card-block"><div class="q-ans"><ul>'+li_list+'</ul></div></div></div></div>');
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         toastr.success('One New Question Created', 'Success');

@@ -30,7 +30,7 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div id="Group" class="w3-container steps">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <h2 class="quiz-heading">Create New Group or Choose One Below</h2>
                                     <div class="quiz-top">
                                         <input type="text" maxlength="50" placeholder="Enter Group Name"
@@ -44,7 +44,7 @@ use yii\helpers\Url;
                                 <?php if (!empty($categories)) { ?>
                                     <?php foreach ($categories as $cat) { ?>
                                         <div class="col-md-3">
-                                            <label class="radioLabel" onclick="displayValue()">
+                                            <label class="radioLabel" onchange="displayValue('group')">
                                                 <input type="radio" name="group" txtvalue="<?= $cat['name'] ?>"
                                                        value="<?= $cat['id'] ?>" class="customRadio" >
                                                 <div class="quiz-group-box" >
@@ -67,7 +67,7 @@ use yii\helpers\Url;
                 <div class="row setup-content" id="step-2">
                     <div id="Subject" class="w3-container steps">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <h2 class="quiz-heading">Create New Subject or Choose One Below</h2>
                                 <div class="quiz-top">
                                     <input type="text" maxlength="50" placeholder="Enter Subject Name"
@@ -85,7 +85,7 @@ use yii\helpers\Url;
                             <?php if (!empty($subject)) { ?>
                                 <?php foreach ($subject as $sub) { ?>
                                     <div class="col-md-3">
-                                        <label class="radioLabel"  onclick="displaysecond()">
+                                        <label class="radioLabel"   onchange="displayValue('subject')">
                                             <input type="radio" name="subject" txtvalue="<?= $sub['name'] ?>"
                                                    value="<?= $sub['id'] ?>" class="customRadio">
                                             <div class="quiz-group-box">
@@ -242,7 +242,9 @@ use yii\helpers\Url;
                                             </label>
                                             <p class="ca-message"></p>
                                             <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()">Delete</button>
+                                                    onclick="this.parentElement.remove()">
+                                                <i class="fa fa-times"></i>
+                                            </button>
                                         </div>
                                         <div class="dis-flex">
                                             <textarea placeholder="Enter Option" id="input_answer4"
@@ -253,7 +255,9 @@ use yii\helpers\Url;
                                             </label>
                                             <p class="ca-message"></p>
                                             <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()">Delete</button>
+                                                    onclick="this.parentElement.remove()">
+                                                <i class="fa fa-times"></i>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="dis-flex">
@@ -261,7 +265,7 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="quiz-button-flex">
                                         <button type="button" id="create_question">Create Question</button>
-                                        <button type="button" id="finish_quiz">Proceed To Final Step</button>
+                                        <button type="button" id="finish_quiz">Complete Quiz</button>
                                     </div>
                                 </div>
                             </div>
@@ -277,14 +281,38 @@ use yii\helpers\Url;
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="payment-text">Total Marks</div>
                                         <div class="pay-input">
                                             <input type="text" maxlength="4" id="input_m" placeholder="Marks">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="payment-text">Time Duration</div>
+                                    <div class="col-md-12">
+                                        <div class="payment-text">Set Time Duration</div>
+                                        <div class="pay-btns">
+                                            <div class="row padd15">
+                                                <div class="col-md-6">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="timeDuration" txtvalue="perQues"
+                                                               value="1" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">Per Question</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="timeDuration" txtvalue="wholeQuiz"
+                                                               value="0" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">Whole Quiz</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
                                         <div class="pay-input">
                                             <input type="text" maxlength="4" id="input_t" placeholder="In Minutes">
                                         </div>
@@ -411,9 +439,7 @@ use yii\helpers\Url;
         </div>
         <div class="col-md-2 pos" id="side-bar-2">
             <div class="steps">
-                <ul class="step">
-                    <li id="fet-name"></li>
-                    <li id="second"></li>
+                <ul class="step" id="stepsBar">
                 </ul>
             </div>
         </div>
@@ -441,6 +467,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.padd15{
+    padding: 0 15px 0 0; 
+}
 #side-bar-main,
 #integration-main,
 #side-bar-2{
@@ -460,21 +489,42 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 .step {
-    padding: 0 10px;
-    text-align: center;
-    list-style: decimal;
+    padding: 0 20px;
+    text-align: left;
+    list-style: none;
 }
 .step h3 {
     margin: 0 0 20px;
     font-family: roboto;
     text-transform: capitalize;
 }
-.step i{
-    font-size:40px;
+.step li{
+    position: relative;
+    margin-left: 5px;
 }
-#marking-details
-{
-display:none;
+.stepsLi i{
+    position: absolute;
+    top: 5px;
+    left: -20px;
+    font-size:18px;
+    color: #00a0e3;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+//.step li:before{
+//    position: absolute;
+//    left: -30px;
+//    top: 0;
+//    font-size:18px;
+//    content: "\f149";
+//    -webkit-transform: scaleX(-1);
+//    transform: scaleX(-1);
+//    font-family: "FontAwesome";
+//    font-weight: 900;
+//    color: #00a0e3;
+//}
+#marking-details{
+ display:none;
 }
 .quiz-textarea textarea{
     height: 100px;
@@ -1071,18 +1121,15 @@ display:none;
 }
 .deleteBtn{
     position: absolute;
-    bottom: -10px;
-    right: 23px;
+    bottom: 16px;
+    right: 0px;
     padding: 1px 6px !important;
-    color: #fff !important;
-    font-size: 13px;
-    background: #00a0e3 !important;
-    font-weight: 600;
-    border-radius: 0 0 5px 5px;   
+    color: #333 !important;
+    font-size: 17px;
+    background: transparent !important;  
 }
 .deleteBtn:hover{
-    background: #00a0e3 !important;
-       color: #fff !important;   
+       color: #00a0e3 !important;   
 }
 .dis-flex{
     display: flex;
@@ -1093,6 +1140,9 @@ display:none;
 .dis-flex textarea{
     height: 60px;
     resize: none;
+}
+.dc{
+    display: none !important;
 }
 ');
 $script = <<< JS
@@ -1128,30 +1178,31 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    function displayValue() {
-        var ele = document.getElementsByClassName('customRadio');
-        for (i = 0; i < ele.length; i++) {
+    function displayValue(name) {
+        var ele = document.getElementsByName(name);
+        for (let i = 0; i < ele.length; i++) {
             if (ele[i].checked) {
-                var name = ele[i].parentElement.getElementsByTagName('p')[0].innerText;
-                document.getElementById("fet-name").innerHTML = "1. " + name;
+                var fieldName = ele[i].parentElement.getElementsByTagName('p')[0].innerText;
+                let stepsBar = document.getElementById("stepsBar");
+                let div = document.createElement('li');
+                div.setAttribute('id', name);
+                div.setAttribute('class', 'stepsLi')
+                div.innerHTML = '<i class="fa fa-level-down"></i>'+ fieldName;
+                let fname = document.getElementById(name);
+                if(fname){
+                    fname.innerHTML = '<i class="fa fa-level-down"></i>' + fieldName;
+                }else{
+                    stepsBar.appendChild(div);
+                }
+                showStepmarking();
             }
         }
     }
-    function displaysecond() {
-        var ele = document.getElementsByClassName('customRadio');
-        for (i = 0; i < ele.length; i++) {
-            if (ele[i].checked) {
-                var name = ele[i].parentElement.getElementsByTagName('p')[0].innerText;
-                document.getElementById("second").innerHTML = "2. " + name;
-            }
-        }
-    }
+
     let optionRadio = document.getElementsByClassName('ca-ans');
     for (let i = 0; i < optionRadio.length; i++) {
         optionRadio[i].addEventListener('click', function () {
             let correctAnswer = document.querySelectorAll(".correctAnswer");
-
-            console.log(correctAnswer.length);
             if (correctAnswer.length == 1) {
                 correctAnswer[0].classList.remove('correctAnswer');
                 let sParent = correctAnswer[0].parentElement;
@@ -1167,5 +1218,21 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
             correctMessage.innerHTML = "Correct Answer";
             correctMessage.classList.add('ca-message-add');
         })
+    }
+    let downElem = [];
+
+    function showStepmarking() {
+        let stepsLi =  document.getElementsByClassName('stepsLi');
+        // downElem.push(stepsLi);
+        console.log(stepsLi);
+        let lastElm = stepsLi[stepsLi.length - 1];
+        console.log(lastElm.querySelector('i'));
+        let dc = document.getElementsByClassName('dc');
+        if(dc.length > 0){
+            for(let i = 0; i < dc.length; i++){
+                dc[i].classList.remove('dc');
+            }
+        }
+        lastElm.querySelector('i').classList.add('dc');
     }
 </script>
