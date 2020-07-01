@@ -7,7 +7,7 @@ $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
                 <div class="left-side-container">
                     <div class="freelance-image">
                         <?php
@@ -51,7 +51,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4 bl-1 br-gary">
+            <div class="col-md-4 col-sm-6  br-gary">
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><span
@@ -113,7 +113,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-    <section>
+    <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-8">
                 <div class="container-detail-box">
@@ -168,158 +168,167 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
                 </div>
-<!--                <div class="container-detail-box">-->
-<!--                    <div class="education-detail">-->
-<!--                        <div class="education-head">Education</div>-->
-<!--                        <div class="set">-->
-<!--                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University-->
-<!--                            </div>-->
-<!--                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>BCA</div>-->
-<!--                            <div class="s-time s-text"><i class="fas fa-clock"></i>2013 - 2016</div>-->
-<!--                        </div>-->
-<!--                        <div class="set">-->
-<!--                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University-->
-<!--                            </div>-->
-<!--                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>MCA</div>-->
-<!--                            <div class="s-time s-text"><i class="fas fa-clock"></i>2016 - 2018</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="experience-detail">-->
-<!--                        <div class="education-head">Work Experience</div>-->
-<!--                        <div class="set">-->
-<!--                            <div class="uni-name s-text"><i class="fas fa-hotel"></i>Infosis, chd</div>-->
-<!--                            <div class="quelification s-text"><i class="fas fa-briefcase"></i>Backend Developer</div>-->
-<!--                            <div class="s-time s-text"><i class="fas fa-calendar-alt"></i>12/2/2017 to 12/5/2019</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="achievements-detail set-li">-->
-<!--                        <div class="education-head">Achievements</div>-->
-<!--                        <ul>-->
-<!--                            <li>Hackathon Winner</li>-->
-<!--                            <li>Coding Challenge Winner</li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="hobbies-detail set-li">-->
-<!--                        <div class="education-head">Hobbies</div>-->
-<!--                        <ul>-->
-<!--                            <li>Playing Games</li>-->
-<!--                            <li>Watching movies</li>-->
-<!--                            <li>Listening songs</li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="Interests-detail set-li">-->
-<!--                        <div class="education-head">Interests</div>-->
-<!--                        <ul>-->
-<!--                            <li>coding</li>-->
-<!--                            <li>Designing</li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-            </div>
-            <!--Sidebar Start-->
-            <div class="col-md-4 col-sm-4">
-                <div class="sidebar-container">
-                    <div class="sidebar-box">
-                        <span class="sidebar-status"><?= $user['availability'] ?></span>
-                        <div class="sidebar-inner-box">
-                            <div class="sidebar-box-thumb">
-                                <?php
-                                if ($image):
-                                    ?>
-                                    <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle "/>
-                                <?php else: ?>
-                                    <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
-                                            color="<?= $user['initials_color']; ?>" width="140" height="140"
-                                            font="70px"></canvas>
-                                <?php endif; ?>
+                <div class="container-detail-box">
+                    <div class="education-detail">
+                        <div class="education-head">Education</div>
+                        <?php
+                        foreach ($education as $edu) {
+                            ?>
+                            <div class="set">
+                                <div class="uni-name s-text"><i class="fas fa-university"></i><?= $edu['institute'] ?>
+                                </div>
+                                <div class="quelification s-text"><i
+                                            class="fas fa-user-graduate"></i><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                </div>
+                                <div class="s-time s-text"><i
+                                            class="fas fa-clock"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                </div>
                             </div>
-                            <div class="sidebar-box-detail">
-                                <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                                <span class="desination"><?= $user['job_profile'] ?></span>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <div class="experience-detail">
+                        <div class="education-head">Work Experience</div>
+                        <?php
+                        foreach ($experience as $exp) {
+                            ?>
+                            <div class="set">
+                                <div class="uni-name s-text"><i
+                                            class="fas fa-hotel"></i><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                </div>
+                                <div class="quelification s-text"><i class="fas fa-briefcase"></i><?= $exp['title'] ?>
+                                </div>
+                                <div class="s-time s-text"><i
+                                            class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                </div>
+                                <div class="s-time s-text"><i class="fas fa-align-center"></i><?= $exp['description'] ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="sidebar-box-extra">
-                            <ul>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <div class="achievements-detail set-li">
+                        <div class="education-head">Achievements</div>
+                        <ul>
+                            <?php
+                            foreach ($achievement as $achive) {
+                                ?>
+                                <li><?= $achive['achievement'] ?></li>
                                 <?php
-                                $i = 0;
-                                foreach ($skills as $sk) {
-                                    ?>
-                                    <li>
-                                        <?php
-                                        echo $sk['skills'];
-                                        $i++;
-                                        if ($i == 3) break;
-                                        ?>
-                                    </li>
-                                <?php }
-                                if (count($skills) >= 4) {
-                                    ?>
-                                    <li class="more-skill bg-primary">+<?= count($skills) - 3 ?></li>
-                                <?php } ?>
-                            </ul>
-                            <ul class="status-detail">
-                                <li class="br-1">
-                                    <strong>
-                                        <?php
-                                        if ($user['experience']) {
-                                            if ($strToArr[1] != 0) {
-                                                echo $strToArr[1] . ' Year(s) ';
-                                            }
-                                            if ($strToArr[3] != 0) {
-                                                echo $strToArr[3] . ' Month(s)';
-                                            }
-                                        } else {
-                                            echo '--';
-                                        }
-                                        ?>
-                                    </strong>
-                                    Experience
-                                </li>
-                            </ul>
-                        </div>
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                    <div class="hobbies-detail set-li">
+                        <div class="education-head">Hobbies</div>
+                        <ul>
+                            <?php
+                            foreach ($hobbies as $hobby) {
+                                ?>
+                                <li><?= $hobby['hobby'] ?></li>
+                                <?php
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                    <div class="Interests-detail set-li">
+                        <div class="education-head">Interests</div>
+                        <ul>
+                            <?php
+                            foreach ($interests as $intrst) {
+                                ?>
+                                <li><?= $intrst['interest'] ?></li>
+                                <?php
+                            }
+                            ?>
+                        </ul>
                     </div>
                 </div>
-                <!-- Make An Offer-->
-<!--                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">-->
-<!--                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>-->
-<!--                    <div class="prefer-detail">-->
-<!--                        <ul>-->
-<!--                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>-->
-<!--                            <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">-->
-<!--                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>-->
-<!--                    <div class="prefer-detail">-->
-<!--                        <ul>-->
-<!--                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>-->
-<!--                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>-->
-<!--                            </li>-->
-<!--                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
-            <!--End Sidebar-->
+            <?php
+            if (array_filter($job_preference)) {
+                ?>
+                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
+                    <div class="prefer-detail">
+                        <ul>
+                            <li><span class="set-width">Profile</span><span
+                                        class="position"><?= $job_preference['profiles_name'] ?></span>
+                            </li>
+                            <li><span class="set-width">Type</span><span
+                                        class="position"><?= $job_preference['type'] ?></span></li>
+                            <li><span class="set-width">City</span><span
+                                        class="position"><?= $job_preference['cities'] ?></span>
+                            </li>
+                            <li><span class="set-width">Skills</span><span
+                                        class="position"><?= $job_preference['skills'] ?></span>
+                            </li>
+                            <li><span class="set-width">Industry</span><span
+                                        class="position"><?= $job_preference['industry'] ?></span>
+                            </li>
+                            <li><span class="set-width">Experience</span><span
+                                        class="position"><?= $job_preference['exp'] ?> year('s)</span>
+                            </li>
+                            <li><span class="set-width">Working Days</span><span
+                                        class="position"><?= ($job_preference['sun_frequency']) ? 'Sun,' : '' ?> Mon, Tue, Wed, Thu, Fri<?= ($job_preference['sat_frequency']) ? ', Sat' : '' ?></span>
+                            </li>
+                            <li><span class="set-width">Timings</span><span
+                                        class="position"><?= date("g:i A", strtotime($job_preference['from'])) . ' to ' . date("g:i A", strtotime($job_preference['to'])) ?> </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <?php
+            }
+            if (array_filter($internship_preference)) {
+                ?>
+                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
+                    <div class="prefer-detail">
+                        <ul>
+                            <li><span class="set-width">Profile</span><span
+                                        class="position"><?= $internship_preference['profiles_name'] ?></span>
+                            </li>
+                            <li><span class="set-width">Type</span><span
+                                        class="position"><?= $internship_preference['type'] ?></span></li>
+
+                            <li><span class="set-width">City</span><span
+                                        class="position"><?= $internship_preference['cities'] ?></span>
+                            </li>
+                            <li><span class="set-width">Skills</span><span
+                                        class="position"><?= $internship_preference['skills'] ?></span>
+                            </li>
+                            <li><span class="set-width">Industry</span><span
+                                        class="position"><?= $internship_preference['industry'] ?></span>
+                            </li>
+                            <li><span class="set-width">Working Days</span><span
+                                        class="position"><?= ($internship_preference['sun_frequency']) ? 'Sun,' : '' ?> Mon, Tue, Wed, Thu, Fri<?= ($internship_preference['sat_frequency']) ? ', Sat' : '' ?></span>
+                            </li>
+                            <li><span class="set-width">Timings</span><span
+                                        class="position"><?= date("g:i A", strtotime($internship_preference['from'])) . ' to ' . date("g:i A", strtotime($internship_preference['to'])) ?> </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+        <!--End Sidebar-->
         </div>
     </section>
 <?php
 $this->registerCss('
+.user-icon.img-circle.img-responsive {
+    width: 236px;
+}
+body{background-color:#f9f9f9;}
+//.detail-section{
+//    filter: blur(5px);
+//    -webkit-filter: blur(5px);
+//}
 .education-head {
     font-size: 18px;
     font-weight: 500;
@@ -428,9 +437,10 @@ $this->registerCss('
     padding: 5px 25px;
     box-shadow: 0px 1px 12px 1px #a5a5a5;
     border-radius: 4px;
-    margin-top: 2px;
+    margin: 10px 5px 5px;
     font-size: 13px;
     display: inline-block;
+    font-family:roboto;
 }
 .edit-profile-btn:hover, .edit-profile-btn:focus{
     background-color:#0392ce;
@@ -438,40 +448,48 @@ $this->registerCss('
 }
 .freelance-image img{
     width:100%;
-    height:88%;
+    height:100%;
+    object-fit:fill;
 }
  .inner-header-page{
-    padding:150px 0 50px;
-	text-align:left;
-	background:#f5f6f7;
-    border-bottom:2px solid #00a0e3;	
+    padding:100px 0 0px;	
 }
 .left-side-container {
-    display: table;
-    width: 100%;
+	width: 100%;
+	background-color: #fff;
+	padding: 50px;
+	position: relative;
+	margin: auto;
+	border-radius: 8px;
+	margin-bottom: 25px;
+	min-height: 270px;
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
 }
 .inner-header-page .freelance-image {
-    height: 160px;
-    flex: 0 0 140px;
-    margin-right: 35px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.1);
-    display: inline-block;
-    padding: 0 20px;
-    line-height: 140px;
-    float: left;
+	height: 240px;
+	background: #fff;
+	border-radius: 100%;
+	box-shadow: 0 3px 12px rgba(0,0,0,.1);
+	padding: 2px;
+	position: absolute;
+	left: -19%;
+	top: 5%;
+	width: 240px;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
-	max-width:140px;
-	margin-top:10px;
+//	max-width:140px;
+//	margin-top:10px;
+}
+.header-details p{
+    font-size:16px;
+    font-family:roboto;
 }
 .header-details h4{
 	margin:0 0 5px 0;
-	font-size:24px;
+	font-size:34px;
+	font-family:lora;
 }
 .header-details h4 span{
 	font-size:17px;
@@ -487,6 +505,8 @@ $this->registerCss('
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 12px;
+    font-family:roboto;
+    font-size:16px;
 }
 .inner-header-page .header-details ul li img{
     height: 16px;
@@ -532,7 +552,7 @@ $this->registerCss('
     background-color: #0395d8;
 }
 .header-details {
-    margin-top: 20px;
+    padding-left: 100px;
 }
 .inner-header-page .header-details li .star-rating {
     position: relative;
@@ -557,6 +577,12 @@ $this->registerCss('
 }
 .inner-header-page .header-details li .star-rating .fa.fill {
     color:#febe42;
+}
+.right-side-detail {
+	background-color: #fff;
+	padding: 37px 20px;
+	border-radius: 8px;
+    min-height:270px;
 }
 .right-side-detail ul {
     padding: 0;
@@ -858,6 +884,16 @@ ul.status-detail li>strong {
     .header-details {
         margin-top: 0px;
         display: inherit;
+        padding-left:0;
+        text-align:center;
+    }
+    .inner-header-page .freelance-image {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin: auto;
+        width: 160px;
+        height: 160px;
     }
 }
 @media screen and (max-width: 991px) and (min-width: 768px) {

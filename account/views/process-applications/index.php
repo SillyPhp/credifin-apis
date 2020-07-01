@@ -17,7 +17,8 @@ use yii\widgets\Pjax;
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
                 ?>
-                <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                <li id="<?= 'nav' . $p['field_enc_id'] ?>"
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title=""
                        data-original-title="<?= $p['field_name'] ?>" href="#">
@@ -29,7 +30,8 @@ use yii\widgets\Pjax;
             }
             ?>
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired" href="#">
+                <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
+                   href="#">
                     <i class="fa fa-check-square-o"></i>
                 </a>
             </li>
@@ -42,12 +44,17 @@ use yii\widgets\Pjax;
                     $fieldMain = "";
                     if ($arr['status'] == 'Hired') {
                         $tempfieldMain = "result";
+                        $fieldName = "Hired";
+                    } else if ($arr['status'] == 'Rejected') {
+                        $fieldName = "Rejected";
                     } else {
+                        $fieldName = "Applied";
                         $tempfieldMain = "";
                     }
                     foreach ($arr['appliedApplicationProcesses'] as $p) {
                         if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
                             $fieldMain = $p['field_enc_id'];
+                            $fieldName = $p['field_name'];
                             $tempfieldMain = $p['field_enc_id'] . $j;
                             break;
                         }
@@ -71,9 +78,11 @@ use yii\widgets\Pjax;
                                             <?= $arr['name'] ?>
                                         </h4>
                                         <?php
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 1) {
-                                                echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                        if ($arr['createdBy']['userWorkExperiences']) {
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                }
                                             }
                                         }
                                         ?>
@@ -81,21 +90,23 @@ use yii\widgets\Pjax;
                                     <div class="pr-user-past">
                                         <?php
                                         $experience = [];
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 0) {
-                                                array_push($experience, $exp["company"]);
+                                        if ($arr['createdBy']['userWorkExperiences']) {
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 0) {
+                                                    array_push($experience, $exp["company"]);
+                                                }
                                             }
-                                        }
-                                        $str = implode(", ", array_unique($experience));
-                                        if ($str) {
-                                            ?>
-                                            <span class="past-title">
+                                            $str = implode(", ", array_unique($experience));
+                                            if ($str) {
+                                                ?>
+                                                <span class="past-title">
                                     Past
                                   </span>
-                                            <h5>
-                                                <?= rtrim($str, ','); ?>
-                                            </h5>
-                                            <?php
+                                                <h5>
+                                                    <?= rtrim($str, ','); ?>
+                                                </h5>
+                                                <?php
+                                            }
                                         }
                                         ?>
                                         <!--                                    <span>+2 more</span>-->
@@ -124,27 +135,31 @@ use yii\widgets\Pjax;
                                     <div class="pr-user-skills">
                                         <ul>
                                             <?php
-                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
-                                                ?>
-                                                <li><?= $skill['skill']; ?></li>
-                                                <?php
+                                            if ($arr['createdBy']['userSkills']) {
+                                                foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                                    ?>
+                                                    <li><?= $skill['skill']; ?></li>
+                                                    <?php
+                                                }
                                             }
                                             ?>
                                         </ul>
                                         <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
                                         <?php
                                         $industry = [];
-                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                            array_push($industry, $ind["industry"]);
-                                        }
-                                        $str2 = implode(", ", array_unique($industry));
-                                        if ($str2) {
-                                            ?>
-                                            <h4>
-                                                <span>Industry: </span>
-                                                <?= rtrim($str2, ','); ?>
-                                            </h4>
-                                            <?php
+                                        if ($arr['createdBy']['userPreferredIndustries']) {
+                                            foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
+                                                array_push($industry, $ind["industry"]);
+                                            }
+                                            $str2 = implode(", ", array_unique($industry));
+                                            if ($str2) {
+                                                ?>
+                                                <h4>
+                                                    <span>Industry: </span>
+                                                    <?= rtrim($str2, ','); ?>
+                                                </h4>
+                                                <?php
+                                            }
                                         }
                                         ?>
                                     </div>
@@ -152,21 +167,23 @@ use yii\widgets\Pjax;
                                 <div class="col-md-3 pl-0">
                                     <div class="pr-user-actions">
                                         <div class="pr-top-actions text-right">
-                                            <a href="<?= '/' . $arr['username'] ?>">View Profile</a>
+                                            <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                                Profile</a>
                                             <?php
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
-                                            <a href="<?= $cv ?>">Download Resume</a>
+                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
                                         </div>
                                         <ul>
                                             <!--                                        <li>-->
                                             <!--                                            <a href="#">-->
                                             <!--                                                <img src="-->
-<!--                                            <= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?>"/>-->
+                                            <!--                                            <= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?>"/>-->
                                             <!--                                            </a>-->
                                             <!--                                        </li>-->
                                             <li>
-                                                <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>" data-key="<?= $arr['name'];?>">
+                                                <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>"
+                                                   data-key="<?= $arr['name']; ?>">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                                 </a>
                                             </li>
@@ -174,6 +191,10 @@ use yii\widgets\Pjax;
                                             <!--                            <i class="fa fa-phone-square"></i>-->
                                             <!--                        </li>-->
                                         </ul>
+                                        <div class="round-detail">
+                                            <h5>Current Round:</h5>
+                                            <h4><?= $fieldName; ?></h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +252,8 @@ use yii\widgets\Pjax;
                                     <tbody class="qu_data">
                                     <?php foreach ($que as $list_que) { ?>
                                         <tr>
-                                            <td><a class="blue question_list" href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
+                                            <td><a class="blue question_list"
+                                                   href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
                                                    data-questionId="<?= $list_que['qid']; ?>"
                                                    data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
                                                    target="_blank"><?= $list_que['name']; ?></a>
@@ -258,6 +280,12 @@ use yii\widgets\Pjax;
     </div>
 <?php
 $this->registerCss('
+.round-detail{text-align:center;}
+.round-detail h5{margin-bottom:5px;}
+.round-detail h4{
+    margin-top: 0px;
+    font-weight: 600;
+}
 .pl-0{padding-left:0px;}
 li{list-style: none;}
 .pr-user-main{
@@ -270,7 +298,7 @@ li{list-style: none;}
   position:relative;
 }
 .pr-user-inner-main{
-  padding:20px 0px;
+  padding:20px 0px 0;
   padding-top: 0px;
   padding-left: 15px;
   width:calc(100% - 70px);
@@ -302,6 +330,7 @@ li{list-style: none;}
 }
 .pr-user-icon img{
     width: 100%;
+    height:100%;
 }
 .pr-user-detail h5{
   font-size:14px;
@@ -617,6 +646,7 @@ $(document).on('click', '.approve', function(e) {
     var btn2 = btn.next();
     var btn3 = btn.prev();
     var total = $(this).attr('data-total');
+    var listid = $('ul.pr-process-tab').find('.active').prop('id');
    $.ajax({
        url:'/account/jobs/approve-candidate',
        data:{field_id:field_id,app_id:app_id},
@@ -634,6 +664,8 @@ $(document).on('click', '.approve', function(e) {
                   $.pjax.reload({container: '#pjax_process', async: false});
                   setTimeout(function() {
                     hiring_process();
+                    utilities.initials();
+                    $('#'+listid).find('a').click();
                   }, 1000)
             } else {
                disable(btn);

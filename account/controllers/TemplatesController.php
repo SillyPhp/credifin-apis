@@ -9,6 +9,13 @@ use yii\web\HttpException;
 
 class TemplatesController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (!empty(Yii::$app->user->identity->organization)) {
@@ -54,13 +61,14 @@ class TemplatesController extends Controller
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
+                $z->joinWith(['parentEnc z1']);
             }], false)
             ->joinWith(['applicationTypeEnc f'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
-//            ->groupBy('zz.name')
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 

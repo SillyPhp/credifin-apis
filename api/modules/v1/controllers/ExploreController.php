@@ -164,4 +164,35 @@ class ExploreController extends ApiBaseController
         }
     }
 
+    public function actionMostActiveProfiles()
+    {
+        $type = Yii::$app->request->post('type');
+
+        if(!$type){
+            return $this->response(422,'missing information');
+        }
+
+        $profiles = AssignedCategories::find()
+            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/','https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->alias('a')
+            ->distinct()
+            ->joinWith(['parentEnc b'], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->joinWith(['employerApplications d' => function ($b) use ($type) {
+                $b->joinWith(['applicationTypeEnc e']);
+                $b->andWhere(['e.name' => ucfirst($type)]);
+            }], false)
+            ->groupBy(['a.parent_enc_id'])
+            ->orderBy(['total' => SORT_DESC])
+            ->limit(8)
+            ->asArray()
+            ->all();
+
+        if($profiles){
+            return $this->response(200,$profiles);
+        }else{
+            return $this->response(404,'not found');
+        }
+    }
+
 }

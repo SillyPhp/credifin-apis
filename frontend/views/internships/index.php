@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
@@ -13,19 +13,19 @@ use yii\helpers\Url;
                 <h2 class="intern-banner-heading mt-0 heading-text">
                     <?= Yii::t('frontend', 'Intern With The Best'); ?></h2>
                 <div class="search-by-type row">
-                    <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
+                    <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" name="keyword" class="form-control"
+                            <input type="text" name="keyword" class="form-control" id="keywords"
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
-                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
+                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 sett-marg">
                             <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
-                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
+                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn sett-marg">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
                                    value="Search">
                         </div>
@@ -36,17 +36,15 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
-    <div class="row">
-        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
-            <div class="">
-                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
-                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
-                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
-                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
-                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
-            </div>
-        </nav>
-    </div>
+    <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+        <div class="">
+            <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+            <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+            <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+            <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+            <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
+        </div>
+    </nav>
 </section>
 <section>
     <div class="container">
@@ -97,16 +95,16 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<div id="stats_cards">
 
-</div>
+<?php
+echo $this->render('/widgets/info-stats');
 
-<?=
-$this->render('/widgets/top-cities',[
+echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -236,10 +234,9 @@ if (Yii::$app->user->isGuest) {
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -799,6 +796,11 @@ $this->registerCss('
         width:90%;
     }
 }
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
+}
 ');
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3',
@@ -835,7 +837,31 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
-fetchStats(template=$('#stats_cards'));
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname&&kname) 
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname)
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      }
+});
+
+ $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+ 
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -868,9 +894,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
 
     function showMoreEvent() {
         hideMore('searches');
@@ -879,23 +902,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
+
 
     function showLessEvent() {
         hideLess('searches');

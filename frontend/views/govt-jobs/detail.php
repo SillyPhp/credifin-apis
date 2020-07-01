@@ -1,12 +1,11 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-$link = Url::to('detail/' . $get['slug'], 'https');
+$link = Url::to('/govt-jobs/detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
+$sharing_title = str_replace('|','',$this->title);
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
@@ -114,7 +113,7 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="locations">Locations</div>
                 <div class="location-tab set-sticky">
                     <div class="location-set">
-                        <div style="margin-bottom: 8px;">
+                        <div>
                             <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
                             <span><?= $get['Location'] ?></span>
                         </div>
@@ -153,19 +152,19 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="tw-share">
                         <button class="tw-btn"
-                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$sharing_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-twitter marg"></i>Twitter
                         </button>
                     </div>
                     <div class="li-share">
                         <button class="li-btn"
-                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$sharing_title.'&summary='.$sharing_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-linkedin-in marg"></i>LinkedIn
                         </button>
                     </div>
                     <div class="wa-share">
                         <button class="wa-btn"
-                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-whatsapp marg"></i>Whatsapp
                         </button>
                     </div>
@@ -184,7 +183,6 @@ $this->params['seo_tags'] = [
 <?php
 $this->registerCss('
 .tags-bar > span {
-    float: left;
     background: #f4f5fa;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -356,11 +354,9 @@ margin:auto;
     font-size:19px;
 }
 .job-single-head2 {
-        float: left;
         width: 100%;
-//        padding-bottom: 30px;
-//        border-bottom: 1px solid #e8ecec;
-    }
+//        float: left;
+}
 .job-single-head2 > span {
         float: left;
         width: 100%;
@@ -374,8 +370,8 @@ margin:auto;
         color: #202020;
     }
 .job-overview {
-    float: left;
     width: 100%;
+//    float: left;
 }
 .job-overview > h3 {
     float: left;
@@ -465,10 +461,10 @@ margin:auto;
     padding: 15px;
     border-radius: 5px;
     text-align: justify;
-    float:left;
     box-shadow: 0 0 10px 0px #eee;
     clear:both;
     width:100%;
+//    float:left;
 }
 .d-head {
     font-size: 22px;
@@ -476,17 +472,16 @@ margin:auto;
     font-family:roboto;
     color: #00a0e3;
     padding: 25px 0 5px 5px;
-    float:left;
+//    float:left;
 }
 .summary{
     font-size:18px;
     font-weight:500;
-    padding: 10px 0 5px 0;
+    padding: 0 0 5px 0;
     font-family:roboto;
 }   
 .d-content {
     font-size: 15px;
-    padding:0 0 15px 0;
     font-family:roboto;
 }
 .d-points > ul {

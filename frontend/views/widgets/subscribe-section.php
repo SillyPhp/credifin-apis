@@ -245,7 +245,7 @@ $(document).on('submit', '#subscribe-newsletter', function (event) {
                 $('.subscribe-widget-btn').prop('disabled', true);
             },
             success: function (response) {
-                if (response.status == 200) {
+                if (response.status == 200 || response.status == 203) {
                     toastr.success(response.message, response.title);
                     $(".w-parent").fadeOut(100);
                     $(".thanks-portion").fadeIn(700);
@@ -265,3 +265,5 @@ $(document).on('submit', '#subscribe-newsletter', function (event) {
 });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

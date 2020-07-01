@@ -7,6 +7,7 @@ use yii\console\Controller;
 use common\models\EmailLogs;
 use common\models\Users;
 use common\models\Utilities;
+use yii\db\Query;
 
 class NotificationEmailsController extends Controller
 {
@@ -62,4 +63,74 @@ class NotificationEmailsController extends Controller
         }
     }
 
+    public function actionGetOrganizationProfile()
+    {
+        return Yii::$app->notification->orgProfileMail();
+    }
+
+    public function actionGetUserProfile()
+    {
+        return Yii::$app->notification->getData();
+    }
+
+    public function actionSendUserProfileMail($limit = 10)
+    {
+        $data = (new Query())
+            ->from(['a' => EmailLogs::tableName()])
+            ->where(['a.email_type' => 4, 'a.organization_enc_id' => null, 'is_sent' => 0]);
+        foreach ($data->batch($limit) as $rows) {
+            foreach ($rows as $r) {
+                $mailData = "";
+                $mailData = json_decode($r['data'], true);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $mailData['user']['name'],
+                    "email" => $mailData['user']['email'],
+                ];
+                $mail->subject = 'Empower Youth Updates User Profile';
+                $mail->data = ['name' => $mailData['user']['name'], 'username' => $mailData['user']['username']];
+                $mail->template = 'complete-profile';
+                if ($mail->send()) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(EmailLogs::tableName(), ['is_sent' => 1, 'last_updated_on' => date('Y-m-d H:i:s')], ['email_log_enc_id' => $r['email_log_enc_id']])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    public function actionSendProfileMail($limit = 10)
+    {
+        $data = (new Query())
+            ->from(['a' => EmailLogs::tableName()])
+            ->where(['a.email_type' => 4, 'is_sent' => 0])
+            ->andWhere(['not', ['a.organization_enc_id' => null]]);
+        foreach ($data->batch($limit) as $rows) {
+            foreach ($rows as $r) {
+                $mailData = "";
+                $mailData = json_decode($r['data'], true);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $mailData['organization']['name'],
+                    "email" => $mailData['organization']['email'],
+                ];
+                $mail->subject = 'Empower Youth Updates User Profile';
+                $mail->data = ['name' => $mailData['organization']['name'], 'username' => $mailData['organization']['username']];
+                $mail->template = 'complete-profile';
+                if ($mail->send()) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(EmailLogs::tableName(), ['is_sent' => 1, 'last_updated_on' => date('Y-m-d H:i:s')], ['email_log_enc_id' => $r['email_log_enc_id']])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
 }

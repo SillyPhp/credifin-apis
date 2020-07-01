@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\models\ForgotPasswordForm;
+use common\models\EmailLogs;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -26,7 +27,7 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST'],
                 'login' => ['POST'],
                 'refresh-access-token' => ['POST'],
-                'forgot-password'=>['POST']
+                'forgot-password' => ['POST']
             ]
         ];
         return $behaviors;
@@ -71,14 +72,16 @@ class AuthController extends ApiBaseController
         }
     }
 
-    private function userValid($model)
+    private function userValid($username)
     {
-        $usernamesModel = new Usernames();
-        $usernamesModel->username = $model->username;
-        if (!$usernamesModel->validate()) {
-            return false;
-        } else {
+        $user_exists = Usernames::find()
+            ->where(['username' => $username])
+            ->exists();
+
+        if ($user_exists) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -119,11 +122,11 @@ class AuthController extends ApiBaseController
         if (!$usernamesModel->validate() || !$usernamesModel->save()) {
             return false;
         }
-        $user->username = $model->username;
-        $user->first_name = $model->first_name;
-        $user->last_name = $model->last_name;
+        $user->username = strtolower($model->username);
+        $user->first_name = ucfirst(strtolower($model->first_name));
+        $user->last_name = ucfirst(strtolower($model->last_name));
         $user->phone = $model->phone;
-        $user->email = $model->email;
+        $user->email = strtolower($model->email);
         $user->user_enc_id = time() . mt_rand(10, 99);
         $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
         $user->initials_color = RandomColors::one();
@@ -132,6 +135,30 @@ class AuthController extends ApiBaseController
         $user->setPassword($model->password);
         $user->generateAuthKey();
         if ($user->save()) {
+            Yii::$app->individualSignup->registrationEmail($user->user_enc_id);
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                "name" => $user->first_name ." " . $user->last_name,
+                "email" => $user->email,
+            ];
+            $mail->subject = 'Welcome to Empower Youth';
+            $mail->template = 'thank-you';
+            if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $mail_logs->email_type = 5;
+                $mail_logs->user_enc_id = $user->user_enc_id;
+                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_email = $user->email;
+                $mail_logs->receiver_phone = $user->phone;
+                $mail_logs->subject = 'Welcome to Empower Youth';
+                $mail_logs->template = 'thank-you';
+                $mail_logs->is_sent = 1;
+                $mail_logs->save();
+            }
             return $user;
         }
         return false;
@@ -211,15 +238,15 @@ class AuthController extends ApiBaseController
             'username' => 'Username already taken'
         ];
 
-        if (!$this->userValid($params)) {
+        $username = $params['username'];
+        $password = $params['password'];
+        $source = $params['source'];
+
+        if ($this->userValid($username)) {
             if ($params['password'] == '' && $params['password'] == null) {
                 return $this->response(409, $already_taken);
             }
         }
-
-        $username = $params['username'];
-        $password = $params['password'];
-        $source = $params['source'];
 
         if (!isset($password) && isset($username)) {
             $user = Candidates::find()
@@ -260,20 +287,21 @@ class AuthController extends ApiBaseController
         return $this->response(405);
     }
 
-    public function actionForgotPassword(){
+    public function actionForgotPassword()
+    {
         $email = Yii::$app->request->post('email');
         $model = new ForgotPasswordForm();
         $user = Users::find()
-            ->select(['user_enc_id','email'])
-            ->where(['status'=>'Active','is_deleted'=>0])
-            ->andWhere(['or',['email'=>$email],['username'=>$email]])
+            ->select(['user_enc_id', 'email'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
+            ->andWhere(['or', ['email' => $email], ['username' => $email]])
             ->asArray()
             ->one();
 
         $model->email = $user['email'];
-        if(empty($user)){
-            $this->response(404,['message'=>'not found']);
-        }else {
+        if (empty($user)) {
+            $this->response(404, ['message' => 'not found']);
+        } else {
             if ($model) {
                 if ($model->forgotPassword()) {
                     return $this->response(200, ['message' => 'An email with instructions has been sent to your email address (please also check your spam folder).']);

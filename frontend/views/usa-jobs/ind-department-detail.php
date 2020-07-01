@@ -76,7 +76,7 @@ echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
 .application-card-main
 {
-height:210px;
+height:175px;
 }
 .align_btn
 {

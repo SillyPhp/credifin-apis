@@ -7,7 +7,7 @@ use borales\extensions\phoneInput\PhoneInput;
 
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
             <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
@@ -79,6 +79,14 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
+                                <div class="separator pb-10">
+                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                </div>
+                                <div class="form-group mt-10">
+                                    <?=
+                                    \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+                                    ?>
+                                </div>
                                 <div class="new-user">
                                     New User?
                                     <button type="button" onclick="changeSignup()"> Sign Up</button>
@@ -107,6 +115,10 @@ use borales\extensions\phoneInput\PhoneInput;
 </div>
 <?php
 $this->registerCss('
+.auth-clients{
+    display: flex !important;
+    justify-content: center !important;
+    } 
 .individual-form::-webkit-scrollbar { 
     width: 0 !important 
 }
@@ -367,7 +379,7 @@ input{
     }
 }
 @media screen and (min-width: 768px){
-    .modal-dialog {
+    .modal-dialog-main {
         width: 750px !important;
         margin: 30px auto;
     }
