@@ -176,7 +176,8 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .p-category > a img{
-//    max-height:55px !important;    
+    height:85px;
+    width:85px;  
 }
 .actions > a {
     margin-right: 15px;
