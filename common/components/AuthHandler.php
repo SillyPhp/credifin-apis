@@ -82,6 +82,7 @@ class AuthHandler
                         'user_type_enc_id' => $user_type->user_type_enc_id,
                         'status' => 'Active',
                         'initials_color' => RandomColors::one(),
+                        'is_credential_change' => 1,
                     ]);
                     //$user->generateAuthKey();
                     //$user->generatePasswordResetToken();
@@ -136,14 +137,13 @@ class AuthHandler
         } else { // user already logged in
             if (!$auth) { // add auth provider
                 $auth = new Auth([
-                    'user_id' => Yii::$app->user->id,
+                    'user_id' => Yii::$app->user->identity->user_enc_id,
                     'source' => $this->client->getId(),
                     'source_id' => (string)$attributes['id'],
                 ]);
                 if ($auth->save()) {
                     /** @var User $user */
                     $user = $auth->user;
-                    $this->updateUserInfo($user);
                     Yii::$app->getSession()->setFlash('success', [
                         Yii::t('app', 'Linked {client} account.', [
                             'client' => $this->client->getTitle()
