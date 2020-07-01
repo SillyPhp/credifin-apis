@@ -12,6 +12,7 @@ use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\States;
+use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
@@ -63,6 +64,7 @@ class SiteController extends Controller
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'onAuthSuccess'],
+                'successUrl' => 'oauth-varify',
             ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -75,6 +77,42 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOauthVarify()
+    {
+        $this->layout = 'main-secondary';
+        $credentialsSetup = new CredentialsSetup();
+        if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->is_credential_change===1)
+        {
+            return $this->render('auth-varify',['credentialsSetup'=>$credentialsSetup]);
+        }
+        else{
+            return $this->redirect('/');
+        }
+    }
+    public function actionPostCredentials()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if ($credentialsSetup->load(Yii::$app->request->post()))
+        {
+         if ($credentialsSetup->save())
+         {
+             return $this->redirect('/');
+         }
+        }
+    }
+    public function actionValidateUser()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $credentialsSetup->load(Yii::$app->request->post());
+            if ($credentialsSetup->username===Yii::$app->user->identity->username)
+            {
+                return [];
+            }
+            return ActiveForm::validate($credentialsSetup);
+        }
+    }
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
