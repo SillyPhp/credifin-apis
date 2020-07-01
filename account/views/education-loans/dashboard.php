@@ -228,16 +228,17 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Accepted</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Under Process</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn"
+                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
                                                     </div>
                                                 </div>
                                                 <span class="currentState">Accepted</span>
@@ -281,16 +282,17 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Accepted</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Under Process</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn"
+                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
                                                     </div>
                                                 </div>
                                                 <span class="currentState">Accepted</span>
@@ -333,16 +335,17 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Accepted</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Under Process</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn"
+                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
                                                     </div>
                                                 </div>
                                                 <span class="currentState">Accepted</span>
@@ -854,6 +857,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         let currentState = parElement.querySelector('.currentState');
         currentState.innerText = currentRoundName;
 
+        if(currentState.innerHTML == ''){
+
+        }
         if (currentState.innerText == 'Disbursed') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
