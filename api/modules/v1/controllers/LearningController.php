@@ -175,40 +175,28 @@ class LearningController extends ApiBaseController
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->one();
-//        return $video_detail;
-        if ($video_detail) {
-            return $this->response(200, $video_detail);
-        } else {
-            return $this->response(404, 'Not Found');
-        }
-    }
-
-    public function actionTopVideo($slug)
-    {
-        $video_detail = LearningVideos::find()
+        $parent_id = $video_detail['parent_enc_id'];
+        $video_id = $video_detail['video_enc_id'];
+        $tags_id = $video_detail['learningVideoTags'];
+        $related_videos = LearningVideos::find()
             ->alias('a')
-            ->select(['a.*', 'c.category_enc_id', 'c.parent_enc_id', 'd.name child_name', 'e.name parent_name'])
-            ->joinWith(['learningVideoTags b' => function ($y) {
-                $y->select(['b.video_enc_id', 'b.tag_enc_id', 'f.name']);
-                $y->joinWith(['tagEnc f'], false);
-                $y->limit(10);
-            }])
-            ->joinWith(['assignedCategoryEnc c' => function ($x) {
-                $x->joinWith(['categoryEnc d'], false);
-                $x->joinWith(['parentEnc e'], false);
-            }], false)
-            ->where(['a.slug' => $slug])
+            ->joinWith(['assignedCategoryEnc b'], false)
+            ->where(['b.parent_enc_id' => $parent_id])
             ->andWhere(['a.status' => 1])
             ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['!=', 'a.video_enc_id', $video_id])
+            ->limit(10)
             ->asArray()
-            ->one();
-        $parent_id = Yii::$app->request->post('video_id');
-        $tags_id = Yii::$app->request->post('tags_id');
-        $current_video_id = LearningVideos::find()
-            ->where(['slug' => $slug])
-            ->andWhere(['status' => 1])
+            ->all();
+        $top_videos = LearningVideos::find()
+            ->orderBy(['view_count' => SORT_DESC])
+            ->where(['status' => 1])
             ->andWhere(['is_deleted' => 0])
-            ->one();
+            ->andWhere(['!=', 'video_enc_id', $video_id])
+            ->limit(2)
+            ->asArray()
+            ->all();
+
         $interested_videos = [];
         if (count($tags_id) > 0) {
             $interested_videos = LearningVideos::find()
@@ -217,103 +205,54 @@ class LearningController extends ApiBaseController
                 ->where(['in', 'b.tag_enc_id', $tags_id])
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['!=', 'b.video_enc_id', $current_video_id['video_enc_id']])
+                ->andWhere(['!=', 'b.video_enc_id', $video_id])
                 ->limit(8)
                 ->asArray()
                 ->all();
         }
 
-        $related_videos = LearningVideos::find()
-            ->alias('a')
-            ->joinWith(['assignedCategoryEnc b'], false)
-            ->where(['b.parent_enc_id' => $parent_id])
-            ->andWhere(['a.status' => 1])
-            ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
-            ->limit(10)
-            ->asArray()
-            ->all();
-        $top_videos = LearningVideos::find()
-            ->orderBy(['view_count' => SORT_DESC])
-            ->where(['status' => 1])
+        $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
+        $likeStatus = LearningVideoLikes::find()
+            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['video_enc_id' => $video_id])
             ->andWhere(['is_deleted' => 0])
-            ->andWhere(['!=', 'video_enc_id', $current_video_id['video_enc_id']])
-            ->limit(2)
-            ->asArray()
-            ->all();
+            ->one();
+        $likeCount = LearningVideoLikes::find()
+            ->where(['video_enc_id' => $video_id])
+            ->andWhere(['is_deleted' => 0])
+            ->andWhere(['status' => 1])
+            ->count();
+        $dislikeCount = LearningVideoLikes::find()
+            ->where(['video_enc_id' => $video_id])
+            ->andWhere(['is_deleted' => 0])
+            ->andWhere(['status' => 2])
+            ->count();
+        $commentCount = LearningVideoComments::find()
+            ->where(['video_enc_id' => $video_id])
+            ->andWhere(['is_deleted' => 0])
+            ->count();
 
-        if (Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-
-            $top_category = AssignedCategories::find()
-                ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'COUNT(a.parent_enc_id) cnt'])
-                ->joinWith(['learningVideos b' => function ($b) {
-                    $b->andOnCondition(['b.status' => 1]);
-                    $b->andOnCondition(['b.is_deleted' => 0]);
-                }], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->where(['a.assigned_to' => 'Videos'])
-                ->andWhere(['a.status' => 'Approved'])
-                ->andWhere([
-                    'or',
-                    ['a.parent_enc_id' => ""],
-                    ['a.parent_enc_id' => NULL]
-                ])
-                ->andWhere(['a.is_deleted' => 0])
-                ->groupBy(['a.assigned_category_enc_id'])
-                ->asArray()
-                ->limit(15)
-                ->all();
-            if ($related_videos || $top_videos || $top_category || $interested_videos) {
-                $response = [
-                    'status' => 200,
-                    'message' => 'Success',
-                    'related_videos' => $related_videos,
-                    'top_videos' => $top_videos,
-                    'top_category' => $top_category,
-                    'interested_videos' => $interested_videos,
-                ];
-            } else {
-                $response = [
-                    'status' => 201,
-                ];
-            }
-            return ($response);
-        }
-        if (!empty($video_detail)) {
-            $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
-            $likeStatus = LearningVideoLikes::find()
-                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
-            $likeCount = LearningVideoLikes::find()
-                ->where(['video_enc_id' => $video_detail['video_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->andWhere(['status' => 1])
-                ->count();
-            $dislikeCount = LearningVideoLikes::find()
-                ->where(['video_enc_id' => $video_detail['video_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->andWhere(['status' => 2])
-                ->count();
-            $commentCount = LearningVideoComments::find()
-                ->where(['video_enc_id' => $video_detail['video_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->count();
-            return $this->render('video-detail', [
-                'video_detail' => $video_detail,
-                'like_status' => $likeStatus,
-                'like_count' => $likeCount,
-                'dislike_count' => $dislikeCount,
-                'comment_count' => $commentCount,
-            ]);
+        $data = [
+            'details' => $video_detail,
+            'related_videos' => $related_videos,
+            'top_videos' => $top_videos,
+            'interested_videos' => $interested_videos,
+            'like_status' => $likeStatus,
+            'like_count' => $likeCount,
+            'dislike_count' => $dislikeCount,
+            'comment_count' => $commentCount,
+        ];
+        if ($video_detail) {
+            return $this->response(200, $data);
         } else {
-            return $this->response(404, 'not found');
+            return $this->response(404, 'Not Found');
         }
     }
 
+    private function toMinutes($time)
+    {
+        $time = explode(':', $time);
+        return ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
+    }
 
 }
