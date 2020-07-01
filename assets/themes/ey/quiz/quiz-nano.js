@@ -188,6 +188,13 @@ function create_question()
     let q =  $.trim($('#input_question').val());
     let optionList = document.querySelector('.optionList');
     question_txts = optionList.getElementsByTagName('textarea');
+    let correctAnswer = document.querySelectorAll(".correctAnswer");
+    if (correctAnswer.length == 1) {
+        correctAnswer[0].classList.remove('correctAnswer');
+        let sParent = correctAnswer[0].parentElement;
+        sParent.querySelector('.ca-message').innerHTML = "";
+        sParent.querySelector('.ca-message').classList.remove('ca-message-add');
+    }
     var options_list = [];
     $.each(question_txts,function (index,value) {
         let opt = $.trim(this.value);
@@ -641,6 +648,7 @@ $(document).on('click','#add_options_btn',function(e)
 {
     e.preventDefault();
     addOption();
+    quesOptions();
 })
 function addOption() {
     let optionList = document.querySelector('.optionList');
@@ -655,7 +663,7 @@ function addOption() {
             '        <span class="checkmark"></span>\n' +
             '    </label>\n' +
             '    <p class="ca-message"></p>\n' +
-            '    <button type="button" class="deleteBtn" onclick="this.parentElement.remove()"><i class="fa fa-trash"></i></button>';
+            '    <button type="button" class="deleteBtn" onclick="this.parentElement.remove()"><i class="fa fa-times"></i></button>';
 
         optionList.appendChild(newOption);
     }

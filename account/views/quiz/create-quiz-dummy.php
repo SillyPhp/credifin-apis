@@ -46,8 +46,8 @@ use yii\helpers\Url;
                                         <div class="col-md-3">
                                             <label class="radioLabel" onchange="displayValue('group')">
                                                 <input type="radio" name="group" txtvalue="<?= $cat['name'] ?>"
-                                                       value="<?= $cat['id'] ?>" class="customRadio" >
-                                                <div class="quiz-group-box" >
+                                                       value="<?= $cat['id'] ?>" class="customRadio">
+                                                <div class="quiz-group-box">
                                                     <p class="quiz-class"><?= $cat['name'] ?></p>
                                                 </div>
                                             </label>
@@ -85,7 +85,7 @@ use yii\helpers\Url;
                             <?php if (!empty($subject)) { ?>
                                 <?php foreach ($subject as $sub) { ?>
                                     <div class="col-md-3">
-                                        <label class="radioLabel"   onchange="displayValue('subject')">
+                                        <label class="radioLabel" onchange="displayValue('subject')">
                                             <input type="radio" name="subject" txtvalue="<?= $sub['name'] ?>"
                                                    value="<?= $sub['id'] ?>" class="customRadio">
                                             <div class="quiz-group-box">
@@ -124,6 +124,7 @@ use yii\helpers\Url;
                                         foreach ($recommend_topics as $rec) { ?>
                                             <label class="radio_topics">
                                                 <input type="radio" name="topic" txtvalue="<?= $rec['name'] ?>"
+                                                       onchange="displayValue('topic')"
                                                        value="<?= $rec['id'] ?>" class="customRadio_topic">
                                                 <li class="topicList"><?= $rec['name'] ?></li>
                                             </label>
@@ -142,7 +143,8 @@ use yii\helpers\Url;
                                             foreach ($user_topics as $tp) { ?>
                                                 <label class="radio_topics">
                                                     <input type="radio" name="topic" txtvalue="<?= $tp['name'] ?>"
-                                                           value="<?= $tp['id'] ?>" class="customRadio_topic">
+                                                           onchange="displayValue('topic')" value="<?= $tp['id'] ?>"
+                                                           class="customRadio_topic">
                                                     <li class="topicList"><?= $tp['name'] ?></li>
                                                 </label>
                                             <?php }
@@ -169,11 +171,11 @@ use yii\helpers\Url;
                         <div class="row">
                             <div class="col-md-6">
                                 <h2 class="quiz-heading">Introduction To Quiz</h2>
-                                <p class="recom-charac">Minimum 160 characters recommended</p>
                                 <div class="quiz-intro">
                                     <textarea class="quiz-intro-textarea" maxlength="280" id="inro_input"
                                               placeholder="Enter Quiz Intro"></textarea>
                                 </div>
+                                <p class="recom-charac">Minimum 160 characters recommended</p>
                             </div>
                             <div class="col-md-6">
                                 <div class="previous-topics">
@@ -241,8 +243,9 @@ use yii\helpers\Url;
                                                 <span class="checkmark"></span>
                                             </label>
                                             <p class="ca-message"></p>
-                                            <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()">
+                                            <button type="button" class="deleteBtn" data-toggle="tooltop"
+                                                    title="Delete Option"
+                                                    data-placement="top" onclick="this.parentElement.remove()">
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </div>
@@ -254,17 +257,19 @@ use yii\helpers\Url;
                                                 <span class="checkmark"></span>
                                             </label>
                                             <p class="ca-message"></p>
-                                            <button type="button" class="deleteBtn"
-                                                    onclick="this.parentElement.remove()">
+                                            <button type="button" class="deleteBtn" data-toggle="tooltop"
+                                                    title="Delete Option"
+                                                    data-placement="top" onclick="this.parentElement.remove()">
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="dis-flex">
+                                    <div class="dis-flex flex-end">
+                                        <button type="button" id="create_question">Create Question</button>
                                         <button type="button" id="add_options_btn">Add More Options</button>
                                     </div>
                                     <div class="quiz-button-flex">
-                                        <button type="button" id="create_question">Create Question</button>
+
                                         <button type="button" id="finish_quiz">Complete Quiz</button>
                                     </div>
                                 </div>
@@ -470,6 +475,9 @@ $this->registerCss('
 .padd15{
     padding: 0 15px 0 0; 
 }
+.flex-end{
+    justify-content: space-between;
+}
 #side-bar-main,
 #integration-main,
 #side-bar-2{
@@ -489,7 +497,7 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 .step {
-    padding: 0 20px;
+    padding: 0 0px;
     text-align: left;
     list-style: none;
 }
@@ -500,13 +508,16 @@ $this->registerCss('
 }
 .step li{
     position: relative;
-    margin-left: 5px;
+    padding: 5px 10px 5px 25px;
+}
+.step li:nth-child(even){
+    background: #fff;
 }
 .stepsLi i{
     position: absolute;
-    top: 5px;
-    left: -20px;
-    font-size:18px;
+    top: 10px;
+    left: 0px;
+    font-size: 18px;
     color: #00a0e3;
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
@@ -533,7 +544,12 @@ $this->registerCss('
 .quiz-button-flex{
     display: flex;
     justify-content: space-between;
-    margin-top: 50px;
+    margin-top: 20px;
+}
+#finish_quiz{
+    width: 100%;
+    max-width: 425px;
+    background: #20B2AA;
 }
 #payment-details,#final-details{
     display: none;
@@ -646,6 +662,10 @@ $this->registerCss('
 }
 .quiz-ques button{
     padding: 10px 15px;
+
+}
+#create_question{
+    background: #ff7803;
 }
 .pay-btns button{
     margin-bottom: 10px;
@@ -1120,13 +1140,11 @@ display:none;
     font-weight: 500 !important;
 }
 .deleteBtn{
-    position: absolute;
-    bottom: 16px;
-    right: 0px;
     padding: 1px 6px !important;
     color: #333 !important;
     font-size: 17px;
     background: transparent !important;  
+    margin-top: 10px;
 }
 .deleteBtn:hover{
        color: #00a0e3 !important;   
@@ -1167,6 +1185,10 @@ $(document).on('click', '.scroll-to-sec', function(e) {
     var offsetHeight = $(sectionId).offset().top - 90 ;
     $('html, body').animate({scrollTop: offsetHeight}, 600);
 });
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/ey/quiz/quiz-nano.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1182,16 +1204,16 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
         var ele = document.getElementsByName(name);
         for (let i = 0; i < ele.length; i++) {
             if (ele[i].checked) {
-                var fieldName = ele[i].parentElement.getElementsByTagName('p')[0].innerText;
+                var fieldName = ele[i].parentElement.querySelectorAll('p , li')[0].innerText;
                 let stepsBar = document.getElementById("stepsBar");
                 let div = document.createElement('li');
                 div.setAttribute('id', name);
                 div.setAttribute('class', 'stepsLi')
-                div.innerHTML = '<i class="fa fa-level-down"></i>'+ fieldName;
+                div.innerHTML = '<i class="fa fa-level-down"></i>' + fieldName;
                 let fname = document.getElementById(name);
-                if(fname){
+                if (fname) {
                     fname.innerHTML = '<i class="fa fa-level-down"></i>' + fieldName;
-                }else{
+                } else {
                     stepsBar.appendChild(div);
                 }
                 showStepmarking();
@@ -1199,37 +1221,38 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
         }
     }
 
-    let optionRadio = document.getElementsByClassName('ca-ans');
-    for (let i = 0; i < optionRadio.length; i++) {
-        optionRadio[i].addEventListener('click', function () {
-            let correctAnswer = document.querySelectorAll(".correctAnswer");
-            if (correctAnswer.length == 1) {
-                correctAnswer[0].classList.remove('correctAnswer');
-                let sParent = correctAnswer[0].parentElement;
-                sParent.querySelector('.ca-message').innerHTML = "";
-                sParent.querySelector('.ca-message').classList.remove('ca-message-add');
-            }
-            let checkRadio = document.querySelector('input[name="answer"]:checked');
-            let parentlabel = checkRadio.parentElement;
-            let rootParent = parentlabel.parentElement;
-            let correctInput = rootParent.querySelector('.ques-input');
-            let correctMessage = rootParent.querySelector('.ca-message');
-            correctInput.classList.add('correctAnswer');
-            correctMessage.innerHTML = "Correct Answer";
-            correctMessage.classList.add('ca-message-add');
-        })
+    function quesOptions() {
+        let optionRadio = document.getElementsByClassName('ca-ans');
+        for (let i = 0; i < optionRadio.length; i++) {
+            optionRadio[i].addEventListener('click', function () {
+                let correctAnswer = document.querySelectorAll(".correctAnswer");
+                if (correctAnswer.length == 1) {
+                    correctAnswer[0].classList.remove('correctAnswer');
+                    let sParent = correctAnswer[0].parentElement;
+                    sParent.querySelector('.ca-message').innerHTML = "";
+                    sParent.querySelector('.ca-message').classList.remove('ca-message-add');
+                }
+                let checkRadio = document.querySelector('input[name="answer"]:checked');
+                let parentlabel = checkRadio.parentElement;
+                let rootParent = parentlabel.parentElement;
+                let correctInput = rootParent.querySelector('.ques-input');
+                let correctMessage = rootParent.querySelector('.ca-message');
+                correctInput.classList.add('correctAnswer');
+                correctMessage.innerHTML = "Correct Answer";
+                correctMessage.classList.add('ca-message-add');
+            })
+        }
     }
-    let downElem = [];
+
+    quesOptions();
 
     function showStepmarking() {
-        let stepsLi =  document.getElementsByClassName('stepsLi');
-        // downElem.push(stepsLi);
-        console.log(stepsLi);
+        let stepsLi = document.getElementsByClassName('stepsLi');
         let lastElm = stepsLi[stepsLi.length - 1];
         console.log(lastElm.querySelector('i'));
         let dc = document.getElementsByClassName('dc');
-        if(dc.length > 0){
-            for(let i = 0; i < dc.length; i++){
+        if (dc.length > 0) {
+            for (let i = 0; i < dc.length; i++) {
                 dc[i].classList.remove('dc');
             }
         }
