@@ -11,7 +11,7 @@ if (!empty($total_processes)) {
                 if ($next < $total_processes) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
-                        <div class="p-category">
+                        <div class="p-category set-m">
                             <div class="click hiring-click <?= (($processes[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
                                 <span class="fa <?= (($processes[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?>"></span>
                                 <div class="ring"></div>
@@ -92,8 +92,9 @@ function run_ajax(id,url) {
 JS;
 $this->registerJs($script);
 $this->registerCss("
-.proccess_img{
-     max-height: 55px !important;
+.set-m > a img {
+    height: 65px !important;
+    width: 65px !important;
 }
 .click {
 font-size: 33px;
