@@ -213,7 +213,7 @@ if (Yii::$app->user->isGuest) {
 </section>
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3 col-sm-6',
+    'size' => 'col-md-4 col-sm-4',
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/category-card');

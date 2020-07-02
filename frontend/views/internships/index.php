@@ -803,7 +803,7 @@ $this->registerCss('
 }
 ');
 echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3',
+    'size' => 'col-md-4 col-sm-4',
     'is_ajax' => true
 ]);
 $script = <<<JS
