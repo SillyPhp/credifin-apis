@@ -1,15 +1,23 @@
 <?php
-use yii\helpers\Url;
-?>
 
-<div class="temp-job-main">
-    <div class="temp-head">Job Templates</div>
-    <div class="temp-card">
-        <i class="fa fa-files-o" title="clone"></i>
-        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png') ?>">
-        <h3>Web developer</h3>
+use yii\helpers\Url;
+
+$type_job = strtolower($type);
+?>
+<?php if ($jobs) { ?>
+    <div class="temp-job-main">
+        <div class="temp-head"><?= ($type == 'Jobs') ? 'Job' : 'Internship' ?> Templates</div>
+        <?php foreach ($jobs as $jb) { ?>
+            <a href="<?= Url::to('/account/'.$type_job.'/clone-template?aidk=' . $jb['application_enc_id']); ?>">
+            <div class="temp-card">
+                <i class="fa fa-files-o" title="clone"></i>
+                <img src="/assets/common/categories/profile/<?= $jb['icon_png']; ?>">
+                <h3><?= $jb['cat_name']; ?></h3>
+            </div>
+            </a>
+        <?php } ?>
     </div>
-</div>
+<?php } ?>
 <?php
 $this->registercss('
 .temp-job-main {
