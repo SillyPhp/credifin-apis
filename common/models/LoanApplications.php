@@ -44,7 +44,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return [
             [['loan_app_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'purpose', 'created_by', 'created_on'], 'required'],
-            [['applicant_dob', 'created_on'], 'safe'],
+            [['applicant_dob', 'created_on','updated_on','updated_by'], 'safe'],
             [['degree', 'purpose'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],

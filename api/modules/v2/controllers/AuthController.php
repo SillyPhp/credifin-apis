@@ -8,6 +8,7 @@ use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\ErexxSettings;
+use common\models\Organizations;
 use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
@@ -509,28 +510,33 @@ class AuthController extends ApiBaseController
                 foreach ($college_settings as $c) {
                     $settings[$c['setting']] = $c['value'] == 2 ? true : false;
                 }
+
+                $education_loan_college = Organizations::find()
+                    ->select(['has_loan_featured'])
+                    ->where(['organization_enc_id' => $college_id])
+                    ->asArray()
+                    ->one();
+
             }
 
         }
 
-        return [
+        $data = [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
-            'education_loan' => $user_detail['has_loan_featured'],
+//            'education_loan' => (int)$user_detail['has_loan_featured'] == 1 ? true : false,
+//            'ceducation_loan' => (int)$education_loan_college['has_loan_featured'] == 1 ? true : false,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['course_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
             'semester' => $user_detail['semester'],
             'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
-//            'user_type' => $user_detail['user_type'],
             'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
             'cgpa' => $user_detail['cgpa'],
-//            'college' => $user_detail['org_name'],
             'college' => (!empty($user_detail['teachers'][0]['collegeEnc']) ? $user_detail['teachers'][0]['collegeEnc']['name'] : $user_detail['org_name']),
             'college_enc_id' => (!empty($user_detail['teachers']) ? $user_detail['college_enc_id'] : $user_detail['organization_enc_id']),
-//            'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
             'last_name' => $user_detail['last_name'],
@@ -539,8 +545,16 @@ class AuthController extends ApiBaseController
             'access_token' => $find_user['access_token'],
             'refresh_token' => $find_user['refresh_token'],
             'access_token_expiry_time' => $find_user['access_token_expiration'],
-            'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
+            'refresh_token_expiry_time' => $find_user['refresh_token_expiration']
         ];
+
+        if ($college_id) {
+            $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
+        } else {
+            $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
+        }
+
+        return $data;
     }
 
     private function userOtherDetail($user_id)
