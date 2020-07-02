@@ -70,7 +70,7 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     </div>
     <div class="form-group mt-10">
         <?=
-        \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => Url::to('/site/auth', 'https'), 'popupMode' => true, ])
+        \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => [Url::to('/site/auth', 'https')], 'popupMode' => true, ])
         ?>
     </div>
     <div class="separator pb-10 text-black">
