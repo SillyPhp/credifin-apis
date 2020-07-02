@@ -7,7 +7,7 @@ if(!empty($size)){
 ?>
 <script id="whats-new-blog" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-4">
+    <div class="<?= $col; ?>">
         <div class="whats-new-box">
             <div class="wn-box-icon">
                 <a href="/blog/{{slug}}"><img src="{{image}}" alt="{{title}}"></a>
