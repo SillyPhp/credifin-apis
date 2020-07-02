@@ -122,7 +122,14 @@ class GovtJobsController extends Controller
 
     public function actionDepartments()
     {
-        return $this->render('departments');
+        $all_govt_jobs = IndianGovtJobs::find()
+            ->select(['job_enc_id'])
+            ->andWhere(['is_deleted' => 0])
+            ->asArray()
+            ->all() ;
+        return $this->render('departments',[
+            'all_govt_jobs' => $all_govt_jobs,
+        ]);
     }
 
     public function actionDept($slug)
