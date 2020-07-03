@@ -285,7 +285,7 @@ class AuthController extends ApiBaseController
                         ->where(['a.user_enc_id' => $user->user_enc_id, 'b.is_erexx_registered' => 1, 'b.is_deleted' => 0])
                         ->asArray()
                         ->one();
-                    if ($user_type['type'] != 'College') {
+                    if (!in_array($user_type['type'], ['College', 'School'])) {
                         return false;
                     }
                 }
@@ -517,6 +517,14 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                $business_activity = Organizations::find()
+                    ->alias('a')
+                    ->select(['a.organization_enc_id', 'c.business_activity'])
+                    ->joinWith(['businessActivityEnc c'])
+                    ->where(['a.organization_enc_id' => $college_id])
+                    ->asArray()
+                    ->one();
+
             }
 
         }
@@ -549,6 +557,7 @@ class AuthController extends ApiBaseController
         ];
 
         if ($college_id) {
+            $data['business_activity'] = $business_activity;
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
         } else {
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
