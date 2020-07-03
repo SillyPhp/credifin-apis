@@ -18,7 +18,12 @@ if (!empty($total_processes)) {
                                 <div class="ring2"></div>
                                 <input type="hidden" value="<?=$processes[$next]["id"]; ?>">
                             </div>
-                            <a href="#" onclick="window.open('<?= Url::to('/account/templates/hiring-process' . DIRECTORY_SEPARATOR . $processes[$next]["id"]); ?>/view', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                            <div class="rt-bttns">
+                                <a class="clone-bttn set-right-align two copy_content_hiring" href=""  value="<?=$processes[$next]["id"]; ?>">
+                                    <i class="fa fa-files-o"></i>
+                                </a>
+                            </div>
+                            <a href="#" onclick="window.open('<?= Url::to('/account/templates/hiring-process' . DIRECTORY_SEPARATOR . $processes[$next]["id"]); ?>/view', '_blank');" >
                                 <img class="proccess_img" src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
                                 <span><?= $processes[$next]['process_name']; ?></span>
                             </a>
@@ -92,7 +97,7 @@ $this->registerCss("
     width: 65px !important;
 }
 .click {
-font-size: 33px;
+    font-size: 33px;
     color: rgba(0,0,0,.5);
     width: 38px;
     height: 38px;
@@ -130,13 +135,12 @@ span:active {
 	border-radius: 50%;
 	cursor: pointer;
 }
-.clone-bttn
-{
-display:block;
-left:0;
-width: fit-content;
-    font-size: 19px;
-    top: 7px;
+.clone-bttn {
+    display:block;
+    left:2;
+    width: fit-content;
+    font-size: 18px;
+    top: 2px;
 }
 .active > span, .active-2 > span {
 	color: #F5CC27 !important;
@@ -191,8 +195,3 @@ width: fit-content;
 	opacity: 1;
 }
 ");
-
-$script = <<<js
-$('[data-toggle="tooltip"]').tooltip();
-js;
-$this->registerJs($script);

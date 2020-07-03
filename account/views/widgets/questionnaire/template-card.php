@@ -19,7 +19,12 @@ if (!empty($total_questionnaire)) {
                                 <div class="ring2"></div>
                                 <input type="hidden" value="<?=$questionnaire[$next]["id"]; ?>">
                             </div>
-                            <a href="#" onclick="window.open('<?= Url::to('/account/templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>/view', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                            <div class="rt-bttns">
+                                <a class="clone-bttn set-right-align two copy_content_questionnaire" href=""  data-toggle="tooltip" data-placement="top" title="Use Questionnaire" value="<?=$questionnaire[$next]["id"]; ?>">
+                                    <i class="fa fa-files-o"></i>
+                                </a>
+                            </div>
+                            <a href="#" onclick="window.open('<?= Url::to('/account/templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>/view', '_blank');" >
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
