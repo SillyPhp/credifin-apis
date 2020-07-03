@@ -318,12 +318,9 @@ $this->registerCss('
 .wn-box-details{
     min-height:100px !important;
 }
-.wn-box-icon{
-    max-width: 270px !important;
-}
 .wn-box-icon img{
     height: 200px !important;
-    object-fit: fill;
+    object-fit: cover;
 }
 /* Top Search bar css start */
 .twitter-typeahead{
