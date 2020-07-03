@@ -16,6 +16,11 @@ if (!empty($total_processes)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
+                            <div class="rt-bttns">
+                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
+                                    <i class="fa fa-clone"></i>
+                                </a>
+                            </div>
 <!--                            <div class="rt-bttns">-->
 <!--                                <a class="edit-bttn set-right-align two" href="--><?//= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'edit'); ?><!--" target="_blank">-->
 <!--                                    <i class="fa fa-edit"></i>-->
@@ -27,7 +32,7 @@ if (!empty($total_processes)) {
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <a href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>" data-toggle="tooltip" title="Use this Template" data-placement="bottom">
+                            <a href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
                                 <span class="proc-s"><?= $processes[$next]['process_name']; ?></span>
                             </a>
