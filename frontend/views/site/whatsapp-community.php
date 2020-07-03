@@ -46,20 +46,20 @@ use yii\helpers\Url;
                                 <?php
                                 foreach ($d['socialLinks'] as $social) {
                                     switch ($social['platform_name']){
-                                        case 'Facebook' :
-                                            $bg = '#3b5998';
-                                            break;
                                         case 'WhatsApp' :
                                             $bg = '#25d366';
+                                            break;
+                                        case 'Telegram' :
+                                            $bg = '#0088cc';
                                             break;
                                         case 'Instagram' :
                                             $bg = '#c13584';
                                             break;
+                                        case 'Facebook' :
+                                            $bg = '#3b5998';
+                                            break;
                                         case 'twitter' :
                                             $bg = '#1da1f2';
-                                            break;
-                                        case 'Telegram' :
-                                            $bg = '#0088cc';
                                             break;
                                         default :
                                             $bg = '#ff7803';

@@ -135,9 +135,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', [
-            'model' => $model
-        ]);
+        return $this->render('index');
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -871,6 +869,15 @@ class SiteController extends Controller
                 break;
             case 'getInternationalJobs':
                 return $this->renderAjax('/widgets/international-jobs');
+                break;
+            case 'getSafetySigns':
+                return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getOnlineClasses':
+                $model = new ClassEnquiryForm();
+                return $this->renderAjax('/widgets/online-classes',[
+                    'model' => $model,
+                ]);
                 break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
