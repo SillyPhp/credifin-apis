@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 
 ?>
+<div class="row">
 <div class="col-md-12">
     <div class="widget-row">
         <div class="col-md-3 col-sm-6">
@@ -32,16 +33,6 @@ use yii\helpers\Url;
                 </div>
             </a>
         </div>
-        <!--            <div class="col-md-3 col-sm-6">-->
-        <!--                <a href="#">-->
-        <!--                    <div class="box-des box2 mt">-->
-        <!--                        <img src="-->
-        <? //= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
-        <!--                        <span class="count">50</span>-->
-        <!--                        <span class="box-text">Candidates Under Review</span>-->
-        <!--                    </div>-->
-        <!--                </a>-->
-        <!--            </div>-->
         <div class="col-md-3 col-sm-6">
             <a href="#">
                 <div class="box-des box4 mt box2set">
@@ -80,18 +71,19 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
-
+</div>
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
         <div class="portlet-title tabbable-line">
-            <div class="caption">
-                <i class=" icon-social-twitter font-dark hide"></i>
-                <span class="caption-subject font-dark bold uppercase">Company Profiles</span>
-            </div>
-            <div class="actions">
-                <div class="btn-group dashboard-button">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase">Company Profiles</span>
+                    </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-md-12">
                     <ul class="statusFilters">
@@ -174,20 +166,31 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
+                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre
+                                                            Verification
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under
+                                                            Process
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
+                                                        </button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
+                                                        </button>
                                                         <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
+                                                                onclick="nextRound(this)" value="Rejected">Reject
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <span class="currentState">New Lead</span>
                                                 <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
                                                         data-placement="top" title="Move to Next Phase">
                                                     <i class="fa fa-arrow-circle-right"></i>
@@ -228,20 +231,31 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
+                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre
+                                                            Verification
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under
+                                                            Process
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
+                                                        </button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
+                                                        </button>
                                                         <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
+                                                                onclick="nextRound(this)" value="Rejected">Reject
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <span class="currentState">New Lead</span>
                                                 <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
                                                         data-placement="top" title="Move to Next Phase">
                                                     <i class="fa fa-arrow-circle-right"></i>
@@ -282,20 +296,31 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
+                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre
+                                                            Verification
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under
+                                                            Process
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
+                                                        </button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
+                                                        </button>
                                                         <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
+                                                                onclick="nextRound(this)" value="Rejected">Reject
+                                                            .modal-content         </button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <span class="currentState">New Lead</span>
                                                 <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
                                                         data-placement="top" title="Move to Next Phase">
                                                     <i class="fa fa-arrow-circle-right"></i>
@@ -335,20 +360,31 @@ use yii\helpers\Url;
                                                                 class="fa fa-ellipsis-v"></i></button>
                                                     <div class="dropdown-content myDropdown">
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted</button>
+                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre Verification</button>
+                                                                onclick="nextRound(this)" value="Accepted">Accepted
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under Process</button>
+                                                                onclick="nextRound(this)" value="Pre Verification">Pre
+                                                            Verification
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned</button>
+                                                                onclick="nextRound(this)" value="Under Process">Under
+                                                            Process
+                                                        </button>
                                                         <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed</button>
+                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
+                                                        </button>
+                                                        <button class="actionBtn"
+                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
+                                                        </button>
                                                         <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject</button>
+                                                                onclick="nextRound(this)" value="Rejected">Reject
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <span class="currentState">New Lead</span>
                                                 <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
                                                         data-placement="top" title="Move to Next Phase">
                                                     <i class="fa fa-arrow-circle-right"></i>
@@ -392,57 +428,195 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
-<div id="myModal" class="modal">
+<div id="loanDetailModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Installment Schedule</h2>
         <div class="loanModalDetails">
-        <table>
-            <thead>
-            <tr>
-                <th class='tInstall'>S.No</th>
-                <th class='aInstall'>Due Date</th>
-                <th class='dueDate'>Amount</th>
-                <th class='installPaid'>Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>01-08-2020</td>
-                <td>5726</td>
-                <td>Due</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>01-09-2020</td>
-                <td>5726</td>
-                <td>Due</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>01-10-2020</td>
-                <td>5726</td>
-                <td>Due</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>01-11-2020</td>
-                <td>5726</td>
-                <td>Due</td>
-            </tr>
-            </tbody>
-        </table>
+            <div id="loanDetailScroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th class='tInstall'>S.No</th>
+                        <th class='aInstall'>Due Date</th>
+                        <th class='dueDate'>Amount</th>
+                        <th class='installPaid'>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>01-08-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>01-09-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>01-10-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>01-11-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>01-10-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>01-11-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>01-10-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>01-11-2020</td>
+                        <td>5726</td>
+                        <td>Due</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="sanctionModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content loanModal">
+        <span class="close">&times;</span>
+        <div class="loanModalDetails">
+            <div class="row">
+                <div class="col-md-3 col-sm-12 noPadd">
+                    <div class="loan-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-sanction-icon.png') ?>">
+                        <p>Sanction Loan</p>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-12 noPadd">
+                    <div id="loanModalScroll">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        File Number
+                                    </label>
+                                    <input type="text" class="form-control" id="fileNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        Loan Amount
+                                    </label>
+                                    <input type="text" class="form-control" id="loanAmount">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        Processing Fee
+                                    </label>
+                                    <input type="text" class="form-control" id="processing">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        Total Installments
+                                    </label>
+                                    <input type="text" class="form-control" id="installments">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        Discounting
+                                    </label>
+                                    <input type="text" class="form-control" id="discounting">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        Approved By
+                                    </label>
+                                    <input type="text" class="form-control" id="approved">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="form-group">
+                                    <label for="number" class="input-group-text">
+                                        FLDG
+                                    </label>
+                                    <input type="text" class="form-control" id="FLDG">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 padd-20">
+                                <div class="certificate-list">
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Certificate Name</th>
+                                            <th>Collected</th>
+                                            <th>Yet To Be Collected</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Birth Certificate</td>
+                                            <td><input type="radio" id="male" name="Certificate" value="Collected"
+                                                       checked></td>
+                                            <td><input type="radio" id="male" name="Certificate" value="Pending"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Residence Proof</td>
+                                            <td><input type="radio" id="male" name="Residence" value="Collected"></td>
+                                            <td><input type="radio" id="male" name="Residence" value="Pending" checked>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Proof of Identity</td>
+                                            <td><input type="radio" id="male" name="Identity" value="Collected" checked>
+                                            </td>
+                                            <td><input type="radio" id="male" name="Identity" value="Pending"></td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 <?php
 $this->registerCss('
-.modal-content h2{
-    font-family: lora;
-    font-size: 20px;
-    text-align: center;
+.form-group{
+    margin-bottom: 5px;
 }
 tr{
     position: relative;
@@ -541,7 +715,8 @@ tr{
 #overflowScroll{
     position:relative;
     overflow-y: hidden;
-    min-height:100vh;
+    max-height:70vh;
+    padding: 0 0 30px 0;
 }
 
 .mainTable table { 
@@ -572,73 +747,9 @@ tr{
 .hide{
     display: none;
 }
-@media 
-only screen and (max-width: 760px),
-(min-device-width: 768px) and (max-device-width: 1024px)  {
 
-	/* Force table to not be like tables anymore */
-	.mainTable table, .mainTable thead, .mainTable tbody, .mainTable th, .mainTable td, .mainTable tr { 
-		display: block; 
-	}
-	
-	/* Hide table headers (but not display: none;, for accessibility) */
-	.mainTable thead tr { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-	
-	.mainTable tr { border: 1px solid #ccc; }
-	
-	.mainTable td { 
-		/* Behave  like a "row" */
-		border: none;
-		border-bottom: 1px solid #eee; 
-		position: relative;
-		padding-left: 50%; 
-	}
-	
-	.mainTable td:before { 
-		/* Now like a table header */
-		position: absolute;
-		/* Top/left values mimic padding */
-		top: 6px;
-		left: 6px;
-		width: 45%; 
-		padding-right: 10px; 
-		white-space: nowrap;
-	}
-	
-	/*
-	Label the data
-	*/
-	.mainTable td:nth-of-type(1):before { content: "Move To Next Phase "; }
-	.mainTable td:nth-of-type(2):before { content: "Current Phase"; }
-	.mainTable td:nth-of-type(3):before { content: "Applicant Name"; }
-	.mainTable td:nth-of-type(4):before { content: "Date of Birth"; }
-	.mainTable td:nth-of-type(5):before { content: "Country?"; }
-	.mainTable td:nth-of-type(6):before { content: "City"; }
-	.mainTable td:nth-of-type(7):before { content: "Degree"; }
-	.mainTable td:nth-of-type(8):before { content: "Course Name"; }
-	.mainTable td:nth-of-type(9):before { content: "College/University Name"; }
-	.mainTable td:nth-of-type(10):before { content: "Start Date"; }
-	.mainTable td:nth-of-type(11):before { content: "End Date"; }
-	.mainTable td:nth-of-type(12):before { content: "Phone Number"; }
-	.mainTable td:nth-of-type(13):before { content: "Email Address"; }
-	.mainTable td:nth-of-type(14):before { content: "Loan Amount"; }
-	.mainTable td:nth-of-type(15):before { content: "Co-Applicant"; }
-	.mainTable td:nth-of-type(16):before { content: "Co-Applicant\'s Name"; }
-	.mainTable td:nth-of-type(17):before { content: "Co-Applicant\'s employment type"; }
-	.mainTable td:nth-of-type(18):before { content: "Co-Applicant\'s Annual Income"; }
-	.mainTable td:nth-of-type(19):before { content: "2nd Co-Applicant"; }
-	.mainTable td:nth-of-type(20):before { content: "2nd Co-Applicant\'s Name"; }
-	.mainTable td:nth-of-type(21):before { content: "2nd Co-Applicant\'s employment type"; }
-	.mainTable td:nth-of-type(22):before { content: "2nd Co-Applicant\'s Annual Income"; }
-    .mainTable td:nth-of-type(23):before { content: "3rd Co-Applicant"; }
-	.mainTable td:nth-of-type(24):before { content: "3rd Co-Applicant\'s Name"; }
-	.mainTable td:nth-of-type(25):before { content: "3rd Co-Applicant\'s employment type"; }
-	.mainTable td:nth-of-type(26):before { content: "3rd Co-Applicant\'s Annual Income"; }
-}
+
+
  /*--- input checkbox ---*/
 label {
     display:inline-block;
@@ -733,6 +844,7 @@ input.checkbox:checked + label:before {
 .loanDetails{
     position: absolute;
     z-index: 1;   
+   
 }
 .loanDetails table{
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
@@ -779,11 +891,11 @@ input.checkbox:checked + label:before {
     color:#00a0e3;
 }
 
-.modal {
+#sanctionModal.modal,
+#loanDetailModal.modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  z-index: 9999; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -793,13 +905,14 @@ input.checkbox:checked + label:before {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+#sanctionModal .modal-content,
+#loanDetailModal .modal-content {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 60vw;
-  height: 60vh;
+  width: 70vw;
+  height: 70vh;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -820,15 +933,191 @@ input.checkbox:checked + label:before {
   text-decoration: none;
   cursor: pointer;
 }
+
+.loan-icon img{
+    max-width: 150px;
+}
+.loan-icon{
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column
+}
+.loan-icon p{
+    color: #fff;
+    font-family: lora;
+    font-size: 20px;
+}
+.loanModal{
+    background: linear-gradient(to right, #00a0e3 25%, #fff 25%)    
+}
+.modal-open {
+    overflow: hidden !important;
+}
+.loanModalDetails{
+    height: 60vh;
+}
+.loanModalDetails label{
+    border: none;
+    height: auto;
+    display: block;
+    padding: 0 5px;
+    color:#333;
+    font-family: roboto;
+    line-height: 18px;
+    text-align: left;
+}
+.modal-content h2{
+    font-family: lora;
+    font-size: 20px;
+    text-align: center;
+}
+#loanModalScroll{
+    position: relative;
+    height: 60vh;
+    padding: 0 10px;
+}
+.certificate-list{
+    margin-top: 15px;
+}
+.noPadd{
+    padding:0px;
+}
+#loanDetailScroll{
+    position: relative;
+    height: 60vh;
+}
+#loanModalScroll .ps__thumb-x,
+#loanModalScroll .ps__rail-x,
+#loanModalScroll .ps--active-x > .ps__rail-x{
+    display: none !important;
+}
+@media screen and (max-width: 992px){
+    .loan-icon img{
+      display: none;
+    }
+    .loan-icon p{
+        color: #333;
+        font-size: 20px;
+        margin: 0px 0 0 0;
+    }
+    .loan-icon{
+        height: auto;
+    }
+    #loanModalScroll{
+        height: 60vh;
+    }
+    .loanModal {
+        background: linear-gradient(to bottom, #00a0e3 5%, #fff 5%);
+    }
+    #sanctionModal .modal-content{
+        height: 80vh
+    }
+}
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	.mainTable table, .mainTable thead, .mainTable tbody, .mainTable th, .mainTable td, .mainTable tr, 
+	.loanDetails table, .loanDetails thead, .loanDetails tbody, .loanDetails th, .loanDetails td, .loanDetails tr,
+	.loanModalDetails table, .loanModalDetails thead, .loanModalDetails tbody, .loanModalDetails th, .loanModalDetails td,
+	 .loanModalDetails tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.mainTable thead tr,
+	.loanModalDetails thead tr,
+	.loanDetails thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	.mainTable tr,
+	 .loanModalDetails tr{ border: 1px solid #ccc; }
+	
+	.mainTable td, 
+	.loanDetails td ,
+	.loanModalDetails td { 
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50% !important; 
+	}
+	
+	.mainTable td:before, 
+	.loanDetails td:before,
+	.loanModalDetails td:before { 
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+	
+	.mainTable td:nth-of-type(1):before { content: "Move To Next Phase "; }
+	.mainTable td:nth-of-type(2):before { content: "Current Phase"; }
+	.mainTable td:nth-of-type(3):before { content: "Applicant Name"; }
+	.mainTable td:nth-of-type(4):before { content: "Date of Birth"; }
+	.mainTable td:nth-of-type(5):before { content: "Country?"; }
+	.mainTable td:nth-of-type(6):before { content: "City"; }
+	.mainTable td:nth-of-type(7):before { content: "Degree"; }
+	.mainTable td:nth-of-type(8):before { content: "Course Name"; }
+	.mainTable td:nth-of-type(9):before { content: "College/University Name"; }
+	.mainTable td:nth-of-type(10):before { content: "Start Date"; }
+	.mainTable td:nth-of-type(11):before { content: "End Date"; }
+	.mainTable td:nth-of-type(12):before { content: "Phone Number"; }
+	.mainTable td:nth-of-type(13):before { content: "Email Address"; }
+	.mainTable td:nth-of-type(14):before { content: "Loan Amount"; }
+	.mainTable td:nth-of-type(15):before { content: "Co-Applicant"; }
+	.mainTable td:nth-of-type(16):before { content: "Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(17):before { content: "Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(18):before { content: "Co-Applicant\'s Annual Income"; }
+	.mainTable td:nth-of-type(19):before { content: "2nd Co-Applicant"; }
+	.mainTable td:nth-of-type(20):before { content: "2nd Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(21):before { content: "2nd Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(22):before { content: "2nd Co-Applicant\'s Annual Income"; }
+    .mainTable td:nth-of-type(23):before { content: "3rd Co-Applicant"; }
+	.mainTable td:nth-of-type(24):before { content: "3rd Co-Applicant\'s Name"; }
+	.mainTable td:nth-of-type(25):before { content: "3rd Co-Applicant\'s employment type"; }
+	.mainTable td:nth-of-type(26):before { content: "3rd Co-Applicant\'s Annual Income"; }
+	
+	
+	.loanModalDetails td:nth-of-type(1):before { content: "S.No "; }
+	.loanModalDetails td:nth-of-type(2):before { content: "Due Date "; }
+	.loanModalDetails td:nth-of-type(3):before { content: "Amount "; }
+	.loanModalDetails td:nth-of-type(4):before { content: "Status"; }
+
+    .loanDetails td:nth-of-type(1):before{content: "Total Installments"}
+    .loanDetails td:nth-of-type(2):before{content: "Amount Per Installment"}
+    .loanDetails td:nth-of-type(3):before{content: "Next Due Date"}
+    .loanDetails td:nth-of-type(4):before{content: "Installments Paid"}
+    .loanDetails td:nth-of-type(5):before{content: "Installments Due"}
+    .loanDetails td:nth-of-type(6):before{content: "View All"}
+
+    .loanDetails{
+        position: absolute;
+        z-index: 1;
+        width: 90%;   
+    }
+}
+
 ');
 
 $script = <<<JS
 
 var ps = new PerfectScrollbar('#overflowScroll');
+var ps = new PerfectScrollbar('#loanModalScroll');
+var ps = new PerfectScrollbar('#loanDetailScroll');
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 });
+
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
@@ -841,6 +1130,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             // x.classList.remove('show');
         }
     }
+    let sanctionModal = document.getElementById('sanctionModal');
 
     function actionStats(ths) {
         let dropdownShow = ths.nextElementSibling.classList;
@@ -857,16 +1147,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         let currentState = parElement.querySelector('.currentState');
         currentState.innerText = currentRoundName;
 
-        if(currentState.innerHTML == ''){
-
+        if (currentRoundName == 'Sanctioned') {
+            sanctionModal.style.display = "block"
         }
-        if (currentState.innerText == 'Disbursed') {
+        if (currentRoundName == 'Disbursed') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
             parElement.querySelector('.viewStatus').style.display = "block";
         }
 
-        if (currentState.innerHTML == 'Rejected'){
+        if (currentRoundName == 'Rejected') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
             parElement.querySelector('.reconsider').style.display = "block";
@@ -881,12 +1171,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         let phases = parElement.getElementsByClassName('actionBtn');
         let pVal = [];
         for (let i = 0; i < phases.length; i++) {
-            pVal.push(phases[i].innerHTML);
+            pVal.push(phases[i].value);
             let nextIndex = pVal.indexOf(curPhase) + 1;
             let nextElem = pVal[nextIndex];
             curElement[0].innerHTML = nextElem;
 
-            if (curElement[0].innerHTML == 'Disbursed') {
+            if (nextElem == 'Sanctioned') {
+                sanctionModal.style.display = "block"
+            }
+
+            if (nextElem == 'Disbursed') {
                 parElement.querySelector('.nextState').style.display = "none";
                 parElement.querySelector('.dropdown').style.display = "none";
                 parElement.querySelector('.viewStatus').style.display = "block";
@@ -921,25 +1215,32 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         parElem.remove();
     }
 
-    function showModal() {
-        var modal = document.getElementById("myModal");
-        var ldBtn = document.getElementById("ld-btn");
-            ldBtn.onclick = function () {
-                modal.style.display = "block";
-            }
-        var span = document.getElementsByClassName("close")[0];
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
+    var modal = document.getElementById("loanDetailModal");
 
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+    function showModal() {
+        var ldBtn = document.getElementById("ld-btn");
+        ldBtn.onclick = function () {
+            modal.style.display = "block";
+        }
+    }
+
+    var span = document.getElementsByClassName("close");
+    for (let i = 0; i < span.length; i++) {
+        span[i].onclick = function () {
+            modal.style.display = "none";
+            sanctionModal.style.display = "none";
         }
     }
 
 
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        if (event.target == sanctionModal) {
+            sanctionModal.style.display = "none";
+        }
+    }
 
 
 </script>
