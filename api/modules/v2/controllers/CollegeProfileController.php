@@ -76,18 +76,41 @@ class CollegeProfileController extends ApiBaseController
     public function actionOrgData()
     {
         if ($user = $this->isAuthorized()) {
-            $organizations = Users::find()
-                ->alias('a')
-                ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-                ->joinWith(['organizationEnc b' => function ($b) {
-                    $b->joinWith(['referrals c'], false);
-                }], false)
-                ->where(['a.user_enc_id' => $user->user_enc_id])
-                ->asArray()
-                ->all();
 
-            return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            $user_type = Users::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($user_type['organization_enc_id']) {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['organizationEnc b' => function ($b) {
+                        $b->joinWith(['referrals c'], false);
+                    }], false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            } else {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['teachers cc' => function ($cc) {
+                        $cc->joinWith(['collegeEnc b' => function ($b) {
+                            $b->joinWith(['referrals c'], false);
+                        }], false);
+                    }],false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            }
         }
     }
 
