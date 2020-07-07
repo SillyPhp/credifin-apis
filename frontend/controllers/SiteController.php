@@ -65,7 +65,7 @@ class SiteController extends Controller
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'onAuthSuccess'],
-                'successUrl' => 'oauth-varify',
+                'successUrl' => 'oauth-verify',
             ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -78,7 +78,7 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
-    public function actionOauthVarify()
+    public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();

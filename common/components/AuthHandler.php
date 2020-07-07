@@ -36,9 +36,12 @@ class AuthHandler
         $id = ArrayHelper::getValue($attributes, 'id');
         $nickname = ArrayHelper::getValue($attributes, 'login');
         $name = ArrayHelper::getValue($attributes, 'name');
+        $first_name = ArrayHelper::getValue($attributes, 'first_name');
+        $last_name = ArrayHelper::getValue($attributes, 'last_name');
         $user_type = UserTypes::findOne([
             'user_type' => 'Individual',
         ]);
+
         /* @var Auth $auth */
         $auth = Auth::find()->where([
             'source' => $this->client->getId(),
@@ -70,12 +73,16 @@ class AuthHandler
                     $utilitiesModel->variables['password'] = $password;
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $name_array = explode(' ',$name);
-                    $username = $this->generate_username($name, 1000);
-                    $user = new Users([
+                    if (!empty($first_name)&&!empty($last_name)):
+                        $username = $this->generate_username($first_name.' '.$last_name, 1000);
+                        else:
+                        $username = $this->generate_username($name, 1000);
+                        endif;
+                        $user = new Users([
                         'username' => $username,
                         'user_enc_id' => $utilitiesModel->encrypt(),
-                        'first_name' => $name_array[0],
-                        'last_name' => $name_array[1],
+                        'first_name' => (($first_name)?$first_name:$name_array[0]),
+                        'last_name' => (($last_name)?$last_name:$name_array[1]),
                         'email' => $email,
                         'password' => $utilitiesModel->encrypt_pass(),
                         'auth_key' => Yii::$app->security->generateRandomString(),

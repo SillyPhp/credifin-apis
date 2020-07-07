@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\ChangePassword;
 use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
+use common\models\BusinessActivities;
 use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\ErexxSettings;
@@ -285,7 +286,7 @@ class AuthController extends ApiBaseController
                         ->where(['a.user_enc_id' => $user->user_enc_id, 'b.is_erexx_registered' => 1, 'b.is_deleted' => 0])
                         ->asArray()
                         ->one();
-                    if ($user_type['type'] != 'College') {
+                    if (!in_array($user_type['type'], ['College', 'School'])) {
                         return false;
                     }
                 }
@@ -411,6 +412,7 @@ class AuthController extends ApiBaseController
 
         $access_token = Yii::$app->request->post('access_token');
         $source = Yii::$app->request->post('source');
+        $type = '';
 
         $find_user = UserAccessTokens::find()
             ->select(['*'])
@@ -442,7 +444,8 @@ class AuthController extends ApiBaseController
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
                     'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester',
-                    'e.has_loan_featured'
+                    'e.has_loan_featured',
+                    'c1.business_activity_enc_id teacher_org_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
@@ -496,26 +499,66 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->all();
 
-                $j = 0;
-                foreach ($college_settings as $c) {
-                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
-                        if ($c['value'] == null) {
-                            $college_settings[$j]['value'] = 2;
-                        }
-                    }
-                    $j++;
-                }
-
-                $settings = [];
-                foreach ($college_settings as $c) {
-                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
-                }
+//                $j = 0;
+//                foreach ($college_settings as $c) {
+//                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+//                        if ($c['value'] == null) {
+//                            $college_settings[$j]['value'] = 2;
+//                        }
+//                    }
+//                    $j++;
+//                }
+//
+//                $settings = [];
+//                foreach ($college_settings as $c) {
+//                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+//                }
 
                 $education_loan_college = Organizations::find()
                     ->select(['has_loan_featured'])
                     ->where(['organization_enc_id' => $college_id])
                     ->asArray()
                     ->one();
+
+                $business_activity = Organizations::find()
+                    ->alias('a')
+                    ->select(['a.organization_enc_id', 'c.business_activity'])
+                    ->joinWith(['businessActivityEnc c'])
+                    ->where(['a.organization_enc_id' => $college_id])
+                    ->asArray()
+                    ->one();
+
+                if ($business_activity['business_activity'] == 'School') {
+                    $j = 0;
+                    foreach ($college_settings as $c) {
+                        if ($c['setting'] == 'show_teachers') {
+                            if ($c['value'] == null) {
+                                $college_settings[$j]['value'] = 2;
+                            }
+                        }
+                        $j++;
+                    }
+
+                    $settings = [];
+                    foreach ($college_settings as $c) {
+                        $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                    }
+                } else {
+                    $j = 0;
+                    foreach ($college_settings as $c) {
+                        if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                            if ($c['value'] == null) {
+                                $college_settings[$j]['value'] = 2;
+                            }
+                        }
+                        $j++;
+                    }
+
+                    $settings = [];
+                    foreach ($college_settings as $c) {
+                        $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                    }
+                }
 
             }
 
@@ -548,7 +591,17 @@ class AuthController extends ApiBaseController
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration']
         ];
 
+        if ($user_detail['teacher_org_type']) {
+            $type = BusinessActivities::find()
+                ->where(['business_activity_enc_id' => $user_detail['teacher_org_type']])
+                ->asArray()
+                ->one();
+
+            $data['business_activity'] = $type['business_activity'];
+        }
+
         if ($college_id) {
+            $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
         } else {
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
