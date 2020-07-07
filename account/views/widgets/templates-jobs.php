@@ -15,6 +15,11 @@ $type_job = strtolower($type);
             </div>
             </a>
         <?php } ?>
+        <div class="view-all-bt">
+            <?php if (count($jobs) >= 4){ ?>
+                <a href="<?= Url::to('/account/'.$type_job.'/view-templates'); ?>">View All</a>
+            <?php } ?>
+        </div>
     </div>
 <?php } ?>
 <?php
@@ -60,5 +65,14 @@ $this->registercss('
 	font-weight: 400;
 	margin: 0;
 	color: #fff;
+}
+.view-all-bt {
+	margin: 12px 0 0;
+}
+.view-all-bt a{
+	color: #000;
+	font-weight: 500;
+	font-family: roboto;
+	font-size: 16px;
 }
 ');
