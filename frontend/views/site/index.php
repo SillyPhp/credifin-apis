@@ -170,11 +170,6 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/safety-signs')?>
-<!--- virus Section --->
-<?= $this->render('/widgets/online-classes', [
-    'model' => $model,
-]) ?>
 
 <?= $this->render('/widgets/our-services') ?>
 
@@ -1203,7 +1198,9 @@ if (!Yii::$app->user->isGuest) {
         'getInternationalJobs',
         'getTopCities',
         'getLearningTopics',
+        'getSafetySigns',
         'getStats',
+        'getOnlineClasses',
         'getCompaniesWithUs',
         'getNewsUpdate',
         'getTweets',
@@ -1220,7 +1217,9 @@ if (!Yii::$app->user->isGuest) {
         'getInternationalJobs',
         'getTopCities',
         'getLearningTopics',
+        'getSafetySigns',
         'getStats',
+        'getOnlineClasses',
         'getHowItWorks',
         'getCompaniesWithUs',
         'getNewsUpdate',

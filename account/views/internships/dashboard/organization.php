@@ -125,6 +125,10 @@ use yii\widgets\Pjax;
                     </a>
                 </div>
             </div>
+            <?= $this->render('/widgets/templates-jobs', [
+                'jobs' => $internships,
+                'type' => 'Internships',
+            ]);?>
         </div>
         <div class="col-md-10">
             <div class="loader"><img

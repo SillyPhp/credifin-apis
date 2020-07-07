@@ -11,7 +11,7 @@ if (!empty($total_processes)) {
                 if ($next < $total_processes) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
-                        <div class="p-category">
+                        <div class="p-category set-m">
                             <div class="click hiring-click <?= (($processes[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
                                 <span class="fa <?= (($processes[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?>"></span>
                                 <div class="ring"></div>
@@ -92,11 +92,12 @@ function run_ajax(id,url) {
 JS;
 $this->registerJs($script);
 $this->registerCss("
-.proccess_img{
-     max-height: 55px !important;
+.set-m > a img {
+    height: 65px !important;
+    width: 65px !important;
 }
 .click {
-font-size: 33px;
+    font-size: 33px;
     color: rgba(0,0,0,.5);
     width: 38px;
     height: 38px;
@@ -104,14 +105,15 @@ font-size: 33px;
     /* margin-top: 20px; */
     position: absolute;
     cursor: pointer;
-    right: 10px;
-    top: 17px;
+    right: 0px;
+    top: 10px;
 }
 .click span {
 	margin-left: 4px;
 	margin-top: 3px;
 	z-index: 999;
 	position: absolute;
+	font-size:24px;
 }
 
 span:hover {
@@ -133,20 +135,19 @@ span:active {
 	border-radius: 50%;
 	cursor: pointer;
 }
-.clone-bttn
-{
-display:block;
-left:0;
-width: fit-content;
-    font-size: 19px;
-    top: 7px;
+.clone-bttn {
+    display:block;
+    left:2;
+    width: fit-content;
+    font-size: 18px;
+    top: 2px;
 }
 .active > span, .active-2 > span {
 	color: #F5CC27 !important;
 }
 
 .active-2 .ring {
-	width: 45px !important;
+	width: 35px !important;
     height: 36px !important;
     top: -7px !important;
     left: -4px !important;
@@ -160,11 +161,11 @@ width: fit-content;
 }
 
 .active-2 .ring2 {
-	background: #fff !important;
+//	background: #fff !important;
 }
 
 .active-3 .ring2 {
-	width: 45px !important;
+	width: 35px !important;
     height: 42px !important;
     top: -10px !important;
     left: -4px !important;
