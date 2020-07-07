@@ -1,9 +1,23 @@
 <?php
-
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+$exp = [
+    '0' => 'Freshers',
+    '1' => '1',
+    '2' => '2',
+    '3' => '3',
+    '4' => '4',
+    '5' => '5',
+    '6' => '6',
+    '7' => '7',
+    '8' => '8',
+    '9' => '9',
+    '10' => '10',
+    '15' => '15',
+    '20' => '20',
+    '20+' => 'More Than 20 Years'
+];
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 
@@ -103,6 +117,7 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
                                     'primary_cat' => $primary_cat,
                                     'industry' => $industry,
                                     'type' => $type,
+                                    'exp' => $exp,
                                 ]);
                             elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [

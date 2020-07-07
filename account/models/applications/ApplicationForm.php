@@ -90,6 +90,8 @@ class ApplicationForm extends Model
     public $custom_job_title;
     public $last_date;
     public $gender;
+    public $minimum_exp;
+    public $maximum_exp;
     public $min_exp;
     public $industry;
     public $fill_quesio_on;
@@ -165,6 +167,8 @@ class ApplicationForm extends Model
                 'checkbox',
                 'gender',
                 'min_exp',
+                'minimum_exp',
+                'maximum_exp',
                 'industry',
                 'last_date',
                 'last_date',
@@ -297,7 +301,8 @@ class ApplicationForm extends Model
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($this->to));
-        $employerApplicationsModel->experience = $this->min_exp;
+        $employerApplicationsModel->minimum_exp = $this->minimum_exp;
+        $employerApplicationsModel->maximum_exp = $this->maximum_exp;
         $employerApplicationsModel->preferred_gender = $this->gender;
         $employerApplicationsModel->preferred_industry = $this->industry;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
