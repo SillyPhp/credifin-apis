@@ -22,10 +22,13 @@ use yii\helpers\Url;
                 <button class="w3-bar-item w3-button steps-btn tablink payLink" value="#step-6" disabled="disabled">
                     Rules
                 </button>
+
+
             </div>
         </div>
         <div class="col-md-8" id="integration-main">
             <div id="form-data">
+
                 <div class="row setup-content" id="step-1">
                     <div class="col-md-12">
                         <div id="Group" class="w3-container steps">
@@ -440,6 +443,9 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
+                <div class="CreateQuesButton">
+                    <button class="cqbBtn">Start Creating Questions</button>
+                </div>
             </div>
         </div>
         <div class="col-md-2 pos" id="side-bar-2">
@@ -472,6 +478,23 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.cqbBtn{
+    background: #00a0e3;
+    color:#fff;
+    padding: 10px 20px 7px;
+    border: none;
+    border-radius:10px 10px 0 0; 
+    font-size: 16px;
+}
+.cqbBtn:hover{
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+}
+.CreateQuesButton{
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
 .padd15{
     padding: 0 15px 0 0; 
 }
@@ -751,6 +774,7 @@ $this->registerCss('
 	position: sticky;
 	overflow: auto;
 	top: 100px;
+	height: 100%;
 }
 .w3-light-grey, .w3-hover-light-grey:hover, .w3-light-gray, .w3-hover-light-gray:hover {
     color: #000!important;
