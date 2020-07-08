@@ -2001,9 +2001,8 @@ function init() {
                         required: true,
                         
                     },
-                    'min_exp': {
+                    'minimum_exp': {
                         required: true,
-                        
                     },
                     'startdate':
                      {
