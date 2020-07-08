@@ -51,21 +51,21 @@ if (!empty($object->getinterviewcity)) {
 
 function experience($min,$max)
 {
-  if ($min=='0'&&is_null($max)){
+  if ($min=='0'&&$max==NULL){
       $experience = 'No Experience';
   }
   elseif ($min=='20'&&$max=='20+')
   {
       $experience = 'More Than 20 Years Experience';
   }
-  elseif (!is_null($min)&&!is_null($max)){
+  elseif ($min!=NULL&&$max!=NULL){
       $experience = $min.' - '.$max.' Years Experience';
   }
-  elseif (!is_null($min)&&is_null($max))
+  elseif ($min!=NULL&&$max==NULL)
   {
       $experience = 'Minimum '.$min.' Years Experience';
   }
-  elseif (is_null($min)&&!is_null($max))
+  elseif ($min==NULL&&$max!=NULL)
   {
       $experience = 'Maximum '.$max.' Years Experience';
   }
@@ -73,6 +73,7 @@ function experience($min,$max)
   {
       $experience = 'No Experience';
   }
+
   return $experience;
 }
 $experience = experience($object->minimum_exp,$object->maximum_exp);
