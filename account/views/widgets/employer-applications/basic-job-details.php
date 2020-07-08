@@ -214,27 +214,30 @@ use kartik\widgets\DatePicker;
             'onchange' => '$("#max_exp_details").empty().append($("<option>", { 
                                         value: "",
                                         text : "Max Experience" 
-                                    })); 
+                                    }));   
                                     var _curIndex = $(this).val();
-                                    var _totalLentgh = Object.keys(_experience).length;
-                                    $.each(_experience, function (index,value) {
+                                    var experience = '.json_encode($exp).'; 
+                                    var _totalLentgh = Object.keys(experience).length;
+                                    if(_curIndex!=""||_curIndex!=null){ 
+                                    $.each(experience, function (index,value) {
                                       if(index==_curIndex){
                                         return false;
                                       }
                                       else
                                       {
-                                      delete _experience[index];
+                                      delete experience[index];
                                       }
                                     }); 
-                                    delete _experience[_curIndex];
+                                    delete experience[_curIndex];
                                     var id = "max_exp_details";
                                     var selectbox = $(\'#\' + id + \'\');
-                                    $.each(_experience, function (index,value) {
+                                    $.each(experience, function (index,value) {
                                       selectbox.append($(\'<option>\', {
                                           value: index,
                                           text: value
                                          }));
                                     }); 
+                                    } 
                                     ',
         ])->label(false); ?>
     </div>
@@ -353,34 +356,34 @@ $('#designations').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });
-JS;
-$scriptHead = <<< JS
 if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') {
     var exp_id = "max_exp_details";
-    _setExperience('$model->minimum_exp',exp_id);
+    var experience = _experience; 
+    _setExperience('$model->minimum_exp',exp_id,_experience); 
 }
-function _setExperience(e,exp_id) {
-    $.each(_experience, function (index,value) {
+function _setExperience(e,exp_id,experience) {
+    if(e!=""||e!=null){ 
+        $.each(experience, function (index,value) {
     if(index==e){
      return false;
     }
     else
     {
-    delete _experience[index];
+    delete experience[index];
     }
     }); 
-    delete _experience[e];
+    delete experience[e];
     var selectbox = $('#' + exp_id + '');
-    $.each(_experience, function (index,value) {
+    $.each(experience, function (index,value) {
     selectbox.append($('<option>', {
     value: index,
     text: value
     }));
     }); 
     selectbox.val('$model->maximum_exp');
+    }
   }
 JS;
-$this->registerJs($scriptHead);
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
