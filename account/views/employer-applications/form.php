@@ -19,6 +19,7 @@ $exp = [
     '20+' => 'More Than 20 Years'
 ];
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\View::POS_HEAD);
 ?>
 
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">

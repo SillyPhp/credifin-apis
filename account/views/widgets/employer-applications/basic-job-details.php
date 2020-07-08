@@ -215,7 +215,6 @@ use kartik\widgets\DatePicker;
                                         value: "",
                                         text : "Max Experience" 
                                     })); 
-                                    var _experience = '.json_encode($exp).';
                                     var _curIndex = $(this).val();
                                     var _totalLentgh = Object.keys(_experience).length;
                                     $.each(_experience, function (index,value) {
@@ -355,6 +354,33 @@ $('#designations').typeahead(null, {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });
 JS;
+$scriptHead = <<< JS
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') {
+    var exp_id = "max_exp_details";
+    _setExperience('$model->minimum_exp',exp_id);
+}
+function _setExperience(e,exp_id) {
+    $.each(_experience, function (index,value) {
+    if(index==e){
+     return false;
+    }
+    else
+    {
+    delete _experience[index];
+    }
+    }); 
+    delete _experience[e];
+    var selectbox = $('#' + exp_id + '');
+    $.each(_experience, function (index,value) {
+    selectbox.append($('<option>', {
+    value: index,
+    text: value
+    }));
+    }); 
+    selectbox.val('$model->maximum_exp');
+  }
+JS;
+$this->registerJs($scriptHead);
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
