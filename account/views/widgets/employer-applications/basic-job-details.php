@@ -207,47 +207,75 @@ use kartik\widgets\DatePicker;
             <label class="g-pref">Gender Preference</label>
         </div>
     </div>
-    <div class="col-md-3">
-        <?= $form->field($model, 'min_exp')->dropDownList([
-            '0' => 'No Experience',
-            '1' => 'Less Than 1',
-            '2' => '1 Year',
-            '3' => '2-3 Years',
-            '3-5' => '3-5 Years',
-            '5-10' => '5-10 Years',
-            '10-20' => '10-20 Years',
-            '20+' => 'More Than 20 Years',
-        ], [
-            'prompt' => 'Experience Required',
+    <div class="col-md-2">
+        <?= $form->field($model,'minimum_exp')->dropDownList($exp, [
+            'prompt' => 'Min Experience',
+            'id'=>'min_exp_details',
+            'onchange' => '$("#max_exp_details").empty().append($("<option>", { 
+                                        value: "",
+                                        text : "Max Experience" 
+                                    })); 
+                                    var _experience = '.json_encode($exp).';
+                                    var _curIndex = $(this).val();
+                                    var _totalLentgh = Object.keys(_experience).length;
+                                    $.each(_experience, function (index,value) {
+                                      if(index==_curIndex){
+                                        return false;
+                                      }
+                                      else
+                                      {
+                                      delete _experience[index];
+                                      }
+                                    }); 
+                                    delete _experience[_curIndex];
+                                    var id = "max_exp_details";
+                                    var selectbox = $(\'#\' + id + \'\');
+                                    $.each(_experience, function (index,value) {
+                                      selectbox.append($(\'<option>\', {
+                                          value: index,
+                                          text: value
+                                         }));
+                                    }); 
+                                    ',
         ])->label(false); ?>
     </div>
-    <div class="col-md-3">
-        <?=
-        $form->field($model, 'last_date')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Last Date To Apply'],
-            'readonly' => true,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'dd-M-yyyy',
-                'name' => 'earliestjoiningdate',
-                'todayHighlight' => true,
-                'startDate' => '+0d',
-            ]])->label(false);
-        ?>
+    <div class="col-md-2">
+        <?= $form->field($model,'maximum_exp')->dropDownList([], [
+            'prompt' => 'Max Experience',
+            'id' => 'max_exp_details',
+        ])->label(false); ?>
     </div>
-    <div class="col-md-3">
-        <?=
-        $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Joining Date'],
-            'readonly' => true,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'dd-M-yyyy',
-                'name' => 'earliestjoiningdate',
-                'todayHighlight' => true,
-                'startDate' => '+0d',
-            ]])->label(false);
-        ?>
+    <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-6">
+                <?=
+                $form->field($model, 'last_date')->widget(DatePicker::classname(), [
+                    'options' => ['placeholder' => 'Last Date'],
+                    'readonly' => true,
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd-M-yyyy',
+                        'name' => 'earliestjoiningdate',
+                        'todayHighlight' => true,
+                        'startDate' => '+0d',
+                    ]])->label(false);
+                ?>
+            </div>
+            <div class="col-md-6">
+                <?=
+                $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
+                    'options' => ['placeholder' => 'Joining Date'],
+                    'readonly' => true,
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd-M-yyyy',
+                        'name' => 'earliestjoiningdate',
+                        'todayHighlight' => true,
+                        'startDate' => '+0d',
+                    ]])->label(false);
+                ?>
+            </div>
+        </div>
     </div>
 </div>
 <?php

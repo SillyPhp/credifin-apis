@@ -215,6 +215,11 @@ class ApplicationCards
                 WHEN a.experience = "5-10" THEN "5-10 Years Experience"
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience"
                END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
