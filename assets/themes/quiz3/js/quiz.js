@@ -20,7 +20,7 @@
                 var k = 0;
 
                 for(var i = 0; i < result.length; i++){
-                    var answersResult = result[i]['quizAnswers'];
+                    var answersResult = result[i]['quizAnswersPools'];
                     data['questions'][k] = {};
                     data['questions'][k]['answers'] = [];
                     for(var j = 0; j < answersResult.length; j++){

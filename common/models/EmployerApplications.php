@@ -33,6 +33,7 @@ use Yii;
  * @property string $image Application Image
  * @property string $image_location Application Image Path
  * @property int $application_for 0 for Both, 1 for Empower Youth, 2 for Erexx
+ * @property int $for_all_colleges 0 for choosed colleges, 1 for all colleges
  * @property string $created_on On which date Application information was added to database
  * @property string $created_by By which User Application information was added
  * @property string $last_updated_on On which date Application information was updated
@@ -54,7 +55,7 @@ use Yii;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+// * @property AssignedCategories $title
  * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
@@ -86,7 +87,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
-            [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'is_deleted'], 'integer'],
+            [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
             [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -331,5 +332,13 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function getShortlistedApplications()
     {
         return $this->hasMany(ShortlistedApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxEmployerApplications()
+    {
+        return $this->hasMany(ErexxEmployerApplications::className(), ['employer_application_enc_id' => 'application_enc_id']);
     }
 }

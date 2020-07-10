@@ -209,12 +209,12 @@ $this->registerCss("
 @media screen and (min-width: 540px) {
     .checkbox-label {
         width: 100%;
-        margin: 18px auto;
+        margin: 10px auto;
     }
 }
 .form {
     padding: 0 16px;
-    max-width: 750px;
+    max-width: 1000px;
     margin: 15px auto;
     font-size: 18px;
     font-weight: 600;
@@ -246,10 +246,10 @@ $this->registerCss("
     padding:8px 20px 0px;
 }
 .main-outer{
-    width:60%;
-    height:70%;
-    top:12%;
-    left:20%;
+    width:80%;
+    height:80%;
+    top:10%;
+    left:10%;
     display: none;
     position: fixed;
     overflow:hidden;
@@ -394,8 +394,8 @@ $script = <<<JS
         var chk1 = $('.ba-box input[type=radio]:checked').length;
         
         if(chk1 === 1){
-            $(this).css('pointer-events', 'none');
-            $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            // $(this).css('pointer-events', 'none');
+            // $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
             $("#ba_submit_form").submit();
         } else {
             $('.error').html('Select at least one to continue');

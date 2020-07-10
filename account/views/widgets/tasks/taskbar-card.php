@@ -7,12 +7,13 @@ use yii\helpers\Html;
 echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 ?>
 
-<section class="card card-transparent">
+<section class="card card-transparent nd-shadow">
     <div class="card-body">
         <section class="card card-group">
             <header class="card-header bg-primary">
                 <div class="widget-profile-info">
                     <div class="profile-picture">
+                        <div class="edit-org-logo"><i class="fa fa-pencil"></i></div>
                         <?php
                         $name = $image = $link = NULL;
                         if (!empty(Yii::$app->user->identity->organization)) {
@@ -56,6 +57,9 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                                 <i class="fa fa-check mr-1"></i> Tasks
                             </a>
                         </h4>
+                        <div class="pendind-tasks">
+                            <div class="pt">Pending Tasks: <span id="pt-number"></span></div>
+                        </div>
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
@@ -81,9 +85,45 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
         </section>
     </div>
 </section>
-
+<div class="load-content">
+    <div class="modal fade bs-modal-lg in" id="loadData" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss("
+.modal-backdrop{
+    z-index: 9998 !Important;
+}
+.edit-org-logo{
+    position: absolute;
+    right: 10px;
+    background-color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: #000;
+    text-align: center;
+    line-height: 28px;
+    box-shadow: 0px 1px 5px 0px #5a5a5ac4;
+    cursor:pointer;
+}
+.pt{
+    font-size: 15px;
+    padding-left: 27px;
+    padding-top: 10px;
+}
+.pt span{
+    color:#00a0e3;
+}
 .card {
     background: transparent;
     -webkit-box-shadow: none;
@@ -166,7 +206,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 600px;
-    min-height:205px;
+    min-height:435px;
     display: block;
     overflow-x: scroll;
 }
@@ -249,6 +289,7 @@ ul.widget-todo-list li .todo-actions .todo-remove {
     display: table-cell;
     vertical-align: middle;
     width: 1%;
+    position:relative;
 }
 .widget-profile-info .profile-picture img, .widget-profile-info .profile-picture canvas {
     display: block;
@@ -308,6 +349,10 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 }
 ");
 $script = <<< JS
+    $(document).on('click', '.edit-org-logo', function() {
+        $("#loadData").modal('show');
+        $('.load-content').load('/account/dashboard/update-profile');
+    });
     var ps = new PerfectScrollbar('.widget-todo-list');
     var page = 0;
     var action = 1;
@@ -334,9 +379,11 @@ $script = <<< JS
                     btn_submit.prop('disabled', '');
                     $('.widget-todo-list').prepend(Mustache.render(todo_template, response.data));
                     form[0].reset();
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
                     btn_submit.prop('disabled', '');
+                    getTasksByCountByClassName('.todo-check')
                 }
             },
             error: function (response) {
@@ -357,6 +404,7 @@ $script = <<< JS
                 if (response.status == 200) {
                     $(remove).remove();
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
                 }
@@ -397,8 +445,10 @@ $script = <<< JS
             success: function (response) {
                 if (response.status == 200) {
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 }
             }
         });
@@ -415,6 +465,7 @@ $script = <<< JS
             success: function (response) {
                 if (response.status == 200) {
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check');
                 } else {
                     toastr.error(response.message, response.title);
                 }
@@ -479,6 +530,7 @@ $script = <<< JS
                                 var dattaa = $('.edit_task').val();
                                 $('.edit_task').hide();
                                 parent.text(dattaa);
+                                getTasksByCountByClassName('.todo-check')
                             } else {
                                 toastr.error(response.message, response.title);
                             }
@@ -525,6 +577,7 @@ $script = <<< JS
                         }
                     }
                     $('.widget-todo-list').append(Mustache.render(todo_template, response.tasks));
+                    getTasksByCountByClassName(".todo-check");
                     action = 1;
                 } else {
                     action = 2;
@@ -551,6 +604,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
 <script type="text/template" id="todo-template">
@@ -569,4 +623,11 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js'
         </div>
     </li>
     {{/.}}
+</script>
+
+<script>
+    const getTasksByCountByClassName = (className) => {
+        const tasks = document.querySelectorAll(className);
+        document.getElementById('pt-number').innerHTML = tasks.length
+    };
 </script>

@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$link = Url::to($org_slug . '/reviews' . $referral, true);
+$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-reviews" type="text/template">
         {{#.}}
@@ -38,11 +36,6 @@ $link = Url::to($org_slug . '/reviews' . $referral, true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
-                            <button type="button" data-toggle="modal" data-target="#report">
-                                <i class="fas fa-flag"></i> Report
-                            </button>
-                        </div>
                         <div class="publish-date">{{created_on}}</div>
                         {{#is_current_employee}}
                         <div class="emp-duration">Current Employee</div>
@@ -98,29 +91,48 @@ $link = Url::to($org_slug . '/reviews' . $referral, true);
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6">
+                    <div class="col-md-4 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
                             <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-twitter-square"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-whatsapp wa_icon_hover"
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6">
+                    <div class="col-md-8 col-sm-6">
                         <div class="usefull-bttn pull-right">
                             <div class="use-bttn">
+                                {{#feedback_type}}
+                                <button type="button" class="btn_usefull usefull_btn_color" data-key="{{review_enc_id}}" value="1"><i
+                                            class="fas fa-thumbs-up"></i> Usefull
+                                </button>
+                                {{/feedback_type}}
+                                {{^feedback_type}}
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
                                             class="fas fa-thumbs-up"></i> Usefull
                                 </button>
+                                {{/feedback_type}}
                             </div>
                             <div class="notuse-bttn">
+                                {{#feedback_type_not}}
+                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="0"><i
+                                            class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                                {{/feedback_type_not}}
+                                {{^feedback_type_not}}
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
                                             class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                                {{/feedback_type_not}}
+                            </div>
+                            <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
+                                <button type="button" data-toggle="modal" data-target="#report">
+                                    <i class="fas fa-flag"></i> Report
                                 </button>
                             </div>
                         </div>
@@ -258,7 +270,7 @@ $this->registerCss("
     color:#38A1F3; 
     cursor: pointer;
 }
-.ushare i.fa-linkedin-square:hover{
+.ushare i.fa-linkedin:hover{
     color:#0077B5;
     cursor: pointer; 
 }
@@ -447,6 +459,10 @@ border-color: #00a0e3 !important;
 {
     color: #d72a2a !important;;
     border-color: #d72a2a !important;;
+}
+.wa_icon_hover:hover {
+    cursor: pointer;
+    color: #56dc56 !important;
 }
 ");
 

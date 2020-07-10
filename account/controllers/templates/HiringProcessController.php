@@ -8,8 +8,16 @@ use common\models\HiringProcessTemplates;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+
 class HiringProcessController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $options = [
@@ -24,6 +32,7 @@ class HiringProcessController extends Controller
             'processes' => $processes->getProcesses($options),
         ]);
     }
+
     public function actionView($id)
     {
         $process_name = HiringProcessTemplates::find()
@@ -36,7 +45,7 @@ class HiringProcessController extends Controller
             ->where(['hiring_process_enc_id' => $id])
             ->asArray()
             ->all();
-        if (empty($process_name)|| empty($process_fields)) {
+        if (empty($process_name) || empty($process_fields)) {
             return 'not found';
         }
 
@@ -48,21 +57,17 @@ class HiringProcessController extends Controller
 
     public function actionAssignHiringProcessTemplate()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
             $q = new HiringProcessModel();
-            if ($q->assignToOrg($id))
-            {
+            if ($q->assignToOrg($id)) {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Added To Your List'
                 ];
-            }
-            else
-            {
+            } else {
                 return [
                     'status' => 201,
                     'title' => 'error',
@@ -76,30 +81,24 @@ class HiringProcessController extends Controller
 
     public function actionBookmarkHiringProcessTemplate()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
             $q = new HiringProcessModel();
             $execute = $q->assignToBookMark($id);
-            if ($execute=='mark')
-            {
+            if ($execute == 'mark') {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Added To BookMark List'
                 ];
-            }
-            elseif ($execute =='unmark')
-            {
+            } elseif ($execute == 'unmark') {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Removed From BookMark List'
                 ];
-            }
-            else
-            {
+            } else {
                 return [
                     'status' => 201,
                     'title' => 'error',

@@ -15,6 +15,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="padding-left set-overlay">
+                    <?= $this->render("@common/widgets/candidate-actions-navbar");?>
                     <?php Pjax::begin(['id' => 'profile_icon_pjax']) ?>
                     <?php $form = ActiveForm::begin(['id' => 'userProfilePicture', 'action' => '/users/update-profile-picture']) ?>
                     <div class="profile-title" id="mp">
@@ -403,7 +404,7 @@ margin-top:20px;
 }
 .set-overlay{
     background-color: #ffffffd9;
-    padding: 30px 30px 40px;
+    padding: 15px 30px 40px 30px;
     box-shadow: 0px 0px 16px 6px rgba(179, 179, 179, 0.1);
     border-radius: 6px;
 }

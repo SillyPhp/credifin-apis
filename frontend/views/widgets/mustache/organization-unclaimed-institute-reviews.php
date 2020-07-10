@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$link = Url::to($org_slug . '/reviews' . $referral, true);
+$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-student-reviews" type="text/template">
         {{#.}}
@@ -94,7 +92,7 @@ $link = Url::to($org_slug . '/reviews' . $referral, true);
                             <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-twitter-square"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-whatsapp wa_icon_hover"

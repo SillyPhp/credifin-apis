@@ -13,7 +13,7 @@ Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEA
 
         <div class="modal-content half-bg-color">
             <div class="row margin-0">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-xs-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
                             <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">

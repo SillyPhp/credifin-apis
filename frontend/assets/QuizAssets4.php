@@ -9,10 +9,12 @@ class QuizAssets4 extends AssetBundle {
     public $basePath = '@rootDirectory/assets/themes/quiz4';
     public $baseUrl = '@root/assets/themes/quiz4';
     public $css = [
+        'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
         'css/style.css',
     ];
     public $js = [
+        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
         'js/main.js',
     ];
     public $depends = [

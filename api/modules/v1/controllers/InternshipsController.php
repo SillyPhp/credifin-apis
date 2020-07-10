@@ -79,7 +79,7 @@ class InternshipsController extends ApiBaseController
         if (count($result) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(404);
+            return $this->response(404, 'Not Found');
         }
     }
 
@@ -107,7 +107,7 @@ class InternshipsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404, 'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -134,7 +134,7 @@ class InternshipsController extends ApiBaseController
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
                 } else {
-                    return $this->response(401);
+                    return $this->response(401, 'unauthorized');
                 }
             }
 
@@ -237,7 +237,7 @@ class InternshipsController extends ApiBaseController
 
             return $this->response(200, $result);
         } else {
-            return $this->response(422);
+            return $this->response(422, 'Missing Information');
         }
 
     }
@@ -288,7 +288,7 @@ class InternshipsController extends ApiBaseController
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
         } else {
-            return $this->response(404);
+            return $this->response(404, 'Not found');
         }
 
     }
@@ -300,7 +300,7 @@ class InternshipsController extends ApiBaseController
 
         $reqParams = Yii::$app->request->post();
 
-        if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && !empty($reqParams['city_id'])) {
+        if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id'])) {
 
             if ($reqParams['city_id'] != '') {
                 $city_enc_ids = explode(",", $reqParams['city_id']);
@@ -325,7 +325,7 @@ class InternshipsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404, 'Not Found');
             }
 
             $token_holder_id = UserAccessTokens::find()
@@ -365,14 +365,14 @@ class InternshipsController extends ApiBaseController
                 if ($res = $model->saveValues()) {
                     return $this->response(200, $res);
                 } else {
-                    return $this->response(500);
+                    return $this->response(500, 'Not Saved');
                 }
             } else {
-                return $this->response(409);
+                return $this->response(409, 'conflict');
             }
 
         } else {
-            return $this->response(422);
+            return $this->response(422, 'Missing Information');
         }
     }
 
@@ -383,7 +383,7 @@ class InternshipsController extends ApiBaseController
             $data = $this->getApplication($req['id']);
 
             if (empty($data)) {
-                return $this->response(404);
+                return $this->response(404, 'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -412,12 +412,12 @@ class InternshipsController extends ApiBaseController
 
                     $reviewlist = ReviewedApplications::find()
                         ->select(['review'])
-                        ->where(['review' =>1,'application_enc_id'=>$req['id'], 'created_by'=>$user->user_enc_id])
+                        ->where(['review' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
 
                 } else {
-                    return $this->response(401);
+                    return $this->response(401, 'unauthorized');
                 }
             }
 
@@ -434,7 +434,7 @@ class InternshipsController extends ApiBaseController
                 }
                 setlocale(LC_MONETARY, 'en_IN');
                 $data['amount'] = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
-            }else{
+            } else {
                 $data['amount'] = "Unpaid";
             }
             $data['hasQuestionnaire'] = ApplicationInterviewQuestionnaire::find()
@@ -464,6 +464,10 @@ class InternshipsController extends ApiBaseController
                 }
             }
 
+            if (!$data["vacancies"]) {
+                $data["vacancies"] = 0;
+            }
+
             if (empty($data['applicationInterviewLocations'])) {
                 $data['applicationInterviewLocations'][] = [
                     "location_enc_id" => "kdmvkdkv",
@@ -481,57 +485,24 @@ class InternshipsController extends ApiBaseController
 
             return $this->response(200, $data);
         } else {
-            return $this->response(422);
+            return $this->response(422, 'Missing Information');
         }
     }
 
     private function getApplication($id)
     {
-        return EmployerApplications::find()
+        $application = EmployerApplications::find()
+            ->select(['organization_enc_id', 'unclaimed_organization_enc_id'])
+            ->where([
+                'application_enc_id' => $id,
+                'is_deleted' => 0,
+            ])
+            ->asArray()
+            ->one();
+
+        $application_data = EmployerApplications::find()
             ->alias('a')
             ->distinct()
-            ->select([
-                'a.id',
-                'a.application_enc_id',
-                'a.title',
-                '(CASE
-                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
-                    WHEN a.preferred_gender = "1" THEN "Male"
-                    WHEN a.preferred_gender = "2" THEN "Female"
-                    WHEN a.preferred_gender = "3" THEN "Transgender"
-                    END) as preferred_gender',
-                'TRIM(REPLACE(a.description, "\n", " ")) as description',
-                'l.category_enc_id',
-                'm.category_enc_id as cat_id',
-                'm.name',
-                'l.name as cat_name',
-                'l.icon_png',
-                'a.type',
-                'a.slug',
-                'a.preferred_industry',
-                'a.interview_process_enc_id',
-                'a.timings_from',
-                'a.timings_to',
-                'a.joining_date',
-                'a.last_date',
-                'b.wage_type',
-                'b.wage_duration',
-                'b.fixed_wage',
-                'b.min_wage',
-                'b.max_wage',
-                'b.fixed_wage',
-                'b.working_days',
-                'b.interview_start_date',
-                'b.interview_end_date',
-                'b.has_placement_offer',
-                'w.organization_enc_id',
-                'w.name organization_name',
-                'w.initials_color color',
-                'w.email',
-                'w.website',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
-                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
-            ])
             ->where([
                 'a.application_enc_id' => $id,
                 'a.is_deleted' => 0,
@@ -539,7 +510,6 @@ class InternshipsController extends ApiBaseController
             ->joinWith(['applicationTypeEnc r' => function ($x) {
                 $x->andWhere(['r.name' => 'Internships']);
             }], false)
-            ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($x) {
                 $x->onCondition(['c.is_deleted' => 0]);
                 $x->joinWith(['benefitEnc d'], false);
@@ -575,12 +545,94 @@ class InternshipsController extends ApiBaseController
                     $x->joinWith(['cityEnc v'], false);
                 }], false);
                 $x->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
-            }])
-            ->joinWith(['organizationEnc w' => function ($s) {
-                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
-            }], false)
+            }]);
+        if ($application['organization_enc_id']) {
+            $application_data->joinWith(['applicationOptions b'], false)
+                ->joinWith(['organizationEnc w' => function ($s) {
+                    $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
+                }], false);
+            $image_link = Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https');
+        } else {
+            $application_data->joinWith(['applicationUnclaimOptions b'], false)
+                ->joinWith(['unclaimedOrganizationEnc w' => function ($s) {
+                    $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
+                }], false);
+            $image_link = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https');
+        }
+        $data1 = $application_data->select([
+            'a.id',
+            'a.application_enc_id',
+            '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" ELSE "unclaimed" END) as company_type',
+            '(CASE WHEN a.interview_process_enc_id IS NOT NULL THEN "ai_job" ELSE "quick_job" END) as job_type',
+            'a.title',
+            '(CASE
+                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
+                    WHEN a.preferred_gender = "1" THEN "Male"
+                    WHEN a.preferred_gender = "2" THEN "Female"
+                    WHEN a.preferred_gender = "3" THEN "Transgender"
+                    END) as preferred_gender',
+            'TRIM(REPLACE(a.description, "\n", " ")) as description',
+            'l.category_enc_id',
+            'm.category_enc_id as cat_id',
+            'm.name',
+            'l.name as cat_name',
+            'l.icon_png',
+            'a.type',
+            'a.slug',
+            'a.preferred_industry',
+            'a.interview_process_enc_id',
+            'a.timings_from',
+            'a.timings_to',
+            'a.joining_date',
+            'a.last_date',
+            'w.organization_enc_id',
+            'w.name organization_name',
+            'w.initials_color color',
+            'w.email',
+            'w.website',
+            'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . $image_link . '",w.logo_location, "/", w.logo) END logo',
+            'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
+        ])
+//            ->joinWith(['organizationEnc w' => function ($s) {
+//                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
+//            }], false)
             ->asArray()
             ->one();
+
+        if ($application['organization_enc_id']) {
+            $data2 = $application_data->select(['b.wage_type',
+                'b.wage_duration',
+                'b.fixed_wage',
+                'b.min_wage',
+                'b.max_wage',
+                'b.working_days',
+                'b.interview_start_date',
+                'b.interview_end_date',])
+                ->asArray()
+                ->all();
+        } else {
+            $data2 = $application_data->select(['b.wage_type',
+                'b.wage_duration',
+                'b.fixed_wage',
+                'b.min_wage',
+                'b.max_wage',
+                'b.job_url'
+            ])
+                ->asArray()
+                ->all();
+        }
+
+        unset($data2[0]['applicationEmployeeBenefits']);
+        unset($data2[0]['applicationEducationalRequirements']);
+        unset($data2[0]['applicationSkills']);
+        unset($data2[0]['applicationJobDescriptions']);
+        unset($data2[0]['applicationPlacementLocations']);
+        unset($data2[0]['applicationInterviewLocations']);
+        unset($data2[0]['applicationUnclaimOptions']);
+
+        $result = array_merge($data1, $data2[0]);
+
+        return $result;
     }
 
 }

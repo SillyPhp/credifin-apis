@@ -20,7 +20,7 @@ class ApiUtilitiesController extends ApiBaseController
     {
         $statesModel = new States();
         $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'name', 'state_enc_id');
-        $states = ['select' => 'default'] + $states;
+//        $states = ['select' => 'default'] + $states;
         return $this->response(200, $states);
     }
 
@@ -51,9 +51,9 @@ class ApiUtilitiesController extends ApiBaseController
             if (count($cities) > 0) {
                 return $this->response(200, $cities);
             }
-            return $this->response(404);
+            return $this->response(404,'Not found');
         }
-        return $this->response(422);
+        return $this->response(422,'Missing Information');
     }
 
 //    public function actionJobProfiles($n){

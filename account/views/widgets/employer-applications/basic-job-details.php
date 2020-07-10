@@ -195,7 +195,7 @@ use kartik\widgets\DatePicker;
                 ])->label(false);
                 ?>
             </div>
-            <label>Gender Preference</label>
+            <label class="g-pref">Gender Preference</label>
         </div>
     </div>
     <div class="col-md-3">

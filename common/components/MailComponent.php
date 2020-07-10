@@ -46,6 +46,7 @@ class MailComponent extends Component
         }
 
         if (Yii::$app->mailer->sendMultiple($this->_mails)) {
+            $this->_mails = [];
             return true;
         }
 

@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%post_comments}}".
  *
@@ -48,6 +50,7 @@ class PostComments extends \yii\db\ActiveRecord
             [['reply_to'], 'exist', 'skipOnError' => true, 'targetClass' => PostComments::className(), 'targetAttribute' => ['reply_to' => 'comment_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

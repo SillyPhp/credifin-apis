@@ -6,7 +6,7 @@
         <div class="add-comment">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/comments/parent-comment">
+                    <form id="postComm" action="/<?= $controllerId; ?>/parent-comment">
                         <div class="">
                             <textarea id="commentArea"></textarea>
                         </div>
@@ -51,17 +51,34 @@ $this->registerCss('
     padding:8px 10px;
     font-size:13px;
 }
+.showReply{
+    margin: 10px;
+    margin-left: 60px;
+    padding-left: 70px;
+}
+.view-replies{
+    padding:10px 15px;
+    background-color:#00a0e3;
+    color:#fff;
+    border-color:transparent;
+    border-radius:4px;
+}
 ');
 
 $this->registerJs('
     //page load => get all parent comments
-    
+        var slug = window.location.pathname.split("/");
+        var lastpart = slug[slug.length-1];
+        if(lastpart === "")
+        {
+            lastpart = slug[slug.length-2];
+        }
     $.ajax({
         type: "POST",
-        url: "/'. Yii::$app->controller->id . '/comments/get-parent-comments",
+        url: "/' . $controllerId . '/get-parent-comments",
         async: false,
         data: {
-            param: window.location.pathname.split("/")[2]
+            param: lastpart
         },
         success: function(response){
             if(response.status == 200){
@@ -92,12 +109,18 @@ $script = <<<JS
         }
 
         var url = $('#postComm').attr('action');
+        var slug = window.location.pathname.split('/');
+        var lastpart = slug[slug.length-1];
+        if(lastpart === '')
+        {
+            lastpart = slug[slug.length-2];
+        }
         $.ajax({
             type: 'POST',
             url: url,
             async: false,
             data: {
-                param: window.location.pathname.split('/')[2],
+                param: lastpart,
                 comment: comment
             },
             success: function (response) {
@@ -223,6 +246,12 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
+        var slug = window.location.pathname.split('/');
+        var lastpart = slug[slug.length-1];
+        if(lastpart === '')
+        {
+            lastpart = slug[slug.length-2];
+        }
 
         var child_comments_send = $('#child-comment-box').attr('action');
         $.ajax({
@@ -230,7 +259,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             url: child_comments_send,
             async: false,
             data: {
-                param: window.location.pathname.split('/')[2],
+                param: lastpart,
                 reply: reply,
                 parent_id: parent_id
             },
@@ -284,13 +313,19 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
+        var slug = window.location.pathname.split('/');
+        var lastpart = slug[slug.length-1];
+        if(lastpart === '')
+        {
+            lastpart = slug[slug.length-2];
+        }
 
         $.ajax({
             type: 'POST',
-            url: '/<?= Yii::$app->controller->id; ?>/comments/get-child-comments',
+            url: '/<?= $controllerId; ?>/get-child-comments',
             data: {
                 parent: parent_id,
-                param: window.location.pathname.split('/')[2],
+                param: lastpart,
             },
             success: function (response) {
                 if (response.status == 200) {
@@ -323,8 +358,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <img src="{{img}}">
                         {{/img}}
                         {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="64" height="64"
-                                font="35px"></canvas>
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="90" height="90"
+                                font="45px"></canvas>
                         {{/img}}
                     </div>
                 </div>
@@ -346,7 +381,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         {{#hasChild}}
         <div class="showReply">
             <div class="srBtn">
-                <button type="button" id="{{comment_enc_id}}" onclick="viewMoreReplies(this)">View Replies</button>
+                <button type="button" id="{{comment_enc_id}}" onclick="viewMoreReplies(this)" class="view-replies"><i class="fas fa-plus"></i>  View Replies</button>
             </div>
         </div>
         {{/hasChild}}
@@ -364,8 +399,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <img src="{{img}}">
                         {{/img}}
                         {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="64" height="64"
-                                font="35px"></canvas>
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="90" height="90"
+                                font="45px"></canvas>
                         {{/img}}
                     </div>
                 </div>
@@ -387,7 +422,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <div class="col-md-10 col-md-offset-2">
             <div class="reply-comment">
                 <div class="col-md-12">
-                    <form action="/<?= Yii::$app->controller->id; ?>/comments/child-comment" id="child-comment-box">
+                    <form action="/<?= $controllerId; ?>/child-comment" id="child-comment-box">
                         <textarea id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" id="reply_comm" onclick="addDynamicComment(this)">
