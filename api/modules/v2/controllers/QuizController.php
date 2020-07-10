@@ -6,6 +6,9 @@ namespace api\modules\v2\controllers;
 use common\models\MockLabelPool;
 use common\models\MockLabels;
 use common\models\MockLevels;
+use common\models\MockQuizAnswersPool;
+use common\models\MockQuizPool;
+use common\models\MockQuizQuestionsPool;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -29,6 +32,8 @@ class QuizController extends ApiBaseController
                 'levels' => ['POST', 'OPTIONS'],
                 'add-labels' => ['POST', 'OPTIONS'],
                 'add-level' => ['POST', 'OPTIONS'],
+                'add-question-pool' => ['POST', 'OPTIONS'],
+                'remove-question' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -228,10 +233,143 @@ class QuizController extends ApiBaseController
         }
     }
 
-    public function actionAddPool()
+    public function actionAddQuestionPool()
     {
         if ($user = $this->isAuthorized()) {
 
+            $params = Yii::$app->request->post();
+
+            if (isset($params['name']) && !empty($params['name'])) {
+                $name = $params['name'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['organization_enc_id']) && !empty($params['organization_enc_id'])) {
+                $organization_enc_id = $params['organization_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['label_enc_id']) && !empty($params['label_enc_id'])) {
+                $label_enc_id = $params['label_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $quiz_pool_enc_id = $params['quiz_pool_enc_id'];
+            $question = $params['question'];
+            $answers = $params['answers'];
+            $keywords = $params['keywords'];
+            $description = $params['description'];
+
+            if (empty($quiz_pool_enc_id)) {
+                $quiz_pool = new MockQuizPool();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $quiz_pool->quiz_pool_enc_id = $utilitiesModel->encrypt();
+                $quiz_pool->label_enc_id = $label_enc_id;
+                $quiz_pool->name = $name;
+                $quiz_pool->organization_enc_id = $organization_enc_id;
+                $quiz_pool->keywords = $keywords;
+                $quiz_pool->description = $description;
+                $quiz_pool->created_on = date('Y-m-d H:i:s');
+                $quiz_pool->created_by = $user->user_enc_id;
+                if ($quiz_pool->save()) {
+                    $question_pool = new MockQuizQuestionsPool();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $question_pool->quiz_question_pool_enc_id = $utilitiesModel->encrypt();
+                    $question_pool->quiz_pool_enc_id = $quiz_pool->quiz_pool_enc_id;
+                    $question_pool->question = $question;
+                    $question_pool->created_by = $user->user_enc_id;
+                    $question_pool->created_on = date('Y-m-d H:i:s');
+                    if ($question_pool->save()) {
+                        foreach ($answers as $a) {
+                            $answers_pool = new MockQuizAnswersPool();
+                            $utilitiesModel = new \common\models\Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $answers_pool->quiz_answer_pool_enc_id = $utilitiesModel->encrypt();;
+                            $answers_pool->quiz_question_pool_enc_id = $question_pool->quiz_question_pool_enc_id;
+                            $answers_pool->answer = $a['answer'];
+                            $answers_pool->is_answer = $a['is_answer'];
+                            if (!$answers_pool->save()) {
+                                print_r($answers_pool->getErrors());
+                                die();
+                            }
+                        }
+                        $data = [];
+                        $data['quiz_pool_enc_id'] = $quiz_pool->quiz_pool_enc_id;
+                        $data['question_enc_id'] = $question_pool->quiz_question_pool_enc_id;
+                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    } else {
+                        print_r($question_pool->getErrors());
+                        die();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    print_r($quiz_pool->getErrors());
+                    die();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                $question_pool = new MockQuizQuestionsPool();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $question_pool->quiz_question_pool_enc_id = $utilitiesModel->encrypt();
+                $question_pool->quiz_pool_enc_id = $quiz_pool_enc_id;
+                $question_pool->question = $question;
+                $question_pool->created_by = $user->user_enc_id;
+                $question_pool->created_on = date('Y-m-d H:i:s');
+                if ($question_pool->save()) {
+                    foreach ($answers as $a) {
+                        $answers_pool = new MockQuizAnswersPool();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $answers_pool->quiz_answer_pool_enc_id = $utilitiesModel->encrypt();
+                        $answers_pool->quiz_question_pool_enc_id = $question_pool->quiz_question_pool_enc_id;
+                        $answers_pool->answer = $a['answer'];
+                        $answers_pool->is_answer = $a['is_answer'];
+                        $answers_pool->save();
+                    }
+                    $data = [];
+                    $data['quiz_pool_enc_id'] = $quiz_pool_enc_id;
+                    $data['question_enc_id'] = $question_pool->quiz_question_pool_enc_id;
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveQuestion()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['question_enc_id']) && $params['question_enc_id']) {
+                $question_id = $params['question_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $question = MockQuizQuestionsPool::find()
+                ->where(['quiz_question_pool_enc_id' => $question_id])
+                ->one();
+            if ($question) {
+                $question->is_deleted = 1;
+                $question->updated_on = date('Y-m-d H:i:s');
+                $question->updated_by = $user->user_enc_id;
+                if (!$question->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'deleted']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
