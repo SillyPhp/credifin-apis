@@ -410,6 +410,9 @@ $this->render('/widgets/employer_applications/top-banner', [
                     ]);
                 endif;
                 ?>
+
+                <?= $this->render('/widgets/join-social-groups');?>
+
                 <?php
                 if (Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
