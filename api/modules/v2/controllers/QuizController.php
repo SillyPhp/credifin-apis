@@ -9,6 +9,7 @@ use common\models\MockLevels;
 use common\models\MockQuizAnswersPool;
 use common\models\MockQuizPool;
 use common\models\MockQuizQuestionsPool;
+use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -34,6 +35,7 @@ class QuizController extends ApiBaseController
                 'add-level' => ['POST', 'OPTIONS'],
                 'add-question-pool' => ['POST', 'OPTIONS'],
                 'remove-question' => ['POST', 'OPTIONS'],
+                'get-pools' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -47,6 +49,47 @@ class QuizController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    private function getOrgId()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $user_type = Users::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($user_type['organization_enc_id']) {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['organizationEnc b' => function ($b) {
+                        $b->joinWith(['referrals c'], false);
+                    }], false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->one();
+
+                return $organizations['college_id'];
+            } else {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['teachers cc' => function ($cc) {
+                        $cc->joinWith(['collegeEnc b' => function ($b) {
+                            $b->joinWith(['referrals c'], false);
+                        }], false);
+                    }], false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->one();
+
+                return $organizations['college_id'];
+            }
+        }
     }
 
     public function actionLevels()
@@ -293,23 +336,16 @@ class QuizController extends ApiBaseController
                             $answers_pool->quiz_question_pool_enc_id = $question_pool->quiz_question_pool_enc_id;
                             $answers_pool->answer = $a['answer'];
                             $answers_pool->is_answer = $a['is_answer'];
-                            if (!$answers_pool->save()) {
-                                print_r($answers_pool->getErrors());
-                                die();
-                            }
+                            $answers_pool->save();
                         }
                         $data = [];
                         $data['quiz_pool_enc_id'] = $quiz_pool->quiz_pool_enc_id;
                         $data['question_enc_id'] = $question_pool->quiz_question_pool_enc_id;
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     } else {
-                        print_r($question_pool->getErrors());
-                        die();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
                 } else {
-                    print_r($quiz_pool->getErrors());
-                    die();
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             } else {
@@ -370,6 +406,46 @@ class QuizController extends ApiBaseController
                 }
             }
             return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetPools()
+    {
+        if ($user = $this->isAuthorized()) {
+            $org_id = $this->getOrgId();
+            $pools = MockQuizPool::find()
+                ->alias('a')
+                ->select([
+                    'a.quiz_pool_enc_id',
+                    'a.label_enc_id',
+                    'a.organization_enc_id',
+                    'a.name',
+                    'a.keywords',
+                    'a.description',
+                ])
+                ->andWhere(['or',
+                    ['a.organization_enc_id' => $org_id],
+                    ['a.organization_enc_id' => null]
+                ])
+                ->asArray()
+                ->all();
+
+            if ($pools) {
+                return $this->response(200, ['status' => 200, 'data' => $pools]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCreateQuiz()
+    {
+        if ($user = $this->isAuthorized()) {
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
