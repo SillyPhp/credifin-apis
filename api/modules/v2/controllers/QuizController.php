@@ -3,6 +3,7 @@
 
 namespace api\modules\v2\controllers;
 
+use common\models\CollegeCourses;
 use common\models\MockLabelPool;
 use common\models\MockLabels;
 use common\models\MockLevels;
@@ -446,6 +447,29 @@ class QuizController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCourses()
+    {
+        if ($this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $courses = CollegeCourses::find()
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
+                ->groupBy(['a.course_name'])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'courses' => $courses]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
