@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%mock_quizzes}}".
  *
@@ -17,6 +19,7 @@ namespace common\models;
  * @property string $slug Quiz Slug
  * @property int $total_questions Number of Question that will displayed on play quiz
  * @property string $for_sections Sections store in comma separated form like (A,B,C)
+ * @property string $course_enc_id course or class id
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -27,6 +30,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property MockLabels $labelEnc
+ * @property CollegeCourses $courseEnc
  */
 class MockQuizzes extends \yii\db\ActiveRecord
 {
@@ -44,15 +48,16 @@ class MockQuizzes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quiz_enc_id', 'label_enc_id', 'name', 'slug', 'total_questions', 'created_by'], 'required'],
+            [['quiz_enc_id', 'name', 'slug', 'total_questions', 'course_enc_id', 'created_by'], 'required'],
             [['per_ques_marks', 'total_marks', 'per_ques_time', 'total_time', 'negetive_marks', 'total_questions', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['quiz_enc_id', 'label_enc_id', 'name', 'slug', 'for_sections', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['quiz_enc_id', 'label_enc_id', 'name', 'slug', 'for_sections', 'course_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['label_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => MockLabels::className(), 'targetAttribute' => ['label_enc_id' => 'label_enc_id']],
+            [['course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['course_enc_id' => 'college_course_enc_id']],
         ];
     }
 
@@ -86,5 +91,13 @@ class MockQuizzes extends \yii\db\ActiveRecord
     public function getLabelEnc()
     {
         return $this->hasOne(MockLabels::className(), ['label_enc_id' => 'label_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCourseEnc()
+    {
+        return $this->hasOne(CollegeCourses::className(), ['college_course_enc_id' => 'course_enc_id']);
     }
 }
