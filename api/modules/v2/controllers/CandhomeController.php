@@ -885,7 +885,7 @@ class CandhomeController extends ApiBaseController
                         $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                         $b->onCondition(['b.is_deleted' => 0]);
                     }], false)
-                    ->where(['a.organization_enc_id' => $college_id['organization_enc_id']])
+                    ->where(['a.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0])
                     ->groupBy(['a.course_name'])
                     ->asArray()
                     ->all();
