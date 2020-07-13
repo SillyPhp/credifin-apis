@@ -447,56 +447,50 @@ class QuizController extends ApiBaseController
 
     public function actionCreateQuiz()
     {
-        $data = Yii::$app->request->post();
-        if (!empty($data) && !empty($data->pools)) {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                if ($user = $this->isAuthorized()) {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
+            if (!empty($data) && !empty($data['pools'])) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
                     $quizModel = new MockQuizzes();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $quizModel->quiz_enc_id = $utilitiesModel->encrypt();
-                    $quizModel->name = $data->name;
-                    $quizModel->total_questions = $data->total_ques;
-                    if ($data->ques_marks) {
-                        $quizModel->per_ques_marks = $data->ques_marks;
-                        $data->whole_marks = $data->ques_marks * $data->total_ques;
+                    $quizModel->name = $data['name'];
+                    $quizModel->total_questions = $data['total_ques'];
+                    if ($data['marks_type'] == 1) {
+                        $quizModel->per_ques_marks = $data['marks'];
+                    } elseif ($data['marks_type'] == 0) {
+                        $quizModel->total_marks = $data['marks'];
                     }
-                    $quizModel->total_marks = $data->whole_marks;
-                    if ($data->ques_time) {
-                        $quizModel->per_ques_time = $data->ques_time;
-                        $data->whole_time = $data->ques_time * $data->total_ques;
+                    if ($data['duration_type'] == 0) {
+                        $quizModel->total_time = $data['duration'];
+                    } else if ($data['duration_type'] == 1) {
+                        $quizModel->per_ques_time = $data['duration'];
                     }
-                    $quizModel->total_time = $data->whole_time;
-                    if ($data->is_nagetive_marking) {
-                        $quizModel->negetive_marks = $data->nagetive_marks;
+                    if ($data['is_nagetive_marking']) {
+                        $quizModel->negetive_marks = $data['nagetive_marks'];
                     }
-                    $utilitiesModel->variables['name'] = $data->name;
+                    $utilitiesModel->variables['name'] = $data['name'];
                     $utilitiesModel->variables['table_name'] = MockQuizzes::tableName();
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $quizModel->slug = $utilitiesModel->create_slug();
-                    if ($data->class && $data->section) {
-                        $level_id = MockLevels::findOne(['assigned_to' => $data->type, 'name' => 'Class'])['level_enc_id'];
-                        if (!$level_id) {
-                            $level_id = MockLevels::findOne(['assigned_to' => $data->type, 'name' => 'Course'])['level_enc_id'];
-                        }
-                        $label_id = MockLabels::findOne(['level_enc_id' => $level_id, 'poolEnc.name' => $data->class])['label_enc_id'];
-                        $quizModel->for_sections = implode(",", $data->section);
-                    }
-                    $quizModel->label_enc_id = $label_id;
-                    $quizModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    $quizModel->for_sections = implode(",", $data['sections']);
+                    $quizModel->course_enc_id = $data['class'];
+//                    $quizModel->label_enc_id = $data->label_id;
+                    $quizModel->created_by = $user->user_enc_id;
                     if (!$quizModel->validate() || !$quizModel->save()) {
                         $transaction->rollBack();
-                        return $this->response(401, ['status' => 500, 'message' => 'Error Occured...']);
+                        return $this->response(500, ['status' => 500, 'message' => 'Error Occurred...']);
                     }
-                    foreach ($data->pools as $pool) {
+                    foreach ($data['pools'] as $pool) {
                         $assignedPoolModel = new MockAssignedQuizPool();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $assignedPoolModel->assigned_quiz_pool_enc_id = $utilitiesModel->encrypt();
                         $assignedPoolModel->quiz_enc_id = $quizModel->quiz_enc_id;
                         $assignedPoolModel->quiz_pool_enc_id = $pool;
-                        $assignedPoolModel->min = $data->min;
-                        $assignedPoolModel->max = $data->max;
+                        $assignedPoolModel->min = $data['min'];
+                        $assignedPoolModel->max = $data['max'];
                         if (!$assignedPoolModel->save() || !$assignedPoolModel->validate()) {
                             $transaction->rollBack();
                             return $this->response(500, ['status' => 500, 'message' => 'Error Occured...']);
@@ -504,13 +498,38 @@ class QuizController extends ApiBaseController
                     }
                     $transaction->commit();
                     return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully..']);
-                } else {
-                    return $this->response(500, ['status' => 401, 'message' => 'unauthorized']);
+                } catch (yii\db\Exception $exception) {
+                    $transaction->rollBack();
+                    return $this->response(500, ['status' => 500, 'message' => 'Database Exception']);
                 }
-            } catch (yii\db\Exception $exception) {
-                $transaction->rollBack();
-                return $this->response(500, ['status' => 500, 'message' => 'Database Exception']);
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCourses()
+    {
+        if ($this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $courses = CollegeCourses::find()
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
+                ->groupBy(['a.course_name'])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'courses' => $courses]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }
