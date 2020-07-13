@@ -373,6 +373,16 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                     }
                     ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="blogbox"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
@@ -430,16 +440,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                     <?php
                 }
                 ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="blogbox"></div>
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -555,7 +555,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
-echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/application-card-2');
 $this->registerCss("
 #mixedSlider .MS-content .item {
     display: inline-block;
