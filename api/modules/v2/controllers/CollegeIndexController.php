@@ -607,9 +607,9 @@ class CollegeIndexController extends ApiBaseController
                     }
                 }
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
-                if($positions) {
+                if ($positions) {
                     $data['positions'] = $positions;
-                }else{
+                } else {
                     $data['positions'] = $j['positions'];
                 }
                 array_push($result, $data);
@@ -821,7 +821,7 @@ class CollegeIndexController extends ApiBaseController
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $college_id])
+                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
                 ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
@@ -1141,6 +1141,32 @@ class CollegeIndexController extends ApiBaseController
                 if (!$mail->setEmailLog()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
+    public function actionTeachersInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('emails');
+            $mail = [];
+            $mails = [];
+            foreach ($data as $m) {
+                $mail['email'] = $m;
+                array_push($mails, $mail);
+            }
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
+            $mail->email_type = 6;
+            $mail->type = 2;
+            $mail->email_receivers = $mails;
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
         }
