@@ -104,7 +104,7 @@ class CollegeProfileController extends ApiBaseController
                         $cc->joinWith(['collegeEnc b' => function ($b) {
                             $b->joinWith(['referrals c'], false);
                         }], false);
-                    }],false)
+                    }], false)
                     ->where(['a.user_enc_id' => $user->user_enc_id])
                     ->asArray()
                     ->all();
@@ -138,7 +138,7 @@ class CollegeProfileController extends ApiBaseController
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $organizations['organization_enc_id']])
+                ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0])
                 ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
@@ -256,7 +256,7 @@ class CollegeProfileController extends ApiBaseController
             }
 
             $already_have = CollegeCourses::find()
-                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name'], 'is_deleted' => 0])
                 ->one();
 
             if (empty($already_have)) {
@@ -294,7 +294,7 @@ class CollegeProfileController extends ApiBaseController
                             $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                             $b->onCondition(['b.is_deleted' => 0]);
                         }])
-                        ->where(['a.organization_enc_id' => $college_id])
+                        ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
                         ->groupBy(['a.course_name'])
                         ->asArray()
                         ->all();
@@ -323,7 +323,7 @@ class CollegeProfileController extends ApiBaseController
                 ->one();
 
             $already_have = CollegeCourses::find()
-                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name'], 'is_deleted' => 0])
                 ->andWhere(['not', ['college_course_enc_id' => $req['course_id']]])
                 ->one();
 
@@ -343,7 +343,7 @@ class CollegeProfileController extends ApiBaseController
                                 $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                                 $b->onCondition(['b.is_deleted' => 0]);
                             }])
-                            ->where(['a.organization_enc_id' => $college_id])
+                            ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
                             ->groupBy(['a.course_name'])
                             ->asArray()
                             ->all();
@@ -359,6 +359,38 @@ class CollegeProfileController extends ApiBaseController
             }
         } else {
             return $this->response(401);
+        }
+    }
+
+    public function actionRemoveCourse()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (isset($params['course_enc_id']) && !empty($params['course_enc_id'])) {
+                $course_id = $params['course_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing informtion']);
+            }
+
+            $course = CollegeCourses::find()
+                ->where(['college_course_enc_id' => $course_id])
+                ->one();
+
+            if ($course) {
+                $course->is_deleted = 1;
+                $course->updated_by = $user->user_enc_id;
+                $course->updated_on = date('Y-m-d H:i:s');
+                if ($course->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

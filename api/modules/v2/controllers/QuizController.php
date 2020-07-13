@@ -399,8 +399,8 @@ class QuizController extends ApiBaseController
                 ->one();
             if ($question) {
                 $question->is_deleted = 1;
-                $question->updated_on = date('Y-m-d H:i:s');
-                $question->updated_by = $user->user_enc_id;
+                $question->last_updated_on = date('Y-m-d H:i:s');
+                $question->last_updated_by = $user->user_enc_id;
                 if (!$question->update()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
