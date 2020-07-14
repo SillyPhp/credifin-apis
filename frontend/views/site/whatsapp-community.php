@@ -26,226 +26,224 @@ use yii\helpers\Url;
     </section>
     <section>
         <div class="container">
-            <div>
-                <div class="col-md-8">
-                    <div class="group-links">
-                        <div class="using-tabs">
-                            <div class="tile" id="tile-1">
-                                <ul class="nav nav-tabs nav-justified" role="tablist">
-                                    <div class="slider"></div>
-                                    <?php
-                                    $tab_i =0;
-                                    foreach ($socials as $k => $s) {
-                                        switch ($s['name']) {
-                                            case 'WhatsApp' :
-                                                $ficon = 'fab fa-whatsapp';
-                                                break;
-                                            case 'Telegram' :
-                                                $ficon = 'fab fa-telegram-plane';
-                                                break;
-                                            case 'Instagram' :
-                                                $ficon = 'fab fa-instagram';
-                                                break;
-                                            case 'Facebook' :
-                                                $ficon = 'fab fa-facebook-f';
-                                                break;
-                                            case 'Twitter' :
-                                                $ficon = 'fab fa-twitter';
-                                                break;
-                                            default :
-                                                $ficon = 'fab fa-list';
-                                        }
-                                        if($tab_i == 0){
-                                            $class="active";
-                                        } else{
-                                            $class = '';
-                                        }
-                                        ?>
-
-                                        <li class="nav-item <?= $class;?>">
-                                            <a class="nav-link" id="<?= $s['name'] ?>-tab" data-toggle="tab"
-                                               href="#<?= $s['name'] ?>"
-                                               role="tab" aria-controls="home" aria-selected="true">
-                                                <i class="<?= $ficon ?>"></i> <?= $s['name'] ?></a>
-                                        </li>
-                                        <?php
-                                        $tab_i++;
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
-                            <div class="group-head">Click on links to join the groups</div>
-                            <!-- Tab panes -->
-                            <div class="tab-content">
+            <div class="col-md-8 col-sm-12">
+                <div class="group-links">
+                    <div class="using-tabs">
+                        <div class="tile" id="tile-1">
+                            <ul class="nav nav-tabs nav-justified" role="tablist">
+                                <div class="slider"></div>
                                 <?php
+                                $tab_i = 0;
                                 foreach ($socials as $k => $s) {
                                     switch ($s['name']) {
                                         case 'WhatsApp' :
-                                            $bg = '#25d366';
+                                            $ficon = 'fab fa-whatsapp';
                                             break;
                                         case 'Telegram' :
-                                            $bg = '#0088cc';
+                                            $ficon = 'fab fa-telegram-plane';
                                             break;
                                         case 'Instagram' :
-                                            $bg = '#c13584';
+                                            $ficon = 'fab fa-instagram';
                                             break;
                                         case 'Facebook' :
-                                            $bg = '#3b5998';
+                                            $ficon = 'fab fa-facebook-f';
                                             break;
-                                        case 'twitter' :
-                                            $bg = '#1da1f2';
+                                        case 'Twitter' :
+                                            $ficon = 'fab fa-twitter';
                                             break;
                                         default :
-                                            $bg = '#ff7803';
+                                            $ficon = 'fab fa-list';
+                                    }
+                                    if ($tab_i == 0) {
+                                        $class = "active";
+                                    } else {
+                                        $class = '';
                                     }
                                     ?>
 
-                                    <div class="tab-pane fade <?= ($k > 0) ? '' : 'active in' ?>"
-                                         id="<?= $s['name'] ?>" role="tabpanel" aria-labelledby="home-tab">
-                                        <?php
-                                        foreach ($s['socialLinks'] as $link) {
-                                            ?>
-
-                                            <div class="col-md-3 col-sm-4">
-                                                <div class="gr-link">
-                                                    <a href="<?= $link['link'] ?>">
-                                                        <div class="wab-icon"
-                                                             onMouseOver="this.style.background='<?= $bg ?>'"
-                                                             onMouseLeave="this.style.background='white'">
-                                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->quiz->background->image . $s['icon_location'] . '/' . $s['icon']) ?>"
-                                                                 alt="">
-                                                        </div>
-                                                        <div class="wab-name"
-                                                             onMouseOver="this.style.color='<?= $bg ?>'"
-                                                             onMouseLeave="this.style.color='black'">
-                                                            <span><?= $link['title'] ?></span>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                        ?>
-                                    </div>
-
+                                    <li class="nav-item <?= $class; ?>">
+                                        <a class="nav-link" id="<?= $s['name'] ?>-tab" data-toggle="tab"
+                                           href="#<?= $s['name'] ?>"
+                                           role="tab" aria-controls="home" aria-selected="true">
+                                            <i class="<?= $ficon ?>"></i> <?= $s['name'] ?></a>
+                                    </li>
                                     <?php
+                                    $tab_i++;
                                 }
                                 ?>
-                            </div>
+                            </ul>
+                        </div>
+                        <div class="group-head">Click on links to join the groups</div>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <?php
+                            foreach ($socials as $k => $s) {
+                                switch ($s['name']) {
+                                    case 'WhatsApp' :
+                                        $bg = '#25d366';
+                                        break;
+                                    case 'Telegram' :
+                                        $bg = '#0088cc';
+                                        break;
+                                    case 'Instagram' :
+                                        $bg = '#c13584';
+                                        break;
+                                    case 'Facebook' :
+                                        $bg = '#3b5998';
+                                        break;
+                                    case 'twitter' :
+                                        $bg = '#1da1f2';
+                                        break;
+                                    default :
+                                        $bg = '#ff7803';
+                                }
+                                ?>
+
+                                <div class="tab-pane fade <?= ($k > 0) ? '' : 'active in' ?>"
+                                     id="<?= $s['name'] ?>" role="tabpanel" aria-labelledby="home-tab">
+                                    <?php
+                                    foreach ($s['socialLinks'] as $link) {
+                                        ?>
+
+                                        <div class="col-md-3 col-sm-4">
+                                            <div class="gr-link">
+                                                <a href="<?= $link['link'] ?>">
+                                                    <div class="wab-icon"
+                                                         onMouseOver="this.style.background='<?= $bg ?>'"
+                                                         onMouseLeave="this.style.background='white'">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->quiz->background->image . $s['icon_location'] . '/' . $s['icon']) ?>"
+                                                             alt="">
+                                                    </div>
+                                                    <div class="wab-name"
+                                                         onMouseOver="this.style.color='<?= $bg ?>'"
+                                                         onMouseLeave="this.style.color='black'">
+                                                        <span><?= $link['title'] ?></span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
-                    <!--                        <div class="row marginTop">-->
-                    <!--                            <div class="col-md-12">-->
-                    <!--                                <div class="form-heading">Category Groups</div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/Fa6asX5YHSa7SA1ZbKfzQN">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Government Job Updates</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Worldwide Job</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-                    <!--                        <div class="row marginTop">-->
-                    <!--                            <div class="col-md-12">-->
-                    <!--                                <div class="form-heading">Profile Groups</div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/EsYR8OAUodR6BpzL9dLtp0 ">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> IT Jobs</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/ClLwm5ikzECLVIFUKQXSVo">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Accounting Jobs</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/B5B0wEIZX6j9LhFh576PXe">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Marketing Jobs</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/E0sLcOyF2HSJpwYB5P0TIa">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Engeneering Jobs</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!--                            <div class="col-md-3 col-sm-4">-->
-                    <!--                                <div class="gr-link">-->
-                    <!--                                    <a href="https://chat.whatsapp.com/IX08MxIPWom0acMyI7xzGA">-->
-                    <!--                                        <div class="wab-icon">-->
-                    <!--                                            <img src="-->
-                    <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
-                    <!--                                                 alt="">-->
-                    <!--                                        </div>-->
-                    <!--                                        <div class="wab-name">-->
-                    <!--                                            <span> Business Development Jobs</span>-->
-                    <!--                                        </div>-->
-                    <!--                                    </a>-->
-                    <!--                                </div>-->
-                    <!--                            </div>-->
-                    <!---->
-                    <!--                        </div>-->
                 </div>
+                <!--                        <div class="row marginTop">-->
+                <!--                            <div class="col-md-12">-->
+                <!--                                <div class="form-heading">Category Groups</div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/Fa6asX5YHSa7SA1ZbKfzQN">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Government Job Updates</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Worldwide Job</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                        <div class="row marginTop">-->
+                <!--                            <div class="col-md-12">-->
+                <!--                                <div class="form-heading">Profile Groups</div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/EsYR8OAUodR6BpzL9dLtp0 ">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> IT Jobs</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/ClLwm5ikzECLVIFUKQXSVo">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Accounting Jobs</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/B5B0wEIZX6j9LhFh576PXe">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Marketing Jobs</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/E0sLcOyF2HSJpwYB5P0TIa">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Engeneering Jobs</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="col-md-3 col-sm-4">-->
+                <!--                                <div class="gr-link">-->
+                <!--                                    <a href="https://chat.whatsapp.com/IX08MxIPWom0acMyI7xzGA">-->
+                <!--                                        <div class="wab-icon">-->
+                <!--                                            <img src="-->
+                <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                <!--                                                 alt="">-->
+                <!--                                        </div>-->
+                <!--                                        <div class="wab-name">-->
+                <!--                                            <span> Business Development Jobs</span>-->
+                <!--                                        </div>-->
+                <!--                                    </a>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!---->
+                <!--                        </div>-->
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-12">
                 <?= $this->render('/widgets/advertise-jobs-widget'); ?>
                 <?= $this->render('/widgets/advertise-training-course') ?>
             </div>
