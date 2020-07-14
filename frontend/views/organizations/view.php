@@ -101,12 +101,12 @@ $round_avg = round($overall_avg);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-<!--                    <ul class="nav nav-tabs nav-padd-20">-->
-<!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
-<!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
-<!--                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>-->
-<!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
-<!--                    </ul>-->
+                    <!--                    <ul class="nav nav-tabs nav-padd-20">-->
+                    <!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+                    <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -214,19 +214,19 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-<!--                                <div class="j-profiles">-->
-<!--                                    <h3>Job Profiles</h3>-->
-<!--                                    <div class="row" style="padding: 0 15px;">-->
-<!--                                        <div class="pf-flex">-->
-<!--                                            <div class="pf-all">Infromation technology</div>-->
-<!--                                            <div class="pf-all">marketing</div>-->
-<!--                                            <div class="pf-all">sales</div>-->
-<!--                                            <div class="pf-all">Engineering</div>-->
-<!--                                            <div class="pf-all">accounting</div>-->
-<!--                                            <div class="pf-all">others</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="j-profiles">-->
+                            <!--                                    <h3>Job Profiles</h3>-->
+                            <!--                                    <div class="row" style="padding: 0 15px;">-->
+                            <!--                                        <div class="pf-flex">-->
+                            <!--                                            <div class="pf-all">Infromation technology</div>-->
+                            <!--                                            <div class="pf-all">marketing</div>-->
+                            <!--                                            <div class="pf-all">sales</div>-->
+                            <!--                                            <div class="pf-all">Engineering</div>-->
+                            <!--                                            <div class="pf-all">accounting</div>-->
+                            <!--                                            <div class="pf-all">others</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
                             <div>
                                 <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
                                 <div class="sub-review-box">
@@ -329,7 +329,7 @@ $round_avg = round($overall_avg);
                             </div>
                         </div>
                     </div>
-                   <?php if (!empty($benefit)) {
+                    <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
                             <div class="company-benefits">
@@ -495,40 +495,36 @@ $round_avg = round($overall_avg);
                         </div>
                     <?php } ?>
                 </div>
-                <div>
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                Address
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style">
+                            <?= htmlspecialchars_decode($organization['name']) ?> Reviews
+                            <div class="pull-right">
+                                <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
+                                    Review</a>
                             </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-5 col-xs-12 pull-right">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-md-7 col-xs-12">
-                                    <div class="head-office">
-
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div id="org-reviews"></div>
+                        <div class="viewbtn">
+                            <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                <?= htmlspecialchars_decode($organization['name']) ?> Reviews
-                                <div class="pull-right">
-                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
-                                        Review</a>
-                                </div>
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style">
+                            Address
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-12 pull-right">
+                                <div id="map"></div>
                             </div>
-                            <div class="divider"></div>
-                            <div id="org-reviews"></div>
-                            <div class="viewbtn">
-                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                            <div class="col-md-7 col-xs-12">
+                                <div class="head-office">
+
+                                </div>
                             </div>
                         </div>
                     </div>
