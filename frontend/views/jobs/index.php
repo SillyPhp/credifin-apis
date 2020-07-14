@@ -83,7 +83,9 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
-])
+]);
+
+echo $this->render('/widgets/jobs-by-tag');
 ?>
 <section class="bg-lighter">
     <div class="container">

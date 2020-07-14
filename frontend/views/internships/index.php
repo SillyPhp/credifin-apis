@@ -102,7 +102,9 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
-])
+]);
+
+echo $this->render('/widgets/internships-by-tag');
 ?>
 
 <section class="bg-lighter">

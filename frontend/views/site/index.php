@@ -1191,39 +1191,40 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
         'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getTopCities',
-        'getLearningTopics',
-        'getSafetySigns',
         'getStats',
-        'getOnlineClasses',
+        'getLearningTopics',
+        'getInternationalJobs',
         'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
+        'getOnlineClasses',
         'getNewsUpdate',
-        'getTweets',
+//        'getTweets',
         'getShortcuts'
     ];
     ");
 } else {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
         'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getTopCities',
-        'getLearningTopics',
-        'getSafetySigns',
+        'getFeaturedInternships',
         'getStats',
+        'getLearningTopics',
+        'getInternationalJobs',
+        'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
         'getOnlineClasses',
         'getHowItWorks',
-        'getCompaniesWithUs',
         'getNewsUpdate',
-        'getTweets',
+//        'getTweets',
         'getNewsletter',
         'getShortcuts'
     ];
