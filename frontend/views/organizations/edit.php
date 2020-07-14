@@ -145,12 +145,12 @@ $industries = Json::encode($industries);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+<!--                    <ul class="nav nav-tabs nav-padd-20">-->
+<!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+<!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -177,7 +177,7 @@ $industries = Json::encode($industries);
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
                             About <?= htmlspecialchars_decode($organization['name']) ?>
@@ -260,6 +260,38 @@ $industries = Json::encode($industries);
                                         <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
                                               data-type="textarea"
                                               data-value="<?= htmlspecialchars_decode($organization['vision']) ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="av-jobs-intern">
+                        <div class="row">
+                            <div class="heading-style">
+                                Available Jobs
+                                <div class="pull-right">
+                                    <a href="/account/jobs/create" class="write-review">Create New Job</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="internships-block">
+                                <div class="heading-style">
+                                    Available Internships
+                                    <div class="pull-right">
+                                        <a href="/account/internships/create" class="write-review">Create New Internship</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
                                     </div>
                                 </div>
                             </div>
@@ -516,40 +548,7 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div class="row">
-                        <div class="heading-style">
-                            Available Jobs
-                            <div class="pull-right">
-                                <a href="/account/jobs/create" class="write-review">Create New Job</a>
-                            </div>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/account/internships/create" class="write-review">Create New Internship</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade">
+                <div>
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
@@ -577,7 +576,7 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
-                <div id="menu4" class="tab-pane fade">
+                <div>
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style"><?= htmlspecialchars_decode($organization['name']) ?> Reviews</div>
@@ -1244,7 +1243,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position:relative;
 }
 .button_location{
-    padding: 14px 0px;
+//    padding: 14px 0px;
     float:right;
     font-family: "Open Sans", sans-serif;
 }

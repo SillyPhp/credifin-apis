@@ -34,6 +34,7 @@ use yii\helpers\Url;
                                 <ul class="nav nav-tabs nav-justified" role="tablist">
                                     <div class="slider"></div>
                                     <?php
+                                    $tab_i =0;
                                     foreach ($socials as $k => $s) {
                                         switch ($s['name']) {
                                             case 'WhatsApp' :
@@ -54,19 +55,26 @@ use yii\helpers\Url;
                                             default :
                                                 $ficon = 'fab fa-list';
                                         }
+                                        if($tab_i == 0){
+                                            $class="active";
+                                        } else{
+                                            $class = '';
+                                        }
                                         ?>
 
-                                        <li class="nav-item">
+                                        <li class="nav-item <?= $class;?>">
                                             <a class="nav-link" id="<?= $s['name'] ?>-tab" data-toggle="tab"
                                                href="#<?= $s['name'] ?>"
                                                role="tab" aria-controls="home" aria-selected="true">
                                                 <i class="<?= $ficon ?>"></i> <?= $s['name'] ?></a>
                                         </li>
                                         <?php
+                                        $tab_i++;
                                     }
                                     ?>
                                 </ul>
                             </div>
+                            <div class="group-head">Click on links to join the groups</div>
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <?php
@@ -246,6 +254,7 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.tab-content{padding:0;}
 .tile
 {width:100%;}
 #tile-1 .tab-pane
@@ -293,7 +302,7 @@ $this->registerCss('
   transition:all .4s linear;
   
 }
-#tile-1 .nav-tabs .active
+#tile-1 .nav-tabs .active a
 {
   background-color:transparent!important;
   border:none !important;
@@ -418,11 +427,11 @@ html{
     50%{transform: rotate(40deg)}
     100%{transform: rotate(-20deg)}
 }
-.click-note{
+.group-head{
     font-size:25px;
     color:#000;
     font-family: roboto;
-    padding: 15px 0;
+    padding: 20px 0px 10px 15px;
 }
 .gr-link{
     box-shadow: 0 0 5px rgba(0,0,0,.3);
@@ -447,7 +456,7 @@ $("#tile-1 .nav-tabs a").click(function() {
   var width = $(this).parent().width();
     $("#tile-1 .slider").css({"left":+ position.left,"width":width});
 });
-var actWidth = $("#tile-1 .nav-tabs").find(".active").parent("li").width();
+var actWidth = $("#tile-1 .nav-tabs").find(".active").width();
 var actPosition = $("#tile-1 .nav-tabs .active").position();
 $("#tile-1 .slider").css({"left":+ actPosition.left,"width": actWidth});
 

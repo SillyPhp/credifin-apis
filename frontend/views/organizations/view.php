@@ -101,12 +101,12 @@ $round_avg = round($overall_avg);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+<!--                    <ul class="nav nav-tabs nav-padd-20">-->
+<!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>-->
+<!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+<!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -141,7 +141,7 @@ $round_avg = round($overall_avg);
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
                             About <?= htmlspecialchars_decode($organization['name']) ?>
@@ -289,6 +289,42 @@ $round_avg = round($overall_avg);
                                 <div class="review-sidebar-main text-center">
                                     <h4 class="sub-heading-review">Help the community by giving your valuable
                                         review</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="av-jobs-intern">
+                        <div id="jobs-cards-main" class="row">
+                            <div class="heading-style">
+                                Available Jobs
+                                <div class="pull-right">
+                                    <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                       class="write-review">View
+                                        All</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="internships-cards-main" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style">
+                                    Available Internships
+                                    <div class="pull-right">
+                                        <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                           class="write-review">View All</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -459,43 +495,7 @@ $round_avg = round($overall_avg);
                         </div>
                     <?php } ?>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div id="jobs-cards-main" class="row">
-                        <div class="heading-style">
-                            Available Jobs
-                            <div class="pull-right">
-                                <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                   class="write-review">View
-                                    All</a>
-                            </div>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="internships-cards-main" class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                       class="write-review">View All</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade location_tab">
+                <div>
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
@@ -515,7 +515,7 @@ $round_avg = round($overall_avg);
                         </div>
                     </div>
                 </div>
-                <div id="menu4" class="tab-pane fade">
+                <div>
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
