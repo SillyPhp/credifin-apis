@@ -15,7 +15,7 @@ use Yii;
  * @property int $total_marks
  * @property int $per_ques_time
  * @property int $total_time
- * @property int $negetive_marks
+ * @property int $negative_marks
  * @property string $slug Quiz Slug
  * @property int $total_questions Number of Question that will displayed on play quiz
  * @property string $for_sections Sections store in comma separated form like (A,B,C)
@@ -49,7 +49,7 @@ class MockQuizzes extends \yii\db\ActiveRecord
     {
         return [
             [['quiz_enc_id', 'name', 'slug', 'total_questions', 'course_enc_id', 'created_by'], 'required'],
-            [['per_ques_marks', 'total_marks', 'per_ques_time', 'total_time', 'negetive_marks', 'total_questions', 'is_deleted'], 'integer'],
+            [['per_ques_marks', 'total_marks', 'per_ques_time', 'total_time', 'negative_marks', 'total_questions', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['quiz_enc_id', 'label_enc_id', 'name', 'slug', 'for_sections', 'course_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_enc_id'], 'unique'],

@@ -4,6 +4,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\CollegeCourses;
+use common\models\CollegeSections;
 use common\models\MockAssignedQuizPool;
 use common\models\MockLabelPool;
 use common\models\MockLabels;
@@ -12,6 +13,8 @@ use common\models\MockQuizAnswersPool;
 use common\models\MockQuizPool;
 use common\models\MockQuizQuestionsPool;
 use common\models\MockQuizzes;
+use common\models\MockTakenQuizzes;
+use common\models\UserOtherDetails;
 use common\models\Users;
 use Yii;
 use yii\helpers\Url;
@@ -92,6 +95,18 @@ class QuizController extends ApiBaseController
 
                 return $organizations['college_id'];
             }
+        }
+    }
+
+    private function getStudentOrgId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $org_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            return $org_id;
         }
     }
 
@@ -460,16 +475,18 @@ class QuizController extends ApiBaseController
                     $quizModel->total_questions = $data['total_ques'];
                     if ($data['marks_type'] == 1) {
                         $quizModel->per_ques_marks = $data['marks'];
+                        $quizModel->total_marks = $data['marks'] * $data['total_ques'];
                     } elseif ($data['marks_type'] == 0) {
                         $quizModel->total_marks = $data['marks'];
                     }
                     if ($data['duration_type'] == 0) {
                         $quizModel->total_time = $data['duration'];
+                        $quizModel->per_ques_time = $data['duration'] * $data['total_ques'];
                     } else if ($data['duration_type'] == 1) {
                         $quizModel->per_ques_time = $data['duration'];
                     }
                     if ($data['is_nagetive_marking']) {
-                        $quizModel->negetive_marks = $data['nagetive_marks'];
+                        $quizModel->negative_marks = $data['nagetive_marks'];
                     }
                     $utilitiesModel->variables['name'] = $data['name'];
                     $utilitiesModel->variables['table_name'] = MockQuizzes::tableName();
@@ -531,5 +548,122 @@ class QuizController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionGetQuizzes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $student_org_data = $this->getStudentOrgId();
+            $class_id = $student_org_data['course_enc_id'];
+
+            $section = CollegeSections::find()
+                ->where(['section_enc_id' => $student_org_data['section_enc_id']])
+                ->asArray()
+                ->one();
+
+            $quizzes = MockQuizzes::find()
+                ->select([
+                    'quiz_enc_id',
+                    'name',
+                    'slug',
+                    'total_marks',
+                    'per_ques_marks',
+                    'per_ques_time',
+                    'total_time',
+                    'negative_marks',
+                    'total_questions',
+                    'for_sections'
+                ])
+                ->where(['is_deleted' => 0, 'course_enc_id' => $class_id])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            $data = [];
+            foreach ($quizzes as $q) {
+
+                if ($q['for_sections'] != null) {
+                    $sections = explode(',', $q['for_sections']);
+                    if (in_array($section['section_name'], $sections)) {
+                        array_push($data, $quizzes[$i]);
+                    }
+                } else {
+                    if ($section['section_name'] == $q['for_sections']) {
+                        array_push($data, $quizzes[$i]);
+                    }
+                }
+
+                $i++;
+            }
+
+            if ($data) {
+                return $this->response(200, ['status' => 200, 'data' => $data]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionPlayQuiz()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['quiz_enc_id']) && !empty($params['quiz_enc_id'])) {
+                $quiz_enc_id = $params['quiz_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => '']);
+            }
+
+            $quiz = MockQuizzes::find()
+                ->alias('a')
+                ->joinWith(['mockAssignedQuizPools'])
+                ->where(['a.quiz_enc_id' => $quiz_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            $pools_count = count($quiz['mockAssignedQuizPools']);
+            $question_count = $quiz['total_questions'] / $pools_count;
+//            return $this->response(200, ['status' => 200, 'data' => $quiz]);
+
+            $this->getQuestions($quiz['mockAssignedQuizPools'][0]['quiz_pool_enc_id'], (int)$question_count);
+            die();
+
+            $save_quiz = new MockTakenQuizzes();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $save_quiz->taken_quiz_enc_id = $utilitiesModel->encrypt();
+            $save_quiz->quiz_enc_id = $quiz_enc_id;
+            $save_quiz->user_enc_id = $user->user_enc_id;
+            $save_quiz->total_marks = $quiz['total_marks'];
+            $save_quiz->negative_marks = $question_count['negative_marks'];
+            if ($save_quiz->save()) {
+
+            } else {
+                print_r($save_quiz->getErrors());
+                die();
+            }
+
+            return $this->response(200, ['status' => 200, 'data' => $quiz]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function getQuestions($quiz_pool_enc_id, $question_count)
+    {
+        $questions = MockQuizQuestionsPool::find()
+            ->where(['quiz_pool_enc_id' => $quiz_pool_enc_id])
+            ->count($question_count)
+            ->asArray()
+            ->all();
+        print_r($questions);
+        die();
     }
 }
