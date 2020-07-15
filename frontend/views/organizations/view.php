@@ -497,8 +497,8 @@ $round_avg = round($overall_avg);
                 </div>
                 <div class="row">
                     <div class="address-division">
-                        <div class="heading-style">
-                            <?= htmlspecialchars_decode($organization['name']) ?> Reviews
+                        <div class="heading-style">Reviews
+<!--                            --><?//= htmlspecialchars_decode($organization['name']) ?>
                             <div class="pull-right">
                                 <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
                                     Review</a>
@@ -699,12 +699,13 @@ $this->registerCss('
     -moz-transition: .3s all;
     -webkit-transition: .3s all;
     transition: .3s all;
-    color: #00a0e3;
+    background-color: #00a0e3;
+    color:#fff;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
 .write-review:hover{
-    background-color: #00a0e3;
-    color: #fff;
+    color: #00a0e3;
+    background-color: #fff;
 }
 /*----jobs and internships----*/
 .internships-block{

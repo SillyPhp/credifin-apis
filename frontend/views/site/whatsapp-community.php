@@ -48,7 +48,7 @@ use yii\helpers\Url;
                                         case 'Facebook' :
                                             $ficon = 'fab fa-facebook-f';
                                             break;
-                                        case 'Twitter' :
+                                        case 'twitter' :
                                             $ficon = 'fab fa-twitter';
                                             break;
                                         default :
@@ -62,7 +62,7 @@ use yii\helpers\Url;
                                     ?>
 
                                     <li class="nav-item <?= $class; ?>">
-                                        <a class="nav-link" id="<?= $s['name'] ?>-tab" data-toggle="tab"
+                                        <a class="nav-link <?= $s['name'] ?>" id="<?= $s['name'] ?>-tab" data-toggle="tab"
                                            href="#<?= $s['name'] ?>"
                                            role="tab" aria-controls="home" aria-selected="true">
                                             <i class="<?= $ficon ?>"></i> <?= $s['name'] ?></a>
@@ -245,16 +245,43 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 col-sm-12">
                 <?= $this->render('/widgets/advertise-jobs-widget'); ?>
-                <?= $this->render('/widgets/advertise-training-course') ?>
+<!--                --><?//= $this->render('/widgets/advertise-training-course') ?>
             </div>
         </div>
         </div>
     </section>
 <?php
 $this->registerCss('
+.nav-item.active .Facebook, .slider.Facebook{
+    color: #3b5998 !important;
+    background-color: #3b5998 !important;
+}
+.nav-item.active .WhatsApp, .slider.WhatsApp {
+    color: #25d366 !important;
+    background-color: #25d366 !important;
+}
+.nav-item.active .Telegram, .slider.Telegram {
+    color: #0088cc !important;
+    background-color: #0088cc !important;
+}
+.nav-item.active .Instagram, .slider.Instagram {
+	color:#c13584 !important;
+	background-color:#c13584 !important;
+}
+.nav-item.active .twitter, .slider.twitter{
+    color: #1da1f2 !important;
+    background-color: #1da1f2 !important;
+}
 .tab-content{padding:0;}
-.tile
-{width:100%;}
+.using-tabs {
+	height: 100vh;
+}
+.tile {
+    width: 100%;
+    position: sticky;
+    top: 63px;
+    z-index: 1;
+}
 #tile-1 .tab-pane
 {
   padding:15px;
@@ -293,7 +320,6 @@ $this->registerCss('
   width:15%;
   height:4px;
   border-radius:3px;
-  background-color:#39bcd3;
   position:absolute;
   z-index:1200;
   bottom:0;
@@ -304,7 +330,6 @@ $this->registerCss('
 {
   background-color:transparent!important;
   border:none !important;
-  color:#39bcd3 !important;
 }
 .nav-tabs > li > a i {
 	font-size: 26px;
@@ -426,10 +451,11 @@ html{
     100%{transform: rotate(-20deg)}
 }
 .group-head{
-    font-size:25px;
+    font-size:22px;
     color:#000;
     font-family: roboto;
     padding: 20px 0px 10px 15px;
+    text-transform: capitalize;
 }
 .gr-link{
     box-shadow: 0 0 5px rgba(0,0,0,.3);
@@ -453,9 +479,15 @@ $("#tile-1 .nav-tabs a").click(function() {
   var position = $(this).parent().position();
   var width = $(this).parent().width();
     $("#tile-1 .slider").css({"left":+ position.left,"width":width});
+    $(".slider").attr("class","slider " + $(this).text());
 });
 var actWidth = $("#tile-1 .nav-tabs").find(".active").width();
 var actPosition = $("#tile-1 .nav-tabs .active").position();
 $("#tile-1 .slider").css({"left":+ actPosition.left,"width": actWidth});
 
+function sliderInit(){
+    var targetElem = $("#tile-1 ul li.active a").text();
+    $(".slider").addClass(targetElem);
+}
+sliderInit();
 ');
