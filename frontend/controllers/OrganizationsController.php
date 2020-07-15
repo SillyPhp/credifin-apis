@@ -2,7 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
+use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
@@ -103,7 +105,6 @@ class OrganizationsController extends Controller
         }
         return $this->render('index');
     }
-
     public function actionCompanies($q = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
