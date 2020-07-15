@@ -102,7 +102,9 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
-])
+]);
+
+echo $this->render('/widgets/internships-by-tag');
 ?>
 
 <section class="bg-lighter">
@@ -318,12 +320,9 @@ $this->registerCss('
 .wn-box-details{
     min-height:100px !important;
 }
-.wn-box-icon{
-    max-width: 270px !important;
-}
 .wn-box-icon img{
     height: 200px !important;
-    object-fit: fill;
+    object-fit: cover;
 }
 /* Top Search bar css start */
 .twitter-typeahead{

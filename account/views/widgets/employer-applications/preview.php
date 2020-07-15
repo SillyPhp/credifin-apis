@@ -154,10 +154,15 @@
             </tr>
             <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
             <tr>
-                <td><strong>Minimum Experience:</strong></td>
+                <td><strong>Minimum Experience (Years):</strong></td>
                 <td colspan="5"><p class="final_confrm"
-                                   data-display="min_exp"></p></td>
+                                   data-display="minimum_exp"></p></td>
             </tr>
+                <tr>
+                    <td><strong>Maximum Experience (Years):</strong></td>
+                    <td colspan="5"><p class="final_confrm"
+                                       data-display="maximum_exp"></p></td>
+                </tr>
             <?php endif; ?>
             </tbody>
         </table>

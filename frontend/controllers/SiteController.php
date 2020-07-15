@@ -11,6 +11,7 @@ use common\models\ExternalNewsUpdate;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
+use common\models\SocialPlatforms;
 use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
@@ -65,7 +66,7 @@ class SiteController extends Controller
             'auth' => [
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'onAuthSuccess'],
-                'successUrl' => 'oauth-varify',
+                'successUrl' => 'oauth-verify',
             ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -78,7 +79,7 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
-    public function actionOauthVarify()
+    public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();
@@ -135,9 +136,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', [
-            'model' => $model
-        ]);
+        return $this->render('index');
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -293,8 +292,18 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $socials = SocialPlatforms::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function($b){
+//                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
+//                $b->joinWith(['groupEnc c']);
+            }])
+            ->asArray()
+            ->all();
+
         return $this->render('whatsapp-community', [
-            'data' => $data
+            'data' => $data,
+            'socials' => $socials
         ]);
     }
 
@@ -871,6 +880,15 @@ class SiteController extends Controller
                 break;
             case 'getInternationalJobs':
                 return $this->renderAjax('/widgets/international-jobs');
+                break;
+            case 'getSafetySigns':
+                return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getOnlineClasses':
+                $model = new ClassEnquiryForm();
+                return $this->renderAjax('/widgets/online-classes',[
+                    'model' => $model,
+                ]);
                 break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
