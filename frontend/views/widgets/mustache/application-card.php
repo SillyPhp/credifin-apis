@@ -35,7 +35,8 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{link}}" target="_blank" title="{{organization_name}}" style="text-decoration:none;">
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}"
+                               style="text-decoration:none;">
                                 <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
@@ -60,7 +61,8 @@ switch ([$controller_id, $action_id]) {
                                 {{/salary}}
                                 {{^salary}}
                                 {{#sal}}
-                                <h5 class="salary"><a href="{{link}}" target="_blank"><i class="far fa-money-bill-alt"></i> View In Details</a></h5>
+                                <h5 class="salary"><a href="{{link}}" target="_blank"><i
+                                                class="far fa-money-bill-alt"></i> View In Details</a></h5>
                                 {{/sal}}
                                 {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
@@ -80,7 +82,8 @@ switch ([$controller_id, $action_id]) {
                         </div>
                     </div>
                     <div class="application-card-wrapper">
-                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View Detail</a>
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View
+                            Detail</a>
                         <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                     </div>
                 </div>
@@ -170,6 +173,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             if(response.status === 200) { 
                 renderCards(response.cards, container);
                 utilities.initials();
+                localStorage.setItem("displayCity", response.cards[0]['city']);
             } else {
                 if(loader === true) {
                     if(page === 1) {
@@ -210,6 +214,11 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                      },
                 });
             });
+        } else {
+            var displayCity = localStorage.getItem("displayCity");
+            $('#prefer-heading').html('Jobs in ' + displayCity);
+            $('#65af4d5a').prop('href','/jobs-in-' + displayCity)
+            $('#featured-head').show();
         }
     });
 }
