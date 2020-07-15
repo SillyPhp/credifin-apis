@@ -74,7 +74,7 @@ use yii\helpers\Url;
                     {{/rating}}
                     <div class="comp-jobs-intern">
                         <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{#employerApplications.0.total_application}} {{employerApplications.0.total_application}} {{/employerApplications.0.total_application}} {{^employerApplications.0.total_application}} 0 {{/employerApplications.0.total_application}}Jobs</span></a>
-                        <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{#employerApplications.1.total_application}} {{employerApplications.1.total_application}} {{/employerApplications.1.total_application}} {{^employerApplications.1.total_application}} 0 {{/employerApplications.1.total_application}} Internships</span></a> 
+                        <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{#employerApplications.1.total_application}} {{employerApplications.1.total_application}} {{/employerApplications.1.total_application}} {{^employerApplications.1.total_application}} 0 {{/employerApplications.1.total_application}} Internships</span></a>
                     </div>
                     <div class="flw-rvw">
                         <div class="follow-btn">
