@@ -11,6 +11,7 @@ use common\models\ExternalNewsUpdate;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
+use common\models\SocialPlatforms;
 use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
@@ -291,8 +292,18 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $socials = SocialPlatforms::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function($b){
+//                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
+//                $b->joinWith(['groupEnc c']);
+            }])
+            ->asArray()
+            ->all();
+
         return $this->render('whatsapp-community', [
-            'data' => $data
+            'data' => $data,
+            'socials' => $socials
         ]);
     }
 
