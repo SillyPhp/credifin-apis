@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 ?>
 <section class="bg-blue">
     <div class="sign-up-details bg-white" id="sd">
