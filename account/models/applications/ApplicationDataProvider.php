@@ -25,7 +25,7 @@ class ApplicationDataProvider extends Model
         $object = EmployerApplications::find()
             ->alias('a')
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.application_enc_id','b.internship_duration','b.internship_duration_type','b.saturday_frequency','b.sunday_frequency','b.interview_start_date','b.pre_placement_offer','b.has_placement_offer', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
+            ->select(['a.application_enc_id','a.minimum_exp','a.maximum_exp','b.internship_duration','b.internship_duration_type','b.saturday_frequency','b.sunday_frequency','b.interview_start_date','b.pre_placement_offer','b.has_placement_offer', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
                 '(CASE
                 WHEN b.wage_type = "Unpaid" THEN 0
                 WHEN b.wage_type = "Fixed" THEN 1
@@ -97,6 +97,8 @@ class ApplicationDataProvider extends Model
         $model->earliestjoiningdate = date('d-M-Y', strtotime($object['joining_date']));
         $model->last_date = date('d-M-Y', strtotime($object['last_date']));
         $model->min_exp = $object['experience'];
+        $model->minimum_exp = $object['minimum_exp'];
+        $model->maximum_exp = $object['maximum_exp'];
         $model->othrdetail = $object['description'];
         $model->industry = $object['preferred_industry'];
         $model->pref_indus = $object['preferred_industry'];
@@ -161,6 +163,8 @@ class ApplicationDataProvider extends Model
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($model->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($model->to));
         $employerApplicationsModel->experience = $model->min_exp;
+        $employerApplicationsModel->minimum_exp = (($model->minimum_exp)?$model->minimum_exp:NULL);
+        $employerApplicationsModel->maximum_exp = (($model->maximum_exp)?$model->maximum_exp:NULL);
         $employerApplicationsModel->preferred_gender = $model->gender;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($model->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($model->last_date));

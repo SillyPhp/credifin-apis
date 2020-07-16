@@ -17,7 +17,8 @@ use yii\widgets\Pjax;
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
                 ?>
-                <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                <li id="<?= 'nav' . $p['field_enc_id'] ?>"
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title=""
                        data-original-title="<?= $p['field_name'] ?>" href="#">
@@ -46,7 +47,7 @@ use yii\widgets\Pjax;
                         $fieldName = "Hired";
                     } else if ($arr['status'] == 'Rejected') {
                         $fieldName = "Rejected";
-                    } else{
+                    } else {
                         $fieldName = "Applied";
                         $tempfieldMain = "";
                     }
@@ -166,11 +167,12 @@ use yii\widgets\Pjax;
                                 <div class="col-md-3 pl-0">
                                     <div class="pr-user-actions">
                                         <div class="pr-top-actions text-right">
-                                            <a href="<?= Url::to($arr['username'],true) ?>" target="_blank">View Profile</a>
+                                            <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                                Profile</a>
                                             <?php
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
-                                            <a href="<?= Url::to($cv,true); ?>" target="_blank">Download Resume</a>
+                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
                                         </div>
                                         <ul>
                                             <!--                                        <li>-->
@@ -191,7 +193,7 @@ use yii\widgets\Pjax;
                                         </ul>
                                         <div class="round-detail">
                                             <h5>Current Round:</h5>
-                                            <h4><?= $fieldName;?></h4>
+                                            <h4><?= $fieldName; ?></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +298,7 @@ li{list-style: none;}
   position:relative;
 }
 .pr-user-inner-main{
-  padding:20px 0px;
+  padding:20px 0px 0;
   padding-top: 0px;
   padding-left: 15px;
   width:calc(100% - 70px);
@@ -644,6 +646,7 @@ $(document).on('click', '.approve', function(e) {
     var btn2 = btn.next();
     var btn3 = btn.prev();
     var total = $(this).attr('data-total');
+    var listid = $('ul.pr-process-tab').find('.active').prop('id');
    $.ajax({
        url:'/account/jobs/approve-candidate',
        data:{field_id:field_id,app_id:app_id},
@@ -662,6 +665,7 @@ $(document).on('click', '.approve', function(e) {
                   setTimeout(function() {
                     hiring_process();
                     utilities.initials();
+                    $('#'+listid).find('a').click();
                   }, 1000)
             } else {
                disable(btn);

@@ -24,24 +24,14 @@ if (!empty($total_processes)) {
                             <?php
                             if($type == "Internships") {
                                 ?>
-                            <div class="rt-bttns">
-                                <a class="clone-bttn set-right-align two" href="<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>">
-                                    <i class="fa fa-files-o"></i>
-                                </a>
-                            </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
                             } else{
                                 ?>
-                                <div class="rt-bttns">
-                                    <a class="clone-bttn set-right-align two" href="<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>">
-                                        <i class="fa fa-files-o"></i>
-                                    </a>
-                                </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
@@ -215,3 +205,7 @@ width: fit-content;
 	opacity: 1;
 }
 ");
+$script = <<<js
+$('[data-toggle="tooltip"]').tooltip();
+js;
+$this->registerJs($script);

@@ -170,11 +170,6 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/safety-signs')?>
-<!--- virus Section --->
-<?= $this->render('/widgets/online-classes', [
-    'model' => $model,
-]) ?>
 
 <?= $this->render('/widgets/our-services') ?>
 
@@ -1196,35 +1191,40 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
         'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getTopCities',
-        'getLearningTopics',
         'getStats',
+        'getLearningTopics',
+        'getInternationalJobs',
         'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
+        'getOnlineClasses',
         'getNewsUpdate',
-        'getTweets',
+//        'getTweets',
         'getShortcuts'
     ];
     ");
 } else {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
         'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getTopCities',
-        'getLearningTopics',
+        'getFeaturedInternships',
         'getStats',
-        'getHowItWorks',
+        'getLearningTopics',
+        'getInternationalJobs',
         'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
+        'getOnlineClasses',
+        'getHowItWorks',
         'getNewsUpdate',
-        'getTweets',
+//        'getTweets',
         'getNewsletter',
         'getShortcuts'
     ];

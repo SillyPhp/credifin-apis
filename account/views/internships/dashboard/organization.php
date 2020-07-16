@@ -125,6 +125,10 @@ use yii\widgets\Pjax;
                     </a>
                 </div>
             </div>
+            <?= $this->render('/widgets/templates-jobs', [
+                'jobs' => $internships,
+                'type' => 'Internships',
+            ]);?>
         </div>
         <div class="col-md-10">
             <div class="loader"><img
@@ -219,8 +223,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="actions">
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                                   title="Add New">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                   title="Create AI Internship" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"></a>
                                 <?php if ($erexx_applications['total'] > 8): ?>
                                     <a href="<?= Url::toRoute('/internships/active-erexx-internships'); ?>"
                                        data-toggle="tooltip" title="View All">
@@ -615,7 +619,8 @@ $this->registerCss('
     margin-right:10px;
 }
 .ai img, .view img{
-    height:31px;
+    height:31px !important;
+    margin: 0 !important;
 }
 .actions > a > img {
     height:22px;
