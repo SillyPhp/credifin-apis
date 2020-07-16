@@ -6,11 +6,6 @@ use yii\helpers\Url;
 ?>
 <section>
     <div class="container">
-
-    </div>
-</section>
-<section>
-    <div class="container">
         <div class="row">
             <div class="col-md-8">
 
