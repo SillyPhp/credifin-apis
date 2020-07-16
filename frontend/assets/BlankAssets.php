@@ -1,9 +1,6 @@
 <?php
-
 namespace frontend\assets;
-
 use yii\web\AssetBundle;
-
 class BlankAssets extends AssetBundle
 {
 
