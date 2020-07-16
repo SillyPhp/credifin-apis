@@ -86,4 +86,8 @@ class FullTextSearchController extends Controller
     {
         return $this->render('secure');
     }
+
+    public function actionWidget(){
+        return $this->render('widget');
+    }
 }
