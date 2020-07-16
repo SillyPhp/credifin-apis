@@ -10,7 +10,7 @@ class BlankAssets extends AssetBundle
     public $basePath = '@root';
     public $baseUrl = '@root';
     public $css = [
-
+        'css/jquery-ui.min.css',
     ];
     public $js = [
 
