@@ -15,10 +15,10 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-12">
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
-                                            <div class="col-sm-3 text-right pr-0">
+                                            <div class="col-sm-12 text-right pr-0">
                                                 <button style="display:none" type="button"
                                                         class="btn btn-default wizard-prev">
                                                     Previous
@@ -242,8 +242,18 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.page-content {
+    background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
+    background-size: auto 100% !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.container-fluid{
+    padding:0 !important;
+}
 .pr-0{
     padding-right:0px;
+    margin-bottom:5px;
 }
 .card-like {
 //  margin-top: 50px;
@@ -255,14 +265,15 @@ $this->registerCss('
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 .wizard {
-  overflow: hidden;
+	overflow: hidden;
+	background-color: #fffffff7;
 }
 .wizard .wizard-header {
   margin-bottom: 30px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;

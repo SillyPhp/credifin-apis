@@ -26,11 +26,11 @@ use yii\helpers\Url;
     </section>
     <section>
         <div class="container">
-            <div class="col-md-8 col-sm-12">
-                <div class="group-links">
+            <div id="integration-main" class="col-md-8 col-sm-12 col-xs-12">
+                <div class="group-links row">
                     <div class="using-tabs">
                         <div class="tile" id="tile-1">
-                            <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <ul class="nav nav-tabs nav-justified">
                                 <div class="slider"></div>
                                 <?php
                                 $tab_i = 0;
@@ -62,10 +62,9 @@ use yii\helpers\Url;
                                     ?>
 
                                     <li class="nav-item <?= $class; ?>">
-                                        <a class="nav-link <?= $s['name'] ?>" id="<?= $s['name'] ?>-tab" data-toggle="tab"
-                                           href="#<?= $s['name'] ?>"
-                                           role="tab" aria-controls="home" aria-selected="true">
-                                            <i class="<?= $ficon ?>"></i> <?= $s['name'] ?></a>
+                                        <a class="nav-link <?= $s['name'] ?>" id="<?= $s['name'] ?>-tab" href="#<?= $s['name'] ?>">
+                                            <i class="<?= $ficon ?>"></i> <?= $s['name'] ?>
+                                        </a>
                                     </li>
                                     <?php
                                     $tab_i++;
@@ -73,9 +72,9 @@ use yii\helpers\Url;
                                 ?>
                             </ul>
                         </div>
-                        <div class="group-head">Click on links to join the groups</div>
+<!--                        <div class="group-head">Click on links to join the groups</div>-->
                         <!-- Tab panes -->
-                        <div class="tab-content">
+                        <div>
                             <?php
                             foreach ($socials as $k => $s) {
                                 switch ($s['name']) {
@@ -99,8 +98,8 @@ use yii\helpers\Url;
                                 }
                                 ?>
 
-                                <div class="tab-pane fade <?= ($k > 0) ? '' : 'active in' ?>"
-                                     id="<?= $s['name'] ?>" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="col-md-12 set-sticky row" id="<?= $s['name'] ?>">
+                                    <h3 class="col-md-12 col-sm-12 ou-head"><?= $s['name'] ?></h3>
                                     <?php
                                     foreach ($s['socialLinks'] as $link) {
                                         ?>
@@ -243,7 +242,7 @@ use yii\helpers\Url;
                 <!---->
                 <!--                        </div>-->
             </div>
-            <div class="col-md-4 col-sm-12">
+            <div class="col-md-4 col-sm-12 col-xs-12">
                 <?= $this->render('/widgets/advertise-jobs-widget'); ?>
 <!--                --><?//= $this->render('/widgets/advertise-training-course') ?>
             </div>
@@ -252,6 +251,11 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.ou-head {
+	font-size: 22px;
+	font-family: roboto;
+	text-transform: capitalize;
+}
 .nav-item.active .Facebook, .slider.Facebook{
     color: #3b5998 !important;
     background-color: #3b5998 !important;
@@ -274,7 +278,7 @@ $this->registerCss('
 }
 .tab-content{padding:0;}
 .using-tabs {
-	height: 100vh;
+//	height: 100vh;
 }
 .tile {
     width: 100%;
@@ -474,7 +478,20 @@ html{
     transition:.3s all;
 }
 ');
-$this->registerjs('
+$script = <<<JS
+
+function initializePosSticky() {
+  var mainHeight = $('#integration-main').height();
+  $('.using-tabs').css('height',mainHeight);
+}
+initializePosSticky();
+$(document).on('click', '.scroll-to-sec', function(e) {
+    e.preventDefault();
+    var sectionId = $(this).attr('href');
+    var offsetHeight = $(sectionId).offset().top - 90 ;
+    $('html, body').animate({scrollTop: offsetHeight}, 600);
+});
+
 $("#tile-1 .nav-tabs a").click(function() {
   var position = $(this).parent().position();
   var width = $(this).parent().width();
@@ -490,4 +507,29 @@ function sliderInit(){
     $(".slider").addClass(targetElem);
 }
 sliderInit();
-');
+$(window).scroll(function() {
+    var scrollDistance = $(window).scrollTop();
+    $(".set-sticky").each(function(i) {
+        if ($(this).position().top <= (scrollDistance - 350)) {
+            $("#tile-1 ul > li.active").removeClass("active");
+            $("#tile-1 ul > li").eq(i).addClass("active");
+            var position = $("#tile-1 ul > li").eq(i).position();
+            var width = $("#tile-1 ul > li").eq(i).width();
+            $("#tile-1 .slider").css({"left":+ position.left,"width":width});
+            $(".slider").attr("class","slider " + $(this).text());
+        }
+    });
+}).scroll();
+$("#tile-1 ul > li > a").on('click', function(event) {
+    if (this.hash !== "") {
+      event.preventDefault();
+      var hash = this.hash;
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top - 100
+      }, 800, function(){
+      });
+    } 
+  });
+JS;
+$this->registerJs($script);
+?>

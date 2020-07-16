@@ -16,7 +16,7 @@ $type_job = strtolower($type);
             </a>
         <?php } ?>
         <div class="view-all-bt">
-            <?php if (count($jobs) >= 4){ ?>
+            <?php if (count($jobs) >= 10){ ?>
                 <a href="<?= Url::to('/account/'.$type_job.'/view-templates'); ?>">View All</a>
             <?php } ?>
         </div>
@@ -45,7 +45,7 @@ $this->registercss('
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	background-color:#000;
+	background: linear-gradient(to bottom right, #000 0%, #434343 100%);
 }
 .temp-card:hover.temp-card > i{
     background-color:#fff;
