@@ -244,7 +244,6 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 col-sm-12 col-xs-12">
                 <?= $this->render('/widgets/advertise-jobs-widget'); ?>
-<!--                --><?//= $this->render('/widgets/advertise-training-course') ?>
             </div>
         </div>
         </div>
