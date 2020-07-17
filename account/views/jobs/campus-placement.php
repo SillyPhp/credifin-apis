@@ -48,6 +48,9 @@ use yii\helpers\Url;
                                     </div>
                                 </div>
                             </div>
+                            <div class="cr-job">
+                                <a href="/account/jobs/create">Create AI Job</a>
+                            </div>
                             <div class="wizard-body">
                                 <div class="step initial active">
                                     <div class="row">
@@ -248,6 +251,19 @@ $this->registerCss('
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
 }
+.cr-job {
+	text-align: center;
+}
+.cr-job a {
+	font-size: 14px;
+	color: #fff;
+	background-color: #00a0e3;
+	padding: 8px 15px;
+	border-radius: 2px;
+	font-family: roboto;
+	text-transform: uppercase;
+	font-weight: 500;
+}
 .container-fluid{
     padding:0 !important;
 }
@@ -282,6 +298,7 @@ $this->registerCss('
   border-color: #038dab;
   border-top-width: 2px;
   clear:both;
+  margin:0;
 }
 .wizard .wizard-header .steps {
   height: 15px;
