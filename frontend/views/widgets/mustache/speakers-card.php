@@ -11,6 +11,9 @@ use yii\helpers\Url;
                     {{#speaker_image}}
                     <img class="img-fluid" src="{{speaker_image}}"/>
                     {{/speaker_image}}
+                    {{^speaker_image}}
+                    <img class="img-fluid" src="{{speaker_image_fake}}">
+                    {{/speaker_image}}
                     <a href="#{{speaker_enc_id}}" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
                         <i class="fas fa-plus"></i>
                     </a>
@@ -31,6 +34,9 @@ use yii\helpers\Url;
                         <div class="ts-speaker-popup-img">
                             {{#speaker_image}}
                             <img src="{{speaker_image}}">
+                            {{/speaker_image}}
+                            {{^speaker_image}}
+                            <img src="{{speaker_image_fake}}">
                             {{/speaker_image}}
                         </div>
                     </div><!-- col end-->
