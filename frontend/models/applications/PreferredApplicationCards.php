@@ -241,7 +241,6 @@ class PreferredApplicationCards
         $resumeSkills = [];
         $filters = [];
         $optLocationkeys = ['cities', 'states', 'countries'];
-
         if ($options['location']) {
             $optLocations = explode(", ", $options['location']);
             $ipLocation = array_combine($optLocationkeys, $optLocations);
