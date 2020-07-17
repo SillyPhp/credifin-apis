@@ -3,16 +3,16 @@ use yii\helpers\Url;
 ?>
 
     <section class="popular-skills">
-        <h3>Internships By Profiles</h3>
+        <h3>Internships By Titles</h3>
         <div class="popular container">
-            <div class="cards"><a href="/it-internships">Information Technology</a></div>
-            <div class="cards"><a href="/management-internships">Management</a></div>
-            <div class="cards"><a href="/human-resources-internships">Human Resources</a></div>
-            <div class="cards"><a href="/accouting-internships">Accounting</a></div>
-            <div class="cards"><a href="/executive-internships">Executive</a></div>
-            <div class="cards"><a href="/office-support-internships">Office Support</a></div>
-            <div class="cards"><a href="/engineering-internships">Engineering</a></div>
-            <div class="cards"><a href="/legal-internships">Legal</a></div>
+            <div class="cards"><a href="/web-developer-internships">Web Developer</a></div>
+            <div class="cards"><a href="/digital-marketing-internships">Digital Marketing</a></div>
+            <div class="cards"><a href="/graphic-designer-internships">Graphic Designer</a></div>
+            <div class="cards"><a href="/software-engineer-internships">Software Engineer</a></div>
+            <div class="cards"><a href="/sales-executive-internships">Sales Engineer</a></div>
+            <div class="cards"><a href="/content-creator-internships">Content Creator</a></div>
+            <div class="cards"><a href="/data-entry-internships">Data Entry</a></div>
+            <div class="cards"><a href="/web-designer-internships">Web Designer</a></div>
         </div>
     </section>
 

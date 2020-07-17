@@ -3,16 +3,16 @@ use yii\helpers\Url;
 ?>
 
 <section class="popular-skills">
-    <h3>Jobs By Profiles</h3>
+    <h3>Jobs By Title</h3>
     <div class="popular container">
-        <div class="cards"><a href="/it-jobs">Information Technology</a></div>
-        <div class="cards"><a href="/management-jobs">Management</a></div>
-        <div class="cards"><a href="/human-resources-jobs">Human Resources</a></div>
-        <div class="cards"><a href="/accouting-jobs">Accounting</a></div>
-        <div class="cards"><a href="/executive-jobs">Executive</a></div>
-        <div class="cards"><a href="/office-support-jobs">Office Support</a></div>
-        <div class="cards"><a href="/engineering-jobs">Engineering</a></div>
-        <div class="cards"><a href="/legal-jobs">Legal</a></div>
+        <div class="cards"><a href="/web-developer-jobs">Web Developer</a></div>
+        <div class="cards"><a href="/digital-marketing-jobs">Digital Marketing</a></div>
+        <div class="cards"><a href="/graphic-designer-jobs">Graphic Designer</a></div>
+        <div class="cards"><a href="/software-engineer-jobs">Software Engineer</a></div>
+        <div class="cards"><a href="/sales-executive-jobs">Sales Engineer</a></div>
+        <div class="cards"><a href="/content-creator-jobs">Content Creator</a></div>
+        <div class="cards"><a href="/data-entry-jobs">Data Entry</a></div>
+        <div class="cards"><a href="/web-designer-jobs">Web Designer</a></div>
     </div>
 </section>
 
