@@ -13,6 +13,7 @@ use common\models\MockQuizAnswersPool;
 use common\models\MockQuizPool;
 use common\models\MockQuizQuestionsPool;
 use common\models\MockQuizzes;
+use common\models\MockTakenQuizQuestions;
 use common\models\MockTakenQuizzes;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -596,6 +597,15 @@ class QuizController extends ApiBaseController
                 $i++;
             }
 
+            $j = 0;
+            foreach ($data as $d) {
+                $is_played = MockTakenQuizzes::find()
+                    ->where(['user_enc_id' => $user->user_enc_id, 'quiz_enc_id' => $d['quiz_enc_id']])
+                    ->exists();
+                $data[$j]['is_played'] = $is_played;
+                $j++;
+            }
+
             if ($data) {
                 return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
@@ -620,6 +630,14 @@ class QuizController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => '']);
             }
 
+            $is_played = MockTakenQuizzes::find()
+                ->where(['user_enc_id' => $user->user_enc_id, 'quiz_enc_id' => $quiz_enc_id])
+                ->exists();
+
+            if ($is_played) {
+                return $this->response(409, ['status' => 409, 'message' => 'already played or not accessible']);
+            }
+
             $quiz = MockQuizzes::find()
                 ->alias('a')
                 ->joinWith(['mockAssignedQuizPools'])
@@ -629,27 +647,42 @@ class QuizController extends ApiBaseController
 
             $pools_count = count($quiz['mockAssignedQuizPools']);
             $question_count = $quiz['total_questions'] / $pools_count;
-//            return $this->response(200, ['status' => 200, 'data' => $quiz]);
 
-            $this->getQuestions($quiz['mockAssignedQuizPools'][0]['quiz_pool_enc_id'], (int)$question_count);
-            die();
-
-            $save_quiz = new MockTakenQuizzes();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $save_quiz->taken_quiz_enc_id = $utilitiesModel->encrypt();
-            $save_quiz->quiz_enc_id = $quiz_enc_id;
-            $save_quiz->user_enc_id = $user->user_enc_id;
-            $save_quiz->total_marks = $quiz['total_marks'];
-            $save_quiz->negative_marks = $question_count['negative_marks'];
-            if ($save_quiz->save()) {
-
-            } else {
-                print_r($save_quiz->getErrors());
-                die();
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $save_quiz = new MockTakenQuizzes();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $save_quiz->taken_quiz_enc_id = $utilitiesModel->encrypt();
+                $save_quiz->quiz_enc_id = $quiz_enc_id;
+                $save_quiz->user_enc_id = $user->user_enc_id;
+                $save_quiz->total_marks = $quiz['total_marks'];
+                $save_quiz->negative_marks = $question_count['negative_marks'];
+                if ($save_quiz->save()) {
+                    foreach ($quiz['mockAssignedQuizPools'] as $q) {
+                        $questions = $this->getQuestions($q['quiz_pool_enc_id'], (int)$question_count);
+                        foreach ($questions as $ques) {
+                            $questions = new MockTakenQuizQuestions();
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $questions->taken_question_enc_id = $utilitiesModel->encrypt();
+                            $questions->taken_quiz_enc_id = $save_quiz->taken_quiz_enc_id;
+                            $questions->quiz_question_pool_enc_id = $ques['quiz_question_pool_enc_id'];
+                            $questions->created_on = date('Y-m-d H:i:s');
+                            if (!$questions->save()) {
+                                $transaction->rollBack();
+                            }
+                        }
+                    }
+                } else {
+                    $transaction->rollBack();
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'saved']);
+            } catch (yii\db\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'Database Exception']);
             }
-
-            return $this->response(200, ['status' => 200, 'data' => $quiz]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -660,10 +693,117 @@ class QuizController extends ApiBaseController
     {
         $questions = MockQuizQuestionsPool::find()
             ->where(['quiz_pool_enc_id' => $quiz_pool_enc_id])
-            ->count($question_count)
+            ->limit($question_count)
             ->asArray()
             ->all();
-        print_r($questions);
-        die();
+
+        return $questions;
     }
+
+    public function actionGetQuestion()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $quiz_enc_id = $params['quiz_enc_id'];
+            $taken_question_enc_id = $params['taken_question_enc_id'];
+            $quiz_answer_pool_enc_id = $params['quiz_answer_pool_enc_id'];
+            $taken_time = $params['taken_time'];
+
+            if (!empty($quiz_enc_id) && !empty($taken_question_enc_id) && !empty($quiz_answer_pool_enc_id)) {
+                $correct_answer = MockQuizAnswersPool::find()
+                    ->where(['quiz_answer_pool_enc_id' => $quiz_answer_pool_enc_id])
+                    ->asArray()
+                    ->one();
+
+                $taken_quiz = MockTakenQuizzes::find()
+                    ->where(['quiz_enc_id' => $quiz_enc_id, 'user_enc_id' => $user->user_enc_id])
+                    ->one();
+
+                $quiz = MockQuizzes::find()
+                    ->where(['quiz_enc_id' => $quiz_enc_id])
+                    ->asArray()
+                    ->one();
+
+                if ($correct_answer && $taken_quiz) {
+                    if ($correct_answer['is_correct'] == 1) {
+                        $taken_quiz->obtained_marks = $taken_quiz->obtained_marks + ($quiz['total_marks'] / $quiz['total_questions']);
+                    } elseif ($correct_answer['is_correct'] == 0) {
+                        if ($quiz['negative_marks'] != null) {
+                            $taken_quiz->negative_marks = $taken_quiz->negative_marks + $quiz['negative_marks'];
+                        }
+                    }
+                    $taken_quiz->taken_time = $taken_time;
+                    $taken_quiz->updated_on = date('Y-m-d H:i:s');
+                    $taken_quiz->update();
+                }
+
+                $save_answer = MockTakenQuizQuestions::find()
+                    ->where(['taken_question_enc_id' => $taken_question_enc_id])
+                    ->one();
+
+                if ($save_answer) {
+                    $save_answer->quiz_answer_pool_enc_id = $quiz_answer_pool_enc_id;
+                    $save_answer->is_correct = $correct_answer['is_answer'];
+                    $save_answer->updated_on = date('Y-m-d H:i:s');
+                    if (!$save_answer->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'en error occurred']);
+                    }
+                }
+
+                $play_question = $this->que();
+
+                if ($play_question) {
+                    return $this->response(200, ['status' => 200, 'data' => $play_question]);
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+
+            } else {
+
+                $play_question = $this->que();
+
+                if ($play_question) {
+                    return $this->response(200, ['status' => 200, 'data' => $play_question]);
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+    }
+
+    private function que()
+    {
+        if ($user = $this->isAuthorized()) {
+            $play_question = MockTakenQuizQuestions::find()
+                ->alias('a')
+                ->select([
+                    'a.taken_question_enc_id',
+                    'a.taken_quiz_enc_id',
+                    'a.quiz_question_pool_enc_id'
+                ])
+                ->joinWith(['takenQuizEnc b'], false)
+                ->joinWith(['quizQuestionPoolEnc c' => function ($c) {
+                    $c->select(['c.quiz_question_pool_enc_id', 'c.question']);
+                    $c->joinWith(['mockQuizAnswersPools c1' => function ($c1) {
+                        $c1->select([
+                            'c1.quiz_answer_pool_enc_id',
+                            'c1.quiz_question_pool_enc_id',
+                            'c1.answer'
+                        ]);
+                    }]);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['b.user_enc_id' => $user->user_enc_id])
+                ->andWhere(['a.quiz_answer_pool_enc_id' => null])
+                ->asArray()
+                ->one();
+
+            return $play_question;
+        }
+    }
+
 }

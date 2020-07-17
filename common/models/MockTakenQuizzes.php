@@ -13,8 +13,11 @@ use Yii;
  * @property string $user_enc_id Student or user who take quiz
  * @property int $total_marks total quiz marks
  * @property int $negative_marks negative marks
+ * @property int $obtained_negative_marks
  * @property int $obtained_marks obtained marks
+ * @property string $taken_time
  * @property string $created_on
+ * @property string $updated_on
  *
  * @property MockTakenQuizQuestions[] $mockTakenQuizQuestions
  * @property MockQuizzes $quizEnc
@@ -37,8 +40,8 @@ class MockTakenQuizzes extends \yii\db\ActiveRecord
     {
         return [
             [['taken_quiz_enc_id', 'quiz_enc_id', 'user_enc_id', 'total_marks'], 'required'],
-            [['total_marks', 'negative_marks', 'obtained_marks'], 'integer'],
-            [['created_on'], 'safe'],
+            [['total_marks', 'negative_marks', 'obtained_negative_marks', 'obtained_marks'], 'integer'],
+            [['taken_time', 'created_on', 'updated_on'], 'safe'],
             [['taken_quiz_enc_id', 'quiz_enc_id', 'user_enc_id'], 'string', 'max' => 100],
             [['taken_quiz_enc_id'], 'unique'],
             [['quiz_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => MockQuizzes::className(), 'targetAttribute' => ['quiz_enc_id' => 'quiz_enc_id']],
