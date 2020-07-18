@@ -1191,7 +1191,7 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
-        'getFeaturedJobs',
+        'getFeaturedApplications',
         'getStats',
         'getLearningTopics',
         'getInternationalJobs',
@@ -1210,7 +1210,7 @@ if (!Yii::$app->user->isGuest) {
 } else {
     $this->registerJs("
     var loadElems = [
-        'getFeaturedJobs',
+        'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
         'getLearningTopics',
