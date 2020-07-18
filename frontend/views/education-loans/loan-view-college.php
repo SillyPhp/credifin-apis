@@ -432,12 +432,19 @@ use yii\helpers\Url;
                     <div class="el-pos-rel">
                         <div class="max-300">
                             <div class="cl-heading">Get the Best Education Loan</div>
-                            <div class="cl-text"> We tie up with the best providers in the country to help you plan your
-                                education.
-                                With offers that provide up to 100% of your required loan amount, planning for your
-                                education
-                                is now more easier than ever.
-                            </div>
+<!--                            <div class="cl-text"> We tie up with the best providers in the country to help you plan your-->
+<!--                                education.-->
+<!--                                With offers that provide up to 100% of your required loan amount, planning for your-->
+<!--                                education-->
+<!--                                is now more easier than ever.-->
+<!--                            </div>-->
+                            <ul class="loan-benefits">
+                                <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
+                                <li>- <span>0%</span> rate of interest</li>
+                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
+                                    the students in a particular <span>academic year</span>.</li>
+                                <li>- Loan will be <span>repaid</span> with in the semester</li>
+                            </ul>
                             <div class="cl-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
                                      alt="">
@@ -450,6 +457,14 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.loan-benefits li{
+    color:#f3f3f2;
+    font-size: 16px;    
+}
+.loan-benefits li span{
+    font-weight: bold;
+    color:#fff;
+}
 #countryName{
     display: none;
 }
