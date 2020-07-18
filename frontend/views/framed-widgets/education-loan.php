@@ -446,6 +446,9 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+button{
+border: 1px solid #ddd !important;
+}
 #countryName{
     display: none;
 }

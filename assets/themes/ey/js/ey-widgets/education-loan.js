@@ -63,17 +63,22 @@
     iframe = document.createElement("iframe");
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("allowfullscreen", "true");
-    iframe.setAttribute("scrolling", "no");
+    iframe.setAttribute("scrolling", "yes");
     iframe.setAttribute("src", src);
     iframe.setAttribute("width", "100%");
+    //iframe.setAttribute("height", "100vh");
+    iframe.style.height = "100vh";
+    iframe.setAttribute("id", "idIframe");
     iframe.style.width = "10px";
     iframe.style.minWidth = "100%";
-    iframe.setAttribute("height", 1357 + "px");
     if (title) {
         iframe.title = title;
     }
-    console.log(script);
-    script.parentNode.insertBefore(iframe, script.nextSibling);
+    window.addEventListener('load', function(e) {
+        var elem = document.getElementById("ey-education-loan");
+        //script.parentNode.insertBefore(iframe, script.nextSibling);
+        elem.appendChild(iframe);
+    });
     if (window.addEventListener) {
         window.addEventListener("message", onMessage, false);
     } else if (window.attachEvent) {
