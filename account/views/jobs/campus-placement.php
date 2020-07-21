@@ -57,8 +57,8 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-md-12">
-                                                <h4>Select Jobs for campus hiring.</h4>
+                                            <div class="col-md-12 text-center">
+                                                <h4 class="slct">Select Jobs for campus hiring.</h4>
                                             </div>
                                             <?php
                                             foreach ($applications['data'] as $app) {
@@ -132,7 +132,7 @@ use yii\helpers\Url;
                                         if (!empty($applications['data'])) {
                                             ?>
                                             <div class="col-md-12">
-                                                <h4>Select Colleges for campus hiring.</h4>
+                                                <h4 style="font-family: roboto;font-size: 20px;">Select Colleges for campus hiring.</h4>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input form-md-floating-label">
@@ -252,13 +252,13 @@ $this->registerCss('
     background-repeat: no-repeat !important;
 }
 .cr-job {
-	text-align: center;
+	text-align: right;
 }
 .cr-job a {
 	font-size: 14px;
 	color: #fff;
-	background-color: #00a0e3;
-	padding: 8px 15px;
+	background-color: #ff7803;
+	padding: 10px 15px;
 	border-radius: 2px;
 	font-family: roboto;
 	text-transform: uppercase;
@@ -270,6 +270,10 @@ $this->registerCss('
 .pr-0{
     padding-right:0px;
     margin-bottom:5px;
+}
+.slct{
+    font-family:roboto;
+    font-size:20px;
 }
 .card-like {
 //  margin-top: 50px;
@@ -285,11 +289,12 @@ $this->registerCss('
 	background-color: #fffffff7;
 }
 .wizard .wizard-header {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
   margin-bottom: 0px;
+  font-family:roboto;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;
