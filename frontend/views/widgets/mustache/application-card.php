@@ -1,6 +1,9 @@
 <?php
+use yii\helpers\Url;
+
 $controller_id = Yii::$app->controller->id;
 $action_id = Yii::$app->controller->action->id;
+$baseUrl = Url::base(true);
 switch ([$controller_id, $action_id]) {
     case ['site', 'load-data'] :
     case ['jobs', 'index'] :
@@ -217,7 +220,9 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         } else {
             var displayCity = localStorage.getItem("displayCity");
             $('#prefer-heading').html('Jobs in ' + displayCity);
-            $('#65af4d5a').prop('href','/jobs-in-' + displayCity)
+            var viewbtn = $('#view-all-application');
+            var dis_link = "$baseUrl" + "/jobs-in-";
+            viewbtn.prop('href',dis_link + displayCity)
             $('#featured-head').show();
         }
     });
