@@ -893,9 +893,12 @@ class SiteController extends Controller
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
                 break;
-            case 'getFeaturedJobs':
-                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
+            case 'getFeaturedApplications':
+                return $this->renderAjax('/widgets/employer_applications/preferred-applications');
                 break;
+//            case 'getFeaturedJobs':
+//                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
+//                break;
             case 'getHowItWorks':
                 if (Yii::$app->user->isGuest) {
                     return $this->renderAjax('/widgets/homepage_components/how-it-works');
