@@ -457,7 +457,7 @@ class JobsController extends Controller
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
-            ->limit(4)
+            ->limit(10)
             ->all();
 
         return $application;

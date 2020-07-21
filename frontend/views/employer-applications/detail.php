@@ -427,18 +427,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                 if (Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
                 }
-
-                if (!$settings["showNewPositionsWidget"]) {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
-                                <?= $this->render("/widgets/square_ads"); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
                 ?>
             </div>
         </div>

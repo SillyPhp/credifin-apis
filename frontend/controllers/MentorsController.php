@@ -40,6 +40,10 @@ class MentorsController extends Controller
     public function actionWebinarSpeakers(){
         return $this->render('speakers');
     }
+
+    public  function actionWebinarView(){
+        return $this->render('webinar-view');
+    }
     public function actionGetWebinarSpeakers(){
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -75,7 +79,14 @@ class MentorsController extends Controller
                 ->all();
             if ($dataDetail) {
                 array_walk($dataDetail, function (&$item) {
-                    $item['speaker_image'] = Url::to(Yii::$app->params->upload_directories->speakers->image . $item['image_location'] . '/' . $item['image']);
+                    if ($item['image']) {
+                        $image_path = Yii::$app->params->upload_directories->speakers->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        if (file_exists($image_path)) {
+                            $image = Yii::$app->params->upload_directories->speakers->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        }
+                    }
+                    $item['speaker_image'] = $image;
+                    $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/speaker1.jpg');
                     $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo  . $item['org_logo_location'] . '/' . $item['org_logo']);
                     unset($item['image']);
                     unset($item['image_location']);
