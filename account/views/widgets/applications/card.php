@@ -61,22 +61,22 @@ if (!empty($total_applications)) {
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn" type="button" >
+                               class="j-twitter share_btn tt" type="button" data-toggle="tooltip" title="share on Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-email share_btn" type="button">
+                               class="j-email share_btn tt" type="button" data-toggle="tooltip" title="share on E-mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-whatsapp share_btn" type="button">
+                               class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip" title="share on Whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-linkedin share_btn" type="button">
+                               class="j-linkedin share_btn tt" type="button" data-toggle="tooltip" title="share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
