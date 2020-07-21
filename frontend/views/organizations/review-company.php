@@ -500,6 +500,9 @@ if ($review_type=='claimed')
 }
 
 $this->registerCss('
+.i-review-next,.i-review-input-group,.i-review-selectbox,.i-review-input{
+    background-color:#fff !important;
+}
 .share-btn{
     display:flex;
     width:100%;
@@ -1220,7 +1223,7 @@ var popup = new ideaboxPopup({
 			startPage: {
 					msgTitle        : 'Rate the company on the following criteria :',
 					msgDescription 	: '',
-					startBtnText	: "Let's Get Start",
+					startBtnText	: "Let's Get Started",
 					showCancelBtn	: false,
 					cancelBtnText	: 'Cancel'
 
