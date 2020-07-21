@@ -83,9 +83,9 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
                                 </div>
                                 <div class="form-group mt-10">
-                                    <?=
-                                    \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
-                                    ?>
+<!--                                    --><?//=
+//                                    \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+//                                    ?>
                                 </div>
                                 <div class="new-user">
                                     New User?

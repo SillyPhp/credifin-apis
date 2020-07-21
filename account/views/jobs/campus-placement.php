@@ -19,18 +19,12 @@ use yii\helpers\Url;
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
                                             <div class="col-sm-12 text-right pr-0">
-                                                <button style="display:none" type="button"
-                                                        class="btn btn-default wizard-prev">
-                                                    Previous
-                                                </button>
-                                                <button type="button" class="btn btn-primary wizard-next">
-                                                    Continue
-                                                </button>
-                                                <button style="display:none" type="submit"
-                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">
-                                                    Submit
-                                                </button>
-
+                                                <div class="cr-job">
+                                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                                       title="Create AI Job" class="ai">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                                    </a>
+                                                </div>
                                             </div>
                                             <?php
                                         } else{
@@ -48,17 +42,14 @@ use yii\helpers\Url;
                                     </div>
                                 </div>
                             </div>
-                            <div class="cr-job">
-                                <a href="/account/jobs/create">Create AI Job</a>
-                            </div>
                             <div class="wizard-body">
                                 <div class="step initial active">
                                     <div class="row">
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-md-12">
-                                                <h4>Select Jobs for campus hiring.</h4>
+                                            <div class="col-md-12 text-center">
+                                                <h4 class="slct">Select from Previous Jobs for campus hiring.</h4>
                                             </div>
                                             <?php
                                             foreach ($applications['data'] as $app) {
@@ -132,7 +123,7 @@ use yii\helpers\Url;
                                         if (!empty($applications['data'])) {
                                             ?>
                                             <div class="col-md-12">
-                                                <h4>Select Colleges for campus hiring.</h4>
+                                                <h4 class="slct">Select Colleges for campus hiring.</h4>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input form-md-floating-label">
@@ -252,17 +243,7 @@ $this->registerCss('
     background-repeat: no-repeat !important;
 }
 .cr-job {
-	text-align: center;
-}
-.cr-job a {
-	font-size: 14px;
-	color: #fff;
-	background-color: #00a0e3;
-	padding: 8px 15px;
-	border-radius: 2px;
-	font-family: roboto;
-	text-transform: uppercase;
-	font-weight: 500;
+	text-align: right;
 }
 .container-fluid{
     padding:0 !important;
@@ -270,6 +251,11 @@ $this->registerCss('
 .pr-0{
     padding-right:0px;
     margin-bottom:5px;
+}
+.slct{
+    font-family:roboto;
+    font-size:18px;
+    font-weight:500;
 }
 .card-like {
 //  margin-top: 50px;
@@ -285,11 +271,13 @@ $this->registerCss('
 	background-color: #fffffff7;
 }
 .wizard .wizard-header {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
   margin-bottom: 0px;
+  font-family:roboto;
+  font-weight:500;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;

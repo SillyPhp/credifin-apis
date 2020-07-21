@@ -19,7 +19,7 @@ $this->registercss('
 	/* box-shadow: 0 5px 5px rgba(0, 0, 0, .3); */
 	border-radius: 4px;
 	/* background-image: linear-gradient(33deg, white 47%, #8a1117 100%); */
-	padding: 15px 10px 15px;
+	padding: 15px 5px 15px;
 	margin-top: 15px;
 	text-align: center;
 }
