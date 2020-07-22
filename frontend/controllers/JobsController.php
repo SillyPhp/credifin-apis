@@ -1404,7 +1404,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionXmlFeeds($offset = 0, $limit = 100, $type = 'Jobs')
+    public function actionXmlFeeds($offset = 0, $limit = 3000, $type = 'Jobs')
     {
         $params = [];
         $type = 'Jobs';

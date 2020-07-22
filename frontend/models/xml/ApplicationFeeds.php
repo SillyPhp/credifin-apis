@@ -132,9 +132,9 @@ class ApplicationFeeds
             $result[$i]['expire'] = date('d.m.Y', strtotime($val['expire']));
             $result[$i]['pubdate'] = date('d.m.Y', strtotime($val['pubdate']));
             $result[$i]['updated'] = date('d.m.Y', strtotime($val['updated']));
-            $result[$i]['description'] = $this->utf8ize($result[$i]['description']);
-            $result[$i]['education_req'] = $this->utf8ize($result[$i]['education_req']);
-            $result[$i]['organization_name'] = $this->utf8ize($result[$i]['organization_name']);
+            $result[$i]['description'] = utf8_encode(html_entity_decode($result[$i]['description']));
+            $result[$i]['education_req'] = utf8_encode(html_entity_decode($result[$i]['education_req']));
+            $result[$i]['organization_name'] = utf8_encode(html_entity_decode($result[$i]['organization_name']));
             $date=date_create($result[$i]['expire']);
             date_add($date,date_interval_create_from_date_string("60 days"));
             $result[$i]['expire'] = date_format($date,"d.m.Y");
