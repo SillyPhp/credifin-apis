@@ -38,7 +38,7 @@ class ApplicationFeeds
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.application_number id',
-                'CONCAT("'.Url::base('https').'","/job/",a.slug) link',
+                'CONCAT("https://empoweryouth.com","/job/",a.slug) link',
                 'c.name as name',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
                 '(CASE WHEN ct.name IS NOT NULL THEN ct.name ELSE cy.name END) as country',
@@ -86,7 +86,7 @@ class ApplicationFeeds
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.application_number id',
-                'CONCAT("'.Url::base('https').'","/job/",a.slug) link',
+                'CONCAT("https://empoweryouth.com","/job/",a.slug) link',
                 'c.name as name',
                 'g.name city',
                 'ct.name country',
