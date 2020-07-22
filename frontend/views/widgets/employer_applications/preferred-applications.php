@@ -58,15 +58,15 @@ $this->registerCss('
     font-size: 18px;
     font-family: roboto;
     background-color: #fff;
-    border: 1px solid #909497;
-    color: #909497;
-    padding: 6px 35px;
+    border: 2px solid #828181;
+    color: #828181;
+    padding: 8px 40px;
     border-radius: 4px;
     transition:all .3s;
 }
 .v-btn a:hover{
     background-color: #00a0e3;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     color: #fff;
 }
 .widget-heading {
