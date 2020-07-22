@@ -37,7 +37,7 @@ class ApplicationFeeds
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.application_number id',
+            ->select(['xt.html_code','a.application_number id',
                 'CONCAT("https://empoweryouth.com","/job/",a.slug) link',
                 'c.name as name',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
@@ -85,7 +85,7 @@ class ApplicationFeeds
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.application_number id',
+            ->select(['xt.html_code','a.application_number id',
                 'CONCAT("https://empoweryouth.com","/job/",a.slug) link',
                 'c.name as name',
                 'g.name city',
