@@ -28,6 +28,7 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -1403,4 +1404,5 @@ class JobsController extends Controller
             }
         }
     }
+
 }
