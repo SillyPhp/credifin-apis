@@ -132,8 +132,9 @@ class ApplicationFeeds
             $result[$i]['expire'] = date('d.m.Y', strtotime($val['expire']));
             $result[$i]['pubdate'] = date('d.m.Y', strtotime($val['pubdate']));
             $result[$i]['updated'] = date('d.m.Y', strtotime($val['updated']));
-            $result[$i]['description'] = utf8_encode($result[$i]['description']); 
-            $result[$i]['education_req'] = utf8_encode($result[$i]['education_req']);
+            $result[$i]['description'] = $this->utf8ize($result[$i]['description']);
+            $result[$i]['education_req'] = $this->utf8ize($result[$i]['education_req']);
+            $result[$i]['organization_name'] = $this->utf8ize($result[$i]['organization_name']);
             $date=date_create($result[$i]['expire']);
             date_add($date,date_interval_create_from_date_string("60 days"));
             $result[$i]['expire'] = date_format($date,"d.m.Y");
@@ -189,5 +190,16 @@ class ApplicationFeeds
             $i++;
         }
         return $result;
+    }
+
+    private  function utf8ize($mixed) {
+        if (is_array($mixed)) {
+            foreach ($mixed as $key => $value) {
+                $mixed[$key] = $this->utf8ize($value);
+            }
+        } elseif (is_string($mixed)) {
+            return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+        }
+        return $mixed;
     }
 }
