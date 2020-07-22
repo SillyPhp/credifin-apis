@@ -8,6 +8,8 @@ use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\LoanApplications;
+use common\models\LoanTypes;
+use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -58,6 +60,17 @@ class LoansController extends ApiBaseController
             return $organizations['college_id'];
         } else {
             return $this->response(401);
+        }
+    }
+
+    private function getStudentCollegeId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+            return $college_id['organization_enc_id'];
         }
     }
 
@@ -225,6 +238,44 @@ class LoansController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'nor found']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFeeComponents()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = $this->getStudentCollegeId();
+
+            $fee_components = OrganizationFeeComponents::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.fee_component_enc_id', 'a.name'])
+                ->joinWith(['assignedOrganizationFeeComponents b'], false)
+                ->where(['b.organization_enc_id' => $college_id, 'b.status' => 1, 'b.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $loan_types = LoanTypes::find()
+                ->select(['loan_type_enc_id', 'loan_name'])
+                ->asArray()
+                ->all();
+
+            if ($fee_components) {
+                return $this->response(200, ['status' => 200, 'fee_components' => $fee_components, 'loan_types' => $loan_types]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetMinMax()
+    {
+        if ($user = $this->isAuthorized()) {
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
