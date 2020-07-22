@@ -7,10 +7,11 @@ use yii\helpers\Url;
 <section>
     <div class="videoFlex">
         <div class="video-section">
-            <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+            <iframe src=""></iframe>
+            <div class="slide-close-btn">X</div>
         </div>
         <div class="slide-section">
-            <div class="slide-close-btn">X</div>
+
             <div id="scroll-chat">
                 <div class="chat">
                     <div class="chat-box">
@@ -175,10 +176,10 @@ $this->registerCss('
     color:#333;
 }
 .webinar-speakers p a{
-        color:#000;
+    color:#000;
 }
 .webinar-speakers p a:hover{
-        color:#00a0e3;
+    color:#00a0e3;
 }
 .mentor-heading {
     font-size: 25px;
@@ -242,13 +243,14 @@ $this->registerCss('
     width: 70vw;
     height: calc(100vh - 65px);
     background: #000; 
+    position: relative;
 }
 .slide-section{
     width:30vw;
     height: calc(100vh - 65px);
     background: #eee;
     position: relative;
-        overflow: hidden;
+    overflow: hidden;
  }
 .slide-hide{
     width: 0vw;
@@ -256,8 +258,8 @@ $this->registerCss('
 }
 .slide-close-btn{
     position: absolute;
-    top: 50%;
-    left:0px;
+    top: 20px;
+    right:0px;
     width: 30px;
     height: 30px;
     color: #000;
@@ -267,6 +269,9 @@ $this->registerCss('
     align-items: center; 
     cursor:pointer;
     color:#fff;
+    z-index: 999;
+    border-radius: 10px 0 0 10px;
+    line-height: 0px;
 }
 .video-details{
     background: #f8f8f8;

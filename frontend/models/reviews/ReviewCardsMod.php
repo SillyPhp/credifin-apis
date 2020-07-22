@@ -27,33 +27,44 @@ class ReviewCardsMod
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
-        $q1 = (new \yii\db\Query())
+        $q1 = Organizations::find()
+            ->distinct()
+            ->alias('a')
             ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
-                'a.created_on','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs',
-                'COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships',
-                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
+                'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
                 '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
-            ->distinct()
-            ->from(Organizations::tableName() . 'as a')
-            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id AND b.is_deleted = 0')
-            ->leftJoin(ApplicationOptions::tableName() . 'as ab', 'ab.application_enc_id = b.application_enc_id')
-            ->leftJoin(ApplicationTypes::tableName() . 'as h', 'h.application_type_enc_id = b.application_type_enc_id')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = b.application_enc_id AND e.is_deleted = 0')
-            ->leftJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
-            ->leftJoin(ApplicationPlacementCities::tableName() . 'as t', 't.application_enc_id = b.application_enc_id AND t.is_deleted = 0')
-            ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
-            ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
-            ->leftJoin(BusinessActivities::tableName() . 'as y', 'y.business_activity_enc_id = a.business_activity_enc_id')
-            ->leftJoin(OrganizationReviews::tableName() . 'as z', 'z.organization_enc_id = a.organization_enc_id')
+            ->joinWith(['businessActivityEnc y'],false)
+            ->joinWith(['organizationReviews z'],false)
+            ->joinWith(['employerApplications b' => function ($x) {
+                $x->joinWith(['applicationPlacementLocations e'=>function($x)
+                {
+                    $x->joinWith(['locationEnc f'=>function($x)
+                    {
+                        $x->joinWith(['cityEnc g'],false);
+                    }]);
+                }], false);
+                $x->joinWith(['applicationPlacementCities t'=>function($x)
+                {
+                    $x->joinWith(['cityEnc x'],false);
+                }], false);
+                $x->select(['b.organization_enc_id','h.name','COUNT(distinct b.application_enc_id) as total_application']);
+                $x->joinWith(['applicationOptions ab'], false);
+                $x->joinWith(['applicationTypeEnc h'=>function($x){
+                    $x->groupBy(['h.name']);
+                    $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                }], false);
+                $x->onCondition(['b.is_deleted' => 0]);
+                $x->groupBy(['b.organization_enc_id']);
+            }], true)
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->groupBy(['a.organization_enc_id'])
-            ->orderBy(['a.created_on' => SORT_DESC]);
+            ->orderBy(['a.is_featured'=>SORT_DESC,'a.created_on' => SORT_DESC]);
 
         if (isset($options['business_activity'])) {
             $q1->andWhere([
@@ -88,28 +99,40 @@ class ReviewCardsMod
             $q1->orFilterHaving(['ROUND(AVG(z.average_rating))' => $options['rating']]);
         }
 
-        $q2 = (new \yii\db\Query())
+        $q2 = UnclaimedOrganizations::find()
+            ->distinct()
+            ->alias('a')
             ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
-                'a.created_on','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs',
-                'COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships',
+                'a.created_on',
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND(average_rating) rating','IFNULL(u.positions, 0) total_vaccency'])
-            ->distinct() 
-            ->from(UnclaimedOrganizations::tableName() . 'as a')
-            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.unclaimed_organization_enc_id = a.organization_enc_id AND b.is_deleted = 0')
-            ->leftJoin(ApplicationUnclaimOptions::tableName() . 'as u', 'u.application_enc_id = b.application_enc_id')
-            ->leftJoin(ApplicationTypes::tableName() . 'as h', 'h.application_type_enc_id = b.application_type_enc_id')
-            ->leftJoin(ApplicationPlacementCities::tableName() . 'as t', 't.application_enc_id = b.application_enc_id AND t.is_deleted = 0')
-            ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
-            ->leftJoin(BusinessActivities::tableName() . 'as y', 'y.business_activity_enc_id = a.organization_type_enc_id')
-            ->leftJoin(NewOrganizationReviews::tableName() . 'as z', 'z.organization_enc_id = a.organization_enc_id')
+            ->joinWith(['organizationTypeEnc y'], false)
+            ->joinWith(['newOrganizationReviews z' => function ($b) {
+                $b->joinWith(['cityEnc d'], false);
+            }], false)
+            ->joinWith(['employerApplications b' => function ($x) {
+                $x->joinWith(['applicationTypeEnc h'=>function($x)
+                {
+                    $x->groupBy(['h.name']);
+                    $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                }], false);
+                $x->select(['b.unclaimed_organization_enc_id','h.name','COUNT(distinct b.application_enc_id) as total_application']);
+                $x->joinWith(['applicationUnclaimOptions u'], false);
+                $x->joinWith(['applicationPlacementCities t'=>function($x)
+                {
+                    $x->joinWith(['cityEnc x'],false);
+                }], false);
+                $x->onCondition(['b.is_deleted' => 0]);
+                $x->groupBy('b.organization_enc_id');
+            }], true)
             ->where(['a.is_deleted' => 0])
             ->groupBy(['a.organization_enc_id'])
-            ->orderBy(['a.created_on' => SORT_DESC]);
+            ->orderBy(['a.is_featured'=>SORT_DESC,'a.created_on' => SORT_DESC]);
+
         if (isset($options['business_activity'])) {
             $q2->andWhere([
                 'or',
@@ -142,13 +165,14 @@ class ReviewCardsMod
             $q2->orFilterHaving(['ROUND(AVG(c.average_rating))' => $options['rating']]);
         }
         $count = $q2->count()+$q1->count();
-        $q  = (new \yii\db\Query())
-            ->from([
-                $q1->union($q2),
-            ])
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy(['is_featured'=>SORT_DESC])
+
+        $q1 = $q1->limit($limit)
+        ->offset($offset);
+
+        $q2 = $q2->limit($limit)
+            ->offset($offset);
+        $q = $q1->union($q2)
+            ->asArray()
             ->all();
         return [
             'total' => $count,

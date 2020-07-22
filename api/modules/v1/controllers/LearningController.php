@@ -5,6 +5,7 @@ namespace api\modules\v1\controllers;
 
 
 use common\models\AssignedCategories;
+use common\models\Categories;
 use common\models\extended\TrainingPrograms;
 use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
@@ -29,6 +30,7 @@ class LearningController extends ApiBaseController
                 'contributors',
                 'popular-questions',
                 'video-detail',
+                'videos',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -145,6 +147,91 @@ class LearningController extends ApiBaseController
 
         if ($questions) {
             return $this->response(200, $questions);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionVideos()
+    {
+        $type = Yii::$app->request->post('type');
+        $slug = Yii::$app->request->post('slug');
+        if ($type === "category") {
+            $parentId = Categories::find()
+                ->alias('a')
+                ->select(['a.category_enc_id', 'b.assigned_category_enc_id', 'a.name', 'CASE WHEN b.banner IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->background->image, 'https') . '", b.banner_location, "/", b.banner) ELSE "/assets/themes/ey/images/pages/learning-corner/othercover.png" END banner'])
+                ->joinWith(['assignedCategories b'], false)
+                ->where([
+                    'a.slug' => $slug,
+                    'b.assigned_to' => 'Videos',
+                ])
+                ->andWhere([
+                    'or',
+                    ['not', ['b.parent_enc_id' => NULL]],
+                    ['not', ['b.parent_enc_id' => ""]]
+                ])
+                ->asArray()
+                ->one();
+
+            $questions = QuestionsPool::find()
+                ->alias('a')
+                ->andWhere(['a.is_deleted' => 0])
+                ->select(['a.question_pool_enc_id', 'c.name', 'question', 'privacy', 'a.slug', 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image', 'f.username', 'f.initials_color', 'CONCAT(f.first_name," ","f.last_name") user_name'])
+                ->joinWith(['createdBy f'], false)
+                ->joinWith(['topicEnc b' => function ($b) use ($parentId) {
+                    $b->andWhere(['b.category_enc_id' => $parentId['category_enc_id']]);
+                    $b->joinWith(['categoryEnc c'], false);
+                }], false)
+                ->joinWith(['questionsPoolAnswers d' => function ($b) {
+                    $b->joinWith(['createdBy e'], false);
+                    $b->select(['d.question_pool_enc_id', 'CONCAT(e.first_name," ",e.last_name) name', 'CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image', 'e.username', 'e.initials_color']);
+                    $b->limit(3);
+                }])
+                ->orderBy(new Expression('rand()'))
+                ->limit(6)
+                ->asArray()
+                ->all();
+
+            $result = LearningVideos::find()
+                ->alias('a')
+                ->joinWith(['assignedCategoryEnc b' => function ($x) use ($slug) {
+                    $x->andOnCondition(['b.assigned_to' => 'Videos']);
+                    $x->andOnCondition(['b.status' => 'Approved']);
+                    $x->andOnCondition(['b.is_deleted' => 0]);
+                    $x->innerJoinWith(['categoryEnc c' => function ($y) use ($slug) {
+                        $y->andOnCondition(['c.slug' => $slug]);
+                    }]);
+                }])
+                ->andWhere(['a.status' => 1])
+                ->andWhere(['a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $categories = AssignedCategories::find()
+                ->alias('a')
+                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'c.icon_png child_icon', 'd.icon_png parent_icon'])
+                ->joinWith(['learningVideos b' => function ($b) {
+                    $b->andOnCondition(['b.status' => 1]);
+                    $b->andOnCondition(['b.is_deleted' => 0]);
+                }], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->joinWith(['parentEnc d'], false)
+                ->where(['a.assigned_to' => 'Videos'])
+                ->andWhere(['a.status' => 'Approved'])
+                ->andWhere(['a.parent_enc_id' => $parentId['category_enc_id']])
+                ->andWhere(['a.is_deleted' => 0])
+                ->groupBy(['a.assigned_category_enc_id'])
+                ->asArray()
+                ->all();
+
+            $response = [];
+            if (!empty($questions)) {
+                $response['questions'] = $questions;
+            }
+            if (!empty($result)) {
+                $response['video_gallery'] = $result;
+                $response['categories'] = $categories;
+            }
+            return $this->response(200, $response);
         } else {
             return $this->response(404, 'not found');
         }
