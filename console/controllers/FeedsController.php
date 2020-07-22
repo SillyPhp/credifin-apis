@@ -9,7 +9,6 @@ class FeedsController extends Controller {
     public function actionXmlFeeds($offset = 0, $limit = 3000,$type='Jobs')
     {
         $params = [];
-        $type = 'Jobs';
         $params['limit'] = $limit;
         $params['offset'] = $offset;
         $params['type'] = $type;
@@ -28,28 +27,38 @@ class FeedsController extends Controller {
             $node = $dom->createElement('job');
             $attr_node_id = new \DOMAttr('id', $i++);
             $node->setAttributeNode($attr_node_id);
-            $child_node_slug = $dom->createElement('link', '<![CDATA['.$object['link'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('name', '<![CDATA['.$object['name'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('region', '<![CDATA['.$object['city'].', '.$object['country'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('salary', '<![CDATA['.$object['salary'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('description', '<![CDATA['.$object['description'].'<br>'.$object['education_req'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('apply_url', '<![CDATA['.$object['link'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('company', '<![CDATA['.$object['organization_name'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('pubdate', '<![CDATA['.$object['pubdate'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('updated', '<![CDATA['.$object['updated'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('expire', '<![CDATA['.$object['expire'].']]>');
-            $node->appendChild($child_node_slug);
-            $child_node_slug = $dom->createElement('type', '<![CDATA['.$object['type'].']]>');
-            $node->appendChild($child_node_slug);
+            $name = $node->appendChild($dom->createElement('link'));
+            $name->appendChild($dom->createCDATASection($object['link']));
+
+            $name = $node->appendChild($dom->createElement('name'));
+            $name->appendChild($dom->createCDATASection($object['name']));
+
+            $name = $node->appendChild($dom->createElement('region'));
+            $name->appendChild($dom->createCDATASection($object['city'].', '.$object['country']));
+
+            $name = $node->appendChild($dom->createElement('salary'));
+            $name->appendChild($dom->createCDATASection($object['salary']));
+
+            $name = $node->appendChild($dom->createElement('description'));
+            $name->appendChild($dom->createCDATASection($object['description'].'<br>'.$object['education_req']));
+
+            $name = $node->appendChild($dom->createElement('apply_url'));
+            $name->appendChild($dom->createCDATASection($object['link']));
+
+            $name = $node->appendChild($dom->createElement('company'));
+            $name->appendChild($dom->createCDATASection($object['organization_name']));
+
+            $name = $node->appendChild($dom->createElement('pubdate'));
+            $name->appendChild($dom->createCDATASection($object['pubdate']));
+
+            $name = $node->appendChild($dom->createElement('updated'));
+            $name->appendChild($dom->createCDATASection($object['updated']));
+
+            $name = $node->appendChild($dom->createElement('expire'));
+            $name->appendChild($dom->createCDATASection($object['expire']));
+
+            $name = $node->appendChild($dom->createElement('type'));
+            $name->appendChild($dom->createCDATASection($object['type']));
             $root->appendChild($node);
         }
         $dom->appendChild($root);
