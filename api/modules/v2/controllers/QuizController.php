@@ -908,6 +908,7 @@ class QuizController extends ApiBaseController
                     ->where(['quiz_pool_enc_id' => $q['quiz_pool_enc_id']])
                     ->count();
                 $labels = $this->getLabels($q['label_enc_id']);
+
                 $quiz_pools[$i]['labels'] = $labels;
                 $quiz_pools[$i]['question_count'] = $pool_questions_count;
                 $i++;
@@ -924,7 +925,7 @@ class QuizController extends ApiBaseController
         }
     }
 
-    private function getLabels($label_id, $arr = [])
+    private function getLabels($label_id)
     {
         $label = MockLabels::find()
             ->distinct()
@@ -936,11 +937,46 @@ class QuizController extends ApiBaseController
             ->one();
 
         if ($label) {
-            $parent = $this->getLabels($label['parent_enc_id'], $arr);
+            $parent = $this->getLabels($label['parent_enc_id']);
             $label['parent'] = $parent;
         }
 
         return $label;
+    }
+
+    public function actionTeacherStats()
+    {
+        if ($user = $this->isAuthorized()) {
+            $quiz_count = MockQuizzes::find()
+                ->where(['created_by' => $user, 'is_deleted' => 0])
+                ->count();
+
+            $quiz_pool_count = MockQuizPool::find()
+                ->where(['created_by' => $user])
+                ->count();
+
+            $played = MockQuizzes::find()
+                ->where(['created_by' => $user, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $played_count = 0;
+            foreach ($played as $p){
+                $count = MockTakenQuizzes::find()
+                    ->where(['quiz_enc_id'=>$p['quiz_enc_id']])
+                    ->count();
+
+                $played_count += $count;
+            }
+
+            $count = [];
+            $count['quiz_count'] = $quiz_count;
+            $count['pools_count'] = $quiz_pool_count;
+            $count['played_count'] = $played_count;
+            return $this->response(200, ['status' => 200, 'data' => $count]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }

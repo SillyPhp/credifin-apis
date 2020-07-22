@@ -10,6 +10,7 @@ use common\models\ErexxEmployerApplications;
 use common\models\LoanApplications;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
+use common\models\OrganizationLoanSchemes;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -276,6 +277,25 @@ class LoansController extends ApiBaseController
     public function actionGetMinMax()
     {
         if ($user = $this->isAuthorized()) {
+            $college_id = $this->getStudentCollegeId();
+            $params = Yii::$app->request->post();
+            if (isset($params['loan_type_enc_id']) && !empty($params['loan_type_enc_id'])) {
+                $loan_type = $params['loan_type_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $org_min_max = OrganizationLoanSchemes::find()
+                ->select(['scheme_enc_id','min(borrower) min','max(borrower) max'])
+                ->where(['organization_enc_id' => $college_id, 'loan_type_enc_id' => $loan_type])
+                ->asArray()
+                ->all();
+
+            if ($org_min_max) {
+                return $this->response(200, ['status' => 200, 'data' => $org_min_max]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
