@@ -158,6 +158,48 @@ if (!empty($total_applications)) {
 Pjax::end();
 
 $this->registerCss("
+.hr-com-jobs{
+    font-size:13px; 
+    color:#080808; 
+    padding:10px 0 0px;
+    margin-top:10px; 
+    border-top:1px solid #eef1f5;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.hr-com-jobs > a > i{
+    font-size: 25px;
+    margin-top: 4px;
+    transition: all .3s;
+}
+.hr-com-jobs > a > i:hover{
+    color:#ff7803;
+}
+.appl {
+    flex-basis: 100%;
+}
+.appl a {
+    font-family: roboto;
+    font-size: 12px;
+    color: #00a0e3;
+    border: 1px solid #00a0e3;
+    -webkit-border-radius: 20px !important;
+    -moz-border-radius: 20px !important;
+    -ms-border-radius: 20px !important;
+    -o-border-radius: 20px !important;
+    border-radius: 4px !important;
+    padding: 6px 0;
+    display: block;
+    margin-left: 10px;
+    flex-basis: 50%;
+}
+.appl a:hover {
+    background: #00a0e3 !important;
+    color: #ffffff;
+    transition: all 0.4s ease 0s;
+    text-decoration:none;
+}
 .tt + .tooltip > .tooltip-inner {
     min-width:70px;
     max-width:110px;
