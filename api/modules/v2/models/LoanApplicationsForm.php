@@ -3,9 +3,11 @@
 
 namespace api\modules\v2\models;
 
+use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
+use common\models\OrganizationFeeAmount;
 use Yii;
 use yii\base\Model;
 
@@ -27,19 +29,33 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($userId)
+    public function add($userId, $college_id)
     {
+        $application_fee = OrganizationFeeAmount::find()
+            ->select(['application_fee_amount_enc_id', 'amount', 'gst'])
+            ->where(['organization_enc_id' => $college_id, 'loan_type_enc_id' => $this->loan_type_enc_id, 'status' => 1])
+            ->asArray()
+            ->one();
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $this->loan_app_enc_id = $utilitiesModel->encrypt();
+            $this->college_enc_id = $college_id;
+            if (!empty($application_fee)) {
+                $this->status = 4;
+            }
+            $this->source = 'Mec';
             $this->created_by = $userId;
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
                 $transaction->rollback();
                 return false;
+            } else {
+                $this->_flag = true;
             }
+
             if (!empty($this->purpose)) {
                 foreach ($this->purpose as $p) {
                     $purpose = new LoanPurpose();
@@ -51,9 +67,10 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->created_by = $userId;
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
-                        print_r($purpose->getErrors());
                         $transaction->rollback();
                         return false;
+                    } else {
+                        $this->_flag = true;
                     }
                 }
             }
@@ -66,6 +83,9 @@ class LoanApplicationsForm extends LoanApplications
                 $model->relation = $applicant['relation'];
                 $model->employment_type = $applicant['employment_type'];
                 $model->annual_income = $applicant['annual_income'];
+//                if($key == 'pan_number') {
+//                    $model->pan_number = $applicant['pan_number'];
+//                }
                 $model->created_by = $userId;
                 $model->created_on = date('Y-m-d H:i:s');
                 if (!$model->save()) {
@@ -75,9 +95,60 @@ class LoanApplicationsForm extends LoanApplications
                     $this->_flag = true;
                 }
             }
+            if (!empty($application_fee)) {
+
+                $amount = $application_fee['amount'];
+                $gst = $application_fee['gst'];
+                $percentage = ($amount * $gst) / 100;
+                $total_amount = $amount + $percentage;
+                $application_fee['total_amount'] = $total_amount;
+
+                $args = [];
+                $args['amount'] = $application_fee['total_amount'];
+                $args['currency'] = "INR";
+                $args['email'] = $this->email;
+                $args['contact'] = $this->phone;
+
+                $request = curl_init('http://www.sneh.eygb.me/api/v3/payment-request/get-token');
+                curl_setopt($request, CURLOPT_POST, true);
+                curl_setopt($request, CURLOPT_POSTFIELDS, $args);
+                curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+                $response = json_decode(curl_exec($request), true);
+
+                if (isset($response['status']) && $response['status'] == 'created') {
+                    $token = $response['id'];
+                    $loan_payment = new EducationLoanPayments();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+                    $loan_payment->college_enc_id = $college_id;
+                    $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
+                    $loan_payment->payment_token = $token;
+                    $loan_payment->payment_amount = $application_fee['total_amount'];
+                    $loan_payment->payment_gst = $application_fee['gst'];
+                    $loan_payment->created_by = $userId;
+                    $loan_payment->created_on = date('Y-m-d H:i:s');
+                    if (!$loan_payment->save()) {
+                        print_r($loan_payment->getErrors());
+                        die();
+                        $transaction->rollBack();
+                        return false;
+                    } else {
+                        $transaction->commit();
+                        $data = [];
+                        $data['loan_app_enc_id'] = $this->loan_app_enc_id;
+                        $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
+                        $data['payment_id'] = $loan_payment->payment_token;
+                        return $data;
+                    }
+                }
+            }
             if ($this->_flag) {
                 $transaction->commit();
-                return true;
+                $data = [];
+                $data['loan_app_enc_id'] = $this->loan_app_enc_id;
+                $data['education_loan_payment_enc_id'] = '';
+                $data['payment_id'] = '';
+                return $data;
             } else {
                 $transaction->rollBack();
                 return false;
