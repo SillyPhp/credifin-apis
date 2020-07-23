@@ -6,6 +6,7 @@ namespace api\modules\v1\controllers;
 
 use common\models\AssignedCategories;
 use common\models\Categories;
+use common\models\EmployerApplications;
 use common\models\extended\TrainingPrograms;
 use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
@@ -156,6 +157,7 @@ class LearningController extends ApiBaseController
     {
         $type = Yii::$app->request->post('type');
         $slug = Yii::$app->request->post('slug');
+        $response = [];
         if ($type === "category") {
             $parentId = Categories::find()
                 ->alias('a')
@@ -172,6 +174,10 @@ class LearningController extends ApiBaseController
                 ])
                 ->asArray()
                 ->one();
+
+            if($parentId){
+                $response['detail'] = $parentId;
+            }
 
             $questions = QuestionsPool::find()
                 ->alias('a')
@@ -191,6 +197,9 @@ class LearningController extends ApiBaseController
                 ->limit(6)
                 ->asArray()
                 ->all();
+            if($questions){
+                $response['questions'] = $questions;
+            }
 
             $result = LearningVideos::find()
                 ->alias('a')
@@ -206,6 +215,10 @@ class LearningController extends ApiBaseController
                 ->andWhere(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+            if ($result) {
+                $response['top_videos'] = $result;
+            }
+
             $categories = AssignedCategories::find()
                 ->alias('a')
                 ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'c.icon_png child_icon', 'd.icon_png parent_icon'])
@@ -222,14 +235,244 @@ class LearningController extends ApiBaseController
                 ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
                 ->all();
-
-            $response = [];
-            if (!empty($questions)) {
-                $response['questions'] = $questions;
-            }
-            if (!empty($result)) {
-                $response['video_gallery'] = $result;
+            if ($categories) {
                 $response['categories'] = $categories;
+            }
+            $jobs = EmployerApplications::find()
+                ->alias('a')
+                ->select([
+                    'a.application_enc_id application_id',
+                    'a.last_date',
+                    'a.type',
+                    'CONCAT("/job/", a.slug) link',
+                    '(CASE
+                    WHEN a.experience = "0" THEN "No Experience"
+                    WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+                    WHEN a.experience = "2" THEN "1 Year Experience"
+                    WHEN a.experience = "3" THEN "2-3 Years Experience"
+                    WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+                    WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+                    WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+                    WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                    ELSE "No Experience"
+                    END) as experience',
+                    'c.initials_color color',
+                    'CONCAT("/", c.slug) organization_link',
+                    'c.name as organization_name',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'h.name category',
+                    'g.name as title',
+                    'e.designation',
+                    'l.fixed_wage as fixed_salary',
+                    'l.wage_type salary_type',
+                    'l.max_wage as max_salary',
+                    'l.min_wage as min_salary',
+                    'l.wage_duration as salary_duration',
+                    'i.location_enc_id location_id',
+                    "k.name as city",
+                ])
+                ->innerJoinWith(['applicationTypeEnc b'], false)
+                ->innerJoinWith(['organizationEnc c'], false)
+                ->innerJoinWith(['title d' => function ($x) {
+                    $x->innerJoinWith(['categoryEnc g'], false);
+                    $x->innerJoinWith(['parentEnc h'], false);
+                }], false)
+                ->innerJoinWith(['designationEnc e'], false)
+                ->innerJoinWith(['preferredIndustry f'], false)
+                ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
+                    $x->innerJoinWith(['locationEnc j' => function ($x) {
+                        $x->innerJoinWith(['cityEnc k'], false);
+                    }], false);
+                }], false)
+                ->innerJoinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Jobs',
+                    'a.for_careers' => 0,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
+                ->andFilterWhere([
+                    'or',
+                    ['like', 'a.slug', $slug],
+                    ['like', 'a.description', $slug],
+                    ['like', 'g.name', $slug],
+                    ['like', 'h.name', $slug],
+                    ['like', 'g.slug', $slug],
+                    ['like', 'e.designation', $slug],
+                    ['like', 'e.slug', $slug],
+                    ['like', 'f.industry', $slug],
+                    ['like', 'f.slug', $slug],
+                ])
+                ->groupBy(['a.application_enc_id'])
+                ->limit(6);
+
+            $final_jobs = $jobs->asArray()->all();
+
+            $i = 0;
+            foreach ($final_jobs as $val) {
+                $final_jobs[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+                if ($val['salary_type'] == "Fixed") {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                    } else {
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                    }
+                } elseif ($val['salary_type'] == "Negotiable") {
+                    if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                        }
+                    } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                        } else {
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                        }
+                    } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_jobs[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                        }
+                    }
+                }
+                $i++;
+            }
+
+            if($final_jobs){
+                $response['related_jobs'] = $final_jobs;
+            }
+
+            $internships = EmployerApplications::find()
+                ->alias('a')
+                ->select([
+                    'a.application_enc_id application_id',
+                    'a.last_date',
+                    'a.type',
+                    'CONCAT("/internship/", a.slug) link',
+                    'c.initials_color color',
+                    'CONCAT("/", c.slug) organization_link',
+                    'c.name as organization_name',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'h.name category',
+                    'g.name as title',
+                    'l.fixed_wage as fixed_salary',
+                    'l.wage_type salary_type',
+                    'l.max_wage as max_salary',
+                    'l.min_wage as min_salary',
+                    'l.wage_duration as salary_duration',
+                    'i.location_enc_id location_id',
+                    "k.name as city",
+                ])
+                ->innerJoinWith(['applicationTypeEnc b'], false)
+                ->innerJoinWith(['organizationEnc c'], false)
+                ->innerJoinWith(['title d' => function ($x) {
+                    $x->innerJoinWith(['categoryEnc g'], false);
+                    $x->innerJoinWith(['parentEnc h'], false);
+                }], false)
+                ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
+                    $x->innerJoinWith(['locationEnc j' => function ($x) {
+                        $x->innerJoinWith(['cityEnc k'], false);
+                    }], false);
+                }], false)
+                ->innerJoinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Internships',
+                    'a.for_careers' => 0,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
+                ->andFilterWhere([
+                    'or',
+                    ['like', 'a.slug', $slug],
+                    ['like', 'a.description', $slug],
+                    ['like', 'b.name', $slug],
+                    ['like', 'a.type', $slug],
+                    ['like', 'c.name', $slug],
+                    ['like', 'c.slug', $slug],
+                    ['like', 'c.website', $slug],
+                    ['like', 'g.name', $slug],
+                    ['like', 'h.name', $slug],
+                    ['like', 'g.slug', $slug],
+                    ['like', 'l.wage_type', $slug],
+                    ['like', 'l.wage_duration', $slug],
+                    ['like', 'j.location_name', $slug],
+                    ['like', 'j.address', $slug],
+                    ['like', 'k.name', $slug],
+                ])
+                ->groupBy(['a.application_enc_id'])
+                ->limit(6);
+
+            $final_internships = $internships->asArray()->all();
+
+            $i = 0;
+            foreach ($final_internships as $val) {
+                $final_internships[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+                if ($val['salary_type'] == "Fixed") {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_internships[$i]['salary'] = $val['fixed_salary'] . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_internships[$i]['salary'] = $val['fixed_salary'] * 730 . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 7 * 30 . ' p.m.';
+                    } else {
+                        $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 12 . ' p.m.';
+                    }
+                } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
+                    if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_internships[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . " - ₹" . (string)($val['max_salary'] * 730) . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . " - ₹" . (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                        } else {
+                            $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . " - ₹" . (int)($val['max_salary']) / 12 . ' p.m.';
+                        }
+                    } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_internships[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . ' p.m.';
+                        } else {
+                            $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . ' p.m.';
+                        }
+                    } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $final_internships[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $final_internships[$i]['salary'] = (string)($val['max_salary'] * 730) . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $final_internships[$i]['salary'] = (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                        } else {
+                            $final_internships[$i]['salary'] = (int)($val['max_salary']) / 12 . ' p.m.';
+                        }
+                    }
+                }
+                $i++;
+            }
+            if($final_internships){
+                $response['related_internships'] = $final_internships;
             }
             return $this->response(200, $response);
         } else {
