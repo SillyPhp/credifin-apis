@@ -178,7 +178,7 @@ $this->registerCss('
     background: #ffcc00;
     padding: 20px 20px 0;
     position: relative;
-    margin: 20px;   
+    margin: 20px 0;   
 }
 .sub-btn {
      border: 2px solid #000;
