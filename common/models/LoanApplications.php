@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $loan_app_enc_id
+ * @property string $college_enc_id
  * @property string $college_course_enc_id organization_enc_id
  * @property string $loan_type_enc_id
  * @property string $applicant_name Course Name
@@ -21,6 +22,7 @@ use Yii;
  * @property string $email
  * @property int $gender 1 for Male, 2 for Female
  * @property double $amount
+ * @property string $source
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_by
@@ -51,12 +53,12 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'created_by', 'created_on'], 'required'],
+            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'source', 'created_on'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['degree'], 'string'],
+            [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
-            [['loan_app_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
