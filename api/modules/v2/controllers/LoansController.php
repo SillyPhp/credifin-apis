@@ -123,7 +123,6 @@ class LoansController extends ApiBaseController
                     'a.email',
                     'a.gender',
                     'a.amount',
-                    'a.source as purpose',
                     'c.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
@@ -140,6 +139,10 @@ class LoansController extends ApiBaseController
                         'd.employment_type',
                         'd.annual_income'
                     ]);
+                }])
+                ->joinWith(['loanPurposes e' => function($e){
+                    $e->select(['e.loan_purpose_enc_id','e.loan_app_enc_id','e.fee_component_enc_id', 'e1.name']);
+                    $e->joinWith(['feeComponentEnc e1'],false);
                 }])
                 ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0]);
             if ($limit) {
@@ -164,7 +167,6 @@ class LoansController extends ApiBaseController
                         'a.email',
                         'a.gender',
                         'a.amount',
-                        'a.purpose',
                         'c.course_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
@@ -181,6 +183,10 @@ class LoansController extends ApiBaseController
                             'd.employment_type',
                             'd.annual_income'
                         ]);
+                    }])
+                    ->joinWith(['loanPurposes e' => function($e){
+                        $e->select(['e.loan_purpose_enc_id','e.loan_app_enc_id','e.fee_component_enc_id', 'e1.name']);
+                        $e->joinWith(['feeComponentEnc e1'],false);
                     }])
                     ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
                     ->asArray()

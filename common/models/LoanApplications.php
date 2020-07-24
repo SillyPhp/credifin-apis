@@ -32,7 +32,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property LoanTypes $loanTypeEnc
- * @property LoanTypes $loanTypeEnc0
+ * @property Organizations $collegeEnc
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanPurpose[] $loanPurposes
  */
@@ -63,7 +63,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
+            [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -110,9 +110,9 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLoanTypeEnc0()
+    public function getCollegeEnc()
     {
-        return $this->hasOne(LoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'college_enc_id']);
     }
 
     /**
