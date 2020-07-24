@@ -65,7 +65,7 @@ class BlogController extends Controller
                 }], false)
                 ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->orderby(new Expression('rand()'))
-                ->limit(4)
+                ->limit(3)
                 ->asArray()
                 ->all();
             return $response = [

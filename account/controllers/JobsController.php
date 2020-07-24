@@ -440,10 +440,28 @@ class JobsController extends Controller
             'colleges' => $colleges,
             'addedColleges' => $addedColleges,
             'saveCollege' => $saveCollege,
+            'jobs' => $this->__getApplications("Jobs"),
             'primary_fields' => $this->getCategories()
         ]);
     }
+    private function __getApplications($type)
+    {
+        $application = \common\models\ApplicationTemplates::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+            ->joinWith(['title0 z' => function ($z) {
+                $z->joinWith(['categoryEnc zz']);
+                $z->joinWith(['parentEnc z1']);
+            }], false)
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->limit(10)
+            ->all();
 
+        return $application;
+    }
     private function __questionnaire($limit = NULL)
     {
         $options = [

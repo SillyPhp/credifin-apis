@@ -129,6 +129,7 @@ class UserDataComponent extends Component
             ->where(['a.user_enc_id' => $userId])
             ->asArray()
             ->one();
+
         return $data;
     }
 }

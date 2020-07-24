@@ -25,6 +25,8 @@ use Yii;
  * @property string $joining_date Joining Date
  * @property string $last_date Last Date to Apply
  * @property string $experience Minimum Experience Required
+ * @property string $minimum_exp Minimum Experience Required
+ * @property string $maximum_exp Maximum Experience Required
  * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
@@ -88,7 +90,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
         return [
             [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
             [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
-            [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
+            [['description', 'type', 'experience','minimum_exp','maximum_exp','preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
             [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['application_enc_id'], 'unique'],

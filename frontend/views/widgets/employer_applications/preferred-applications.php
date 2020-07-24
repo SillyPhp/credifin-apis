@@ -2,37 +2,73 @@
 
 use yii\helpers\Url;
 
+$baseUrl = Url::base(true);
 ?>
-
-    <section>
+    <div class="ji-tabs">
         <div class="container">
-            <div class="row" id="featured-head">
-                <div class="col-md-6 col-sm-8 col-xs-12">
-                    <h1 class="heading-style" id="prefer-heading">Prefered Jobs</h1>
+            <ul id="myTabs" class="nav nav-pills nav-justified set-w" role="tablist" data-tabs="tabs">
+                <li class="active use-act" data-id="jobs"><a href="#featured-cards-jobs" data-toggle="tab">Jobs</a></li>
+                <li class="use-act" data-id="internships"><a href="#featured-cards-internships" data-toggle="tab">Internships</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="featured-cards-jobs">
+                    <?= $this->render('/widgets/preloaders/preferred-application-card'); ?>
                 </div>
-                <div class="col-md-6 col-sm-4 col-xs-12">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/jobs'); ?> " class="btn btn-3" id="65af4d5a">
-                                <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
-                                <span class="round"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                        </div>
-                    </div>
+                <div role="tabpanel" class="tab-pane fade" id="featured-cards-internships">
+                    <?= $this->render('/widgets/preloaders/preferred-application-card'); ?>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="featured-job-cards">
-                        <?= $this->render('/widgets/preloaders/preferred-application-card'); ?>
-                    </div>
-                </div>
+            <div class="v-btn">
+                <a href="<?= Url::to('/jobs'); ?>" id="view-all-application">View All</a>
             </div>
         </div>
-    </section>
+    </div>
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+#app-data{overflow-x:unset !important}
+.set-w {
+    max-width: 450px;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    background-color: #00a0e3;
+    padding: 8px 3px;
+    border-radius: 4px;
+    justify-content: center;
+    margin-bottom:20px;
+}
+.nav-pills li a{
+    color:#fff;
+    font-family:roboto;
+    font-size:18px;
+    font-weight:500;
+    margin:0 5px;
+    transition:all .3s;
+    padding:8px 15px;
+}
+.use-act{flex-basis:50%;}
+.nav-pills li a:hover, .nav-pills li.active > a, .nav-pills li.active > a:hover, .nav-pills li.active > a:focus{
+    background-color:#fff !important;
+    color:#00a0e3;
+}
+.v-btn{text-align:center;}
+.v-btn a{
+    font-size: 18px;
+    font-family: roboto;
+    background-color: #fff;
+    border: 2px solid #828181;
+    color: #828181;
+    padding: 8px 40px;
+    border-radius: 4px;
+    transition:all .3s;
+}
+.v-btn a:hover{
+    background-color: #00a0e3;
+    border: 2px solid transparent;
+    color: #fff;
+}
 .widget-heading {
 	text-align: center;
 	font-size: 27px;
@@ -98,7 +134,13 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-
+var baseUrl = "$baseUrl";
+$(document).on('click', '.use-act', function(e) {
+    e.preventDefault();
+    var displayCity = localStorage.getItem("displayCity");
+    var id = $(this).attr('data-id');
+    var view_link = $('#view-all-application').attr('href', baseUrl + '/' + id + '-in-' + displayCity);
+});
  var x, lat, lng, city, state, country, geocoder, latlng, loc;
  $(document).ready(function() {
      $('#featured-head').hide();
@@ -106,7 +148,8 @@ $script = <<<JS
  });
  function result() {
      loc = city + ', ' + state + ', ' + country;
-     getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
+     getCards(type = 'Internships',container = '#featured-cards-internships', url = '/employers/preferred-application-list',loc, 6, 'ai');
+     getCards(type = 'Jobs',container = '#featured-cards-jobs', url = '/employers/preferred-application-list',loc, 6, 'ai');
      // if(city != ""){
      //    $('#prefer-heading').html('Jobs in ' + city);
      //    $('#65af4d5a').prop('href','/jobs-in-' + city)

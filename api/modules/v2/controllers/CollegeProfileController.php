@@ -76,18 +76,41 @@ class CollegeProfileController extends ApiBaseController
     public function actionOrgData()
     {
         if ($user = $this->isAuthorized()) {
-            $organizations = Users::find()
-                ->alias('a')
-                ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-                ->joinWith(['organizationEnc b' => function ($b) {
-                    $b->joinWith(['referrals c'], false);
-                }], false)
-                ->where(['a.user_enc_id' => $user->user_enc_id])
-                ->asArray()
-                ->all();
 
-            return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            $user_type = Users::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($user_type['organization_enc_id']) {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['organizationEnc b' => function ($b) {
+                        $b->joinWith(['referrals c'], false);
+                    }], false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            } else {
+                $organizations = Users::find()
+                    ->alias('a')
+                    ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    ->joinWith(['teachers cc' => function ($cc) {
+                        $cc->joinWith(['collegeEnc b' => function ($b) {
+                            $b->joinWith(['referrals c'], false);
+                        }], false);
+                    }],false)
+                    ->where(['a.user_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'detail' => $organizations]);
+            }
         }
     }
 
@@ -472,6 +495,14 @@ class CollegeProfileController extends ApiBaseController
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], true)
                 ->joinWith(['applicationTypeEnc z'])
+                ->joinWith(['applicationEmployeeBenefits za' => function ($za) {
+                    $za->select(['za.application_benefit_enc_id',
+                        'za.benefit_enc_id', 'za.application_enc_id',
+                        'zb.benefit',
+                        'CASE WHEN zb.icon IS NULL OR zb.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon, 'https') . '", zb.icon_location, "/", zb.icon) END icon']);
+                    $za->joinWith(['benefitEnc zb'], false);
+                    $za->onCondition(['za.is_available' => 1, 'za.is_deleted' => 0]);
+                }])
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
@@ -493,54 +524,109 @@ class CollegeProfileController extends ApiBaseController
             $result = $jobs->orderBy(['b.is_college_approved' => SORT_DESC])->asArray()
                 ->all();
 
-
-            $i = 0;
-            foreach ($result as $val) {
-                $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
-                if ($val['salary_type'] == "Fixed") {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
-                    } else {
-                        $result[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+            if ($type == 'Internships') {
+                $i = 0;
+                foreach ($result as $val) {
+                    if ($val['salary_type'] == "Fixed") {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = $val['fixed_salary'] . ' p.m.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = $val['fixed_salary'] * 4 . ' p.m.';
+                        }
+                    } elseif ($val['salary_type'] == "Negotiable") {
+                        if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 4) . " - ₹" . (string)($val['max_salary'] * 4) . ' p.m.';
+                            }
+                        } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 4) . ' p.m.';
+                            }
+                        } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['max_salary'] * 4) . ' p.m.';
+                            }
+                        }
+                    } elseif ($val['salary_type'] == "Performance Based") {
+                        if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 4) . " - ₹" . (string)($val['max_salary'] * 4) . ' p.m.';
+                            }
+                        } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 4) . ' p.m.';
+                            }
+                        } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['max_salary'] * 4) . ' p.m.';
+                            }
+                        }
+                    } elseif ($val['salary_type'] == "Unpaid") {
+                        $result[$i]['salary'] = 'Unpaid';
                     }
-                } elseif ($val['salary_type'] == "Negotiable") {
-                    if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
-                        if ($val['salary_duration'] == "Monthly") {
-                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Hourly") {
-                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Weekly") {
-                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
-                        } else {
-                            $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
-                        }
-                    } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
-                        if ($val['salary_duration'] == "Monthly") {
-                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Hourly") {
-                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Weekly") {
-                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
-                        } else {
-                            $result[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
-                        }
-                    } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
-                        if ($val['salary_duration'] == "Monthly") {
-                            $result[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Hourly") {
-                            $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
-                        } elseif ($val['salary_duration'] == "Weekly") {
-                            $result[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
-                        } else {
-                            $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
-                        }
-                    }
+                    $i++;
                 }
-                $i++;
+            } else {
+                $i = 0;
+                foreach ($result as $val) {
+                    $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+                    if ($val['salary_type'] == "Fixed") {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                        }
+                    } elseif ($val['salary_type'] == "Negotiable") {
+                        if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Hourly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                            } else {
+                                $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                            }
+                        } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Hourly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                            } else {
+                                $result[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                            }
+                        } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                            if ($val['salary_duration'] == "Monthly") {
+                                $result[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Hourly") {
+                                $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                            } elseif ($val['salary_duration'] == "Weekly") {
+                                $result[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                            } else {
+                                $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                            }
+                        }
+                    }
+                    $i++;
+                }
             }
 
             $resultt = [];
@@ -573,6 +659,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['last_date'] = $j['last_date'];
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
+                $data['benefits'] = $j['applicationEmployeeBenefits'];
                 $data['salary'] = $j['salary'];
                 foreach ($j['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {

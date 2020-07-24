@@ -3,7 +3,10 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\models\ForgotPasswordForm;
+use api\modules\v1\models\SocialLogin;
+use common\components\AuthHandler;
 use common\models\EmailLogs;
+use common\models\User;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -27,10 +30,94 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST'],
                 'login' => ['POST'],
                 'refresh-access-token' => ['POST'],
-                'forgot-password' => ['POST']
+                'forgot-password' => ['POST'],
+                'social-authentication' => ['POST'],
+                'social-login' => ['POST']
             ]
         ];
         return $behaviors;
+    }
+
+    public function actionSocialAuthentication()
+    {
+        $model = new SocialLogin();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $result = $model->handle();
+                if ($result['status'] == 203) {
+                    $user = Candidates::findOne([
+                        'user_enc_id' => $result['user_id'],
+                    ]);
+                    $token = $this->findToken($user, $model->source);
+                    if (empty($token)) {
+                        if ($token = $this->newToken($user->user_enc_id, $model->source)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
+                    } else {
+                        if ($token = $this->onlyTokens($token)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
+                    }
+                } else if ($result['status'] == 205) {
+                    $user = Candidates::findOne([
+                        'user_enc_id' => $result['user_id'],
+                    ]);
+                    return $this->response(200, ['user_id' => $user->user_enc_id, 'user_name' => $user->username]);
+                } else {
+                    return $this->response(500, 'An Error Occurred..');
+                }
+            }
+            return $this->response(422, $model->getErrors());
+        }
+        return $this->response(422);
+    }
+
+    public function actionSocialLogin()
+    {
+        $id = Yii::$app->request->post('user_id');
+        $username = Yii::$app->request->post('username');
+        $platform = Yii::$app->request->post('platform');
+        $source = Yii::$app->request->post('source');
+        $user = Candidates::findOne([
+            'user_enc_id' => $id,
+        ]);
+        if (!$user) {
+            return $this->response(404, 'Not Found');
+        }
+        if ($user->username != $username) {
+            $chkUsername = Usernames::findOne(['username' => $username]);
+            if ($chkUsername) {
+                return $this->response(409, 'Already Exist');
+            } else {
+                $save_user_name = new Usernames();
+                $save_user_name->username = $username;
+                $save_user_name->assigned_to = 2;
+                if ($save_user_name->save()) {
+                    $user->username = $username;
+                    $user->last_updated_on = date('Y-m-d H:i:s');
+                    if (!$user->update()) {
+                        return $this->response(500, 'an error occurred');
+                    }
+                } else {
+                    return $this->response(500, 'an error occurred');
+                }
+            }
+
+        }
+        $token = $this->findToken($user, $platform);
+        if (empty($token)) {
+            if ($token = $this->newToken($user->user_enc_id, $source)) {
+                $data = $this->returnData($user, $token);
+                return $this->response(200, $data);
+            }
+        } else {
+            if ($token = $this->onlyTokens($token)) {
+                $data = $this->returnData($user, $token);
+                return $this->response(200, $data);
+            }
+        }
     }
 
     public function actionSignup()
@@ -139,19 +226,19 @@ class AuthController extends ApiBaseController
             $mail = Yii::$app->mail;
             $mail->receivers = [];
             $mail->receivers[] = [
-                "name" => $user->first_name ." " . $user->last_name,
+                "name" => $user->first_name . " " . $user->last_name,
                 "email" => $user->email,
             ];
             $mail->subject = 'Welcome to Empower Youth';
             $mail->template = 'thank-you';
-            if($mail->send()){
+            if ($mail->send()) {
                 $mail_logs = new EmailLogs();
                 $utilitesModel = new Utilities();
                 $utilitesModel->variables['string'] = time() . rand(100, 100000);
                 $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
                 $mail_logs->email_type = 5;
                 $mail_logs->user_enc_id = $user->user_enc_id;
-                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_name = $user->first_name . " " . $user->last_name;
                 $mail_logs->receiver_email = $user->email;
                 $mail_logs->receiver_phone = $user->phone;
                 $mail_logs->subject = 'Welcome to Empower Youth';

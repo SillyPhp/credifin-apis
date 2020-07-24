@@ -373,6 +373,16 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                     }
                     ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="blogbox"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
@@ -410,33 +420,14 @@ $this->render('/widgets/employer_applications/top-banner', [
                     ]);
                 endif;
                 ?>
+
+                <?= $this->render('/widgets/join-social-groups');?>
+
                 <?php
                 if (Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
                 }
-
-                if (!$settings["showNewPositionsWidget"]) {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
-                                <?= $this->render("/widgets/square_ads"); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
                 ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="blogbox"></div>
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -552,7 +543,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
-echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/application-card-2');
 $this->registerCss("
 #mixedSlider .MS-content .item {
     display: inline-block;
@@ -948,6 +939,7 @@ button.lc-item-video-menu {
         width: 115px;
         height: 115px;
         background-color:#fff;
+        object-fit: contain;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}

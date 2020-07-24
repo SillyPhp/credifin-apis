@@ -15,22 +15,16 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-12">
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
-                                            <div class="col-sm-3 text-right pr-0">
-                                                <button style="display:none" type="button"
-                                                        class="btn btn-default wizard-prev">
-                                                    Previous
-                                                </button>
-                                                <button type="button" class="btn btn-primary wizard-next">
-                                                    Continue
-                                                </button>
-                                                <button style="display:none" type="submit"
-                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">
-                                                    Submit
-                                                </button>
-
+                                            <div class="col-sm-12 text-right pr-0">
+                                                <div class="cr-job">
+                                                    <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                                       title="Create AI Internship" class="ai">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                                    </a>
+                                                </div>
                                             </div>
                                             <?php
                                         } else {
@@ -49,8 +43,8 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-md-12">
-                                                <h4>Select Internships for campus hiring.</h4>
+                                            <div class="col-md-12 text-center">
+                                                <h4 class="slct">Select from Previous Internships for campus hiring.</h4>
                                             </div>
                                             <?php
                                             foreach ($applications['data'] as $app) {
@@ -125,7 +119,7 @@ use yii\helpers\Url;
                                         if (!empty($applications['data'])) {
                                             ?>
                                             <div class="col-md-12">
-                                                <h4>Select Colleges for campus hiring.</h4>
+                                                <h4 class="slct">Select Colleges for campus hiring.</h4>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input form-md-floating-label">
@@ -243,8 +237,26 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.page-content {
+    background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
+    background-size: auto 100% !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.container-fluid{
+    padding:0 !important;
+}
+.cr-job {
+	margin-bottom: 5px;
+}
+.slct{
+    font-family:roboto;
+    font-size:18px;
+    font-weight:500;
+}
 .pr-0{
     padding-right:0px;
+    margin-bottom:5px;
 }
 .card-like {
 //  margin-top: 50px;
@@ -257,13 +269,16 @@ $this->registerCss('
 }
 .wizard {
   overflow: hidden;
+	background-color: #fffffff7;
 }
 .wizard .wizard-header {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+  font-family:roboto;
+  font-weight:500;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;

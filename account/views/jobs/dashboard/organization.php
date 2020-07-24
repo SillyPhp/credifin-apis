@@ -133,6 +133,10 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </a>
                 </div>
             </div>
+             <?= $this->render('/widgets/templates-jobs', [
+            'jobs' => $jobs,
+             'type' => 'Jobs',
+        ]);?>
         </div>
         <div class="col-md-10 col-sm-9">
             <div class="row widget-row">
