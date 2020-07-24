@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -12,6 +14,7 @@ namespace common\models;
  * @property string $relation
  * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
  * @property double $annual_income
+ * @property string $pan_number co borrower pan card number
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  *
@@ -40,6 +43,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['annual_income'], 'number'],
             [['created_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'created_by'], 'string', 'max' => 100],
+            [['pan_number'], 'string', 'max' => 15],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];

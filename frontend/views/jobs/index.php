@@ -143,21 +143,21 @@ echo $this->render('/widgets/jobs-by-tag');
         </div>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="heading-style">Blogs</div>
-                    </div>
-                </div>
-                <div id="whats-new" class="row">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-sm-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="heading-style">Blogs</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id="whats-new" class="row">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -214,10 +214,10 @@ if (Yii::$app->user->isGuest) {
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-4 col-sm-4',
-    'is_ajax' => true,
-]);
+//echo $this->render('/widgets/blogs/whats-new', [
+//    'size' => 'col-md-4 col-sm-4',
+//    'is_ajax' => true,
+//]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
