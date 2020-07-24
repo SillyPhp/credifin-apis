@@ -700,8 +700,8 @@ class CandhomeController extends ApiBaseController
                 ->where([
                     'b.organization_enc_id' => $college_id['organization_enc_id'],
                     'a.is_deleted' => 0,
-                    'a.session_for' => 2
                 ])
+                ->andWhere(['not', ['a.session_for' => 1]])
 //                ->andWhere(['>=', 'a.end_datetime', $date_now])
                 ->asArray()
                 ->all();
