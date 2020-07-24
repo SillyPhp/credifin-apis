@@ -261,7 +261,7 @@ input::-moz-file-upload-button:focus{
     color: #000;
 }
 .form-control.for-choose{
-    padding: 0 !important;
+//    padding: 0 !important;
     color: transparent;
     cursor: pointer;
 }
