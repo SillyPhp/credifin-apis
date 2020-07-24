@@ -461,11 +461,11 @@ $this->registerCss('
     color:#f3f3f2;
     font-size: 16px;    
 }
+#countryName{
 .loan-benefits li span{
     font-weight: bold;
     color:#fff;
 }
-#countryName{
     display: none;
 }
 #subBtn{
