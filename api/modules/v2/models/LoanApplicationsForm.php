@@ -74,6 +74,7 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
+
             foreach ($this->co_applicants as $key => $applicant) {
                 $model = new LoanCoApplicants();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -128,8 +129,6 @@ class LoanApplicationsForm extends LoanApplications
                     $loan_payment->created_by = $userId;
                     $loan_payment->created_on = date('Y-m-d H:i:s');
                     if (!$loan_payment->save()) {
-                        print_r($loan_payment->getErrors());
-                        die();
                         $transaction->rollBack();
                         return false;
                     } else {
