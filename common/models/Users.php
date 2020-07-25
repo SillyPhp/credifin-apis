@@ -266,7 +266,7 @@ namespace common\models;
  * @property Labels[] $labels
  * @property Labels[] $labels0
  * @property LoanApplications[] $loanApplications
- * @property LoanCoApplicants[] $loanCoApplicants
+ * @property LoanCoApplicants[] $tloanCoApplicants
  * @property MisAssignedMenuItems[] $misAssignedMenuItems
  * @property MisAssignedMenuItems[] $misAssignedMenuItems0
  * @property MisAssignedMenus[] $misAssignedMenuses
@@ -274,6 +274,20 @@ namespace common\models;
  * @property MisUserTasks[] $misUserTasks
  * @property MisUserTasks[] $misUserTasks0
  * @property MisUserTasks[] $misUserTasks1
+ * @property MockBoards[] $mockBoards
+ * @property MockCoursePool[] $mockCoursePools
+ * @property MockCourses[] $mockCourses
+ * @property MockLabelPool[] $mockLabelPools
+ * @property MockLabels[] $mockLabels
+ * @property MockLevels[] $mockLevels
+ * @property MockQuizPool[] $mockQuizPools
+ * @property MockQuizQuestionsPool[] $mockQuizQuestionsPools
+ * @property MockQuizQuestionsPool[] $mockQuizQuestionsPools0
+ * @property MockQuizzes[] $mockQuizzes
+ * @property MockQuizzes[] $mockQuizzes0
+ * @property MockSubjects[] $mockSubjects
+ * @property MockSubjectsPool[] $mockSubjectsPools
+ * @property MockTakenQuizzes[] $mockTakenQuizzes
  * @property NewsTags[] $newsTags
  * @property NewsTags[] $newsTags0
  * @property OnlineClassComments[] $onlineClassComments
@@ -3520,6 +3534,118 @@ class Users extends \yii\db\ActiveRecord
     public function getMisUserTasks1()
     {
         return $this->hasMany(MisUserTasks::className(), ['task_for' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockBoards()
+    {
+        return $this->hasMany(MockBoards::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockCoursePools()
+    {
+        return $this->hasMany(MockCoursePool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockCourses()
+    {
+        return $this->hasMany(MockCourses::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLabelPools()
+    {
+        return $this->hasMany(MockLabelPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLabels()
+    {
+        return $this->hasMany(MockLabels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLevels()
+    {
+        return $this->hasMany(MockLevels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizPools()
+    {
+        return $this->hasMany(MockQuizPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizQuestionsPools()
+    {
+        return $this->hasMany(MockQuizQuestionsPool::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizQuestionsPools0()
+    {
+        return $this->hasMany(MockQuizQuestionsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizzes()
+    {
+        return $this->hasMany(MockQuizzes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizzes0()
+    {
+        return $this->hasMany(MockQuizzes::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockSubjects()
+    {
+        return $this->hasMany(MockSubjects::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockSubjectsPools()
+    {
+        return $this->hasMany(MockSubjectsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockTakenQuizzes()
+    {
+        return $this->hasMany(MockTakenQuizzes::className(), ['user_enc_id' => 'user_enc_id']);
     }
 
     /**
