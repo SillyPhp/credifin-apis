@@ -27,8 +27,9 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_by
  * @property string $updated_on
- * @property int $status 0 as Pending, 1 as Approved, 2 reject
+ * @property int $status 0 as Pending, 1 as Approved, 2 reject,4 inactive
  *
+ * @property EducationLoanPayments[] $educationLoanPayments
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -53,7 +54,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'source', 'created_on'], 'required'],
+            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'source', 'created_on'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
@@ -66,6 +67,14 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEducationLoanPayments()
+    {
+        return $this->hasMany(EducationLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
