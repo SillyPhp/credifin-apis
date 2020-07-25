@@ -20,7 +20,7 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['co_applicants', 'purpose', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'loan_type_enc_id'], 'required'],
+            [['co_applicants', 'purpose', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -83,9 +83,7 @@ class LoanApplicationsForm extends LoanApplications
                 $model->relation = $applicant['relation'];
                 $model->employment_type = $applicant['employment_type'];
                 $model->annual_income = $applicant['annual_income'];
-//                if($key == 'pan_number') {
-//                    $model->pan_number = $applicant['pan_number'];
-//                }
+                $model->pan_number = $applicant['pan_number'];
                 $model->created_by = $userId;
                 $model->created_on = date('Y-m-d H:i:s');
                 if (!$model->save()) {
