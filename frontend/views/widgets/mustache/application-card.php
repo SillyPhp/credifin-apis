@@ -519,6 +519,7 @@ text-overflow: ellipsis;
 }
 .salary{ 
     padding-left: 16px;
+    text-transform: capitalize;
 }
 .lg-skill{
     white-space: nowrap;
