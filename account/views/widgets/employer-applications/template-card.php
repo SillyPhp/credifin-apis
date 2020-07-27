@@ -104,7 +104,7 @@ JS;
 $this->registerJs($script);
 $this->registerCss("
 .profile_img{
-width:115px;
+height:90px;
 }
 .click {
 font-size: 33px;
