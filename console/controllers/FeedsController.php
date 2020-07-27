@@ -378,7 +378,7 @@ class FeedsController extends Controller {
                                     $placementCity->created_on = date('Y-m-d H:i:s');
                                     $placementCity->created_by = null;
                                     if (!$placementCity->save()) {
-                                        return false;
+                                        print_r($placementCity->getErrors());
                                     }
                                 }
                             }
