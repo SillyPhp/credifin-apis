@@ -361,7 +361,7 @@ class JobsController extends Controller
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 9;
+            $options['limit'] = 27;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -381,19 +381,12 @@ class JobsController extends Controller
             if ($parameters['slug'] && !empty($parameters['slug'])) {
                 $options['slug'] = $parameters['slug'];
             }
-            $cardsDb = ApplicationCards::jobs($options);
-            if (!empty($options['company']) || !empty($options['slug'])) {
-                $merg = $cardsDb;
-            } else {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
-            }
-            if (count($merg) > 0) {
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'cards' => $merg,
+                    'cards' => $cards,
                 ];
             } else {
                 $response = [
