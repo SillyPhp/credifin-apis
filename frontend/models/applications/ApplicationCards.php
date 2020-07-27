@@ -451,7 +451,8 @@ class ApplicationCards
                 ['REGEXP', 'c.name', $search_pattern],
                 ['REGEXP', 'i.name', $search_pattern],
                 ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
+                ['REGEXP', 'a.slug', $search_pattern],
+                ['REGEXP', 'x.location_name', $search_pattern]
             ]);
         }
         if (isset($optLocation)) {
@@ -474,6 +475,7 @@ class ApplicationCards
                 ['REGEXP', 's.name', $search_pattern_location],
                 ['REGEXP', 'ct.name', $search_pattern_location],
                 ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'x.location_name', $search_pattern_location],
             ]);
         }
         if (!empty($locations)) {

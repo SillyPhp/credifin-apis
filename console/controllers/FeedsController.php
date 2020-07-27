@@ -180,12 +180,12 @@ class FeedsController extends Controller {
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                             $model->organization_enc_id = $utilitiesModel->encrypt();
                             $model->organization_type_enc_id = null;
-                            $utilitiesModel->variables['name'] = $result['company'];
+                            $utilitiesModel->variables['name'] = $result['company'].rand(10, 1000);
                             $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
                             $utilitiesModel->variables['field_name'] = 'slug';
                             $slug = $utilitiesModel->create_slug();
                             $slug_replace_str = str_replace("-", "", $slug);
-                            $model->slug = $slug_replace_str;
+                            $model->slug = $slug;
                             $model->website = $result['company_url'];
                             $model->name = $result['company'];
                             $model->created_by = null;
@@ -334,9 +334,8 @@ class FeedsController extends Controller {
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                             $model->organization_enc_id = $utilitiesModel->encrypt();
                             $model->organization_type_enc_id = null;
-                            $slug = $utilitiesModel->create_slug();
-                            $slug_replace_str = str_replace("-", "", $slug);
                             $model->slug = $result['company']['short_name'];
+                            $slug_replace_str = str_replace("-", "", $result['company']['short_name']);
                             $model->website = null;
                             $model->name = $result['company']['name'];
                             $model->created_by = null;
