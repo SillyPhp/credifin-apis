@@ -20,7 +20,7 @@ use Yii;
  * @property string $unique_source_id source ids for apis
  * @property string $title Foreign Key to Assigned Categories Table
  * @property string $designation_enc_id Foreign Key to Designations Table
- * @property string $type Type (Full Time, Part Time, Work From Home)
+ * @property string $type Type (Full Time, Part Time, Work From Home, Contract)
  * @property string $preferred_industry Foreign Key to Industries Table
  * @property string $interview_process_enc_id Foreign Key to Organization Interview Process
  * @property string $timings_from Timings From
