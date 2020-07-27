@@ -136,6 +136,7 @@ use yii\helpers\Url;
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
                                             <th class="collegeName">College/University Name</th>
+                                            <th class="loanPurpos">Purpose Of Loan</th>
                                             <th class="startDate">Semester</th>
                                             <th class="endDate">Year</th>
                                             <th class="phoneNumber">Phone Number</th>
@@ -203,6 +204,7 @@ use yii\helpers\Url;
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
                                             <td>6</td>
                                             <td>3</td>
                                             <td>+91 7837394374</td>
@@ -268,6 +270,7 @@ use yii\helpers\Url;
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
                                             <td>2</td>
                                             <td>1</td>
                                             <td>+91 7837394374</td>
@@ -332,6 +335,7 @@ use yii\helpers\Url;
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
                                             <td>6</td>
                                             <td>3</td>
                                             <td>+91 7837394374</td>
@@ -397,6 +401,7 @@ use yii\helpers\Url;
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
                                             <td>2</td>
                                             <td>1</td>
                                             <td>+91 7837394374</td>
