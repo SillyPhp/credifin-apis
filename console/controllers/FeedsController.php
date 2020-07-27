@@ -1,5 +1,14 @@
 <?php
 namespace console\controllers;
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Utilities;
+use common\models\EmployerApplications;
+use common\models\UnclaimedOrganizations;
+use common\models\Usernames;
 use frontend\models\xml\ApplicationFeeds;
 use yii\helpers\Url;
 use Yii;
@@ -64,5 +73,188 @@ class FeedsController extends Controller {
         $dom->appendChild($root);
         $dom->save($base_path.DIRECTORY_SEPARATOR.$xml_file_name);
         echo "$xml_file_name has been successfully created";
+    }
+
+    public function actionFetchMuse($start,$end)
+    {
+        echo $this->muse($start,$end);
+    }
+    private function muse($start,$end)
+    {
+        $type = ApplicationTypes::findOne(['name' => 'Jobs']);
+        $muse_key = 'ecc017e088bb50fd3d47686f1a669033492e98111bbe1c60084214e48b45fe07';
+        for($i=$start;$i<=$end;$i++){
+            $page = $i;
+            $url = "https://www.themuse.com/api/public/jobs?api_key=" . $muse_key . "&page=" . $page;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            $header = [
+                'Accept: application/json, text/plain, */*',
+                'Content-Type: application/json;charset=utf-8',
+            ];
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            $result = curl_exec($ch);
+            $result = json_decode($result, true);
+            if (isset($result['results'])||!empty($result['results'])){
+                foreach ($result['results'] as $result)
+                {
+                    $r = EmployerApplications::find()
+                        ->where(['source'=>3])
+                        ->andWhere(['unique_source_id'=>strval($result['id'])])
+                        ->one();
+                    if (empty($r))
+                    {
+                        $employerApplication = new EmployerApplications();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $employerApplication->application_enc_id = $utilitiesModel->encrypt();
+                        $employerApplication->application_number = rand(1000, 10000) . time();
+                        $employerApplication->application_type_enc_id = $type->application_type_enc_id;
+                        $employerApplication->published_on = $result['publication_date'];
+                        $employerApplication->image = '1';
+                        $employerApplication->image_location = '1';
+                        $employerApplication->status = 'Active';
+                        $category_execute = Categories::find()
+                            ->alias('a')
+                            ->where(['name' => $result['name']]);
+                        $chk_cat = $category_execute->asArray()->one();
+                        if (empty($chk_cat)) {
+                            $categoriesModel = new Categories;
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                            $categoriesModel->name = $result['name'];
+                            $utilitiesModel->variables['name'] = $result['name'];
+                            $utilitiesModel->variables['table_name'] = Categories::tableName();
+                            $utilitiesModel->variables['field_name'] = 'slug';
+                            $categoriesModel->slug = $utilitiesModel->create_slug();
+                            $categoriesModel->created_by = null;
+                            if ($categoriesModel->save()) {
+                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name']);
+                            } else {
+                                return false;
+                            }
+                        } else {
+                            $chk_assigned = $category_execute
+                                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                                ->andWhere(['b.parent_enc_id' => null])
+                                ->andWhere(['b.assigned_to' => 'Jobs'])
+                                ->asArray()
+                                ->one();
+                            if (empty($chk_assigned)) {
+                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name']);
+                            } else {
+                                $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
+                                $utilitiesModel->variables['name'] = $result['company']['name'] . '-' . $chk_assigned['name'] . '-' . $employerApplication->application_number;
+                                $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+                                $utilitiesModel->variables['field_name'] = 'slug';
+                                $employerApplication->slug = $utilitiesModel->create_slug();
+                            }
+                        }
+                        $employerApplication->type = 'Full Time';
+                        $employerApplication->preferred_gender = '0';
+                        $employerApplication->timings_from = date("H:i:s", strtotime("9:00"));
+                        $employerApplication->timings_to = date("H:i:s", strtotime("5:00"));
+                        $employerApplication->joining_date = date('Y-m-d H:i:s');
+                        $employerApplication->last_date = date('Y-m-d', strtotime(' + 56 days'));
+                        $employerApplication->created_on = date('Y-m-d H:i:s');
+                        $employerApplication->created_by = null;
+                        $employerApplication->source = 3;
+                        $employerApplication->unique_source_id = strval($result['id']);
+                        $chk_com = UnclaimedOrganizations::find()
+                            ->select(['organization_enc_id'])
+                            ->where(['name' => $result['company']['name']])
+                            ->one();
+                        if (!empty($chk_com)) :
+                            $employerApplication->unclaimed_organization_enc_id = $chk_com->organization_enc_id;
+                        else:
+                            $model = new UnclaimedOrganizations();
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $model->organization_enc_id = $utilitiesModel->encrypt();
+                            $model->organization_type_enc_id = null;
+                            $slug = $utilitiesModel->create_slug();
+                            $slug_replace_str = str_replace("-", "", $slug);
+                            $model->slug = $result['company']['short_name'];
+                            $model->website = null;
+                            $model->name = $result['company']['name'];
+                            $model->created_by = null;
+                            $model->initials_color = RandomColors::one();
+                            $model->status = 1;
+                            if ($model->save()) {
+                                $username = new Usernames();
+                                $username->username = $slug_replace_str;
+                                $username->assigned_to = 3;
+                                if (!$username->save()) {
+                                    return false;
+                                }
+                                $employerApplication->unclaimed_organization_enc_id = $model->organization_enc_id;
+                            }
+                        endif;
+                        if ($employerApplication->save()) {
+                            $unclaimOptions = new ApplicationUnclaimOptions();
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $unclaimOptions->unclaim_options_enc_id = $utilitiesModel->encrypt();
+                            $unclaimOptions->application_enc_id = $employerApplication->application_enc_id;
+                            $unclaimOptions->job_url = $result['refs']['landing_page'];
+                            $unclaimOptions->job_level = (($result['levels'][0]['name'])?$result['levels'][0]['name']:null);
+                            $unclaimOptions->created_on = date('Y-m-d H:i:s');;
+                            $unclaimOptions->created_by = null;
+                            if (!$unclaimOptions->save()) {
+                                return false;
+                            }
+                            if (!empty($result['locations'])) {
+                                foreach ($result['locations'] as $city) {
+                                    $placementCity = new ApplicationPlacementCities();
+                                    $utilitiesModel = new Utilities();
+                                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                    $placementCity->placement_cities_enc_id = $utilitiesModel->encrypt();
+                                    $placementCity->application_enc_id = $employerApplication->application_enc_id;
+                                    $placementCity->location_name = $city['name'];
+                                    $placementCity->created_on = date('Y-m-d H:i:s');
+                                    $placementCity->created_by = null;
+                                    if (!$placementCity->save()) {
+                                        return false;
+                                    }
+                                }
+                            }
+
+                        }
+                        else{
+                            print_r($employerApplication->getErrors());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        echo 'success';
+    }
+    private function addNewAssignedCategory($category_id, $employerApplication, $typ,$company,$title)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->assigned_to = $typ;
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = null;
+        if ($assignedCategoryModel->save()) {
+            $utilitiesModel->variables['name'] =  $company. '-' . $title . '-' . $employerApplication->application_number;
+            $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $employerApplication->slug = $utilitiesModel->create_slug();
+            $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
+        } else {
+            return false;
+        }
     }
 }
