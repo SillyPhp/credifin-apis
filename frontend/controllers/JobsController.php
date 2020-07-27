@@ -404,7 +404,7 @@ class JobsController extends Controller
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
-        if ($get)
+        if ($get['title'])
         {
             return $this->render('api-jobs',
                 [
