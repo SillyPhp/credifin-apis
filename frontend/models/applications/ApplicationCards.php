@@ -266,8 +266,8 @@ class ApplicationCards
                END) as sector',
                 'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 '(CASE
-                WHEN a.source = 3 THEN CONCAT("/job/api")
-                WHEN a.source = 2 THEN 
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                END) as link',
                 'CONCAT("/job/", a.slug) organization_link',
