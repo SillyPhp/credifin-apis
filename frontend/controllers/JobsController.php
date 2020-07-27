@@ -404,11 +404,16 @@ class JobsController extends Controller
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
-         return $this->render('api-jobs',
-            [
-                'get' => $get, 'slugparams' => $slugparams,
-                'source' => $source, 'id' => $eaidk
-            ]);
+        if ($get)
+        {
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk
+                ]);
+        }else{
+            return 'Application Has Been Moved or Deleted';
+        }
     }
 
     private function musejobs($id)
