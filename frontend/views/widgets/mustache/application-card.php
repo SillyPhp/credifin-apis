@@ -127,7 +127,7 @@ function renderCards(cards, container){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
     if(cardsLength%3 !==0 && loader === true) {
-        $('#loadMore').hide();
+        $('#loadMore').css('display','none');
     }
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
@@ -217,6 +217,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                      },
                 });
             });
+            sticky_relocate();
         } else {
             var displayCity = localStorage.getItem("displayCity");
             $('#prefer-heading').html('Jobs in ' + displayCity);
