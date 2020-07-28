@@ -915,7 +915,7 @@ class QuizController extends ApiBaseController
             }
 
             if ($quiz_pools) {
-                return $this->response(200, ['status' => 200, 'datat' => $quiz_pools]);
+                return $this->response(200, ['status' => 200, 'data' => $quiz_pools]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
