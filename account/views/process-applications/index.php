@@ -235,8 +235,7 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down"
-                                       aria-hidden="true"></i>
+                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip" title="View Questionnaire"></i>
                                 </button>
                             </div>
                         </div>
@@ -280,6 +279,10 @@ use yii\widgets\Pjax;
     </div>
 <?php
 $this->registerCss('
+.tt + .tooltip > .tooltip-inner {
+    min-width:140px !important;
+    background-color:#000 !important;
+}
 .round-detail{text-align:center;}
 .round-detail h5{margin-bottom:5px;}
 .round-detail h4{
@@ -311,11 +314,13 @@ li{list-style: none;}
   font-weight:500;
   margin: 0px;
   display: inline-block;
+  text-transform:capitalize;
 }
 .pr-user-detail{
     padding-left: 85px;
     padding-top: 20px;
     margin-top: -10px;
+    height:68px;
 }
 .pr-user-icon{
     display: inline-block;
@@ -437,11 +442,12 @@ li{list-style: none;}
   text-overflow: ellipsis;
   background: white;
   border: 1px solid #ccc;
-  border-right: none;
   padding: 0;
   cursor: pointer;
   margin-bottom: 1em;
   color:#555;
+  border-left-color:transparent !important;
+  border-right-color:transparent !important;
 }
 .pr-process-tab li a{
     background-color:transparent !Important;
@@ -463,7 +469,7 @@ li{list-style: none;}
   top: 0;
   right: -34px;
   width: 0;
-  height: 0;
+  height: 100%;
   border: 17px solid transparent;
   border-left-color: #797979;
 }
@@ -476,15 +482,16 @@ li{list-style: none;}
   right: -35px;
   margin-right: 1px;
   width: 0;
-  height: 0;
+  height: 100%;
   border: 17px solid transparent;
   border-left-color: white;
 }
 .pr-process-tab li:first-child {
   border-radius: 20px 0 0 20px;
+  border-left-color: #ccc !important;
 }
 .pr-process-tab li:last-child {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #ccc !important;
   border-radius: 0 20px 20px 0;
 }
 .pr-process-tab li:last-child:before, .pr-process-tab li:last-child:after{
@@ -505,6 +512,12 @@ li{list-style: none;}
 }
 .pr-process-tab li.active:before {
   border-left-color: #00a0e3;
+}
+.tooltip-inner {
+    background-color: #00a0e3 !important;
+    color: #fff;
+    padding:5px 10px;
+    border-radius:20px !important;
 }
 .tooltip-inner {
     background-color: #00a0e3 !important;

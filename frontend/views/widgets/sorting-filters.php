@@ -67,7 +67,7 @@ $this->registercss('
 .change_color
 {
     color: #fff;
-    background-color: #ff7803;
+    background-color: #00a0e3;
     border-radius: 2px;
 }
 ');

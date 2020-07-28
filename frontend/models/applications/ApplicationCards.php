@@ -200,7 +200,9 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.source',
+                new Expression('NULL as sector'),
+                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -256,8 +258,18 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
-                'CONCAT("/job/", a.slug) link',
+            ->select(['a.source',
+                '(CASE
+                WHEN a.source = 3 THEN v.job_level
+                WHEN a.source = 2 THEN v.job_level
+                ELSE NULL
+               END) as sector',
+                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                '(CASE
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("/job/", a.slug)
+               END) as link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -271,20 +283,23 @@ class ApplicationCards
                 WHEN a.experience = "5-10" THEN "5-10 Years Experience"
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
+                ELSE NULL
                END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
-                'v.wage_type salary_type',
+                'v.wage_type as salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                '(CASE
+                WHEN g.name IS NULL THEN x.location_name
+                ELSE g.name
+               END) as city',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = v.currency_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
@@ -296,6 +311,7 @@ class ApplicationCards
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
 
         if (!empty($profiles)) {
             $cards1->andWhere([
@@ -435,7 +451,8 @@ class ApplicationCards
                 ['REGEXP', 'c.name', $search_pattern],
                 ['REGEXP', 'i.name', $search_pattern],
                 ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
+                ['REGEXP', 'a.slug', $search_pattern],
+                ['REGEXP', 'x.location_name', $search_pattern]
             ]);
         }
         if (isset($optLocation)) {
@@ -458,6 +475,7 @@ class ApplicationCards
                 ['REGEXP', 's.name', $search_pattern_location],
                 ['REGEXP', 'ct.name', $search_pattern_location],
                 ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'x.location_name', $search_pattern_location],
             ]);
         }
         if (!empty($locations)) {
@@ -570,6 +588,11 @@ class ApplicationCards
                         $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 }
+            }
+            else
+            {
+                $result[$i]['salary'] = null;
+                $result[$i]['sal'] = 1; //for api jobs where every thing for salary is blank
             }
             $i++;
         }

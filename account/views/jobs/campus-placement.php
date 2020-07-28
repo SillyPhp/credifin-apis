@@ -18,11 +18,18 @@ use yii\helpers\Url;
                                             <div class="col-sm-12">
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
-                                            <div class="col-sm-12 text-right pr-0">
+                                            <div class="col-sm-3 pr-0">
+                                                <button style="display:none" type="button"
+                                                        class="btn btn-default wizard-prev">Previous</button>
+                                                <button style="display:none" type="submit"
+                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">Submit</button>
+                                            </div>
+                                            <div class="col-sm-9 text-right pr-0">
                                                 <div class="cr-job">
                                                     <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
                                                        title="Create AI Job" class="ai">
                                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                                        <h3>Create AI Job</h3>
                                                     </a>
                                                 </div>
                                             </div>
@@ -236,6 +243,18 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.ai{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+.ai h3 {
+	margin: 0;
+	font-size: 20px;
+	color: #ff7803;
+	font-family: roboto;
+	margin-left: 5px;
+} 
 .page-content {
     background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
     background-size: auto 100% !important;
