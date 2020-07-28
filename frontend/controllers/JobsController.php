@@ -361,7 +361,7 @@ class JobsController extends Controller
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 9;
+            $options['limit'] = 27;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -381,19 +381,12 @@ class JobsController extends Controller
             if ($parameters['slug'] && !empty($parameters['slug'])) {
                 $options['slug'] = $parameters['slug'];
             }
-            $cardsDb = ApplicationCards::jobs($options);
-            if (!empty($options['company']) || !empty($options['slug'])) {
-                $merg = $cardsDb;
-            } else {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
-            }
-            if (count($merg) > 0) {
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'cards' => $merg,
+                    'cards' => $cards,
                 ];
             } else {
                 $response = [
@@ -403,6 +396,54 @@ class JobsController extends Controller
             return $response;
         }
         return $this->render('list');
+    }
+    public function actionApi($source = '', $slugparams = null, $eaidk = null)
+    {
+        if ($source == 'git-hub') {
+            $get = $this->gitjobs($eaidk);
+        } else if ($source == 'muse') {
+            $get = $this->musejobs($eaidk);
+        }
+        if ($get['title'])
+        {
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk
+                ]);
+        }else{
+            return 'Application Has Been Moved or Deleted';
+        }
+    }
+
+    private function musejobs($id)
+    {
+        $url = "https://www.themuse.com/api/public/jobs/" . $id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if ($result) {
+            $result['title'] = $result['name'];
+            $result['company'] = $result['company']['name'];
+            $result['created_at'] = $result['publication_date'];
+            $result['url'] = $result['refs']['landing_page'];
+            $result['description'] = $result['contents'];
+            $result['location'] = $result['locations'];
+            unset($result['name']);
+            unset($result['publication_date']);
+            unset($result['refs']);
+            unset($result['contents']);
+            unset($result['locations']);
+        }
+        return $result;
     }
 
     public function actionDetail($eaidk)
@@ -1366,14 +1407,6 @@ class JobsController extends Controller
         return $result;
     }
 
-    public function actionApi($comp, $eaidk)
-    {
-        $get = $this->gitjobs($eaidk);
-        if ($get) {
-            return $this->render('git-api-jobs', ['get' => $get, 'slug' => $comp]);
-        }
-    }
-
     public function actionImageScript()
     {
         $model = new scriptModel();
@@ -1404,63 +1437,4 @@ class JobsController extends Controller
             }
         }
     }
-   public function actionTest($offset = 0, $limit = 3000,$type='Jobs')
-   {
-       $params = [];
-       $params['limit'] = $limit;
-       $params['offset'] = $offset;
-       $params['type'] = $type;
-       $obj = new ApplicationFeeds();
-       $objects = $obj->getApplications($params);
-       $dom = new \DOMDocument();
-       $dom->encoding = 'utf-8';
-       $dom->xmlVersion = '1.0';
-       $dom->formatOutput = true;
-       $base_path = Url::to('@rootDirectory/files/xml');
-       $xml_file_name = $type.'-Feeds.xml';
-       $root = $dom->createElement('jobs');
-       $i = time().rand(100, 100000);
-       foreach ($objects as $object)
-       {
-           $node = $dom->createElement('job');
-           $attr_node_id = new \DOMAttr('id', $i++);
-           $node->setAttributeNode($attr_node_id);
-           $name = $node->appendChild($dom->createElement('link'));
-           $name->appendChild($dom->createCDATASection($object['link']));
-
-           $name = $node->appendChild($dom->createElement('name'));
-           $name->appendChild($dom->createCDATASection($object['name']));
-
-           $name = $node->appendChild($dom->createElement('region'));
-           $name->appendChild($dom->createCDATASection($object['city'].', '.$object['country']));
-
-           $name = $node->appendChild($dom->createElement('salary'));
-           $name->appendChild($dom->createCDATASection($object['salary']));
-
-           $name = $node->appendChild($dom->createElement('description'));
-           $name->appendChild($dom->createCDATASection($object['description'].'<br>'.$object['education_req']));
-
-           $name = $node->appendChild($dom->createElement('apply_url'));
-           $name->appendChild($dom->createCDATASection($object['link']));
-
-           $name = $node->appendChild($dom->createElement('company'));
-           $name->appendChild($dom->createCDATASection($object['organization_name']));
-
-           $name = $node->appendChild($dom->createElement('pubdate'));
-           $name->appendChild($dom->createCDATASection($object['pubdate']));
-
-           $name = $node->appendChild($dom->createElement('updated'));
-           $name->appendChild($dom->createCDATASection($object['updated']));
-
-           $name = $node->appendChild($dom->createElement('expire'));
-           $name->appendChild($dom->createCDATASection($object['expire']));
-
-           $name = $node->appendChild($dom->createElement('type'));
-           $name->appendChild($dom->createCDATASection($object['type']));
-           $root->appendChild($node);
-       }
-       $dom->appendChild($root);
-       $dom->save($base_path.DIRECTORY_SEPARATOR.$xml_file_name);
-       echo "$xml_file_name has been successfully created";
-   }
 }
