@@ -74,6 +74,7 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
+
             foreach ($this->co_applicants as $key => $applicant) {
                 $model = new LoanCoApplicants();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
