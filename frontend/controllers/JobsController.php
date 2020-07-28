@@ -1463,4 +1463,16 @@ class JobsController extends Controller
        $dom->save($base_path.DIRECTORY_SEPARATOR.$xml_file_name);
        echo "$xml_file_name has been successfully created";
    }
+
+    public function actionClearMyCache()
+    {
+        $cache = Yii::$app->cache->flush();
+
+        if ($cache) {
+            $this->redirect(Yii::$app->request->referrer);
+        } else {
+            $this->redirect('/jobs/clear-my-cache');
+            return 'something went wrong...! please try again later';
+        }
+    }
 }
