@@ -163,8 +163,8 @@ class ApplicationDataProvider extends Model
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($model->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($model->to));
         $employerApplicationsModel->experience = $model->min_exp;
-        $employerApplicationsModel->minimum_exp = (($model->minimum_exp)?$model->minimum_exp:NULL);
-        $employerApplicationsModel->maximum_exp = (($model->maximum_exp)?$model->maximum_exp:NULL);
+        $employerApplicationsModel->minimum_exp = ((is_null($model->minimum_exp))?null:$model->minimum_exp);
+        $employerApplicationsModel->maximum_exp = ((is_null($model->maximum_exp))?null:$model->maximum_exp);
         $employerApplicationsModel->preferred_gender = $model->gender;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($model->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($model->last_date));
