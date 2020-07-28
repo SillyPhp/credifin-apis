@@ -301,8 +301,8 @@ class ApplicationForm extends Model
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($this->to));
-        $employerApplicationsModel->minimum_exp = (($this->minimum_exp)?$this->minimum_exp:NULL);
-        $employerApplicationsModel->maximum_exp = (($this->maximum_exp)?$this->maximum_exp:NULL);
+        $employerApplicationsModel->minimum_exp = ((is_null($this->minimum_exp))?NULL:$this->minimum_exp);
+        $employerApplicationsModel->maximum_exp = ((is_null($this->maximum_exp))?NULL:$this->maximum_exp);
         $employerApplicationsModel->preferred_gender = $this->gender;
         $employerApplicationsModel->preferred_industry = $this->industry;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
