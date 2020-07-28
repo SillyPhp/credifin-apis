@@ -74,9 +74,7 @@ use yii\widgets\Pjax;
                                                         height="80" font="35px"></canvas>
                                             <?php endif; ?>
                                         </a>
-                                        <h4>
-                                            <?= $arr['name'] ?>
-                                        </h4>
+                                        <a class="pr-user-n" href="<?= '/' . $arr['username'] ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
                                             foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -235,7 +233,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip" title="View Questionnaire"></i>
+                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                       title="View Questionnaire"></i>
                                 </button>
                             </div>
                         </div>
@@ -309,12 +308,13 @@ li{list-style: none;}
 .hiring_process_list > li{
     width:100%;
 }
-.pr-user-detail h4{
+.pr-user-n{
   font-size:19px;
   font-weight:500;
   margin: 0px;
   display: inline-block;
   text-transform:capitalize;
+  color:#000;
 }
 .pr-user-detail{
     padding-left: 85px;
