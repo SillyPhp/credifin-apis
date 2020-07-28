@@ -72,7 +72,7 @@ class QuizController extends ApiBaseController
                 }],false)
                 ->where(['z.quiz_enc_id' => $id])
                 ->asArray()
-                ->all();
+                ->one();
             return $this->response(200, ['status' => 200, 'data' => $detail]);
         }
         return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
