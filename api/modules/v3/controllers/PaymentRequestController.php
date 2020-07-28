@@ -36,7 +36,7 @@ class PaymentRequestController extends ApiBaseController
         $mtx = Yii::$app->getSecurity()->generateRandomString();
         //params list end
 
-        if (Yii::$app->params->paymentGateway->icici) {
+        if (Yii::$app->params->paymentGateway->mec->icici) {
             $configuration = Yii::$app->params->paymentGateway->mec->icici;
             if ($configuration->mode === "production") {
                 $access_key = $configuration->credentials->production->access_key;
