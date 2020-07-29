@@ -54,22 +54,23 @@ class MentorsController extends Controller
                 ->select(['a.speaker_enc_id',
                     'a.unclaimed_org_id',
                     'a.designation_enc_id',
-                    'a.fullname',
-                    'a.image','a.image_location',
-                    'a.description',
-                    'a.facebook','a.twitter','a.instagram','a.linkedin',
-                    'a.is_deleted',
                     'b.designation',
+                    'CONCAT(f.first_name, " ", f.last_name) fullname',
+                    'f.email', 'f.phone',
+                    'f.image','f.image_location',
+                    'f.description',
+                    'f.facebook','f.twitter','f.instagram','f.linkedin',
                     'c.logo org_logo','c.logo_location org_logo_location',
                     'c.name org_name'
                 ])
                 ->where(['a.is_deleted' => 0])
-                    ->joinWith(['designationEnc b'],false)
-                    ->joinWith(['unclaimedOrg c'],false)
-                    ->joinWith(['speakerExpertises d' => function($d){
-                        $d->select(['d.speaker_enc_id','d.skill_enc_id','e.skill']);
-                        $d->joinWith(['skillEnc e'],false);
-                    }])
+                ->joinWith(['designationEnc b'],false)
+                ->joinWith(['unclaimedOrg c'],false)
+                ->joinWith(['speakerExpertises d' => function($d){
+                    $d->select(['d.speaker_enc_id','d.skill_enc_id','e.skill']);
+                    $d->joinWith(['skillEnc e'],false);
+                }])
+                ->joinWith(['userEnc f'],false)
                 ->asArray()
                 ->distinct()
                 ->orderBy(['a.created_on' => SORT_DESC]);
@@ -86,7 +87,7 @@ class MentorsController extends Controller
                         }
                     }
                     $item['speaker_image'] = $image;
-                    $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/speaker1.jpg');
+                    $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                     $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo  . $item['org_logo_location'] . '/' . $item['org_logo']);
                     unset($item['image']);
                     unset($item['image_location']);
