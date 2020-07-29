@@ -120,7 +120,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->college_enc_id = $college_id;
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
                 $loan_payment->payment_token = $token;
-                $loan_payment->payment_amount = $total_amount;
+                $loan_payment->payment_amount = $application_fee['amount'];
                 $loan_payment->payment_gst = $gst;
                 $loan_payment->created_by = $userId;
                 $loan_payment->created_on = date('Y-m-d H:i:s');
