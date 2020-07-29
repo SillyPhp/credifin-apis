@@ -367,7 +367,8 @@ class LoansController extends ApiBaseController
                     'a.applicant_name', 'a.amount loan_amount',
                     'a.status', 'd.payment_token',
                     'd.payment_id', 'd.payment_status',
-                    'd.payment_amount application_fees', 'd.payment_gst application_fees_gst'
+                    'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
+                    'd.education_loan_payment_enc_id'
                 ])
                 ->joinWith(['loanPurposes b' => function ($b) {
                     $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
