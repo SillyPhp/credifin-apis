@@ -87,6 +87,7 @@ class FeedsController extends Controller {
     private function git($start,$end)
     {
         $type = ApplicationTypes::findOne(['name' => 'Jobs']);
+        $othr = Categories::findOne(['name'=>'Others']);
         for($i=$start;$i<=$end;$i++){
             $page = $i;
             $url = "https://jobs.github.com/positions.json?page=".$page;
@@ -136,7 +137,7 @@ class FeedsController extends Controller {
                             $categoriesModel->slug = $utilitiesModel->create_slug();
                             $categoriesModel->created_by = null;
                             if ($categoriesModel->save()) {
-                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company'],$result['name']);
+                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company'],$result['name'],null,null,$othr->category_enc_id);
                             } else {
                                 print_r($categoriesModel->getErrors());
                             }
@@ -149,7 +150,7 @@ class FeedsController extends Controller {
                                 ->asArray()
                                 ->one();
                             if (empty($chk_assigned)) {
-                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company'],$result['title']);
+                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company'],$result['title'],null,null,$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
                                 $utilitiesModel->variables['name'] = $result['company'] . '-' . $chk_assigned['name'];
@@ -243,6 +244,7 @@ class FeedsController extends Controller {
     private function muse($start,$end)
     {
         $type = ApplicationTypes::findOne(['name' => 'Jobs']);
+        $othr = Categories::findOne(['name'=>'Others']);
         $muse_key = 'ecc017e088bb50fd3d47686f1a669033492e98111bbe1c60084214e48b45fe07';
         for($i=$start;$i<=$end;$i++){
             $page = $i;
@@ -293,7 +295,7 @@ class FeedsController extends Controller {
                             $categoriesModel->slug = $utilitiesModel->create_slug();
                             $categoriesModel->created_by = null;
                             if ($categoriesModel->save()) {
-                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name']);
+                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 return false;
                             }
@@ -306,7 +308,7 @@ class FeedsController extends Controller {
                                 ->asArray()
                                 ->one();
                             if (empty($chk_assigned)) {
-                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name']);
+                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
                                 $employerApplication->slug = $result['short_name'];
@@ -394,7 +396,7 @@ class FeedsController extends Controller {
         }
         echo 'success';
     }
-    private function addNewAssignedCategory($category_id, $employerApplication, $typ,$company,$title,$source=null,$short_name=null)
+    private function addNewAssignedCategory($category_id, $employerApplication, $typ,$company,$title,$source=null,$short_name=null,$cid)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
@@ -404,6 +406,8 @@ class FeedsController extends Controller {
         $assignedCategoryModel->assigned_to = $typ;
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
         $assignedCategoryModel->created_by = null;
+        $assignedCategoryModel->parent_enc_id = $cid;
+        $assignedCategoryModel->status = 'Pending';
         if ($assignedCategoryModel->save()) {
             if ($source==3){
                 $employerApplication->slug = $short_name;
