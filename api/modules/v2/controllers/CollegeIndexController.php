@@ -1048,7 +1048,7 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['course_name']) && !empty($data['course_name'])) {
                 $candidates->andWhere(['cc.course_name' => $data['course_name']]);
             }
-            if (isset($data['semester']) && !empty($data['semester'])) {
+            if (isset($data['semester']) && !empty($data['semester']) && count($data['semester']) < 10) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);
             }
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {

@@ -144,9 +144,9 @@ class LoansController extends ApiBaseController
                         'd.annual_income'
                     ]);
                 }])
-                ->joinWith(['loanPurposes e' => function($e){
-                    $e->select(['e.loan_purpose_enc_id','e.loan_app_enc_id','e.fee_component_enc_id', 'e1.name']);
-                    $e->joinWith(['feeComponentEnc e1'],false);
+                ->joinWith(['loanPurposes e' => function ($e) {
+                    $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
+                    $e->joinWith(['feeComponentEnc e1'], false);
                 }])
                 ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0]);
             if ($limit) {
@@ -188,9 +188,9 @@ class LoansController extends ApiBaseController
                             'd.annual_income'
                         ]);
                     }])
-                    ->joinWith(['loanPurposes e' => function($e){
-                        $e->select(['e.loan_purpose_enc_id','e.loan_app_enc_id','e.fee_component_enc_id', 'e1.name']);
-                        $e->joinWith(['feeComponentEnc e1'],false);
+                    ->joinWith(['loanPurposes e' => function ($e) {
+                        $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
+                        $e->joinWith(['feeComponentEnc e1'], false);
                     }])
                     ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
                     ->asArray()
@@ -351,6 +351,56 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionStudentLoans()
+    {
+        if ($user = $this->isAuthorized()) {
+            $loans = LoanApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id',
+                    'a.applicant_name', 'a.amount loan_amount',
+                    'a.status', 'd.payment_token',
+                    'd.payment_id', 'd.payment_status',
+                    'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
+                    'd.education_loan_payment_enc_id'
+                ])
+                ->joinWith(['loanPurposes b' => function ($b) {
+                    $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
+                    $b->joinWith(['feeComponentEnc c'], false);
+                }])
+                ->joinWith(['educationLoanPayments d'], false)
+                ->where(['a.created_by' => $user->user_enc_id])
+                ->asArray()
+                ->all();
+
+            if ($loans) {
+                return $this->response(200, ['status' => 200, 'data' => $loans]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionApplicationStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $status = LoanApplications::find()
+                ->where(['created_by' => $user->user_enc_id, 'status' => 0])
+                ->one();
+
+            if ($status) {
+                return $this->response(200, ['status' => 200, 'data' => $status->status]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

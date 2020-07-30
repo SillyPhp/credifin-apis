@@ -44,6 +44,7 @@ class QuizController extends ApiBaseController
                 'add-question-pool' => ['POST', 'OPTIONS'],
                 'remove-question' => ['POST', 'OPTIONS'],
                 'get-pools' => ['POST', 'OPTIONS'],
+                'detail' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -57,6 +58,24 @@ class QuizController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionDetail()
+    {
+        $id = Yii::$app->request->post('id');
+        if ($id) {
+            $detail = MockQuizzes::find()
+                ->alias('z')
+                ->select(['z.*','a1.name as label_name'])
+                ->joinWith(['labelEnc a' => function($a){
+                    $a->joinWith(['poolEnc a1']);
+                }],false)
+                ->where(['z.quiz_enc_id' => $id])
+                ->asArray()
+                ->one();
+            return $this->response(200, ['status' => 200, 'data' => $detail]);
+        }
+        return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
     }
 
     private function getOrgId()
@@ -915,7 +934,7 @@ class QuizController extends ApiBaseController
             }
 
             if ($quiz_pools) {
-                return $this->response(200, ['status' => 200, 'datat' => $quiz_pools]);
+                return $this->response(200, ['status' => 200, 'data' => $quiz_pools]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
@@ -961,9 +980,9 @@ class QuizController extends ApiBaseController
                 ->all();
 
             $played_count = 0;
-            foreach ($played as $p){
+            foreach ($played as $p) {
                 $count = MockTakenQuizzes::find()
-                    ->where(['quiz_enc_id'=>$p['quiz_enc_id']])
+                    ->where(['quiz_enc_id' => $p['quiz_enc_id']])
                     ->count();
 
                 $played_count += $count;
