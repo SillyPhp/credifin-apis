@@ -36,6 +36,9 @@ use yii\widgets\Pjax;
                 </a>
             </li>
         </ul>
+        <div class="scd-btn text-right">
+            <a href="/account/schedular/interview">Schedule Interview</a>
+        </div>
         <ul class="hiring_process_list gallery_zoom">
             <?php
             if (!empty($fields)) {
@@ -171,6 +174,8 @@ use yii\widgets\Pjax;
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
                                             <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+<!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+<!--                                            <a href="#">Request to Complete Profile</a>-->
                                         </div>
                                         <ul>
                                             <!--                                        <li>-->
@@ -263,7 +268,10 @@ use yii\widgets\Pjax;
                                     </tbody>
                                 </table>
                             <?php } else { ?>
-                                <h3>No Questionnaire To Display</h3>
+                                <div class="without-q">
+                                    <h3>No Questionnaire To Display</h3>
+<!--                                    <a href="#">Set Questionnaire</a>-->
+                                </div>
                             <?php } ?>
                         </div>
                     </li>
@@ -278,15 +286,40 @@ use yii\widgets\Pjax;
     </div>
 <?php
 $this->registerCss('
+.scd-btn a{
+	background-color: #ff7803;
+	color: #fff;
+	font-size: 14px;
+	font-family: roboto;
+	padding: 8px 15px;
+	border-radius: 4px;
+}
+.without-q {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.without-q h3{
+    margin:14px 0;
+}
+.without-q a{
+	font-size: 14px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: #fff;
+	padding: 4px 8px;
+	border-radius: 4px;
+}
 .tt + .tooltip > .tooltip-inner {
     min-width:140px !important;
     background-color:#000 !important;
 }
 .round-detail{text-align:center;}
-.round-detail h5{margin-bottom:5px;}
+.round-detail h5{margin-bottom:5px;font-family:roboto;}
 .round-detail h4{
     margin-top: 0px;
-    font-weight: 600;
+    font-weight: 500;
+    font-family:roboto;
 }
 .pl-0{padding-left:0px;}
 li{list-style: none;}
@@ -304,6 +337,7 @@ li{list-style: none;}
   padding-top: 0px;
   padding-left: 15px;
   width:calc(100% - 70px);
+  font-family:roboto;
 }
 .hiring_process_list > li{
     width:100%;
@@ -359,6 +393,7 @@ li{list-style: none;}
 }
 .pr-user-past h5{
   display:inline-block;
+  font-family:roboto;
 }
 .pr-user-skills{padding-top:20px;}
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
@@ -373,18 +408,21 @@ li{list-style: none;}
 }
 .pr-user-skills h4{
   font-size:14px;
+  font-family:roboto;
 }
 .pr-user-skills h4 span{
   color:#777;
 }
 .pr-top-actions a{
     background-color: #00a0e3;
-    padding: 4px 10px;
+    padding: 4px 6px;
     display: inline-block;
     border-radius: 0px 0px 4px 4px;
     color: #fff;
     font-size: 12px;
-    margin-right:1px;
+    margin:auto;
+    margin-bottom:5px;
+    font-family:roboto;
 }
 .pr-user-actions ul{
   padding-top:40px;
