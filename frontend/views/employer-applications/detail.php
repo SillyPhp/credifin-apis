@@ -428,7 +428,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                
+
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
