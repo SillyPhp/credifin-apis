@@ -428,6 +428,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
+
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -477,6 +478,7 @@ if ($settings["showNewPositionsWidget"]):
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -1713,8 +1715,9 @@ button.lc-item-video-menu {
         border-right-color: #ffffff;
     }
     .p-category img{
-        width: 80px;
-        height: 50px;
+        max-width: 80px;
+        max-height: 50px;
+        width: auto;
     }
     .p-category .p-category-view img, .p-category .checkbox-text span i {
         color: #4aa1e3;
