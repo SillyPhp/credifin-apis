@@ -66,6 +66,9 @@ $this->registerCss("
     top: 0;
     display:none;
 }
+.off-add{
+    word-break: break-all;
+}
 ");
 $script = <<<JS
 
