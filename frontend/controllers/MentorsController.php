@@ -49,7 +49,14 @@ class MentorsController extends Controller
 
     public function actionWebinarView()
     {
-        return $this->render('webinar-view');
+        $type = 'view';
+        return $this->render('webinar-view', ['type' => $type]);
+    }
+
+    public function actionWebinarLive()
+    {
+        $type = 'broadcast';
+        return $this->render('webinar-view', ['type' => $type]);
     }
 
     public function actionGetWebinarSpeakers()
