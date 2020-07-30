@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <section>
     <div class="videoFlex">
         <div class="video-section">
-            <iframe src=""></iframe>
+            <iframe src="<?= Url::to('/live-stream/'.$type.'?id=' . $_GET['id']) ?>"></iframe>
             <div class="slide-close-btn">X</div>
         </div>
         <div class="slide-section">
