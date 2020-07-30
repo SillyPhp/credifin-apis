@@ -66,6 +66,9 @@ $this->registerCss("
     top: 0;
     display:none;
 }
+.off-add{
+    word-break: break-all;
+}
 ");
 $script = <<<JS
 
@@ -102,6 +105,8 @@ function getLocations() {
                   });
                 }
                 // renderLocations(response.locations);
+            } else{
+                $('.location_tab').css('display','none');
             }
         }
     });

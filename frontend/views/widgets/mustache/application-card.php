@@ -1,6 +1,9 @@
 <?php
+use yii\helpers\Url;
+
 $controller_id = Yii::$app->controller->id;
 $action_id = Yii::$app->controller->action->id;
+$baseUrl = Url::base(true);
 switch ([$controller_id, $action_id]) {
     case ['site', 'load-data'] :
     case ['jobs', 'index'] :
@@ -19,7 +22,7 @@ switch ([$controller_id, $action_id]) {
                 <div class="app-box">
                     <div class="row">
                         <div class="application-card-img">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
+                            <a href="{{organization_link}}" target="_blank" title="{{organization_name}}">
                                 {{#logo}}
                                 <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                                 {{/logo}}
@@ -35,8 +38,9 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}"
+                               style="text-decoration:none;">
+                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
                         {{#city}}
@@ -49,7 +53,7 @@ switch ([$controller_id, $action_id]) {
                         <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
                               data-long="{{longitude}}"
                               data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
                         </span>
                         {{/city}}
                         </span>
@@ -60,7 +64,8 @@ switch ([$controller_id, $action_id]) {
                                 {{/salary}}
                                 {{^salary}}
                                 {{#sal}}
-                                <h5 class="salary"><a href="{{link}}" target="_blank"><i class="far fa-money-bill-alt"></i> View In Details</a></h5>
+                                <h5 class="salary"><a href="{{link}}" target="_blank"><i
+                                                class="far fa-money-bill-alt"></i> View In Details</a></h5>
                                 {{/sal}}
                                 {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
@@ -72,15 +77,16 @@ switch ([$controller_id, $action_id]) {
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
-                                {{^experience}}
-                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
-                                {{/experience}}
+                                {{#sector}}
+                                <h5 class="salary"><i class="fas fa-puzzle-piece"></i>: {{sector}}</h5>
+                                {{/sector}}
                             </div>
                             <div class="clear"></div>
                         </div>
                     </div>
                     <div class="application-card-wrapper">
-                        <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View
+                            Detail</a>
                         <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                     </div>
                 </div>
@@ -113,12 +119,15 @@ function gitHubJobs() {
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
+let return_message = false;
+let jobs_parent;
+let internships_parent;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
     if(cardsLength%3 !==0 && loader === true) {
-        $('#loadMore').hide();
+        $('#loadMore').css('display','none');
     }
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
@@ -167,6 +176,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             if(response.status === 200) { 
                 renderCards(response.cards, container);
                 utilities.initials();
+                localStorage.setItem("displayCity", response.cards[0]['city']);
             } else {
                 if(loader === true) {
                     if(page === 1) {
@@ -174,6 +184,18 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                     }
                     $('#loadMore').hide();
                     load_more_cards = false;
+                } else {
+                    if(return_message === true){
+                        if(type === 'Jobs'){
+                            $(jobs_parent).addClass('hidden');
+                        } else {
+                            $(internships_parent).addClass('hidden');
+                        }
+                        if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            $(jobs_parent).html('<h2 class="text-center">There are no Jobs or Internships in this Company</h2>');
+                            $(jobs_parent).removeClass('hidden');
+                        }
+                    }
                 }
             }
         }
@@ -195,6 +217,14 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                      },
                 });
             });
+            sticky_relocate();
+        } else {
+            var displayCity = localStorage.getItem("displayCity");
+            $('#prefer-heading').html('Jobs in ' + displayCity);
+            var viewbtn = $('#view-all-application');
+            var dis_link = "$baseUrl" + "/jobs-in-";
+            viewbtn.prop('href',dis_link + displayCity)
+            $('#featured-head').show();
         }
     });
 }
@@ -342,12 +372,12 @@ function checkSkills2(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.text-center{font-family:roboto;}
 .city
 {
 text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 40%;
 }
 
 .application-card-description h5{
@@ -370,6 +400,7 @@ text-overflow: ellipsis;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
@@ -380,7 +411,7 @@ text-overflow: ellipsis;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -423,6 +454,7 @@ text-overflow: ellipsis;
     position:absolute !important;
     right: -4px !important;
     top: -3px !important;
+    max-width:255px;
 }
 .clear{
     clear:both;
@@ -488,6 +520,7 @@ text-overflow: ellipsis;
 }
 .salary{ 
     padding-left: 16px;
+    text-transform: capitalize;
 }
 .lg-skill{
     white-space: nowrap;

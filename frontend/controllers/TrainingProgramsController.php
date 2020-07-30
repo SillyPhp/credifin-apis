@@ -28,6 +28,13 @@ class TrainingProgramsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
         }
+
+        return $this->render('index', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionLoadCards(){
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -48,10 +55,6 @@ class TrainingProgramsController extends Controller
             }
             return $response;
         }
-
-        return $this->render('index', [
-            'model' => $model,
-        ]);
     }
     public function actionFetchInstitutes()
     {

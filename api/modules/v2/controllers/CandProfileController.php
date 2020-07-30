@@ -82,7 +82,7 @@ class CandProfileController extends ApiBaseController
 
             return $this->response(200, $result);
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -92,7 +92,8 @@ class CandProfileController extends ApiBaseController
             ->alias('a')
             ->where([
                 'a.created_by' => $id,
-                'a.assigned_to' => $type
+                'a.assigned_to' => $type,
+                'a.is_deleted' => 0
             ])
             ->joinWith(['userPreferredJobProfiles b' => function ($x) {
                 $x->onCondition(['b.is_deleted' => 0]);
@@ -121,7 +122,7 @@ class CandProfileController extends ApiBaseController
             ->alias('a')
             ->select(['a.name value', 'a.category_enc_id key'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => $type, 'b.status' => 'Approved'])
+            ->where(['b.assigned_to' => $type, 'b.status' => 'Approved', 'b.is_deleted' => 0])
             ->asArray()
             ->all();
 
@@ -228,7 +229,7 @@ class CandProfileController extends ApiBaseController
 
             }
 
-            $data =  [
+            $data = [
                 'user_id' => $find_user['user_enc_id'],
                 'username' => $user_detail['username'],
                 'user_type' => $user_detail['user_type'],
@@ -248,9 +249,9 @@ class CandProfileController extends ApiBaseController
                 'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
             ];
 
-            return $this->response(200, ['status' => 200,'data'=>$data]);
+            return $this->response(200, ['status' => 200, 'data' => $data]);
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -276,14 +277,16 @@ class CandProfileController extends ApiBaseController
                         ->one();
 
                     if ($user) {
-//                        $a = $this->updateData($req, $user_id);
                         if ($this->updateData($req, $user_id)) {
                             return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     } else {
-//                        $b = $this->saveData($req, $user_id);
                         if ($this->saveData($req, $user_id)) {
                             return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     }
                 }
@@ -297,16 +300,20 @@ class CandProfileController extends ApiBaseController
                     if ($user) {
                         if ($this->updateData($req, $user_id)) {
                             return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     } else {
                         if ($this->saveData($req, $user_id)) {
                             return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     }
                 }
             }
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -335,7 +342,7 @@ class CandProfileController extends ApiBaseController
                 $user_locations_model->created_on = date('Y-m-d H:i:s');
                 $user_locations_model->created_by = $user_id;
                 if (!$user_locations_model->save()) {
-                    print_r($user_locations_model->getErrors());
+                    return false;
                 }
             }
 
@@ -353,7 +360,7 @@ class CandProfileController extends ApiBaseController
                 $user_industries_model->created_by = $user_id;
                 $user_industries_model->created_on = date('Y-m-d H:i:s');
                 if (!$user_industries_model->save()) {
-                    print_r($user_industries_model->getErrors());
+                    return false;
                 }
             }
 
@@ -379,12 +386,12 @@ class CandProfileController extends ApiBaseController
                 $user_jobs_profile->created_on = date('Y-m-d H:i:s');
                 $user_jobs_profile->created_by = $user_id;
                 if (!$user_jobs_profile->save()) {
-                    print_r($user_jobs_profile->getErrors());
+                    return false;
                 }
             }
             return true;
         } else {
-            print_r($user_preference->getErrors());
+            return false;
         }
     }
 
@@ -448,7 +455,7 @@ class CandProfileController extends ApiBaseController
                     $user_locations_model->created_on = date('Y-m-d H:i:s');
                     $user_locations_model->created_by = $user_id;
                     if (!$user_locations_model->save()) {
-                        print_r($user_locations_model->getErrors());
+                        return false;
                     }
                 }
             }
@@ -503,7 +510,7 @@ class CandProfileController extends ApiBaseController
                     $user_industries_model->created_on = date('Y-m-d H:i:s');
                     $user_industries_model->created_by = $user_id;
                     if (!$user_industries_model->save()) {
-                        print_r($user_industries_model->getErrors());
+                        return false;
                     }
                 }
             }
@@ -595,14 +602,14 @@ class CandProfileController extends ApiBaseController
                     $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
                     $userpreferredJobsModel->created_by = $user_id;
                     if (!$userpreferredJobsModel->save()) {
-                        print_r($userpreferredJobsModel->getErrors());
+                        return false;
                     }
                 }
             }
 
             return true;
         } else {
-            print_r($user_preference->getErrors());
+            return false;
         }
     }
 

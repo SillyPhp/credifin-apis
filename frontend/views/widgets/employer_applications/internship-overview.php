@@ -34,7 +34,7 @@ if (!empty($placement_locations)) {
             <h3>Stipend Type</h3>
             <span><?= $wage_type; ?></span></li>
         <li><i class="far fa-money-bill-alt"></i>
-            <h3>Stipend Ammount</h3>
+            <h3>Stipend Amount</h3>
             <span><?= (($ammount_value)? $ammount_value : 'N/A') ?></span>
         </li>
         <li><i class="fas fa-gift"></i>

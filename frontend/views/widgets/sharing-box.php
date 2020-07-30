@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
+$news_title = urlencode($news_title);
 ?>
 
     <div class="sharing-box">
@@ -15,18 +15,18 @@ use yii\helpers\Url;
             </a>
         </div>
         <div class="tw-share">
-            <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$news_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span class="tw-btn"><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="li-share">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$news_title.'&summary='.$news_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
                 <span class="li-btn"><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
         <div class="wa-share">
-            <a href="wa.me/?text=" target="_blank" class="share-elem-main">
-                <span class="wa-btn"><i class="fab fa-whatsapp marg"></i> Whatsapp</span>
+            <a href="#!" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                <span class="wa-btn"><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
         <div class="mail-share">

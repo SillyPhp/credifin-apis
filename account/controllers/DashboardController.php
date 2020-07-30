@@ -15,6 +15,7 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -81,6 +82,7 @@ class DashboardController extends Controller
         }
 
         if (Yii::$app->user->identity->organization) {
+            $scriptModel = new scriptModel();
             $viewed = $this->hasViewed();
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
             $applications = [
@@ -300,6 +302,7 @@ class DashboardController extends Controller
             'org_applications' => $this->__jobs(8),
             'total_org_applied' => $this->total_applied(),
             'viewed' => $viewed,
+            'scriptModel' => $scriptModel,
         ]);
     }
 
@@ -311,9 +314,6 @@ class DashboardController extends Controller
                 'where' => [
                     'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                     'a.status' => 'Active',
-                ],
-                'having' => [
-                    '>=', 'a.last_date', date('Y-m-d')
                 ],
                 'orderBy' => [
                     'a.published_on' => SORT_DESC,
@@ -352,9 +352,6 @@ class DashboardController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
-            ],
-            'having' => [
-                '>', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -1148,7 +1145,9 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-
+    public function actionSafetyPosters(){
+        return $this->render('safety-posters');
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[

@@ -10,6 +10,7 @@ use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
+use common\models\OrganizationReviews;
 use common\models\Utilities;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
@@ -367,6 +368,13 @@ class OrganizationsController extends ApiBaseController
                     ->one();
                 $result['industry'] = $industry['industry'];
 
+                $reviews = OrganizationReviews::find()
+                    ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
+                    ->where(['organization_enc_id' => $organization['organization_enc_id']])
+                    ->asArray()
+                    ->one();
+                $result['reviews'] = $reviews;
+
                 if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
                     $token_holder_id = UserAccessTokens::find()
@@ -390,10 +398,10 @@ class OrganizationsController extends ApiBaseController
 
                 return $this->response(200, $result);
             } else {
-                return $this->response(404);
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
-            return $this->response(422);
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
     }
 

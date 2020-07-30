@@ -61,7 +61,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                         <?php endif; ?>
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization):
-                    if (strpos($job_url, 'http://') || strpos($job_url, 'https://') === false) {
+                    if (strpos($job_url, 'http://') === false && strpos($job_url, 'https://') === false) {
                         $job_url = 'http://' . $job_url;
                     }
                     ?>
@@ -126,15 +126,15 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <i class="fab fa-facebook-f"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-twitter"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-whatsapp"></i>
                 </a>
                 <a href="#"

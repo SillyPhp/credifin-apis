@@ -312,6 +312,7 @@ AppAssets::register($this);
                                 <li><a href="<?= "/careers"; ?>">Careers</a></li>
                                 <li><a href="javascript:;" class="partnerWith">Partner With Us</a></li>
                                 <li><a href="javascript:;" class="giveFeedback">Feedback</a></li>
+                                <li><a href="<?= "/our-partners"; ?>">Our Partners</a></li>
                             </ul>
                         </div>
                     </div>

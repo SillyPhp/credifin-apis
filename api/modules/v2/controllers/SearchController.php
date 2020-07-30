@@ -104,7 +104,10 @@ class SearchController extends ApiBaseController
                         $y->andWhere([
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
-                            'f.college_enc_id' => $college_id['organization_enc_id']
+                            'f.college_enc_id' => $college_id['organization_enc_id'],
+                            'f.is_deleted' => 0,
+                            'f.is_college_approved' => 1,
+                            'f.status' => 'Active',
                         ]);
                     }], false)
                         ->joinWith(['organizationLocations ee' => function ($e) {
@@ -122,9 +125,6 @@ class SearchController extends ApiBaseController
                     'aa.organization_approvel' => 1,
                     'aa.college_approvel' => 1,
                     'aa.is_deleted' => 0,
-                    'f.is_deleted' => 0,
-                    'f.is_college_approved' => 1,
-                    'f.status' => 'Active',
                     'b.is_erexx_approved' => 1,
                     'b.has_placement_rights' => 1]);
 
@@ -166,7 +166,7 @@ class SearchController extends ApiBaseController
                     $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                 }])
-                ->where(['b.has_placement_rights' => 1, 'aa.is_deleted' => 0]);
+                ->where(['b.has_placement_rights' => 1, 'b.is_erexx_approved' => 1, 'aa.is_deleted' => 0, 'b.is_deleted' => 0, 'b.status' => 'Active']);
 
             if (isset($name) && !empty($name)) {
                 $org->andWhere([
@@ -258,6 +258,8 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.last_date',
+                    'b.joining_date',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -267,7 +269,9 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->joinWith(['organizationEnc bb' => function ($bb) {
+                        $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
+                    }], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
                         $y->select(['y.interview_process_enc_id']);
@@ -294,12 +298,27 @@ class SearchController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1, 'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1]);
+                ->where([
+                    'a.college_enc_id' => $college_id,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active',
+                    'a.is_college_approved' => 1,
+                    'b.application_for' => [0, 2],
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0,
+                    'b1.is_deleted' => 0,
+                    'b1.status' => 'Active',
+                    'b1.college_approvel' => 1
+                ]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
                     'or',
@@ -337,6 +356,8 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.last_date',
+                    'b.joining_date',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -373,12 +394,23 @@ class SearchController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1, 'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1]);
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active',
+                    'a.is_college_approved' => 1,
+                    'b.application_for' => [0, 2],
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0
+                ]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
                     'or',
@@ -467,11 +499,15 @@ class SearchController extends ApiBaseController
             $data['org_slug'] = $j['org_slug'];
             $data['title'] = $j['title'];
             $data['slug'] = $j['slug'];
+            $data['last_date'] = $j['last_date'];
+            $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
             foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
-                array_push($locations, $l['name']);
-                $positions += $l['positions'];
+                if (!in_array($l['name'], $locations)) {
+                    array_push($locations, $l['name']);
+                    $positions += $l['positions'];
+                }
             }
 
             foreach ($j['employerApplicationEnc']['applicationEducationalRequirements'] as $a) {

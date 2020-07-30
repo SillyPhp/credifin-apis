@@ -3,7 +3,8 @@
 use yii\helpers\Url;
 
 ?>
-
+<div class="follow-us">
+    <h3>Follow us on</h3>
     <div class="follow-main">
         <div class="fb">
             <a href="https://www.facebook.com/empower">
@@ -30,28 +31,50 @@ use yii\helpers\Url;
             </a>
         </div>
     </div>
+</div>
 <?php
 $this->registercss('
+.follow-us {
+	background-color: #f7f7f7;
+	padding: 5px 10px 10px;
+	border-radius: 8px;
+	margin-bottom: 8px;
+}
+.follow-us h3 {
+	margin: 2px 0;
+	text-align: center;
+	font-size: 20px;
+	font-family: lora;
+	text-transform: capitalize;
+}
 .follow-main {
 	display: flex;
-	justify-content: right;
-	background-color: #f7f7f7;
-	float: right;
-	padding: 15px 8px 10px;
-	border-radius:8px;
+	justify-content: center;
+}
+
+.fb, .tw, .ig {
+	text-align: center;
+	flex-basis: 50%;
+	background-color: #eee;
+	margin: 0 5px 0 0;
+	transition: all .3s;
+	border-radius:4px;
+}
+.fb a, .tw a, .ig a {
+	display: block;
+	padding: 10px 0 5px;
 }
 .i-text {
-	font-size: 15px;
+	font-size: 13px;
 	font-family: roboto;
-	padding: 4px 0 0 0;
 	color: #000;
 }
-.fb, .tw, .ig{
-    text-align:center;
+.fb:hover, .tw:hover, .ig:hover{
+    transform: scale(1.09);
 }
+
 .fb i, .tw i, .ig i {
-	font-size: 25px;
-	margin: 0 35px;
+	font-size: 20px;
 }
 .fb i{
     color:#3b5998;
@@ -61,11 +84,5 @@ $this->registercss('
 } 
 .ig i{
     color:#c2359d;
-}
-@media (max-width:550px){
-.follow-main {
-	justify-content: center;
-	float:none;
-}
 }
 ');

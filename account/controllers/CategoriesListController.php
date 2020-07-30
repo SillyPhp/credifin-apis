@@ -105,7 +105,7 @@ class CategoriesListController extends Controller
         return json_encode($categories);
     }
 
-    public function actionJobProfiles($q)
+    public function actionJobProfiles($q,$parent=null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $categories = AssignedCategories::find()
@@ -113,8 +113,9 @@ class CategoriesListController extends Controller
             ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-            ->andWhere('b.name LIKE "%' . $q . '%"')
-            ->andWhere(['not', ['a.parent_enc_id' => null]])
+            ->where('b.name LIKE "% '.$q.'%" OR b.name LIKE "'.$q.'%"')
+            ->andWhere(['a.parent_enc_id' => $parent,'a.status'=>'Approved'])
+            ->limit(6)
             ->asArray()
             ->all();
         return $categories;
@@ -338,6 +339,17 @@ class CategoriesListController extends Controller
             ->asArray()
             ->all();
         return $primaryfields;
+    }
+
+    public function actionGroups($q=null,$type=null,$is_parent=null)
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $sql = "SELECT DISTINCT `a`.`name` AS `word`, `a`.`category_enc_id` AS `id` FROM ".Categories::tableName()." `a` INNER JOIN ".AssignedCategories::tableName()." as `b` ON b.category_enc_id = a.category_enc_id WHERE (`b`.`parent_enc_id` IS NULL) AND (name LIKE '{$q}%' OR name LIKE '% {$q}%') AND (`b`.`status`='Approved') LIMIT 10";
+            $p = Yii::$app->db->createCommand($sql)
+                ->queryAll();
+            return $p;
+        }
     }
 
 }

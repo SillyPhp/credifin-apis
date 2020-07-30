@@ -546,7 +546,7 @@ z-index:0;
     font-family: Open Sans;
     cursor: pointer;
 }
-#min_max
+#min_max,.skill_wrapper .Typeahead-spinner
 {
  display:none;
 }
@@ -813,6 +813,13 @@ float:right;
   top: 0;
   left: 0;
   opacity: .9;
+}
+.skill_wrapper .Typeahead-spinner
+{
+    position: absolute;
+    z-index: 999;
+    right: 1px;
+    top: 8px;
 }
 .m-modal hidden{
 //display:none;

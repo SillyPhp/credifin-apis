@@ -456,6 +456,11 @@ $this->registerCss('
         max-width: 200px;
     }
 }
+@media screen and (max-width: 550px){
+    .online-content{
+        margin-left: 0px;
+    }
+}
 ');
 $script = <<<JS
 $(document).on('submit', '#enquiry-form', function (event) {
@@ -468,7 +473,7 @@ $(document).on('submit', '#enquiry-form', function (event) {
         return false;
     }
     form.data('requestRunning', true);
-    var url = form.attr('action');
+    var url = '/';
     var data = form.serialize();
     var method = form.attr('method');
     var formData = new FormData(this);

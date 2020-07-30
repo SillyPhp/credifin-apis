@@ -22,7 +22,7 @@ use yii\helpers\Url;
                 $newsUpdates = ExternalNewsUpdate::find()
                     ->where(['is_deleted' => 0, 'status' => 1])
                     ->orderBy(['created_on' => SORT_DESC])
-                    ->limit(6)
+                    ->limit(9)
                     ->all();
                 foreach ($newsUpdates as $n) {
                     ?>
@@ -46,9 +46,8 @@ use yii\helpers\Url;
 <?php
 $this->registercss('
 .news-updation {
-	background-color: #000;
-	padding: 0px 0 30px;
-	margin:20px 0;
+	background:linear-gradient(to bottom right, #141e30 0%, #243b55 100%);
+	padding:20px 0 40px;
 }
 .n-heading {
 	text-align: left;
@@ -67,19 +66,20 @@ $this->registercss('
 	float: right;
 	padding: 2px 17px;
 	margin-top: 12px;
+	margin-bottom: 12px;
 	border-radius: 4px;
 	transition:all .3s;
 	border:2px solid transparent;
 }
 .view-all-news:hover a{
-    background-color:#000;
+    background-color:#141e30;
     color:#fff;
     border:2px solid #fff;
 }
 .news-bx {
 	display: flex;
 	margin-bottom: 15px;
-	border: 1px dashed #fff;
+	border: 1px dotted #fff;
 	padding: 10px;
 	transition: all .3s;
 }
@@ -88,7 +88,9 @@ $this->registercss('
 }
 .news-logo {
     max-width: 70px;
-    line-height:55px;
+    line-height:50px;
+    height:55px;
+    overflow:hidden;
 }
 .news-name {
 	padding-left: 14px;
@@ -103,7 +105,6 @@ $this->registercss('
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: #fff;
-	padding-top: 6px;
 }
 .news-bx:hover .news-name {
 	color: #000;

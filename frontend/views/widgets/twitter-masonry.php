@@ -79,6 +79,14 @@ $(document).on('load', function() {
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.twitter-tweet {
+    max-width: 272px !important;
+    justify-content:center;
+}
+.posted-tweet iframe {
+    width: 280px !important;
+    margin-bottom: 0px !important;
+}
 .mar-center{
     margin:0 auto;
     width:100%;
