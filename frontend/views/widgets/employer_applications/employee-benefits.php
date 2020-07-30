@@ -16,7 +16,7 @@ if(!empty($benefits)) {
                         ?>
                         <div class="col-lg-4 col-md-4 col-sm-4">
                             <div class="p-category">
-                                <div class="p-category-view ">
+                                <div class="p-category-view">
                                     <?php
                                     if (!empty($benefits[$next]['icon'])) {
                                         $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon']);
