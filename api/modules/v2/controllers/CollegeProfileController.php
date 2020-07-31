@@ -613,7 +613,7 @@ class CollegeProfileController extends ApiBaseController
             } else {
                 $i = 0;
                 foreach ($result as $val) {
-                    $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+//                    $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
                     if ($val['salary_type'] == "Fixed") {
                         if ($val['salary_duration'] == "Monthly") {
                             $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
@@ -671,7 +671,8 @@ class CollegeProfileController extends ApiBaseController
                         $f->innerJoinWith(['userOtherInfo g']);
                         $f->onCondition(['f.is_deleted' => 0]);
                     }], false)
-                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'a.is_deleted' => 0])
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'a.is_deleted' => 0,
+                        'g.organization_enc_id' => $college_id, 'g.is_deleted' => 0])
                     ->asArray()
                     ->one();
 
@@ -693,6 +694,11 @@ class CollegeProfileController extends ApiBaseController
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
                 $data['salary'] = $j['salary'];
+                if ($j['last_date'] < date('Y-m-d')) {
+                    $data['is_closed'] = true;
+                } else {
+                    $data['is_closed'] = false;
+                }
                 foreach ($j['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {
                         array_push($locations, $l['name']);
@@ -817,7 +823,7 @@ class CollegeProfileController extends ApiBaseController
 
             $i = 0;
             foreach ($result as $val) {
-                $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+//                $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
                 if ($val['salary_type'] == "Fixed") {
                     if ($val['salary_duration'] == "Monthly") {
                         $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
@@ -874,7 +880,10 @@ class CollegeProfileController extends ApiBaseController
                         $f->innerJoinWith(['userOtherInfo g']);
                         $f->onCondition(['f.is_deleted' => 0]);
                     }], false)
-                    ->where(['a.application_enc_id' => $j['employerApplicationEnc']['application_enc_id'], 'a.is_deleted' => 0])
+                    ->where(['a.application_enc_id' => $j['employerApplicationEnc']['application_enc_id'],
+                        'a.is_deleted' => 0, 'g.organization_enc_id' => $college_id,
+                        'g.is_deleted' => 0
+                    ])
                     ->asArray()
                     ->one();
 
@@ -894,6 +903,11 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['salary'] = $j['salary'];
+                if ($j['last_date'] < date('Y-m-d')) {
+                    $data['is_closed'] = true;
+                } else {
+                    $data['is_closed'] = false;
+                }
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {
                         array_push($locations, $l['name']);
@@ -974,7 +988,7 @@ class CollegeProfileController extends ApiBaseController
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
                 ->groupBy(['a.applied_application_enc_id'])
-                ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id])
+                ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()
                 ->all();
 

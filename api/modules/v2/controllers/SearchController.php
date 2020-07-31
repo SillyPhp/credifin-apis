@@ -439,7 +439,7 @@ class SearchController extends ApiBaseController
 
         $i = 0;
         foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+//            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
                     $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
@@ -503,6 +503,11 @@ class SearchController extends ApiBaseController
             $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
+            if ($j['last_date'] < date('Y-m-d')) {
+                $data['is_closed'] = true;
+            } else {
+                $data['is_closed'] = false;
+            }
             foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
                 if (!in_array($l['name'], $locations)) {
                     array_push($locations, $l['name']);
@@ -519,7 +524,7 @@ class SearchController extends ApiBaseController
             }
 
             $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
-            $data['location'] = implode(',', $locations);
+            $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
             $data['positions'] = $positions;
             $data['education'] = implode(',', $educational_requirement);
             $data['skills'] = implode(',', $skills);
