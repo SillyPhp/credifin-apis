@@ -428,7 +428,21 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-
+<!--                <div class="rec-main col-md-10 col-md-offset-1 mt2">-->
+<!--                    <div class="recommendation-box">-->
+<!--                        <button>13 Recommendation</button>-->
+<!--                        <a href="">Write A Recommendation</a>-->
+<!--                    </div>-->
+<!--                    <div class="">-->
+<!---->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="rec-main col-md-10 col-md-offset-1">-->
+<!--                    <div class="job-review-box">-->
+<!--                        <button>10 Job Reviews</button>-->
+<!--                        <a href="">Write A Review</a>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -457,7 +471,58 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </section>
 <?php endif; ?>
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="heading-style">Courses</div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="type-1">
+                <div>
+                    <a href="<?= Url::to('/courses')?>" class="btn btn-3">
+                        <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                        <span class="round"><i class="fas fa-chevron-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <?php
+        foreach ($related_courses as $r) {
+            ?>
+            <div class="col-md-4 col-sm-6">
+                <a href="/courses/detail/<?= $r['course_id'] ?>" class="display-block">
+                    <div class="course-box">
+                        <div class="course-upper">
+                            <div class="course-logo">
+                                <img src="<?= $r['image']?>"/>
+                            </div>
+                            <div class="course-description">
+                                <div class="course-name"><?= $r['title'];?></div>
+                                <div class="course-fees">$ <?= $r['price'];?></div>
+                                <?php
+                                    if( $r['author']) {
+                                        ?>
+                                        <div class="course-start"><i class="far fa-user"></i>
+                                            <span class="c-author">
+                                                <?= $r['author'] ?>
+                                            </span>
+                                        </div>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="course-skills">
+                            <h4 class="text-right m-0">Udemy</h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php }?>
+    </div>
+</div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
         $ctt =  ucfirst(strtolower($cat_name));
@@ -546,7 +611,56 @@ if ($settings["showNewPositionsWidget"]):
 </script>
 <?php
 echo $this->render('/widgets/mustache/application-card-2');
+echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss("
+.course-box{
+    min-height: 179px;
+}
+.display-block{
+    display: block;
+}
+.recommendation-box, .job-review-box{
+    width: 100%;
+    position: ralative;
+}
+.recommendation-box button,
+.job-review-box button{
+    width: 100%;
+    background: #ff7803;
+    padding: 18px 0px;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px
+}
+
+.job-review-box button{
+    background: #00a0e3;
+}
+
+.recommendation-box a,
+.job-review-box a{
+    float: right;
+    font-size: 13px;
+    color: #ff7803;
+    font-weight: bold;
+}
+.job-review-box a{
+    color: #00a0e3;
+}
+.recommendation-box a:hover{
+    color: #00a0e3
+}
+.recommendation-box a:hover{
+    color: #ff7803
+}
+.mt2{
+    margin-top: 20px  
+}
+.rec-main{
+    padding: 15px 0 0;
+}
 #mixedSlider .MS-content .item {
     display: inline-block;
     width: 31.7%;
