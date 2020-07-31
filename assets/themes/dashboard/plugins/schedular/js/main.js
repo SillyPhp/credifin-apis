@@ -213,7 +213,11 @@
             $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
             $('#rounds option').each(function () {
                 var background = $(this).data('url');
-                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+                var data = $(this).attr('data-name');
+                if(!data){
+                    data = "";
+                }
+                $('#newrounds').append('<li value="' + $(this).val() + '"><div class="new-s"><span><img src="' + background + '" alt="">' + $(this).text() + '</span><span class="sec-s">'+ data +'</span></div></li>');
             });
             $('#rounds').remove();
             $('#newrounds').attr('id', 'rounds');
@@ -249,7 +253,11 @@
             $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
             $('#rounds option').each(function () {
                 var background = $(this).data('url');
-                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+                var data = $(this).attr('data-name');
+                if(!data){
+                    data = "";
+                }
+                $('#newrounds').append('<li value="' + $(this).val() + '"><div class="new-s"><span><img src="' + background + '" alt="">' + $(this).text() + '</span><span class="sec-s">'+ data +'</span></div></li>');
             });
             $('#rounds').remove();
             $('#newrounds').attr('id', 'rounds');
