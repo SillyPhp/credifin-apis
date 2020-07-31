@@ -9,6 +9,8 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
+use common\models\CollegeCourses;
+use common\models\Courses;
 use common\models\Designations;
 use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
@@ -454,7 +456,6 @@ class JobsController extends Controller
                 'is_deleted' => 0
             ])
             ->one();
-
         if (!$application_details) {
             return 'Not Found';
         }
@@ -526,7 +527,26 @@ class JobsController extends Controller
                    ->limit(6);
                $popular_videos = $xyz->asArray()->all();
            }
-
+        $app_title = $application_details->title0->categoryEnc->name;
+        $skills = ApplicationSkills::find()
+            ->alias('a')
+            ->select(['a.skill_enc_id', 'b.skill'])
+            ->joinWith(['skillEnc b'], false)
+            ->where(['a.application_enc_id' => $application_details->application_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        $skills = ArrayHelper::getColumn($skills, 'skill');
+        $industry = $application_details->preferredIndustry->industry;
+        $related_courses = Courses::find()
+            ->where(['or',
+                ['like', 'title', $app_title],
+                ['in', 'title', $skills],
+                ['like', 'title', $industry]
+            ])
+            ->asArray()
+            ->limit(6)
+            ->all();
+//        print_r($related_courses);
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -537,6 +557,8 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
             'popular_videos' => $popular_videos,
+            'skills' => $skills,
+            'related_courses' => $related_courses,
             'cat_name' => $cat_name,
         ]);
     }
