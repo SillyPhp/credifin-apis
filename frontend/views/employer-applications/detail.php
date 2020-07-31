@@ -479,7 +479,7 @@ if ($settings["showNewPositionsWidget"]):
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="type-1">
                 <div>
-                    <a href="<?= Url::to('/courses')?>" class="btn btn-3">
+                    <a id="course-list-btn" href="<?= Url::to('/courses')?>" class="btn btn-3">
                         <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                         <span class="round"><i class="fas fa-chevron-right"></i></span>
                     </a>
@@ -487,41 +487,42 @@ if ($settings["showNewPositionsWidget"]):
             </div>
         </div>
     </div>
-    <div class="row">
-        <?php
-        foreach ($related_courses as $r) {
-            ?>
-            <div class="col-md-4 col-sm-6">
-                <a href="/courses/detail/<?= $r['course_id'] ?>" class="display-block">
-                    <div class="course-box">
-                        <div class="course-upper">
-                            <div class="course-logo">
-                                <img src="<?= $r['image']?>"/>
-                            </div>
-                            <div class="course-description">
-                                <div class="course-name"><?= $r['title'];?></div>
-                                <div class="course-fees">$ <?= $r['price'];?></div>
-                                <?php
-                                    if( $r['author']) {
-                                        ?>
-                                        <div class="course-start"><i class="far fa-user"></i>
-                                            <span class="c-author">
-                                                <?= $r['author'] ?>
-                                            </span>
-                                        </div>
-                                        <?php
-                                    }
-                                ?>
-                            </div>
-                        </div>
-                        <div class="course-skills">
-                            <h4 class="text-right m-0">Udemy</h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        <?php }?>
-    </div>
+    <div class="row" id="list-main"></div>
+<!--    <div class="row">-->
+<!--        --><?php
+//        foreach ($related_courses as $r) {
+//            ?>
+<!--            <div class="col-md-4 col-sm-6">-->
+<!--                <a href="/courses/detail/--><?//= $r['course_id'] ?><!--" class="display-block">-->
+<!--                    <div class="course-box">-->
+<!--                        <div class="course-upper">-->
+<!--                            <div class="course-logo">-->
+<!--                                <img src="--><?//= $r['image']?><!--"/>-->
+<!--                            </div>-->
+<!--                            <div class="course-description">-->
+<!--                                <div class="course-name">--><?//= $r['title'];?><!--</div>-->
+<!--                                <div class="course-fees">$ --><?//= $r['price'];?><!--</div>-->
+<!--                                --><?php
+//                                    if( $r['author']) {
+//                                        ?>
+<!--                                        <div class="course-start"><i class="far fa-user"></i>-->
+<!--                                            <span class="c-author">-->
+<!--                                                --><?//= $r['author'] ?>
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                        --><?php
+//                                    }
+//                                ?>
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="course-skills">-->
+<!--                            <h4 class="text-right m-0">Udemy</h4>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        --><?php //}?>
+<!--    </div>-->
 </div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
@@ -1909,15 +1910,63 @@ button.lc-item-video-menu {
           }
     }
     /* Profile icons css ends */
-    ");
-$this->registerJs("
+");
 
+$script = <<<JS
 var slugg = '$slug'; 
-var data = {slug: slugg};
+var type = "$type";
+var keyword = "$job_heading";
+var cat = '';
+function getCourseList(){
+    $.ajax({
+        method: "POST",
+        url : '/courses/courses-list',
+        data:{keyword:keyword,cat:cat,page:1,limit:6},
+        beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+        success: function(response) {
+            response = JSON.parse(response);
+            $('.loader-main').hide();
+            $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
+            $('#loadMore').addClass("loading_more");
+            $('.load-more-text').css('visibility', 'visible');
+            $('.load-more-spinner').css('visibility', 'hidden');
+            if(response.count == 0) {
+                $('#loadMore').hide();
+                load_more_cards = false;
+                var alreadyExist = $('#list-main').children().length;
+                if(alreadyExist == 0){
+                    $('#list-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+                }
+            } else{
+                page++;
+                var template = $('#course-card').html();
+                var rendered = Mustache.render(template,response.results);
+                $('#list-main').append(rendered);
+                $('.c-author').each(function() {
+                    var strVal = $.trim($(this).text());
+                    var lastChar = strVal.slice(-1);
+                    if (lastChar == ',') { // check last character is string
+                        strVal = strVal.slice(0, -1); // trim last character
+                        $(this).text(strVal);
+                    }
+                });
+            }
+            $('#course-list-btn').attr('href','/courses/courses-list?keyword=' + keyword)
+        },
+        complete: function() {
+            loading = true;
+        }
+    });
+}
+getCourseList();
+
 $.ajax({
     type: 'POST',
     url: '/drop-resume/check-resume',
-    data : data,
+    data : {slug: slugg},
     success: function(response){
         $('#dropcv').val(response.message);
     }
@@ -1929,9 +1978,8 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
-//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
-");
-$this->registerJs("
-getCards('" . $type . 's' . "','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
-");
+getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org=' + slugg);
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
