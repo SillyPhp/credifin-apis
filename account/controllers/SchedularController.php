@@ -65,7 +65,7 @@ class SchedularController extends Controller
     {
         $applications = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'CONCAT(c.name, " - ", d.name) application_name'])
+            ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'c.name application_name','d.name category_name'])
 //            ->innerJoinWith(['applicationInterviewQuestionnaires z'])
             ->innerJoinWith(['appliedApplications t'])
             ->joinWith(['title b' => function ($x) {
