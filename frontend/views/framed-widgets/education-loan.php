@@ -453,6 +453,9 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.padd-20{
+    padding-bottom: 20px;
+}
 .loan-benefits li{
     color:#f3f3f2;
     font-size: 16px;    
