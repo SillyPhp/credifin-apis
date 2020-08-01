@@ -256,12 +256,14 @@ use yii\helpers\Url;
 $this->registerCss('
 li .new-s {
     display: flex;
-    width: 95%;
+    width: 100%;
     justify-content: space-between;
+    align-items: center;
 }
 .sec-s{
-    font-size:12px;
+    font-size:10px;
     color:#939191;
+    font-family:roboto;
 }
 .selected > .new-s > .sec-s, li:not(.init):hover> .new-s > .sec-s {
     color: #fff;
