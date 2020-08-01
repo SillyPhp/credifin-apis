@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <script id="companies-card-all" type="text/template">
         {{#.}}
@@ -77,12 +79,9 @@ use yii\helpers\Url;
                         <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{#employerApplications.1.total_application}} {{employerApplications.1.total_application}} {{/employerApplications.1.total_application}} {{^employerApplications.1.total_application}} 0 {{/employerApplications.1.total_application}} Internships</span></a>
                     </div>
                     <div class="flw-rvw">
-                        <div class="follow-btn">
-                            <a href="/{{review_link}}" target="_blank">Follow</a>
-                        </div>
-                        <div class="review-btn">
-                            <a href="/{{review_link}}" target="_blank">Review</a>
-                        </div>
+                        <a href="/{{profile_link}}" target="_blank">VIEW PROFILE</a>
+                        <a href="/{{review_link}}" target="_blank">REVIEW</a>
+                        <a href="/{{review_link}}" target="_blank">FOLLOW</a>
                     </div>
                 </a>
             </div>
@@ -97,12 +96,6 @@ $this->registercss('
 .new-j img{
     width:55px !important;
 }
-.flw-rvw {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
 .company-main {
 	border: 1px solid #eee;
 	box-shadow:0px 2px 10px rgba(0,0,0,0.10);
@@ -190,44 +183,41 @@ $this->registercss('
 	position: absolute;
 	top: 0;
 	right: 0px;
-	background-color: #00a0e3;
-	border-radius: 0 4px 0 4px;
 	padding: 3px 8px;
 }
 .total-vacancies a {
-	font-size: 17px;
-	font-family: roboto;
-	color: #fff;
+	font-size: 20px;
+	font-family: lora;
 	font-weight: 500;
 	display: block;
 }
 .comp-jobs-intern a {
     margin: 0 15px;
 }
-.follow-btn, .review-btn {
-    margin:10px;
+.flw-rvw {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding:0 10px;
+	margin:5px 0;
 }
-.follow-btn a, .review-btn a {
+.flw-rvw a {
 	color: #fff;
-	font-size: 17px;
+	font-size: 12px;
 	font-family: roboto;
-	padding: 6px 22px;
-	border-radius: 3px;
+	padding: 6px 0;
+	border-radius: 4px;
 	font-weight: 500;
 	text-transform: uppercase;
-	border: 1px solid;
+	border:2px solid;
+	background-color: #00a0e3;
+	flex-basis: 50%;
+	margin: 0 4px;
 }
-.follow-btn a:hover {
+.flw-rvw a:hover{
 	background-color: #fff;
-	color: #ff7803;
+	color: #00a0e3;
 	transition: all .3s;
-}
-.follow-btn a{background-color:#f78726;}
-.review-btn a{background-color:#29ace3;}
-.review-btn a:hover {
-    background-color:#fff;
-    color:#00a0e3;
-    transition:all .3s;
 }
 .com-rating.comp-ratings img {
     width: 20px;
