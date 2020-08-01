@@ -600,6 +600,12 @@ class CollegeIndexController extends ApiBaseController
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['college_enc_id'] = $j['college_enc_id'];
                 $data['is_college_approved'] = $j['is_college_approved'];
+                $data['last_date'] = $j['last_date'];
+                if($j['last_date'] < date('Y-m-d')){
+                    $data['is_closed'] = true;
+                }else{
+                    $data['is_closed'] = false;
+                }
                 foreach ($j['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {
                         array_push($locations, $l['name']);
