@@ -543,58 +543,67 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
-        $modelSignUp = new IndividualSignUpForm();
-        if ($model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $modelSignUp->username = $model->username;
-            $modelSignUp->first_name = $model->first_name;
-            $modelSignUp->last_name = $model->last_name;
-            $modelSignUp->email = $model->email;
-            $modelSignUp->phone = $model->phone;
-            $modelSignUp->new_password = $model->new_password;
-            $modelSignUp->confirm_password = $model->confirm_password;
-            $errors = ActiveForm::validate($modelSignUp);
-            if (empty($errors)) {
-                $session = Yii::$app->session;
-                $session->set('profile_job', $model->job_profile);
-                $session->set('city', $model->city);
-                $session->set('cityId', $model->city_id);
-                $session->set('salary', $model->salary);
-                $session->set('experience', $model->experience);
-
-                $modelSignUp->user_type = 'Individual';
-
-                if ($modelSignUp->add()) {
-                    $data['username'] = $modelSignUp->username;
-                    $data['password'] = $modelSignUp->new_password;
-                    if ($this->login($data)) {
-
-                        $profileJob = $session->get('profile_job');
-                        $cityJob = $session->get('city');
-                        $cityJobId = $session->get('cityId');
-                        $salaryJob = $session->get('salary');
-                        $experienceJob = $session->get('experience');
-                        if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
-                            return $this->redirect('/account/dashboard');
-                        } else {
-                            return [
-                                'status' => 'error',
-                                'title' => 'error',
-                                'message' => 'An error has occurred. Please try again later',
-                            ];
-                        }
-                    }
-                }
-            } else {
-                return $errors;
-            }
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
         }
+
         return $this->renderAjax('sign-up-candidate', [
             'model' => $model,
             'jobprimaryfields' => $jobprimaryfields,
         ]);
     }
+    public function actionSignUp(){
+        $model = new SignUpCandidateForm();
+        $modelSignUp = new IndividualSignUpForm();
+        if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $modelSignUp->username = $model->username;
+                $modelSignUp->first_name = $model->first_name;
+                $modelSignUp->last_name = $model->last_name;
+                $modelSignUp->email = $model->email;
+                $modelSignUp->phone = $model->phone;
+                $modelSignUp->new_password = $model->new_password;
+                $modelSignUp->confirm_password = $model->confirm_password;
+                if (empty($errors)) {
+                    $session = Yii::$app->session;
+                    $session->set('profile_job', $model->job_profile);
+                    $session->set('city', $model->city);
+                    $session->set('cityId', $model->city_id);
+                    $session->set('salary', $model->salary);
+                    $session->set('experience', $model->experience);
 
+                    $modelSignUp->user_type = 'Individual';
+
+                    if ($modelSignUp->add()) {
+                        $data['username'] = $modelSignUp->username;
+                        $data['password'] = $modelSignUp->new_password;
+                        if ($this->login($data)) {
+
+                            $profileJob = $session->get('profile_job');
+                            $cityJob = $session->get('city');
+                            $cityJobId = $session->get('cityId');
+                            $salaryJob = $session->get('salary');
+                            $experienceJob = $session->get('experience');
+                            if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
+                                return $this->redirect('/account/dashboard');
+                            } else {
+                                return [
+                                    'status' => 'error',
+                                    'title' => 'error',
+                                    'message' => 'An error has occurred. Please try again later',
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    return $errors;
+                }
+            }
+        }
+    }
     private function login($data = [])
     {
         $loginFormModel = new LoginForm();
