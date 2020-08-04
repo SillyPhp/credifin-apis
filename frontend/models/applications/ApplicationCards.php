@@ -271,8 +271,8 @@ class ApplicationCards
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                END) as link',
-                'CONCAT("/job/", a.slug) organization_link',
-                'd.initials_color color',
+                'CONCAT("/", d.slug,"/reviews") organization_link',
+                'd.initials_color color', 
                 'c.name as title',
                 'a.last_date',
                 'i.icon', '(CASE
