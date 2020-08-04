@@ -1917,7 +1917,7 @@ var slugg = '$slug';
 var type = "$type";
 var keyword = "$job_heading";
 var cat = '';
-function getCourseList(){
+function getCourseList(keyword=null,cat=null){
     $.ajax({
         method: "POST",
         url : '/courses/courses-list',
@@ -1938,7 +1938,7 @@ function getCourseList(){
                 load_more_cards = false;
                 var alreadyExist = $('#list-main').children().length;
                 if(alreadyExist == 0){
-                    $('#list-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+                    getCourseList(); 
                 }
             } else{
                 page++;
@@ -1961,8 +1961,7 @@ function getCourseList(){
         }
     });
 }
-getCourseList();
-
+getCourseList(keyword,cat);
 $.ajax({
     type: 'POST',
     url: '/drop-resume/check-resume',
