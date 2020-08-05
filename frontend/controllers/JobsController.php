@@ -9,15 +9,28 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
+use common\models\CollegeCourses;
+use common\models\Courses;
 use common\models\Designations;
 use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
+use common\models\LearningVideos;
 use common\models\OrganizationLocations;
 use common\models\States;
 use common\models\TwitterJobs;
+use common\models\UnclaimAssignedIndustries;
 use common\models\UnclaimedOrganizations;
+use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
+use common\models\Usernames;
 use frontend\models\applications\PreferredApplicationCards;
+use frontend\models\curl\RollingCurl;
+use frontend\models\curl\RollingCurlRequest;
+use frontend\models\curl\RollingRequest;
+use frontend\models\script\Box;
+use frontend\models\script\Color;
+use frontend\models\script\scriptModel;
+use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -43,6 +56,9 @@ use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
 use yii\db\Query;
+use common\models\Utilities;
+use common\models\RandomColors;
+use yii\db\Expression;
 
 class JobsController extends Controller
 {
@@ -100,40 +116,6 @@ class JobsController extends Controller
                     }
                 endif;
             }
-        }
-    }
-
-    public function actionTest()
-    {
-        $mail = Yii::$app->mail;
-        $mail->receivers = [];
-        $mail->receivers = [
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@yahoo.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@outlook.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@gmail.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "shshank@dsbedutech.in",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "kashishbudhiraja16781@gmail.com",
-            ]
-        ];
-        $mail->subject = 'Company SignUp';
-        $mail->data = ['job' => ""];
-        $mail->template = 'company-signup';
-        if ($mail->send()) {
-            return "ok";
         }
     }
 
@@ -323,18 +305,19 @@ class JobsController extends Controller
             ->select(['city_name', 'SUM(job_count) as jobs'])
             ->groupBy('city_enc_id')
             ->orderBy(['jobs' => SORT_DESC])
-            ->limit(4)
+            ->limit(3)
             ->all();
 
         $tweets = $this->_getTweets(null, null, "Jobs", 4, "");
-
+        $type = 'jobs';
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'type' => $type
         ]);
     }
 
@@ -363,7 +346,6 @@ class JobsController extends Controller
 
     public function actionList()
     {
-
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
@@ -371,6 +353,9 @@ class JobsController extends Controller
             if (Yii::$app->request->get('location') || Yii::$app->request->get('keyword')) {
                 $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
                 $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
+            }
+            if (Yii::$app->request->get('slug')) {
+                $parameters['slug'] = Yii::$app->request->get('slug');
             }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
@@ -395,7 +380,9 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
+            if ($parameters['slug'] && !empty($parameters['slug'])) {
+                $options['slug'] = $parameters['slug'];
+            }
             $cards = ApplicationCards::jobs($options);
             if (count($cards) > 0) {
                 $response = [
@@ -412,6 +399,54 @@ class JobsController extends Controller
         }
         return $this->render('list');
     }
+    public function actionApi($source = '', $slugparams = null, $eaidk = null)
+    {
+        if ($source == 'git-hub') {
+            $get = $this->gitjobs($eaidk);
+        } else if ($source == 'muse') {
+            $get = $this->musejobs($eaidk);
+        }
+        if ($get['title'])
+        {
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk
+                ]);
+        }else{
+            return 'Application Has Been Moved or Deleted';
+        }
+    }
+
+    private function musejobs($id)
+    {
+        $url = "https://www.themuse.com/api/public/jobs/" . $id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if ($result) {
+            $result['title'] = $result['name'];
+            $result['company'] = $result['company']['name'];
+            $result['created_at'] = $result['publication_date'];
+            $result['url'] = $result['refs']['landing_page'];
+            $result['description'] = $result['contents'];
+            $result['location'] = $result['locations'];
+            unset($result['name']);
+            unset($result['publication_date']);
+            unset($result['refs']);
+            unset($result['contents']);
+            unset($result['locations']);
+        }
+        return $result;
+    }
 
     public function actionDetail($eaidk)
     {
@@ -421,7 +456,6 @@ class JobsController extends Controller
                 'is_deleted' => 0
             ])
             ->one();
-
         if (!$application_details) {
             return 'Not Found';
         }
@@ -448,6 +482,71 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new \frontend\models\applications\JobApplied();
+        $desi_name = $application_details->designationEnc->designation;
+        $pro_name = $application_details->title0->parentEnc->name;
+        $cat_name = $application_details->title0->categoryEnc->name;
+        $related_videos = LearningVideos::find()
+            ->alias('z')
+            ->where(['z.is_deleted' => 0,
+                'z.status' => 1])
+            ->orderBy(new Expression('rand()'))
+            ->limit(6);
+
+        $popular_videos =  $related_videos
+               ->joinWith(['assignedCategoryEnc a'=>function($a){
+                   $a->joinWith(['parentEnc a1'],false);
+                   $a->joinWith(['categoryEnc a2'],false);
+                   $a->joinWith(['employerApplications b' => function($b){
+                       $b->joinWith(['designationEnc c'],false);
+                   }],false);
+               }],false)
+             ->andFilterWhere(['or',
+                 ['like','c.designation',$desi_name],
+                 ['like','a1.name',$pro_name],
+                 ['like','a2.name',$cat_name],
+             ])
+               ->asArray()->all();
+        if(count($popular_videos) < 6) {
+            $limit = 6 - count($popular_videos);
+            $xyz = LearningVideos::find()
+                ->alias('z')
+                ->where(['z.is_deleted' => 0,
+                    'z.status' => 1])
+                ->orderBy(new Expression('rand()'))
+                ->limit($limit);
+            $xz = $xyz->asArray()->all();
+            $popular_videos = array_merge($popular_videos, $xz);
+        }
+           if (empty($popular_videos) )
+           {
+               $xyz = LearningVideos::find()
+                   ->alias('z')
+                   ->where(['z.is_deleted' => 0,
+                       'z.status' => 1])
+                   ->orderBy(new Expression('rand()'))
+                   ->limit(6);
+               $popular_videos = $xyz->asArray()->all();
+           }
+//        $app_title = $application_details->title0->categoryEnc->name;
+//        $skills = ApplicationSkills::find()
+//            ->alias('a')
+//            ->select(['a.skill_enc_id', 'b.skill'])
+//            ->joinWith(['skillEnc b'], false)
+//            ->where(['a.application_enc_id' => $application_details->application_enc_id, 'a.is_deleted' => 0])
+//            ->asArray()
+//            ->all();
+//        $skills = ArrayHelper::getColumn($skills, 'skill');
+//        $industry = $application_details->preferredIndustry->industry;
+//        $related_courses = Courses::find()
+//            ->where(['or',
+//                ['like', 'title', $app_title],
+//                ['in', 'title', $skills],
+//                ['like', 'title', $industry]
+//            ])
+//            ->asArray()
+//            ->limit(6)
+//            ->all();
+//        print_r($related_courses);
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -457,6 +556,10 @@ class JobsController extends Controller
             'type' => $type,
             'model' => $model,
             'shortlist' => $shortlist,
+            'popular_videos' => $popular_videos,
+//            'skills' => $skills,
+//            'related_courses' => $related_courses,
+            'cat_name' => $cat_name,
         ]);
     }
 
@@ -1080,10 +1183,9 @@ class JobsController extends Controller
     {
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-
             Yii::$app->response->format = Response::FORMAT_JSON;
             $activeProfiles = AssignedCategories::find()
-                ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+                ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(CASE WHEN d.application_enc_id IS NOT NULL AND d.is_deleted = 0 Then 1 END) as total'])
                 ->alias('a')
                 ->distinct()
                 ->innerJoinWith(['parentEnc b' => function ($b) {
@@ -1310,15 +1412,51 @@ class JobsController extends Controller
         ];
     }
 
-    public function actionClearMyCache()
+    private function gitjobs($id)
     {
-        $cache = Yii::$app->cache->flush();
+        $url = "https://jobs.github.com/positions/" . $id . ".json";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        return $result;
+    }
 
-        if ($cache) {
-            $this->redirect(Yii::$app->request->referrer);
-        } else {
-            $this->redirect('/jobs/clear-my-cache');
-            return 'something went wrong...! please try again later';
+    public function actionImageScript()
+    {
+        $model = new scriptModel();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->logo = UploadedFile::getInstance($model, 'logo');
+            $rand_dir = Yii::$app->getSecurity()->generateRandomString();
+            $file_logo = $rand_dir . '-' . $model->logo->baseName . '.' . $model->logo->extension;
+            $base_path = Url::to('@rootDirectory/files/temp/' . $rand_dir);
+            if (!is_dir($base_path)) {
+                if (mkdir($base_path, 0755, true)) {
+                    if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
+                        $file = $model->genrate($base_path . DIRECTORY_SEPARATOR . $file_logo, $rand_dir);
+                        if (isset($file)) {
+                            $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
+                            return [
+                                'status' => 200,
+                                'url' => $url,
+                                'time' => $file['time'],
+                            ];
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            }
         }
     }
 }

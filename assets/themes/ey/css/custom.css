@@ -200,7 +200,7 @@ button, input, optgroup, select, textarea {
 }
 @media screen and (max-width: 400px){
     .heading-style {
-        font-size: 23pt;
+        font-size: 21pt;
     }
 }
 /* Headings css ends*/
@@ -339,7 +339,7 @@ button, input, optgroup, select, textarea {
     box-shadow: 0px 2px 20px 1px #bbbbbb8c;
     width: 80px;
     margin-left: 18px;
-    margin-top: 15px;
+    margin-top: 20px;
     overflow: hidden;
     float: left;
     line-height: 75px;
@@ -875,5 +875,21 @@ button, input, optgroup, select, textarea {
 .type-1 a:hover .round i {
     left: 12%;
     color: #FFF;
+}
+@media (max-width:415px){
+    .type-1 div a{
+        padding:8px 40px 8px 18px !important;
+    }
+    .type-1 div a .round{
+        width: 30px !important;
+        height:30px !important;
+    }
+    .type-1 a:hover {
+        padding-left: 25px !important;
+        padding-right: 20px !important;
+    }
+    .type-1 a:hover .round {
+        width: calc(100% - 6px) !important;
+    }
 }
 /*<!---- view-all button css ends --->*/

@@ -20,6 +20,7 @@ $this->registerCss('
     border-radius:10px;
     box-shadow:0 0 10px rgba(0,0,0,.1);
     margin-bottom:20px;
+    position:relative;
 }
 .icon{
     height:150px;
@@ -32,27 +33,34 @@ $this->registerCss('
     top:50%;
     left:50%;
     transform: translate(-50%, -50%);
+    margin-top:10px;
 }
-.profile{
-    border-top:1px solid #eee;
-    text-align:center;
-    padding-top:5px;
-    font-size:17px;
-    line-height: 21px;
-    min-height:60px;
-    position:relative;
+.profile {
+	border-top: 1px solid #eee;
+	font-size: 16px;
+	min-height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family:roboto;
 }
-.pn{
-    position:absolute;
-    top:50%;
-    width:100%;
-    left:50%;
-    transform:translate(-50%,-50%);
+.cnt {
+	position: absolute;
+	right: 5px;
+	top: 6px;
+	background-color:#00a0e3;
+	padding: 1px 6px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: roboto;
+	text-transform: uppercase;
+	color: #fff;
+	font-weight: 500;
 }
 ');
 $script = <<<JS
 function getProfiles() {
-    var card = '{{#.}}<div class="col-md-3"><a href="list?keyword={{name}}"><div class="profile-box"><div class="icon"><img src="{{icon}}"></div><div class="profile"><div class="pn">{{name}}</div></div></div></a></div>{{/.}}';
+    var card = '{{#.}}<div class="col-md-3 col-sm-4"><a href="list?keyword={{name}}"><div class="profile-box"><div class="cnt">{{total}} Jobs</div><div class="icon"><img src="{{icon}}"></div><div class="profile"><div class="pn">{{name}}</div></div></div></a></div>{{/.}}';
     $.ajax({
         method: "POST",
         url : window.location.href,

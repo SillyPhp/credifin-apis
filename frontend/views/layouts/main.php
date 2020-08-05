@@ -312,6 +312,7 @@ AppAssets::register($this);
                                 <li><a href="<?= "/careers"; ?>">Careers</a></li>
                                 <li><a href="javascript:;" class="partnerWith">Partner With Us</a></li>
                                 <li><a href="javascript:;" class="giveFeedback">Feedback</a></li>
+                                <li><a href="<?= "/our-partners"; ?>">Our Partners</a></li>
                             </ul>
                         </div>
                     </div>
@@ -363,7 +364,7 @@ AppAssets::register($this);
                 </div>
                 <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
-                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
+                        <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
                            title='Download Empower Youth App on Google Play'>
                             <img alt='Get it on Google Play'
                                  src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'

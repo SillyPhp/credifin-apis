@@ -148,7 +148,7 @@ a:hover{
     text-align:center;
     border:2px solid #eef1f5;
     background:#fff; 
-    padding:20px 10px;
+    padding:20px 10px 10px;
     border-radius:14px !important; 
     margin-bottom:20px; 
     text-decoration:none; 
@@ -199,10 +199,10 @@ a:hover{
 .hr-com-jobs{
     font-size:13px; 
     color:#080808; 
-    padding:10px 0 10px; 
+    padding:10px 0 10px;
     margin-top:10px; 
     border-top:1px solid #eef1f5;
-}            
+}
 .minus-15-pad{
     padding-left:0px !important; 
     padding-right:0px !important;

@@ -45,7 +45,16 @@ use kartik\widgets\DatePicker;
         </div>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+        <div class="row">
+            <div class="col-md-12" id="wh_type">
+                <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+            </div>
+            <div id="wh_vacancy">
+                <div class="col-md-5">
+                    <?= $form->field($model, 'vacancy')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Positions', 'id' => 'wh_positions','maxLength'=>7])->label(false); ?>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -198,47 +207,77 @@ use kartik\widgets\DatePicker;
             <label class="g-pref">Gender Preference</label>
         </div>
     </div>
-    <div class="col-md-3">
-        <?= $form->field($model, 'min_exp')->dropDownList([
-            '0' => 'No Experience',
-            '1' => 'Less Than 1',
-            '2' => '1 Year',
-            '3' => '2-3 Years',
-            '3-5' => '3-5 Years',
-            '5-10' => '5-10 Years',
-            '10-20' => '10-20 Years',
-            '20+' => 'More Than 20 Years',
-        ], [
-            'prompt' => 'Experience Required',
+    <div class="col-md-2">
+        <?= $form->field($model,'minimum_exp')->dropDownList($exp, [
+            'prompt' => 'Min Experience',
+            'id'=>'min_exp_details',
+            'onchange' => '$("#max_exp_details").empty().append($("<option>", { 
+                                        value: "",
+                                        text : "Max Experience" 
+                                    }));   
+                                    var _curIndex = $(this).val();
+                                    var experience = '.json_encode($exp).'; 
+                                    var _totalLentgh = Object.keys(experience).length;
+                                    if(_curIndex!=""||_curIndex!=null){ 
+                                    $.each(experience, function (index,value) {
+                                      if(index==_curIndex){
+                                        return false;
+                                      }
+                                      else
+                                      {
+                                      delete experience[index];
+                                      }
+                                    }); 
+                                    delete experience[_curIndex];
+                                    var id = "max_exp_details";
+                                    var selectbox = $(\'#\' + id + \'\');
+                                    $.each(experience, function (index,value) {
+                                      selectbox.append($(\'<option>\', {
+                                          value: index,
+                                          text: value
+                                         }));
+                                    }); 
+                                    } 
+                                    ',
         ])->label(false); ?>
     </div>
-    <div class="col-md-3">
-        <?=
-        $form->field($model, 'last_date')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Last Date To Apply'],
-            'readonly' => true,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'dd-M-yyyy',
-                'name' => 'earliestjoiningdate',
-                'todayHighlight' => true,
-                'startDate' => '+0d',
-            ]])->label(false);
-        ?>
+    <div class="col-md-2">
+        <?= $form->field($model,'maximum_exp')->dropDownList([], [
+            'prompt' => 'Max Experience',
+            'id' => 'max_exp_details',
+        ])->label(false); ?>
     </div>
-    <div class="col-md-3">
-        <?=
-        $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Joining Date'],
-            'readonly' => true,
-            'pluginOptions' => [
-                'autoclose' => true,
-                'format' => 'dd-M-yyyy',
-                'name' => 'earliestjoiningdate',
-                'todayHighlight' => true,
-                'startDate' => '+0d',
-            ]])->label(false);
-        ?>
+    <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-6">
+                <?=
+                $form->field($model, 'last_date')->widget(DatePicker::classname(), [
+                    'options' => ['placeholder' => 'Last Date'],
+                    'readonly' => true,
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd-M-yyyy',
+                        'name' => 'earliestjoiningdate',
+                        'todayHighlight' => true,
+                        'startDate' => '+0d',
+                    ]])->label(false);
+                ?>
+            </div>
+            <div class="col-md-6">
+                <?=
+                $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
+                    'options' => ['placeholder' => 'Joining Date'],
+                    'readonly' => true,
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd-M-yyyy',
+                        'name' => 'earliestjoiningdate',
+                        'todayHighlight' => true,
+                        'startDate' => '+0d',
+                    ]])->label(false);
+                ?>
+            </div>
+        </div>
     </div>
 </div>
 <?php
@@ -306,6 +345,7 @@ function wage_type(sl_type)
 });
 $('#fixed_wage, #ctc').mask("#,#0,#00", {reverse: true});
 $('#max_wage, #min_wage').mask("#,#0,#00", {reverse: true});
+$('#wh_positions').mask("#", {reverse: true});   
 $('#designations').typeahead(null, {
   name: 'designations_test',
   display: 'designation',
@@ -316,6 +356,33 @@ $('#designations').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') {
+    var exp_id = "max_exp_details";
+    var experience = _experience; 
+    _setExperience('$model->minimum_exp',exp_id,_experience); 
+}
+function _setExperience(e,exp_id,experience) {
+    if(e!=""||e!=null){ 
+        $.each(experience, function (index,value) {
+    if(index==e){
+     return false;
+    }
+    else
+    {
+    delete experience[index];
+    }
+    }); 
+    delete experience[e];
+    var selectbox = $('#' + exp_id + '');
+    $.each(experience, function (index,value) {
+    selectbox.append($('<option>', {
+    value: index,
+    text: value
+    }));
+    }); 
+    selectbox.val('$model->maximum_exp');
+    }
+  }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
