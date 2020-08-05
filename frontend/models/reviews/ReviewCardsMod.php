@@ -28,7 +28,7 @@ class ReviewCardsMod
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
- 
+
         if (Yii::$app->user->identity->user_enc_id){
             $is_login = 1;
         }
