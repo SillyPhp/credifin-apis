@@ -285,7 +285,7 @@ if ($settings["showNewPositionsWidget"]):
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.desc strong
+.desc strong, .desc h1
 {
 font-size: 15px;
     font-weight: 500;
