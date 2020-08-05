@@ -304,7 +304,7 @@ class JobsController extends ApiBaseController
                 'b.interview_start_date',
                 'b.interview_end_date',
                 'w.organization_enc_id',
-                'w.name organization_name',
+                'REPLACE(w.name, "&amp;", "&") as organization_name',
                 'w.initials_color color',
                 'w.email',
                 'w.website',
