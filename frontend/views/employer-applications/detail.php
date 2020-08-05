@@ -1915,7 +1915,7 @@ button.lc-item-video-menu {
 $script = <<<JS
 var slugg = '$slug'; 
 var type = "$type";
-var keyword = "$job_heading";
+var keyword = "$searchItems";
 var cat = '';
 function getCourseList(keyword=null,cat=null){
     $.ajax({
