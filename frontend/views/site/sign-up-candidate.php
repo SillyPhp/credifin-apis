@@ -284,8 +284,14 @@ allNextBtn.click(function(){
         curStepBtn = curStep.attr("id"),
         nextStepWizard = curStep.next(),
         isValid = false;
-    nextStepWizard.show();
-    curStep.hide();
+    switch(curStepBtn){
+        case 'step-1':
+            validate_tab_first(isValid,curStep,nextStepWizard);
+            break;
+        case 'step-2':
+            validate_tab_second(isValid,curStep,nextStepWizard);
+            break;
+    }
     });
 allPrevBtn.click(function(){
     var curStep = $(this).closest(".tab"),
@@ -327,7 +333,40 @@ allPrevBtn.click(function(){
                   var citiesdata = datum.city_name;
                   $('#city_id').val(datum.id);
                });
-
+ function validate_tab_first(isValid,curStep,nextStepWizard) {
+    if ($('input[name="city"]').val().length!==0 && $('#job_profile').val().length!==0 && $('#experience').val().length!==0 && $('input[name="salary"]').val().length!==0)
+    {
+       isValid = true;
+    }
+    else
+    {
+        swal({
+            title:"",
+            text: "Please Fill all Fields",
+        });
+    }
+    if (isValid){
+        nextStepWizard.show();
+        curStep.hide();
+    }
+}
+ function validate_tab_second(isValid,curStep,nextStepWizard) {
+    if ($('input[name="first_name"]').val().length!==0 && $('input[name="last_name"]').val().length!==0 && $('input[name="email"]').val().length!==0 && $('input[name="phone"]').val().length!==0)
+    {
+        isValid = true;
+    }
+    else
+    {
+        swal({
+            title:"",
+            text: "Please Fill all Fields",
+        });
+    }
+    if (isValid){
+        nextStepWizard.show();
+        curStep.hide();
+    }
+}
 $(document).on('submit', '#signup_candidate_form', function (event) {
         event.stopImmediatePropagation();
         event.preventDefault();
