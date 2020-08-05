@@ -855,9 +855,9 @@ class CandhomeController extends ApiBaseController
                         $c1->joinWith(['designationEnc c2' => function ($c2) {
                             $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
                         }], false);
-                        $c1->andWhere(['c1.is_deleted' => 0]);
+                        $c1->onCondition(['c1.is_deleted' => 0]);
                     }]);
-                    $bb->andWhere(['c.is_deleted' => 0]);
+                    $bb->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['webinarRegistrations d' => function ($d) {
                     $d->select([
