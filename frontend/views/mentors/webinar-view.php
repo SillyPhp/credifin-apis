@@ -2,81 +2,27 @@
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
-
+if (Yii::$app->user->identity->image) {
+    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+} else{
+    $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+'. Yii::$app->user->identity->last_name .'&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
+}
 ?>
+<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
+<input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>" id="current-user-name">
+<input type="hidden" value="<?= $image; ?>" id="current-user-image">
+
 <section>
     <div class="videoFlex">
         <div class="video-section">
-            <iframe src="<?= Url::to('/live-stream/'.$type.'?id=' . $_GET['id']) ?>"></iframe>
+            <iframe src="<?= Url::to('/live-stream/' . $type . '?id=' . $_GET['id']) ?>"></iframe>
             <div class="slide-close-btn">X</div>
         </div>
         <div class="slide-section">
 
             <div id="scroll-chat">
                 <div class="chat">
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
-                    <div class="chat-box">
-                        <div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="username-msg">
-                            <div class="us-name">Tarandeep Singh Rakhra</div>
-                            <div class="us-msg">Registration is powered by Sign In Once</div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="msg-input">
@@ -126,6 +72,16 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<script type="text/javascript">
+    // Variables defined
+    //var sendMessagesUrl = '<?//= Yii::$app->params->fireabse->modules->realtimeChat->config->functions->sendMessages; ?>//';
+    var specialKey = '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->specialKey; ?>';
+    let params = (new URL(document.location)).searchParams;
+    let webinarId = params.get('id');
+    let userId = document.getElementById('current-user-id').value;
+    let userName = document.getElementById('current-user-name').value;
+    let userImage = document.getElementById('current-user-image').value;
+</script>
 <?php
 $this->registerCss('
 .msg-input{
@@ -287,18 +243,100 @@ $this->registerCss('
 .live-count i{
     color: green;
 }
-
-
+.chat-box.right-aligned{
+    flex-direction: row-reverse;
+}
+.chat-box.right-aligned .username-msg{
+    margin-left: 0px;    
+    margin-right: -25px;
+    text-align:right;
+}
+.chat-box.right-aligned .username-msg .us-name {
+    padding-left: 0px;
+    padding-right: 20px;
+}
 ');
 $script = <<<JS
 const ps = new PerfectScrollbar('#scroll-chat');
+var db = firebase.database();
+db
+            .ref(specialKey + '/conversations/' + webinarId)
+            .on('value', gotData, errData);
 
+            function gotData(data) {
+                var result = [];
+                for (var i in data.val()) {
+                    result.push([i, data.val()[i]]);
+                }
+                for (var z = 0; z < result.length; z++) {
+                    if (!document.getElementById(result[z][0])) {
+                        if(result[z][1].sender != userId){
+                            showMessage(result[z][0], result[z][1].name, result[z][1].image, result[z][1].message,false);
+                        } else {
+                            showMessage(result[z][0], result[z][1].name, result[z][1].image, result[z][1].message, true);
+                        }
+                    }
+                }
+            }
+
+            function errData(data) {
+                console.log('err');
+            }
+            function showMessage(id,name,image,message,owner){
+                let chat = document.querySelector('.chat');
+                let chatBox = document.createElement('div');
+                if(owner){
+                    chatBox.setAttribute('class', 'chat-box right-aligned');
+                } else{
+                    chatBox.setAttribute('class', 'chat-box');
+                }
+                chatBox.setAttribute('id', id);
+                chatBox.innerHTML = `<div class="user-icon">
+                                    <img src="`+ image +`">
+                                    </div>
+                                    <div class="username-msg">
+                                        <div class="us-name">`+ name +`</div>
+                                        <div class="us-msg">` + message + `</div>
+                                    </div>`;
+                chat.appendChild(chatBox);
+                var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
+                document.getElementById('scroll-chat').scrollTop = myElement;
+            }
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+
+<script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+        apiKey: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->apiKey; ?>',
+        authDomain: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->authDomain; ?>',
+        databaseURL: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->databaseURL; ?>',
+        projectId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->projectId; ?>',
+        storageBucket: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->storageBucket; ?>',
+        messagingSenderId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->messagingSenderId; ?>',
+    };
+    firebase.initializeApp(config);
+</script>
 <script>
+    var db = firebase.database();
+    var monthDict = {
+        0: 'Jan',
+        1: 'Feb',
+        2: 'Mar',
+        3: 'Apr',
+        4: 'May',
+        5: 'June',
+        6: 'July',
+        7: 'Aug',
+        8: 'Sep',
+        9: 'Oct',
+        10: 'Nov',
+        11: 'Dec',
+    };
     document.querySelector('.slide-close-btn').addEventListener('click', hideSlide);
 
     function hideSlide() {
@@ -329,18 +367,47 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     function sendMessage() {
         let message = document.querySelector('.send-msg').value;
-        let chat = document.querySelector('.chat');
-        let chatBox = document.createElement('div');
-        chatBox.setAttribute('class', 'chat-box');
-        chatBox.innerHTML = `<div class="user-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                            </div>
-                            <div class="username-msg">
-                                <div class="us-name">Tarandeep Singh Rakhra</div>
-                                <div class="us-msg">` + message + `</div>
-                            </div>`;
-        chat.appendChild(chatBox);
+        // let chat = document.querySelector('.chat');
+        //let chatBox = document.createElement('div');
+        //chatBox.setAttribute('class', 'chat-box');
+        //chatBox.innerHTML = `<div class="user-icon">
+        //                    <img src="<?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>//">
+        //                    </div>
+        //                    <div class="username-msg">
+        //                        <div class="us-name">`+ userName +`</div>
+        //                        <div class="us-msg">` + message + `</div>
+        //                    </div>`;
+        //chat.appendChild(chatBox);
         document.querySelector('.send-msg').value = "";
+        var currentDate = new Date();
+        var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
+        var getMins = currentDate.getMinutes();
+        if (getMins < 10) {
+            getMins = "0" + getMins;
+        }
+        var timeMain = currentDate.getHours() + ":" + getMins;
+        var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+        ref.set({
+            'name': userName,
+            'sender': userId,
+            'is_public': true,
+            'reply_to': "",
+            'message': message,
+            'image': userImage,
+            'date': dateMain,
+            'time': timeMain,
+        });
+        var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
+        document.getElementById('scroll-chat').scrollTop = myElement;
+    }
 
+    function uniqueId() {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < 15; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return userId + result;
     }
 </script>

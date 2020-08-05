@@ -13,38 +13,54 @@ use yii\web\BadRequestHttpException;
 
 class MentorsController extends Controller
 {
-    public function actionMentorshipIndex(){
+    public function actionMentorshipIndex()
+    {
         $model = new \frontend\models\mentorship\MentorshipEnquiryForm();
 
-        return $this->render('mentorship-index',[
+        return $this->render('mentorship-index', [
             'model' => $model,
         ]);
     }
 
-    public function actionMentorProfile(){
+    public function actionMentorProfile()
+    {
         return $this->render('mentor-profile');
     }
 
-    public function actionAllMentors(){
+    public function actionAllMentors()
+    {
         return $this->render('all-mentors');
     }
 
-    public function actionScoolMentorship(){
+    public function actionScoolMentorship()
+    {
         return $this->render('scool-mentorship');
     }
 
-    public function actionWebinarDetails(){
+    public function actionWebinarDetails()
+    {
         return $this->render('webinar-details');
     }
 
-    public function actionWebinarSpeakers(){
+    public function actionWebinarSpeakers()
+    {
         return $this->render('speakers');
     }
 
-    public  function actionWebinarView(){
-        return $this->render('webinar-view');
+    public function actionWebinarView()
+    {
+        $type = 'view';
+        return $this->render('webinar-view', ['type' => $type]);
     }
-    public function actionGetWebinarSpeakers(){
+
+    public function actionWebinarLive()
+    {
+        $type = 'broadcast';
+        return $this->render('webinar-view', ['type' => $type]);
+    }
+
+    public function actionGetWebinarSpeakers()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $limit = Yii::$app->request->post('limit');

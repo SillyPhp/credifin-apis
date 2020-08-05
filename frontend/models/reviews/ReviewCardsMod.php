@@ -15,6 +15,7 @@ use common\models\OrganizationLocations;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
+use yii\db\Expression;
 use yii\helpers\Url;
 use Yii;
 
@@ -27,10 +28,14 @@ class ReviewCardsMod
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
+
+        if (Yii::$app->user->identity->user_enc_id){
+            $is_login = 1;
+        }
         $q1 = Organizations::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select([new Expression('"'.$is_login.'" as login'),'a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
@@ -38,9 +43,9 @@ class ReviewCardsMod
                 'a.slug profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
                 '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
-            ->joinWith(['businessActivityEnc y'],false)
-            ->joinWith(['organizationReviews z'],false)
-            ->joinWith(['employerApplications b' => function ($x) {
+                ->joinWith(['businessActivityEnc y'],false)
+                ->joinWith(['organizationReviews z'],false)
+                ->joinWith(['employerApplications b' => function ($x) {
                 $x->joinWith(['applicationPlacementLocations e'=>function($x)
                 {
                     $x->joinWith(['locationEnc f'=>function($x)
@@ -102,7 +107,7 @@ class ReviewCardsMod
         $q2 = UnclaimedOrganizations::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select([new Expression('"'.$is_login.'" as login'),'a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on',
@@ -110,11 +115,11 @@ class ReviewCardsMod
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND(average_rating) rating','IFNULL(u.positions, 0) total_vaccency'])
-            ->joinWith(['organizationTypeEnc y'], false)
-            ->joinWith(['newOrganizationReviews z' => function ($b) {
+                ->joinWith(['organizationTypeEnc y'], false)
+                ->joinWith(['newOrganizationReviews z' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
-            }], false)
-            ->joinWith(['employerApplications b' => function ($x) {
+                }], false)
+                ->joinWith(['employerApplications b' => function ($x) {
                 $x->joinWith(['applicationTypeEnc h'=>function($x)
                 {
                     $x->groupBy(['h.name']);

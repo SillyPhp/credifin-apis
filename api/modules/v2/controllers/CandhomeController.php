@@ -178,6 +178,7 @@ class CandhomeController extends ApiBaseController
                     'a.current_round',
                     'g.name application_type',
                     'b.slug',
+                    'b.last_date',
                     'd.slug comp_slug',
                     'd.name organization_name',
                     'e2.name title',
@@ -222,6 +223,11 @@ class CandhomeController extends ApiBaseController
                 foreach ($a['appliedApplicationLocations'] as $c) {
                     array_push($cities, $c['city_name']);
                 }
+                if ($a['last_date'] < date('Y-m-d')) {
+                    $applied_jobs[$i]['is_closed'] = true;
+                } else {
+                    $applied_jobs[$i]['is_closed'] = false;
+                }
                 $applied_jobs[$i]['cities'] = implode(',', $cities);
                 $i++;
             }
@@ -235,6 +241,7 @@ class CandhomeController extends ApiBaseController
                     'a.current_round',
                     'g.name application_type',
                     'b.slug',
+                    'b.last_date',
                     'd.slug comp_slug',
                     'd.name organization_name',
                     'e2.name title',
@@ -279,7 +286,12 @@ class CandhomeController extends ApiBaseController
                 foreach ($a['appliedApplicationLocations'] as $c) {
                     array_push($cities, $c['city_name']);
                 }
-                $applied_internships[$i]['cities'] = implode(',', $cities);
+                if ($a['last_date'] < date('Y-m-d')) {
+                    $applied_internships[$i]['is_closed'] = true;
+                } else {
+                    $applied_internships[$i]['is_closed'] = false;
+                }
+                $applied_internships[$i]['cities'] = $cities ? implode(',', $cities) : 'Work From Home';
                 $i++;
             }
 

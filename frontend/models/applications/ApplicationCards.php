@@ -230,7 +230,7 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -270,8 +270,8 @@ class ApplicationCards
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
-               END) as link',
-                'CONCAT("/job/", a.slug) organization_link',
+                END) as link',
+                'CONCAT("/", d.slug,"/reviews") organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -291,7 +291,7 @@ class ApplicationCards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN g.name IS NULL THEN x.location_name
@@ -626,7 +626,7 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -667,7 +667,7 @@ class ApplicationCards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
@@ -902,7 +902,7 @@ class ApplicationCards
                 'CONCAT("/training/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link', 'd.initials_color color',
                 'c.name as title', 'i.icon',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
                 '(CASE

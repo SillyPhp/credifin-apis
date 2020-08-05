@@ -29,6 +29,7 @@ class SignUpCandidateForm extends Model
     public $experience;
     public $salary;
     public $phone;
+    public $countryCode;
     public $_flag;
 
     public function behaviors()
@@ -49,6 +50,7 @@ class SignUpCandidateForm extends Model
     {
         return [
             [['email','username','new_password','confirm_password','first_name','last_name','job_profile','city','city_id','phone','experience','salary'], 'required'],
+            [['salary'], 'integer', 'min' => 1],
             [['email'], 'email'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
             [['username', 'email', 'first_name', 'last_name','phone', 'new_password', 'confirm_password'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],

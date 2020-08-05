@@ -62,7 +62,7 @@ $primary_cat = ArrayHelper::map($jobprimaryfields, 'category_enc_id', 'name');
                             <?= $form->field($model, 'new_password', ['enableAjaxValidation' => true, 'template' => '<div class="enter-pass col-md-6 pdng">{label}{input}{error}</div>'])->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Enter your password'])->label('Enter Password'); ?>
                             <?= $form->field($model, 'confirm_password', ['enableAjaxValidation' => true, 'template' => '<div class="confirm-pass col-md-6 pdng">{label}{input}{error}</div>'])->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Confirm your password'])->label('Confirm Password'); ?>
                             <div class="submit-b col-md-12 col-sm-12">
-                                <?= Html::submitButton('Submit', ['class' => 'sub-btn submBtn', 'onclick' => "return Validate()"]) ?>
+                                <?= Html::submitButton('Submit', ['class' => 'sub-btn submBtn','id' => 'sign_up_btn', 'onclick' => "return Validate()"]) ?>
                             </div>
                         </div>
                         <?php ActiveForm::end(); ?>
@@ -78,6 +78,9 @@ $primary_cat = ArrayHelper::map($jobprimaryfields, 'category_enc_id', 'name');
 
 <?php
 $this->registerCss('
+.help-block {
+color: #a94442;
+}
 .emp-logo {
     width: 230px;
     margin: auto;
@@ -284,8 +287,14 @@ allNextBtn.click(function(){
         curStepBtn = curStep.attr("id"),
         nextStepWizard = curStep.next(),
         isValid = false;
-    nextStepWizard.show();
-    curStep.hide();
+    switch(curStepBtn){
+        case 'step-1':
+            validate_tab_first(isValid,curStep,nextStepWizard);
+            break;
+        case 'step-2':
+            validate_tab_second(isValid,curStep,nextStepWizard);
+            break;
+    }
     });
 allPrevBtn.click(function(){
     var curStep = $(this).closest(".tab"),
@@ -327,18 +336,78 @@ allPrevBtn.click(function(){
                   var citiesdata = datum.city_name;
                   $('#city_id').val(datum.id);
                });
-
-$(document).on('submit', '#signup_candidate_form', function (event) {
+ function validate_tab_first(isValid,curStep,nextStepWizard) {
+     isValid = true;
+    if ($('#job_profile').val().length==0)
+        {
+         isValid = false;
+        $('#job_profile').next('p').html('Job Profile cannot be blank');
+       }
+    if ($('input[name="city_id"]').val().length==0)
+        {
+         isValid = false;
+        $('.twitter-typeahead').next('p').html('City cannot be blank');
+        }
+    if ($('#experience').val().length==0)
+        {
+           isValid = false;
+        $('#experience').next('p').html('Experience cannot be blank');
+        }
+    if ($('input[name="salary"]').val().length==0)
+        {
+        isValid = false;
+        $('#salary').next('p').html('Salary cannot be blank');
+        }
+    if (isValid){
+        nextStepWizard.show();
+        curStep.hide();
+    }
+}
+ function validate_tab_second(isValid,curStep,nextStepWizard) {
+     isValid = true;
+    if ($('input[name="first_name"]').val().length==0)
+        {
+            isValid = false;
+        $('#first_name').next('p').html('First Name cannot be blank');
+        }
+    if ($('input[name="last_name"]').val().length==0)
+        {
+            isValid = false;
+        $('#last_name').next('p').html('Last Name cannot be blank');
+        }
+    if ($('input[name="email"]').val().length==0)
+        {
+            isValid = false;
+        $('#email').next('p').html('Email cannot be blank');
+        }
+   if($(".field-email").hasClass("has-error")){
+       isValid = false;
+  }
+   if ($('input[name="phone"]').val().length==0)
+        {
+            isValid = false;
+        $('#phone').next('p').html('Phone cannot be blank');
+        }
+   if($(".field-phone").hasClass("has-error")){
+       isValid = false;
+  }
+    if (isValid){
+        nextStepWizard.show();
+        curStep.hide();
+    }
+}
+$(document).on('click', '#sign_up_btn', function (event) {
         event.stopImmediatePropagation();
         event.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+        var btn = $(this);
+        var form = $('#signup_candidate_form');
+        var data = form.serialize();
         $.ajax({
-            url: url,
-            type: 'post',
+            url: '/site/sign-up',
+            type: 'POST',
             data: data,
             beforeSend: function (){
-                $('.submBtn').prop('disabled', 'disabled');
+                btn.prop('disabled', 'disabled');
             },
             success: function (response) {
                 if (response.status == 'success') {
