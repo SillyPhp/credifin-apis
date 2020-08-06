@@ -397,6 +397,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             'date': dateMain,
             'time': timeMain,
         });
+        var data = {
+            'webinar_enc_id' : webinarId,
+            'message' : message,
+            'reply_to':''
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/mentors/save-conversation',
+            data: data
+        });
         var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
         document.getElementById('scroll-chat').scrollTop = myElement;
     }
