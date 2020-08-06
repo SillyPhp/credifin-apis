@@ -35,7 +35,9 @@ class ReviewCardsMod
         $q1 = Organizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"'.$is_login.'" as login'),'a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select([new Expression('"'.$is_login.'" as login'),new Expression(' "1" as is_claimed'),'(CASE
+                WHEN fo.followed = "1" THEN fo.followed ELSE NULL
+               END) as is_followed','a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
@@ -66,6 +68,10 @@ class ReviewCardsMod
                 $x->onCondition(['b.is_deleted' => 0]);
                 $x->groupBy(['b.organization_enc_id']);
             }], true)
+            ->joinWith(['followedOrganizations fo'=>function($x)
+            {
+                $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
+            }],false)
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->groupBy(['a.organization_enc_id'])
@@ -107,7 +113,9 @@ class ReviewCardsMod
         $q2 = UnclaimedOrganizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"'.$is_login.'" as login'),'a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select([new Expression('"'.$is_login.'" as login'),new Expression(' "0" as is_claimed'),'(CASE
+                WHEN fo.followed = "1" THEN fo.followed ELSE NULL
+               END) as is_followed','a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on',
@@ -134,6 +142,10 @@ class ReviewCardsMod
                 $x->onCondition(['b.is_deleted' => 0]);
                 $x->groupBy('b.organization_enc_id');
             }], true)
+            ->joinWith(['unclaimedFollowedOrganizations fo'=>function($x)
+            {
+                $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
+            }],false)
             ->where(['a.is_deleted' => 0])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['a.is_featured'=>SORT_DESC,'a.created_on' => SORT_DESC]);
