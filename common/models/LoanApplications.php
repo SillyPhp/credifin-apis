@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
@@ -20,6 +22,7 @@ namespace common\models;
  * @property string $email
  * @property int $gender 1 for Male, 2 for Female
  * @property double $amount
+ * @property int $aadhaar_number
  * @property string $source
  * @property string $created_by user_enc_id
  * @property string $created_on created on
@@ -52,10 +55,10 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'source', 'created_on'], 'required'],
+            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'aadhaar_number', 'source', 'created_on'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
-            [['years', 'semesters', 'gender', 'status'], 'integer'],
+            [['years', 'semesters', 'gender', 'aadhaar_number', 'status'], 'integer'],
             [['amount'], 'number'],
             [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
