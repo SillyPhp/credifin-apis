@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Speakers;
 use common\models\WebinarConversationMessages;
 use common\models\WebinarConversations;
+use common\models\Webinars;
 use common\models\WebinarSpeakers;
 use Yii;
 use yii\web\Controller;
@@ -127,30 +128,17 @@ class MentorsController extends Controller
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
+            $webinar = Webinars::findOne(['session_enc_id' => $data['webinar_enc_id']]);
+            $conversation_id = WebinarConversations::find()
+                ->where(['webinar_enc_id' => $webinar->webinar_enc_id])
+                ->one();
 
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
+            if ($conversation_id) {
+                $comment = new WebinarConversationMessages();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $conversation = new WebinarConversations();
-                $conversation->conversation_enc_id = $utilitiesModel->encrypt();
-                $conversation->conversation_type = 2;
-                $conversation->webinar_enc_id = $data['webinar_enc_id'];
-                $conversation->created_by = Yii::$app->user->identity->user_enc_id;
-                $conversation->created_on = date('Y-m-d H:i:s');
-                if (!$conversation->save()) {
-                    $transaction->rollBack();
-                    return $response = [
-                        'status' => 500,
-                        'title' => 'Error',
-                        'message' => 'an error occurred',
-                    ];
-                }
-
-                $comment = new WebinarConversationMessages();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $comment->message_enc_id = $utilitiesModel->encrypt();
-                $comment->conversation_enc_id = $conversation->conversation_enc_id;
+                $comment->conversation_enc_id = $conversation_id->conversation_enc_id;
                 $comment->message = $data['message'];
                 if (isset($data['reply_to']) && !empty($data['reply_to'])) {
                     $comment->parent_enc_id = $data['reply_to'];
@@ -163,18 +151,63 @@ class MentorsController extends Controller
                         'title' => 'Error',
                         'message' => 'an error occurred',
                     ];
+                } else {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Successfully Added',
+                    ];
                 }
+            } else {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $conversation = new WebinarConversations();
+                    $conversation->conversation_enc_id = $utilitiesModel->encrypt();
+                    $conversation->conversation_type = 2;
+                    $conversation->webinar_enc_id = $webinar->webinar_enc_id;
+                    $conversation->created_by = Yii::$app->user->identity->user_enc_id;
+                    $conversation->created_on = date('Y-m-d H:i:s');
+                    if (!$conversation->save()) {
+                        $transaction->rollBack();
+                        return $response = [
+                            'status' => 500,
+                            'title' => 'Error',
+                            'message' => 'an error occurred',
+                        ];
+                    }
 
-                $transaction->commit();
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Successfully Added',
-                ];
+                    $comment = new WebinarConversationMessages();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $comment->message_enc_id = $utilitiesModel->encrypt();
+                    $comment->conversation_enc_id = $conversation->conversation_enc_id;
+                    $comment->message = $data['message'];
+                    if (isset($data['reply_to']) && !empty($data['reply_to'])) {
+                        $comment->parent_enc_id = $data['reply_to'];
+                    }
+                    $comment->created_on = date('Y-m-d H:i:s');
+                    $comment->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$comment->save()) {
+                        $transaction->rollBack();
+                        return $response = [
+                            'status' => 500,
+                            'title' => 'Error',
+                            'message' => 'an error occurred',
+                        ];
+                    }
 
-            } catch (\Exception $exception) {
-                $transaction->rollBack();
-                return false;
+                    $transaction->commit();
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Successfully Added',
+                    ];
+
+                } catch (\Exception $exception) {
+                    $transaction->rollBack();
+                    return false;
+                }
             }
 
         }

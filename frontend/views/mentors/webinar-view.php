@@ -367,38 +367,39 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     function sendMessage() {
         let message = document.querySelector('.send-msg').value;
-        // let chat = document.querySelector('.chat');
-        //let chatBox = document.createElement('div');
-        //chatBox.setAttribute('class', 'chat-box');
-        //chatBox.innerHTML = `<div class="user-icon">
-        //                    <img src="<?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>//">
-        //                    </div>
-        //                    <div class="username-msg">
-        //                        <div class="us-name">`+ userName +`</div>
-        //                        <div class="us-msg">` + message + `</div>
-        //                    </div>`;
-        //chat.appendChild(chatBox);
-        document.querySelector('.send-msg').value = "";
-        var currentDate = new Date();
-        var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
-        var getMins = currentDate.getMinutes();
-        if (getMins < 10) {
-            getMins = "0" + getMins;
+        if(message.trim() != "") {
+            document.querySelector('.send-msg').value = "";
+            var currentDate = new Date();
+            var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
+            var getMins = currentDate.getMinutes();
+            if (getMins < 10) {
+                getMins = "0" + getMins;
+            }
+            var timeMain = currentDate.getHours() + ":" + getMins;
+            var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+            ref.set({
+                'name': userName,
+                'sender': userId,
+                'is_public': true,
+                'reply_to': "",
+                'message': message.trim(),
+                'image': userImage,
+                'date': dateMain,
+                'time': timeMain,
+            });
+            var data = {
+                'webinar_enc_id': webinarId,
+                'message': message.trim(),
+                'reply_to': ''
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/mentors/save-conversation',
+                data: data
+            });
+            var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
+            document.getElementById('scroll-chat').scrollTop = myElement;
         }
-        var timeMain = currentDate.getHours() + ":" + getMins;
-        var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
-        ref.set({
-            'name': userName,
-            'sender': userId,
-            'is_public': true,
-            'reply_to': "",
-            'message': message,
-            'image': userImage,
-            'date': dateMain,
-            'time': timeMain,
-        });
-        var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
-        document.getElementById('scroll-chat').scrollTop = myElement;
     }
 
     function uniqueId() {
