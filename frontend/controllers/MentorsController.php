@@ -17,6 +17,7 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\helpers\ArrayHelper;
 
 class MentorsController extends Controller
 {
@@ -89,12 +90,16 @@ class MentorsController extends Controller
         $type = 'broadcast';
         $webinarDetail = self::getWebianrDetails($id);
         $webinars = self::getWebianrs($id);
-
-        return $this->render('webinar-view', [
-            'type' => $type,
-            'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail
-        ]);
+        $speakerIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
+        if (in_array(Yii::$app->user->identity->user_enc_id, $speakerIds)) {
+            return $this->render('webinar-view', [
+                'type' => $type,
+                'webinars' => $webinars,
+                'webinarDetail' => $webinarDetail
+            ]);
+        } else {
+            return 'you are not authorized speaker';
+        }
     }
 
     public function actionRegisterWebinar()

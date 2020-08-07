@@ -40,6 +40,7 @@ class LiveStreamController extends Controller
             }
             return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
         }
+
         return $this->renderAjax('broadcast', ['tokenId' => $data->session_id]);
     }
 }
