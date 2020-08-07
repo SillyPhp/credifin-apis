@@ -276,7 +276,7 @@ class FeedsController extends Controller {
                         $employerApplication->application_enc_id = $utilitiesModel->encrypt();
                         $employerApplication->application_number = rand(1000, 10000) . time();
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
-                        $employerApplication->published_on = $result['publication_date'];
+                        $employerApplication->published_on = date('Y-m-d H:i:s',strtotime($result['publication_date']));
                         $employerApplication->image = '1';
                         $employerApplication->image_location = '1';
                         $employerApplication->status = 'Active';
