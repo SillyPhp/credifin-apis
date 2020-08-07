@@ -723,6 +723,19 @@ class CandhomeController extends ApiBaseController
                 ->all();
 
 
+            $j = 0;
+            $data = [];
+            foreach ($webinar as $w) {
+                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
+                $end_time = date('Y-m-d H:i:s', $newtimestamp);
+                if ($end_time > $date_now) {
+                    array_push($data, $webinar[$j]);
+                }
+                $j++;
+            }
+
+            $webinar = $data;
+
             if (!empty($webinar)) {
                 $i = 0;
                 foreach ($webinar as $w) {
@@ -768,14 +781,22 @@ class CandhomeController extends ApiBaseController
                 ->one();
 
             if ($register_user) {
-                return $this->response(409, ['status' => 409, 'message' => 'already registered']);
+                $register_user->status = 1;
+                $register_user->last_updated_on = date('Y-m-d H:i:s');
+                $register_user->last_updated_by = $user->user_enc_id;
+                if ($register_user->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Joined Successfully']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+//                return $this->response(409, ['status' => 409, 'message' => 'already registered']);
             }
 
             $webinar = Webinars::findOne(['webinar_enc_id' => $webinar_id]);
             $webinarSession = WebinarSessions::findOne(['session_enc_id' => $webinar->session_enc_id]);
-            if(!$webinarSession){
+            if (!$webinarSession) {
                 return $this->response(409, ['status' => 409, 'message' => 'Session not created..']);
             }
+
             $model = new WebinarRegistrations();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -785,7 +806,7 @@ class CandhomeController extends ApiBaseController
             $model->created_by = $user->user_enc_id;
             $model->created_on = date('Y-m-d h:i:s');
             if ($model->save()) {
-                return $this->response(200, ['status' => 200, 'sessionEnc' =>  $webinarSession, 'message' => 'Joined Successfully']);
+                return $this->response(200, ['status' => 200, 'sessionEnc' => $webinarSession, 'message' => 'Joined Successfully']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
@@ -903,6 +924,49 @@ class CandhomeController extends ApiBaseController
         return WebinarRegistrations::find()
             ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
             ->exists();
+    }
+
+    public function actionChangeStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['webinar_enc_id']) && empty($params['webinar_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            if (!isset($params['status']) && empty($params['status'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            $already_exists = WebinarRegistrations::find()
+                ->where(['created_by' => $user->user_enc_id, 'webinar_enc_id' => $params['webinar_enc_id']])
+                ->one();
+
+            if ($already_exists) {
+                $already_exists->interest_status = $params['status'];
+                $already_exists->last_updated_on = date('Y-m-d H:i:s');
+                $already_exists->last_updated_by = $user->user_enc_id;
+                if ($already_exists->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            } else {
+                $reg = new WebinarRegistrations();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $reg->register_enc_id = $utilitiesModel->encrypt();
+                $reg->webinar_enc_id = $params['webinar_enc_id'];
+                $reg->created_by = $user->user_enc_id;
+                $reg->interest_status = $params['status'];
+                $reg->status = 0;
+                $reg->created_on = date('Y-m-d H:i:s');
+                if ($reg->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
     public function actionCollegeCourses()
