@@ -2,14 +2,16 @@
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
+
 if (Yii::$app->user->identity->image) {
     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-} else{
-    $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+'. Yii::$app->user->identity->last_name .'&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
+} else {
+    $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
 ?>
 <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
-<input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>" id="current-user-name">
+<input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>"
+       id="current-user-name">
 <input type="hidden" value="<?= $image; ?>" id="current-user-image">
 
 <section>
@@ -40,12 +42,24 @@ if (Yii::$app->user->identity->image) {
             <div class="row">
                 <div class="col-md-9">
                     <div class="video-action">
-                        <div class="webinar-video-title">Business Conferences 2020</div>
+                        <div class="webinar-video-title"><?= $webinarDetail['title'] ?></div>
                         <div class="webinar-speakers">
                             <p><span>Speakers:</span>
-                                <a target="_blank" href="mentor-profile">Tarandeep Singh Rakhra </a>,
-                                <a target="_blank" href="">Sneh Kaushal</a> ,
-                                <a target="_blank" href="">Ajay Juneja</a>
+                                <?php
+                                if ($webinarDetail['webinarSpeakers']) {
+                                    $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
+                                    foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
+                                        ?>
+                                        <a target="_blank" href=""><?= $speaker['fullname'] ?></a>
+                                        <?php
+                                        if ($key < $speakerCount) {
+                                            echo ", ";
+                                        }
+                                    }
+                                } else {
+                                    echo 'N/A';
+                                }
+                                ?>
                             </p>
                         </div>
                     </div>
@@ -67,8 +81,9 @@ if (Yii::$app->user->identity->image) {
             </div>
         </div>
         <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card') ?>
-            <?= $this->render('/widgets/mentorships/webinar-card') ?>
+            <?= $this->render('/widgets/mentorships/webinar-card', [
+                'webinars' => $webinars,
+            ]) ?>
         </div>
     </div>
 </section>
@@ -367,7 +382,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     function sendMessage() {
         let message = document.querySelector('.send-msg').value;
-        if(message.trim() != "") {
+        if (message.trim() != "") {
             document.querySelector('.send-msg').value = "";
             var currentDate = new Date();
             var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
