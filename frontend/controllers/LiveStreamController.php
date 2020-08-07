@@ -22,7 +22,7 @@ class LiveStreamController extends Controller
             return $this->renderAjax('view', ['tokenId' => $session_id]);
         } else {
             $webinar = Webinars::findOne(['session_enc_id' => $id]);
-            return $this->render('webinar-view', ['webinar' => $webinar]);
+            return $this->renderAjax('webinar-view', ['webinar' => $webinar]);
         }
     }
 
