@@ -987,17 +987,49 @@ class QuizController extends ApiBaseController
             if ($id) {
                 $detail = MockQuizzes::find()
                     ->alias('z')
-                    ->select(['z.*', 'a1.name as label_name'])
+                    ->select(['z.quiz_enc_id',
+                        'z.label_enc_id',
+                        'a1.name as label_name',
+                        'z.name',
+                        'z.per_ques_marks',
+                        'z.total_marks',
+                        'z.per_ques_time',
+                        'z.total_time',
+                        'z.negative_marks',
+                        'z.slug',
+                        'z.total_questions',
+                        'z.for_sections',
+                        'z.course_enc_id',
+                        'c.course_name class'
+                    ])
                     ->joinWith(['labelEnc a' => function ($a) {
                         $a->joinWith(['poolEnc a1']);
                     }], false)
-                    ->joinWith(['mockAssignedQuizPools b'])
-                    ->where(['z.quiz_enc_id' => $id])
+                    ->joinWith(['mockAssignedQuizPools b' => function ($b) {
+                        $b->select(['b.assigned_quiz_pool_enc_id',
+                            'b.quiz_enc_id',
+                            'b.quiz_pool_enc_id',
+                            'b.min',
+                            'b.max',
+                            'bb.name pool_name'
+                        ]);
+                        $b->joinWith(['quizPoolEnc bb'], false);
+                    }])
+                    ->joinWith(['courseEnc c'], false)
+                    ->where(['z.quiz_enc_id' => $id, 'z.is_deleted' => 0])
                     ->asArray()
                     ->one();
+
+                if(!empty($detail['mockAssignedQuizPools'])){
+                    $detail['min'] = (int)$detail['mockAssignedQuizPools'][0]['min'];
+                    $detail['max'] = (int)$detail['mockAssignedQuizPools'][0]['max'];
+                }
+
                 return $this->response(200, ['status' => 200, 'data' => $detail]);
             }
             return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized ']);
         }
     }
 
