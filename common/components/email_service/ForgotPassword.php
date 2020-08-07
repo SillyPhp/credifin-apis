@@ -6,6 +6,7 @@ use common\models\Users;
 use common\models\Organizations;
 use common\models\UserVerificationTokens;
 use Yii;
+use yii\helpers\Url;
 use DateTime;
 use yii\base\Component;
 use common\models\Utilities;
@@ -18,11 +19,13 @@ class ForgotPassword extends Component
     {
         $is_user = false;
         $data = Organizations::find()
-            ->select(['organization_enc_id id', 'name', 'email'])
+            ->alias('a')
+            ->select(['a.organization_enc_id org_id', 'a.name', 'a.email', 'b.user_enc_id id'])
+            ->innerJoinWith(['createdBy b'], false)
             ->where([
-                'email' => $email,
-                'status' => 'Active',
-                'is_deleted' => 0,
+                'a.email' => $email,
+                'a.status' => 'Active',
+                'a.is_deleted' => 0,
             ])
             ->asArray()
             ->one();
@@ -58,7 +61,7 @@ class ForgotPassword extends Component
         $userVerificationModel = new UserVerificationTokens();
 
         if (!$is_user) {
-            $userVerificationModel->organization_enc_id = $data['id'];
+            $userVerificationModel->organization_enc_id = $data['org_id'];
         }
 
         $user['name'] = $data['name'];
@@ -75,14 +78,13 @@ class ForgotPassword extends Component
             ['is_deleted' => 0]
         ]);
 
-
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userVerificationModel->token_enc_id = $utilitiesModel->encrypt();
         $userVerificationModel->token = Yii::$app->security->generateRandomString();
         $userVerificationModel->verification_type = 1;
         $userVerificationModel->created_by = $data['id'];
         if ($userVerificationModel->validate() && $userVerificationModel->save()) {
-            $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/reset-password/' . $userVerificationModel->token]);
+            $user['link'] = Url::to('/reset-password/' . $userVerificationModel->token,'https');
 
             Yii::$app->mailer->htmlLayout = 'layouts/email';
             $mail = Yii::$app->mailer->compose(

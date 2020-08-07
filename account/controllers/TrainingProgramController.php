@@ -17,6 +17,7 @@ class TrainingProgramController extends Controller
     public function beforeAction($action)
     {
         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+            Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
             return parent::beforeAction($action);
         } else{
             throw new HttpException(404, Yii::t('account', 'Page not found.'));

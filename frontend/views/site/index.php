@@ -5,28 +5,22 @@ use yii\helpers\Url;
 $this->params['header_dark'] = false;
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<section class="slider">
+<section class="slider bg-main-s">
     <div class="block no-padding">
         <div class="container fluid">
             <div class="">
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt="Empower Youth"/></li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
-                                        alt="Empower Youth"/>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
+                                     alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
                             </li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt="Empower Youth"/></li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
                                 <h3>Discover a New Career Specially Designed For You</h3>
-                                <span>The Easiest Way to Get Your New Job</span>
+                                <span>The Easiest Way to Build Your Career</span>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
@@ -45,7 +39,8 @@ $this->params['header_dark'] = false;
                                 </div><!-- Job Search 2 -->
                                 <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
                                     <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a href="/blog">Blogs</a>
+                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
+                                            href="/blog">Blogs</a>
                                 </span>
                             </div>
                         </div>
@@ -55,697 +50,191 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 
-
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="box-border fade-in one">
-                        <a href="/employers">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Employers</div>
-                            <div class="h-text">I want to recruit talent</div>
-                        </a>
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in one">
+                    <a href="/employers">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
+                                 alt="Employers" title="Employers"></div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
+                                 alt="Employers" title="Employers"></div>
+                        <div class="h-heading">Employers</div>
+                        <!--                            <div class="h-text">I want to recruit talent</div>-->
+                    </a>
+                </div>
+                <!--                </div>-->
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in two">
+                    <a href="/candidates/features">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
+                                 alt="Candidates" title="Candidates">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
+                                 alt="Employers" title="Candidates"></div>
+                        <div class="h-heading">Candidates</div>
+                        <!--                            <div class="h-text">I'm the talent</div>-->
+                    </a>
+                </div>
+                <!--                </div>-->
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in two">
+                    <a href="/schools">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
+                                 alt="Candidates" title="schools">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
+                                 alt="Employers" title="schools"></div>
+                        <div class="h-heading">Schools</div>
+                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
+                    </a>
+                </div>
+                <!--                </div>-->
+                <div class="box-border fade-in three">
+                    <a href="/training-programs">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-blue.png') ?>"
+                                 alt="Candidates" title="Educational Institute">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-white.png') ?>"
+                                 alt="Employers" title="Educational Institute"></div>
+                        <div class="h-heading">Educational Institute</div>
+                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
+                    </a>
+                </div>
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in three">
+                    <!--                        <div class="box-overlay">-->
+                    <a href="/colleges">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                 alt="Universities & Colleges" title="Colleges">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
+                                 alt="Employers" title="Colleges"></div>
+                        <div class="h-heading">Colleges</div>
+                        <!--                                <div class="h-text">I'm the future</div>-->
+                    </a>
+                    <!--                        </div>-->
+                    <!--                        <div class="overlay">-->
+                    <!--                            <div class="text">Coming Soon</div>-->
+                    <!--                        </div>-->
+                </div>
+                <!--                </div>-->
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in four">
+                    <div class="box-overlay">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colleges.png') ?>"
+                                 alt="Universities & Colleges" title="Universities">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
+                                 alt="Employers" title="Universities"></div>
+                        <div class="h-heading">Universities</div>
+                        <!--                            <div class="h-text">I want to enroll talent</div>-->
+                    </div>
+                    <div class="overlay">
+                        <div class="text">Coming Soon</div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="box-border fade-in two">
-                        <a href="/candidates/features">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>"
-                                     alt="Candidates" title="Candidates">
-                            </div>
-                            <div class="h-heading">Candidates</div>
-                            <div class="h-text">I'm the talent</div>
-                        </a>
+                <!--                </div>-->
+                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
+                <div class="box-border fade-in four">
+                    <div class="box-overlay">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
+                                 title="Recruiters" alt="Recruiters">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
+                                 alt="Employers" title="Recruiters"></div>
+                        <div class="h-heading">Recruiters</div>
+                        <!--                            <div class="h-text">I want to find the best match for talent</div>-->
+                    </div>
+                    <div class="overlay">
+                        <div class="text">Coming Soon</div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="box-border fade-in three">
-                        <div class="box-overlay">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
-                                     alt="Universities & Colleges" title="Universities and Colleges">
-                            </div>
-                            <div class="h-heading">Universities & Colleges</div>
-                            <div class="h-text">I want to enroll talent</div>
-                        </div>
-                        <div class="overlay">
-                            <div class="text">Coming Soon</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="box-border fade-in four">
-                        <div class="box-overlay">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>"
-                                     title="Recruiters" alt="Recruiters">
-                            </div>
-                            <div class="h-heading">Recruiters</div>
-                            <div class="h-text">I want to find the best match for talent</div>
-                        </div>
-                        <div class="overlay">
-                            <div class="text">Coming Soon</div>
-                        </div>
-                    </div>
-                </div>
+                <!--                </div>-->
             </div>
         </div>
     </div>
 </section>
 
-<!--------services section starts-------->
+<?= $this->render('/widgets/our-services') ?>
 
-<section class="services-section">
-    <div class="container">
-        <h1 class="heading-style ">Our Services</h1>
-        <div class="services row">
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/jobs'); ?>">
-                    <div class="service-box">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs"/>
-                        </div>
-                        <div class="ser-heading">Jobs</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/internships'); ?>">
-                    <div class="service-box ser-box-orange">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships"
-                                 title="Internships"/>
-                        </div>
-                        <div class="ser-heading">Internships</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/learning'); ?>">
-                    <div class="service-box ser-box-yellow">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
-                                 alt="learning">
-                        </div>
-                        <div class="ser-heading">Learning Hub</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/reviews'); ?>">
-                    <div class="service-box ser-box-purple">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews"
-                                 title="Reviews"/>
-                        </div>
-                        <div class="ser-heading">Reviews</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/training-programs'); ?>">
-                    <div class="service-box ser-box-maroon">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
-                                 alt="training">
-                        </div>
-                        <div class="ser-heading">Training Courses</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/career-advice'); ?>">
-                    <div class="service-box ser-box-green">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="reviews">
-                        </div>
-                        <div class="ser-heading">Career Advice</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<!---->
-<?= $this->render('/widgets/usa_and_govt_jobs');?>
-
-<section>
-    <div class="block">
-        <div class="container">
-            <!--            <div class="row">-->
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="tab-sec">
-                    <ul class="nav nav-tabs">
-                        <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
-                        <li><a data-tab="rjobs">Recent Opportunities</a></li>
-                    </ul>
-                    <div id="fjobs" class="tab-content current">
-                        <div class="job-listings-tabs">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="job-listing wtabs">
-                                        <a href="<?= Url::to('/job/audit-and-risk-management-manager-65391554294078') ?>">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/midland">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                                             alt="Midland Microfin" title="Midland Microfin"/>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/job/audit-and-risk-management-manager-65391554294078"
-                                                       title="Audit And Risk Management">
-                                                        Audit And Risk Management
-                                                    </a>
-                                                </h3>
-                                                <div class="wtabs-com-name">
-                                                    <a href="/midland" title="Midland Microfin Ltd">
-                                                        Midland Microfin Ltd.
-                                                    </a>
-                                                </div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jodhpur,
-                                                    <a href="/job/audit-and-risk-management-manager-65391554294078"> 4
-                                                        more</a></div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="/job/business-development-executive-1901271548600570">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/dsbedutech">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.jpg') ?>"
-                                                             alt="DSB EduTech" title="DSB EduTech"/>
-                                                    </a>
-                                                </div>
-
-                                                <h3>
-                                                    <a href="/job/business-development-executive-1901271548600570"
-                                                       title="Business Development Executive">
-                                                        Business Development Executive
-                                                    </a>
-                                                </h3>
-                                                <div class="wtabs-com-name"><a href="/dsbedutech" title="DSB EduTech">
-                                                        DSB EduTech</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="/job/credit-officer-credit-development-officer-28891553595039">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/capitalbank">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>"
-                                                             alt="capital-small-bank" title="capital-small-bank"/>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/job/credit-officer-credit-development-officer-28891553595039"
-                                                       title="Credit Officer">Credit Officer</a></h3>
-                                                <div class="wtabs-com-name"><a href="/capitalbank"
-                                                                               title="Capital Small Finance Bank">
-                                                        Capital Small Finance Bank</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar,
-                                                    <a href="/job/credit-officer-credit-development-officer-28891553595039">10
-                                                        More</a>
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <!-- Job -->
-                                </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="job-listing wtabs">
-                                        <a href="/job/business-development-business-develpment-executive-20931553506890">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/hamco">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                             alt="Hamco" title="Hamco"/>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/job/business-development-business-develpment-executive-20931553506890"
-                                                       title="Business Development">
-                                                        Business Development</a></h3>
-                                                <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a>
-                                                </div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/sales-officer-29591553927078">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/citizensbank">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>"
-                                                             alt="Citizen Bank" title="Citizen Bank"/>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/internship/sales-officer-29591553927078"
-                                                       title="Sales Officer">
-                                                        Sales Officer
-                                                    </a>
-                                                </h3>
-                                                <div class="wtabs-com-name"><a href="/citizensbank"
-                                                                               title="Citizens Bank"> Citizens Bank</a>
-                                                </div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Mohali, <a
-                                                            href="/internship/sales-officer-29591553927078">8 More</a>
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div>
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/assistant-director-98591554009460">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/manojoshempo">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/fame-finders.png') ?>"
-                                                             alt="Up Money Limited" title="Up Money Limited"/>
-                                                    </a>
-                                                </div>
-                                                <h3><a href="/internship/assistant-director-98591554009460"
-                                                       title="Assistant Director">Assistant Director</a></h3>
-                                                <div class="wtabs-com-name"><a href="/manojoshempo"
-                                                                               title="Fame Finders Media"> Fame Finders
-                                                        Media </a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>New Delhi
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div><!-- Job -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="rjobs" class="tab-content">
-                        <div class="job-listings-tabs">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="job-listing wtabs">
-                                        <a href="/job/web-developer-front-backend-developer-72621553337524">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/webriderz">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/webRiderz.png') ?>"
-                                                             alt="Up Money Limited" title="Up Money Limited"/>
-                                                    </a>
-                                                </div>
-                                                <h3><a href="/job/web-developer-front-backend-developer-72621553337524"
-                                                       title="Web Developer">Web Developer</a></h3>
-                                                <div class="wtabs-com-name"><a href="/webriderz" title="Web Riderz"> Web
-                                                        Riderz</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/business-development-associate-62841553668575">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/thesmarttree">
-                                                        <canvas class="user-icon" name="The SmartTree" color="#ea3fa8"
-                                                                width="80" height="60" font="30px"></canvas>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/internship/business-development-associate-62841553668575"
-                                                       title="Business Development Associate">
-                                                        Business Development Associate
-                                                    </a>
-                                                </h3>
-                                                <div class="wtabs-com-name"><a href="/thesmarttree"
-                                                                               title="The SmartTree"> The SmartTree</a>
-                                                </div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Work From
-                                                    Home
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/market-research-analyst-11301553596170">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/hamco">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                             alt="hamco" title="Hamco"/>
-                                                    </a>
-                                                </div>
-                                                <h3><a href="/internship/market-research-analyst-11301553596170"
-                                                       title="Market Research Analyst">Market Research Analyst</a></h3>
-                                                <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a>
-                                                </div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div><!-- Job -->
-                                </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/teaching-electronics-65721553323006">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/becre8v">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>"
-                                                             alt="Be Creative" title="Be Creative"/>
-                                                    </a>
-                                                </div>
-                                                <h3><a href="/internship/teaching-electronics-65721553323006"
-                                                       title="Teaching (Electronics)">Teaching (Electronics)</a></h3>
-                                                <div class="wtabs-com-name"><a href="/becre8v" title="Be Cre8v"> Be
-                                                        Cre8v</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana, <a
-                                                            href="">3 More</a>
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="/internship/digital-marketing-22371553238862">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/insta">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
-                                                             alt="Insta Apphanced" title="Insta Apphanced"/>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/internship/digital-marketing-22371553238862"
-                                                       title="Digital Marketing">Digital Marketing</a></h3>
-                                                <div class="wtabs-com-name"><a href="/insta" title="Insta Apphanced">
-                                                        Insta Apphanced</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
-                                                </div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                            <div class="intern-tag">Internship</div>
-                                        </a>
-                                    </div><!-- Job -->
-                                    <div class="job-listing wtabs">
-                                        <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/akrolixinnovations">
-                                                        <canvas class="user-icon" name="Akrolix Innovations"
-                                                                color="#ea3fa8" width="80" height="60"
-                                                                font="30px"></canvas>
-                                                    </a>
-                                                </div>
-                                                <h3>
-                                                    <a href="/internship/website-designing-internship-in-gurgaon-26131551884452"
-                                                       title="Website Designing">Website Designing</a></h3>
-                                                <div class="wtabs-com-name"><a href="/akrolixinnovations"
-                                                                               title="Akrolix Innovations"> Akrolix
-                                                        Innovations</a></div>
-                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Gurgaon</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                        </a>
-                                    </div><!-- Job -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="browse-all-cat">
-                        <a href="jobs/list" title="" class="style2">Show all listings</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<?= $this->render('/widgets/whatsapp-widget')?>
-<section>
-    <div class="container ">
-        <div class="cat-padding">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-6 col-sm-12 col-xs-12">
-                        <div class="heading-style">Top Learning Topics</div>
-                    </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
-                        <div class="type-1">
-                            <div>
-                                <a href="/learning/categories" class="btn btn-3">
-                                    <span class="txt-cate">View all</span>
-                                    <span class="round"><i class="fas fa-chevron-right"></i></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="popular-cate" id="categories"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<?= $this->render('/widgets/top-cities',[
-    'cities_jobs' => $cities_jobs
-])?>
-<!---------------how it works-------------->
-<?php
-    if(Yii::$app->user->isGuest) {
-?>
-        <section class="how-it-works">
-            <div class="container">
-                <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
-                <div class="row ">
-                    <div class="col-md-3">
-                        <div class="fade-in one">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
-                                     title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Create your Exclusive Profile</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in two">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
-                                     title="Get discovered by top employers" alt="Get discovered by top employers"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading"> Get discovered by top employers</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in three">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
-                                     title="Evaluate Offer"
-                                     alt="Evaluate Offer"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Evaluate Offer</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in four">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
-                                     title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Receive Custom Job Notifications</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
-                if (Yii::$app->user->isGuest) {
-                    ?>
-                    <div class="row">
-                        <div class="signupbttns">
-                            <a href="/login" class="login-bttn" title="Login">Login</a>
-                            <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
-            </div>
-        </section>
-        <?php
-}
-?>
-<!--how it works ends-->
-
-
-
-<!--new section starts-->
-<?= $this->render('/widgets/companies-with-us'); ?>
-<!--new section ends-->
-<section class="j-tweets">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6">
-                <h1 class="heading-style" id="tweetHeading">Tweets</h1>
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="tweetLinks">
-                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>
-                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tweet-btn">
-                    <button type="button" id="jobtweet" onclick="jobTweet()">Jobs</button>
-                    /
-                    <button type="button" id="interntweet" onclick="internTweet()">Internships</button>
-                </div>
-            </div>
-        </div>
-        <?=
-        $this->render('/widgets/twitter-masonry', [
-            'tweets' => $tweets
-        ]);
-        ?>
-    </div>
-</section>
-<div id="stats_cards">
-
+<div id="app-data"></div>
+<div id="sectionIsLoading" class="sectionIsLoading">
+    <div></div>
+    <div></div>
 </div>
-<!--Subscribe Widget start-->
-<?php
-if (Yii::$app->user->isGuest) {
-    echo $this->render('/widgets/subscribe-section');
-}
-?>
-<!--Subscribe Widget ends-->
-<section class="search-lists">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Popular Searches</div>
-                <ul class="quick-links" id="searches">
-                    <?php foreach ($search_words as $sw) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
-                               title="<?= $sw['name'] ?>">
-                                <?= $sw['name'] ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Jobs</div>
-                <ul class="quick-links" id="jobs">
-                    <?php foreach ($job_profiles as $jp) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
-                               title="<?= $jp['name']; ?> Jobs">
-                                <?= $jp['name']; ?> Jobs
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Browse by City</div>
-                <ul class="quick-links" id="cities">
-                    <?php foreach ($cities as $c) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to($c['link'], "https"); ?>" title="Jobs in <?= $c['name']; ?>">
-                                Jobs in <?= $c['name']; ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Internships</div>
-                <ul class="quick-links" id="internships">
-                    <?php foreach ($internship_profiles as $ip) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
-                               title="<?= $ip['name']; ?> Internships">
-                                <?= $ip['name']; ?> Internships
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-        </div>
-    </div>
-</section>
 
 <?php
-echo $this->render('/widgets/info-stats');
-echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
+#app-data{
+    overflow-x: hidden;
+}
+.header-row {
+    margin-top: -150px;
+    background-color:#ffffff2b;
+    padding:0;
+}
+.icon img {
+    height: 60px;
+    width: 60px;
+}
+.h-heading{
+    color:#fff;
+}
+.h-text{
+    color:#ff7803;
+}
+.sectionIsLoading {
+    display: none;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: auto;
+}
+.sectionIsLoading div {
+  position: absolute;
+  border: 4px solid #00a0e3;
+  opacity: 1;
+  border-radius: 50%;
+  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.sectionIsLoading div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes sectionIsLoading {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -797,53 +286,6 @@ $this->registerCss('
 }
 .feature-links a:hover{
     color:#ff7803;
-}
-.pos-rel{
-    position:relative;
-    min-height:300px;
-    width:100%;
-    text-align:center;
-} 
-.pos-middle{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:100%
-}
-.mob-pos{
-    position:absolute;
-    bottom:0;
-    left:30px;
-}
-.mob-pos img{
-    max-height:300px;
-}
-.moble-bg{
-background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .'); 
-background-attachment:fixed;
-//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-//    background-repeat:no-repeat;
-//    background-size:cover;
-}
-.mob-heading{
-    font-size:33px;
-    color:#000;
-    font-family:Roboto;
-        font-weight:500;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-sub-heading{
-    font-size:18px;
-    color:#000;
-    font-family:Roboto;
-    font-weight:300;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-imgs img{
-    max-height: 300px;
 }
 .app-btn{
     max-width:200px;
@@ -919,113 +361,49 @@ background-attachment:fixed;
    padding-left:0px !important; 
    padding-right:0px !important; 
 }
-/*try now sec*/
-.fixed-bttn{
-    min-height:400px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
-    background-size: cover;
-    position:relative;
-    background-repeat:no-repeat;
-}
-.pos-ab{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-.fx-heading{
-  text-transform:capitalize;
-    font-size:35px;
-    text-align:center;
-    padding:0 0 20px 0;
-    color:#666666;
-    font-family:lobster;
-}
-.post-job-bttn a{
-    background:#00a0e3;
-    color:#fff;
-    border-radius:5px;
-    text-transform: uppercase;
-    padding:10px 20px;
-    font-size:18px;
-    box-shadow:0 0 10px rgba(66, 63, 63, .5);
-    -webkit-transition:.3s all;
-   transition:.3s all;
-   text-align:center;
-   margin:0 auto;
-   max-width:300px;
-   font-weight:400;
-   font-family:Roboto;
-}
-.post-job-bttn a:hover{
-   box-shadow:none;
-   -webkit-transition:.3s all;
-   transition:.3s all;
-}
-.hvr-float-shadow {
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  position: relative;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
-}
-.hvr-float-shadow:before {
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
-  content: \'\';
-  top: 100%;
-  left: 5%;
-  height: 10px;
-  width: 90%;
-  opacity: 0;
-  background: -webkit-radial-gradient(center, ellipse, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform, opacity;
-  transition-property: transform, opacity;
-}
-.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
-  -webkit-transform: translateY(-5px);
-  transform: translateY(-5px);
-}
-.hvr-float-shadow:hover:before, .hvr-float-shadow:focus:before, .hvr-float-shadow:active:before {
-  opacity: 1;
-  -webkit-transform: translateY(5px);
-  transform: translateY(5px);
-}
-/*try now ends*/
-
 .header-boxs{
-    max-width:850px;
+    max-width:1300px;
     margin:0 auto;
 }
 .box-border:hover{
     -ms-transform: scale(1.1,1.1); 
     -webkit-transform: scale(1.1,1.1); 
     transform: scale(1.1,1.1);
-
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
     transition:.3s all;
+    background-color:#00a0e3;
+    z-index:1;
+    border:none;
+    box-shadow:0px 0px 37px #00000091;
+}
+.box-border:hover .icon{
+    display:none;
+}
+.box-border:hover .h-text{
+    color:#fff;
+}
+.icon2{
+    display:none;
+}
+.icon2 img{
+    height:60px;
+    width:60px;
+}
+.box-border:hover .icon2{
+    display:block;
 }
 .box-border{
-    background: #fff;
-    border:1px solid rgba(234,238,238,.8);
-    padding: 20px 30px;
+    border-left:1px solid #ffffff4f;
+    border-right:1px solid #ffffff4f;
+    padding:20px;
     text-align: center;
-    box-shadow: 0 0 5px rgba(0,0,0,.1); 
-    margin-bottom: 20px; 
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
     transition:.3s all;
 } 
+
 .box-overlay {
     display: block;
   width: 100%;
@@ -1057,102 +435,8 @@ background-attachment:fixed;
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 20%;
+    height: 35%;
 }
-
-
-/*how we are different*/
-.different{
-    overflow-x:hidden
-}
-/*how we are different ends*/
-
-/*services section starts*/
-.services{
-    padding: 0px 0 25px 0; 
-    text-align:center !important;
-}
-.service-box{ 
-    background:url(' . Url::to('@eyAssets/images/pages/index2/orange-bg.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100% !important;
-    background-position: 0px -8px !important;
-    background-repeat:no-repeat !important;
-}
-.service-box:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
-    border-top:5px solid #ff7803;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    color:#ff7803;
-}
-.ser-box-orange{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
-}
-.ser-box-orange:hover{
-    border-top:5px solid #00a0e3;
-    color:#00a0e3;
-}
-.ser-box-purple{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
-}
-.ser-box-purple:hover{
-    border-top:5px solid #5E4795;
-    color:#5E4795;
-}
-.ser-box-yellow{
-    background: url('.Url::to('@eyAssets/images/pages/index2/learningbg.png').');
-}
-.ser-box-yellow:hover{
-    border-top: 5px solid #f8b321;
-    color:#f8b321
-}
-.ser-box-maroon{
-    background: url('.Url::to('@eyAssets/images/pages/index2/trainingbg.png').');
-}
-.ser-box-maroon:hover{
-    border-top: 5px solid #c76692;
-    color:#c76692
-}
-.ser-box-green{
-    background: url('.Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png').');
-}
-.ser-box-green:hover{
-    border-top: 5px solid #047c7d;
-    color:#047c7d
-}
-.ser-icons{
-    text-align:center;
-}
-.ser-icons img{
-    max-height: 75px; 
-    max-width: 75px;
-}
-.serv-center{
-    padding:0 30px;
-}
-.ser-heading{
-    padding: 10px 0 0 0;
-    text-transform: uppercase;
-    font-size: 20px;
-    text-align:center;
-    font-family:lora;
-}
-/*services section ends*/
 /*how it works section starts*/
 .how-it-works{
     padding: 20px 0 45px 0;
@@ -1320,20 +604,49 @@ how-icon{
 }
 /*<!---- view-all button css ends --->*/
 
-@media screen and (min-width: 993px){
+@media screen and (min-width: 1400px){
     .box-border{
-         min-width: 200px !important;
-         max-width: 200px !important;
-         height: 260px;
+         min-width: 191px !important;
+         max-width: 191px !important;
     }
 }
-@media screen and (max-width: 992px) {
-    .header-boxs{
-        display:inline;
-    }
+@media screen and (max-width: 1400px){
     .box-border{
-        min-height:270px;
-        margin-left:0px;
+         min-width: 157px !important;
+         max-width: 157px !important;
+         padding-bottom: 15px;
+    }
+    .h-heading{
+        font-size: 14px;
+        line-height: 16px;
+    }
+}
+@media screen and (max-width: 1100px) {
+    .box-border{
+        min-width: 191px !important;
+        max-width: 191px !important;
+        margin: 0 10px;
+        min-height: 170px;
+        margin-bottom:20px;
+        margin-left: 0px;
+        background: #fff;
+        border: 1px solid #eee;
+        padding: 30px;
+    }
+    .header-boxs{
+        flex-wrap: wrap;
+    }
+    .header-row{
+        margin-top:-100px;
+    }
+    .h-heading{
+        color:#000;
+         font-size: 16px;
+        line-height: 16px;
+  
+    }
+    .box-border:hover .h-heading{
+        color:#fff;
     }
 }
 .job-field .chosen-container-single .chosen-single{
@@ -1364,6 +677,19 @@ how-icon{
         margin-bottom: 30px;
     }
 }
+@media screen and (max-width: 550px){
+     .box-border{
+        min-width: 145px !important;
+        max-width: 145px !important;
+        margin: 0 10px 10px;
+         padding: 20px 20px 15px;
+         min-height: 150px;
+     }
+     .h-heading{
+        line-height: 20px;
+  
+    }
+}
 .job-field select{
     float: left;
     width: 100%;
@@ -1385,18 +711,11 @@ how-icon{
         border-radius: 8px;
         background:none;
     }
-@media screen and (max-width: 495px){   
-    .header-row{
-        margin-top:10px;
-    }
-}
+@media screen and (max-width: 575px){   
 
-@media screen and (max-width: 375px){
-     .box-border{
-        min-height:280px;
-        margin-left:0px;
-        padding: 20px 10px;
-     }
+    .header-row{
+        margin-top:20px;
+    }
 }
 
 .tab-sec {
@@ -1504,13 +823,11 @@ how-icon{
 }
 .job-style-bx .job-is {
     margin: 0;
-    
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     border-radius: 4px;
-
     color: #ffffff;
 }
 .tab-sec .tab-content {
@@ -1764,10 +1081,7 @@ how-icon{
     font-size:14px;
 }
 
-@media only screen and (max-width: 992px){
-    .mob-pos{
-        left: 30px;
-    }    
+@media only screen and (max-width: 992px){  
      .how-icon{
         text-align:center;
         padding:0 0 20px 0;
@@ -1777,20 +1091,7 @@ how-icon{
         font-size:20px
     }
 }
-@media only screen and (max-width: 768px){
-    .mob-pos{
-        left: 50%;
-        transform:translateX(-50%);
-    }    
-}
 @media only screen and (max-width:500px){
-    .pos-rel{
-        min-height: 225px;        
-    }
-    .mob-heading{
-        font-size: 26px;
-        padding: 20px 0 0 0;
-    }
     .c-logo{
         width:100% !important ;
         text-align:center;
@@ -1818,24 +1119,53 @@ how-icon{
 
 ');
 $script = <<< JS
- $('.tab-sec li a').on("click", function(){
-        var tab_id = $(this).attr('data-tab');
-        $('.tab-sec li a').removeClass('current');
-        $('.tab-content').removeClass('current');
-        $(this).addClass('current');
-        $("#"+tab_id).addClass('current');
-    });
-
-
+$("html, body").animate({ scrollTop: 0 }, "slow");
+var load_content = true;
+var loadNth = 0;
+var errorNth = 0;
 // window.onscroll = function() {scrollFunction()};
-// function scrollFunction() {
-//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-//     document.getElementById("myBttn").style.display = "block";
-//   } else {
-//     document.getElementById("myBttn").style.display = "none";
-//   }
+function scrollFunction() {
+     // var doc_height = $(document).height() - $(window).height();
+  // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
+  // for(var l =0;l<loadElems.length;l++){
+      if(load_content && loadElems[loadNth]){
+        load_content = false;
+        $('#sectionIsLoading').fadeIn(500);
+        $.ajax({
+            url: "/site/load-data",
+            method: "POST",
+            async:false,
+            data: {type:loadElems[loadNth]},
+            beforeSend:function(){
+                
+            },
+            success: function (response) {
+                
+                // $(this).animate({scrollTop : -500}, 400);
+                $('#app-data').append(response);
+                loadNth++;
+                errorNth = 0;
+            },
+            complete: function() {
+                load_content = true;
+                $('#sectionIsLoading').fadeOut(800);
+                setTimeout(function() {
+                    scrollFunction();
+                }, 700);
+            },
+            error: function(xhr, textStatus, errorThrown){
+               scrollFunction();
+               errorNth++;
+               if(errorNth == 3){
+                   loadNth++;
+               }
+            }
+        });
+      }
+      }
+  // }
 // }
-        
+    scrollFunction();    
   jQuery(function($) {
   $('.main-slider-sec').slick({
 	  slidesToShow: 1,
@@ -1849,14 +1179,57 @@ $script = <<< JS
 	});
 });
 
-$(document).on('click','#search-submit',function() {
-   var value = $('#search-input').val();
-   if(value == ''){
-       return false;
-   }
+
+document.getElementById('search-submit').addEventListener('click',(evt)=> {
+  var searchInput = document.getElementById('search-input').value;
+  if(searchInput == ''){
+      evt.preventDefault();
+      return false; 
+  }
 });
-fetchStats(template=$('#stats_cards'));
 JS;
+if (!Yii::$app->user->isGuest) {
+    $this->registerJs("
+    var loadElems = [
+        'getFeaturedApplications',
+        'getStats',
+        'getLearningTopics',
+        'getInternationalJobs',
+        'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
+        'getOnlineClasses',
+        'getNewsUpdate',
+//        'getTweets',
+        'getShortcuts'
+    ];
+    ");
+} else {
+    $this->registerJs("
+    var loadElems = [
+        'getFeaturedApplications',
+        'getFeaturedInternships',
+        'getStats',
+        'getLearningTopics',
+        'getInternationalJobs',
+        'getCompaniesWithUs',
+        'getGovernmentJobs',
+        'getTopCities',
+//        'getOpportunities',
+        'getWhatsappCommunity',
+        'getSafetySigns',
+        'getOnlineClasses',
+        'getHowItWorks',
+        'getNewsUpdate',
+//        'getTweets',
+        'getNewsletter',
+        'getShortcuts'
+    ];
+    ");
+}
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 //$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
@@ -1864,143 +1237,28 @@ $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['position' => \yii\web\View::POS_HEAD]);
 ?>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
-    var twitterTweets = document.querySelectorAll('.twitter-cards');
-    const settings = {
-        jobs: {
-            color: "#00a0e3",
-            title: "Job Tweets",
-            viewAllLink: "/tweets/jobs",
-            postLink: "/tweets/job/create"
-        },
-        internships: {
-            color: "#00a0e3",
-            title: "Internship Tweets",
-            viewAllLink: "/tweets/internships",
-            postLink: "/tweets/internship/create"
-        }
-    };
-    window.onload = function () {
-        jobTweet();
-    }
+    var modal = document.getElementById("virusModal");
+    // Get the button that opens the modal
+    var btn = document.getElementsByClassName("collegeSignupModal");
 
-    function jobTweet() {
-        document.getElementById('jobtweet').style.color = "#00a0e3";
-        document.getElementById('interntweet').style.color = "#000";
-        document.getElementById('tweetHeading').innerHTML = "Job Tweets";
-        document.getElementById('tweetAllLink').href = "/tweets/jobs";
-        document.getElementById('tweetPostLink').href = "/tweets/job/create";
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
 
-        for (var i = 0; i < twitterTweets.length; i++) {
-            if (twitterTweets[i].getAttribute('data-id') == "Internships") {
-                twitterTweets[i].style.display = "none";
-            } else if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
-                twitterTweets[i].style.display = "block";
-            }
+    for (var i = 0; i < btn.length; i++) {
+        btn[i].onclick = function () {
+            modal.style.display = "block";
         }
     }
-
-    function internTweet() {
-        document.getElementById('interntweet').style.color = "#00a0e3";
-        document.getElementById('jobtweet').style.color = "#000";
-        document.getElementById('tweetHeading').innerHTML = "Internship Tweets";
-        document.getElementById('tweetAllLink').href = "/tweets/internships";
-        document.getElementById('tweetPostLink').href = "/tweets/internship/create";
-
-        for (var i = 0; i < twitterTweets.length; i++) {
-            if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
-                twitterTweets[i].style.display = "none";
-            } else if (twitterTweets[i].getAttribute('data-id') == "Internships") {
-                twitterTweets[i].style.display = "block";
-            }
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
     }
-
-    expandFirst('searches');
-    expandFirst('cities');
-    expandFirst('jobs');
-    expandFirst('internships');
-
-    function expandFirst(elem) {
-        var i = 0;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k = 0;
-        while (k < listElementsLength) {
-            if (k < i + 4) {
-                if (document.getElementById(elem)) {
-                    document.getElementById(elem).children[k].classList.remove('hide');
-                }
-            } else {
-                break;
-            }
-            k += 1;
-        }
-    }
-
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
-
-    function showMoreEvent() {
-        hideMore('searches');
-        hideMore('cities');
-        hideMore('jobs');
-        hideMore('internships');
-    }
-
-    function hideMore(elem) {
-        // var i = 0;
-        // i += 5;
-        // var k = 4;
-        var ll = 0;``
-        var zz = 0;
-        var tt = 0;
-        var f = true;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (ll < listElementsLength) {
-            if (document.getElementById(elem).children[ll]) {
-                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
-                    document.getElementById(elem).children[ll].classList.remove('hide');
-                    zz += 1;
-                    f = false;
-                }
-            }
-            ll += 1;
-        }
-        if (f) {
-            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
-        }
-    }
-
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
-
-    function showLessEvent() {
-        hideLess('searches');
-        hideLess('cities');
-        hideLess('jobs');
-        hideLess('internships');
-    }
-
-    function hideLess(elem) {
-        shrinkFirst(elem);
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
-        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
-        expandFirst(elem);
-    }
-
-    function shrinkFirst(elem) {
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k = 5;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.add('hide');
-            }
-            k += 1;
-        }
-    }
-
 </script>

@@ -131,8 +131,6 @@ class JobApplied extends Model
                     $locModel->city_enc_id = $location;
                     $locModel->created_on = date('Y-m-d H:i:s');
                     $locModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    $app_id = $appliedModel->applied_application_enc_id;
-                    $id = $this->id;
                     if (!$locModel->save()) {
                         return false;
                     }
@@ -142,6 +140,8 @@ class JobApplied extends Model
                 'status' => true,
                 'aid' => $appliedModel->applied_application_enc_id,
             ];
+            $app_id = $appliedModel->applied_application_enc_id;
+            $id = $this->id;
             $this->save_process($id, $app_id);
             RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
             return $status;

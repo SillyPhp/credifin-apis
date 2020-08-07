@@ -58,10 +58,11 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 <?php
 $this->registerCss('
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/qn-bg.png") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-position: center;
+    background-position: bottom;
+    background-size:cover;
 }
 .sub-bttn{
     text-align:center;
@@ -103,10 +104,10 @@ body  {
     border-radius: 6px;
 }
 input[type="text"], select{
-    border-radius:5px !important;
+    background-color:#fff !important;
 }
 form label{
-    margin-bottom:0px;
+    margin-bottom:6px;
 }
 label{
     text-transform: capitalize;

@@ -5,6 +5,7 @@ use yii\helpers\Url;
     {{#.}}
 <div class="col-md-3 col-sm-6">
              <div class="agency-box">
+                 <a href="/usa-jobs/department/{{slug}}" title="{{Value}}">
                     <div class="agency-logo">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{Value}}" title="{{Value}}">
@@ -16,15 +17,23 @@ use yii\helpers\Url;
                     </div>
                     <div class="agency-name">{{Value}}</div>
                     <div class="agency-count">
-                        <a href="#">{{total_applications}} Jobs</a>
+                        <a href="/usa-jobs/department/{{slug}}">{{total_applications}} Jobs</a>
                     </div>
+                 </a>
              </div>
 </div>
     {{/.}}
 </script>
 <?php
+$this->registerCss('
+.align_btn
+{
+text-align:center;
+clear:both;
+}
+');
 $script = <<< JS
-function fetchDepartments(template,limit,offset) {
+function fetchDepartments(template,limit,offset,loader,loader_btn) {
   $.ajax({
   url:'/usa-jobs/get-departments',
   method:'Post',
@@ -34,10 +43,19 @@ function fetchDepartments(template,limit,offset) {
       'offset':offset,
   },
   beforeSend: function(){
-     
+     if (loader_btn)
+          { 
+              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+          }
+      if (loader) {
+            $('.img_load').css('display','block');
+        }
       },
   success:function(response) {
       if(response.status === 200) {
+          $('.img_load').css('display','none');
+          $('#loader').html('Load More');
+          $('#loader').css('display','initial');
           template.append(Mustache.render($('#departments-card').html(),response.cards));
           utilities.initials();
       }

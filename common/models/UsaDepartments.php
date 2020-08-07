@@ -2,14 +2,13 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%Usa_Departments}}".
  *
  * @property int $id Primary Key
  * @property string $Code
  * @property string $Value
+ * @property string $slug
  * @property string $Acronym
  * @property string $LastModified
  * @property string $IsDisabled
@@ -41,7 +40,7 @@ class UsaDepartments extends \yii\db\ActiveRecord
             [['total_applications'], 'integer'],
             [['last_retrieved_on'], 'safe'],
             [['Code', 'Acronym', 'IsDisabled'], 'string', 'max' => 10],
-            [['Value'], 'string', 'max' => 255],
+            [['Value', 'slug'], 'string', 'max' => 255],
             [['LastModified', 'last_retrieved_by'], 'string', 'max' => 100],
             [['image', 'image_location'], 'string', 'max' => 50],
             [['Code'], 'unique'],

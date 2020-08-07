@@ -3,38 +3,41 @@
 use Yii\helpers\Url;
 
 ?>
-    <?php
-        foreach($featured_jobs as $featured_job) {
-            ?>
-            <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="new-job-box">
+<?php
+foreach ($featured_jobs as $featured_job) {
+    ?>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="new-job-box">
             <div class="row">
-            <div class="col-md-3">
-            <div class="img-main">
+                <div class="col-md-3">
+                    <div class="img-main">
 
-            <a href="<?= $featured_job['organization_link'] ?>" title="<?= $featured_job['organization_link'] ?>">
-            <?php
-            if (!empty($featured_job['logo'])){
-                ?>
-                <img class="img" src="<?= $featured_job['logo'] ?> alt=" error">
-            <?php
-                }else{
-            ?>
-                <canvas class="user-icon" name="<?= $featured_job['organization_name'] ?>"
-                        color="<?= $featured_job['color'] ?>" width="100" height="100"
-                        font="55px"></canvas>
-            <?php
-             }
-            ?>
-                    </a>
+                        <a href="<?= $featured_job['organization_link'] ?>"
+                           title="<?= $featured_job['organization_link'] ?>">
+                            <?php
+                            if (!empty($featured_job['logo'])) {
+                                ?>
+                                <img class="img" src="<?= $featured_job['logo'] ?>"
+                                     alt="<?= $featured_job['organization_name'] ?>">
+                                <?php
+                            } else {
+                                ?>
+                                <canvas class="user-icon" name="<?= $featured_job['organization_name'] ?>"
+                                        color="<?= $featured_job['color'] ?>" width="100" height="100"
+                                        font="55px"></canvas>
+                                <?php
+                            }
+                            ?>
+                        </a>
+                    </div>
                 </div>
-                </div>
-                    <div class="col-md-9">
+                <div class="col-md-9">
                     <div class="comps-name-1">
                 <span class="skill">
                     <a href="<?= $featured_job['link'] ?>"><?= $featured_job['title'] ?></a>
                 </span>
-                        <a href="<?= $featured_job['organization_link'] ?>" title="<?= $featured_job['organization_name'] ?>"
+                        <a href="<?= $featured_job['organization_link'] ?>"
+                           title="<?= $featured_job['organization_name'] ?>"
                            style=" text-decoration:none;">
                             <h4 class="comp-name"><?= $featured_job['organization_name'] ?></h4>
                         </a>
@@ -50,28 +53,35 @@ use Yii\helpers\Url;
 
                     </div>
                 </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="tag-box">
-                            <div class="tag">
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tag-box">
+                        <div class="tag" id="skills-box">
                             <span class="tags">
-                                <span class="after">html</span>
-                                <span class="after">css</span>
-                                <span class="after">php</span>
-                                <span class="after hide-resp">java</span>
-                                <span class="after hide-resp">jquary</span>
-                                <span class="ADD-more"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                <?php
+                                $skills = explode(',', $featured_job['skill']);
+                                foreach ($skills as $skill){
+                                    ?>
+                                    <span class="after"><?= $skill ?></span>
+<!--                                    <span class="after">css</span>-->
+<!--                                    <span class="after">php</span>-->
+<!--                                    <span class="after hide-resp">java</span>-->
+<!--                                    <span class="after hide-resp">jquary</span>-->
+                                <?php
+                                }
+                                ?>
+                                    <span class="ADD-more"><i class="fa fa-plus" aria-hidden="true"></i></span>
                             </span>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
-            <?php
-        }
-    ?>
+        </div>
+    </div>
+    <?php
+}
+?>
 <?php
 $this->registerCss('
 .application-card-description{
@@ -246,5 +256,12 @@ $this->registerCss('
 
 }
 
-')
+');
+$script = <<<JS
+    var d1 = $("#skills-box").width();
+    console.log('ricky');
+    console.log($skills);
+JS;
+$this->registerJs($script);
 ?>
+
