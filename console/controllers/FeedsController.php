@@ -75,7 +75,6 @@ class FeedsController extends Controller {
         $dom->save($base_path.DIRECTORY_SEPARATOR.$xml_file_name);
         echo "$xml_file_name has been successfully created";
     }
-
     public function actionFetchMuse($start,$end)
     {
         echo $this->muse($start,$end);
@@ -227,7 +226,6 @@ class FeedsController extends Controller {
                             if (!$placementCity->save()) {
                                 print_r($placementCity->getErrors());
                             }
-
                         }
                         else{
                             print_r($employerApplication->getErrors());
@@ -298,7 +296,7 @@ class FeedsController extends Controller {
                             if ($categoriesModel->save()) {
                                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
-                                return false;
+                                print_r($categoriesModel->getErrors());
                             }
                         } else {
                             $chk_assigned = $category_execute
@@ -350,7 +348,7 @@ class FeedsController extends Controller {
                                 $username->username = $slug_replace_str;
                                 $username->assigned_to = 3;
                                 if (!$username->save()) {
-                                    return false;
+                                    print_r($username->getErrors());
                                 }
                                 $employerApplication->unclaimed_organization_enc_id = $model->organization_enc_id;
                             }
@@ -366,7 +364,7 @@ class FeedsController extends Controller {
                             $unclaimOptions->created_on = date('Y-m-d H:i:s');;
                             $unclaimOptions->created_by = null;
                             if (!$unclaimOptions->save()) {
-                                return false;
+                                print_r($unclaimOptions->getErrors());
                             }
                             if (!empty($result['locations'])) {
                                 foreach ($result['locations'] as $city) {
@@ -423,7 +421,7 @@ class FeedsController extends Controller {
             }
             $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
         } else {
-            return false;
+            print_r($assignedCategoryModel->getErrors());
         }
     }
 }
