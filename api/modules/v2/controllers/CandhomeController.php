@@ -901,6 +901,7 @@ class CandhomeController extends ApiBaseController
             if (!empty($webinar)) {
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
+                $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
                 $date = new \DateTime($webinar['start_datetime']);
                 $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
                 $webinar['seconds'] = $seconds;
@@ -922,8 +923,19 @@ class CandhomeController extends ApiBaseController
     private function userRegistered($webinar_id, $user_id)
     {
         return WebinarRegistrations::find()
-            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1])
             ->exists();
+    }
+
+    private function interested($webinar_id, $user_id)
+    {
+        $interest =  WebinarRegistrations::find()
+            ->select(['interest_status'])
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
+            ->asArray()
+            ->one();
+
+        return $interest['interest_status'];
     }
 
     public function actionChangeStatus()
