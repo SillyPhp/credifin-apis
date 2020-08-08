@@ -20,7 +20,8 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['co_applicants', 'purpose', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['purpose', 'college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['co_applicants'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -74,23 +75,25 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
-            foreach ($this->co_applicants as $key => $applicant) {
-                $model = new LoanCoApplicants();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->loan_co_app_enc_id = $utilitiesModel->encrypt();
-                $model->loan_app_enc_id = $this->loan_app_enc_id;
-                $model->name = $applicant['name'];
-                $model->relation = $applicant['relation'];
-                $model->employment_type = $applicant['employment_type'];
-                $model->annual_income = $applicant['annual_income'];
-                $model->pan_number = $applicant['pan_number'];
-                $model->created_by = $userId;
-                $model->created_on = date('Y-m-d H:i:s');
-                if (!$model->save()) {
-                    $transaction->rollback();
-                    return false;
-                } else {
-                    $this->_flag = true;
+            if ($this->co_applicants && !empty($this->co_applicants) && $this->co_applicants != null) {
+                foreach ($this->co_applicants as $key => $applicant) {
+                    $model = new LoanCoApplicants();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                    $model->loan_app_enc_id = $this->loan_app_enc_id;
+                    $model->name = $applicant['name'];
+                    $model->relation = $applicant['relation'];
+                    $model->employment_type = $applicant['employment_type'];
+                    $model->annual_income = $applicant['annual_income'];
+                    $model->pan_number = $applicant['pan_number'];
+                    $model->created_by = $userId;
+                    $model->created_on = date('Y-m-d H:i:s');
+                    if (!$model->save()) {
+                        $transaction->rollback();
+                        return false;
+                    } else {
+                        $this->_flag = true;
+                    }
                 }
             }
             if (!empty($application_fee)) {
@@ -194,6 +197,6 @@ class LoanApplicationsForm extends LoanApplications
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
-        return json_decode($result,true);
+        return json_decode($result, true);
     }
 }
