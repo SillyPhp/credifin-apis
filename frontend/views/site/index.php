@@ -162,9 +162,8 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-.header-row
 
-
+<?= $this->render('/widgets/our-services') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
@@ -188,6 +187,7 @@ $this->registerCss('
 }
 .h-heading{
     color:#fff;
+    font-weight:400;
 }
 .h-text{
     color:#ff7803;
@@ -428,7 +428,7 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 35%;
+    height: 100%;
 }
 /*how it works section starts*/
 .how-it-works{
@@ -610,7 +610,7 @@ how-icon{
          padding-bottom: 15px;
     }
     .h-heading{
-        font-size: 14px;
+        font-size: 16px;
         line-height: 16px;
     }
 }
@@ -634,7 +634,7 @@ how-icon{
     }
     .h-heading{
         color:#000;
-         font-size: 16px;
+         font-size: 14px;
         line-height: 16px;
   
     }
