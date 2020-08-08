@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
@@ -535,13 +536,8 @@ class SiteController extends Controller
     {
 
         $model = new SignUpCandidateForm();
-        $jobprimaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
-            ->asArray()
-            ->all();
+        $job_profile = new ApplicationForm();
+        $primary_cat = $job_profile->getPrimaryFields();
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -551,7 +547,7 @@ class SiteController extends Controller
 
         return $this->renderAjax('sign-up-candidate', [
             'model' => $model,
-            'jobprimaryfields' => $jobprimaryfields,
+            'primary_cat' => $primary_cat,
         ]);
     }
     public function actionSignUp(){
