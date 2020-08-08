@@ -59,7 +59,7 @@ $companies = Organizations::find()
 $this->registercss('
 .companies {
     background-color: #f5f5f5;
-    padding: 10px 0 30px;
+    padding: 20px 0 30px;
 }
 .ac-subheading{
     margin-top:-15px;
