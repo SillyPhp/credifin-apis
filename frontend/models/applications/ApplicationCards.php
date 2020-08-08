@@ -437,7 +437,7 @@ class ApplicationCards
                 ]);
                 $cards2->andFilterWhere([
                     'or',
-                    ['like', 'x.location_name', $search]
+                    ['like', 'x.location_name', $search],
                     ['like', 'a.type', $search],
                     ['like', 'c.name', $search],
                 ]);
