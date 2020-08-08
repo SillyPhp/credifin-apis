@@ -61,6 +61,9 @@ $companies = Organizations::find()
     </section>
 <?php
 $this->registercss('
+.footer{
+    margin-top: 0px !important;
+}
 .companies {
     background-color: #f5f5f5;
     padding: 20px 0 30px;
