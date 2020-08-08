@@ -6,30 +6,47 @@ use yii\db\Expression;
 
 $controller_name = Yii::$app->controller->id;
 $action_name = Yii::$app->controller->action->id;
+$college = false;
+$headName = 'Companies';
 switch ([$controller_name, $action_name]) {
     case ['colleges', ''] :
     case ['colleges', 'index'] :
         $field = 'is_erexx_registered';
+        $college = true;
+        $headName = 'Colleges';
         break;
     default :
         $field = 'is_featured';
 }
 $companies = Organizations::find()
-    ->where(['not', ['logo' => null]])
-    ->andWhere(['not', ['logo' => ""]])
-    ->andWhere(['status' => 'Active', 'is_deleted' => 0, $field => 1])
-    ->orderby(new Expression('rand()'))
-    ->limit(12)
-    ->all();
+    ->alias('z')
+    ->joinWith(['businessActivityEnc a']);
+if ($college) {
+    $companies->andWhere(['in', 'a.business_activity', ['College']]);
+} else {
+    $companies->andWhere(['not', ['in', 'a.business_activity', ['College', 'Educational Institute', 'School']]]);
+}
+$companies->andWhere(['not', ['z.logo' => null]])
+    ->andWhere(['not', ['z.logo' => ""]])
+    ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0, 'z.' . $field => 1])
+    ->orderby(new Expression('rand()'));
+$companies = $companies->limit(12)->all();
+
 ?>
     <section class="companies">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="com-grid">
-                        <h1 class="heading-style">Featured Companies</h1>
-                        <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
-                        <div class="all-coms"><a href="/organizations">View All Companies</a></div>
+                        <h1 class="heading-style">Featured <?= $headName ?></h1>
+                        <?php
+                        if (!$college) {
+                            ?>
+                            <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
+                            <div class="all-coms"><a href="/organizations">View All Companies</a></div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
