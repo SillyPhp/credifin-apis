@@ -428,33 +428,51 @@ class ApplicationCards
             $cards2->andWhere(['d.slug'=>$options['slug']]);
         }
         if (isset($options['keyword'])) {
-            $search = trim($options['keyword'], " ");
-            $search_pattern = self::makeSQL_search_pattern($search);
-            $cards1->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 'v.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
-                ['REGEXP', 'l.designation', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'h.industry', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
-            ]);
-            $cards2->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern],
-                ['REGEXP', 'x.location_name', $search_pattern]
-            ]);
+             $search = trim($options['keyword'], " ");
+            if ($search == "remote" || $search == "work from home")
+            {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['like', 'a.type', $search],
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['like', 'x.location_name', $search]
+                    ['like', 'a.type', $search],
+                    ['like', 'c.name', $search],
+                ]);
+            }
+            else{
+                $search_pattern = self::makeSQL_search_pattern($search);
+                $cards1->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 'v.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'x.name', $search_pattern],
+                    ['REGEXP', 'l.designation', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'h.industry', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'cy.name', $search_pattern]
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'x.location_name', $search_pattern]
+                ]);
+            }
         }
         if (isset($optLocation)) {
             $search_location = trim($optLocation, " ");
