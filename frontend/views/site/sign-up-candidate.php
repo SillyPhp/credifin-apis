@@ -6,7 +6,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
-$primary_cat = ArrayHelper::map($jobprimaryfields, 'category_enc_id', 'name');
 ?>
 
     <section class="set-bg">
