@@ -709,6 +709,7 @@ class CandhomeController extends ApiBaseController
                         'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                     ]);
                     $d->joinWith(['createdBy d1'], false);
+                    $d->limit(6);
                     $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
                 }])
                 ->joinWith(['sessionEnc e'])
@@ -721,9 +722,14 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+
             if (!empty($webinar)) {
                 $i = 0;
                 foreach ($webinar as $w) {
+                    $registered_count = WebinarRegistrations::find()
+                        ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
+                        ->count();
+                    $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
                     $date = new \DateTime($w['start_datetime']);
@@ -817,30 +823,41 @@ class CandhomeController extends ApiBaseController
                     'a.title',
                     'a.start_datetime',
                     'a.availability',
+                    'a.duration',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                     'a.description',
+                    'a.seats'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
                 ->joinWith(['webinarSpeakers c' => function ($bb) {
                     $bb->select([
                         'c.webinar_enc_id',
                         'c.speaker_enc_id',
-                        'c1.fullname',
-                        'CASE WHEN c1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", c1.image_location, "/", c1.image) END image',
-                        'c1.email',
-                        'c1.phone',
-                        'c1.facebook',
-                        'c1.twitter',
-                        'c1.linkedin',
-                        'c1.instagram',
+                        'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
+                        'CASE WHEN cc1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", cc1.image_location, "/", cc1.image) END image',
+                        'cc1.email',
+                        'cc1.phone',
+                        'cc1.facebook',
+                        'cc1.twitter',
+                        'cc1.linkedin',
+                        'cc1.instagram',
                         'c2.designation',
                     ]);
                     $bb->joinWith(['speakerEnc c1' => function ($c1) {
+                        $c1->select(['c1.speaker_enc_id']);
+                        $c1->joinWith(['userEnc cc1'], false);
+                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
+                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
+                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
+                                $g1->onCondition(['g1.is_deleted' => 0]);
+                            }], false);
+                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
+                        }]);
                         $c1->joinWith(['designationEnc c2' => function ($c2) {
                             $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
                         }], false);
                         $c1->onCondition(['c1.is_deleted' => 0]);
-                    }], false);
+                    }]);
                     $bb->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['webinarRegistrations d' => function ($d) {
