@@ -22,7 +22,7 @@ class LiveStreamController extends Controller
             return $this->renderAjax('view', ['tokenId' => $session_id]);
         } else {
             $webinar = Webinars::findOne(['session_enc_id' => $id]);
-            return $this->render('webinar-view', ['webinar' => $webinar]);
+            return $this->renderAjax('webinar-view', ['webinar' => $webinar]);
         }
     }
 
@@ -40,6 +40,7 @@ class LiveStreamController extends Controller
             }
             return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
         }
+
         return $this->renderAjax('broadcast', ['tokenId' => $data->session_id]);
     }
 }
