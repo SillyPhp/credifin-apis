@@ -83,7 +83,9 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
-])
+]);
+
+echo $this->render('/widgets/jobs-by-tag');
 ?>
 <section class="bg-lighter">
     <div class="container">
@@ -141,21 +143,21 @@ echo $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="heading-style">Blogs</div>
-                    </div>
-                </div>
-                <div id="whats-new" class="row">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-sm-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="heading-style">Blogs</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id="whats-new" class="row">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -212,10 +214,10 @@ if (Yii::$app->user->isGuest) {
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3 col-sm-6',
-    'is_ajax' => true,
-]);
+//echo $this->render('/widgets/blogs/whats-new', [
+//    'size' => 'col-md-4 col-sm-4',
+//    'is_ajax' => true,
+//]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
@@ -292,9 +294,6 @@ $this->registerCss('
     color:#00a0e3;
     padding:0;
     font-size:14px;
-}
-.wn-box-details{
-    min-height:100px !important;
 }
 .input-group-addon{
     font-size:15px;
@@ -834,13 +833,6 @@ $this->registerCss('
 }
 .twitter-typeahead{
     float:left;
-}
-.wn-box-icon{
-    max-width: 100% !important;
-}
-.wn-box-icon img{
-    height: 200px !important;
-    object-fit: fill;
 }
 @media only screen and (max-width: 767px) and (min-width: 375px) {
     .form-inline .input-group{

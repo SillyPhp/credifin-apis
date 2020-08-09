@@ -30,6 +30,7 @@ $this->registerCss('
 .whats-new-box{
     border-radius:5px;
     margin-bottom:20px;
+    box-shadow:0 0 6px rgba(0, 0, 0, 0.2);
 }
 .wn-box-icon{
     max-width:100%;
@@ -47,9 +48,10 @@ $this->registerCss('
     opacity: 1;
     display: block;
     width: 100%;
-    height: 100%;
+    height: 200px;
     transition: .5s ease;
     backface-visibility: hidden;
+    object-fit:cover;
 }
 .whats-new-box:hover{
     box-shadow:0 0 15px rgba(73, 72, 72, 0.28);
@@ -70,9 +72,16 @@ $this->registerCss('
     padding: 5px 10px 10px 8px;
     border: 1px solid rgba(230, 230, 230, .3);
     border-radius:0 0 5px 5px;
+    min-height:100px !important;
+    text-align:center;
 }
-.wn-box-title{
-    font-weight: bold;
+.wn-box-title {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-family: roboto;
+	font-size: 16px;
 }
 .wn-box-cat{
    font-size:14px;

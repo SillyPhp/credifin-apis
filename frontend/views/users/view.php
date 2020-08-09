@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
@@ -175,13 +175,17 @@ $this->params['header_dark'] = false;
                         foreach ($education as $edu) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i class="fas fa-university"></i><?= $edu['institute'] ?>
+                                <div class="prof-p">
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                    <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i
-                                            class="fas fa-user-graduate"></i><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-clock"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                    </div>
+                                    <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -194,15 +198,18 @@ $this->params['header_dark'] = false;
                         foreach ($experience as $exp) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i
-                                            class="fas fa-hotel"></i><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                <div class="prof-p">
+                                    <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i class="fas fa-briefcase"></i><?= $exp['title'] ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
-                                </div>
-                                <div class="s-time s-text"><i class="fas fa-align-center"></i><?= $exp['description'] ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -321,6 +328,28 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.prof-p {
+	width: 80px;
+	height: 80px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.prof-p img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.prof-inner {
+	margin: 0 0 0 10px;
+}
+.s-text-2 {
+    font-size: 14px;
+    color: #aaa9a9;
+}
+.user-icon.img-circle.img-responsive {
+    width: 236px;
+}
 body{background-color:#f9f9f9;}
 //.detail-section{
 //    filter: blur(5px);
@@ -340,9 +369,10 @@ body{background-color:#f9f9f9;}
     margin-bottom: -1px;
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
+    display:flex;
 }
 .s-text {
-    font-size: 14px;
+    font-size: 18px;
     font-family: roboto;
 }
 .s-text > i{

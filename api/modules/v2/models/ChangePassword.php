@@ -36,7 +36,7 @@ class ChangePassword extends Model
         $utilitiesModel->variables['password'] = $this->old_password;
         $this->old_password = $utilitiesModel->encrypt_pass();
         if ($this->old_password !== $password['password']) {
-            return false;
+            return 403;
         }
         $utilitiesModel->variables['password'] = $this->new_password;
         $this->new_password = $utilitiesModel->encrypt_pass();

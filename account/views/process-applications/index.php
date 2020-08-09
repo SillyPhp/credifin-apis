@@ -17,7 +17,8 @@ use yii\widgets\Pjax;
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
                 ?>
-                <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                <li id="<?= 'nav' . $p['field_enc_id'] ?>"
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title=""
                        data-original-title="<?= $p['field_name'] ?>" href="#">
@@ -35,6 +36,9 @@ use yii\widgets\Pjax;
                 </a>
             </li>
         </ul>
+        <div class="scd-btn text-right">
+            <a href="/account/schedular/interview">Schedule Interview</a>
+        </div>
         <ul class="hiring_process_list gallery_zoom">
             <?php
             if (!empty($fields)) {
@@ -46,7 +50,7 @@ use yii\widgets\Pjax;
                         $fieldName = "Hired";
                     } else if ($arr['status'] == 'Rejected') {
                         $fieldName = "Rejected";
-                    } else{
+                    } else {
                         $fieldName = "Applied";
                         $tempfieldMain = "";
                     }
@@ -73,9 +77,7 @@ use yii\widgets\Pjax;
                                                         height="80" font="35px"></canvas>
                                             <?php endif; ?>
                                         </a>
-                                        <h4>
-                                            <?= $arr['name'] ?>
-                                        </h4>
+                                        <a class="pr-user-n" href="<?= '/' . $arr['username'] ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
                                             foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -166,11 +168,14 @@ use yii\widgets\Pjax;
                                 <div class="col-md-3 pl-0">
                                     <div class="pr-user-actions">
                                         <div class="pr-top-actions text-right">
-                                            <a href="<?= Url::to($arr['username'],true) ?>" target="_blank">View Profile</a>
+                                            <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                                Profile</a>
                                             <?php
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
-                                            <a href="<?= Url::to($cv,true); ?>" target="_blank">Download Resume</a>
+                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+<!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+<!--                                            <a href="#">Request to Complete Profile</a>-->
                                         </div>
                                         <ul>
                                             <!--                                        <li>-->
@@ -191,7 +196,7 @@ use yii\widgets\Pjax;
                                         </ul>
                                         <div class="round-detail">
                                             <h5>Current Round:</h5>
-                                            <h4><?= $fieldName;?></h4>
+                                            <h4><?= $fieldName; ?></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -233,8 +238,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down"
-                                       aria-hidden="true"></i>
+                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                       title="View Questionnaire"></i>
                                 </button>
                             </div>
                         </div>
@@ -263,7 +268,10 @@ use yii\widgets\Pjax;
                                     </tbody>
                                 </table>
                             <?php } else { ?>
-                                <h3>No Questionnaire To Display</h3>
+                                <div class="without-q">
+                                    <h3>No Questionnaire To Display</h3>
+<!--                                    <a href="#">Set Questionnaire</a>-->
+                                </div>
                             <?php } ?>
                         </div>
                     </li>
@@ -278,11 +286,40 @@ use yii\widgets\Pjax;
     </div>
 <?php
 $this->registerCss('
+.scd-btn a{
+	background-color: #ff7803;
+	color: #fff;
+	font-size: 14px;
+	font-family: roboto;
+	padding: 8px 15px;
+	border-radius: 4px;
+}
+.without-q {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.without-q h3{
+    margin:14px 0;
+}
+.without-q a{
+	font-size: 14px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: #fff;
+	padding: 4px 8px;
+	border-radius: 4px;
+}
+.tt + .tooltip > .tooltip-inner {
+    min-width:140px !important;
+    background-color:#000 !important;
+}
 .round-detail{text-align:center;}
-.round-detail h5{margin-bottom:5px;}
+.round-detail h5{margin-bottom:5px;font-family:roboto;}
 .round-detail h4{
     margin-top: 0px;
-    font-weight: 600;
+    font-weight: 500;
+    font-family:roboto;
 }
 .pl-0{padding-left:0px;}
 li{list-style: none;}
@@ -296,24 +333,28 @@ li{list-style: none;}
   position:relative;
 }
 .pr-user-inner-main{
-  padding:20px 0px;
+  padding:20px 0px 0;
   padding-top: 0px;
   padding-left: 15px;
   width:calc(100% - 70px);
+  font-family:roboto;
 }
 .hiring_process_list > li{
     width:100%;
 }
-.pr-user-detail h4{
+.pr-user-n{
   font-size:19px;
   font-weight:500;
   margin: 0px;
   display: inline-block;
+  text-transform:capitalize;
+  color:#000;
 }
 .pr-user-detail{
     padding-left: 85px;
     padding-top: 20px;
     margin-top: -10px;
+    height:68px;
 }
 .pr-user-icon{
     display: inline-block;
@@ -352,6 +393,7 @@ li{list-style: none;}
 }
 .pr-user-past h5{
   display:inline-block;
+  font-family:roboto;
 }
 .pr-user-skills{padding-top:20px;}
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
@@ -366,18 +408,21 @@ li{list-style: none;}
 }
 .pr-user-skills h4{
   font-size:14px;
+  font-family:roboto;
 }
 .pr-user-skills h4 span{
   color:#777;
 }
 .pr-top-actions a{
     background-color: #00a0e3;
-    padding: 4px 10px;
+    padding: 4px 6px;
     display: inline-block;
     border-radius: 0px 0px 4px 4px;
     color: #fff;
     font-size: 12px;
-    margin-right:1px;
+    margin:auto;
+    margin-bottom:5px;
+    font-family:roboto;
 }
 .pr-user-actions ul{
   padding-top:40px;
@@ -435,11 +480,12 @@ li{list-style: none;}
   text-overflow: ellipsis;
   background: white;
   border: 1px solid #ccc;
-  border-right: none;
   padding: 0;
   cursor: pointer;
   margin-bottom: 1em;
   color:#555;
+  border-left-color:transparent !important;
+  border-right-color:transparent !important;
 }
 .pr-process-tab li a{
     background-color:transparent !Important;
@@ -461,7 +507,7 @@ li{list-style: none;}
   top: 0;
   right: -34px;
   width: 0;
-  height: 0;
+  height: 100%;
   border: 17px solid transparent;
   border-left-color: #797979;
 }
@@ -474,15 +520,16 @@ li{list-style: none;}
   right: -35px;
   margin-right: 1px;
   width: 0;
-  height: 0;
+  height: 100%;
   border: 17px solid transparent;
   border-left-color: white;
 }
 .pr-process-tab li:first-child {
   border-radius: 20px 0 0 20px;
+  border-left-color: #ccc !important;
 }
 .pr-process-tab li:last-child {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #ccc !important;
   border-radius: 0 20px 20px 0;
 }
 .pr-process-tab li:last-child:before, .pr-process-tab li:last-child:after{
@@ -503,6 +550,12 @@ li{list-style: none;}
 }
 .pr-process-tab li.active:before {
   border-left-color: #00a0e3;
+}
+.tooltip-inner {
+    background-color: #00a0e3 !important;
+    color: #fff;
+    padding:5px 10px;
+    border-radius:20px !important;
 }
 .tooltip-inner {
     background-color: #00a0e3 !important;
@@ -644,6 +697,7 @@ $(document).on('click', '.approve', function(e) {
     var btn2 = btn.next();
     var btn3 = btn.prev();
     var total = $(this).attr('data-total');
+    var listid = $('ul.pr-process-tab').find('.active').prop('id');
    $.ajax({
        url:'/account/jobs/approve-candidate',
        data:{field_id:field_id,app_id:app_id},
@@ -662,6 +716,7 @@ $(document).on('click', '.approve', function(e) {
                   setTimeout(function() {
                     hiring_process();
                     utilities.initials();
+                    $('#'+listid).find('a').click();
                   }, 1000)
             } else {
                disable(btn);

@@ -220,7 +220,7 @@ body{
  color: #6c757d;
  font-size:14px;
 }
-.posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
+.posted-tweet iframe{width:280px !important;margin-bottom:0px !important;}
 .head-bg{
     background-color:#C1E8F1;
     padding: 85px 0px;
@@ -485,6 +485,10 @@ float:right;
 .overlay-image.i-4 {
     bottom: 0px;
     left: 20%;
+}
+.twitter-tweet {
+    max-width: 272px !important;
+    justify-content:center;
 }
 //.container blockquote  {
 //    display: none;

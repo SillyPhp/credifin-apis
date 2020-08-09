@@ -90,6 +90,8 @@ class ApplicationForm extends Model
     public $custom_job_title;
     public $last_date;
     public $gender;
+    public $minimum_exp;
+    public $maximum_exp;
     public $min_exp;
     public $industry;
     public $fill_quesio_on;
@@ -165,6 +167,8 @@ class ApplicationForm extends Model
                 'checkbox',
                 'gender',
                 'min_exp',
+                'minimum_exp',
+                'maximum_exp',
                 'industry',
                 'last_date',
                 'last_date',
@@ -297,7 +301,8 @@ class ApplicationForm extends Model
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($this->to));
-        $employerApplicationsModel->experience = $this->min_exp;
+        $employerApplicationsModel->minimum_exp = $this->minimum_exp === '0' || $this->minimum_exp ? $this->minimum_exp:null;
+        $employerApplicationsModel->maximum_exp = $this->maximum_exp === '0' || $this->maximum_exp ? $this->maximum_exp:null;
         $employerApplicationsModel->preferred_gender = $this->gender;
         $employerApplicationsModel->preferred_industry = $this->industry;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
@@ -894,7 +899,12 @@ class ApplicationForm extends Model
                 WHEN a.experience = "5-10" THEN "5-10 Years"
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
-                ELSE "No Experience"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
+                ELSE "No Experience" 
                 END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {

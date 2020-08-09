@@ -11,6 +11,9 @@ use yii\helpers\Url;
                     {{#speaker_image}}
                     <img class="img-fluid" src="{{speaker_image}}"/>
                     {{/speaker_image}}
+                    {{^speaker_image}}
+                    <img class="img-fluid" src="{{speaker_image_fake}}">
+                    {{/speaker_image}}
                     <a href="#{{speaker_enc_id}}" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
                         <i class="fas fa-plus"></i>
                     </a>
@@ -32,13 +35,18 @@ use yii\helpers\Url;
                             {{#speaker_image}}
                             <img src="{{speaker_image}}">
                             {{/speaker_image}}
+                            {{^speaker_image}}
+                            <img src="{{speaker_image_fake}}">
+                            {{/speaker_image}}
                         </div>
                     </div><!-- col end-->
                     <div class="col-lg-6">
                         <div class="ts-speaker-popup-content">
                             <h3 class="ts-title">{{fullname}}</h3>
+                            <span class="speakder-designation"><i class="fa fa-envelope"></i> {{email}}</span>
+                            <span class="speakder-designation mb2 phone-icon"><i class="fa fa-phone"></i> {{phone}}</span>
                             {{#designation}}
-                            <span class="speakder-designation">{{designation}}</span>
+                            <span class="speakder-designation mb2">{{designation}}</span>
                             {{/designation}}
                             {{#org_image}}
                             <img class="company-logo"
@@ -292,10 +300,14 @@ $this->registerCss('
 .ts-speaker-popup .ts-speaker-popup-content .speakder-designation {
     display: block;
     font-size: 14px;
-    margin-bottom: 20px;
     text-transform: capitalize;
 }
-
+.mb2{
+    margin-bottom: 20px
+}
+.phone-icon i{
+transform: rotate(100deg);
+}
 .ts-speaker-popup .ts-speaker-popup-content .company-logo {
     margin-bottom: 0px;
 }
@@ -418,7 +430,7 @@ function fetchNews(template,limit_dept,offset,loader,loader_btn) {
       $('#loader').css('display','initial');
       $('#loader').attr('disabled', false);
        match_dept = match_dept+body.count;
-      if (body.total<4||body.total==match_dept) {
+      if (body.total==match_dept) {
           $('#loader').hide();
       }
       template.append(Mustache.render($('#speakers-card').html(),body.cards));

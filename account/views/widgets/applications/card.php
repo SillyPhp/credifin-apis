@@ -2,6 +2,7 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $total_applications = count($applications);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
@@ -20,7 +21,7 @@ if (!empty($total_applications)) {
         <?php
         for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
-                $tipvalue = explode('/',$applications[$next]['link'])[1];
+                $tipvalue = explode('/', $applications[$next]['link'])[1];
                 ?>
                 <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-6'); ?>">
                     <div class="hr-company-box">
@@ -48,11 +49,13 @@ if (!empty($total_applications)) {
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php endif; ?>
-                            <button type="button" class="j-delete tt" data-toggle="tooltip" title="Delete <?= $tipvalue ?>"
+                            <button type="button" class="j-delete tt" data-toggle="tooltip"
+                                    title="Delete <?= $tipvalue ?>"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="j-closed tt" data-toggle="tooltip" title="Close <?= $tipvalue ?>"
+                            <button type="button" class="j-closed tt" data-toggle="tooltip"
+                                    title="Close <?= $tipvalue ?>" data-name="<?= $tipvalue ?>"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
@@ -61,22 +64,26 @@ if (!empty($total_applications)) {
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn" type="button" >
+                               class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share on Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-email share_btn" type="button">
+                               class="j-email share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share via E-mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-whatsapp share_btn" type="button">
+                               class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share on Whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-linkedin share_btn" type="button">
+                               class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
@@ -85,9 +92,12 @@ if (!empty($total_applications)) {
                         if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
                             ?>
                             <div class="exp-soon-main">
-                                <a href="#" class="datepicker_opn" data-id="<?= $applications[$next]['application_enc_id']?>" data-date="<?= date("d-m-Y", strtotime($application['last_date'])); ?>">
+                                <a href="#" class="datepicker_opn"
+                                   data-id="<?= $applications[$next]['application_enc_id'] ?>"
+                                   data-date="<?= date("d-m-Y", strtotime($application['last_date'])); ?>">
                                     <div class="expring-btn" data-toggle="tooltip" title="Extend Date">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>" alt="expring icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>"
+                                             alt="expring icon">
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
@@ -118,15 +128,12 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="row">
-                            <div class="col-md-12" style="font-family: roboto;">
-                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'],true); ?>">
-                                    <?= sizeof($applications[$next]['appliedApplications']).' Applications'; ?>
+<!--                            <a href="--><?//= Url::to($applications[$next]["link"], true); ?><!--">--><?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
+                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip" title="VIEW <?= strtoupper($applications[$next]['application_type'])?>"><i class="fa fa-info-circle"></i></a>
+                            <div class="appl">
+                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
+                                    <?= sizeof($applications[$next]['appliedApplications']) . ' Applications'; ?>
                                 </a>
-                            </div>
-                            <div class="col-md-12 j-grid"><a
-                                        href="<?= Url::to($applications[$next]["link"],true); ?>"><?= Yii::t('account', 'VIEW '.strtoupper($applications[$next]['application_type'])); ?></a>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -151,7 +158,52 @@ if (!empty($total_applications)) {
 Pjax::end();
 
 $this->registerCss("
-.tt + .tooltip > .tooltip-inner {width:115px;}
+.hr-com-jobs{
+    font-size:13px; 
+    color:#080808; 
+    padding:10px 0 0px;
+    margin-top:10px; 
+    border-top:1px solid #eef1f5;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.hr-com-jobs > a > i{
+    font-size: 25px;
+    margin-top: 4px;
+    transition: all .3s;
+}
+.hr-com-jobs > a > i:hover{
+    color:#ff7803;
+}
+.appl {
+    flex-basis: 100%;
+}
+.appl a {
+    font-family: roboto;
+    font-size: 12px;
+    color: #00a0e3;
+    border: 1px solid #00a0e3;
+    -webkit-border-radius: 20px !important;
+    -moz-border-radius: 20px !important;
+    -ms-border-radius: 20px !important;
+    -o-border-radius: 20px !important;
+    border-radius: 4px !important;
+    padding: 6px 0;
+    display: block;
+    margin-left: 10px;
+    flex-basis: 50%;
+}
+.appl a:hover {
+    background: #00a0e3 !important;
+    color: #ffffff;
+    transition: all 0.4s ease 0s;
+    text-decoration:none;
+}
+.tt + .tooltip > .tooltip-inner {
+    min-width:70px;
+    max-width:110px;
+}
 .exp-soon-msg{
      box-shadow: 0 0 10px rgba(0,0,0,.2);
     padding: 5px;
@@ -236,9 +288,6 @@ $this->registerCss("
 }
 .topic-con{
     position:relative;
-}
-.j-grid > a{ 
-    margin-top:0px;
 } 
 ");
 $script = <<<JS
@@ -268,8 +317,9 @@ $(document).on('click','.j-delete',function(e){
 
 $(document).on('click','.j-closed',function(e){
      e.preventDefault();
+     var data_name = $(this).attr('data-name');
      var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Delete the current Application?")) { 
+     if (window.confirm("Do you really want to Close the current Application?")) { 
         main_card.remove();
         var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
@@ -281,7 +331,7 @@ $(document).on('click','.j-closed',function(e){
                 $.pjax.reload({container: "#pjax_active_jobs", async: false});
                   if(data==true) {
                       $.pjax.reload({container: "#pjax_closed_jobs", async: false});
-                      toastr.success('Closed Successfully', 'Success');
+                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
                     }
                    else {
                       toastr.error('Something went wrong. Please try again.', 'Opps!!');

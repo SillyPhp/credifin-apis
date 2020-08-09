@@ -178,7 +178,7 @@ $this->registerCss('
     background: #ffcc00;
     padding: 20px 20px 0;
     position: relative;
-    margin: 20px;   
+    margin: 20px 0;   
 }
 .sub-btn {
      border: 2px solid #000;
@@ -261,7 +261,7 @@ input::-moz-file-upload-button:focus{
     color: #000;
 }
 .form-control.for-choose{
-    padding: 0 !important;
+//    padding: 0 !important;
     color: transparent;
     cursor: pointer;
 }

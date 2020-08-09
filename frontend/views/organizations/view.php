@@ -101,12 +101,12 @@ $round_avg = round($overall_avg);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+                    <!--                    <ul class="nav nav-tabs nav-padd-20">-->
+                    <!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+                    <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -141,7 +141,7 @@ $round_avg = round($overall_avg);
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
                             About <?= htmlspecialchars_decode($organization['name']) ?>
@@ -214,19 +214,19 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-<!--                                <div class="j-profiles">-->
-<!--                                    <h3>Job Profiles</h3>-->
-<!--                                    <div class="row" style="padding: 0 15px;">-->
-<!--                                        <div class="pf-flex">-->
-<!--                                            <div class="pf-all">Infromation technology</div>-->
-<!--                                            <div class="pf-all">marketing</div>-->
-<!--                                            <div class="pf-all">sales</div>-->
-<!--                                            <div class="pf-all">Engineering</div>-->
-<!--                                            <div class="pf-all">accounting</div>-->
-<!--                                            <div class="pf-all">others</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <!--                                <div class="j-profiles">-->
+                            <!--                                    <h3>Job Profiles</h3>-->
+                            <!--                                    <div class="row" style="padding: 0 15px;">-->
+                            <!--                                        <div class="pf-flex">-->
+                            <!--                                            <div class="pf-all">Infromation technology</div>-->
+                            <!--                                            <div class="pf-all">marketing</div>-->
+                            <!--                                            <div class="pf-all">sales</div>-->
+                            <!--                                            <div class="pf-all">Engineering</div>-->
+                            <!--                                            <div class="pf-all">accounting</div>-->
+                            <!--                                            <div class="pf-all">others</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
                             <div>
                                 <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
                                 <div class="sub-review-box">
@@ -293,7 +293,43 @@ $round_avg = round($overall_avg);
                             </div>
                         </div>
                     </div>
-                   <?php if (!empty($benefit)) {
+                    <div class="av-jobs-intern">
+                        <div id="jobs-cards-main" class="row">
+                            <div class="heading-style">
+                                Available Jobs
+                                <div class="pull-right">
+                                    <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                       class="write-review">View
+                                        All</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="internships-cards-main" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style">
+                                    Available Internships
+                                    <div class="pull-right">
+                                        <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                           class="write-review">View All</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
                             <div class="company-benefits">
@@ -459,76 +495,36 @@ $round_avg = round($overall_avg);
                         </div>
                     <?php } ?>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div id="jobs-cards-main" class="row">
-                        <div class="heading-style">
-                            Available Jobs
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style">Reviews
+<!--                            --><?//= htmlspecialchars_decode($organization['name']) ?>
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                   class="write-review">View
-                                    All</a>
+                                <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
+                                    Review</a>
                             </div>
                         </div>
                         <div class="divider"></div>
+                        <div id="org-reviews"></div>
+                        <div class="viewbtn">
+                            <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style">
+                            Address
+                        </div>
+                        <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
+                            <div class="col-md-5 col-xs-12 pull-right">
+                                <div id="map"></div>
                             </div>
-                        </div>
-                    </div>
+                            <div class="col-md-7 col-xs-12">
+                                <div class="head-office">
 
-                    <div id="internships-cards-main" class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                       class="write-review">View All</a>
                                 </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade location_tab">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                Address
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-5 col-xs-12 pull-right">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-md-7 col-xs-12">
-                                    <div class="head-office">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="menu4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                <?= htmlspecialchars_decode($organization['name']) ?> Reviews
-                                <div class="pull-right">
-                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
-                                        Review</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div id="org-reviews"></div>
-                            <div class="viewbtn">
-                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
                             </div>
                         </div>
                     </div>
@@ -703,12 +699,13 @@ $this->registerCss('
     -moz-transition: .3s all;
     -webkit-transition: .3s all;
     transition: .3s all;
-    color: #00a0e3;
+    background-color: #00a0e3;
+    color:#fff;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
 .write-review:hover{
-    background-color: #00a0e3;
-    color: #fff;
+    color: #00a0e3;
+    background-color: #fff;
 }
 /*----jobs and internships----*/
 .internships-block{

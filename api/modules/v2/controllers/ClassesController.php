@@ -147,7 +147,7 @@ class ClassesController extends ApiBaseController
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $college_id['college_id']])
+                ->where(['a.organization_enc_id' => $college_id['college_id'], 'a.is_deleted' => 0])
                 ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();

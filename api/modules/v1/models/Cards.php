@@ -56,7 +56,7 @@ class Cards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -105,7 +105,7 @@ class Cards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
@@ -300,6 +300,9 @@ class Cards
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
                 $result[$i]['skill'] = 'Multiple Skills';
             }
+            if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
+                $result[$i]['salary'] = $currency . ' View In Detail';
+            }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
             unset($result[$i]['salary_duration']);
@@ -338,7 +341,7 @@ class Cards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -377,7 +380,7 @@ class Cards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
@@ -533,7 +536,7 @@ class Cards
                 } else {
                     $result[$i]['salary'] = $currency . round((int)$val['fixed_salary'] / 12) . ' p.m.';
                 }
-            }  elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
+            } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
                         $result[$i]['salary'] = $currency . round((string)$val['min_salary']) . " - " . $currency . round((string)$val['max_salary']) . ' p.m.';
@@ -572,6 +575,9 @@ class Cards
             }
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
                 $result[$i]['skill'] = 'Multiple Skills';
+            }
+            if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
+                $result[$i]['salary'] = $currency . ' View In Detail';
             }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);

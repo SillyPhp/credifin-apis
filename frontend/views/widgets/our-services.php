@@ -107,6 +107,36 @@ use yii\helpers\Url;
                         </div>
                     </a>
                 </div>
+<!--                <div class="col-md-2 col-sm-4 col-xs-6 u-p">-->
+<!--                    <a href="--><?//= Url::to('/training-programs'); ?><!--">-->
+<!--                        <div class="service-main">-->
+<!--                            <div class="service-icon">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?><!--"-->
+<!--                                     alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">-->
+<!--                            </div>-->
+<!--                            <div class="service-icon2">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/our-services/training-courses-orange.png') ?><!--"-->
+<!--                                     alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">-->
+<!--                            </div>-->
+<!--                            <div class="service-txt">Training Courses</div>-->
+<!--                        </div>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--                <div class="col-md-2 col-sm-4 col-xs-6 u-p">-->
+<!--                    <a href="--><?//= Url::to('/career-advice'); ?><!--">-->
+<!--                        <div class="service-main">-->
+<!--                            <div class="service-icon">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/our-services/career-advice-blue.png') ?><!--"-->
+<!--                                     alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">-->
+<!--                            </div>-->
+<!--                            <div class="service-icon2">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/our-services/career-advice-orange.png') ?><!--"-->
+<!--                                     alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">-->
+<!--                            </div>-->
+<!--                            <div class="service-txt">Career Advice</div>-->
+<!--                        </div>-->
+<!--                    </a>-->
+<!--                </div>-->
             </div>
         </div>
     </section>
