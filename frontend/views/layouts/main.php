@@ -655,7 +655,7 @@ $this->registerCss('
     background-repeat: no-repeat;
     background-size: contain;
     background-position: left bottom;
-    margin-top: 60px;
+    margin-top: 0px;
     background:#333 !important;
     color:#fff !important;
 } 
