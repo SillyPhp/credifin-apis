@@ -240,7 +240,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         </div>
     </div>
 </div>
-<input type="hidden" id="share_link_aud" value="<?= Url::base('https').'/live-stream/audience/'.$tokenId?>">
+<input type="hidden" id="share_link_aud" value="<?= Url::base('https').'/mentors/webinar-view?id='.$tokenId?>">
 <?php
 $script = <<< JS
 browserAccess();
