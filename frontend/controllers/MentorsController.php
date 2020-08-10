@@ -74,7 +74,7 @@ class MentorsController extends Controller
 
     public function actionWebinarView($id)
     {
-        $type = 'view';
+        $type = 'audience';
         $webinarDetail = self::getWebianrDetails($id);
         $webinars = self::getWebianrs($id);
 //        $iframeUrl = '/live-stream/' . $type . '?id=' . $id;
@@ -87,7 +87,7 @@ class MentorsController extends Controller
 
     public function actionWebinarLive($id)
     {
-        $type = 'broadcast';
+        $type = 'multi-stream';
         $webinarDetail = self::getWebianrDetails($id);
         $webinars = self::getWebianrs($id);
         $speakerIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
