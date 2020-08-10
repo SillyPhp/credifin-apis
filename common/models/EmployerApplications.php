@@ -100,6 +100,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
             [['slug'], 'unique'],
+            [['slug'], 'string', 'max' => 255],
             [['application_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationTypes::className(), 'targetAttribute' => ['application_type_enc_id' => 'application_type_enc_id']],
             [['title'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['title' => 'assigned_category_enc_id']],
             [['preferred_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['preferred_industry' => 'industry_enc_id']],
