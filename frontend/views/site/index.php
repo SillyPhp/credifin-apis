@@ -115,7 +115,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>"
                                  alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work"
-                                 alt="Employers" title="Colleges"></div>
+                                 title="Colleges"></div>
                         <div class="h-heading">Courses</div>
                     </a>
                 </div>
@@ -138,6 +138,9 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
+
+<?= $this->render('/widgets/our-services') ?>
+
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
     <div></div>
@@ -160,6 +163,7 @@ $this->registerCss('
 }
 .h-heading{
     color:#fff;
+    font-weight:400;
 }
 .h-text{
     color:#ff7803;
@@ -400,7 +404,7 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 35%;
+    height: 100%;
 }
 /*how it works section starts*/
 .how-it-works{
@@ -582,7 +586,7 @@ how-icon{
          padding-bottom: 15px;
     }
     .h-heading{
-        font-size: 14px;
+        font-size: 16px;
         line-height: 16px;
     }
 }
@@ -606,7 +610,7 @@ how-icon{
     }
     .h-heading{
         color:#000;
-         font-size: 16px;
+         font-size: 14px;
         line-height: 16px;
   
     }
