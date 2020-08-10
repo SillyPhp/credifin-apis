@@ -1917,6 +1917,7 @@ var slugg = '$slug';
 var type = "$type";
 var keyword = "$searchItems";
 var cat = '';
+
 function getCourseList(keyword=null,cat=null){
     $.ajax({
         method: "POST",
