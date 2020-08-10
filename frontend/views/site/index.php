@@ -53,7 +53,6 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in one">
                     <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
@@ -65,11 +64,8 @@ $this->params['header_dark'] = false;
                                  alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer"
                                  title="Jobs"/></div>
                         <div class="h-heading">Jobs</div>
-                        <!--                            <div class="h-text">I want to recruit talent</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
@@ -82,11 +78,8 @@ $this->params['header_dark'] = false;
                                  alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me"
                                  title="Internships"/></div>
                         <div class="h-heading">Internships</div>
-                        <!--                            <div class="h-text">I'm the talent</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
@@ -97,10 +90,8 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>"
                                  alt="international internships, web developer career, software engineer career"></div>
                         <div class="h-heading">Learning Hub</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
                 <div class="box-border fade-in three">
                     <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
@@ -113,12 +104,9 @@ $this->params['header_dark'] = false;
                                  alt="research internship, software developer career internship websites, best learning websites"
                                  title="Reviews"/></div>
                         <div class="h-heading">Reviews</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
                 </div>
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in three">
-                    <!--                        <div class="box-overlay">-->
                     <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>"
@@ -126,18 +114,11 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>"
-                            alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work"
+                                 alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work"
                                  alt="Employers" title="Colleges"></div>
                         <div class="h-heading">Courses</div>
-                        <!--                                <div class="h-text">I'm the future</div>-->
                     </a>
-                    <!--                        </div>-->
-                    <!--                        <div class="overlay">-->
-                    <!--                            <div class="text">Coming Soon</div>-->
-                    <!--                        </div>-->
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
                         <div class="icon">
@@ -148,24 +129,15 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>"
                                  alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana"></div>
                         <div class="h-heading">Education Loan</div>
-                        <!--                            <div class="h-text">I want to enroll talent</div>-->
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
-
-                <!--                </div>-->
             </div>
         </div>
     </div>
 </section>
-.header-row
-
-
-
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
     <div></div>
