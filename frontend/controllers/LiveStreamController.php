@@ -43,4 +43,29 @@ class LiveStreamController extends Controller
 
         return $this->renderAjax('broadcast', ['tokenId' => $data->session_id]);
     }
+
+    public function actionAudience($id)
+    {
+        $this->layout = 'blank-layout';
+        if ($id) {
+            return $this->render('multi-view', ['tokenId' => $id]);
+        }
+    }
+
+    public function actionMultiStream($id)
+    {
+        $this->layout = 'blank-layout';
+        $session = Yii::$app->session;
+        if (empty($session->get('uid'))) {
+            $session->set('uid',rand(100,1000));
+        }
+        if ($id) {
+            return $this->render('multi-stream', ['tokenId' => $id,'uid'=>$session->get('uid')]);
+        }
+    }
+
+    public function actionConnect()
+    {
+        return $this->renderAjax('connect');
+    }
 }
