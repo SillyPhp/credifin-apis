@@ -98,7 +98,7 @@ class MentorsController extends Controller
                 'webinarDetail' => $webinarDetail
             ]);
         } else {
-            return 'you are not authorized speaker';
+            return $this->render('non-authorized');
         }
     }
 
