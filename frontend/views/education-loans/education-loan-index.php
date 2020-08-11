@@ -12,7 +12,8 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6">
                 <div class="loan-text">
                     <h1>Education Loan</h1>
-                    <h3>We Work With You To Turn Your Dreams Into Reality</h3>
+                    <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
+                    <a href="education-loan-view" class="hvr-sweep-to-bottom">Apply Now</a>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -22,11 +23,12 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Educational Loan With Us'); ?></h2>
+                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
                 </div>
             </div>
             <div class="row">
@@ -35,39 +37,108 @@ use yii\helpers\Url;
                         <img class="grids-image"
                              src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi1.png'); ?>"/>
                     </figure>
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Customized Loans'); ?></h4>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
                 </div>
                 <div class="col-md-3 col-sm-3 categories">
                     <figure class="grids">
                         <img class="grids-image"
                              src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi4.png'); ?>">
                     </figure>
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Quick approval'); ?></h4>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
                 </div>
                 <div class="col-md-3 col-sm-3 categories">
                     <figure class="grids">
                         <img class="grids-image"
                              src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi2.png'); ?>">
                     </figure>
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Minimal documentation'); ?></h4>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
                 </div>
                 <div class="col-md-3 col-sm-3 categories">
                     <figure class="grids">
                         <img class="grids-image"
                              src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
                     </figure>
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Get loan to study abroad'); ?></h4>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
                 </div>
             </div>
         </div>
     </section>
+    <section class="edu-loan">
+        <div class="container">
+            <div class="edu-loan-txt col-md-6">Ready to get Started ?</div>
+            <div class="col-md-6"><a href="education-loan-view" class="hvr-sweep-to-bottom">Apply Now</a></div>
+        </div>
+    </section>
+    <section class="edu-with-sec">
+        <div class="container">
+            <div class="row mt-20">
+                <div class="col-md-12">
+                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi1.png'); ?>"/>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Up to 100% Financing'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi1.png'); ?>"/>
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Customized Loans'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi4.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Quick Sanctions'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi2.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Minimal Documentation'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi4.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Flexible Repayment Options'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Get loan to study abroad'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Pre Admission Loan'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Pre Visa Loan'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Bridge Loan'); ?></h4>
+                </div>
+                <div class="col-md-3 col-sm-3 categories">
+                    <img class="grids-image"
+                         src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Fast Track Loan'); ?></h4>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="clearfix"></div>
     <section>
         <div class="">
             <div class="col-md-4 hw-block1">
                 <div class="edu-hw-block">
-                    <div class="edu-hw-title">Online Pre Approval</div>
-                    <div class="edu-hw-icon"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans/1L.png') ?>" alt=""/></div>
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/1L.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Study Abroad Education Loan</div>
                     <div class="edu-hw-text">Our online eligibility tool helps find the best possible
                         loan option for your requirements.
                     </div>
@@ -76,9 +147,10 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 hw-block2">
                 <div class="edu-hw-block">
-                    <div class="edu-hw-title">Select Your Loan</div>
-                    <div class="edu-hw-icon"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans/2L.png') ?>" alt=""/></div>
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/2L.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Study in India Education Loan</div>
                     <div class="edu-hw-text">Our online eligibility tool helps find the best possible
                         loan option for your requirements.
                     </div>
@@ -87,14 +159,14 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 hw-block3">
                 <div class="edu-hw-block">
-                    <div class="edu-hw-title">Lifetime Service</div>
-                    <div class="edu-hw-icon"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans/3L.png') ?>" alt=""/></div>
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/3L.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Education Institution Loans</div>
                     <div class="edu-hw-text">Empower Youth team ensures that you do not have to worry about financing
                         during your study.
                         Any conflicts with the banks during disbursal are promptly resolved.
                     </div>
-
                 </div>
             </div>
         </div>
@@ -108,16 +180,8 @@ use yii\helpers\Url;
         </div>
         <div id="ecww-widget-iframeinner"></div>
     </section>
-
     <div class="clearfix"></div>
-    <section class="edu-loan">
-        <div class="container">
-            <div class="edu-loan-txt col-md-6">Ready to get Started ?</div>
-            <div class="col-md-6"><a href="/site/education-loan" class="hvr-sweep-to-bottom">Apply Now</a></div>
-        </div>
-    </section>
-    <div class="clearfix"></div>
-    <section class="l-help">
+    <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="col-md-4">
@@ -233,6 +297,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.mb1{
+    margin-bottom: 10px
+}
 .loan-text {
     padding-top: 140px;
 }
@@ -241,7 +308,7 @@ $this->registerCss('
     font-weight: 700;
 }
 .loan-text h3{
-    margin: 0;
+    margin-top: 0;
     font-family: lora;
 }
 .lp-name{
@@ -542,9 +609,26 @@ $this->registerCss('
     max-height: 400px; 
     padding: 40px 0;
 }
-.edu-hw-title{font-size: 25px; color:#fff; font-family: open sans; text-transform: uppercase; font-weight: bold; }
-.edu-hw-icon{ padding: 20px; }
-.edu-hw-text{font-size: 16px; line-height: 20px; color:#fff; padding: 10px 30px; font-family: open sans }
+.edu-hw-title{
+    font-size: 18px; 
+    color:#fff; 
+    font-family: Roboto; 
+    text-transform: uppercase; 
+    font-weight: bold;
+}
+.edu-hw-icon{ 
+    padding: 20px; 
+}
+.edu-hw-icon img{
+    max-width: 80px
+}
+.edu-hw-text{
+    font-size: 16px; 
+    line-height: 20px; 
+    color:#fff; 
+    padding: 10px 30px; 
+    font-family: open sans 
+}
 .heading-style{
    font-family: lobster;
    font-size: 28pt;
