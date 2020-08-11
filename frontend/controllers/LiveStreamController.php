@@ -22,7 +22,7 @@ class LiveStreamController extends Controller
             return $this->renderAjax('view', ['tokenId' => $session_id]);
         } else {
             $webinar = Webinars::findOne(['session_enc_id' => $id]);
-            return $this->render('webinar-view', ['webinar' => $webinar]);
+            return $this->renderAjax('webinar-view', ['webinar' => $webinar]);
         }
     }
 
@@ -40,6 +40,44 @@ class LiveStreamController extends Controller
             }
             return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
         }
+
         return $this->renderAjax('broadcast', ['tokenId' => $data->session_id]);
+    }
+
+    public function actionAudience($id)
+    {
+        $this->layout = 'blank-layout';
+        if ($id) {
+            return $this->render('multi-view', ['tokenId' => $id]);
+        }
+    }
+
+    public function actionMultiStream($id)
+    {
+        $data = WebinarSessions::findOne(['session_enc_id' => $id]);
+        if (!$data->session_id) {
+            $data = $data->webinars;
+            foreach ($data as $d) {
+                foreach ($d->webinarSpeakers as $speaker) {
+                    $user_id = $speaker->speakerEnc->userEnc->user_enc_id;
+                    break;
+                }
+                break;
+            }
+            return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
+        }
+        $this->layout = 'blank-layout';
+        $session = Yii::$app->session;
+        if (empty($session->get('uid'))) {
+            $session->set('uid',Yii::$app->user->identity->id);
+        }
+        if ($id) {
+            return $this->render('multi-stream', ['tokenId' => $id,'uid'=>$session->get('uid')]);
+        }
+    }
+
+    public function actionConnect()
+    {
+        return $this->renderAjax('connect');
     }
 }

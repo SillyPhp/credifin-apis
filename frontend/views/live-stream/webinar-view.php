@@ -11,31 +11,11 @@ use yii\helpers\Url;
         <h4><span class="text-danger">Start time</span> : <?= date('d/m/Y h:i A', strtotime($webinar->start_datetime)) ?></h4>
     </div>
 
-    <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>The Live Will Start Soon</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
 <?php
 $this->registerCss('
-.modal-header{border:none;padding:10px;}
-.modal-body{text-align:center;}
-.modal-body p{
-    font-size: 20px;
-    font-family: roboto;
-}
 div#webinar-status {
     text-align: center;
+    color: #fff;
+    padding-top: 96px;
 }
 ');

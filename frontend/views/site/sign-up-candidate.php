@@ -6,7 +6,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
-$primary_cat = ArrayHelper::map($jobprimaryfields, 'category_enc_id', 'name');
 ?>
 
     <section class="set-bg">
@@ -348,16 +347,6 @@ allPrevBtn.click(function(){
          isValid = false;
         $('.twitter-typeahead').next('p').html('City cannot be blank');
         }
-    if ($('#experience').val().length==0)
-        {
-           isValid = false;
-        $('#experience').next('p').html('Experience cannot be blank');
-        }
-    if ($('input[name="salary"]').val().length==0)
-        {
-        isValid = false;
-        $('#salary').next('p').html('Salary cannot be blank');
-        }
     if (isValid){
         nextStepWizard.show();
         curStep.hide();
@@ -383,11 +372,11 @@ allPrevBtn.click(function(){
    if($(".field-email").hasClass("has-error")){
        isValid = false;
   }
-   if ($('input[name="phone"]').val().length==0)
-        {
-            isValid = false;
-        $('#phone').next('p').html('Phone cannot be blank');
-        }
+   // if ($('input[name="phone"]').val().length==0)
+   //      {
+   //          isValid = false;
+   //      $('#phone').next('p').html('Phone cannot be blank');
+   //      }
    if($(".field-phone").hasClass("has-error")){
        isValid = false;
   }
