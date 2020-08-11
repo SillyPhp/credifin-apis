@@ -14,6 +14,7 @@ use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
 use common\models\OrganizationEmployeeBenefits;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\Referral;
@@ -601,9 +602,9 @@ class CollegeIndexController extends ApiBaseController
                 $data['college_enc_id'] = $j['college_enc_id'];
                 $data['is_college_approved'] = $j['is_college_approved'];
                 $data['last_date'] = $j['last_date'];
-                if($j['last_date'] < date('Y-m-d')){
+                if ($j['last_date'] < date('Y-m-d')) {
                     $data['is_closed'] = true;
-                }else{
+                } else {
                     $data['is_closed'] = false;
                 }
                 foreach ($j['applicationPlacementLocations'] as $l) {
@@ -965,6 +966,50 @@ class CollegeIndexController extends ApiBaseController
             $i = 0;
             if ($companies) {
                 foreach ($companies as $c) {
+
+                    $org_labels = OrganizationLabels::find()
+                        ->alias('a')
+                        ->select([
+                            'a.org_label_enc_id',
+                            'a.label_enc_id',
+                            'b.name'
+                        ])
+                        ->joinWith(['labelEnc b'])
+                        ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    $labels = [];
+                    if ($org_labels) {
+                        foreach ($org_labels as $l) {
+                            switch ($l['name']) {
+                                case "Treanding":
+                                    $labels['Treanding'] = true;
+                                    break;
+                                case "Promoted":
+                                    $labels['Promoted'] = true;
+                                    break;
+                                case "New":
+                                    $labels['New'] = true;
+                                    break;
+                                case "Hot":
+                                    $labels['Hot'] = true;
+                                    break;
+                                case "Featured":
+                                    $labels['Featured'] = true;
+                                    break;
+                                case "trendd":
+                                    $labels['trendd'] = true;
+                                    break;
+                                case "Verified":
+                                    $labels['Verified'] = true;
+                                    break;
+                            }
+                        }
+                    }
+
+                    $companies[$i]['labels'] = $labels;
+
                     $reviews = OrganizationReviews::find()
                         ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
                         ->where(['organization_enc_id' => $c['organization_enc_id']])
