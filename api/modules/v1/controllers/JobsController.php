@@ -38,7 +38,8 @@ class JobsController extends ApiBaseController
                 'get-jobs-by-organization',
                 'search',
                 'jobs-near-me',
-                'test'
+                'test',
+                'git-muse-jobs'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -48,7 +49,8 @@ class JobsController extends ApiBaseController
                 'list' => ['POST'],
                 'detail' => ['POST'],
                 'apply' => ['POST'],
-                'available-resume' => ['POST']
+                'available-resume' => ['POST'],
+                'git-muse-jobs' => ['POST']
             ]
         ];
         return $behaviors;
@@ -95,6 +97,79 @@ class JobsController extends ApiBaseController
         } else {
             return $this->response(404, 'Not Found');
         }
+    }
+
+    private function gitjobs($id)
+    {
+        $url = "https://jobs.github.com/positions/" . $id . ".json";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        return $result;
+    }
+
+    private function musejobs($id)
+    {
+        $url = "https://www.themuse.com/api/public/jobs/" . $id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if ($result) {
+            $result['title'] = $result['name'];
+            $result['company'] = $result['company']['name'];
+            $result['created_at'] = $result['publication_date'];
+            $result['url'] = $result['refs']['landing_page'];
+            $result['description'] = $result['contents'];
+            $result['location'] = $result['locations'];
+            unset($result['name']);
+            unset($result['publication_date']);
+            unset($result['refs']);
+            unset($result['contents']);
+            unset($result['locations']);
+        }
+        return $result;
+    }
+
+    public function actionGitMuseJobs()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['source']) && empty($params['source'])) {
+            return $this->response(422, 'missing information');
+        }
+//        if (!isset($params['slug']) && empty($params['slug'])) {
+//            return $this->response(422, 'missing information');
+//        }
+        if (!isset($params['id']) && empty($params['id'])) {
+            return $this->response(422, 'missing information');
+        }
+
+        if ($params['source'] == 2) {
+            $get = $this->gitjobs($params['id']);
+        } else if ($params['source'] == 3) {
+            $get = $this->musejobs($params['id']);
+        }
+        if ($get['title']) {
+            return $this->response(200, $get);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
     }
 
     public function actionDetail()
