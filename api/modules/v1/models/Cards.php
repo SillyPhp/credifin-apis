@@ -39,6 +39,7 @@ class Cards
             ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
+                'a.source',
                 'a.last_date',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
@@ -88,6 +89,7 @@ class Cards
             ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
+                'a.source',
                 'a.last_date',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
