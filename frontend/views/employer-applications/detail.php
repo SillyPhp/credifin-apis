@@ -1930,7 +1930,7 @@ function getCourseList(keyword=null,cat=null){
         success: function(response) {
             response = JSON.parse(response);
             $('.loader-main').hide();
-            $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
+            // $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
