@@ -38,7 +38,7 @@ class LiveStreamController extends Controller
                 }
                 break;
             }
-            return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
+            return $this->renderAjax('generate-session', ['user_id' => $user_id, 'id' => $id]);
         }
 
         return $this->renderAjax('broadcast', ['tokenId' => $data->session_id]);
@@ -64,7 +64,7 @@ class LiveStreamController extends Controller
                 }
                 break;
             }
-            return $this->render('generate-session', ['user_id' => $user_id, 'id' => $id]);
+            return $this->renderAjax('generate-session', ['user_id' => $user_id, 'id' => $id]);
         }
         $this->layout = 'blank-layout';
         $session = Yii::$app->session;
