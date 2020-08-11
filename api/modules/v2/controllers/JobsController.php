@@ -134,6 +134,12 @@ class JobsController extends ApiBaseController
                 $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
             }
 
+            if ($data['last_date'] < date('Y-m-d')) {
+                $data['is_closed'] = true;
+            } else {
+                $data['is_closed'] = false;
+            }
+
             if ($data['wage_type'] == 'Fixed') {
                 if ($data['wage_duration'] == 'Monthly') {
                     $data['fixed_wage'] = $data['fixed_wage'] * 12;
@@ -262,7 +268,7 @@ class JobsController extends ApiBaseController
                 'x.industry',
                 'a.title',
                 '(CASE
-                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
+                     WHEN a.preferred_gender = "0" THEN "No preferred gender"
                     WHEN a.preferred_gender = "1" THEN "Male"
                     WHEN a.preferred_gender = "2" THEN "Female"
                     WHEN a.preferred_gender = "3" THEN "Transgender"
