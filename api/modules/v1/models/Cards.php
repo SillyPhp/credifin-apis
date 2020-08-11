@@ -40,6 +40,7 @@ class Cards
                 'd.initials_color color',
                 'c.name as title',
                 'a.source',
+                'a.unique_source_id',
                 'a.last_date',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
@@ -90,6 +91,7 @@ class Cards
                 'd.initials_color color',
                 'c.name as title',
                 'a.source',
+                'a.unique_source_id',
                 'a.last_date',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
