@@ -21,6 +21,7 @@ AppAssets::register($this);
     <?= Html::csrfMetaTags(); ?>
     <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
     <?php
     if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
@@ -400,6 +401,43 @@ AppAssets::register($this);
     }
     ?>
 </div>
+<script type="text/javascript">
+    function handleCredentialResponse(response) {
+        if (response.credential){
+            var token = parseJwt(response.credential);
+            authLogin(token);
+        }
+        else{
+            alert('Server Error');
+        }
+
+    }
+
+    function parseJwt (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    };
+
+    function authLogin(token) {
+        $.ajax({
+            url:'/site/one-tap-auth',
+            method:'POST',
+            data:token,
+            beforeSuccess:function(e)
+            {
+                console.log('sending you');
+            },
+            success:function (e) {
+                console.log(e);
+            }
+        })
+    }
+</script>
 <?php
 $this->registerCss('
 .footer-bottom-links a{
