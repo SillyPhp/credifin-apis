@@ -41,6 +41,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
     <section>
         <div class="container">
             <div class="row">
@@ -60,7 +63,7 @@ use yii\helpers\Url;
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="heading-style">Post Genuine Review About Your Collage</div>
+            <div class="heading-style">Post Genuine Review About Your College</div>
             <div class="col-md-4 set style-set">
                 <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
                 <div class="text">Share Your Experience</div>

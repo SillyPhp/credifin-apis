@@ -19,8 +19,8 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="mt-actions">
                 <?php
-                if (!empty($applied_applications['list'])) { ?>
-                    <?php foreach ($applied_applications['list'] as $candiates) { ?>
+                if (!empty($applied_applications)) { ?>
+                    <?php foreach ($applied_applications as $candiates) { ?>
                         <div class="mt-action">
                             <div class="mt-action-img" style="width: auto">
                                 <a href="/<?= $candiates['username'] ?>">
@@ -63,7 +63,7 @@ use yii\helpers\Url;
                                  class="img-responsive" alt=""/>
                         </div>
                         <div class="tab-empty-text">
-                            <div class="">No Applications</div>
+                            <div class="">There Are No Applicants</div>
                         </div>
                     </div>
                 <?php } ?>

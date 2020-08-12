@@ -29,7 +29,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
     </div>
 </section>
 
-<section>
+<section style="background: #fff;">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6">
@@ -57,16 +57,23 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/govt-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
             <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
             <div id="cards">
-            </div>
-            <div class="align_btn">
-                <button id="loadMore" class="btn btn-success">Load More</button>
             </div>
         </div>
     </div>
@@ -157,9 +164,6 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-border-bottom{
-    height:156px;
-}
 .loader_screen img
 {
 display:none;
@@ -553,18 +557,6 @@ float:right;
     margin-left: auto;
     margin-right: auto;
 }
-@media only screen and (max-width: 550px){
-    .overlay-image {
-        max-width: 115px;
-    }
-}
-.application-card-img{
-    margin-left:0px;
-    margin-top:30px;
-}
-.application-card-description{
-    margin:20px 0 0 15px !important;
-}
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
 echo $this->render('/widgets/mustache/departments_govt');
@@ -583,7 +575,7 @@ $(document).on('submit','#form-search',function(e) {
           window.location.assign('/govt-jobs/search/'+keyword.replace(/\s+/g, '-'));
       }
 })
-fetchDepartments(template=$('#departments_cards'),limit_dept=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit_dept=12,offset=0);
 JS;
 $this->registerJs($script);
 ?>

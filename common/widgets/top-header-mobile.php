@@ -275,7 +275,7 @@
                             </div>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
-                                    <a href="/account/resume-builder">Build Resume</a>
+                                    <a href="/account/resume-builder">Resume Builder</a>
                                 </div>
                             </div>
                         </div>

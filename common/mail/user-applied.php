@@ -386,6 +386,7 @@ $this->registerCss("
         font-size: 19px;
         font-weight: 500;
         display: inline-block;
+        color:#fff;
     }
 
     .inner-text {

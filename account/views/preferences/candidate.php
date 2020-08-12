@@ -1,5 +1,5 @@
 <?php
-
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -13,7 +13,7 @@ $intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 
 
 
     <div class="container">
-        <div class="portlet light">
+        <div class="portlet light col-md-8 col-md-offset-2">
             <div class="portlet-title tabbable-line">
                 <?= $this->render("@common/widgets/candidate-actions-navbar");?>
                 <div class="tabbable-line">
@@ -332,6 +332,17 @@ $intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 
     </div>
 <?php
 $this->registerCss("
+.page-content{
+    background:url('" . Url::to('@eyAssets/images/backgrounds/for-preferences.png') . "') !important;
+    background-size: cover !important;
+    background-position: left bottom !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.portlet.light{opacity:.95;}
+.container, .container-fluid{
+    padding:0 !important;
+}
 .irs-disabled{
     pointer-events: none;
 }
@@ -906,7 +917,7 @@ $script = <<< JS
                 prefetch: '',
                 cache: true, 
                 remote: {
-                    url: '/cities/city-list?q=%QUERY',
+                    url: '/cities/get-location?q=%QUERY',
                     wildcard: '%QUERY'
                 }
             });
@@ -918,7 +929,7 @@ $script = <<< JS
                 itemText: 'text',
                 typeaheadjs: {
                     name: 'city',
-                    displayKey: 'text',
+                    displayKey: 'city_name',
                     source: city.ttAdapter()
                 }
             });

@@ -138,10 +138,11 @@ input:checked ~ label:hover ~ label {
 }    
     
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/qn_bg.jpg") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-position: center;
+    background-position: bottom;
+    background-size:cover;
 }
 .sub-bttn{
     text-align:center;

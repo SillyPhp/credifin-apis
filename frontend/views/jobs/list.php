@@ -59,6 +59,10 @@ $this->params['seo_tags'] = [
     ],
 ];
 $this->registerCss('
+.salary a
+{
+color: #2b7cb7;
+}
 .change-hr{
     margin-bottom: 30px;
     margin-top: 15px;
@@ -71,6 +75,13 @@ $this->registerCss('
 }
 .main-content{
     min-height:100vh !important;
+}
+.connected-sortable{
+    padding: 15px 0 0 0 !important;
+}
+.close{
+    right: 12px !important;
+    top: -3px !important;
 }
 ');
 ?>
@@ -135,9 +146,7 @@ echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
 ]);
 
-
 $script = <<<JS
-
 var loading = false;
 var load_more_cards = true;
 $(window).animate({scrollTop:0}, '300');
@@ -176,9 +185,16 @@ $(document).on('click','.loading_more', function(e){
 });
 loader = true;
 draggable = true;
-getCards();
+getCards();   
 var sidebarpage = 1;
 getReviewList(sidebarpage);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
+<script>
+    setTimeout(function () {
+        let eyActiveMenu = document.getElementsByClassName('ey-active-menu');
+        eyActiveMenu[0].classList.remove('ey-active-menu');
+    }, 2000);
+</script>

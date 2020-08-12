@@ -1,10 +1,25 @@
 <?php
-
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+$exp = [
+    '0' => 'Freshers',
+    '1' => '1',
+    '2' => '2',
+    '3' => '3',
+    '4' => '4',
+    '5' => '5',
+    '6' => '6',
+    '7' => '7',
+    '8' => '8',
+    '9' => '9',
+    '10' => '10',
+    '15' => '15',
+    '20' => '20',
+    '20+' => 'More Than 20 Years'
+];
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\View::POS_HEAD);
 ?>
 
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
@@ -103,6 +118,7 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
                                     'primary_cat' => $primary_cat,
                                     'industry' => $industry,
                                     'type' => $type,
+                                    'exp' => $exp,
                                 ]);
                             elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
@@ -1635,6 +1651,7 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+#wh_vacancy{display:none}
 #wage_type-error .color_red
 {font-size:13px}
 @keyframes bounce{
@@ -1798,10 +1815,16 @@ function work_from_home(job_type_str) {
   if(job_type_str == "Work From Home")  
         {
         $('.placement_location_hide').hide();
+        $('#wh_vacancy').show();
+        $('#wh_type').removeClass('col-md-12');
+        $('#wh_type').addClass('col-md-7');
         }
    else
      { 
        $('.placement_location_hide').show();
+       $('#wh_vacancy').hide();
+       $('#wh_type').removeClass('col-md-7');
+        $('#wh_type').addClass('col-md-12');
          }
 }
  function ChildFunction()
@@ -1978,9 +2001,8 @@ function init() {
                         required: true,
                         
                     },
-                    'min_exp': {
+                    'minimum_exp': {
                         required: true,
-                        
                     },
                     'startdate':
                      {

@@ -9,13 +9,14 @@ use yii\helpers\url;
                     <img src="<?= Url::to('@eyAssets/images/pages/custom/jb.png') ?>" alt="">
                 </div>
                 <div class="wid-name">
-                    Latest Jobs
+                    Latest Jobs & Internships
                 </div>
                 <div class="wid-sub-name">
-                    Click on the link below to check out the <span>Latest Jobs</span>
+                    Click on the link below to check out the <br><span>Jobs & Internships</span>
                 </div>
                 <div class="wid-link">
                     <a href="/jobs/list">View Jobs</a>
+                    <a href="/internships/list">View Internships</a>
                 </div>
             </div>
         </div>
@@ -23,14 +24,20 @@ use yii\helpers\url;
 
 <?php
 $this->registerCss('
-.wid-link{
-    margin-top:30px;
+.wid-link {
+	margin-top: 25px;
+	display: flex;
+	justify-content: center;
 }
-.wid-link a{
-    padding:10px 15px;
-    background: linear-gradient(45deg, #00a0e3, #89d8f9);
-    color:#fff;
-    border-radius:5px;
+.wid-link a {
+	padding: 8px 0;
+	background: linear-gradient(45deg, #00a0e3, #89d8f9);
+	color: #fff;
+	border-radius: 5px;
+	flex-basis: 40%;
+	font-size: 14px;
+	font-family: roboto;
+	margin: 0 6px;
 }
 .wid-link a:hover{
     background: linear-gradient(45deg, #89d8f9, #00a0e3);
@@ -45,20 +52,20 @@ $this->registerCss('
 }
 .wid-name{
     font-family: Roboto;
-    font-weight:bold;
+    font-weight:500;
     font-size:20px;
-    text-align:left;
+    text-align:center;
     color:#000;
     padding-top:40px;
                                           
 }
 .wid-sub-name{
-    text-align:left;
+    text-align:center;
     color:#000;
     font-family: roboto;
     font-size:16px;
 }
 .wid-sub-name span{
-    font-weight:bold;
+    font-weight:500;
 }
 ');

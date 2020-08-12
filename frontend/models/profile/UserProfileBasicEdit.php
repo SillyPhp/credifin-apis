@@ -48,7 +48,7 @@ class UserProfileBasicEdit extends Model
     public function rules()
     {
         return [
-            [['exp_month', 'gender', 'exp_year', 'dob', 'languages', 'skills', 'availability', 'description', 'state', 'city', 'job_title_id'], 'required'],
+            [['gender', 'dob', 'languages', 'skills', 'availability', 'description', 'state', 'city', 'job_title_id'], 'required'],
             ['exp_month', 'integer', 'max' => 11],
             ['category', 'safe'],
             ['exp_year', 'integer', 'max' => 99],
