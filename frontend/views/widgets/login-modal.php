@@ -6,6 +6,12 @@ use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
 ?>
+<div id="g_id_onload"
+     data-client_id="758339221215-qbm8120ln6a178jbh387s5nb08f1g7ss.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-your_own_param_1_to_login="any_value"
+     data-your_own_param_2_to_login="any_value">
+</div>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->

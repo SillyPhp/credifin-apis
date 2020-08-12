@@ -80,6 +80,15 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            $auth = new AuthHandler();
+            return $handle = Yii::$app->request->post();
+           // return $auth->handle();
+        }
+    }
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
