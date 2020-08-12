@@ -15,18 +15,15 @@ use yii\helpers\Url;
                             alt="Invitation" class="responsive"></a>
             </div>
             <div class="welcome-text">
-                <span>Congratulations!</span> It is a great pleasure to invite you to join <a href="<?= Url::to('/', 'https'); ?>" class="e">empoweryouth.com</a> World's 1st integrated career platform where you can apply for jobs, internships, find and give reviews to companies, colleges, institutes. Please confirm your acceptance of this offer by signing in. We are excited to have you join This Platform. If you have any questions, please feel free to reach out at any time.
-                <span class="e">Empower</span> <span class="y">Youth</span>
+                We have great news for you, by getting attached with online campus placement you can easily apply to many companies who are coming for the placement to your college, grab this opportunity by signing up.
+                sign up
+                please make sure that you are filling the right details.
             </div>
             <div class="activate-button">
                 <ul>
-                    <li><a href="<?= Url::to('/signup/individual' . $data['ref'], 'https'); ?>">Claim Account</a></li>
+                    <li><a href="<?= $data['referral_link']?>">Signup Now</a></li>
                 </ul>
                 <div class="btn1"></div>
-            </div>
-            <div class="welcome-text wt2">
-                Please make sure you claim your premium account at the earliest.
-                <div class="ending">Enjoy!</div>
             </div>
 
             <div class="ey-team">

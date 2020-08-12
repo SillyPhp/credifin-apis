@@ -84,9 +84,14 @@ $this->registerCss('
 .what-popular-box:hover > .wp-box-icon > .middle > a > img, .whats-new-box:hover >.wn-box-icon > .middle > a > img{
     opacity:1 !important;
 }
-.wn-box-title{
-    font-weight: bold;
-   
+.wn-box-title {
+	font-weight: bold;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 50px;
+	min-height: 50px;
 }
 .wn-box-details{
     border-top:none;
@@ -129,9 +134,14 @@ a.wn-overlay-text {
 .middle img{
     object-fit:contain;
 }
-.wp-box-des{
-    padding-top:15px;
-    font-size:13px;
+.wp-box-des {
+	font-size: 13px;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	min-height: 92px;
+	max-height: 92px;
 }
 .button {
   display: inline-block;

@@ -1,13 +1,13 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
                 <div class="left-side-container">
                     <div class="freelance-image">
                         <?php
@@ -51,7 +51,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4 bl-1 br-gary">
+            <div class="col-md-4 col-sm-6  br-gary">
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><span
@@ -175,13 +175,17 @@ $this->params['header_dark'] = false;
                         foreach ($education as $edu) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i class="fas fa-university"></i><?= $edu['institute'] ?>
+                                <div class="prof-p">
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                    <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i
-                                            class="fas fa-user-graduate"></i><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-clock"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                    </div>
+                                    <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -194,13 +198,18 @@ $this->params['header_dark'] = false;
                         foreach ($experience as $exp) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i
-                                            class="fas fa-hotel"></i><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                <div class="prof-p">
+                                    <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i class="fas fa-briefcase"></i><?= $exp['title'] ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -246,7 +255,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <?php
-            if (!empty($job_preference)) {
+            if (array_filter($job_preference)) {
                 ?>
                 <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
@@ -280,7 +289,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if (!empty($internship_preference)) {
+            if (array_filter($internship_preference)) {
                 ?>
                 <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
@@ -319,6 +328,29 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.prof-p {
+	width: 80px;
+	height: 80px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.prof-p img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.prof-inner {
+	margin: 0 0 0 10px;
+}
+.s-text-2 {
+    font-size: 14px;
+    color: #aaa9a9;
+}
+.user-icon.img-circle.img-responsive {
+    width: 236px;
+}
+body{background-color:#f9f9f9;}
 //.detail-section{
 //    filter: blur(5px);
 //    -webkit-filter: blur(5px);
@@ -337,9 +369,10 @@ $this->registerCss('
     margin-bottom: -1px;
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
+    display:flex;
 }
 .s-text {
-    font-size: 14px;
+    font-size: 18px;
     font-family: roboto;
 }
 .s-text > i{
@@ -431,9 +464,10 @@ $this->registerCss('
     padding: 5px 25px;
     box-shadow: 0px 1px 12px 1px #a5a5a5;
     border-radius: 4px;
-    margin-top: 2px;
+    margin: 10px 5px 5px;
     font-size: 13px;
     display: inline-block;
+    font-family:roboto;
 }
 .edit-profile-btn:hover, .edit-profile-btn:focus{
     background-color:#0392ce;
@@ -441,40 +475,48 @@ $this->registerCss('
 }
 .freelance-image img{
     width:100%;
-    height:88%;
+    height:100%;
+    object-fit:fill;
 }
  .inner-header-page{
-    padding:150px 0 50px;
-	text-align:left;
-	background:#f5f6f7;
-    border-bottom:2px solid #00a0e3;	
+    padding:100px 0 0px;	
 }
 .left-side-container {
-    display: table;
-    width: 100%;
+	width: 100%;
+	background-color: #fff;
+	padding: 50px;
+	position: relative;
+	margin: auto;
+	border-radius: 8px;
+	margin-bottom: 25px;
+	min-height: 270px;
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
 }
 .inner-header-page .freelance-image {
-    height: 160px;
-    flex: 0 0 140px;
-    margin-right: 35px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.1);
-    display: inline-block;
-    padding: 0 20px;
-    line-height: 140px;
-    float: left;
+	height: 240px;
+	background: #fff;
+	border-radius: 100%;
+	box-shadow: 0 3px 12px rgba(0,0,0,.1);
+	padding: 2px;
+	position: absolute;
+	left: -19%;
+	top: 5%;
+	width: 240px;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
-	max-width:140px;
-	margin-top:10px;
+//	max-width:140px;
+//	margin-top:10px;
+}
+.header-details p{
+    font-size:16px;
+    font-family:roboto;
 }
 .header-details h4{
 	margin:0 0 5px 0;
-	font-size:24px;
+	font-size:34px;
+	font-family:lora;
 }
 .header-details h4 span{
 	font-size:17px;
@@ -490,6 +532,8 @@ $this->registerCss('
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 12px;
+    font-family:roboto;
+    font-size:16px;
 }
 .inner-header-page .header-details ul li img{
     height: 16px;
@@ -535,7 +579,7 @@ $this->registerCss('
     background-color: #0395d8;
 }
 .header-details {
-    margin-top: 20px;
+    padding-left: 100px;
 }
 .inner-header-page .header-details li .star-rating {
     position: relative;
@@ -560,6 +604,12 @@ $this->registerCss('
 }
 .inner-header-page .header-details li .star-rating .fa.fill {
     color:#febe42;
+}
+.right-side-detail {
+	background-color: #fff;
+	padding: 37px 20px;
+	border-radius: 8px;
+    min-height:270px;
 }
 .right-side-detail ul {
     padding: 0;
@@ -861,6 +911,16 @@ ul.status-detail li>strong {
     .header-details {
         margin-top: 0px;
         display: inherit;
+        padding-left:0;
+        text-align:center;
+    }
+    .inner-header-page .freelance-image {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin: auto;
+        width: 160px;
+        height: 160px;
     }
 }
 @media screen and (max-width: 991px) and (min-width: 768px) {

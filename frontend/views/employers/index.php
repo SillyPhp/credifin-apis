@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
@@ -9,19 +9,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="header-content">
-                        <!--                        <div class="vertically-center">-->
-                        <!--                            <div class="main-tagline">Want to attract top talent ?</div>-->
-                        <!--                            <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &-->
-                        <!--                                Save Time On Hiring Candidates.-->
-                        <!--                            </div>-->
-                        <!--                            <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>-->
-                        <!--                            <div class="main-bttn">-->
-                        <!--                                <a href="/signup/organization" class="button2">Create Account-->
-                        <!--                                    <span><i class="fas fa-arrow-right"></i></span> </a>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-                    </div>
+                    <div class="header-content"></div>
                 </div>
             </div>
         </div>
@@ -34,39 +22,6 @@ if (Yii::$app->user->isGuest) {
     ]);
 } ?>
 
-    <!--    <section class="showcase">-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="showcase-heading">-->
-    <!--                        <span>Showcase Your employer brand</span>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                </div>-->
-    <!--                <div class="row">-->
-    <!--                <div class="showcase-subparts">-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/create-profile.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Create Company Profile</span></div>-->
-    <!--                    </div>-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/hiring.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Hiring Posters</span></div>-->
-    <!--                    </div>-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/responsive.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -110,6 +65,11 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/safety-signs')?>
+    <?php
+        echo $this->render('/widgets/e-campus')
+    ?>
+
     <section class="great-bg">
         <div class="container">
             <div class="row">
@@ -203,6 +163,7 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
+
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
@@ -233,6 +194,46 @@ if (Yii::$app->user->isGuest) {
     <section>
         <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
+
+    <Section class="information">
+        <div class="box-parent row">
+            <div class="bolls">
+                <div class="boll1 bol2"></div>
+                <div class="boll2 bol2"></div>
+                <div class="boll3 bol"></div>
+                <div class="boll4 bol"></div>
+                <div class="boll5 bol2"></div>
+                <div class="boll6 bol2"></div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">50 +</div>
+                    <div class="j-name">Colleges</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">10k +</div>
+                    <div class="j-name">Freshers</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">5k +</div>
+                    <div class="j-name">Experienced candidates</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">20k +</div>
+                    <div class="j-name">Internship Candidates</div>
+                </div>
+            </div>
+        </div>
+    </Section>
 
     <section class="emp-back">
         <div class="container">
@@ -330,7 +331,7 @@ if (Yii::$app->user->isGuest) {
         </div>
     </section>
 
-<?= $this->render('/widgets/companies-with-us'); ?>
+<?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [
     'feedbackFormModel' => $feedbackFormModel,
@@ -339,6 +340,84 @@ if (Yii::$app->user->isGuest) {
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.box-parent {
+    background:#ff7803;
+    border-radius: 8px;
+    padding: 90px 50px;
+    overflow:hidden;
+    margin: 20px;
+}
+.jobs-content {
+    text-align: left;
+    border-left: 4px solid #fff;
+    padding-left: 20px;
+}
+.j-count{
+    font-size:40px;
+    color:#fff;
+    font-weight: 700;
+    font-family: roboto;
+}
+.j-name{
+    font-size:23px;
+    color:#fff;
+    font-weight: 300;
+    font-family: roboto;
+}
+@media (max-width:768px){
+    .box-parent{padding:20px 50px !important;}
+    .jobs-content{margin-bottom:10px;}
+}
+.bolls{position:relative;}
+.bol{
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    background: #ff8821;
+    border-radius: 50%;
+}
+.bol2{
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    background: #ff8821;
+    border-radius: 50%;
+}
+.boll1 {
+    top: -100px;
+    left: -56px;
+}
+.boll2 {
+    left: 171px;
+    top: 164px;
+}
+.boll3 {
+    left: 371px;
+    top: -25px;
+}
+.boll4 {
+    right: 1px;
+    top: 76px;
+}
+.boll5 {
+    right: 195px;
+    top: 18px;
+}
+.boll6 {
+    right: -69px;
+    bottom: 12px;
+}
+@media (max-width:415px){
+.boll5 {
+    right: 159px;
+    top: 305px;
+}
+.boll6 {
+    left: 205px;
+    top: 415px;
+}
+}
+
 .emp-main {
     text-align:center;
     margin: 0px 0px 30px 0px;
@@ -483,7 +562,7 @@ $this->registerCss('
 }
 .hwn-icon img{
     width:100%;
-    height:100%;
+//    height:100%;
 }
 .hwn-title{
     margin-top:20px;

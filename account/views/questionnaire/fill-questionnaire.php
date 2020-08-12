@@ -189,10 +189,12 @@ JS;
 $this->registerJs($script);
 $this->registerCss('
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/qn-bg.png") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-position: center;
+    background-position: bottom;
+    background-size: cover;
+    
 }
 .layer-overlay.overlay-white-9::before {
     background-color: rgba(255, 255, 255, 0.49);
