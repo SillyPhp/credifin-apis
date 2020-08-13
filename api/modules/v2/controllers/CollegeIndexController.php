@@ -518,6 +518,7 @@ class CollegeIndexController extends ApiBaseController
                 ->select([
                     'a.application_enc_id',
                     'a.slug',
+                    'a.status',
                     'a.last_date',
                     'a.joining_date',
                     'b.employer_application_enc_id',
@@ -573,7 +574,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['applicationTypeEnc z'])
                 ->where([
                     'a.is_deleted' => 0,
-                    'a.status' => 'Active',
+//                    'a.status' => 'Active',
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
                     'z.name' => $type,
@@ -602,7 +603,7 @@ class CollegeIndexController extends ApiBaseController
                 $data['college_enc_id'] = $j['college_enc_id'];
                 $data['is_college_approved'] = $j['is_college_approved'];
                 $data['last_date'] = $j['last_date'];
-                if ($j['last_date'] < date('Y-m-d')) {
+                if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;
                 } else {
                     $data['is_closed'] = false;
