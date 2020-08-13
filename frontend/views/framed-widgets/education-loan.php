@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var college_id = "' .$wid. '"', \yii\web\View::POS_HEAD);
 ?>
-<script id="context" type="text/javascript" src="https://sandbox-payments.open.money/layer"></script>
+<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section class="bg-blue">
     <div class="sign-up-details bg-white" id="sd">
         <div class="row">
