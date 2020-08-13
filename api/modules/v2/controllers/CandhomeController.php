@@ -42,6 +42,7 @@ class CandhomeController extends ApiBaseController
                 'get-data' => ['POST', 'OPTIONS'],
                 'applied-applications' => ['POST', 'OPTIONS'],
                 'all-notes' => ['POST', 'OPTIONS'],
+                'get-course-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1015,6 +1016,31 @@ class CandhomeController extends ApiBaseController
         }
     }
 
+    public function actionGetCourseList()
+    {
+        $params= Yii::$app->request->post();
+        if ($params['id'])
+        {
+            $courses = CollegeCourses::find()
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }], false)
+                ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
+                ->groupBy(['a.course_name'])
+                ->asArray()
+                ->all();
+            if ($courses) {
+                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        }else{
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 //    public function actionGetCompanies()
 //    {
 //        $q = Organizations::find()

@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
@@ -15,6 +14,7 @@ use Yii;
  * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
  * @property double $annual_income
  * @property string $pan_number co borrower pan card number
+ * @property int $aadhaar_number
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  *
@@ -37,9 +37,9 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'created_by', 'created_on'], 'required'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'aadhaar_number', 'created_on'], 'required'],
             [['relation'], 'string'],
-            [['employment_type'], 'integer'],
+            [['employment_type', 'aadhaar_number'], 'integer'],
             [['annual_income'], 'number'],
             [['created_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'created_by'], 'string', 'max' => 100],
@@ -48,6 +48,10 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
