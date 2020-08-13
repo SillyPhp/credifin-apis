@@ -134,7 +134,7 @@ class JobsController extends ApiBaseController
                 $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
             }
 
-            if ($data['last_date'] < date('Y-m-d')) {
+            if ($data['status'] != 'Active') {
                 $data['is_closed'] = true;
             } else {
                 $data['is_closed'] = false;
@@ -283,6 +283,7 @@ class JobsController extends ApiBaseController
                 'l.icon_png',
                 'a.type',
                 'a.slug',
+                'a.status',
                 'a.preferred_industry',
                 'a.interview_process_enc_id',
                 'a.timings_from',
