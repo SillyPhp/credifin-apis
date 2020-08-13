@@ -34,13 +34,28 @@ class LoanPurpose extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_purpose_enc_id', 'fee_component_enc_id', 'loan_app_enc_id', 'created_by'], 'required'],
+            [['loan_purpose_enc_id', 'fee_component_enc_id', 'loan_app_enc_id'], 'required'],
             [['created_on'], 'safe'],
             [['loan_purpose_enc_id', 'fee_component_enc_id', 'loan_app_enc_id', 'created_by'], 'string', 'max' => 100],
             [['loan_purpose_enc_id'], 'unique'],
             [['fee_component_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationFeeComponents::className(), 'targetAttribute' => ['fee_component_enc_id' => 'fee_component_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('dsbedutech', 'ID'),
+            'loan_purpose_enc_id' => Yii::t('dsbedutech', 'Loan Purpose Enc ID'),
+            'fee_component_enc_id' => Yii::t('dsbedutech', 'Fee Component Enc ID'),
+            'loan_app_enc_id' => Yii::t('dsbedutech', 'Loan App Enc ID'),
+            'created_by' => Yii::t('dsbedutech', 'Created By'),
+            'created_on' => Yii::t('dsbedutech', 'Created On'),
         ];
     }
 
