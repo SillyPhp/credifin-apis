@@ -72,6 +72,14 @@ class ReviewCardsMod
             {
                 $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
             }],false)
+//            ->joinWith(['organizationLabels ol' => function($x){
+//                $x->joinWith(['labelEnc le' => function($l){
+//                    $l->andWhere(['le.is_deleted' => 0]);
+//                }]);
+//                $x->select(['le.name label_name','le.icon','le.icon_location']);
+//                $x->andWhere(['ol.is_deleted' => 0,'ol.label_for' => 0]);
+//                $x->groupBy(['ol.org_label_enc_id']);
+//            }])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->groupBy(['a.organization_enc_id'])
@@ -146,6 +154,14 @@ class ReviewCardsMod
             {
                 $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
             }],false)
+//            ->joinWith(['unclaimOrganizationLabels ul' => function($x){
+//                $x->joinWith(['labelEnc le' => function($le){
+//                    $le->andWhere(['le.is_deleted' => 0]);
+//                }]);
+//                $x->select(['le.name label_name','le.icon','le.icon_location']);
+//                $x->andWhere(['ul.is_deleted' => 0,'ul.label_for' => 0]);
+//                $x->groupBy(['ul.org_label_enc_id']);
+//            }])
             ->where(['a.is_deleted' => 0])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['a.is_featured'=>SORT_DESC,'a.created_on' => SORT_DESC]);

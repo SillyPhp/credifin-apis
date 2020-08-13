@@ -89,6 +89,7 @@ class OrganizationsController extends Controller
             }
             $options['limit'] = 27;
             $cards = $get->getAllCompanies($options);
+//            print_r($cards);die();
             if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
