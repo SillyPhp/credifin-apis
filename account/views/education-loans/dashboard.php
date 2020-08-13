@@ -701,7 +701,7 @@ tr{
     min-width:200px;
     max-width:200px;
 }
-.loanAction{
+.loanAction, .loanPurpos{
     min-width:180px;
     max-width:180px;
 }
