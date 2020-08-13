@@ -14,8 +14,6 @@ namespace common\models;
  *
  * @property Organizations $organizationEnc
  * @property Cities $locationEnc
- * @property Users $createdBy
- * @property Users $lastUpdatedBy
  */
 class OrganizationOtherDetails extends \yii\db\ActiveRecord
 {
@@ -39,8 +37,6 @@ class OrganizationOtherDetails extends \yii\db\ActiveRecord
             [['organization_other_details_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['location_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['location_enc_id' => 'city_enc_id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
@@ -60,19 +56,4 @@ class OrganizationOtherDetails extends \yii\db\ActiveRecord
         return $this->hasOne(Cities::className(), ['city_enc_id' => 'location_enc_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastUpdatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
-    }
 }

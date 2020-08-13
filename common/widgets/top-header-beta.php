@@ -260,7 +260,7 @@
                                             <a href="/account/preferences">My Preferences</a>
                                         </li>
                                         <li>
-                                            <a href="/account/resume-builder">Build Resume</a>
+                                            <a href="/account/resume-builder">Resume Builder</a>
                                         </li>
                                     </ul>
                                 </nav>

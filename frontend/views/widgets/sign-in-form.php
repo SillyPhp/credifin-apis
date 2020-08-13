@@ -36,13 +36,16 @@ use yii\bootstrap\ActiveForm;
                         ]);
                         ?>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group field-pass">
                         <?=
                         $loginForm->field($loginFormModel, 'password')->passwordInput([
                             'autocomplete' => 'off',
                             'placeholder' => $loginFormModel->getAttributeLabel('password'),
                         ]);
                         ?>
+                    </div>
+                    <div class="sign-up text-right">
+                        <a href="/forgot-password" class="sign-link text-right">Forgot Password?</a>
                     </div>
                     <div class="login-form" id="signInForm">
                         <div class="sign-btn">
@@ -59,6 +62,10 @@ use yii\bootstrap\ActiveForm;
 </section>
 <?php
 $this->registerCss('
+.field-pass, .field-pass *{
+    margin-top:0px;
+    margin-bottom:0px;
+}
 #signin-form input{
     border-radius:5px;
 }

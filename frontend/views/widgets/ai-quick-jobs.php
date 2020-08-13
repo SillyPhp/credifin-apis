@@ -11,7 +11,7 @@ use yii\helpers\Url;
         </div>
     </div>
     <div class="parent row">
-        <div class="col-md-4 col-sm-4">
+        <div class="col-md-3 col-sm-6">
             <div class="ai-job">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-jobs.png') ?>">
@@ -27,7 +27,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-sm-4">
+        <div class="col-md-3 col-sm-6">
             <div class="ai-job ai-quick">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
@@ -43,8 +43,8 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-sm-4">
-            <div class="ai-job">
+        <div class="col-md-3 col-sm-6">
+            <div class="ai-job ai-quick">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-jobs.png') ?>">
                 </div>
@@ -55,6 +55,20 @@ use yii\helpers\Url;
                         <li>fast recruitment process</li>
                         <li>post jobs directly from twitter</li>
                         <li>post on Empower Youth, hire on your own platform</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="ai-job">
+                <div class="ai-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
+                </div>
+                <div class="ai-point">
+                    <ul>
+                        <li>visit hundred of colleges just in a click</li>
+                        <li>most advanced recruiters process showcase your employer brand</li>
+                        <li>post all kind of job and opportunities</li>
                     </ul>
                 </div>
             </div>
@@ -80,7 +94,7 @@ $this->registerCss('
     margin-top: 90px !important;
 }
 .ai-job {
-    width: 68%;
+    width: 92%;
     margin: 0 auto;
     border: 1px solid #eee;
     box-shadow: 0px 0px 18px 0px #eee;
@@ -106,9 +120,10 @@ $this->registerCss('
 @media (max-width:992px){
 .ai-job{width:100%;}
 .ai-point > ul > li{font-size:13px;}
+.ai-quick {margin-top: 0px !important;margin-bottom:55px !important;)
 }
-@media (max-width:786px){
-.ai-job{width:100%;}
+@media (max-width:834px){
+.ai-job{width:75%;}
 .ai-point > ul > li{font-size:13px;}
 }
 @media (max-width:414px){
@@ -121,9 +136,6 @@ $this->registerCss('
 .ai-job{
     width:78%;
     margin-bottom:70px;
-}
-.ai-quick{
-    margin-top: 0px;
 }
 }
 @media (max-width:375px){

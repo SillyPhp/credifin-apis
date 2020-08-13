@@ -6,16 +6,18 @@ use yii\helpers\Url;
 
     <section>
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="widget-heading">
-                        <span><img src="" alt=""></span>
-                        <span>Prefered Jobs</span>
-                        <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
-                <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
-<!--                    <i class="fab fa-whatsapp-square"></i> Join Us-->
-                </a>
-            </span>
+            <div class="row" id="featured-head">
+                <div class="col-md-6 col-sm-8 col-xs-12">
+                    <h1 class="heading-style" id="prefer-heading">Prefered Jobs</h1>
+                </div>
+                <div class="col-md-6 col-sm-4 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/jobs'); ?> " class="btn btn-3" id="65af4d5a">
+                                <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,12 +33,13 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.widget-heading{
-    text-align:center;
-    font-size:25px;
-    padding-bottom:20px;
-    color:#333;
-    font-family: roboto;
+.widget-heading {
+	text-align: center;
+	font-size: 27px;
+	padding-bottom: 20px;
+	color: #333;
+	font-family: lora;
+	font-weight: 600;
 }
 .fj-wa a{
     font-size:18px;
@@ -71,16 +74,43 @@ $this->registerCss('
     padding:10px 10px;
     border:none;
 }
+.btn-for-job {
+	text-align: center;
+	margin: 15px 0 20px;
+}
+.btn-for-job a {
+	background: #fff;
+	color: #333;
+	padding: 8px 20px;
+	font-size: 20px;
+	border-radius: 4px;
+	text-transform: capitalize;
+	word-spacing: 2px;
+	border: 1px solid #000;
+	transition: all .3s;
+	font-family: roboto;
+}
+.btn-for-job a:hover {
+	background: #00a0e3;
+	color: #fff;
+	border: 1px solid #00a0e3;
+	box-shadow: 0 0 11px 5px #eee;
+}
 ');
 $script = <<<JS
 
  var x, lat, lng, city, state, country, geocoder, latlng, loc;
  $(document).ready(function() {
+     $('#featured-head').hide();
      getLocation();
  });
  function result() {
      loc = city + ', ' + state + ', ' + country;
      getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
+     // if(city != ""){
+     //    $('#prefer-heading').html('Jobs in ' + city);
+     //    $('#65af4d5a').prop('href','/jobs-in-' + city)
+     // }
  }
 function ipLookUp () {
     city = localStorage.getItem("city");
@@ -90,7 +120,6 @@ function ipLookUp () {
         result();
     } else {
         $.getJSON('https://ipapi.co/json', function(data){
-            console.error(data);
             city = data.city;
             state = data.region;
             country = data.country_name;
@@ -104,7 +133,6 @@ function getLocation() {
     } else {
         x = "Geolocation is not supported by this browser.";
         ipLookUp();
-        console.error(x);
     }
 }
 function showPosition(position) {
@@ -129,14 +157,12 @@ function showError(error) {
             break;
     }
     ipLookUp();
-    console.error(x);
 }
 function geocodeLatLng(lat, lng) {
     geocoder = new google.maps.Geocoder();
     latlng = new google.maps.LatLng(lat, lng);
     geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status === 'OK') {
-            console.log(results);
             for (var i = 0; i < results[0].address_components.length; i++) {
                 for (var b = 0; b < results[0].address_components[i].types.length; b++) {
                     switch (results[0].address_components[i].types[b]) {

@@ -4,73 +4,73 @@ use yii\helpers\Url;
 
 ?>
 <div class="row">
-<div class="col-md-12">
-    <div class="widget-row">
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box1 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
-                    <span class="count">10</span>
-                    <span class="box-text">New Leads</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box3 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">All Applications</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box6 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Accepted</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box4 mt box2set">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
-                    <span class="count">20</span>
-                    <span class="box-text">Pre Verification</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box5 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Under Process</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box7 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Sanctioned</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box7 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Disbursed</span>
-                </div>
-            </a>
+    <div class="col-md-12">
+        <div class="widget-row">
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box1 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
+                        <span class="count">10</span>
+                        <span class="box-text">New Leads</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box3 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">All Applications</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box6 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Accepted</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box4 mt box2set">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
+                        <span class="count">20</span>
+                        <span class="box-text">Pre Verification</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box5 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Under Process</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box7 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Sanctioned</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box7 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Disbursed</span>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-</div>
 </div>
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
@@ -136,7 +136,6 @@ use yii\helpers\Url;
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
                                             <th class="collegeName">College/University Name</th>
-                                            <th class="loanPurpos">Purpose Of Loan</th>
                                             <th class="startDate">Semester</th>
                                             <th class="endDate">Year</th>
                                             <th class="phoneNumber">Phone Number</th>
@@ -159,269 +158,79 @@ use yii\helpers\Url;
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                        <?php
+                                        if (!empty($loans)) {
+                                            foreach ($loans as $loan) {
+                                                ?>
+                                                <tr>
+                                                    <td><?= $loan['apply_date'] ?></td>
+                                                    <td class="actionColoum">
+                                                        <div class="dropdown">
+                                                            <button onclick="actionStats(this)" class="dropbtn"><i
+                                                                        class="fa fa-ellipsis-v"></i></button>
+                                                            <div class="dropdown-content myDropdown">
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="New Lead">New Lead
+                                                                </button>
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="Accepted">Accepted
+                                                                </button>
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="Pre Verification">Pre
+                                                                    Verification
+                                                                </button>
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="Under Process">Under
+                                                                    Process
+                                                                </button>
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="Sanctioned">Sanctioned
+                                                                </button>
+                                                                <button class="actionBtn"
+                                                                        onclick="nextRound(this)" value="Disbursed">Disbursed
+                                                                </button>
+                                                                <button class="actionBtn ab-last-btn"
+                                                                        onclick="nextRound(this)" value="Rejected">Reject
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <span class="currentState">New Lead</span>
+                                                        <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                                data-placement="top" title="Move to Next Phase">
+                                                            <i class="fa fa-arrow-circle-right"></i>
                                                         </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                                <button class="reconsider" onclick="reconsider()">Reconsider</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
-                                            <td>6</td>
-                                            <td>3</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                            .modal-content         </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
-                                            <td>6</td>
-                                            <td>3</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>Tuition Fee, Hostel, Bus Fee, Mess</td>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
+                                                        <button class="viewStatus" onclick="viewStatus()">View Status</button>
+                                                        <button class="reconsider" onclick="reconsider()">Reconsider</button>
+                                                    </td>
+                                                    <td><?= $loan['applicant_name'] ?></td>
+                                                    <td><?= $loan['amount'] ?></td>
+                                                    <td><?= $loan['degree'] ?></td>
+                                                    <td><?= $loan['course_name'] ?></td>
+                                                    <td><?= $loan['org_name'] ?></td>
+                                                    <td><?= $loan['semesters'] ?></td>
+                                                    <td><?= $loan['years'] ?></td>
+                                                    <td><?= $loan['phone'] ?></td>
+                                                    <td><?= $loan['email'] ?></td>
+                                                    <td><?= $loan['city'] ?></td>
+                                                    <td><?= $loan['gender'] ?></td>
+                                                    <td><?= date('d F Y', strtotime($loan['dob'])) ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['annual_income'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['annual_income'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['annual_income'] ?></td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>

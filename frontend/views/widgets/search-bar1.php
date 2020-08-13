@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12">
     <div class="overlay-white-9">
@@ -222,24 +223,27 @@ $this->registerCss('
     }
 }
 ');
-$script = <<<JS
-var type = '$type';
+$script = <<< JS
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
-  var cname = $('#cities').val();
-  var kname = $('#keywords').val();
-  if (cname&&kname)
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname =="" && kname =="")
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type+'-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/jobs/list');
       }
-  else if (cname)
+  if (cname&&kname)  
       {
-          window.location.assign('/'+type+'-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname) 
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (kname)
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type);
-      }
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      } 
 })     
 var searchelem = document.getElementById("search_preview");    
 var getParams = function (url) {
@@ -288,6 +292,7 @@ $('#cities').typeahead(null, {
   source: city,
    limit: 15,
    hint:false,
+   cache:true,
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {

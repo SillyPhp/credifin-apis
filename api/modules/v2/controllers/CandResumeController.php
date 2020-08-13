@@ -2,10 +2,7 @@
 
 namespace api\modules\v2\controllers;
 
-use common\models\Cities;
 use common\models\Skills;
-use common\models\User;
-use common\models\UserAccessTokens;
 use common\models\UserEducation;
 use common\models\Users;
 use common\models\UserSkills;
@@ -43,7 +40,7 @@ class CandResumeController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://127.0.0.1:5500'],
+                'Origin' => ['https://www.myecampus.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
@@ -65,7 +62,7 @@ class CandResumeController extends ApiBaseController
                 ->one();
 
             $users->description = $about;
-            $users->last_updated_on = Date('Y-m-d H:i:a');
+            $users->last_updated_on = date('Y-m-d H:i:s');
             if ($users->update()) {
                 return $this->response(200, ['status' => 200]);
             } else {

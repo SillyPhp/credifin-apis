@@ -17,6 +17,10 @@ return [
         'v1' => [
             'basePath' => '@api/modules/v1',
             'class' => 'api\modules\v1\Module'
+        ],
+        'v3' => [
+            'basePath' => '@api/modules/v3',
+            'class' => 'api\modules\v3\Module'
         ]
     ],
     'components' => [

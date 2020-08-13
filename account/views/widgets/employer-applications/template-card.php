@@ -24,25 +24,15 @@ if (!empty($total_processes)) {
                             <?php
                             if($type == "Internships") {
                                 ?>
-                            <div class="rt-bttns">
-                                <a class="clone-bttn set-right-align two" href="<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>">
-                                    <i class="fa fa-files-o"></i>
-                                </a>
-                            </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/internships/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/internship-template.png'); ?>">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                    <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
                             } else{
                                 ?>
-                                <div class="rt-bttns">
-                                    <a class="clone-bttn set-right-align two" href="<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>">
-                                        <i class="fa fa-files-o"></i>
-                                    </a>
-                                </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/jobs/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-template.png'); ?>">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                    <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
@@ -113,6 +103,9 @@ $script = <<<JS
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.profile_img{
+height:90px;
+}
 .click {
 font-size: 33px;
     color: rgba(0,0,0,.5);
@@ -212,3 +205,7 @@ width: fit-content;
 	opacity: 1;
 }
 ");
+$script = <<<js
+$('[data-toggle="tooltip"]').tooltip();
+js;
+$this->registerJs($script);

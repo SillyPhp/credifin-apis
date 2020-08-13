@@ -31,6 +31,7 @@ class BlogsController extends ApiBaseController
             'except' => [
                 'blogs-home',
                 'post-details',
+                'get-blog-parent-comments',
                 'get-blog-child-comments',
                 'blog-list',
                 'get-posts-by-tag'
@@ -43,6 +44,7 @@ class BlogsController extends ApiBaseController
                 'blogs-home' => ['POST'],
                 'post-details' => ['POST'],
                 'blog-list' => ['POST'],
+                'get-blog-parent-comments' => ['POST'],
                 'get-blog-child-comments' => ['POST'],
                 'save-parent-comment' => ['POST'],
                 'save-child-comment' => ['POST'],
@@ -79,7 +81,7 @@ class BlogsController extends ApiBaseController
 
         $popular_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -100,7 +102,7 @@ class BlogsController extends ApiBaseController
 
         $whats_new_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -120,7 +122,7 @@ class BlogsController extends ApiBaseController
 
         $trending_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -160,8 +162,8 @@ class BlogsController extends ApiBaseController
         }
 
         $post = Posts::find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image',
-                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END user_image'])
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image',
+                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END user_image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->select(['b.post_enc_id', 'b.category_enc_id']);
                 $b->joinWith(['categoryEnc c' => function ($y) {
@@ -185,39 +187,9 @@ class BlogsController extends ApiBaseController
             ->one();
 
 
-        $comments = PostComments::find()
-            ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
-            ->joinWith(['userEnc b'], false)
-            ->where(['a.reply_to' => NULL])
-            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $i = 0;
-        foreach ($comments as $r) {
-            $a = PostComments::find()
-                ->where(['reply_to' => $r['comment_enc_id']])
-                ->andWhere(['post_enc_id' => $post['post_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-            if ($a) {
-                $comments[$i]['hasChild'] = true;
-            } else {
-                $comments[$i]['hasChild'] = false;
-            }
-            $i++;
-        }
-
-        if (!empty($comments)) {
-            $post['comments'] = $comments;
-        }
-
         if ($post) {
             $similar_posts = Posts::find()->alias('a')
-                ->select(['a.title', 'a.slug', 'a.excerpt','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+                ->select(['a.title', 'a.slug', 'a.excerpt', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
                 ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
                 ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
@@ -257,14 +229,14 @@ class BlogsController extends ApiBaseController
             $page = 1;
         }
 
-        if($params['limit']){
+        if ($params['limit']) {
             $limit = (int)$params['limit'];
-        }else{
+        } else {
             $limit = 3;
         }
 
         $posts = Posts::find()->alias('a')
-            ->select(['a.title','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image', 'a.slug'])
+            ->select(['a.title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image', 'a.slug'])
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
@@ -323,6 +295,56 @@ class BlogsController extends ApiBaseController
 
     }
 
+    public function actionGetBlogParentComments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $post = Posts::find()
+            ->where(['slug' => $slug])
+            ->andWhere(['status' => 'Active'])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+
+        $comments = PostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.reply_to' => NULL])
+            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        foreach ($comments as $r) {
+            $a = PostComments::find()
+                ->where(['reply_to' => $r['comment_enc_id']])
+                ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
+            if ($a) {
+                $comments[$i]['hasChild'] = true;
+            } else {
+                $comments[$i]['hasChild'] = false;
+            }
+            $i++;
+        }
+
+        if (!empty($comments)) {
+            return $this->response(200, $comments);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
     public function actionSaveParentComment()
     {
         $params = Yii::$app->request->post();
@@ -348,10 +370,11 @@ class BlogsController extends ApiBaseController
             ->andWhere(['is_deleted' => 0])
             ->one();
 
-        if ($this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
-            return $this->response(200,'saved');
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
+            $result = $this->getComment($data->comment_enc_id,$data->post_enc_id);
+            return $this->response(200, $result);
         } else {
-            return $this->response(500,'an error occured');
+            return $this->response(500, 'an error occurred');
         }
 
 
@@ -382,17 +405,18 @@ class BlogsController extends ApiBaseController
 
         $current_user = $this->userId();
         $current_user = $current_user->user_enc_id;
-            $post = Posts::find()
-                ->where(['slug' => $slug])
-                ->andWhere(['status' => 'Active'])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
+        $post = Posts::find()
+            ->where(['slug' => $slug])
+            ->andWhere(['status' => 'Active'])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
 
-            if ($this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
-               return $this->response(200,'save');
-            } else {
-                return $this->response(500,'an error occurred');
-            }
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
+            $result = $this->getComment($data->comment_enc_id,$data->post_enc_id);
+            return $this->response(200, $result);
+        } else {
+            return $this->response(500, 'an error occurred');
+        }
     }
 
     private function saveComment($comment, $post_enc_id, $current_user, $reply_id = NULL)
@@ -407,7 +431,7 @@ class BlogsController extends ApiBaseController
         $commentModel->user_enc_id = $current_user;
         $commentModel->created_on = date('Y-m-d H:i:s');
         if ($commentModel->save()) {
-            return true;
+            return $commentModel;
         } else {
             return false;
         }
@@ -429,15 +453,15 @@ class BlogsController extends ApiBaseController
             $page = 1;
         }
 
-        if($params['limit']){
+        if ($params['limit']) {
             $limit = (int)$params['limit'];
-        }else{
+        } else {
             $limit = 3;
         }
 
         $postsModel = new Posts();
         $posts = $postsModel->find()->alias('a')
-            ->select(['a.slug','a.title','a.excerpt','a.description','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.slug', 'a.title', 'a.excerpt', 'a.description', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
@@ -448,10 +472,24 @@ class BlogsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        if($posts){
-            return $this->response(200,$posts);
-        }else{
-            return $this->response(404,'not found');
+        if ($posts) {
+            return $this->response(200, $posts);
+        } else {
+            return $this->response(404, 'not found');
         }
+    }
+
+    public function getComment($comment_id, $post_id)
+    {
+        $comments = PostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.post_enc_id' => $post_id, 'a.comment_enc_id' => $comment_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        return $comments;
     }
 }

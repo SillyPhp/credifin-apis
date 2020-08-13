@@ -475,7 +475,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                             {{name}}
                                         </div>
                                         <div class="totalResumes">
-                                            Resumes:
+                                            {{Resumes}}
                                         </div>
                                     </a>
                                 </div>
