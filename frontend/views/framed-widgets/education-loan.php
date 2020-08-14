@@ -983,20 +983,21 @@ function ajaxSubmit(id)
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-                        swal({
-                        title: "",
-                        text: "Your Application Is Processing Please Wait For Application Fee To Process ...",
-                        type:'warning',
-                        showCancelButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Click To Proceed For Payment",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             processPayment(ptoken,loan_id,education_loan_id);
-                         }
-                        );
+//                        swal({
+//                        title: "",
+//                        text: "Your Application Is Processing Please Wait For Application Fee To Process ...",
+//                        type:'warning',
+//                        showCancelButton: false,  
+//                        confirmButtonClass: "btn-primary",
+//                        confirmButtonText: "Click To Proceed For Payment",
+//                        closeOnConfirm: true, 
+//                        closeOnCancel: true
+//                         },
+//                            function (isConfirm) { 
+//                             processPayment(ptoken,loan_id,education_loan_id);
+//                         }
+//                        );
+                        processPayment(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
                             title:"Error",
