@@ -21,8 +21,8 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['purpose','loan_type_enc_id','college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants'], 'safe'],
+            [['purpose','college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['co_applicants','loan_type_enc_id'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
