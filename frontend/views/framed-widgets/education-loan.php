@@ -693,7 +693,7 @@ $script = <<<JS
     
     function getFeeComponents(id) {
         $.ajax({
-            url : 'https://empoweryouth.com/api/v3/education-loan/get-fee-components',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -938,7 +938,7 @@ function ajaxSubmit(id)
       purpose.push(this.value);
     });
     $.ajax({
-            url : 'https://empoweryouth.com/api/v3/education-loan/save-widget-application',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/save-widget-application',
             method : 'POST',
             data : {
                 id:id,
@@ -1056,7 +1056,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
 {
     $.ajax({
-            url : 'https://empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
             data : {
               loan_payment_id:education_loan_id,
