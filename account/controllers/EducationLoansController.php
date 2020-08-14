@@ -86,4 +86,8 @@ class EducationLoansController extends Controller
             'loans' => $loans
         ]);
     }
+
+    public function actionCandidateDashboard(){
+        return $this->render('candidate-dashboard');
+    }
 }
