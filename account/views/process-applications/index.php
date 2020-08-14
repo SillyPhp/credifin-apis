@@ -178,15 +178,19 @@ use yii\widgets\Pjax;
 <!--                                            <a href="#">Request to Complete Profile</a>-->
                                         </div>
                                         <ul>
-                                            <!--                                        <li>-->
-                                            <!--                                            <a href="#">-->
-                                            <!--                                                <img src="-->
-                                            <!--                                            <= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?>"/>-->
-                                            <!--                                            </a>-->
-                                            <!--                                        </li>-->
+<!--                                            <li>-->
+<!--                                                <a href="#">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+<!--                                                </a>-->
+<!--                                            </li>-->
+<!--                                            <li>-->
+<!--                                                <a href="#" class="tt" title="Schedule Interview --><?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
+<!--                                                </a>-->
+<!--                                            </li>-->
                                             <li>
-                                                <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>"
-                                                   data-key="<?= $arr['name']; ?>">
+                                                <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
+                                                   data-key="<?= $arr['name']; ?>" title="Chat Now" data-toggle="tooltip">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                                 </a>
                                             </li>
@@ -647,7 +651,7 @@ li{list-style: none;}
         margin-right: 0px;
         transform: rotateZ(90deg);
     }
-    .pr-process-tab li:last-child {
+    .pr-process-tab li:last-child { 
         border-bottom: 1px solid #ccc !important;
         border-radius: 0px;
     }
@@ -717,7 +721,7 @@ $(document).on('click', '.approve', function(e) {
                     hiring_process();
                     utilities.initials();
                     $('#'+listid).find('a').click();
-                  }, 1000)
+                  }, 100)
             } else {
                disable(btn);
                alert('something went wrong..');
@@ -747,7 +751,7 @@ $(document).on('click','.reject',function(e){
                 $.pjax.reload({container: '#pjax_process', async: false});
                   setTimeout(function() {
                     hiring_process();
-                  }, 1000)
+                  }, 100)
             }
             else {
                 alert('something went wrong..');

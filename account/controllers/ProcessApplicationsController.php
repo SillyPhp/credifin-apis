@@ -72,6 +72,7 @@ class ProcessApplicationsController extends Controller
                         }]);
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
+                    ->orderBy(['a.status' => SORT_ASC])
                     ->asArray()
                     ->all();
 

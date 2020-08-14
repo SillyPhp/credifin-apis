@@ -42,6 +42,7 @@ class CandhomeController extends ApiBaseController
                 'get-data' => ['POST', 'OPTIONS'],
                 'applied-applications' => ['POST', 'OPTIONS'],
                 'all-notes' => ['POST', 'OPTIONS'],
+                'get-course-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -372,6 +373,7 @@ class CandhomeController extends ApiBaseController
                     'a.current_round',
                     'g.name application_type',
                     'b.slug',
+                    'b.status',
                     'd.slug comp_slug',
                     'd.name organization_name',
                     'e2.name title',
@@ -394,7 +396,7 @@ class CandhomeController extends ApiBaseController
                 ->where([
                     'a.created_by' => $id,
                     'a.is_deleted' => 0,
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'b.application_for' => [0, 2],
                     'd.is_erexx_approved' => 1,
@@ -416,6 +418,11 @@ class CandhomeController extends ApiBaseController
                     array_push($cities, $c['city_name']);
                 }
                 $applied[$i]['cities'] = implode(',', $cities);
+                if ($a['status'] != 'Active') {
+                    $applied[$i]['is_closed'] = true;
+                } else {
+                    $applied[$i]['is_closed'] = false;
+                }
                 $i++;
             }
 
@@ -929,7 +936,7 @@ class CandhomeController extends ApiBaseController
 
     private function interested($webinar_id, $user_id)
     {
-        $interest =  WebinarRegistrations::find()
+        $interest = WebinarRegistrations::find()
             ->select(['interest_status'])
             ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
             ->asArray()
@@ -1015,6 +1022,31 @@ class CandhomeController extends ApiBaseController
         }
     }
 
+    public function actionGetCourseList()
+    {
+        $params= Yii::$app->request->post();
+        if ($params['id'])
+        {
+            $courses = CollegeCourses::find()
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }], false)
+                ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
+                ->groupBy(['a.course_name'])
+                ->asArray()
+                ->all();
+            if ($courses) {
+                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        }else{
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 //    public function actionGetCompanies()
 //    {
 //        $q = Organizations::find()
