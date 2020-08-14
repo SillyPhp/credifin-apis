@@ -11,7 +11,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
-                        <span class="count">10</span>
+                        <span class="count"><?= $stats['new_leads'] ?></span>
                         <span class="box-text">New Leads</span>
                     </div>
                 </a>
@@ -20,7 +20,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['all_applications'] ?>+</span>
                         <span class="box-text">All Applications</span>
                     </div>
                 </a>
@@ -29,7 +29,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box6 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['accepted'] ?>+</span>
                         <span class="box-text">Accepted</span>
                     </div>
                 </a>
@@ -38,7 +38,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box4 mt box2set">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
-                        <span class="count">20</span>
+                        <span class="count"><?= $stats['pre_verification'] ?></span>
                         <span class="box-text">Pre Verification</span>
                     </div>
                 </a>
@@ -47,7 +47,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['under_process'] ?>+</span>
                         <span class="box-text">Under Process</span>
                     </div>
                 </a>
@@ -56,7 +56,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['sanctioned'] ?>+</span>
                         <span class="box-text">Sanctioned</span>
                     </div>
                 </a>
@@ -65,7 +65,7 @@ use yii\widgets\Pjax;
                 <a href="#">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['disbursed'] ?>+</span>
                         <span class="box-text">Disbursed</span>
                     </div>
                 </a>
@@ -90,12 +90,12 @@ use yii\widgets\Pjax;
                     <?php
                     $filterList = [
                         'all' => 'All',
-                        4 => 'New Lead',
-                        5 => 'Accepted',
-                        6 => 'Pre Verification',
-                        7 => 'Under Process',
-                        8 => 'Sanctioned',
-                        9 => 'Disbursed',
+                        0 => 'New Lead',
+                        1 => 'Accepted',
+                        2 => 'Pre Verification',
+                        3 => 'Under Process',
+                        4 => 'Sanctioned',
+                        5 => 'Disbursed',
                         10 => 'Rejected',
                     ];
                     ?>
@@ -160,12 +160,12 @@ use yii\widgets\Pjax;
                                         <?php
                                         if (!empty($loans)) {
                                             $dropDowns = [
-                                                4 => 'New Lead',
-                                                5 => 'Accepted',
-                                                6 => 'Pre Verification',
-                                                7 => 'Under Process',
-                                                8 => 'Sanctioned',
-                                                9 => 'Disbursed',
+                                                0 => 'New Lead',
+                                                1 => 'Accepted',
+                                                2 => 'Pre Verification',
+                                                3 => 'Under Process',
+                                                4 => 'Sanctioned',
+                                                5 => 'Disbursed',
                                                 10 => 'Reject',
                                             ];
                                             foreach ($loans as $loan) {
@@ -175,7 +175,7 @@ use yii\widgets\Pjax;
                                                     <td class="actionColoum">
                                                         <div class="dropdown">
                                                             <button onclick="actionStats(this)"
-                                                                    style="display: <?= (in_array($loan['status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                    style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
                                                                     class="dropbtn"><i
                                                                         class="fa fa-ellipsis-v"></i></button>
                                                             <div class="dropdown-content myDropdown">
@@ -192,21 +192,21 @@ use yii\widgets\Pjax;
                                                                 ?>
                                                             </div>
                                                         </div>
-                                                        <span class="currentState"><?= $loan['status'] ?></span>
+                                                        <span class="currentState"><?= $loan['loan_status'] ?></span>
                                                         <button class="nextState" onclick="nextPhase(this)"
-                                                                style="display: <?= (in_array($loan['status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
                                                                 data-toggle="tooltip"
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
                                                                 data-placement="top" title="Move to Next Phase">
                                                             <i class="fa fa-arrow-circle-right"></i>
                                                         </button>
                                                         <button class="viewStatus"
-                                                                style="display: <?= ($loan['status'] == 'Disbursed') ? 'block' : 'none' ?>"
+                                                                style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
                                                                 onclick="viewStatus()">View Status
                                                         </button>
                                                         <button class="reconsider"
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
-                                                                style="display: <?= ($loan['status'] == 'Reject') ? 'block' : 'none' ?>"
+                                                                style="display: <?= ($loan['loan_status'] == 'Reject') ? 'block' : 'none' ?>"
                                                                 onclick="reconsider(this)">Reconsider
                                                         </button>
                                                     </td>
@@ -966,7 +966,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function reconsider(e) {
-        var status = 4;
+        var status = 0;
         var id = e.getAttribute('data-key');
         let parElement = e.closest('.actionColoum');
         let currentState = parElement.querySelector('.currentState');
