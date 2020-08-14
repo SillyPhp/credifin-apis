@@ -28,9 +28,11 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_by
  * @property string $updated_on
- * @property int $status 0 as Pending, 1 as Approved, 2 reject,4 inactive
+ * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
+ * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
  *
  * @property EducationLoanPayments[] $educationLoanPayments
+ * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -58,7 +60,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'aadhaar_number', 'source', 'created_on'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
-            [['years', 'semesters', 'gender', 'aadhaar_number', 'status'], 'integer'],
+            [['years', 'semesters', 'gender', 'aadhaar_number', 'status', 'loan_status'], 'integer'],
             [['amount'], 'number'],
             [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
@@ -76,6 +78,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getEducationLoanPayments()
     {
         return $this->hasMany(EducationLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationLogs()
+    {
+        return $this->hasMany(LoanApplicationLogs::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
