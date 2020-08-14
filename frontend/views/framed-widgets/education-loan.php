@@ -1,6 +1,19 @@
 <?php
 use yii\helpers\Url;
+if (Yii::$app->params->paymentGateways->mec->icici) {
+    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+    if ($configuration->mode === "production") {
+        $access_key = $configuration->credentials->production->access_key;
+        $secret_key = $configuration->credentials->production->secret_key;
+        $url = $configuration->credentials->production->url;
+    } else {
+        $access_key = $configuration->credentials->sandbox->access_key;
+        $secret_key = $configuration->credentials->sandbox->secret_key;
+        $url = $configuration->credentials->sandbox->url;
+    }
+}
 Yii::$app->view->registerJs('var college_id = "' .$wid. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section class="bg-blue">
@@ -1011,8 +1024,8 @@ function ajaxSubmit(id)
 function processPayment(ptoken,loan_id,education_loan_id)
 {
     Layer.checkout({ 
-        token: ptoken, 
-        accesskey: "cbfba3d0-ba9e-11ea-8e90-4384c267ea22"
+        token: ptoken,
+        accesskey: access_key
     }, 
     function(response) {
           // response.payment_token_id
