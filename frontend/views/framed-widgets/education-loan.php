@@ -675,7 +675,7 @@ $script = <<<JS
     getFeeComponents(id = college_id); 
     function getCourseList(id) {
         $.ajax({
-            url : 'https://empoweryouth.com/api/v2/candhome/get-course-list',
+            url : 'http://www.empoweryouth.com/api/v3/education-loan/get-course-list',
             method : 'POST',
             data : {id: id},
             success : function(res) {
