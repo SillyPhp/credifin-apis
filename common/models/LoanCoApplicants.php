@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
@@ -38,7 +37,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'aadhaar_number', 'created_by', 'created_on'], 'required'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'aadhaar_number', 'created_on'], 'required'],
             [['relation'], 'string'],
             [['employment_type', 'aadhaar_number'], 'integer'],
             [['annual_income'], 'number'],
@@ -49,6 +48,10 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery

@@ -38,16 +38,6 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-12 padd-20" id="countryName">
-                                    <div class="form-group">
-                                        <label for="duration" class="input-group-text">
-                                            Enter Country Name
-                                        </label>
-                                        <input type="text" class="form-control" id="country"
-                                               placeholder="Enter Country Name">
-                                    </div>
-                                </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect02">
@@ -55,6 +45,15 @@ use yii\helpers\Url;
                                         </label>
                                         <input type="text" id="cities" name="location" class="form-control"
                                                autocomplete="off" placeholder="City or State"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20" id="countryName">
+                                    <div class="form-group">
+                                        <label for="duration" class="input-group-text">
+                                            College Name
+                                        </label>
+                                        <input type="text" class="form-control" id="country"
+                                               placeholder="Enter College Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -457,6 +456,9 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.padd-20{
+    padding-bottom: 10px;
+}
 .loan-benefits li{
     color:#f3f3f2;
     font-size: 16px;    
