@@ -14,6 +14,7 @@ use Yii;
  * @property string $created_by
  * @property string $last_updated_on
  * @property string $last_updated_by
+ * @property int $interest_status 1 interested,2 not interested,3 attending
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Failed
  * @property int $is_deleted 0 as False, 1 as True
  *
@@ -39,7 +40,7 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
         return [
             [['register_enc_id', 'webinar_enc_id', 'created_by', 'status'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['status', 'is_deleted'], 'integer'],
+            [['interest_status', 'status', 'is_deleted'], 'integer'],
             [['register_enc_id', 'webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['register_enc_id'], 'unique'],
             [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinars::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],

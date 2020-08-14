@@ -67,6 +67,7 @@ class CoursesController extends Controller
             $keyword = Yii::$app->request->post('keyword');
             $page = Yii::$app->request->post('page');
             $page_size = Yii::$app->request->post('limit');
+
             if (!$page_size || $page_size == "") {
                 $page_size = 21;
             }

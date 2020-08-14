@@ -234,13 +234,6 @@ if (!Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
-                            <?= $this->render("/widgets/square_ads"); ?>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="row">
@@ -285,12 +278,12 @@ if ($settings["showNewPositionsWidget"]):
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.desc strong
+.desc strong, .desc h1,.desc h2 
 {
-font-size: 15px;
-    font-weight: 500;
-    font-family: roboto;
-    color: #00a0e3;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    font-family: roboto !important;
+    color: #00a0e3 !important;
 }
 .duties-tab a
  {
@@ -678,6 +671,7 @@ $this->registerCss("
         width: 115px;
         height: 115px;
         background-color:#fff;
+        object-fit: contain;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}

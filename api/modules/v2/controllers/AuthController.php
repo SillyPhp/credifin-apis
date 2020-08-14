@@ -612,6 +612,7 @@ class AuthController extends ApiBaseController
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
         } else {
+            $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
         }
 

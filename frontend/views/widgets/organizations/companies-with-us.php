@@ -15,12 +15,16 @@ switch ([$controller_name, $action_name]) {
         $field = 'is_featured';
 }
 $companies = Organizations::find()
-    ->where(['not', ['logo' => null]])
-    ->andWhere(['not', ['logo' => ""]])
-    ->andWhere(['status' => 'Active', 'is_deleted' => 0, $field => 1])
+    ->alias('z')
+    ->joinWith(['businessActivityEnc a'],false)
+    ->andWhere(['not', ['z.logo' => null]])
+    ->andWhere(['not', ['z.logo' => ""]])
+    ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0, 'z.'.$field => 1])
+    ->andWhere(['not', ['in', 'a.business_activity', ['College', 'Educational Institute', 'School']]])
     ->orderby(new Expression('rand()'))
     ->limit(12)
     ->all();
+
 ?>
     <section class="companies">
         <div class="container">
@@ -57,9 +61,12 @@ $companies = Organizations::find()
     </section>
 <?php
 $this->registercss('
+.footer{
+    margin-top: 0px !important;
+}
 .companies {
     background-color: #f5f5f5;
-    padding: 10px 0 30px;
+    padding: 20px 0 30px;
 }
 .ac-subheading{
     margin-top:-15px;
