@@ -21,12 +21,12 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['purpose', 'college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['purpose','loan_type_enc_id','college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
             [['co_applicants'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
-            [['applicant_name', 'college_course_enc_id', 'applicant_current_city', 'email'], 'string', 'max' => 100],
+            [['applicant_name','loan_type_enc_id','college_course_enc_id', 'applicant_current_city', 'email'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
         ];
     }
@@ -45,10 +45,8 @@ class LoanApplicationsForm extends LoanApplications
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $this->loan_app_enc_id = $utilitiesModel->encrypt();
             $this->college_enc_id = $college_id;
-//            if (!empty($application_fee)) {
-//                $this->status = 4;
-//            }
             $this->source = $source;
+            $this->loan_type_enc_id = (($loan_type)?$loan_type:null);
             $this->created_by = $userId;
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
