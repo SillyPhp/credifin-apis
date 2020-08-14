@@ -147,7 +147,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
