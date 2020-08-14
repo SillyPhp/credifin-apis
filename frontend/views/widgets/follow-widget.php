@@ -35,7 +35,7 @@ use yii\helpers\Url;
 <?php
 $this->registercss('
 .follow-us {
-	background-color: #f7f7f7;
+	background-color: #00a0e3;
 	padding: 5px 10px 10px;
 	border-radius: 8px;
 	margin-bottom: 8px;
@@ -46,6 +46,7 @@ $this->registercss('
 	font-size: 20px;
 	font-family: lora;
 	text-transform: capitalize;
+	color:#fff;
 }
 .follow-main {
 	display: flex;
@@ -55,7 +56,7 @@ $this->registercss('
 .fb, .tw, .ig {
 	text-align: center;
 	flex-basis: 50%;
-	background-color: #eee;
+	background-color: #fff;
 	margin: 0 5px 0 0;
 	transition: all .3s;
 	border-radius:4px;
