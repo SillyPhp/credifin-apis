@@ -54,15 +54,15 @@ class EducationLoansController extends Controller
             ->select(['a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date',
                 '(CASE
-                    WHEN a.status = "4" THEN "New Lead"
-                    WHEN a.status = "5" THEN "Accepted"
-                    WHEN a.status = "6" THEN "Pre Verification"
-                    WHEN a.status = "7" THEN "Under Process"
-                    WHEN a.status = "8" THEN "Sanctioned"
-                    WHEN a.status = "9" THEN "Disbursed"
-                    WHEN a.status = "10" THEN "Reject"
+                    WHEN a.loan_status = "0" THEN "New Lead"
+                    WHEN a.loan_status = "1" THEN "Accepted"
+                    WHEN a.loan_status = "2" THEN "Pre Verification"
+                    WHEN a.loan_status = "3" THEN "Under Process"
+                    WHEN a.loan_status = "4" THEN "Sanctioned"
+                    WHEN a.loan_status = "5" THEN "Disbursed"
+                    WHEN a.loan_status = "10" THEN "Reject"
                     ELSE "N/A"
-                END) as status',
+                END) as loan_status',
                 'a.applicant_name',
                 'a.amount',
                 'a.degree',
@@ -96,12 +96,31 @@ class EducationLoansController extends Controller
                 ]);
             }])
             ->where(['in', 'a.created_by', $studentIds])
-            ->andWhere(['>', 'a.status', 3])
+            ->andWhere(['a.status' => 1])
             ->asArray()
             ->all();
 
+        $stats = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id',
+                'COUNT(a.loan_app_enc_id) as all_applications',
+                'COUNT(CASE WHEN a.loan_status = "0" THEN 1 END) as new_leads',
+                'COUNT(CASE WHEN a.loan_status = "1" THEN 1 END) as accepted',
+                'COUNT(CASE WHEN a.loan_status = "2" THEN 1 END) as pre_verification',
+                'COUNT(CASE WHEN a.loan_status = "3" THEN 1 END) as under_process',
+                'COUNT(CASE WHEN a.loan_status = "4" THEN 1 END) as sanctioned',
+                'COUNT(CASE WHEN a.loan_status = "5" THEN 1 END) as disbursed',
+                'COUNT(CASE WHEN a.loan_status = "10" THEN 1 END) as rejected',
+            ])
+            ->where(['in', 'a.created_by', $studentIds])
+            ->andWhere(['a.status' => 1])
+            ->asArray()
+            ->one();
+
         return $this->render('dashboard', [
-            'loans' => $loans
+            'loans' => $loans,
+            'stats' => $stats
         ]);
     }
 
@@ -114,22 +133,22 @@ class EducationLoansController extends Controller
             $reconsider = Yii::$app->request->post('reconsider');
             switch ($status) {
                 case 'New Lead' :
-                    $status = 4;
+                    $status = 0;
                     break;
                 case 'Accepted' :
-                    $status = 5;
+                    $status = 1;
                     break;
                 case 'Pre Verification' :
-                    $status = 6;
+                    $status = 2;
                     break;
                 case 'Under Process' :
-                    $status = 7;
+                    $status = 3;
                     break;
                 case 'Sanctioned' :
-                    $status = 8;
+                    $status = 4;
                     break;
                 case 'Disbursed' :
-                    $status = 9;
+                    $status = 5;
                     break;
                 case 'Reject' :
                     $status = 10;
@@ -140,7 +159,7 @@ class EducationLoansController extends Controller
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
-                $model->status = $status;
+                $model->loan_status = $status;
                 $model->updated_by = Yii::$app->user->identity->user_enc_id;
                 $model->updated_on = date('Y-m-d H:i:s');
                 if (!$model->save()) {
@@ -158,7 +177,7 @@ class EducationLoansController extends Controller
                 $logModel->loan_app_enc_id = $id;
                 $logModel->created_by = Yii::$app->user->identity->user_enc_id;
                 $logModel->created_on = date('Y-m-d H:i:s');
-                $logModel->status = $status;
+                $logModel->loan_status = $status;
                 $logModel->is_reconsidered = $reconsider;
                 if (!$logModel->save()) {
                     $transaction->rollBack();
