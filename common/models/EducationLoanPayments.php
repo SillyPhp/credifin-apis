@@ -11,10 +11,10 @@ use Yii;
  * @property string $education_loan_payment_enc_id loan payment encrypted id
  * @property string $college_enc_id student college id
  * @property string $loan_app_enc_id loan application enc id
- * @property string $payment_token
- * @property int $payment_amount
+ * @property string $payment_token payment id
+ * @property double $payment_amount
  * @property double $payment_gst
- * @property string $payment_id payment token/id
+ * @property string $payment_id transaction id
  * @property string $payment_status payment status
  * @property string $created_by
  * @property string $created_on
@@ -42,8 +42,8 @@ class EducationLoanPayments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['education_loan_payment_enc_id', 'college_enc_id', 'loan_app_enc_id', 'payment_token', 'payment_amount', 'payment_gst', 'created_by'], 'required'],
-            [['payment_gst','payment_amount'], 'number'],
+            [['education_loan_payment_enc_id', 'college_enc_id', 'loan_app_enc_id', 'payment_token', 'payment_amount', 'payment_gst'], 'required'],
+            [['payment_amount', 'payment_gst'], 'number'],
             [['created_on', 'updated_on'], 'safe'],
             [['education_loan_payment_enc_id', 'college_enc_id', 'loan_app_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['education_loan_payment_enc_id'], 'unique'],
@@ -51,6 +51,28 @@ class EducationLoanPayments extends \yii\db\ActiveRecord
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('dsbedutech', 'ID'),
+            'education_loan_payment_enc_id' => Yii::t('dsbedutech', 'Education Loan Payment Enc ID'),
+            'college_enc_id' => Yii::t('dsbedutech', 'College Enc ID'),
+            'loan_app_enc_id' => Yii::t('dsbedutech', 'Loan App Enc ID'),
+            'payment_token' => Yii::t('dsbedutech', 'Payment Token'),
+            'payment_amount' => Yii::t('dsbedutech', 'Payment Amount'),
+            'payment_gst' => Yii::t('dsbedutech', 'Payment Gst'),
+            'payment_id' => Yii::t('dsbedutech', 'Payment ID'),
+            'payment_status' => Yii::t('dsbedutech', 'Payment Status'),
+            'created_by' => Yii::t('dsbedutech', 'Created By'),
+            'created_on' => Yii::t('dsbedutech', 'Created On'),
+            'updated_by' => Yii::t('dsbedutech', 'Updated By'),
+            'updated_on' => Yii::t('dsbedutech', 'Updated On'),
         ];
     }
 

@@ -475,6 +475,7 @@ class CollegeProfileController extends ApiBaseController
                 ->select([
                     'a.application_enc_id',
                     'a.slug',
+                    'a.status',
                     'a.last_date',
                     'a.joining_date',
                     'b.employer_application_enc_id',
@@ -537,7 +538,7 @@ class CollegeProfileController extends ApiBaseController
                 }])
                 ->where([
                     'a.is_deleted' => 0,
-                    'a.status' => 'Active',
+//                    'a.status' => 'Active',
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
@@ -694,7 +695,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
                 $data['salary'] = $j['salary'];
-                if ($j['last_date'] < date('Y-m-d')) {
+                if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;
                 } else {
                     $data['is_closed'] = false;
@@ -756,6 +757,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.employer_application_enc_id',
                     'a.is_college_approved',
                     'b.slug',
+                    'b.status',
                     'b.last_date',
                     'b.joining_date',
                     'm.fixed_wage as fixed_salary',
@@ -805,7 +807,7 @@ class CollegeProfileController extends ApiBaseController
                     'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.application_for' => [0, 2],
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1
@@ -903,7 +905,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['salary'] = $j['salary'];
-                if ($j['last_date'] < date('Y-m-d')) {
+                if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;
                 } else {
                     $data['is_closed'] = false;
