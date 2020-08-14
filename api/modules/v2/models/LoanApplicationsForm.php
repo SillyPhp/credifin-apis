@@ -51,6 +51,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->created_by = $userId;
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
+                print_r($this->getErrors());
                 $transaction->rollback();
                 return false;
             } else {
@@ -68,6 +69,8 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->created_by = $userId;
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
+                        print_r($purpose->getErrors());
+                        die();
                         $transaction->rollback();
                         return false;
                     } else {
@@ -90,6 +93,8 @@ class LoanApplicationsForm extends LoanApplications
                     $model->created_by = $userId;
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
+                        print_r($model->getErrors());
+                        die();
                         $transaction->rollback();
                         return false;
                     } else {
@@ -129,6 +134,8 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->created_by = $userId;
                 $loan_payment->created_on = date('Y-m-d H:i:s');
                 if (!$loan_payment->save()) {
+                    print_r($loan_payment->getErrors());
+                    die();
                     $transaction->rollBack();
                     return false;
                 } else {
@@ -152,6 +159,8 @@ class LoanApplicationsForm extends LoanApplications
                 return false;
             }
         } catch (\Exception $exception) {
+            print_r($exception);
+            die();
             $transaction->rollBack();
             return false;
         }
