@@ -21,6 +21,7 @@ class EducationLoansController extends Controller
     }
     public function actionApplyLoan($id)
     {
+        $this->layout = 'blank-layout';
         $wid = Organizations::find()
             ->select(['organization_enc_id'])
             ->where(['organization_enc_id'=>$id])
