@@ -270,6 +270,22 @@ $this->registerCss('
     padding-left: 0px;
     padding-right: 20px;
 }
+@media screen and (max-width: 550px){
+    .slide-section{
+        width: 100vw;  
+        height: 100vh;      
+    }
+    .video-section{
+        width: 100vw;
+        height: 50vh;
+    }
+    .videoFlex{
+        flex-direction: column;
+    }
+    .slide-close-btn{
+        display: none;
+    }
+}
 ');
 $script = <<<JS
 const ps = new PerfectScrollbar('#scroll-chat');

@@ -11,6 +11,7 @@ $this->registerCss('
 div#session-status {
     text-align: center;
     padding: 70px;
+    color: #fff;
 }
 ');
 $script = <<<JS
@@ -20,7 +21,6 @@ var duration = 18000;
 $(document).ready(function() {
     var url = 'https://www.ricky.eygb.me/api/v3/video-session/get-tokens';
     generateSession(url);
-    setTimeout(window.location.reload(),2000);
 });
 
 function generateSession(url) {
@@ -33,6 +33,7 @@ function generateSession(url) {
                 var session_id = res.response.session_id;
                 updateWebinarSession(session_id);
             }
+            window.top.location.reload();
         }
     });
 }
