@@ -247,6 +247,9 @@ AppAssets::register($this);
 <!--        <div id="page-loading" class="page-loading">-->
 <!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
 <!--        </div>-->
+        <div id="auth_loading_img">
+        </div>
+        <div class="auth_fader"></div>
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -422,24 +425,75 @@ AppAssets::register($this);
 
         return JSON.parse(jsonPayload);
     };
-
     function authLogin(token) {
         $.ajax({
             url:'/site/one-tap-auth',
             method:'POST',
             data:token,
-            beforeSuccess:function(e)
+            beforeSend:function(e)
             {
-                console.log('sending you');
+                $('#auth_loading_img').addClass('show');
+                $('.auth_fader').css('display','block');
             },
             success:function (e) {
-                console.log(e);
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
+                if (response.status == 201) {
+                    toastr.error(response.message, response.title);
+                }
+            },
+            complete: function() {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
             }
         })
     }
 </script>
 <?php
 $this->registerCss('
+#auth_loading_img
+{
+  display:none;
+}
+ 
+#auth_loading_img.show
+{
+   z-index:100;
+   position: fixed;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    right: 0;
+    border: 6px solid #fff;
+    border-radius: 50%;
+    border-top: 6px solid #00a0e3;
+    width: 60px;
+    height: 60px;
+   -webkit-animation: spin 2s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.auth_fader{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  display:none;
+  z-index:99;
+  background-color:#fff;
+  opacity:0.7;
+}
 .footer-bottom-links a{
     color:#fff;
     margin-right: 20px;
@@ -865,7 +919,7 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
-});
+}); 
 $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {
