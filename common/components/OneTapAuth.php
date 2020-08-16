@@ -1,6 +1,5 @@
 <?php
 namespace common\components;
-
 use common\models\Auth;
 use common\models\User;
 use common\models\Usernames;
@@ -14,59 +13,42 @@ use common\models\UserLogin;
 use yii\authclient\ClientInterface;
 use yii\helpers\ArrayHelper;
 
-/**
- * AuthHandler handles successful authentication via Yii auth component
- */
-class AuthHandler
+class OneTapAuth
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
-
-    public function __construct(ClientInterface $client)
+    public $source = 'google';
+    public function handle($handler)
     {
-        $this->client = $client;
-    }
-
-    public function handle()
-    {
-        $attributes = $this->client->getUserAttributes();
+        $attributes = $handler;
         $email = ArrayHelper::getValue($attributes, 'email');
-        $id = ArrayHelper::getValue($attributes, 'id');
-        $nickname = ArrayHelper::getValue($attributes, 'login');
+        $id = ArrayHelper::getValue($attributes, 'sub');
         $name = ArrayHelper::getValue($attributes, 'name');
-        $first_name = ArrayHelper::getValue($attributes, 'first_name');
-        $last_name = ArrayHelper::getValue($attributes, 'last_name');
+        $first_name = ArrayHelper::getValue($attributes, 'given_name');
+        $last_name = ArrayHelper::getValue($attributes, 'family_name');
         $user_type = UserTypes::findOne([
             'user_type' => 'Individual',
         ]);
 
         /* @var Auth $auth */
         $auth = Auth::find()->where([
-            'source' => $this->client->getId(),
+            'source' => $this->source,
             'source_id' => $id,
         ])->one();
         if (Yii::$app->user->isGuest) {
             if ($auth) { // login
                 $user = UserLogin::findByUsername($auth->user->username, $user_type->user_type_enc_id);
-                //$this->updateUserInfo($user);
-                Yii::$app->user->login($user, 3600 * 24 * 30);
+                return Yii::$app->user->login($user, 3600 * 24 * 30);
             } else { // signup
                 if ($email !== null && Users::find()->where(['email' => $email])->exists()) {
                     $user_db = Users::find()->where(['email' => $email])->one();
                     $auth = new Auth([
                         'user_id' => $user_db->user_enc_id,
-                        'source' => $this->client->getId(),
+                        'source' => $this->source,
                         'source_id' => (string)$id,
                     ]);
                     if ($auth->save()) {
                         $user = UserLogin::findByUsername($user_db->username, $user_type->user_type_enc_id);
-                        Yii::$app->user->login($user, 3600 * 24 * 30);
+                       return Yii::$app->user->login($user, 3600 * 24 * 30);
                     }
-//                    Yii::$app->getSession()->setFlash('error', [
-//                        Yii::t('app', "User with the same email as in {client} account already exists but isn't linked to it. Login using email first to link it.", ['client' => $this->client->getTitle()]),
-//                    ]);
                 } else {
                     $utilitiesModel = new Utilities();
                     $password = Yii::$app->security->generateRandomString(8);
@@ -75,10 +57,10 @@ class AuthHandler
                     $name_array = explode(' ',$name);
                     if (!empty($first_name)&&!empty($last_name)):
                         $username = $this->generate_username($first_name.' '.$last_name, 1000);
-                        else:
+                    else:
                         $username = $this->generate_username($name, 1000);
-                        endif;
-                        $user = new Users([
+                    endif;
+                    $user = new Users([
                         'username' => $username,
                         'user_enc_id' => $utilitiesModel->encrypt(),
                         'first_name' => (($first_name)?$first_name:$name_array[0]),
@@ -91,14 +73,11 @@ class AuthHandler
                         'initials_color' => RandomColors::one(),
                         'is_credential_change' => 1,
                     ]);
-                    //$user->generateAuthKey();
-                    //$user->generatePasswordResetToken();
-
                     $transaction = Users::getDb()->beginTransaction();
                     if ($user->save()) {
                         $auth = new Auth([
                             'user_id' => $user->user_enc_id,
-                            'source' => $this->client->getId(),
+                            'source' => $this->source,
                             'source_id' => (string)$id,
                         ]);
                         $usernamesModel = new Usernames();
@@ -112,7 +91,7 @@ class AuthHandler
                         {
                             Yii::$app->getSession()->setFlash('error', [
                                 Yii::t('app', 'Unable to save {client} account: {errors}', [
-                                    'client' => $this->client->getTitle(),
+                                    'client' => $this->source,
                                     'errors' => json_encode($usernamesModel->getErrors()),
                                 ]),
                             ]);
@@ -121,12 +100,11 @@ class AuthHandler
                             $transaction->commit();
                             //to do login access to user
                             $user = UserLogin::findByUsername($user->username, $user_type->user_type_enc_id);
-                            //$this->updateUserInfo($user);
-                            Yii::$app->user->login($user, 3600 * 24 * 30);
+                           return Yii::$app->user->login($user, 3600 * 24 * 30);
                         } else {
                             Yii::$app->getSession()->setFlash('error', [
                                 Yii::t('app', 'Unable to save {client} account: {errors}', [
-                                    'client' => $this->client->getTitle(),
+                                    'client' => $this->source,
                                     'errors' => json_encode($auth->getErrors()),
                                 ]),
                             ]);
@@ -134,7 +112,7 @@ class AuthHandler
                     } else {
                         Yii::$app->getSession()->setFlash('error', [
                             Yii::t('app', 'Unable to save user: {errors}', [
-                                'client' => $this->client->getTitle(),
+                                'client' => $this->source,
                                 'errors' => json_encode($user->getErrors()),
                             ]),
                         ]);
@@ -145,21 +123,21 @@ class AuthHandler
             if (!$auth) { // add auth provider
                 $auth = new Auth([
                     'user_id' => Yii::$app->user->identity->user_enc_id,
-                    'source' => $this->client->getId(),
-                    'source_id' => (string)$attributes['id'],
+                    'source' => $this->source,
+                    'source_id' => (string)$id,
                 ]);
                 if ($auth->save()) {
                     /** @var User $user */
                     $user = $auth->user;
                     Yii::$app->getSession()->setFlash('success', [
                         Yii::t('app', 'Linked {client} account.', [
-                            'client' => $this->client->getTitle()
+                            'client' => $this->source
                         ]),
                     ]);
                 } else {
                     Yii::$app->getSession()->setFlash('error', [
                         Yii::t('app', 'Unable to link {client} account: {errors}', [
-                            'client' => $this->client->getTitle(),
+                            'client' => $this->source,
                             'errors' => json_encode($auth->getErrors()),
                         ]),
                     ]);
@@ -168,7 +146,7 @@ class AuthHandler
                 Yii::$app->getSession()->setFlash('error', [
                     Yii::t('app',
                         'Unable to link {client} account. There is another user using it.',
-                        ['client' => $this->client->getTitle()]),
+                        ['client' => $this->source]),
                 ]);
             }
         }
@@ -177,15 +155,6 @@ class AuthHandler
     /**
      * @param User $user
      */
-    private function updateUserInfo(User $user)
-    {
-        $attributes = $this->client->getUserAttributes();
-        $github = ArrayHelper::getValue($attributes, 'login');
-        if ($user->github === null && $github) {
-            $user->github = $github;
-            $user->save();
-        }
-    }
 
     //generate a username from Full name
     private function generate_username($string_name=null, $rand_no = 200){
