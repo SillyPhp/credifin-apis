@@ -258,6 +258,7 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.status',
                     'b.last_date',
                     'b.joining_date',
                     'm.fixed_wage as fixed_salary',
@@ -309,7 +310,7 @@ class SearchController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
                     'b.application_for' => [0, 2],
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
@@ -356,6 +357,7 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.status',
                     'b.last_date',
                     'b.joining_date',
                     'm.fixed_wage as fixed_salary',
@@ -404,7 +406,7 @@ class SearchController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
                     'b.application_for' => [0, 2],
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
@@ -503,7 +505,7 @@ class SearchController extends ApiBaseController
             $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
-            if ($j['last_date'] < date('Y-m-d')) {
+            if ($j['status'] != 'Active') {
                 $data['is_closed'] = true;
             } else {
                 $data['is_closed'] = false;

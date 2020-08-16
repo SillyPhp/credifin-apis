@@ -17,6 +17,7 @@ use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
+use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -146,7 +147,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -561,7 +562,7 @@ class SiteController extends Controller
     }
     public function actionSignUp(){
         $model = new SignUpCandidateForm();
-        $modelSignUp = new IndividualSignUpForm();
+        $modelSignUp = new WidgetSignUpForm();
         if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -569,7 +570,9 @@ class SiteController extends Controller
                 $modelSignUp->first_name = $model->first_name;
                 $modelSignUp->last_name = $model->last_name;
                 $modelSignUp->email = $model->email;
+                if($model->phone){
                 $modelSignUp->phone = $model->phone;
+                }
                 $modelSignUp->new_password = $model->new_password;
                 $modelSignUp->confirm_password = $model->confirm_password;
                 if (empty($errors)) {
