@@ -13,7 +13,9 @@ use yii\helpers\Url;
                 <div class="loan-text">
                     <h1>Education Loan</h1>
                     <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
-                    <a href="education-loan-view" class="hvr-sweep-to-bottom">Apply Now</a>
+                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" class="hvr-sweep-to-bottom-2">
+                        Apply Now
+                    </a>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -171,8 +173,14 @@ use yii\helpers\Url;
     <section class="edu-loan">
         <div class="container">
             <div class="us-flex">
-                <div class="edu-loan-txt col-md-6">Ready to get Started ?</div>
-                <div class="col-md-6"><a href="education-loan-view" class="hvr-sweep-to-bottom">Apply Now</a></div>
+                <div class="edu-loan-txt col-md-6">
+                        Ready to get Started ?
+                </div>
+                <div class="col-md-6">
+                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" class="hvr-sweep-to-bottom">
+                        Apply Now
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -208,7 +216,7 @@ use yii\helpers\Url;
                             alt=""/> Contact Us
                     </div>
 
-                    <div class="l-help-txt-btn"><a href="">Contact Us</a>
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -329,6 +337,9 @@ $this->registerCss('
     max-width: 400px;
     margin: 40px auto 0;
 }
+.loansWorks{
+     text-align: center;
+     }
 .mb1{
     margin-bottom: 10px
 }
@@ -726,7 +737,7 @@ $this->registerCss('
 .edu-loan-btn a:hover{
     text-decoration: none;
 }
-.hvr-sweep-to-bottom {
+.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2 {
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -745,7 +756,12 @@ $this->registerCss('
     transition-duration: 0.3s;
     border-radius: 5px;
 }
-.hvr-sweep-to-bottom:before {
+.hvr-sweep-to-bottom-2{
+    background: #53bbeb;
+    color:#ffffff; 
+}
+.hvr-sweep-to-bottom:before,
+.hvr-sweep-to-bottom-2:before {
     content: "";
     position: absolute;
     z-index: -1;
@@ -766,11 +782,16 @@ $this->registerCss('
     -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
 }
-.hvr-sweep-to-bottom:hover, .hvr-sweep-to-bottom:focus, .hvr-sweep-to-bottom:active {
-  color: white;
+.hvr-sweep-to-bottom:hover, .hvr-sweep-to-bottom:focus, .hvr-sweep-to-bottom:active{
+  color: #00a0e3;
   text-decoration: none;
 }
-.hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before {
+.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active{
+     color: #fff;
+  text-decoration: none;
+}
+.hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
+.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before {
   -webkit-transform: scaleY(1);
   transform: scaleY(1);
 }

@@ -10,9 +10,9 @@ use yii\helpers\Url;
 
 class FramedWidgetsController extends Controller
 {
-  public $layout = 'blank-layout';
+  public $layout = 'widget-layout';
   public function actionEducationsLoan($id)
-   {
+   { 
        $wid = Organizations::find()
            ->select(['organization_enc_id'])
            ->where(['organization_enc_id'=>$id])
