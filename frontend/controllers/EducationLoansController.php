@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Organizations;
 use frontend\models\EducationalLoans;
 use Yii;
 use yii\web\Controller;
@@ -17,6 +18,20 @@ class EducationLoansController extends Controller
         return $this->render('apply',[
             'EducationalLoan' => $model,
         ]);
+    }
+    public function actionApplyLoan($id)
+    {
+        $this->layout = 'blank-layout';
+        $wid = Organizations::find()
+            ->select(['organization_enc_id'])
+            ->where(['organization_enc_id'=>$id])
+            ->asArray()->one();
+        if ($wid){
+            return $this->render('/framed-widgets/education-loan',['wid'=>$wid['organization_enc_id']]);
+        }
+        else {
+            return 'Unauthorized';
+        }
     }
     public function actionEducationLoanView(){
         return $this->render('education-loan-view');

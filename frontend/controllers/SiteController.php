@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -81,6 +82,23 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            if((new OneTapAuth())->handle(Yii::$app->request->post()))
+            {
+                return $this->redirect('/site/oauth-verify');
+            }
+            else{
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
@@ -138,7 +156,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
