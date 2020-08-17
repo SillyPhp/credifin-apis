@@ -216,7 +216,7 @@ use yii\helpers\Url;
                             alt=""/> Contact Us
                     </div>
 
-                    <div class="l-help-txt-btn"><a href="">Contact Us</a>
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -337,6 +337,9 @@ $this->registerCss('
     max-width: 400px;
     margin: 40px auto 0;
 }
+.loansWorks{
+     text-align: center;
+     }
 .mb1{
     margin-bottom: 10px
 }
