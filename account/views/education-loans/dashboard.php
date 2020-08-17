@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 ?>
 <div class="row">
@@ -10,7 +11,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
-                        <span class="count">10</span>
+                        <span class="count"><?= $stats['new_leads'] ?></span>
                         <span class="box-text">New Leads</span>
                     </div>
                 </a>
@@ -19,7 +20,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['all_applications'] ?>+</span>
                         <span class="box-text">All Applications</span>
                     </div>
                 </a>
@@ -28,7 +29,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box6 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['accepted'] ?>+</span>
                         <span class="box-text">Accepted</span>
                     </div>
                 </a>
@@ -37,7 +38,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box4 mt box2set">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
-                        <span class="count">20</span>
+                        <span class="count"><?= $stats['pre_verification'] ?></span>
                         <span class="box-text">Pre Verification</span>
                     </div>
                 </a>
@@ -46,7 +47,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['under_process'] ?>+</span>
                         <span class="box-text">Under Process</span>
                     </div>
                 </a>
@@ -55,7 +56,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['sanctioned'] ?>+</span>
                         <span class="box-text">Sanctioned</span>
                     </div>
                 </a>
@@ -64,7 +65,7 @@ use yii\helpers\Url;
                 <a href="#">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count">100+</span>
+                        <span class="count"><?= $stats['disbursed'] ?>+</span>
                         <span class="box-text">Disbursed</span>
                     </div>
                 </a>
@@ -86,35 +87,30 @@ use yii\helpers\Url;
 
             <div class="row">
                 <div class="col-md-12">
+                    <?php
+                    $filterList = [
+                        'all' => 'All',
+                        0 => 'New Lead',
+                        1 => 'Accepted',
+                        2 => 'Pre Verification',
+                        3 => 'Under Process',
+                        4 => 'Sanctioned',
+                        5 => 'Disbursed',
+                        10 => 'Rejected',
+                    ];
+                    ?>
                     <ul class="statusFilters">
-                        <li>
-                            <input id="lists[all]" type="checkbox" name="lists[all]"/>
-                            <label for="lists[all]">All</label>
-                        </li>
-                        <li>
-                            <input id="lists[new_lead]" type="checkbox" name="lists[new_lead]"/>
-                            <label for="lists[new_lead]"> New Lead</label>
-                        </li>
-                        <li>
-                            <input id="lists[accepted]" type="checkbox" name="lists[accepted]"/>
-                            <label for="lists[accepted]"> Accepted</label>
-                        </li>
-                        <li>
-                            <input id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]"/>
-                            <label for="lists[pre_verification]"> Pre Verification</label>
-                        </li>
-                        <li>
-                            <input id="lists[under_process]" type="checkbox" name="lists[under_process]"/>
-                            <label for="lists[under_process]"> Under Process</label>
-                        </li>
-                        <li>
-                            <input id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]"/>
-                            <label for="lists[sanctioned]"> Sanctioned</label>
-                        </li>
-                        <li>
-                            <input id="lists[disbursed]" type="checkbox" name="lists[disbursed]"/>
-                            <label for="lists[disbursed]"> Disbursed</label>
-                        </li>
+                        <?php
+                        foreach ($filterList as $key => $filter) {
+                            ?>
+                            <li>
+                                <input id="lists[<?= $key ?>]" type="checkbox"
+                                       name="lists[<?= $key ?>]" <?= ($key === "all") ? 'checked' : '' ?>/>
+                                <label for="lists[<?= $key ?>]"><?= $filter ?></label>
+                            </li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -123,6 +119,9 @@ use yii\helpers\Url;
             <div class="tab-content">
                 <div class="tab-pane active pos-rel" id="tab_actions_pending">
                     <div id="overflowScroll">
+                        <?php
+                            Pjax::begin(['id' => 'list-container']);
+                        ?>
                         <div class="row">
                             <div class="mt-actions mainTable" style="">
                                 <div class="col-md-12">
@@ -160,47 +159,56 @@ use yii\helpers\Url;
                                         <tbody>
                                         <?php
                                         if (!empty($loans)) {
+                                            $dropDowns = [
+                                                0 => 'New Lead',
+                                                1 => 'Accepted',
+                                                2 => 'Pre Verification',
+                                                3 => 'Under Process',
+                                                4 => 'Sanctioned',
+                                                5 => 'Disbursed',
+                                                10 => 'Reject',
+                                            ];
                                             foreach ($loans as $loan) {
                                                 ?>
                                                 <tr>
-                                                    <td><?= $loan['apply_date'] ?></td>
+                                                    <td><?= date('d M Y', strtotime($loan['apply_date'])) ?></td>
                                                     <td class="actionColoum">
                                                         <div class="dropdown">
-                                                            <button onclick="actionStats(this)" class="dropbtn"><i
+                                                            <button onclick="actionStats(this)"
+                                                                    style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                    class="dropbtn"><i
                                                                         class="fa fa-ellipsis-v"></i></button>
                                                             <div class="dropdown-content myDropdown">
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="New Lead">New Lead
-                                                                </button>
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="Accepted">Accepted
-                                                                </button>
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="Pre Verification">Pre
-                                                                    Verification
-                                                                </button>
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="Under Process">Under
-                                                                    Process
-                                                                </button>
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                                </button>
-                                                                <button class="actionBtn"
-                                                                        onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                                </button>
-                                                                <button class="actionBtn ab-last-btn"
-                                                                        onclick="nextRound(this)" value="Rejected">Reject
-                                                                </button>
+                                                                <?php
+                                                                foreach ($dropDowns as $k => $v) {
+                                                                    ?>
+                                                                    <button class="actionBtn"
+                                                                            data-key="<?= $loan['loan_app_enc_id'] ?>"
+                                                                            data-value="<?= $k ?>"
+                                                                            onclick="nextRound(this)"
+                                                                            value="<?= $v ?>"><?= $v ?></button>
+                                                                    <?php
+                                                                }
+                                                                ?>
                                                             </div>
                                                         </div>
-                                                        <span class="currentState">New Lead</span>
-                                                        <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
+                                                        <span class="currentState"><?= $loan['loan_status'] ?></span>
+                                                        <button class="nextState" onclick="nextPhase(this)"
+                                                                style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                data-toggle="tooltip"
+                                                                data-key="<?= $loan['loan_app_enc_id'] ?>"
                                                                 data-placement="top" title="Move to Next Phase">
                                                             <i class="fa fa-arrow-circle-right"></i>
                                                         </button>
-                                                        <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                                        <button class="reconsider" onclick="reconsider()">Reconsider</button>
+                                                        <button class="viewStatus"
+                                                                style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
+                                                                onclick="viewStatus()">View Status
+                                                        </button>
+                                                        <button class="reconsider"
+                                                                data-key="<?= $loan['loan_app_enc_id'] ?>"
+                                                                style="display: <?= ($loan['loan_status'] == 'Reject') ? 'block' : 'none' ?>"
+                                                                onclick="reconsider(this)">Reconsider
+                                                        </button>
                                                     </td>
                                                     <td><?= $loan['applicant_name'] ?></td>
                                                     <td><?= $loan['amount'] ?></td>
@@ -236,6 +244,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
+                        <?php Pjax::end(); ?>
                     </div>
                 </div>
             </div>
@@ -931,11 +940,12 @@ var ps = new PerfectScrollbar('#loanDetailScroll');
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 });
-
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     window.onclick = function () {
@@ -955,12 +965,29 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         }
     }
 
+    function reconsider(e) {
+        var status = 0;
+        var id = e.getAttribute('data-key');
+        let parElement = e.closest('.actionColoum');
+        let currentState = parElement.querySelector('.currentState');
+        currentState.innerText = 'New Lead';
+        parElement.querySelector('.reconsider').style.display = "none";
+        parElement.querySelector('.nextState').style.display = "block";
+        // parElement.querySelector('.dropdown').style.display = "block";
+        changeStatus(id, status, 1);
+        setTimeout(function(){
+            $.pjax.reload({container: '#list-container', async: false});
+        }, 500);
+    }
+
     function nextRound(e) {
         let currentRoundName = e.value;
         let parElement = e.closest('.actionColoum');
         let currentState = parElement.querySelector('.currentState');
         currentState.innerText = currentRoundName;
-
+        var status = e.getAttribute('data-value');
+        var id = e.getAttribute('data-key');
+        changeStatus(id, status, 0);
         if (currentRoundName == 'Sanctioned') {
             sanctionModal.style.display = "block"
         }
@@ -970,24 +997,38 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             parElement.querySelector('.viewStatus').style.display = "block";
         }
 
-        if (currentRoundName == 'Rejected') {
+        if (currentRoundName == 'Reject') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
             parElement.querySelector('.reconsider').style.display = "block";
         }
     }
 
-    function nextPhase() {
+    function changeStatus(id, status, reconsider) {
+        $.ajax({
+            url: '/account/education-loans/change-status',
+            method: "POST",
+            data: {id: id, status: status, reconsider: reconsider},
+            success: function (res) {
+                if (res.status == 200) {
+                    toastr.success(res.title, res.message);
+                } else {
+                    toastr.error(res.title, res.message);
+                }
+            }
+        });
+    }
+
+    function nextPhase(e) {
         let parElement = event.currentTarget.parentElement;
         let curElement = parElement.getElementsByClassName('currentState');
         let curPhase = curElement[0].innerHTML;
-
         let phases = parElement.getElementsByClassName('actionBtn');
         let pVal = [];
         for (let i = 0; i < phases.length; i++) {
             pVal.push(phases[i].value);
             let nextIndex = pVal.indexOf(curPhase) + 1;
-            let nextElem = pVal[nextIndex];
+            var nextElem = pVal[nextIndex];
             curElement[0].innerHTML = nextElem;
 
             if (nextElem == 'Sanctioned') {
@@ -1001,6 +1042,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             }
 
         }
+        var status = nextElem;
+        var id = e.getAttribute('data-key');
+        changeStatus(id, status, 0);
 
     }
 

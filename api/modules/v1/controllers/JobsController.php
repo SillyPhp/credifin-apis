@@ -136,12 +136,18 @@ class JobsController extends ApiBaseController
             $result['created_at'] = $result['publication_date'];
             $result['url'] = $result['refs']['landing_page'];
             $result['description'] = $result['contents'];
-            $result['location'] = $result['locations'];
+            $result['location'] = $result['locations'][0]['name'];
+            $result['company_logo'] = '';
+            $result['how_to_apply'] = '';
+            $result['company_url'] = '';
             unset($result['name']);
             unset($result['publication_date']);
             unset($result['refs']);
             unset($result['contents']);
             unset($result['locations']);
+            unset($result['levels']);
+            unset($result['tags']);
+            unset($result['categories']);
         }
         return $result;
     }
@@ -164,6 +170,7 @@ class JobsController extends ApiBaseController
         } else if ($params['source'] == 3) {
             $get = $this->musejobs($params['id']);
         }
+
         if ($get['title']) {
             return $this->response(200, $get);
         } else {
