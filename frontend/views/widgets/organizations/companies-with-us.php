@@ -9,22 +9,28 @@ $action_name = Yii::$app->controller->action->id;
 switch ([$controller_name, $action_name]) {
     case ['colleges', ''] :
     case ['colleges', 'index'] :
-        $field = 'is_erexx_registered';
+        $val = '1';
         break;
     default :
-        $field = 'is_featured';
+        $val = '0';
 }
 $companies = Organizations::find()
     ->alias('z')
     ->joinWith(['businessActivityEnc a'],false)
+    ->joinWith(['organizationLabels ol' => function($x){
+        $x->onCondition(['ol.label_for' => 0,'ol.is_deleted' => 0]);
+        $x->joinWith(['labelEnc le' => function($l){
+            $l->onCondition(['le.is_deleted' => 0]);
+        }],false);
+    }],false)
     ->andWhere(['not', ['z.logo' => null]])
     ->andWhere(['not', ['z.logo' => ""]])
-    ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0, 'z.'.$field => 1])
+    ->andWhere(['le.name' => 'Featured','z.is_erexx_registered' => $val])
+    ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
     ->andWhere(['not', ['in', 'a.business_activity', ['College', 'Educational Institute', 'School']]])
     ->orderby(new Expression('rand()'))
     ->limit(12)
     ->all();
-
 ?>
     <section class="companies">
         <div class="container">
