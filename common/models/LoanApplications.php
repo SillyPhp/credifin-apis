@@ -22,7 +22,7 @@ use Yii;
  * @property string $email
  * @property int $gender 1 for Male, 2 for Female
  * @property double $amount
- * @property int $aadhaar_number
+ * @property string $aadhaar_number
  * @property string $source
  * @property string $created_by user_enc_id
  * @property string $created_on created on
@@ -60,10 +60,11 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'aadhaar_number', 'source', 'created_on'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
-            [['years', 'semesters', 'gender', 'aadhaar_number', 'status', 'loan_status'], 'integer'],
+            [['years', 'semesters', 'gender', 'status', 'loan_status'], 'integer'],
             [['amount'], 'number'],
             [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
+            [['aadhaar_number'], 'string', 'max' => 16],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],

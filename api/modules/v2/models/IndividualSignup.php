@@ -44,9 +44,9 @@ class IndividualSignup extends Model
     public function rules()
     {
         return [
-            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation', 'section_id', 'course_id', 'semester'], 'safe'],
+            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation', 'section_id', 'course_id', 'semester', 'roll_number'], 'safe'],
 
-            [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
+            [['first_name', 'last_name', 'phone', 'username', 'email', 'college'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
 
             ['phone', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'phone number already registered'],
@@ -63,8 +63,6 @@ class IndividualSignup extends Model
 
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
-
-            [['college', 'roll_number'], 'required'],
 
             ['source', 'required']
         ];
@@ -166,7 +164,9 @@ class IndividualSignup extends Model
             $user_other_details->semester = $this->semester;
             $user_other_details->starting_year = $this->starting_year;
             $user_other_details->ending_year = $this->ending_year;
-            $user_other_details->university_roll_number = $this->roll_number;
+            if ($this->roll_number != '') {
+                $user_other_details->university_roll_number = $this->roll_number;
+            }
 
 
 //        if ($this->job_start_month) {
