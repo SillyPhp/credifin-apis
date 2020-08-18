@@ -16,21 +16,24 @@ switch ([$controller_name, $action_name]) {
 }
 $companies = Organizations::find()
     ->alias('z')
-    ->joinWith(['businessActivityEnc a'],false)
-    ->joinWith(['organizationLabels ol' => function($x){
-        $x->onCondition(['ol.label_for' => 0,'ol.is_deleted' => 0]);
-        $x->joinWith(['labelEnc le' => function($l){
+    ->joinWith(['businessActivityEnc a'], false)
+    ->joinWith(['organizationLabels ol' => function ($x) {
+        $x->onCondition(['ol.label_for' => 0, 'ol.is_deleted' => 0]);
+        $x->joinWith(['labelEnc le' => function ($l) {
             $l->onCondition(['le.is_deleted' => 0]);
-        }],false);
-    }],false)
+        }], false);
+    }], false)
     ->andWhere(['not', ['z.logo' => null]])
-    ->andWhere(['not', ['z.logo' => ""]])
-    ->andWhere(['le.name' => 'Featured','z.is_erexx_registered' => $val])
-    ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+    ->andWhere(['not', ['z.logo' => ""]]);
+if ($val == 1) {
+    $companies->andWhere(['z.is_erexx_registered' => $val]);
+}
+$companies->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+    ->andWhere(['le.name' => 'Featured'])
     ->andWhere(['not', ['in', 'a.business_activity', ['College', 'Educational Institute', 'School']]])
     ->orderby(new Expression('rand()'))
-    ->limit(12)
-    ->all();
+    ->limit(12);
+$companies = $companies->all();
 ?>
     <section class="companies">
         <div class="container">
