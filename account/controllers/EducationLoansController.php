@@ -47,7 +47,7 @@ class EducationLoansController extends Controller
             ->asArray()
             ->all();
         $studentIds = ArrayHelper::getColumn($students, 'user_enc_id');
-
+        array_push($studentIds, "", "NULL");
         $loans = LoanApplications::find()
             ->distinct()
             ->alias('a')
@@ -79,6 +79,7 @@ class EducationLoansController extends Controller
                     ELSE "N/A"
                 END) as gender',
                 'a.applicant_dob as dob',
+                'a.created_by',
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
@@ -95,7 +96,8 @@ class EducationLoansController extends Controller
                     END) as employment_type',
                 ]);
             }])
-            ->where(['in', 'a.created_by', $studentIds])
+            ->orWhere(['in', 'a.created_by', $studentIds])
+            ->orWhere(['a.created_by' => NULL])
             ->andWhere(['a.status' => 1])
             ->asArray()
             ->all();
