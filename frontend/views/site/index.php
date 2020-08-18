@@ -120,7 +120,7 @@ $this->params['header_dark'] = false;
                     </a>
                 </div>
                 <div class="box-border fade-in four">
-                    <div class="box-overlay">
+                    <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>"
                                  alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
@@ -129,10 +129,7 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>"
                                  alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana"></div>
                         <div class="h-heading">Education Loan</div>
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
