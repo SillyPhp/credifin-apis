@@ -10,7 +10,7 @@ use yii\helpers\Url;
                 <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_new}}
-                        <span class="new-j" data-toggle="tooltip" title="Featured">
+                        <span class="new-j" data-toggle="tooltip" title="New">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
                         </span>
                         {{/is_new}}
@@ -20,17 +20,17 @@ use yii\helpers\Url;
                         </span>
                         {{/is_featured}}
                         {{#is_promoted}}
-                        <span data-toggle="tooltip" title="Featured">
+                        <span data-toggle="tooltip" title="Promoted">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
                         </span>
                         {{/is_promoted}}
                         {{#is_hot}}
-                        <span data-toggle="tooltip" title="Featured">
+                        <span data-toggle="tooltip" title="Hot">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
                         </span>
                         {{/is_hot}}
                         {{#is_trending}}
-                        <span data-toggle="tooltip" title="Featured">
+                        <span data-toggle="tooltip" title="Trending">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
                         </span>
                         {{/is_trending}}
