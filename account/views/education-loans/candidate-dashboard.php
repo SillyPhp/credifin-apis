@@ -19,8 +19,18 @@
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-md-12">
+                        <ul class="formNav">
+                            <li><button data-id="applicantProfile" class="topTab activeLi" onclick="activeTab(event)">Applicant Profile</button></li> /
+                            <li><button data-id="parentsProfile" class="topTab" onclick="activeTab(event)">Parents Profile</button></li> /
+                            <li><button data-id="guarantorProfile" class="topTab" onclick="activeTab(event)">Guarantor's Profile</button></li>
+                        </ul>
                         <form id="regForm">
-                            <div class="tab">
+                            <div class="tab tabActive" id="applicantProfile">
+<!--                                <div class="row">-->
+<!--                                    <div class="col-md-12">-->
+<!--                                        <h4 class="cd-heading">Applicant Profile</h4>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 padd-20">
                                         <div class="form-group disFlex">
@@ -37,44 +47,44 @@
                                 <div class="row mt10">
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="applicantName" class="input-group-text">
                                                 Name of Applicant
                                             </label>
-                                            <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                            <input type="text" class="form-control" id="applicantName" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="applicantEmail" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="Email" placeholder="">
+                                            <input type="text" class="form-control" id="applicantEmail" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="applicantDob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="--/--/----">
+                                            <input type="text" class="form-control" id="applicantDob" placeholder="--/--/----">
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="applicantNumber" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="">
+                                            <input type="text" class="form-control" id="applicantNumber" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label class="radio-heading input-group-text">
+                                            <label class="radio-heading input-group-text" for="degreeApplied">
                                                 Degree Applied
                                             </label>
-                                            <select class="form-control field-req" name="years">
+                                            <select class="form-control field-req"  name="years" id="degreeApplied">
                                                 <option value="1">Under Graduation</option>
                                                 <option value="2">Graduation</option>
                                                 <option value="3">Post Graduation</option>
@@ -85,10 +95,10 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="courseApplied" class="input-group-text">
                                                 Course Applied
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="courseApplied" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -100,13 +110,13 @@
                                         <div class="row mt10">
                                             <div class="col-md-6 padd-20">
                                                 <div class="form-group">
-                                                    <label class="radio-heading input-group-text">
+                                                    <label class="radio-heading input-group-text" for="applicantID">
                                                         ID Proof/Address Proof
                                                     </label>
-                                                    <select class="form-control field-req" name="years">
+                                                    <select class="form-control field-req" name="years" id="applicantID">
                                                         <option value="1">PAN</option>
                                                         <option value="2">Adhaar Card</option>
-                                                        <option value="3">Password</option>
+                                                        <option value="3">Passport</option>
                                                         <option value="4">Voter ID</option>
                                                         <option value="5">Driving License</option>
                                                     </select>
@@ -114,21 +124,21 @@
                                             </div>
                                             <div class="col-md-6 padd-20">
                                                 <div class="form-group">
-                                                    <label for="number" class="input-group-text">
+                                                    <label for="applicantIDnumber" class="input-group-text">
                                                         Id Proof Number
                                                     </label>
-                                                    <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                                    <input type="text" class="form-control" id="applicantIDnumber" placeholder="Number">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 padd-20 text-center">
                                                 <div class="form-group">
-                                                    <label for="idProof" class="">
+                                                    <label for="applicantIDpic" class="">
                                                         <div class="idPhoto">
                                                             <i class="fa fa-cloud-upload"></i>
                                                             Upload Photo
                                                         </div>
                                                     </label>
-                                                    <input type="file" class="form-control idProof-input" id="idProof" placeholder="">
+                                                    <input type="file" class="form-control idProof-input" id="applicantIDpic" placeholder="">
                                                 </div>
                                             </div>
                                         </div>
@@ -137,13 +147,13 @@
                                         <div class="row mt10">
                                             <div class="col-md-6 padd-20">
                                                 <div class="form-group">
-                                                    <label class="radio-heading input-group-text">
+                                                    <label class="radio-heading input-group-text" for="applicantIDtwo">
                                                         ID Proof/Address Proof
                                                     </label>
-                                                    <select class="form-control field-req" name="years">
+                                                    <select class="form-control field-req" name="years" id="applicantIDtwo">
                                                         <option value="1">PAN</option>
                                                         <option value="2">Adhaar Card</option>
-                                                        <option value="3">Password</option>
+                                                        <option value="3">Passport</option>
                                                         <option value="4">Voter ID</option>
                                                         <option value="5">Driving License</option>
                                                     </select>
@@ -151,21 +161,21 @@
                                             </div>
                                             <div class="col-md-6 padd-20">
                                                 <div class="form-group">
-                                                    <label for="number" class="input-group-text">
+                                                    <label for="applicantIDTwoNum" class="input-group-text">
                                                         Id Proof Number
                                                     </label>
-                                                    <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                                    <input type="text" class="form-control" id="applicantIDTwoNum" placeholder="Number">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 padd-20 text-center">
                                                 <div class="form-group">
-                                                    <label for="idProof-2" class="">
+                                                    <label for="applicantIDTwoPic" class="">
                                                         <div class="idPhoto">
                                                             <i class="fa fa-cloud-upload"></i>
                                                             Upload Photo
                                                         </div>
                                                     </label>
-                                                    <input type="file" class="form-control idProof-input" id="idProof-2" placeholder="">
+                                                    <input type="file" class="form-control idProof-input" id="applicantIDTwoPic" placeholder="">
                                                 </div>
                                             </div>
                                         </div>
@@ -175,7 +185,7 @@
                                 <div class="FormDivider"></div>
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Residential Information</h4>
+                                        <h4 class="cd-heading-3">Residential Information</h4>
                                     </div>
                                 </div>
                                 <div class="row mt10">
@@ -187,13 +197,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address1">
+                                                        <input type="radio" checked="checked" id="PA-rented" name="address1">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address1">
+                                                        <input type="radio" name="address1" id="PA-owned">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -202,26 +212,26 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="houseNo" class="input-group-text">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="houseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="PA-city" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="PA-city" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="PA-state" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="PA-state" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -234,13 +244,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address2">
+                                                        <input type="radio" checked="checked" name="address2" id="CA-rented">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address2">
+                                                        <input type="radio" name="address2" id="CA-owned">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -249,84 +259,84 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label class="input-group-text" for="CA-houseNo">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="CA-houseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="CA-city" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="CA-city" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="CA-state" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="CA-state" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="FormDivider"></div>
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Education</h4>
+                                        <h4 class="cd-heading-3">Education</h4>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="class10" class="input-group-text">
                                                 Qualification
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="10th" value="10th">
+                                            <input type="text" class="form-control" id="class10" placeholder="10th" value="10th">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="instituteName" class="input-group-text">
                                                 Name Of Institution
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="instituteName" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="10thmarksObtained" class="input-group-text">
                                                 Marks Obtained
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="10thmarksObtained" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="class12" class="input-group-text">
                                                 Qualification
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="+2" value="+2">
+                                            <input type="text" class="form-control" id="class12" placeholder="+2" value="+2">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="class12Institution" class="input-group-text">
                                                 Name Of Institution
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="class12Institution" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="class12marks" class="input-group-text">
                                                 Marks Obtained
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="class12marks" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -338,46 +348,54 @@
                                         <button type="button" class="eduBtn2" onclick="addEduField()">Add More</button>
                                     </div>
                                 </div>
+                                <div class="text-center">
+                                    <button type="button" class="eduBtn" data-id="parentsProfile" onclick="activeTab(event)">Next</button>
+                                </div>
                             </div>
-                            <div class="tab">
+                            <div class="tab" id="parentsProfile">
+<!--                                <div class="row">-->
+<!--                                    <div class="col-md-12">-->
+<!--                                        <h4 class="cd-heading">Parents Profile</h4>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Father's Information</h4>
+                                        <h4 class="cd-heading-3">Father's Information</h4>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 padd-20">
                                         <div class="form-group disFlex">
-                                            <label for="yourPic" class="input-group-text">
+                                            <label for="fatherPic" class="input-group-text">
                                                 <div class="uploadPic">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </div>
                                             </label>
                                             <div class="ml20"> Upload Photo</div>
-                                            <input type="file" class="form-control pic" id="yourPic" placeholder="">
+                                            <input type="file" class="form-control pic idProof-input" id="fatherPic" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fatherName" class="input-group-text">
                                                 Name
                                             </label>
-                                            <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                            <input type="text" class="form-control" id="fatherName" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fatherEmail" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="Email" placeholder="">
+                                            <input type="text" class="form-control" id="fatherEmail" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fatherDob" class="input-group-text">
                                                 DOB
                                             </label>
                                             <input type="text" class="form-control" id="dob" placeholder="--/--/----">
@@ -385,10 +403,10 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fatherNumber" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="">
+                                            <input type="text" class="form-control" id="fatherNumber" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -401,7 +419,7 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="checkcontainer">Same As Above
-                                                        <input type="checkbox" data-id="fAddress" onchange="hideAddress()">
+                                                        <input type="checkbox" data-id="fAddress" id="fSame" onchange="hideAddress()">
                                                         <span class="Ch-checkmark"></span>
                                                     </label>
                                                 </li>
@@ -418,13 +436,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address1">
+                                                        <input type="radio" checked="checked" name="FRT-rented" id="FRT-rented">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address1">
+                                                        <input type="radio" name="address1" id="FRT-owned">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -433,26 +451,26 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fHouseNo" class="input-group-text">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="fHouseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fCity" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="fCity" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fState" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="fState" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -460,13 +478,13 @@
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label class="radio-heading input-group-text">
+                                            <label class="radio-heading input-group-text" for="fIDproof">
                                                 ID Proof/Address Proof
                                             </label>
-                                            <select class="form-control field-req" name="years">
+                                            <select class="form-control field-req" name="years" id="fIDproof">
                                                 <option value="1">PAN</option>
                                                 <option value="2">Adhaar Card</option>
-                                                <option value="3">Password</option>
+                                                <option value="3">Passport</option>
                                                 <option value="4">Voter ID</option>
                                                 <option value="5">Driving License</option>
                                             </select>
@@ -474,21 +492,10 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fIDproofnumber" class="input-group-text">
                                                 Id Proof Number
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group text-center">
-                                            <label for="idProofFather" class="">
-                                                <div class="idPhoto">
-                                                    <i class="fa fa-cloud-upload"></i>
-                                                    Upload ID Proof's Photo
-                                                </div>
-                                            </label>
-                                            <input type="file" class="form-control idProof-input" id="idProofFather" placeholder="">
+                                            <input type="text" class="form-control" id="fIDproofnumber" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
@@ -506,81 +513,81 @@
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="yearsOFoccu" class="input-group-text">
                                                 Years Of Occupancy In Current House
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="yearsOFoccu" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fOccupation" class="input-group-text">
                                                 Occupation
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="fOccupation" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="fIncome" class="input-group-text">
                                                 Monthly Income
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="fIncome" placeholder="">
                                         </div>
                                     </div>
                                 </div>
 
 
-                            <div class="FormDivider"></div>
+                                <div class="FormDivider"></div>
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Mother's Information</h4>
+                                        <h4 class="cd-heading-3">Mother's Information</h4>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 padd-20">
                                         <div class="form-group disFlex">
-                                            <label for="yourPic" class="input-group-text">
+                                            <label for="MPic" class="input-group-text">
                                                 <div class="uploadPic">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </div>
                                             </label>
                                             <div class="ml20"> Upload Photo</div>
-                                            <input type="file" class="form-control pic" id="yourPic" placeholder="">
+                                            <input type="file" class="form-control pic idProof-input" id="MPic" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MName" class="input-group-text">
                                                 Name
                                             </label>
-                                            <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                            <input type="text" class="form-control" id="MName" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MEmail" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="Email" placeholder="">
+                                            <input type="text" class="form-control" id="MEmail" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MDob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="--/--/----">
+                                            <input type="text" class="form-control" id="MDob" placeholder="--/--/----">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="number" class="input-group-text" for="M-mobile">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="">
+                                            <input type="text" class="form-control" id="M-mobile" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -608,13 +615,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address1">
+                                                        <input type="radio" checked="checked" name="MRT-rented" id="MRT-rented">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address1">
+                                                        <input type="radio" name="MRT-owned" id="MRT-owned">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -623,39 +630,39 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MHouseNo" class="input-group-text">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="MHouseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MCity" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="MCity" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MState" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="MState" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label class="radio-heading input-group-text">
+                                            <label class="radio-heading input-group-text" for="MIdProof">
                                                 ID Proof/Address Proof
                                             </label>
-                                            <select class="form-control field-req" name="years">
+                                            <select class="form-control field-req" name="years" id="MIdProof">
                                                 <option value="1">PAN</option>
                                                 <option value="2">Adhaar Card</option>
-                                                <option value="3">Password</option>
+                                                <option value="3">Passport</option>
                                                 <option value="4">Voter ID</option>
                                                 <option value="5">Driving License</option>
                                             </select>
@@ -664,21 +671,21 @@
 
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="MIdProofNo" class="input-group-text">
                                                 Id Proof Number
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="MIdProofNo" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group text-center">
-                                            <label for="idProofFather" class="">
+                                            <label for="idProofMother" class="">
                                                 <div class="idPhoto">
                                                     <i class="fa fa-cloud-upload"></i>
                                                     Upload ID Proof's Photo
                                                 </div>
                                             </label>
-                                            <input type="file" class="form-control idProof-input" id="idProofFather" placeholder="">
+                                            <input type="file" class="form-control idProof-input" id="idProofMother" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -697,10 +704,10 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="familyIncome" class="input-group-text">
                                                 Family Income(Monthly)
                                             </label>
-                                            <input type="text" class="form-control" id="" placeholder="">
+                                            <input type="text" class="form-control" id="familyIncome" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
@@ -725,67 +732,77 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="siblingName" class="input-group-text">
                                                Name
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="siblingName" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="siblingAge" class="input-group-text">
                                                 Age
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="siblingAge" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="siblingOccupation" class="input-group-text">
                                                 Occupation
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="siblingOccupation" placeholder="Number">
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="button" class="eduBtn eduBtnLight" data-id="applicantProfile" onclick="activeTab(event)">Previous</button>
+                                    <button type="button" class="eduBtn" data-id="guarantorProfile" onclick="activeTab(event)">Next</button>
                                 </div>
                             </div>
-                            <div class="tab">
+                            <div class="tab" id="guarantorProfile">
+<!--                                <div class="row">-->
+<!--                                    <div class="col-md-12">-->
+<!--                                        <h4 class="cd-heading">Guarantor's Profile</h4>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Guarantor 1</h4>
+                                        <h4 class="cd-heading-3">Guarantor 1</h4>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1Name" class="input-group-text">
                                                 Name
                                             </label>
-                                            <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                            <input type="text" class="form-control" id="G1Name" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1Email" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="Email" placeholder="">
+                                            <input type="text" class="form-control" id="G1Email" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1Dob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="--/--/----">
+                                            <input type="text" class="form-control" id="G1Dob" placeholder="--/--/----">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1number" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="">
+                                            <input type="text" class="form-control" id="G1number" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -813,13 +830,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address1">
+                                                        <input type="radio" checked="checked" name="G1-RT" id="G1-rented">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address1">
+                                                        <input type="radio" name="G1-RT" id="G1-owned">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -828,39 +845,39 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1Address" class="input-group-text">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G1Address" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1City" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G1City" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1state" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G1state" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label class="radio-heading input-group-text">
+                                            <label class="radio-heading input-group-text" for="G1ID">
                                                 ID Proof/Address Proof
                                             </label>
-                                            <select class="form-control field-req" name="years">
+                                            <select class="form-control field-req" name="" id="G1ID">
                                                 <option value="1">PAN</option>
                                                 <option value="2">Adhaar Card</option>
-                                                <option value="3">Password</option>
+                                                <option value="3">Passport</option>
                                                 <option value="4">Voter ID</option>
                                                 <option value="5">Driving License</option>
                                             </select>
@@ -868,61 +885,61 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G1IDnumber" class="input-group-text">
                                                 Id Proof Number
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="G1IDnumber" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group text-center">
-                                            <label for="idProofFather" class="">
+                                            <label for="G1IDpic" class="">
                                                 <div class="idPhoto">
                                                     <i class="fa fa-cloud-upload"></i>
                                                     Upload ID Proof's Photo
                                                 </div>
                                             </label>
-                                            <input type="file" class="form-control idProof-input" id="idProofFather" placeholder="">
+                                            <input type="file" class="form-control idProof-input" id="G1IDpic" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="FormDivider"></div>
                                 <div class="row mt10">
                                     <div class="col-md-12">
-                                        <h4 class="cd-heading">Guarantor 2</h4>
+                                        <h4 class="cd-heading-3">Guarantor 2</h4>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2name" class="input-group-text">
                                                 Name
                                             </label>
-                                            <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                            <input type="text" class="form-control" id="G2name" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2email" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="Email" placeholder="">
+                                            <input type="text" class="form-control" id="G2email" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2Dob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="--/--/----">
+                                            <input type="text" class="form-control" id="G2Dob" placeholder="--/--/----">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2number" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="dob" placeholder="">
+                                            <input type="text" class="form-control" id="G2number" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -950,13 +967,13 @@
                                             <ul class="displayInline">
                                                 <li>
                                                     <label class="container-radio">Rented
-                                                        <input type="radio" checked="checked" name="address1">
+                                                        <input type="radio" checked="checked" name="G2address">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio">Owned
-                                                        <input type="radio" name="address1">
+                                                        <input type="radio" name="G2address">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -965,39 +982,39 @@
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2houseNo" class="input-group-text">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G2houseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2city" class="input-group-text">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G2city" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2state" class="input-group-text">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="">
+                                            <input type="text" class="form-control" id="G2state" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label class="radio-heading input-group-text">
+                                            <label class="radio-heading input-group-text" for="G2ID">
                                                 ID Proof/Address Proof
                                             </label>
-                                            <select class="form-control field-req" name="years">
+                                            <select class="form-control field-req" name="years" id="G2ID">
                                                 <option value="1">PAN</option>
                                                 <option value="2">Adhaar Card</option>
-                                                <option value="3">Password</option>
+                                                <option value="3">Passport</option>
                                                 <option value="4">Voter ID</option>
                                                 <option value="5">Driving License</option>
                                             </select>
@@ -1005,29 +1022,28 @@
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
-                                            <label for="number" class="input-group-text">
+                                            <label for="G2IDnumber" class="input-group-text">
                                                 Id Proof Number
                                             </label>
-                                            <input type="text" class="form-control" id="IdNumber" placeholder="Number">
+                                            <input type="text" class="form-control" id="G2IDnumber" placeholder="Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group text-center">
-                                            <label for="idProofFather" class="">
+                                            <label for="G2IDpic" class="">
                                                 <div class="idPhoto">
                                                     <i class="fa fa-cloud-upload"></i>
                                                     Upload ID Proof's Photo
                                                 </div>
                                             </label>
-                                            <input type="file" class="form-control idProof-input" id="idProofFather" placeholder="">
+                                            <input type="file" class="form-control idProof-input" id="G2IDpic" placeholder="">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="text-center">
-                                <button type="button" id="prevBtn" class="eduBtn eduBtnLight" onclick="nextPrev(-1)">Previous</button>
-                                <button type="button" id="nextBtn" class="eduBtn" onclick="nextPrev(1)">Next</button>
+                                <div class="text-center">
+                                    <button type="button" class="eduBtn eduBtnLight"data-id="parentsProfile" onclick="activeTab(event)">Previous</button>
+                                    <button type="button" class="eduBtn" onclick="">Update</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1038,6 +1054,9 @@
 </div>
 <?php
 $this->registerCss('
+.activeLi{
+    color: #00a0e3 !important;
+}
 #siblingInfo{
     display: none;
 }
@@ -1054,6 +1073,11 @@ $this->registerCss('
     font-size: 18px;
     font-weight: bold;
     color: #000;
+}
+.cd-heading-3{
+    font-size: 16px;
+    font-weight: bold;
+    color: #00a0e3;
 }
 .uploadPic{
     height: 80px;
@@ -1287,6 +1311,9 @@ $this->registerCss('
 .tab {
   display: none;
 }
+.tabActive{
+    display: block;
+}
 .cd-heading-2{
     font-size: 18px;
     font-weight: bold;
@@ -1294,6 +1321,20 @@ $this->registerCss('
     font-family: lora;
     margin-bottom: 0px;
     margin-top: 5px;
+}
+.formNav{
+    padding-inline-start: 0px;
+}
+.formNav li{
+    display: inline;
+    list-style-type: none;
+}
+.formNav li button{
+    background: transparent;
+    font-size: 18px;
+    color: #666;
+    border: none;
+    
 }
 ');
 $script = <<<JS
@@ -1361,41 +1402,24 @@ function ShowSibling() {
 </script>
 
 <script>
-    var currentTab = 0; // Current tab is set to be the first tab (0)
-    showTab(currentTab); // Display the current tab
 
-    function showTab(n) {
-        // This function will display the specified tab of the form...
-        var x = document.getElementsByClassName("tab");
-        x[n].style.display = "block";
-        //... and fix the Previous/Next buttons:
-        if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
-        } else {
-            document.getElementById("prevBtn").style.display = "inline";
-        }
-        if (n == (x.length - 1)) {
-            document.getElementById("nextBtn").innerHTML = "Submit";
-        } else {
-            document.getElementById("nextBtn").innerHTML = "Next";
-        }
-
+function activeTab(event) {
+    let tabs = document.getElementsByClassName('tabActive');
+    for(var i = 0; i < tabs.length; i++){
+        tabs[i].classList.remove('tabActive');
+    }
+    let activeLi = document.getElementsByClassName('activeLi');
+    for(var j = 0; j < activeLi.length; i++){
+        activeLi[j].classList.remove('activeLi');
     }
 
-    function nextPrev(n) {
-        // This function will figure out which tab to display
-        var x = document.getElementsByClassName("tab");
-        // Hide the current tab:
-        x[currentTab].style.display = "none";
-        // Increase or decrease the current tab by 1:
-        currentTab = currentTab + n;
-        // if you have reached the end of the form...
-        if (currentTab >= x.length) {
-            // ... the form gets submitted:
-            document.getElementById("regForm").submit();
-            return false;
-        }
-        // Otherwise, display the correct tab:
-        showTab(currentTab);
-    }
-    </script>
+    let activeID = event.currentTarget.getAttribute('data-id');
+    console.log(activeID)
+    let activeTab = document.getElementById(activeID);
+    activeTab.classList.add('tabActive');
+    let selectedTp = document.querySelector('[data-id="'+activeID+'"]');
+    selectedTp.classList.add('activeLi');
+
+}
+
+</script>
