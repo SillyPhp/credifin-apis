@@ -149,10 +149,6 @@ $this->params['header_dark'] = false;
                                  alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana"></div>
                         <div class="h-heading">Education Loan</div>
                         <!--                            <div class="h-text">I want to enroll talent</div>-->
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
                 </div>
                 <!--                </div>-->
                 <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
