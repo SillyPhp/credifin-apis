@@ -3,15 +3,11 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
-use common\models\AssignedWebinarTo;
+use common\models\AssignedCollegeCourses;
 use common\models\ClassNotes;
-use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
-use common\models\FollowedOrganizations;
 use common\models\OnlineClasses;
-use common\models\Organizations;
 use common\models\ShortlistedApplications;
-use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use common\models\WebinarRegistrations;
@@ -998,15 +994,17 @@ class CandhomeController extends ApiBaseController
                 ->one();
 
             if ($college_id) {
-                $courses = CollegeCourses::find()
+                $courses = AssignedCollegeCourses::find()
+                    ->distinct()
                     ->alias('a')
-                    ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                    ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                    ->joinWith(['courseEnc c'], false)
                     ->joinWith(['collegeSections b' => function ($b) {
-                        $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                        $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                         $b->onCondition(['b.is_deleted' => 0]);
                     }], false)
                     ->where(['a.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0])
-                    ->groupBy(['a.course_name'])
+//                    ->groupBy(['a.course_name'])
                     ->asArray()
                     ->all();
                 if ($courses) {
@@ -1024,18 +1022,19 @@ class CandhomeController extends ApiBaseController
 
     public function actionGetCourseList()
     {
-        $params= Yii::$app->request->post();
-        if ($params['id'])
-        {
-            $courses = CollegeCourses::find()
+        $params = Yii::$app->request->post();
+        if ($params['id']) {
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }], false)
                 ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
             if ($courses) {
@@ -1043,7 +1042,7 @@ class CandhomeController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
+        } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }

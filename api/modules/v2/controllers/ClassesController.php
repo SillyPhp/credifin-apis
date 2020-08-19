@@ -6,13 +6,11 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\ClassComments;
 use api\modules\v2\models\ClassForm;
 use api\modules\v2\models\UploadNotes;
-use api\modules\v2\models\ProfilePicture;
+use common\models\AssignedCollegeCourses;
 use common\models\AssignedVideoSessions;
 use common\models\ClassNotes;
-use common\models\CollegeCourses;
 use common\models\OnlineClassComments;
 use common\models\OnlineClasses;
-use common\models\PostComments;
 use common\models\Teachers;
 use common\models\Users;
 use Yii;
@@ -140,15 +138,17 @@ class ClassesController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id['college_id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -371,8 +371,8 @@ class ClassesController extends ApiBaseController
                 ->where(['class_enc_id' => $class_id])
                 ->one();
 
-            if($session){
-                if($session->status == 'Active'){
+            if ($session) {
+                if ($session->status == 'Active') {
                     $session->status = 'Ended';
                     $session->video_session_end_time = date('y-m-d H:i:s');
                     $session->update();
