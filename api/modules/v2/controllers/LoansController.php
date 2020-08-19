@@ -176,7 +176,7 @@ class LoansController extends ApiBaseController
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => 'captured']);
+                ->where(['a.college_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => ['captured', 'created']]);
             if ($limit) {
                 $loan_requests->limit($limit)
                     ->offset(($page - 1) * $limit);
@@ -512,6 +512,85 @@ class LoansController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionManageLoanApplications()
+    {
+        if ($this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $params = Yii::$app->request->post();
+            $limit = $params['limit'];
+
+            $page = $params['page'];
+            if (!$page) {
+                $page = 1;
+            }
+
+            $loan_requests = LoanApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select([
+                    'a.loan_app_enc_id',
+                    'a.applicant_name',
+                    'a.applicant_dob',
+                    'a.applicant_current_city',
+                    'a.degree',
+                    'a.years',
+                    'a.semesters',
+                    'a.phone',
+                    'a.email',
+                    'a.gender',
+                    'a.amount',
+                    'f.payment_status',
+                    'c.course_name',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                ])
+                ->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userOtherInfo b1']);
+                }], false)
+                ->joinWith(['collegeCourseEnc c'], false)
+                ->joinWith(['loanCoApplicants d' => function ($d) {
+                    $d->select([
+                        'd.loan_co_app_enc_id',
+                        'd.loan_app_enc_id',
+                        'd.name',
+                        'd.relation',
+                        'd.employment_type',
+                        'd.annual_income'
+                    ]);
+                }])
+                ->joinWith(['educationLoanPayments f'], false)
+                ->joinWith(['loanPurposes e' => function ($e) {
+                    $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
+                    $e->joinWith(['feeComponentEnc e1'], false);
+                }])
+                ->where(['a.college_enc_id' => $college_id]);
+            if (isset($params['name']) && !empty($params['name'])) {
+                $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
+            }
+            if (isset($params['college_loan_status']) && !empty($params['college_loan_status'])) {
+                $loan_requests->andWhere(['a.status' => $params['college_loan_status']]);
+            }
+            if (isset($params['payment_status']) && !empty($params['payment_status'])) {
+                $loan_requests->andWhere(['f.payment_status' => $params['payment_status']]);
+            }
+            if ($limit) {
+                $loan_requests->limit($limit)
+                    ->offset(($page - 1) * $limit);
+            }
+            $loan_requests = $loan_requests
+                ->asArray()
+                ->all();
+
+            if ($loan_requests) {
+                return $this->response(200, ['status' => 200, 'data' => $loan_requests]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
