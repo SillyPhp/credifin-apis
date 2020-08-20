@@ -81,7 +81,17 @@ use yii\helpers\Url;
                     <div class="flw-rvw">
                         <a href="/{{profile_link}}" target="_blank">VIEW PROFILE</a>
                         <a href="/{{review_link}}" target="_blank">REVIEW</a>
-                        <a href="/{{review_link}}" target="_blank">FOLLOW</a>
+                        {{#login}}
+                        {{#is_followed}}
+                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}" class="is_follow_up follow_btn" target="_blank">FOLLOWED</a>
+                        {{/is_followed}}
+                        {{^is_followed}}
+                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}" class="is_follow_up"  target="_blank">FOLLOW</a>
+                        {{/is_followed}}
+                        {{/login}}
+                        {{^login}}
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal">FOLLOW</a>
+                        {{/login}}
                     </div>
                 </a>
             </div>
@@ -90,6 +100,12 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registercss('
+.follow_btn
+{
+    background-color: #fff !important;
+    color: #00a0e3 !important;
+    transition: all .3s;
+}
 .new-j {
 	margin-left: -5px;
 }
@@ -223,3 +239,45 @@ $this->registercss('
     width: 20px;
 }
 ');
+
+$script = <<< JS
+$(document).on('click','.is_follow_up',function(e) {
+  e.preventDefault();
+    btn = $(this);
+    var org_id = btn.attr('value');
+    var type = btn.attr('type');
+    if (btn.hasClass('follow_btn'))
+        {
+            btn.removeClass('follow_btn')
+            btn.text('Follow');
+        }
+    else 
+        {
+           btn.addClass('follow_btn'); 
+           btn.text('Followed');
+        }
+    if (type == "1")
+        {
+            var url = '/organizations/follow';
+        }
+    else{
+        var url = '/organizations/follow-unclaimed-organization';
+    }
+    $.ajax({
+        url:url,
+        data: {org_id:org_id},                         
+        method: 'post',
+        beforeSend:function(){
+         //pre actions
+        },
+        success:function(data){  
+         //success logs
+        },
+        error:function(xhr)
+        {
+            alert(xhr);
+        }
+    }); 
+})
+JS;
+$this->registerJs($script);

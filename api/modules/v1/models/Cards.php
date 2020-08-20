@@ -300,6 +300,9 @@ class Cards
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
                 $result[$i]['skill'] = 'Multiple Skills';
             }
+            if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
+                $result[$i]['salary'] = $currency . ' View In Detail';
+            }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
             unset($result[$i]['salary_duration']);
@@ -533,7 +536,7 @@ class Cards
                 } else {
                     $result[$i]['salary'] = $currency . round((int)$val['fixed_salary'] / 12) . ' p.m.';
                 }
-            }  elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
+            } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
                         $result[$i]['salary'] = $currency . round((string)$val['min_salary']) . " - " . $currency . round((string)$val['max_salary']) . ' p.m.';
@@ -572,6 +575,9 @@ class Cards
             }
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
                 $result[$i]['skill'] = 'Multiple Skills';
+            }
+            if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
+                $result[$i]['salary'] = $currency . ' View In Detail';
             }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);

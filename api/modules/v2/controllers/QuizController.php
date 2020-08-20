@@ -60,24 +60,6 @@ class QuizController extends ApiBaseController
         return $behaviors;
     }
 
-    public function actionDetail()
-    {
-        $id = Yii::$app->request->post('id');
-        if ($id) {
-            $detail = MockQuizzes::find()
-                ->alias('z')
-                ->select(['z.*','a1.name as label_name'])
-                ->joinWith(['labelEnc a' => function($a){
-                    $a->joinWith(['poolEnc a1']);
-                }],false)
-                ->where(['z.quiz_enc_id' => $id])
-                ->asArray()
-                ->one();
-            return $this->response(200, ['status' => 200, 'data' => $detail]);
-        }
-        return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
-    }
-
     private function getOrgId()
     {
         if ($user = $this->isAuthorized()) {
@@ -995,6 +977,27 @@ class QuizController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+            $id = Yii::$app->request->post('id');
+            if ($id) {
+                $detail = MockQuizzes::find()
+                    ->alias('z')
+                    ->select(['z.*', 'a1.name as label_name'])
+                    ->joinWith(['labelEnc a' => function ($a) {
+                        $a->joinWith(['poolEnc a1']);
+                    }], false)
+                    ->joinWith(['mockAssignedQuizPools b'])
+                    ->where(['z.quiz_enc_id' => $id])
+                    ->asArray()
+                    ->one();
+                return $this->response(200, ['status' => 200, 'data' => $detail]);
+            }
+            return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
         }
     }
 
