@@ -444,7 +444,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -459,7 +459,7 @@ class CandhomeController extends ApiBaseController
                         'a.start_time',
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'a.semester',
                         'a.subject_name',
                         'a.class_type'
@@ -468,7 +468,9 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['courseEnc d'], false)
+                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $d->joinWith(['courseEnc dd']);
+                }], false)
                 ->where([
                     'a.status' => 'Active',
                     'a.is_deleted' => 0,
@@ -477,7 +479,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
-                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.assigned_college_enc_id' => $user['course_enc_id'],
                         'a.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['a.class_date' => $date_now])
@@ -519,7 +521,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -535,7 +537,7 @@ class CandhomeController extends ApiBaseController
                         'b.start_time',
                         'b.end_time',
                         'CONCAT(b2.first_name," ",b2.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'b.subject_name',
                         'a.note',
                         'a.title',
@@ -547,7 +549,9 @@ class CandhomeController extends ApiBaseController
                         $b->joinWith(['userEnc b2'], false);
                         $b->joinWith(['collegeEnc b3'], false);
                     }], false);
-                    $b->joinWith(['courseEnc d'], false);
+                    $b->joinWith(['assignedCollegeEnc d'=>function($d){
+                        $d->joinWith(['courseEnc dd']);
+                    }], false);
                 }], false)
                 ->where([
                     'a.is_deleted' => 0,
@@ -556,7 +560,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'b.semester' => $user['semester'],
-                        'b.course_enc_id' => $user['course_enc_id'],
+                        'b.assigned_college_enc_id' => $user['course_enc_id'],
                         'b.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['<=', 'b.class_date', $date_now])
@@ -612,7 +616,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -627,7 +631,7 @@ class CandhomeController extends ApiBaseController
                         'a.start_time',
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'a.semester',
                         'a.subject_name'
                     ])
@@ -635,7 +639,9 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['courseEnc d'], false)
+                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $d->joinWith(['courseEnc dd']);
+                }], false)
                 ->where([
                     'a.status' => 'Active',
                     'a.is_deleted' => 0,
@@ -643,7 +649,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
-                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.assigned_college_enc_id' => $user['course_enc_id'],
                         'a.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['>', 'a.class_date', $date_now])

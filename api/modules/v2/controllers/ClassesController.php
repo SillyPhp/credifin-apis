@@ -101,8 +101,10 @@ class ClassesController extends ApiBaseController
                         if ($model->SaveClass()) {
                             $data = OnlineClasses::find()
                                 ->alias('a')
-                                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date'])
-                                ->joinWith(['courseEnc b'], false)
+                                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date'])
+                                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                                    $d->joinWith(['courseEnc bb']);
+                                }], false)
                                 ->joinWith(['sectionEnc c'], false)
                                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
                                 ->asArray()
@@ -171,8 +173,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_type', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_type', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['a.class_date' => $date_now])
@@ -211,8 +215,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
                 ->andWhere(['>', 'a.class_date', $date_now])
@@ -334,7 +340,7 @@ class ClassesController extends ApiBaseController
             $model->teacher_enc_id = $teacher_id;
             $model->semester = $data['semester'];
             $model->subject_name = $data['subject_name'];
-            $model->course_enc_id = $data['course_id'];
+            $model->assigned_college_enc_id = $data['course_id'];
             $model->section_enc_id = $data['section_id'];
             $model->start_time = $time_now;
             $model->end_time = $end_time;
@@ -752,8 +758,10 @@ class ClassesController extends ApiBaseController
             $classes = OnlineClasses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
                 ->innerJoinWith(['classNotes n' => function ($n) {
                     $n->select(['n.class_enc_id', 'n.note_enc_id', 'n.note', 'n.title']);
