@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\BusinessActivities;
+use common\models\Countries;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\EducationalLoans;
@@ -30,6 +31,7 @@ class EducationLoansController extends Controller
     }
     public function actionApply(){
         $type = ['College','School','Educational Institute'];
+        $india = Countries::findOne(['name'=>'India'])->country_enc_id;
         $params1 = (new \yii\db\Query())
             ->select(['REPLACE(name, "&amp;", "&") as name','a.organization_enc_id','b.business_activity'])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
@@ -45,10 +47,13 @@ class EducationLoansController extends Controller
             ->andWhere(['in', 'business_activity', $type]);
 
         $data_collection = $params1->union($params2)->all();
-        return $this->render('apply-general-loan-form',['data_collection'=>$data_collection]);
+        return $this->render('apply-general-loan-form',[
+            'data_collection'=>$data_collection,
+            'india'=>$india
+        ]);
     }
     public function actionApplyLoan($id)
-    { 
+    {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
             ->select(['organization_enc_id'])
