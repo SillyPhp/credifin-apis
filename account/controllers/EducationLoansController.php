@@ -36,25 +36,12 @@ class EducationLoansController extends Controller
 
     public function actionDashboard()
     {
-        $college_id = Yii::$app->user->identity->organization_enc_id;
-        $service = Services::findOne(['name' => 'Loans'])['service_enc_id'];
-        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
+        $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
+        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
         if(!$chkPermission){
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
-        $students = UserOtherDetails::find()
-            ->alias('a')
-            ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-            ->joinWith(['userEnc b' => function ($b) {
-                $b->joinWith(['cityEnc b1']);
-            }], false)
-            ->joinWith(['courseEnc cc'], false)
-            ->joinWith(['departmentEnc c'], false)
-            ->where(['a.organization_enc_id' => $college_id, 'a.college_actions' => 0])
-            ->asArray()
-            ->all();
-        $studentIds = ArrayHelper::getColumn($students, 'user_enc_id');
-        array_push($studentIds, "", "NULL");
+
         $loans = LoanApplications::find()
             ->distinct()
             ->alias('a')
@@ -103,9 +90,11 @@ class EducationLoansController extends Controller
                     END) as employment_type',
                 ]);
             }])
-            ->orWhere(['in', 'a.created_by', $studentIds])
-            ->orWhere(['a.created_by' => NULL])
+            ->joinWith(['currentScheme i' => function($i){
+                $i->andWhere(['i.loan_provider_id' => Yii::$app->user->identity->organization_enc_id]);
+            }], false)
             ->andWhere(['a.status' => 1])
+            ->andWhere(['not',['a.current_scheme_id' => null]])
             ->asArray()
             ->all();
 
@@ -122,8 +111,9 @@ class EducationLoansController extends Controller
                 'COUNT(CASE WHEN a.loan_status = "5" THEN 1 END) as disbursed',
                 'COUNT(CASE WHEN a.loan_status = "10" THEN 1 END) as rejected',
             ])
-            ->orWhere(['in', 'a.created_by', $studentIds])
-            ->orWhere(['a.created_by' => NULL])
+            ->joinWith(['currentScheme i' => function($i){
+                $i->andWhere(['i.loan_provider_id' => Yii::$app->user->identity->organization_enc_id]);
+            }], false)
             ->andWhere(['a.status' => 1])
             ->asArray()
             ->one();
@@ -186,6 +176,7 @@ class EducationLoansController extends Controller
                 $logModel->app_log_enc_id = $utilitiesModel->encrypt();
                 $logModel->loan_app_enc_id = $id;
                 $logModel->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
+                $logModel->scheme_enc_id = $model->current_scheme_id;
                 $logModel->created_by = Yii::$app->user->identity->user_enc_id;
                 $logModel->created_on = date('Y-m-d H:i:s');
                 $logModel->loan_status = $status;
