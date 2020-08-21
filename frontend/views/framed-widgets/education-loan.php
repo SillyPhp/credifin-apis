@@ -775,7 +775,7 @@ $script = <<<JS
 				    min:500
 				},
 				'co-pancard[1]':{
-				    required:true,
+				    required:false,
 				    minlength: 10,
 				    maxlength: 10,
 				},
@@ -796,7 +796,7 @@ $script = <<<JS
 				    min:500
 				},
 				'co-pancard[2]':{
-				    required:true,
+				    required:false,
 				    minlength: 10,
 				    maxlength: 10,
 				},
