@@ -9,6 +9,7 @@ use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
+use common\models\PathToClaimOrgLoanApplication;
 use Yii;
 use yii\base\Model;
 
@@ -44,7 +45,7 @@ class LoanApplicationsForm extends LoanApplications
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $this->loan_app_enc_id = $utilitiesModel->encrypt();
-            $this->college_enc_id = $college_id;
+//            $this->college_enc_id = $college_id;
             $this->source = $source;
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
             $this->created_by = $userId;
@@ -56,6 +57,22 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $this->_flag = true;
             }
+
+            $path_to_claim = new PathToClaimOrgLoanApplication();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
+            $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
+            $path_to_claim->assigned_course_enc_id = $this->college_course_enc_id;
+            $path_to_claim->created_by = $userId;
+            if (!$path_to_claim->save()) {
+                print_r($path_to_claim->getErrors());
+                $transaction->rollback();
+                return false;
+            } else {
+                $this->_flag = true;
+            }
+
 
             if (!empty($this->purpose)) {
                 foreach ($this->purpose as $p) {
