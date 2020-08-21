@@ -153,6 +153,7 @@ class LoansController extends ApiBaseController
                     'a.email',
                     'a.gender',
                     'a.amount',
+                    'f.payment_status',
                     'c.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
@@ -170,16 +171,18 @@ class LoansController extends ApiBaseController
                         'd.annual_income'
                     ]);
                 }])
+                ->joinWith(['educationLoanPayments f'], false)
                 ->joinWith(['loanPurposes e' => function ($e) {
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.status' => 0]);
+                ->where(['a.college_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => 'captured']);
             if ($limit) {
                 $loan_requests->limit($limit)
                     ->offset(($page - 1) * $limit);
             }
-            $loan_requests = $loan_requests->asArray()
+            $loan_requests = $loan_requests
+                ->asArray()
                 ->all();
 
             if ($id) {

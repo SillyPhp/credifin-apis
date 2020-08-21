@@ -90,6 +90,8 @@ use yii\helpers\Url;
         </div>
     </section>
 
+
+
     <section class="bg-cl">
         <div class="container">
             <div class="col-md-4 col-sm-4">
@@ -140,8 +142,6 @@ use yii\helpers\Url;
         </div>
 
     </section>
-
-
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -169,6 +169,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+
     <div class="clearfix"></div>
     <section class="edu-loan">
         <div class="container">
@@ -215,8 +217,8 @@ use yii\helpers\Url;
                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
                             alt=""/> Contact Us
                     </div>
-                    <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +8727985888</div>
-                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Call</a>
+
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -318,15 +320,6 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-.callNumber{
-    color: #666666;
-    font-size: 20px;
-    margin-top: 10px;
-    font-weight: bold;
-}
-.callNumber i{
-    color: #1cbcb2;
-}
 .loan-ey-flex{
     display: flex;
     flex-wrap: wrap;
@@ -820,7 +813,7 @@ $this->registerCss('
     font-size: 20px !important; 
 }
 .l-help-txt-btn{
-    margin-top: 15px;
+    margin-top: 40px;
 }
 .l-help-txt-btn a{
     border: 1px solid #1cbcb2; 

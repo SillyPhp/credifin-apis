@@ -38,6 +38,17 @@ class MentorsController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        $route = ltrim(Yii::$app->request->url, '/');
+        if ($route === "") {
+            $route = "/";
+        }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute($route, $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionMentorshipIndex()
     {
         $model = new \frontend\models\mentorship\MentorshipEnquiryForm();
@@ -243,14 +254,16 @@ class MentorsController extends Controller
             if ($dataDetail) {
                 array_walk($dataDetail, function (&$item) {
                     if ($item['image']) {
-                        $image_path = Yii::$app->params->upload_directories->speakers->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                         if (file_exists($image_path)) {
-                            $image = Yii::$app->params->upload_directories->speakers->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                            $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                         }
                     }
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                    $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                    if($item['org_logo']){
+                        $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                    }
                     unset($item['image']);
                     unset($item['image_location']);
                     unset($item['org_logo']);
