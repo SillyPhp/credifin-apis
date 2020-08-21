@@ -14,6 +14,18 @@ use yii\web\Controller;
 
 class EducationLoansController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        $route = ltrim(Yii::$app->request->url, '/');
+        if ($route === "") {
+            $route = "/";
+        }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute($route, $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex(){
         return $this->render("education-loan-index");
     }

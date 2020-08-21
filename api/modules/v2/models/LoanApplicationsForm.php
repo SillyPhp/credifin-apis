@@ -21,19 +21,19 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['purpose','college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants','loan_type_enc_id'], 'safe'],
+            [['purpose', 'college_course_enc_id', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['co_applicants', 'loan_type_enc_id'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
-            [['applicant_name','loan_type_enc_id','college_course_enc_id', 'applicant_current_city', 'email'], 'string', 'max' => 100],
+            [['applicant_name', 'loan_type_enc_id', 'college_course_enc_id', 'applicant_current_city', 'email'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
         ];
     }
 
-    public function add($userId, $college_id,$source='Mec')
+    public function add($userId, $college_id, $source = 'Mec')
     {
-        $loan_type = LoanTypes::findOne(['loan_name'=>'Annual'])->loan_type_enc_id;
+        $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         $application_fee = OrganizationFeeAmount::find()
             ->select(['application_fee_amount_enc_id', 'amount', 'gst'])
             ->where(['organization_enc_id' => $college_id, 'loan_type_enc_id' => $loan_type, 'status' => 1])
@@ -46,7 +46,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_app_enc_id = $utilitiesModel->encrypt();
             $this->college_enc_id = $college_id;
             $this->source = $source;
-            $this->loan_type_enc_id = (($loan_type)?$loan_type:null);
+            $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
             $this->created_by = $userId;
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
@@ -89,7 +89,7 @@ class LoanApplicationsForm extends LoanApplications
                     $model->annual_income = $applicant['annual_income'];
                     $model->pan_number = $applicant['pan_number'];
                     $model->aadhaar_number = $applicant['aadhaar_number'];
-                    $model->created_by = (($userId)?$userId:null);
+                    $model->created_by = (($userId) ? $userId : null);
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         print_r($model->getErrors());
@@ -101,6 +101,7 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
+
             if (!empty($application_fee)) {
                 $amount = $application_fee['amount'];
                 $gst = $application_fee['gst'];
@@ -109,6 +110,7 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $total_amount = 500;
                 $gst = 0;
+                $amount = 500;
             }
 
 
@@ -128,7 +130,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->college_enc_id = $college_id;
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
                 $loan_payment->payment_token = $token;
-                $loan_payment->payment_amount = $application_fee['amount'];
+                $loan_payment->payment_amount = $amount;
                 $loan_payment->payment_gst = $gst;
                 $loan_payment->created_by = $userId;
                 $loan_payment->created_on = date('Y-m-d H:i:s');
