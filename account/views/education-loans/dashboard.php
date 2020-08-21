@@ -109,6 +109,7 @@ use yii\widgets\Pjax;
                                 <label for="lists[<?= $key ?>]"><?= $filter ?></label>
                             </li>
                             <?php
+                            break;
                         }
                         ?>
                     </ul>
