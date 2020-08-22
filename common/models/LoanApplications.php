@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $loan_app_enc_id
+ * @property string $current_scheme_id
  * @property string $college_enc_id
  * @property string $college_course_enc_id organization_enc_id
  * @property string $loan_type_enc_id
@@ -22,6 +23,9 @@ use Yii;
  * @property string $email
  * @property int $gender 1 for Male, 2 for Female
  * @property double $amount
+ * @property double $amount_received
+ * @property double $amount_due
+ * @property double $scholarship
  * @property string $aadhaar_number
  * @property string $source
  * @property string $created_by user_enc_id
@@ -39,10 +43,12 @@ use Yii;
  * @property Users $updatedBy
  * @property LoanTypes $loanTypeEnc
  * @property Organizations $collegeEnc
+ * @property OrganizationLoanSchemes $currentScheme
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanPurpose[] $loanPurposes
+ * @property LoanSanctionReports[] $loanSanctionReports
  * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
  * @property PathToUnclaimOrgLoanApplication[] $pathToUnclaimOrgLoanApplications
  */
@@ -66,8 +72,8 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status', 'loan_status', 'is_deleted'], 'integer'],
-            [['amount'], 'number'],
-            [['loan_app_enc_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['amount', 'amount_received', 'amount_due', 'scholarship'], 'number'],
+            [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
@@ -75,6 +81,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
+            [['current_scheme_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLoanSchemes::className(), 'targetAttribute' => ['current_scheme_id' => 'scheme_enc_id']],
         ];
     }
 
@@ -137,6 +144,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCurrentScheme()
+    {
+        return $this->hasOne(OrganizationLoanSchemes::className(), ['scheme_enc_id' => 'current_scheme_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanCandidateEducations()
     {
         return $this->hasMany(LoanCandidateEducation::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
@@ -164,6 +179,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanPurposes()
     {
         return $this->hasMany(LoanPurpose::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanSanctionReports()
+    {
+        return $this->hasMany(LoanSanctionReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

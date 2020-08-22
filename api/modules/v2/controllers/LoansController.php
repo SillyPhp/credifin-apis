@@ -275,6 +275,9 @@ class LoansController extends ApiBaseController
 
             if ($application) {
                 if ($action == 'approve') {
+                    $application->amount_received = $param['amount_received'];
+                    $application->amount_due = $param['amount_due'];
+                    $application->scholarship = $param['scholarship'];
                     $application->status = 1;
                 } elseif ($action == "reject") {
                     $application->status = 2;
@@ -591,6 +594,36 @@ class LoansController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateAmount()
+    {
+        Yii::$app->cache->flush();
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $loan_app = LoanApplications::find()
+                ->where(['loan_app_enc_id' => $params['loan_app_id']])
+                ->one();
+
+            $loan_app->amount_received = $params['amount_received'];
+            $loan_app->amount_due = $params['amount_due'];
+            $loan_app->scholarship = $params['scholarship'];
+            $loan_app->updated_by = $user->user_enc_id;
+            $loan_app->updated_on = date('Y-m-d H:i:s');
+
+            if ($loan_app->update()) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
