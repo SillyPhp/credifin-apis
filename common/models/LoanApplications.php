@@ -23,6 +23,9 @@ use Yii;
  * @property string $email
  * @property int $gender 1 for Male, 2 for Female
  * @property double $amount
+ * @property double $amount_received
+ * @property double $amount_due
+ * @property double $scholarship
  * @property string $aadhaar_number
  * @property string $source
  * @property string $created_by user_enc_id
@@ -45,6 +48,7 @@ use Yii;
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanPurpose[] $loanPurposes
+ * @property LoanSanctionReports[] $loanSanctionReports
  * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
  * @property PathToUnclaimOrgLoanApplication[] $pathToUnclaimOrgLoanApplications
  */
@@ -68,7 +72,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status', 'loan_status', 'is_deleted'], 'integer'],
-            [['amount'], 'number'],
+            [['amount', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -175,6 +179,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanPurposes()
     {
         return $this->hasMany(LoanPurpose::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanSanctionReports()
+    {
+        return $this->hasMany(LoanSanctionReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

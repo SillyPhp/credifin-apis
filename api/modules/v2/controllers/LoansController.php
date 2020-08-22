@@ -275,6 +275,9 @@ class LoansController extends ApiBaseController
 
             if ($application) {
                 if ($action == 'approve') {
+                    $application->amount_received = $param['amount_received'];
+                    $application->amount_due = $param['amount_due'];
+                    $application->scholarship = $param['scholarship'];
                     $application->status = 1;
                 } elseif ($action == "reject") {
                     $application->status = 2;
