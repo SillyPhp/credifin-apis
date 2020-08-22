@@ -11,6 +11,7 @@ use Yii;
  * @property string $app_log_enc_id
  * @property string $loan_app_enc_id Foreign Key to lJCWPnNNVy3d95ppLp7M_loan_applications Table
  * @property string $organization_enc_id
+ * @property string $sanctioned_report_id
  * @property string $scheme_enc_id
  * @property string $description
  * @property string $created_by Foreign Key to lJCWPnNNVy3d95ppLp7M_users Table
@@ -22,6 +23,7 @@ use Yii;
  * @property Users $createdBy
  * @property Organizations $organizationEnc
  * @property OrganizationLoanSchemes $schemeEnc
+ * @property LoanSanctionReports $sanctionedReport
  */
 class LoanApplicationLogs extends \yii\db\ActiveRecord
 {
@@ -43,12 +45,13 @@ class LoanApplicationLogs extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['created_on'], 'safe'],
             [['is_reconsidered', 'loan_status'], 'integer'],
-            [['app_log_enc_id', 'loan_app_enc_id', 'organization_enc_id', 'scheme_enc_id', 'created_by'], 'string', 'max' => 100],
+            [['app_log_enc_id', 'loan_app_enc_id', 'organization_enc_id', 'sanctioned_report_id', 'scheme_enc_id', 'created_by'], 'string', 'max' => 100],
             [['app_log_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['scheme_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLoanSchemes::className(), 'targetAttribute' => ['scheme_enc_id' => 'scheme_enc_id']],
+            [['sanctioned_report_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanSanctionReports::className(), 'targetAttribute' => ['sanctioned_report_id' => 'report_enc_id']],
         ];
     }
 
@@ -82,5 +85,13 @@ class LoanApplicationLogs extends \yii\db\ActiveRecord
     public function getSchemeEnc()
     {
         return $this->hasOne(OrganizationLoanSchemes::className(), ['scheme_enc_id' => 'scheme_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSanctionedReport()
+    {
+        return $this->hasOne(LoanSanctionReports::className(), ['report_enc_id' => 'sanctioned_report_id']);
     }
 }

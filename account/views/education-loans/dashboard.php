@@ -2,9 +2,14 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
 ?>
 <div class="row">
+    <?php
+    Pjax::begin(['id' => 'stat-container']);
+    ?>
     <div class="col-md-12">
         <div class="widget-row">
             <div class="col-md-3 col-sm-6">
@@ -72,6 +77,7 @@ use yii\widgets\Pjax;
             </div>
         </div>
     </div>
+    <?php Pjax::end(); ?>
 </div>
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
@@ -121,7 +127,7 @@ use yii\widgets\Pjax;
                 <div class="tab-pane active pos-rel" id="tab_actions_pending">
                     <div id="overflowScroll">
                         <?php
-                            Pjax::begin(['id' => 'list-container']);
+                        Pjax::begin(['id' => 'list-container']);
                         ?>
                         <div class="row">
                             <div class="mt-actions mainTable" style="">
@@ -336,63 +342,44 @@ use yii\widgets\Pjax;
                         <p>Sanction Loan</p>
                     </div>
                 </div>
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'sanctioned-form',
+                    'options' => ['enctype' => 'multipart/form-data'],
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group"><label for="number" class="input-group-text">{label}</label>{input}</div>',
+                    ],
+                ]);
+                ?>
                 <div class="col-md-9 col-sm-12 noPadd">
                     <div id="loanModalScroll">
                         <div class="row">
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        File Number
-                                    </label>
-                                    <input type="text" class="form-control" id="fileNumber">
+                            <div class="col-md-12">
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'file_number')->textInput(['autocomplete' => 'off', 'autofocus' => true]); ?>
+                                    <?= $form->field($model, 'loan_app_id', ['template' => '{input}'])->hiddenInput(['id' => 'loan_app_id', 'value' => ""])->label(false); ?>
+                                </div>
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'loan_amount')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Loan Amount
-                                    </label>
-                                    <input type="text" class="form-control" id="loanAmount">
+                            <div class="col-md-12">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'processing_fee')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'total_installments')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'discounting')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Processing Fee
-                                    </label>
-                                    <input type="text" class="form-control" id="processing">
+                            <div class="col-md-12">
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'approved_by')->textInput(['autocomplete' => 'off']); ?>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Total Installments
-                                    </label>
-                                    <input type="text" class="form-control" id="installments">
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Discounting
-                                    </label>
-                                    <input type="text" class="form-control" id="discounting">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Approved By
-                                    </label>
-                                    <input type="text" class="form-control" id="approved">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        FLDG
-                                    </label>
-                                    <input type="text" class="form-control" id="FLDG">
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'fldg')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %'])->label('FLDG'); ?>
                                 </div>
                             </div>
                             <div class="col-md-12 col-sm-12 padd-20">
@@ -406,32 +393,35 @@ use yii\widgets\Pjax;
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>Birth Certificate</td>
-                                            <td><input type="radio" id="male" name="Certificate" value="Collected"
-                                                       checked></td>
-                                            <td><input type="radio" id="male" name="Certificate" value="Pending"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Residence Proof</td>
-                                            <td><input type="radio" id="male" name="Residence" value="Collected"></td>
-                                            <td><input type="radio" id="male" name="Residence" value="Pending" checked>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Proof of Identity</td>
-                                            <td><input type="radio" id="male" name="Identity" value="Collected" checked>
-                                            </td>
-                                            <td><input type="radio" id="male" name="Identity" value="Pending"></td>
-                                        </tr>
-
+                                        <?php
+                                        if ($documents) {
+                                            foreach ($documents as $doc) {
+                                                $name = str_replace(" ", "_", strtolower($doc->name));
+                                                ?>
+                                                <tr>
+                                                    <td><?= $doc->name ?></td>
+                                                    <td><input type="radio"
+                                                               name="documents[<?= $doc->document_enc_id ?>]" value="1">
+                                                    </td>
+                                                    <td><input type="radio"
+                                                               name="documents[<?= $doc->document_enc_id ?>]" value="0">
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <?= Html::submitButton('Update', ['class' => 'btn btn-info updateBtn', 'id' => 'updateBtn']); ?>
+                        </div>
                     </div>
                 </div>
+                <?php ActiveForm::end(); ?>
             </div>
 
         </div>
@@ -799,7 +789,7 @@ input.checkbox:checked + label:before {
 }
 #loanModalScroll{
     position: relative;
-    height: 60vh;
+    height: 65vh;
     padding: 0 10px;
 }
 .certificate-list{
@@ -976,7 +966,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         parElement.querySelector('.nextState').style.display = "block";
         // parElement.querySelector('.dropdown').style.display = "block";
         changeStatus(id, status, 1);
-        setTimeout(function(){
+        setTimeout(function () {
             $.pjax.reload({container: '#list-container', async: false});
         }, 500);
     }
@@ -1010,12 +1000,20 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             url: '/account/education-loans/change-status',
             method: "POST",
             data: {id: id, status: status, reconsider: reconsider},
+            beforeSend: function () {
+                $('#loan_app_id').val(id);
+            },
             success: function (res) {
                 if (res.status == 200) {
                     toastr.success(res.title, res.message);
+                } else if (res.status == 203) {
+                    toastr.warning(res.title, res.message);
                 } else {
                     toastr.error(res.title, res.message);
                 }
+            },
+            complete: function () {
+                $.pjax.reload({container: '#stat-container', async: false});
             }
         });
     }
@@ -1045,8 +1043,32 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
         var status = nextElem;
         var id = e.getAttribute('data-key');
+        switch (status) {
+            case 'New Lead' :
+                status = 0;
+                break;
+            case 'Accepted' :
+                status = 1;
+                break;
+            case 'Pre Verification' :
+                status = 2;
+                break;
+            case 'Under Process' :
+                status = 3;
+                break;
+            case 'Sanctioned' :
+                status = 4;
+                break;
+            case 'Disbursed' :
+                status = 5;
+                break;
+            case 'Reject' :
+                status = 10;
+                break;
+            default :
+                return false;
+        }
         changeStatus(id, status, 0);
-
     }
 
     function template() {
