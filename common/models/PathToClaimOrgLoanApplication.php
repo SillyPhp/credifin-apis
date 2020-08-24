@@ -30,7 +30,7 @@ class PathToClaimOrgLoanApplication extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id', 'created_by'], 'required'],
+            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id'], 'required'],
             [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id', 'created_by'], 'string', 'max' => 100],
             [['bridge_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
