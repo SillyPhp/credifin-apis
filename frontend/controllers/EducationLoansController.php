@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCollegeCourses;
 use common\models\BusinessActivities;
 use common\models\Countries;
 use common\models\Organizations;
