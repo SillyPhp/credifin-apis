@@ -1,8 +1,6 @@
 <?php
-
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%path_to_claim_org_loan_application}}".
@@ -33,7 +31,7 @@ class PathToClaimOrgLoanApplication extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id', 'created_by'], 'required'],
+            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id'], 'required'],
             [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id', 'created_by'], 'string', 'max' => 100],
             [['bridge_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -41,6 +39,7 @@ class PathToClaimOrgLoanApplication extends \yii\db\ActiveRecord
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

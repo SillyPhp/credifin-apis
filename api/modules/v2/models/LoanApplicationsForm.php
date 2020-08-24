@@ -24,7 +24,7 @@ class LoanApplicationsForm extends LoanApplications
     {
         return [
             [['purpose', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants', 'loan_type_enc_id', 'course_enc_id', 'college_course_enc_id'], 'safe'],
+            [['co_applicants', 'loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -51,7 +51,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->college_course_enc_id = NULL;
             $this->source = $source;
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
-            $this->created_by = $userId;
+            $this->created_by = (($userId)?$userId:null);
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
                 $transaction->rollback();
@@ -66,14 +66,13 @@ class LoanApplicationsForm extends LoanApplications
             $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
             $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
             $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
-            $path_to_claim->created_by = $userId;
+            $path_to_claim->created_by = (($userId)?$userId:null);
             if (!$path_to_claim->save()) {
                 $transaction->rollback();
                 return false;
             } else {
                 $this->_flag = true;
             }
-
 
             if (!empty($this->purpose)) {
                 foreach ($this->purpose as $p) {
@@ -103,7 +102,7 @@ class LoanApplicationsForm extends LoanApplications
                     $model->relation = $applicant['relation'];
                     $model->employment_type = $applicant['employment_type'];
                     $model->annual_income = $applicant['annual_income'];
-                    $model->pan_number = $applicant['pan_number'];
+                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number']:null);
                     $model->aadhaar_number = $applicant['aadhaar_number'];
                     $model->created_by = (($userId) ? $userId : null);
                     $model->created_on = date('Y-m-d H:i:s');

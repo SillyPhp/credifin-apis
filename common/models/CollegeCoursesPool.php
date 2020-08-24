@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-use Yii;
 
 /**
  * This is the model class for table "{{%college_courses_pool}}".
@@ -17,6 +14,7 @@ use Yii;
  * @property int $is_deleted 0 false,1 true
  *
  * @property AssignedCollegeCourses[] $assignedCollegeCourses
+ * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses
  * @property Users $updatedBy
  * @property Users $createdBy
  */
@@ -41,6 +39,7 @@ class CollegeCoursesPool extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['course_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['course_name'], 'string', 'max' => 200],
+            [['course_name'], 'unique'],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
@@ -52,6 +51,14 @@ class CollegeCoursesPool extends \yii\db\ActiveRecord
     public function getAssignedCollegeCourses()
     {
         return $this->hasMany(AssignedCollegeCourses::className(), ['course_enc_id' => 'course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedUnclaimCollegeCourses()
+    {
+        return $this->hasMany(AssignedUnclaimCollegeCourses::className(), ['course_enc_id' => 'course_enc_id']);
     }
 
     /**

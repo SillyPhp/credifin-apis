@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-use Yii;
 
 /**
  * This is the model class for table "{{%assigned_college_courses}}".
@@ -26,6 +23,10 @@ use Yii;
  * @property CollegeCoursesPool $courseEnc
  * @property Organizations $organizationEnc
  * @property CollegeSections[] $collegeSections
+ * @property MockQuizzes[] $mockQuizzes
+ * @property OnlineClasses[] $onlineClasses
+ * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
+ * @property UserOtherDetails[] $userOtherDetails
  */
 class AssignedCollegeCourses extends \yii\db\ActiveRecord
 {
@@ -93,5 +94,37 @@ class AssignedCollegeCourses extends \yii\db\ActiveRecord
     public function getCollegeSections()
     {
         return $this->hasMany(CollegeSections::className(), ['assigned_college_enc_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizzes()
+    {
+        return $this->hasMany(MockQuizzes::className(), ['assigned_college_enc_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOnlineClasses()
+    {
+        return $this->hasMany(OnlineClasses::className(), ['assigned_college_enc_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPathToClaimOrgLoanApplications()
+    {
+        return $this->hasMany(PathToClaimOrgLoanApplication::className(), ['assigned_course_enc_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherDetails()
+    {
+        return $this->hasMany(UserOtherDetails::className(), ['assigned_college_enc_id' => 'assigned_college_enc_id']);
     }
 }

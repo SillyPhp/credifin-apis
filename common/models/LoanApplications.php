@@ -87,6 +87,10 @@ class LoanApplications extends \yii\db\ActiveRecord
 
 
     /**
+     * @inheritdoc
+     */
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getEducationLoanPayments()
