@@ -86,7 +86,7 @@ use yii\helpers\Html;
                 <div class="col-md-12">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Company Profiles</span>
+                        <span class="caption-subject font-dark bold uppercase">Loan Applications</span>
                     </div>
                 </div>
             </div>
@@ -206,10 +206,6 @@ use yii\helpers\Html;
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
                                                                 data-placement="top" title="Move to Next Phase">
                                                             <i class="fa fa-arrow-circle-right"></i>
-                                                        </button>
-                                                        <button class="viewStatus"
-                                                                style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
-                                                                onclick="viewStatus()">View Status
                                                         </button>
                                                         <button class="reconsider"
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
@@ -985,7 +981,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         if (currentRoundName == 'Disbursed') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
-            parElement.querySelector('.viewStatus').style.display = "block";
         }
 
         if (currentRoundName == 'Reject') {
@@ -1037,7 +1032,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             if (nextElem == 'Disbursed') {
                 parElement.querySelector('.nextState').style.display = "none";
                 parElement.querySelector('.dropdown').style.display = "none";
-                parElement.querySelector('.viewStatus').style.display = "block";
             }
 
         }
