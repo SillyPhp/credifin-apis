@@ -1090,16 +1090,18 @@ class CollegeIndexController extends ApiBaseController
                     'a.college_actions',
                     'c.name',
                     'a.cgpa',
-                    'cc.course_name',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                 }], true)
-                ->joinWith(['courseEnc cc'], false)
+                ->joinWith(['assignedCollegeEnc cc'=>function($cc){
+                    $cc->joinWith(['courseEnc c1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']]);
             if (isset($data['course_name']) && !empty($data['course_name'])) {
-                $candidates->andWhere(['cc.course_name' => $data['course_name']]);
+                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
             }
             if (isset($data['semester']) && !empty($data['semester']) && count($data['semester']) < 10) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);

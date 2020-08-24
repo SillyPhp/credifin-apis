@@ -154,13 +154,17 @@ class LoansController extends ApiBaseController
                     'a.gender',
                     'a.amount',
                     'f.payment_status',
-                    'c.course_name',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
-                ->joinWith(['createdBy b' => function ($b) {
-                    $b->joinWith(['userOtherInfo b1']);
+                ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                    $c->joinWith(['createdBy b' => function ($b) {
+                        $b->joinWith(['userOtherInfo b1']);
+                    }], false);
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }]);
                 }], false)
-                ->joinWith(['collegeCourseEnc c'], false)
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select([
                         'd.loan_co_app_enc_id',
@@ -176,7 +180,7 @@ class LoansController extends ApiBaseController
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => ['captured', 'created']]);
+                ->where(['cc.organization_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => ['captured', 'created']]);
             if ($limit) {
                 $loan_requests->limit($limit)
                     ->offset(($page - 1) * $limit);
@@ -200,13 +204,17 @@ class LoansController extends ApiBaseController
                         'a.email',
                         'a.gender',
                         'a.amount',
-                        'c.course_name',
+                        'c1.course_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
-                    ->joinWith(['createdBy b' => function ($b) {
-                        $b->joinWith(['userOtherInfo b1']);
+                    ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                        $c->joinWith(['createdBy b' => function ($b) {
+                            $b->joinWith(['userOtherInfo b1']);
+                        }], false);
+                        $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                            $cc->joinWith(['courseEnc c1']);
+                        }]);
                     }], false)
-                    ->joinWith(['collegeCourseEnc c'], false)
                     ->joinWith(['loanCoApplicants d' => function ($d) {
                         $d->select([
                             'd.loan_co_app_enc_id',
@@ -221,7 +229,7 @@ class LoansController extends ApiBaseController
                         $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                         $e->joinWith(['feeComponentEnc e1'], false);
                     }])
-                    ->where(['a.college_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
+                    ->where(['cc.organization_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
                     ->asArray()
                     ->one();
             }
@@ -483,12 +491,13 @@ class LoansController extends ApiBaseController
                     'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
                     'd.education_loan_payment_enc_id'
                 ])
+                ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
                 ->joinWith(['loanPurposes b' => function ($b) {
                     $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
                     $b->joinWith(['feeComponentEnc c'], false);
                 }])
                 ->joinWith(['educationLoanPayments d'], false)
-                ->where(['a.created_by' => $user->user_enc_id])
+                ->where(['cc.created_by' => $user->user_enc_id])
                 ->asArray()
                 ->all();
 
@@ -549,13 +558,17 @@ class LoansController extends ApiBaseController
                     'a.gender',
                     'a.amount',
                     'f.payment_status',
-                    'c.course_name',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->joinWith(['createdBy b' => function ($b) {
                     $b->joinWith(['userOtherInfo b1']);
                 }], false)
-                ->joinWith(['collegeCourseEnc c'], false)
+                ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }]);
+                }], false)
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select([
                         'd.loan_co_app_enc_id',
@@ -571,7 +584,7 @@ class LoansController extends ApiBaseController
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id]);
+                ->where(['cc.organization_enc_id' => $college_id]);
             if (isset($params['name']) && !empty($params['name'])) {
                 $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
             }
