@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 
-$baseUrl = Url::base(true);
+$baseUrl = Url::base("https");
 ?>
     <div class="center-align" id="session-status">
         <h2>Please wait...Redirecting..</h2>
