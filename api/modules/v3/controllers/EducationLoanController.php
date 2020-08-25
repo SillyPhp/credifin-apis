@@ -1,7 +1,9 @@
 <?php
 namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
+use common\models\AssignedCollegeCourses;
 use common\models\CollegeCourses;
+use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanTypes;
@@ -36,15 +38,11 @@ class EducationLoanController extends ApiBaseController
         $params= Yii::$app->request->post();
         if ($params['id'])
         {
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
-                ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
-                    $b->onCondition(['b.is_deleted' => 0]);
-                }], false)
+                ->select(['a.assigned_college_enc_id college_course_enc_id','b.course_name'])
+                ->joinWith(['courseEnc b'], false,'INNER JOIN')
                 ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
             if ($courses) {

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -81,6 +82,23 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            if((new OneTapAuth())->handle(Yii::$app->request->post()))
+            {
+                return $this->redirect('/site/oauth-verify');
+            }
+            else{
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';

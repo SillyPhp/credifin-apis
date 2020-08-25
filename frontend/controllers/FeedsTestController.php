@@ -252,7 +252,7 @@ class FeedsTestController extends Controller {
                                 $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
-                                $employerApplication->slug = $result['short_name'];
+                                $employerApplication->slug = $result['short_name'].'-'.rand(1000,100000);
                             }
                         }
                         $employerApplication->type = 'Full Time';
@@ -352,7 +352,7 @@ class FeedsTestController extends Controller {
         $assignedCategoryModel->status = 'Pending';
         if ($assignedCategoryModel->save()) {
             if ($source==3){
-                $employerApplication->slug = $short_name;
+                $employerApplication->slug = $short_name.'-'.rand(1000, 100000);
             }
             else
             {

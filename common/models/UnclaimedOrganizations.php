@@ -38,6 +38,7 @@ namespace common\models;
  * @property UnclaimAssignedIndustries[] $unclaimAssignedIndustries
  * @property UnclaimOrganizationImages[] $unclaimOrganizationImages
  * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations
+ * @property UnclaimOrganizationLabels[] $unclaimOrganizationLabels
  * @property Cities $cityEnc
  * @property Users $createdBy
  * @property BusinessActivities $organizationTypeEnc
@@ -150,6 +151,14 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     public function getUnclaimOrganizationImages()
     {
         return $this->hasMany(UnclaimOrganizationImages::className(), ['unclaim_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationLabels()
+    {
+        return $this->hasMany(UnclaimOrganizationLabels::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
     /**
      * @return \yii\db\ActiveQuery
