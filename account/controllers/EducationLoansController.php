@@ -180,4 +180,12 @@ class EducationLoansController extends Controller
         }
         return 'updated';
     }
+
+    public function actionCandidateDashboard(){
+        return $this->render('candidate-dashboard');
+    }
+
+    public function actionLoanProfileView(){
+        return $this->render('loan-profile-view');
+    }
 }

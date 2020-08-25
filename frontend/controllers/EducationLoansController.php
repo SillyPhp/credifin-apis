@@ -28,7 +28,14 @@ class EducationLoansController extends Controller
     }
 
     public function actionIndex(){
-        return $this->render("education-loan-index");
+        $loan_org = Organizations::find()
+            ->select(['name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->where(['is_deleted' => 0, 'has_loan_featured' => 1])
+            ->asArray()
+            ->all();
+        return $this->render("education-loan-index",[
+            'loan_org'=>$loan_org,
+        ]);
     }
     public function actionApply(){
         $type = ['College','School','Educational Institute'];
