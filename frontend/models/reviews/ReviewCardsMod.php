@@ -39,11 +39,11 @@ class ReviewCardsMod
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed','a.slug',
                 'a.organization_enc_id','a.name','a.initials_color color',
-                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_featured',
-                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_trending',
-                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_new',
-                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_promoted',
-                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_hot',
+                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_featured',
+                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_trending',
+                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
+                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
+                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
                 'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link','CONCAT(a.slug, "/reviews") review_link',
@@ -77,13 +77,13 @@ class ReviewCardsMod
                 $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
             }],false)
             ->joinWith(['organizationLabels ol' => function($x){
-                $x->select(['ol.organization_enc_id', 'ol.org_label_enc_id', 'ol.label_enc_id']);
+                $x->select(['ol.organization_enc_id', 'ol.org_label_enc_id', 'ol.label_enc_id','le.name label_name']);
                 $x->onCondition(['ol.label_for' => 0,'ol.is_deleted' => 0]);
                 $x->joinWith(['labelEnc le' => function($l){
                     $l->onCondition(['le.is_deleted' => 0]);
                 }],false);
             }],false)
-            ->where(['a.is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['is_featured' => SORT_DESC,'a.created_on' => SORT_DESC]);
@@ -127,11 +127,11 @@ class ReviewCardsMod
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed','a.slug',
                 'a.organization_enc_id','a.name','a.initials_color color',
-                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_featured',
-                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_trending',
-                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_new',
-                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_promoted',
-                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 1  THEN "1" ELSE NULL END) as is_hot',
+                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_featured',
+                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_trending',
+                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
+                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
+                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
                 'a.created_on',
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to (Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
@@ -161,13 +161,13 @@ class ReviewCardsMod
                 $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
             }],false)
             ->joinWith(['unclaimOrganizationLabels ul' => function($x){
-                $x->select(['ul.organization_enc_id','ul.label_enc_id','le.name label_name']);
+                $x->select(['ul.organization_enc_id','ul.org_label_enc_id','ul.label_enc_id','le.name label_name']);
                 $x->onCondition(['ul.label_for' => 0,'ul.is_deleted' => 0]);
                 $x->joinWith(['labelEnc le' => function($le){
                     $le->onCondition(['le.is_deleted' => 0]);
                 }],false);
             }],false)
-            ->where(['a.is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['is_featured'=>SORT_DESC,'a.created_on' => SORT_DESC]);
         if (isset($options['business_activity'])) {
