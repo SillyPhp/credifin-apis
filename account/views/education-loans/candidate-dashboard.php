@@ -1419,7 +1419,7 @@ function activeTab(event) {
     activeTab.classList.add('tabActive');
     let selectedTp = document.querySelector('[data-id="'+activeID+'"]');
     selectedTp.classList.add('activeLi');
-
+    window.scrollTo(0,0);
 }
 
 </script>

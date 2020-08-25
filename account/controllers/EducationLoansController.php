@@ -207,4 +207,8 @@ class EducationLoansController extends Controller
     public function actionCandidateDashboard(){
         return $this->render('candidate-dashboard');
     }
+
+    public function actionLoanProfileView(){
+        return $this->render('loan-profile-view');
+    }
 }
