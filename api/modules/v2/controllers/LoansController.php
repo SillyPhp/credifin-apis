@@ -4,6 +4,9 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\LoanApplicationsForm;
 use common\models\AssignedCategories;
+use common\models\AssignedCollegeCourses;
+use common\models\CollegeCourses;
+use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
@@ -557,6 +560,7 @@ class LoansController extends ApiBaseController
                     'a.email',
                     'a.gender',
                     'a.amount',
+                    'a.status',
                     'f.payment_status',
                     'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
@@ -639,6 +643,54 @@ class LoansController extends ApiBaseController
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateUserCourses()
+    {
+        $data = UserOtherDetails::find()
+            ->where(['not', ['course_enc_id' => NULL]])
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            foreach ($data as $d) {
+                $courses = CollegeCourses::find()
+                    ->where(['college_course_enc_id' => $d['course_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                if ($courses) {
+                    $pool = CollegeCoursesPool::find()
+                        ->where(['course_name' => $courses['course_name']])
+                        ->asArray()
+                        ->one();
+
+                    if ($pool) {
+                        $assigned_courses = AssignedCollegeCourses::find()
+                            ->where(['organization_enc_id' => $d['organization_enc_id'], 'course_enc_id' => $pool['course_enc_id']])
+                            ->asArray()
+                            ->one();
+
+                        if ($assigned_courses) {
+                            $user = UserOtherDetails::find()
+                                ->where(['user_other_details_enc_id' => $d['user_other_details_enc_id']])
+                                ->one();
+
+                            if ($user) {
+                                $user->assigned_college_enc_id = $assigned_courses['assigned_college_enc_id'];
+                                $user->updated_on = date('Y-m-d H:i:s');
+                                if (!$user->update()) {
+                                    print_r($user->getErrors());
+                                    die();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            print_r('done');
+            die();
         }
     }
 
