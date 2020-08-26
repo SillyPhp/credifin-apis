@@ -362,6 +362,10 @@ $this->registerCss('
     border: 1px solid #eee;
     margin-bottom: 15px;
 }
+.loan-college:hover{
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    transition:.3s ease; 
+}
 .loan-college p{
     font-size: 17px;
     line-height: 25px;
