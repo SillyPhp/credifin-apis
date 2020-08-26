@@ -2,6 +2,7 @@
 
 use yii\helpers\Url;
 
+$baseUrl = Url::base("https");
 ?>
     <div class="center-align" id="session-status">
         <h2>Please wait...Redirecting..</h2>
@@ -17,9 +18,10 @@ div#session-status {
 $script = <<<JS
 var id = "$id";
 var user_id = "$user_id";
+var baseUrl = "$baseUrl";
 var duration = 18000;
 $(document).ready(function() {
-    var url = 'https://www.ricky.eygb.me/api/v3/video-session/get-tokens';
+    var url = baseUrl + '/api/v3/video-session/get-tokens';
     generateSession(url);
 });
 
@@ -38,7 +40,7 @@ function generateSession(url) {
     });
 }
 function updateWebinarSession(session_id) {
-    var url = 'https://www.ricky.eygb.me/api/v3/video-session/update-session';
+    var url = baseUrl + '/api/v3/video-session/update-session';
     $.ajax({
         url: url,
         type: 'POST',
