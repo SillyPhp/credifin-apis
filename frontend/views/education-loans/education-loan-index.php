@@ -196,40 +196,30 @@ use yii\helpers\Url;
 <!--        <div id="ecww-widget-iframeinner"></div>-->
 <!--    </section>-->
     <div class="clearfix"></div>
-    <section class="">
+    <section>
         <div class="container">
-            <div class="heading-style ">Need More Help</div>
-            <div class="col-md-4">
-                <div class="l-help-block1">
-                    <div class="l-help-title"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>" alt=""/>
-                        Live Help
-                    </div>
-
-                    <div class="l-help-txt">Get an answer on the spot. We're online 8am - 7pm Mon to Fri and
-                        9am - 3pm on Sat and Sun.
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="l-help-block1">
-                    <div class="l-help-title"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
-                            alt=""/> Contact Us
+            <div class="row">
+                <?php
+                foreach ($loan_org as $l){
+                    ?>
+                    <div class="col-md-3">
+                <a href="">
+                        <div class="loan-college">
+                            <div class="loan-college-img">
+                                <img src="<?= $l['org_logo'] ?>">
+                            </div>
+                            <p><?= $l['name']?></p>
+                        </div>
+                </a>
                     </div>
-
-                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="l-help-block1">
-                    <div class="l-help-title"><img
-                            src="<?= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?>" alt=""/>
-                        See our FAQs
-                    </div>
-                    <div class="l-help-txt">See answers to questions on how to use our services</div>
-                </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </section>
@@ -284,28 +274,41 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
+
+    <section class="">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 class="heading-style">Partner Colleges</h3>
+            <div class="heading-style ">Need More Help</div>
+            <div class="col-md-4">
+                <div class="l-help-block1">
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>" alt=""/>
+                        Live Help
+                    </div>
+
+                    <div class="l-help-txt">Get an answer on the spot. We're online 8am - 7pm Mon to Fri and
+                        9am - 3pm on Sat and Sun.
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <?php
-                foreach ($loan_org as $l){
-                    ?>
-                    <div class="col-md-3">
-                        <div class="loan-college">
-                            <div class="loan-college-img">
-                                <img src="<?= $l['org_logo'] ?>">
-                            </div>
-                            <p><?= $l['name']?></p>
-                        </div>
+            <div class="col-md-4">
+                <div class="l-help-block1">
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
+                                alt=""/> Contact Us
                     </div>
-                    <?php
-                }
-                ?>
+
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="l-help-block1">
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?>" alt=""/>
+                        See our FAQs
+                    </div>
+                    <div class="l-help-txt">See answers to questions on how to use our services</div>
+                </div>
             </div>
         </div>
     </section>
@@ -347,20 +350,29 @@ $this->registerJs($script);
 $this->registerCss('
 .loan-college{
     text-align: center;  
+    border: 1px solid #eee;
 }
 .loan-college p{
     font-size: 17px;
     line-height: 25px;
     margin-top: 10px;
+    padding: 
+    border-top: 1px solid #eee;
 }
 .loan-college-img{
-    width: 100px;
+    width: 100%;
     height: 100px;
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    background: #f7f7f7;
+    
 }
 .loan-college-img img{
-    width: 100%;
-    height: 100%;
+    max-width: 150px;
+    max-height: 100%;
+    margin: 0 auto;
+    padding: 5px 10px
 }
 .loan-ey-flex{
     display: flex;
