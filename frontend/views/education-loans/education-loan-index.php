@@ -355,9 +355,15 @@ $this->registerCss('
 .loan-college p{
     font-size: 17px;
     line-height: 25px;
-    margin-top: 10px;
-    padding: 
+    padding: 5px 10px;
     border-top: 1px solid #eee;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 60px;
 }
 .loan-college-img{
     width: 100%;
