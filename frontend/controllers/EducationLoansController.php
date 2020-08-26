@@ -68,11 +68,11 @@ class EducationLoansController extends Controller
     {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
-            ->select(['organization_enc_id'])
+            ->select(['organization_enc_id', 'name'])
             ->where(['organization_enc_id' => $id])
             ->asArray()->one();
         if ($wid) {
-            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id']]);
+            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id'], 'title' => $wid['name']]);
         } else {
             return 'Unauthorized';
         }
