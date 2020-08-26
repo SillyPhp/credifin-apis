@@ -68,7 +68,7 @@ class EducationLoansController extends Controller
     {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
-            ->select(['organization_enc_id', 'name'])
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name'])
             ->where(['organization_enc_id' => $id])
             ->asArray()->one();
         if ($wid) {
