@@ -178,7 +178,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+    <div class="clearfix"></div>
     <section>
         <div class="container">
             <div class="row">
@@ -247,6 +247,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <div class="clearfix"></div>
+
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({

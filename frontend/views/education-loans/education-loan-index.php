@@ -284,6 +284,31 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="heading-style">Partner Colleges</h3>
+                </div>
+            </div>
+            <div class="row">
+                <?php
+                foreach ($loan_org as $l){
+                    ?>
+                    <div class="col-md-3">
+                        <div class="loan-college">
+                            <div class="loan-college-img">
+                                <img src="<?= $l['org_logo'] ?>">
+                            </div>
+                            <p><?= $l['name']?></p>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </section>
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({
@@ -320,6 +345,23 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.loan-college{
+    text-align: center;  
+}
+.loan-college p{
+    font-size: 17px;
+    line-height: 25px;
+    margin-top: 10px;
+}
+.loan-college-img{
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+.loan-college-img img{
+    width: 100%;
+    height: 100%;
+}
 .loan-ey-flex{
     display: flex;
     flex-wrap: wrap;
