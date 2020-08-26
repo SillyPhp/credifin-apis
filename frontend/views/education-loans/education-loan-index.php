@@ -9,20 +9,22 @@ use yii\helpers\Url;
     <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>-->
     <section class="backgrounds">
         <div class="container">
-            <div class="col-md-6 col-sm-6">
-                <div class="loan-text">
-                    <h1>Education Loan</h1>
-                    <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
-                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
-                       class="hvr-sweep-to-bottom-2">
-                        Apply Now
-                    </a>
-                </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+            <div class="loan-text">
+                <h1>Education Loan</h1>
+                <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
+                <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
+                   class="hvr-sweep-to-bottom-2">
+                    Apply Now
+                </a>
             </div>
-            <div class="col-md-6 col-sm-6">
+        </div>
+                <div class="col-md-6 col-sm-6">
                 <div class="loan-image">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-header-image.png') ?>"/>
                 </div>
+            </div>
             </div>
         </div>
     </section>
@@ -305,7 +307,7 @@ use yii\helpers\Url;
                                 src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
                                 alt=""/> Contact Us
                     </div>
-
+                    <div class="callNumber"></div>
                     <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
                     </div>
                 </div>
@@ -1003,6 +1005,18 @@ $this->registerCss('
     margin-bottom:0px !important; 
     background: #eee;
 } 
+@media screen and (max-width: 500px){
+    .edu-loan-txt{
+        line-height: 60px;
+        margin-bottom:20px;
+    }
+    .us-flex{
+        flex-direction: column;
+    }
+    .loan-image img{
+        max-width: 250px;
+    }
+}
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
 $this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
