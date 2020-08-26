@@ -30,7 +30,7 @@ class EducationLoansController extends Controller
     public function actionIndex()
     {
         $loan_org = Organizations::find()
-            ->select(['name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->select(['organization_enc_id', 'name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
             ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
             ->asArray()
             ->all();
