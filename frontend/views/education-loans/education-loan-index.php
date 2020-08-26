@@ -351,6 +351,7 @@ $this->registerCss('
 .loan-college{
     text-align: center;  
     border: 1px solid #eee;
+    margin-bottom: 15px;
 }
 .loan-college p{
     font-size: 17px;
