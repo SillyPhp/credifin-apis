@@ -28,6 +28,7 @@ class EducationLoanController extends ApiBaseController
                 'get-fee-components' => ['POST', 'OPTIONS'],
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
+                'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -143,5 +144,30 @@ class EducationLoanController extends ApiBaseController
             $loan_payments->update();
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionRetryPayment(){
+        $params = Yii::$app->request->post();
+        $token = $params['token'];
+        $gst = $params['gst'];
+        $pay_amount = $params['pay_amount'];
+        $loan_app_id = $params['loan_app_id'];
+        $payment_id = $params['payment_id'];
+        $status = $params['status'];
+            $loan_payment = new EducationLoanPayments();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+            $loan_payment->loan_app_enc_id = $loan_app_id;
+            $loan_payment->payment_token = $token;
+            $loan_payment->payment_amount = $pay_amount;
+            $loan_payment->payment_status = $status;
+            $loan_payment->payment_id = $payment_id;
+            $loan_payment->payment_gst = $gst;
+            $loan_payment->created_by = null;
+            $loan_payment->created_on = date('Y-m-d H:i:s');
+            if ($loan_payment->save()) {
+                return $this->response(200,['status' => 200, 'message' => 'success']);
+            }
     }
 }
