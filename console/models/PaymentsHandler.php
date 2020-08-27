@@ -4,7 +4,7 @@ use common\models\EducationLoanPayments;
 
 class PaymentsHandler {
 
-    public function get($options)
+    public static function get($options)
     {
         return self::getApplication($options);
     }
