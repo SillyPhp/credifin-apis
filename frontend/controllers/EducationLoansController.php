@@ -30,7 +30,7 @@ class EducationLoansController extends Controller
     public function actionIndex()
     {
         $loan_org = Organizations::find()
-            ->select(['name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->select(['organization_enc_id', 'name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
             ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
             ->asArray()
             ->all();
@@ -68,11 +68,11 @@ class EducationLoansController extends Controller
     {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
-            ->select(['organization_enc_id'])
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name'])
             ->where(['organization_enc_id' => $id])
             ->asArray()->one();
         if ($wid) {
-            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id']]);
+            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id'], 'title' => $wid['name']]);
         } else {
             return 'Unauthorized';
         }
