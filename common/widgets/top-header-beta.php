@@ -352,6 +352,12 @@ $this->registerCss('
     margin: 0 20px 0 0;
     padding: 7px 0px;
 }
+@media screen and(max-width: 1400px) and (min-width: 1080px){
+    .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
+        font: 500 13px/16px Roboto, Arial, sans-serif;
+        margin: 0 15px 0 0;
+    }    
+}
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
 }
@@ -1029,5 +1035,6 @@ $this->registerCss('
 .ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
     color:#00a0e3 !important;
 }
+
 ');
 ?>
