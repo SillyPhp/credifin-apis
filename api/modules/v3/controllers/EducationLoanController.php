@@ -2,6 +2,7 @@
 namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
 use common\models\AssignedCollegeCourses;
+use common\models\AssignedLoanProvider;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
@@ -28,6 +29,7 @@ class EducationLoanController extends ApiBaseController
                 'get-fee-components' => ['POST', 'OPTIONS'],
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
+                'loan-applications' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -146,6 +148,24 @@ class EducationLoanController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
 
+    public function actionLoanApplications()
+    {
+        $params = Yii::$app->request->post();
+        if ($params['id'])
+        {
+            $loansApplications = AssignedLoanProvider::find()
+                ->alias('a')
+                ->where(['provider_enc_id'=>$params['id']])
+                ->joinWith(['loanApplicationEnc b'=>fu])
+                ->asArray()
+                ->all();
+            if ($loansApplications) {
+                return $this->response(200, ['status' => 200, 'applicatons'=>$loansApplications]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Applications Not found']);
+            }
+        }
+    }
     public function actionRetryPayment(){
         $params = Yii::$app->request->post();
         $token = $params['token'];
@@ -154,20 +174,20 @@ class EducationLoanController extends ApiBaseController
         $loan_app_id = $params['loan_app_id'];
         $payment_id = $params['payment_id'];
         $status = $params['status'];
-            $loan_payment = new EducationLoanPayments();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-            $loan_payment->loan_app_enc_id = $loan_app_id;
-            $loan_payment->payment_token = $token;
-            $loan_payment->payment_amount = $pay_amount;
-            $loan_payment->payment_status = $status;
-            $loan_payment->payment_id = $payment_id;
-            $loan_payment->payment_gst = $gst;
-            $loan_payment->created_by = null;
-            $loan_payment->created_on = date('Y-m-d H:i:s');
-            if ($loan_payment->save()) {
-                return $this->response(200,['status' => 200, 'message' => 'success']);
-            }
+        $loan_payment = new EducationLoanPayments();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+        $loan_payment->loan_app_enc_id = $loan_app_id;
+        $loan_payment->payment_token = $token;
+        $loan_payment->payment_amount = $pay_amount;
+        $loan_payment->payment_status = $status;
+        $loan_payment->payment_id = $payment_id;
+        $loan_payment->payment_gst = $gst;
+        $loan_payment->created_by = null;
+        $loan_payment->created_on = date('Y-m-d H:i:s');
+        if ($loan_payment->save()) {
+            return $this->response(200,['status' => 200, 'message' => 'success']);
+        }
     }
 }
