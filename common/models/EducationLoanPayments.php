@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $education_loan_payment_enc_id loan payment encrypted id
  * @property string $loan_app_enc_id loan application enc id
+ * @property string $college_enc_id
  * @property string $payment_token payment id
  * @property double $payment_amount
  * @property double $payment_gst
@@ -46,7 +47,7 @@ class EducationLoanPayments extends \yii\db\ActiveRecord
             [['payment_amount', 'payment_gst'], 'number'],
             [['payment_mode'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['education_loan_payment_enc_id', 'loan_app_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['education_loan_payment_enc_id', 'loan_app_enc_id', 'college_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['reference_number'], 'string', 'max' => 50],
             [['education_loan_payment_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
@@ -64,6 +65,7 @@ class EducationLoanPayments extends \yii\db\ActiveRecord
             'id' => Yii::t('dsbedutech', 'ID'),
             'education_loan_payment_enc_id' => Yii::t('dsbedutech', 'Education Loan Payment Enc ID'),
             'loan_app_enc_id' => Yii::t('dsbedutech', 'Loan App Enc ID'),
+            'college_enc_id' => Yii::t('dsbedutech', 'College Enc ID'),
             'payment_token' => Yii::t('dsbedutech', 'Payment Token'),
             'payment_amount' => Yii::t('dsbedutech', 'Payment Amount'),
             'payment_gst' => Yii::t('dsbedutech', 'Payment Gst'),
