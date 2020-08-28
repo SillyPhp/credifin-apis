@@ -2,6 +2,7 @@
 namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
 use common\models\AssignedCollegeCourses;
+use common\models\AssignedLoanProvider;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
@@ -28,6 +29,7 @@ class EducationLoanController extends ApiBaseController
                 'get-fee-components' => ['POST', 'OPTIONS'],
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
+                'loan-applications' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -143,5 +145,24 @@ class EducationLoanController extends ApiBaseController
             $loan_payments->update();
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionLoanApplications()
+    {
+        $params = Yii::$app->request->post();
+        if ($params['id'])
+        {
+            $loansApplications = AssignedLoanProvider::find()
+                ->alias('a')
+                ->where(['provider_enc_id'=>$params['id']])
+                ->joinWith(['loanApplicationEnc b'=>fu])
+                ->asArray()
+                ->all();
+            if ($loansApplications) {
+                return $this->response(200, ['status' => 200, 'applicatons'=>$loansApplications]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Applications Not found']);
+            }
+        }
     }
 }
