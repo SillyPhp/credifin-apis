@@ -14,6 +14,7 @@ use Yii;
  * @property string $department_enc_id
  * @property string $educational_requirement_enc_id
  * @property string $course_enc_id
+ * @property string $assigned_college_enc_id assigned college course enc id
  * @property string $section_enc_id
  * @property int $semester
  * @property double $cgpa
@@ -30,6 +31,10 @@ use Yii;
  *
  * @property CollegeCourses $courseEnc
  * @property CollegeSections $sectionEnc
+ * @property Organizations $organizationEnc
+ * @property Departments $departmentEnc
+ * @property Users $userEnc
+ * @property AssignedCollegeCourses $assignedCollegeEnc
  */
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
@@ -47,17 +52,37 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'university_roll_number'], 'required'],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id'], 'required'],
             [['semester', 'internship_duration', 'college_actions', 'is_deleted'], 'integer'],
             [['cgpa'], 'number'],
-            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'semester', 'updated_on'], 'safe'],
+            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on'], 'safe'],
             [['job_start_month'], 'string'],
-            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'course_enc_id', 'section_enc_id'], 'string', 'max' => 100],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'course_enc_id', 'assigned_college_enc_id', 'section_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 30],
             [['user_other_details_enc_id'], 'unique'],
             [['course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['course_enc_id' => 'college_course_enc_id']],
             [['section_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeSections::className(), 'targetAttribute' => ['section_enc_id' => 'section_enc_id']],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
+            [['department_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Departments::className(), 'targetAttribute' => ['department_enc_id' => 'department_enc_id']],
+            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['assigned_college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCollegeCourses::className(), 'targetAttribute' => ['assigned_college_enc_id' => 'assigned_college_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCourseEnc()
+    {
+        return $this->hasOne(CollegeCourses::className(), ['college_course_enc_id' => 'course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSectionEnc()
+    {
+        return $this->hasOne(CollegeSections::className(), ['section_enc_id' => 'section_enc_id']);
     }
 
     /**
@@ -79,14 +104,6 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEducationalRequirementEnc()
-    {
-        return $this->hasOne(EducationalRequirements::className(), ['educational_requirement_enc_id' => 'educational_requirement_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
@@ -95,18 +112,8 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCourseEnc()
+    public function getAssignedCollegeEnc()
     {
-        return $this->hasOne(CollegeCourses::className(), ['college_course_enc_id' => 'course_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSectionEnc()
-    {
-        return $this->hasOne(CollegeSections::className(), ['section_enc_id' => 'section_enc_id']);
+        return $this->hasOne(AssignedCollegeCourses::className(), ['assigned_college_enc_id' => 'assigned_college_enc_id']);
     }
 }
-
-

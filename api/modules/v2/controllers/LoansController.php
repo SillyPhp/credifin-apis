@@ -35,6 +35,9 @@ class LoansController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
+                'get-fee-components' => ['POST', 'OPTIONS'],
+                'save-widget-application' => ['POST', 'OPTIONS'],
+                'update-widget-loan-application' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -97,6 +100,29 @@ class LoansController extends ApiBaseController
         }
     }
 
+    public function actionSaveWidgetApplication()
+    {
+        $params = Yii::$app->request->post();
+        if ($params['id']) {
+            $college_id = $params['id'];
+            $orgDate = $params['applicant_dob'];
+            $model = new LoanApplicationsForm();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                if ($model->validate()) {
+                    if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
+                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
     public function actionCollegeStudentLoans()
     {
         if ($this->isAuthorized()) {
@@ -127,13 +153,18 @@ class LoansController extends ApiBaseController
                     'a.email',
                     'a.gender',
                     'a.amount',
-                    'c.course_name',
+                    'f.payment_status',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
-                ->joinWith(['createdBy b' => function ($b) {
-                    $b->joinWith(['userOtherInfo b1']);
+                ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                    $c->joinWith(['createdBy b' => function ($b) {
+                        $b->joinWith(['userOtherInfo b1']);
+                    }], false);
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }]);
                 }], false)
-                ->joinWith(['collegeCourseEnc c'], false)
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select([
                         'd.loan_co_app_enc_id',
@@ -144,16 +175,18 @@ class LoansController extends ApiBaseController
                         'd.annual_income'
                     ]);
                 }])
+                ->joinWith(['educationLoanPayments f'], false)
                 ->joinWith(['loanPurposes e' => function ($e) {
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
-                ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0]);
+                ->where(['cc.organization_enc_id' => $college_id, 'a.status' => 0, 'f.payment_status' => ['captured', 'created']]);
             if ($limit) {
                 $loan_requests->limit($limit)
                     ->offset(($page - 1) * $limit);
             }
-            $loan_requests = $loan_requests->asArray()
+            $loan_requests = $loan_requests
+                ->asArray()
                 ->all();
 
             if ($id) {
@@ -171,13 +204,17 @@ class LoansController extends ApiBaseController
                         'a.email',
                         'a.gender',
                         'a.amount',
-                        'c.course_name',
+                        'c1.course_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
-                    ->joinWith(['createdBy b' => function ($b) {
-                        $b->joinWith(['userOtherInfo b1']);
+                    ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                        $c->joinWith(['createdBy b' => function ($b) {
+                            $b->joinWith(['userOtherInfo b1']);
+                        }], false);
+                        $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                            $cc->joinWith(['courseEnc c1']);
+                        }]);
                     }], false)
-                    ->joinWith(['collegeCourseEnc c'], false)
                     ->joinWith(['loanCoApplicants d' => function ($d) {
                         $d->select([
                             'd.loan_co_app_enc_id',
@@ -192,13 +229,25 @@ class LoansController extends ApiBaseController
                         $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                         $e->joinWith(['feeComponentEnc e1'], false);
                     }])
-                    ->where(['b1.organization_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
+                    ->where(['cc.organization_enc_id' => $college_id, 'a.status' => 0, 'a.loan_app_enc_id' => $id])
                     ->asArray()
                     ->one();
             }
 
             if ($loan_requests) {
+                $i = 0;
+                foreach ($loan_requests as $l) {
+                    if (!$l['image'] && $l['image'] == null) {
+                        $image = "https://ui-avatars.com/api/?name=" . $l['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
+                        $loan_requests[$i]['image'] = $image;
+                    }
+                    $i++;
+                }
                 if ($loan) {
+                    if (!$loan['image'] && $loan['image'] == null) {
+                        $image = "https://ui-avatars.com/api/?name=" . $l['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
+                        $loan['image'] = $image;
+                    }
                     return $this->response(200, ['status' => 200, 'data' => $loan_requests, 'loan_detail' => $loan]);
                 } else {
                     return $this->response(200, ['status' => 200, 'data' => $loan_requests]);
@@ -234,6 +283,9 @@ class LoansController extends ApiBaseController
 
             if ($application) {
                 if ($action == 'approve') {
+                    $application->amount_received = $param['amount_received'];
+                    $application->amount_due = $param['amount_due'];
+                    $application->scholarship = $param['scholarship'];
                     $application->status = 1;
                 } elseif ($action == "reject") {
                     $application->status = 2;
@@ -280,6 +332,35 @@ class LoansController extends ApiBaseController
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetFeeComponents()
+    {
+        $params = Yii::$app->request->post();
+        $college_id = $params['id'];
+        if ($college_id) {
+            $fee_components = OrganizationFeeComponents::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.fee_component_enc_id', 'a.name'])
+                ->joinWith(['assignedOrganizationFeeComponents b'], false)
+                ->where(['b.organization_enc_id' => $college_id, 'b.status' => 1, 'b.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $loan_types = LoanTypes::find()
+                ->select(['loan_type_enc_id', 'loan_name'])
+                ->asArray()
+                ->all();
+
+            if ($fee_components) {
+                return $this->response(200, ['status' => 200, 'fee_components' => $fee_components, 'loan_types' => $loan_types]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
 
@@ -357,6 +438,46 @@ class LoansController extends ApiBaseController
         }
     }
 
+    public function actionUpdateWidgetLoanApplication()
+    {
+        $params = Yii::$app->request->post();
+        if (isset($params['loan_app_id']) && !empty($params['loan_app_id'])) {
+            $loan_app_id = $params['loan_app_id'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        if (isset($params['loan_payment_id']) && !empty($params['loan_payment_id'])) {
+            $loan_payment_id = $params['loan_payment_id'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        if ($params['status'] == 'captured') {
+            $loan_application = LoanApplications::find()
+                ->where(['loan_app_enc_id' => $loan_app_id])
+                ->one();
+            if ($loan_application) {
+                $loan_application->status = 0;
+                $loan_application->updated_by = null;
+                $loan_application->updated_on = date('Y-m-d H:i:s');
+                $loan_application->update();
+            }
+        }
+
+        $loan_payments = EducationLoanPayments::find()
+            ->where(['education_loan_payment_enc_id' => $loan_payment_id])
+            ->one();
+        if ($loan_payments) {
+            $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
+            $loan_payments->payment_status = $params['status'];
+            $loan_payments->updated_by = null;
+            $loan_payments->updated_on = date('Y-m-d H:i:s');
+            $loan_payments->update();
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
     public function actionStudentLoans()
     {
         if ($user = $this->isAuthorized()) {
@@ -370,12 +491,13 @@ class LoansController extends ApiBaseController
                     'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
                     'd.education_loan_payment_enc_id'
                 ])
+                ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
                 ->joinWith(['loanPurposes b' => function ($b) {
                     $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
                     $b->joinWith(['feeComponentEnc c'], false);
                 }])
                 ->joinWith(['educationLoanPayments d'], false)
-                ->where(['a.created_by' => $user->user_enc_id])
+                ->where(['cc.created_by' => $user->user_enc_id])
                 ->asArray()
                 ->all();
 
@@ -400,6 +522,119 @@ class LoansController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'data' => $status->status]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionManageLoanApplications()
+    {
+        if ($this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $params = Yii::$app->request->post();
+            $limit = $params['limit'];
+
+            $page = $params['page'];
+            if (!$page) {
+                $page = 1;
+            }
+
+            $loan_requests = LoanApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select([
+                    'a.loan_app_enc_id',
+                    'a.applicant_name',
+                    'a.applicant_dob',
+                    'a.applicant_current_city',
+                    'a.degree',
+                    'a.years',
+                    'a.semesters',
+                    'a.phone',
+                    'a.email',
+                    'a.gender',
+                    'a.amount',
+                    'f.payment_status',
+                    'c1.course_name',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                ])
+                ->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userOtherInfo b1']);
+                }], false)
+                ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }]);
+                }], false)
+                ->joinWith(['loanCoApplicants d' => function ($d) {
+                    $d->select([
+                        'd.loan_co_app_enc_id',
+                        'd.loan_app_enc_id',
+                        'd.name',
+                        'd.relation',
+                        'd.employment_type',
+                        'd.annual_income'
+                    ]);
+                }])
+                ->joinWith(['educationLoanPayments f'], false)
+                ->joinWith(['loanPurposes e' => function ($e) {
+                    $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
+                    $e->joinWith(['feeComponentEnc e1'], false);
+                }])
+                ->where(['cc.organization_enc_id' => $college_id]);
+            if (isset($params['name']) && !empty($params['name'])) {
+                $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
+            }
+            if (isset($params['college_loan_status']) && !empty($params['college_loan_status'])) {
+                $loan_requests->andWhere(['a.status' => $params['college_loan_status']]);
+            }
+            if (isset($params['payment_status']) && !empty($params['payment_status'])) {
+                $loan_requests->andWhere(['f.payment_status' => $params['payment_status']]);
+            }
+            if ($limit) {
+                $loan_requests->limit($limit)
+                    ->offset(($page - 1) * $limit);
+            }
+            $loan_requests = $loan_requests
+                ->asArray()
+                ->all();
+
+            if ($loan_requests) {
+                return $this->response(200, ['status' => 200, 'data' => $loan_requests]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateAmount()
+    {
+        Yii::$app->cache->flush();
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $loan_app = LoanApplications::find()
+                ->where(['loan_app_enc_id' => $params['loan_app_id']])
+                ->one();
+
+            $loan_app->amount_received = $params['amount_received'];
+            $loan_app->amount_due = $params['amount_due'];
+            $loan_app->scholarship = $params['scholarship'];
+            $loan_app->updated_by = $user->user_enc_id;
+            $loan_app->updated_on = date('Y-m-d H:i:s');
+
+            if ($loan_app->update()) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
 
         } else {

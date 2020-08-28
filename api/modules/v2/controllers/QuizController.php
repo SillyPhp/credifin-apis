@@ -3,7 +3,7 @@
 
 namespace api\modules\v2\controllers;
 
-use common\models\CollegeCourses;
+use common\models\AssignedCollegeCourses;
 use common\models\CollegeSections;
 use common\models\MockAssignedQuizPool;
 use common\models\MockLabelPool;
@@ -505,7 +505,7 @@ class QuizController extends ApiBaseController
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $quizModel->slug = $utilitiesModel->create_slug();
                     $quizModel->for_sections = implode(",", $data['sections']);
-                    $quizModel->course_enc_id = $data['class'];
+                    $quizModel->assigned_college_enc_id = $data['class'];
 //                    $quizModel->label_enc_id = $data->label_id;
                     $quizModel->created_by = $user->user_enc_id;
                     if (!$quizModel->validate() || !$quizModel->save()) {
@@ -544,15 +544,17 @@ class QuizController extends ApiBaseController
         if ($this->isAuthorized()) {
             $college_id = $this->getOrgId();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -586,7 +588,7 @@ class QuizController extends ApiBaseController
                     'total_questions',
                     'for_sections'
                 ])
-                ->where(['is_deleted' => 0, 'course_enc_id' => $class_id])
+                ->where(['is_deleted' => 0, 'assigned_college_enc_id' => $class_id])
                 ->asArray()
                 ->all();
 
@@ -870,9 +872,11 @@ class QuizController extends ApiBaseController
                 ->select([
                     'a.quiz_enc_id', 'a.name', 'a.per_ques_marks', 'a.total_marks',
                     'a.per_ques_time', 'a.total_time', 'a.negative_marks', 'a.total_questions',
-                    'a.for_sections', 'b.course_name class_name'
+                    'a.for_sections', 'bb.course_name class_name'
                 ])
-                ->joinWith(['courseEnc b'], false)
+                ->joinWith(['assignedCollegeEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc bb']);
+                }], false)
                 ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -987,17 +991,51 @@ class QuizController extends ApiBaseController
             if ($id) {
                 $detail = MockQuizzes::find()
                     ->alias('z')
-                    ->select(['z.*', 'a1.name as label_name'])
+                    ->select(['z.quiz_enc_id',
+                        'z.label_enc_id',
+                        'a1.name as label_name',
+                        'z.name',
+                        'z.per_ques_marks',
+                        'z.total_marks',
+                        'z.per_ques_time',
+                        'z.total_time',
+                        'z.negative_marks',
+                        'z.slug',
+                        'z.total_questions',
+                        'z.for_sections',
+                        'z.assigned_college_enc_id',
+                        'cc.course_name class'
+                    ])
                     ->joinWith(['labelEnc a' => function ($a) {
                         $a->joinWith(['poolEnc a1']);
                     }], false)
-                    ->joinWith(['mockAssignedQuizPools b'])
-                    ->where(['z.quiz_enc_id' => $id])
+                    ->joinWith(['mockAssignedQuizPools b' => function ($b) {
+                        $b->select(['b.assigned_quiz_pool_enc_id',
+                            'b.quiz_enc_id',
+                            'b.quiz_pool_enc_id',
+                            'b.min',
+                            'b.max',
+                            'bb.name pool_name'
+                        ]);
+                        $b->joinWith(['quizPoolEnc bb'], false);
+                    }])
+                    ->joinWith(['assignedCollegeEnc c' => function ($b) {
+                        $b->joinWith(['courseEnc cc']);
+                    }], false)
+                    ->where(['z.quiz_enc_id' => $id, 'z.is_deleted' => 0])
                     ->asArray()
                     ->one();
+
+                if (!empty($detail['mockAssignedQuizPools'])) {
+                    $detail['min'] = (int)$detail['mockAssignedQuizPools'][0]['min'];
+                    $detail['max'] = (int)$detail['mockAssignedQuizPools'][0]['max'];
+                }
+
                 return $this->response(200, ['status' => 200, 'data' => $detail]);
             }
             return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized ']);
         }
     }
 

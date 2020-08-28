@@ -5,6 +5,7 @@ namespace api\modules\v3\models;
 use api\modules\v3\models\RtcTokenBuilder;
 use common\models\VideoSessions;
 use common\models\Utilities;
+use common\models\WebinarSessions;
 
 class TokensModel
 {
@@ -45,8 +46,9 @@ class TokensModel
 
     public function validateToken($options)
     {
+        $session_id = WebinarSessions::findOne(['session_enc_id' => $options['tokenId']])['session_id'];
         $model = VideoSessions::find()
-            ->where(['is_active' => 1, 'session_enc_id' => $options['tokenId']])
+            ->where(['is_active' => 1, 'session_enc_id' => $session_id])
             ->asArray()->one();
         if ($model) {
             return [

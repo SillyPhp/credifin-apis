@@ -49,7 +49,8 @@ class SignUpCandidateForm extends Model
     public function rules()
     {
         return [
-            [['email','username','new_password','confirm_password','first_name','last_name','job_profile','city','city_id','phone','experience','salary'], 'required'],
+            [['email','username','new_password','confirm_password','first_name','last_name','job_profile','city','city_id'], 'required'],
+            [['experience','salary','phone'], 'safe'],
             [['salary'], 'integer', 'min' => 1],
             [['email'], 'email'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
@@ -73,8 +74,12 @@ class SignUpCandidateForm extends Model
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $userPreference->preference_enc_id = $utilitiesModel->encrypt();
+            if($experienceJob){
             $userPreference->experience = $experienceJob;
+            }
+            if($salaryJob){
             $userPreference->salary = $salaryJob;
+            }
             $userPreference->created_on = date('Y-m-d H:i:s');
             $userPreference->created_by =Yii::$app->user->identity->user_enc_id;
             if (!$userPreference->validate() || !$userPreference->save()) {

@@ -3,15 +3,11 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
-use common\models\AssignedWebinarTo;
+use common\models\AssignedCollegeCourses;
 use common\models\ClassNotes;
-use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
-use common\models\FollowedOrganizations;
 use common\models\OnlineClasses;
-use common\models\Organizations;
 use common\models\ShortlistedApplications;
-use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use common\models\WebinarRegistrations;
@@ -42,6 +38,7 @@ class CandhomeController extends ApiBaseController
                 'get-data' => ['POST', 'OPTIONS'],
                 'applied-applications' => ['POST', 'OPTIONS'],
                 'all-notes' => ['POST', 'OPTIONS'],
+                'get-course-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -372,6 +369,7 @@ class CandhomeController extends ApiBaseController
                     'a.current_round',
                     'g.name application_type',
                     'b.slug',
+                    'b.status',
                     'd.slug comp_slug',
                     'd.name organization_name',
                     'e2.name title',
@@ -394,7 +392,7 @@ class CandhomeController extends ApiBaseController
                 ->where([
                     'a.created_by' => $id,
                     'a.is_deleted' => 0,
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'b.application_for' => [0, 2],
                     'd.is_erexx_approved' => 1,
@@ -416,6 +414,11 @@ class CandhomeController extends ApiBaseController
                     array_push($cities, $c['city_name']);
                 }
                 $applied[$i]['cities'] = implode(',', $cities);
+                if ($a['status'] != 'Active') {
+                    $applied[$i]['is_closed'] = true;
+                } else {
+                    $applied[$i]['is_closed'] = false;
+                }
                 $i++;
             }
 
@@ -441,7 +444,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -456,7 +459,7 @@ class CandhomeController extends ApiBaseController
                         'a.start_time',
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'a.semester',
                         'a.subject_name',
                         'a.class_type'
@@ -465,7 +468,9 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['courseEnc d'], false)
+                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $d->joinWith(['courseEnc dd']);
+                }], false)
                 ->where([
                     'a.status' => 'Active',
                     'a.is_deleted' => 0,
@@ -474,7 +479,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
-                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.assigned_college_enc_id' => $user['course_enc_id'],
                         'a.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['a.class_date' => $date_now])
@@ -516,7 +521,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -532,7 +537,7 @@ class CandhomeController extends ApiBaseController
                         'b.start_time',
                         'b.end_time',
                         'CONCAT(b2.first_name," ",b2.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'b.subject_name',
                         'a.note',
                         'a.title',
@@ -544,7 +549,9 @@ class CandhomeController extends ApiBaseController
                         $b->joinWith(['userEnc b2'], false);
                         $b->joinWith(['collegeEnc b3'], false);
                     }], false);
-                    $b->joinWith(['courseEnc d'], false);
+                    $b->joinWith(['assignedCollegeEnc d'=>function($d){
+                        $d->joinWith(['courseEnc dd']);
+                    }], false);
                 }], false)
                 ->where([
                     'a.is_deleted' => 0,
@@ -553,7 +560,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'b.semester' => $user['semester'],
-                        'b.course_enc_id' => $user['course_enc_id'],
+                        'b.assigned_college_enc_id' => $user['course_enc_id'],
                         'b.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['<=', 'b.class_date', $date_now])
@@ -609,7 +616,7 @@ class CandhomeController extends ApiBaseController
 
             $user = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.assigned_college_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
                 ->innerJoinWith(['userOtherInfo b'], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id])
                 ->asArray()
@@ -624,7 +631,7 @@ class CandhomeController extends ApiBaseController
                         'a.start_time',
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
-                        'd.course_name',
+                        'dd.course_name',
                         'a.semester',
                         'a.subject_name'
                     ])
@@ -632,7 +639,9 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['courseEnc d'], false)
+                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $d->joinWith(['courseEnc dd']);
+                }], false)
                 ->where([
                     'a.status' => 'Active',
                     'a.is_deleted' => 0,
@@ -640,7 +649,7 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
-                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.assigned_college_enc_id' => $user['course_enc_id'],
                         'a.section_enc_id' => $user['section_enc_id']
                     ])
                 ->andWhere(['>', 'a.class_date', $date_now])
@@ -723,6 +732,19 @@ class CandhomeController extends ApiBaseController
                 ->all();
 
 
+            $j = 0;
+            $data = [];
+            foreach ($webinar as $w) {
+                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
+                $end_time = date('Y-m-d H:i:s', $newtimestamp);
+                if ($end_time > $date_now) {
+                    array_push($data, $webinar[$j]);
+                }
+                $j++;
+            }
+
+            $webinar = $data;
+
             if (!empty($webinar)) {
                 $i = 0;
                 foreach ($webinar as $w) {
@@ -768,14 +790,22 @@ class CandhomeController extends ApiBaseController
                 ->one();
 
             if ($register_user) {
-                return $this->response(409, ['status' => 409, 'message' => 'already registered']);
+                $register_user->status = 1;
+                $register_user->last_updated_on = date('Y-m-d H:i:s');
+                $register_user->last_updated_by = $user->user_enc_id;
+                if ($register_user->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Joined Successfully']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+//                return $this->response(409, ['status' => 409, 'message' => 'already registered']);
             }
 
             $webinar = Webinars::findOne(['webinar_enc_id' => $webinar_id]);
             $webinarSession = WebinarSessions::findOne(['session_enc_id' => $webinar->session_enc_id]);
-            if(!$webinarSession){
+            if (!$webinarSession) {
                 return $this->response(409, ['status' => 409, 'message' => 'Session not created..']);
             }
+
             $model = new WebinarRegistrations();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -785,7 +815,7 @@ class CandhomeController extends ApiBaseController
             $model->created_by = $user->user_enc_id;
             $model->created_on = date('Y-m-d h:i:s');
             if ($model->save()) {
-                return $this->response(200, ['status' => 200, 'sessionEnc' =>  $webinarSession, 'message' => 'Joined Successfully']);
+                return $this->response(200, ['status' => 200, 'sessionEnc' => $webinarSession, 'message' => 'Joined Successfully']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
@@ -880,6 +910,7 @@ class CandhomeController extends ApiBaseController
             if (!empty($webinar)) {
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
+                $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
                 $date = new \DateTime($webinar['start_datetime']);
                 $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
                 $webinar['seconds'] = $seconds;
@@ -901,8 +932,62 @@ class CandhomeController extends ApiBaseController
     private function userRegistered($webinar_id, $user_id)
     {
         return WebinarRegistrations::find()
-            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1])
             ->exists();
+    }
+
+    private function interested($webinar_id, $user_id)
+    {
+        $interest = WebinarRegistrations::find()
+            ->select(['interest_status'])
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
+            ->asArray()
+            ->one();
+
+        return $interest['interest_status'];
+    }
+
+    public function actionChangeStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['webinar_enc_id']) && empty($params['webinar_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            if (!isset($params['status']) && empty($params['status'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            $already_exists = WebinarRegistrations::find()
+                ->where(['created_by' => $user->user_enc_id, 'webinar_enc_id' => $params['webinar_enc_id']])
+                ->one();
+
+            if ($already_exists) {
+                $already_exists->interest_status = $params['status'];
+                $already_exists->last_updated_on = date('Y-m-d H:i:s');
+                $already_exists->last_updated_by = $user->user_enc_id;
+                if ($already_exists->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            } else {
+                $reg = new WebinarRegistrations();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $reg->register_enc_id = $utilitiesModel->encrypt();
+                $reg->webinar_enc_id = $params['webinar_enc_id'];
+                $reg->created_by = $user->user_enc_id;
+                $reg->interest_status = $params['status'];
+                $reg->status = 0;
+                $reg->created_on = date('Y-m-d H:i:s');
+                if ($reg->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
     public function actionCollegeCourses()
@@ -915,15 +1000,17 @@ class CandhomeController extends ApiBaseController
                 ->one();
 
             if ($college_id) {
-                $courses = CollegeCourses::find()
+                $courses = AssignedCollegeCourses::find()
+                    ->distinct()
                     ->alias('a')
-                    ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                    ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                    ->joinWith(['courseEnc c'], false)
                     ->joinWith(['collegeSections b' => function ($b) {
-                        $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                        $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                         $b->onCondition(['b.is_deleted' => 0]);
                     }], false)
                     ->where(['a.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0])
-                    ->groupBy(['a.course_name'])
+//                    ->groupBy(['a.course_name'])
                     ->asArray()
                     ->all();
                 if ($courses) {
@@ -939,6 +1026,32 @@ class CandhomeController extends ApiBaseController
         }
     }
 
+    public function actionGetCourseList()
+    {
+        $params = Yii::$app->request->post();
+        if ($params['id']) {
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }], false)
+                ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
+//                ->groupBy(['a.course_name'])
+                ->asArray()
+                ->all();
+            if ($courses) {
+                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 //    public function actionGetCompanies()
 //    {
 //        $q = Organizations::find()

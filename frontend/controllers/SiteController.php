@@ -1,7 +1,9 @@
 <?php
 
 namespace frontend\controllers;
+use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -16,6 +18,7 @@ use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
+use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -79,6 +82,23 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            if((new OneTapAuth())->handle(Yii::$app->request->post()))
+            {
+                return $this->redirect('/site/oauth-verify');
+            }
+            else{
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
@@ -136,7 +156,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -535,13 +555,8 @@ class SiteController extends Controller
     {
 
         $model = new SignUpCandidateForm();
-        $jobprimaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
-            ->asArray()
-            ->all();
+        $job_profile = new ApplicationForm();
+        $primary_cat = $job_profile->getPrimaryFields();
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -551,12 +566,12 @@ class SiteController extends Controller
 
         return $this->renderAjax('sign-up-candidate', [
             'model' => $model,
-            'jobprimaryfields' => $jobprimaryfields,
+            'primary_cat' => $primary_cat,
         ]);
     }
     public function actionSignUp(){
         $model = new SignUpCandidateForm();
-        $modelSignUp = new IndividualSignUpForm();
+        $modelSignUp = new WidgetSignUpForm();
         if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -564,7 +579,9 @@ class SiteController extends Controller
                 $modelSignUp->first_name = $model->first_name;
                 $modelSignUp->last_name = $model->last_name;
                 $modelSignUp->email = $model->email;
+                if($model->phone){
                 $modelSignUp->phone = $model->phone;
+                }
                 $modelSignUp->new_password = $model->new_password;
                 $modelSignUp->confirm_password = $model->confirm_password;
                 if (empty($errors)) {

@@ -53,107 +53,71 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in one">
                     <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>"
-                                 alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer"
-                                 title="Jobs"/></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs"/>
+                        </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>"
-                                 alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer"
-                                 title="Jobs"/></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs"/></div>
                         <div class="h-heading">Jobs</div>
-                        <!--                            <div class="h-text">I want to recruit talent</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>"
-                                 alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me"
-                                 title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships"/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>"
-                                 alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me"
-                                 title="Internships"/></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships"/>
+                        </div>
                         <div class="h-heading">Internships</div>
-                        <!--                            <div class="h-text">I'm the talent</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>"
-                                 alt="international internships, web developer career, software engineer career">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>"
-                                 alt="international internships, web developer career, software engineer career"></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>">
+                        </div>
                         <div class="h-heading">Learning Hub</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
                 </div>
-                <!--                </div>-->
                 <div class="box-border fade-in three">
                     <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>"
-                                 alt="research internship, software developer career internship websites, best learning websites"
-                                 title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews"/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>"
-                                 alt="research internship, software developer career internship websites, best learning websites"
-                                 title="Reviews"/></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews"/>
+                        </div>
                         <div class="h-heading">Reviews</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
                 </div>
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in three">
-                    <!--                        <div class="box-overlay">-->
                     <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>"
-                                 alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>"
-                            alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work"
-                                 alt="Employers" title="Colleges"></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges">
+                        </div>
                         <div class="h-heading">Courses</div>
-                        <!--                                <div class="h-text">I'm the future</div>-->
                     </a>
-                    <!--                        </div>-->
-                    <!--                        <div class="overlay">-->
-                    <!--                            <div class="text">Coming Soon</div>-->
-                    <!--                        </div>-->
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in four">
-                    <div class="box-overlay">
+                    <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>"
-                                 alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>"
-                                 alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana"></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>">
+                        </div>
                         <div class="h-heading">Education Loan</div>
-                        <!--                            <div class="h-text">I want to enroll talent</div>-->
+                    </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
-
-                <!--                </div>-->
             </div>
         </div>
     </div>
@@ -173,7 +137,7 @@ $this->registerCss('
     overflow-x: hidden;
 }
 .header-row {
-    margin-top: -132px;
+    margin-top: -150px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -600,6 +564,9 @@ how-icon{
     }
 }
 @media screen and (max-width: 1400px){
+    .header-row{
+        margin-top: -132px;
+    }
     .box-border{
          min-width: 157px !important;
          max-width: 157px !important;

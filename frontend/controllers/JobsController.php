@@ -1450,4 +1450,15 @@ class JobsController extends Controller
             }
         }
     }
+    public function actionClearMyCache()
+    {
+        $cache = Yii::$app->cache->flush();
+
+        if ($cache) {
+            $this->redirect(Yii::$app->request->referrer);
+        } else {
+            $this->redirect('/jobs/clear-my-cache');
+            return 'something went wrong...! please try again later';
+        }
+    }
 }

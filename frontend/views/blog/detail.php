@@ -52,7 +52,7 @@ $this->params['seo_tags'] = [
                     <div class="blog-division">
                         <?php
                         $postCat = $post->postCategories;
-                        foreach ($postCat as $cat){
+                        foreach ($postCat as $cat) {
                             $cat_name = $cat->categoryEnc->name;
                         }
                         if (!$cat_name) {
@@ -67,6 +67,9 @@ $this->params['seo_tags'] = [
                         <div id="blog-description" class="blog-text">
                             <?= $post->description; ?>
                         </div>
+                    </div>
+                    <div>
+                        <?= $this->render('/widgets/sharing-widget-new'); ?>
                     </div>
                     <?=
                     $this->render('/widgets/mustache/discussion/discussion-box', [
@@ -154,7 +157,6 @@ $this->params['seo_tags'] = [
                     echo $this->render('/widgets/hot-jobs');
                     ?>
                     <!--hotjobs Widget ends-->
-                    <?= $this->render("/widgets/square_ads"); ?>
                 </div>
             </div>
         </div>
@@ -171,20 +173,20 @@ margin-top:15px;
 
 /*----blog section----*/
 .blog-header{
-    min-height:200px;
-    background:#eee;
+    min-height:150px;
+    background:#007bff;
 }
 .blog-header > .container{
     padding-top:0px !important;
 }
 .pos-rel{
     position:relative;
-    height:200px;
+    height:150px;
 }
 
 .blog-title{
     font-size: 35px;
-    color:#000;
+    color:#fff;
     font-weight: bold;
     position:absolute;
     top:50%;
