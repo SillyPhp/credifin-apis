@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
 use common\models\AssignedCategories;
 use common\models\AssignedCollegeCourses;
+use common\models\CertificateTypes;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
@@ -12,6 +13,7 @@ use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\LoanApplications;
+use common\models\LoanCertificates;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\OrganizationFeeComponents;
@@ -692,6 +694,104 @@ class LoansController extends ApiBaseController
             print_r('done');
             die();
         }
+    }
+
+    public function actionLoanSecondForm()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            if (!isset($params['type']) && empty($params['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            if (!isset($params['id']) && empty($params['id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function saveIdProof($params, $id = null)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            if ($id != null) {
+
+                $certificate = CertificateTypes::find()
+                    ->where(['name' => $params['proof_name']])
+                    ->one();
+
+                if (!$certificate) {
+                    $certificate = new CertificateTypes();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
+                    $certificate->name = $params['proof_name'];
+                    if (!$certificate->save()) {
+                        print_r($certificate->getErrors());
+                        return false;
+                    }
+                }
+
+                $loan_certificates = LoanCertificates::find()
+                    ->where(['certificate_enc_id' => $id])
+                    ->one();
+
+                $loan_certificates->certificate_type_enc_id = $certificate->certificate_type_enc_id;
+                $loan_certificates->number = $params['number'];
+                $loan_certificates->updated_by = $user->user_enc_id;
+                $loan_certificates->updated_on = date('Y-m-d H:i:s');
+                if (!$loan_certificates->update()) {
+                    $loan_certificates->getErrors();
+                    return false;
+                }
+
+            } else {
+
+                $certificate = CertificateTypes::find()
+                    ->where(['name' => $params['proof_name']])
+                    ->one();
+
+                if (!$certificate) {
+                    $certificate = new CertificateTypes();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
+                    $certificate->name = $params['proof_name'];
+                    if (!$certificate->save()) {
+                        print_r($certificate->getErrors());
+                        return false;
+                    }
+                }
+
+                $loan_certificates = new LoanCertificates();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $loan_certificates->certificate_enc_id = $utilitiesModel->encrypt();
+                $loan_certificates->loan_app_enc_id = $params['loan_app_id'];
+                if (isset($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
+                    $loan_certificates->loan_co_app_enc_id = $params['loan_co_app_id'];
+                }
+                $loan_certificates->certificate_type_enc_id = $certificate->certificate_type_enc_id;
+                $loan_certificates->number = $params['number'];
+                $loan_certificates->created_by = $user->user_enc_id;
+                $loan_certificates->created_on = date('Y-m-d H:i:s');
+                if (!$loan_certificates->save()) {
+                    print_r($loan_certificates->getErrors());
+                    return false;
+                }
+
+            }
+        }
+    }
+
+    private function saveAddress($params, $id = null)
+    {
+
     }
 
 }
