@@ -738,6 +738,9 @@ color:#e65332;
         max-width: 100px;
         margin: 20px auto;
     }
+    .loan-benefits{
+        padding-inline-start: 0px;
+    }
 }
 ');
 $script = <<<JS
