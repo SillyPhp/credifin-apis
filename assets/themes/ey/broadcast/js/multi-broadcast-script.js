@@ -7,7 +7,6 @@ var channelName = channel_name; // set channel name
 // create client instance
 var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // h264 better detail at a higher motion
 var mainStreamId; // reference to main stream
-
 // set video profile
 // [full list: https://docs.agora.io/en/Interactive%20Broadcast/videoProfile_web?platform=Web#video-profile-table]
 var cameraVideoProfile = "480p"; // 960 × 720 @ 30fps  & 750kbs
@@ -91,7 +90,9 @@ client.on("stream-subscribed", function (evt) {
     var remoteStream = evt.stream;
     var id = remoteStream.getId();
     // Play the remote stream.
-    $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
+    if($("#stream-player-"+ id).length == 0){
+        $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
+    }
     remoteStream.play("stream-player-"+id+"");
     console.log('stream-subscribed remote-uid: ', id);
     initializeUi();
