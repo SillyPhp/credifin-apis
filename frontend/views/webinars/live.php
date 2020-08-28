@@ -1,11 +1,10 @@
 <?php
+$this->params['header_dark'] = true;
+
 use yii\helpers\Url;
 
-$this->params['header_dark'] = true;
-$basePath = Url::base("https");
-
 if (Yii::$app->user->identity->image) {
-    $image = $basePath . '/' . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
 } else {
     $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
@@ -18,7 +17,7 @@ if (Yii::$app->user->identity->image) {
 <section>
     <div class="videoFlex">
         <div class="video-section">
-            <iframe src="<?= Url::to('/live-stream/' . $type . '?id=' . $_GET['id']) ?>"></iframe>
+            <iframe src="<?= Url::to( $type . '?id=' . $_GET['id']) ?>"></iframe>
             <div class="slide-close-btn">X</div>
         </div>
         <div class="slide-section">
