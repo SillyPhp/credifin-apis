@@ -11,6 +11,7 @@ namespace common\models;
  * @property string $created_on created on
  * @property string $updated_on
  * @property string $updated_by
+ * @property string $status
  * @property int $is_deleted 0 false,1 true
  *
  * @property AssignedCollegeCourses[] $assignedCollegeCourses
@@ -34,8 +35,9 @@ class CollegeCoursesPool extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_enc_id', 'course_name', 'created_by', 'created_on'], 'required'],
+            [['course_enc_id', 'course_name', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
+            [['status'], 'string'],
             [['is_deleted'], 'integer'],
             [['course_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['course_name'], 'string', 'max' => 200],
