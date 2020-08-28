@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use account\models\loanApplications\LoanSanctionedForm;
+use common\models\AssignedLoanProvider;
 use common\models\LoanApplicationLogs;
 use common\models\LoanApplications;
 use common\models\LoanDocuments;
@@ -35,7 +36,58 @@ class EducationLoansController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
-
+    public function actionTest()
+    {
+        $params['id'] = 'mKXM03kGoZak4E81xxmW79z4NJv6eW';
+        $loansApplications = AssignedLoanProvider::find()
+            ->alias('z')
+            ->distinct()
+            ->where(['provider_enc_id'=>$params['id']])
+            ->select(['a.loan_app_enc_id',
+                'a.created_on as apply_date',
+                '(CASE
+                    WHEN a.loan_status = "0" THEN "New Lead"
+                    WHEN a.loan_status = "1" THEN "Accepted"
+                    WHEN a.loan_status = "2" THEN "Pre Verification"
+                    WHEN a.loan_status = "3" THEN "Under Process"
+                    WHEN a.loan_status = "4" THEN "Sanctioned"
+                    WHEN a.loan_status = "5" THEN "Disbursed"
+                    WHEN a.loan_status = "10" THEN "Reject"
+                    ELSE "N/A"
+                END) as loan_status',
+                'a.applicant_name',
+                'a.amount',
+                'a.degree',
+                'f.course_name',
+                'REPLACE(g.name, "&amp;", "&") as org_name',
+                'a.semesters',
+                'a.years',
+                'a.phone',
+                'a.email',
+                'a.applicant_current_city as city',
+                '(CASE
+                    WHEN a.gender = "1" THEN "Male"
+                    WHEN a.gender = "2" THEN "Female"
+                    ELSE "N/A"
+                END) as gender',
+                'a.applicant_dob as dob',
+            ])
+            ->joinWith(['loanApplicationEnc a'=>function($b)
+            {
+                $b->joinWith(['loanCoApplicants h']);
+                $b->joinWith(['pathToClaimOrgLoanApplications c'=>function($b)
+                {
+                    $b->joinWith(['assignedCourseEnc d'=>function($v)
+                    {
+                        $v->joinWith(['courseEnc f'],false,'INNER JOIN');
+                        $v->joinWith(['organizationEnc g'],false,'INNER JOIN');
+                    }]);
+                }],false,'INNER JOIN');
+            }],true,'LEFT JOIN')
+            ->asArray()
+            ->all();
+        print_r($loansApplications);
+    }
     public function actionDashboard()
     {
         $model = new LoanSanctionedForm();
@@ -109,7 +161,6 @@ class EducationLoansController extends Controller
             ->andWhere(['not', ['a.current_scheme_id' => null]])
             ->asArray()
             ->all();
-
         $stats = LoanApplications::find()
             ->distinct()
             ->alias('a')
