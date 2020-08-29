@@ -67,7 +67,7 @@ if (Yii::$app->user->identity->image) {
                 </div>
                 <div class="col-md-3">
                     <div class="live-count">
-                        <i class="fas fa-circle"></i> Viewers: <span>700</span>
+                        <i class="fas fa-circle"></i> Viewers: <span id="viewers"></span>
                     </div>
                 </div>
             </div>
@@ -387,6 +387,20 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
         }
     }
+    var refs = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId)
+    refs.set({
+        'status': 'online',
+    });
+    var userLastOnlineRef = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId);
+    userLastOnlineRef.onDisconnect().remove();
+    var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
+    usersCount.on('value', function (data) {
+        var result2 = [];
+        for (var i in data.val()) {
+            result2.push([i, data.val()[i]]);
+        }
+        document.getElementById('viewers').innerText = result2.length;
+    });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
