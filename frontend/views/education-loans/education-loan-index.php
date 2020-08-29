@@ -310,8 +310,8 @@ use yii\helpers\Url;
                                 src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
                                 alt=""/> Contact Us
                     </div>
-                    <div class="callNumber"> +8727985888</div>
-                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
+                    <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +8727985888</div>
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Call Us</a>
                     </div>
                 </div>
             </div>
@@ -324,7 +324,7 @@ use yii\helpers\Url;
 <!--                    <div class="l-help-txt">See answers to questions on how to use our services</div>-->
 <!--                </div>-->
 <!--            </div>-->
-            </div>  
+            </div>
         </div>
     </section>
 <?php
@@ -363,6 +363,16 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.callNumber{
+    color: #666;
+    font-size: 18px;
+    margin-top: 10px;
+    font-family: roboto;
+    text-align: center;
+}
+.callNumber i{
+    color: #1b4145
+}
 .edu-flex{
     display: flex;
     align-items: center;
@@ -938,18 +948,19 @@ $this->registerCss('
     font-size: 20px !important; 
 }
 .l-help-txt-btn{
-    margin-top: 40px;
+    margin-top: 20px;
+    text-align: center;
 }
 .l-help-txt-btn a{
-    border: 1px solid #1cbcb2; 
+    border: 1px solid #00a0e3; 
     padding: 10px 20px; 
     color: #fff; 
-    background: #1cbcb2;
+    background: #00a0e3;
 }
 .l-help-txt-btn a:hover{
-    border: 2px solid #1cbcb2; 
+    border: 2px solid #00a0e3; 
     padding: 10px 20px; 
-    color: #1cbcb2; 
+    color: #00a0e3; 
     background: #fff; 
     text-decoration: none;
     transition: .3s ease-in-out;
@@ -957,6 +968,7 @@ $this->registerCss('
 .l-help-txt{
     font-size: 15px; 
     padding: 20px 30px 0 30px;
+    font-family: roboto;
 }
 /*Emi Calculator*/
 #ecww-formwrapper{
