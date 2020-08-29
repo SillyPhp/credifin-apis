@@ -133,12 +133,14 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="col-md-8 col-sm-8">
                 <div class="container-detail-box">
+                    <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
                     <div class="down-r">
                         <?php
-                        $cv = Yii::$app->params->upload_directories->resume->file . $userResume['resume_location'] . DIRECTORY_SEPARATOR . $userResume['resume'];
+                        $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
                         ?>
                         <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
                     </div>
+                <?php } ?>
                     <div class="apply-job-header">
                         <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php

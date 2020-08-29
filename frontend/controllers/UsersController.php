@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\AppliedApplications;
 use common\models\Countries;
 use common\models\Industries;
 use common\models\Skills;
@@ -189,6 +190,12 @@ class UsersController extends Controller
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->one();
+        $userApplied = AppliedApplications::find()
+            ->alias('z')
+            ->joinWith(['applicationEnc ae'],false)
+            ->where(['z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->asArray()
+            ->one();
 
         $education = UserEducation::find()
             ->where(['user_enc_id' => $user['user_enc_id']])
@@ -231,6 +238,7 @@ class UsersController extends Controller
             'skills' => $skills,
             'language' => $language,
             'userCv' => $userCv,
+            'userApplied' => $userApplied,
             'job_preference' => $job_preference,
             'internship_preference' => $internship_preference,
             'education' => $education,
