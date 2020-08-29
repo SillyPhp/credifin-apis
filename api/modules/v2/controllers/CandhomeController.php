@@ -851,6 +851,7 @@ class CandhomeController extends ApiBaseController
                 ->select([
                     'a.webinar_enc_id',
                     'a.title',
+                    'a.session_enc_id',
                     'a.start_datetime',
                     'a.availability',
                     'a.duration',

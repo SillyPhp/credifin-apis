@@ -431,24 +431,14 @@ $this->registerCss('
     background:#00a0e3;
 }
 @media only screen and (max-width: 500px){
-    .sign-up-details{
-        width:70vw;
-    }
-    .college-logo{
-        width:30vw;
-        margin-left:70vw;
-    }
-    .cl-heading{
-        font-size:10px;
-        display:none;
-    }
-    .cl-text{
-        font-size: 8px;
-        display:none;
-    }
-    .cl-icon img{
-        margin-top:35vh
-    }
+//    .sign-up-details{
+//        width:70vw;
+//    }
+//    .college-logo{
+//        width:30vw;
+//        margin-left:70vw;
+//    }
+
 }
 #footer{
     display:none;
@@ -626,7 +616,40 @@ form label {
 .service-list input[type="radio"]:focus + label {
  border: 1px solid #00a0e3;
 }
-
+@media screen and (max-width: 500px){
+    .bg-blue{
+        display:flex;
+        flex-direction: column;
+    }
+    .sign-up-details{
+        position: relative;
+        width: 100vw;
+        min-height: unset;
+        order:2;
+        padding-bottom: 30px;
+    }
+    .college-logo{
+        width: 100vw;
+        position: relative;
+        margin-left: 0px;
+        min-height: unset;
+        height: auto !important;
+        order: 1;
+        padding-top: 100px; 
+    }
+    .cl-heading{
+        font-size:10px;
+        display:none;
+    }
+    .cl-text{
+        font-size: 14px;
+//        display:none;
+    }
+    .cl-icon img{
+        max-width: 100px;
+        margin: 20px auto;
+    }
+}
 ');
 $script = <<<JS
     getCourseList(id = 0);

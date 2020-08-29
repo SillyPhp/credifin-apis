@@ -51,7 +51,7 @@ if (Yii::$app->user->identity->image) {
                                     $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
                                     foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
                                         ?>
-                                        <a target="_blank" href=""><?= $speaker['fullname'] ?></a>
+                                        <?= $speaker['fullname'] ?>
                                         <?php
                                         if ($key < $speakerCount) {
                                             echo ", ";

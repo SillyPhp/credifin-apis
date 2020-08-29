@@ -13,31 +13,32 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
     }
 }
 Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var token = "' . $token . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var education_loan_id = "' . $education_loan_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var ptoken = "' . $token . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_id = "' . $loan_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var gst = "' . $gst . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var pay_amount = "' . $amount . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <script>
-    p(token,access_key);
-    function p(ptoken,access_key) {
+    payment(ptoken,access_key);
+    function payment(ptoken,access_key) {
         Layer.checkout({
                 token: ptoken,
                 accesskey: access_key
             },
             function(response) {
                 if (response.status == "captured") {
-                    updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
+                    updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                     window.location.href = "/";
                 } else if (response.status == "created") {
-                    updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
+                    updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                     window.location.href = "/";
                 } else if (response.status == "pending") {
-                    updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
+                    updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                 } else if (response.status == "failed") {
-                    updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
+                    updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                 } else if (response.status == "cancelled") {
-                    updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
+                    updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                     location.reload(true);
                 }
             },
@@ -49,14 +50,17 @@ Yii::$app->view->registerJs('var loan_id = "' . $loan_id . '"', \yii\web\View::P
             }
         );
     }
- function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
+
+ function updateStatus(ptoken,loan_id,gst,pay_amount,payment_id=null,status)
  {
      $.ajax({
-         url : 'https://empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
+         url : 'https://empoweryouth.com/api/v3/education-loan/retry-payment',
          method : 'POST',
          data : {
-             loan_payment_id:education_loan_id,
-             loan_app_id:loan_app_enc_id,
+             token:ptoken,
+             gst:gst,
+             pay_amount:pay_amount,
+             loan_app_id:loan_id,
              payment_id:payment_id,
              status:status,
          },
