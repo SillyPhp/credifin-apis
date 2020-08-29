@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Speakers;
 use common\models\WebinarConversationMessages;
 use common\models\WebinarConversations;
+use common\models\WebinarOutcomes;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
@@ -73,9 +74,71 @@ class MentorsController extends Controller
         return $this->render('scool-mentorship');
     }
 
-    public function actionWebinarDetails()
+    public function actionWebinarDetails($id)
     {
-        return $this->render('webinar-details');
+        $webinar = Webinars::find()
+            ->select(['webinar_enc_id','title','start_datetime','description','seats'])
+            ->where(['webinar_enc_id' => $id])
+            ->asArray()
+            ->one();
+        $assignSpeaker = WebinarSpeakers::find()
+            ->alias('z')
+            ->distinct()
+            ->select([
+                'z.webinar_enc_id',
+                'z.speaker_enc_id',
+                'a.unclaimed_org_id',
+                'a.designation_enc_id',
+                'b.designation',
+                'CONCAT(f.first_name, " ", f.last_name) fullname',
+                'f.email', 'f.phone',
+                'f.image', 'f.image_location',
+                'f.description',
+                'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
+                'c.logo org_logo', 'c.logo_location org_logo_location',
+                'c.name org_name'
+            ])
+            ->joinWith(['speakerEnc a' => function($a){
+                $a->andWhere(['a.is_deleted' => 0]);
+                    $a->joinWith(['designationEnc b'], false);
+                    $a->joinWith(['unclaimedOrg c'], false);
+                    $a->joinWith(['speakerExpertises d' => function ($d) {
+                        $d->select(['d.speaker_enc_id', 'd.skill_enc_id', 'e.skill']);
+                        $d->joinWith(['skillEnc e'], false);
+                    }],false);
+                    $a->joinWith(['userEnc f'], false);
+            }],false)
+            ->andWhere(['z.is_deleted' => 0,'z.webinar_enc_id' => $id])
+            ->asArray()
+            ->all();
+        if ($assignSpeaker) {
+            array_walk($assignSpeaker, function (&$item) {
+                if ($item['image']) {
+                    $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                    if (file_exists($image_path)) {
+                        $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                    }
+                }
+                $item['speaker_image'] = $image;
+                $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                if($item['org_logo']){
+                    $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                }
+                unset($item['image']);
+                unset($item['image_location']);
+                unset($item['org_logo']);
+                unset($item['org_logo_location']);
+            });
+        }
+        $outComes = WebinarOutcomes::find()
+            ->where(['is_deleted' => 0,'webinar_enc_id' => $id])
+            ->asArray()
+            ->all();
+        return $this->render('webinar-details',[
+            'webinar' => $webinar,
+            'assignSpeaker' => $assignSpeaker,
+            'outComes' => $outComes,
+        ]);
     }
 
     public function actionWebinarSpeakers()
