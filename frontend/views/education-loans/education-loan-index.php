@@ -1,6 +1,6 @@
 <?php
 
-$this->title = Yii::t('frontend', 'Education Loans');
+//$this->title = Yii::t('frontend', 'Education Loans');
 
 use yii\helpers\Url;
 
