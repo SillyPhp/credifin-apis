@@ -29,6 +29,18 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <div class="clearfix"></div>
+          <section class="edu-loans">
+               <div class="container">
+                   <div class="rupee-main">
+                      <div class="edu-loans-txt">Interest Free Loans For </br> All Your Educational Needs!!</div>
+                       <div class="rupe-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupee.png'); ?>"/>
+                       </div>
+                   </div>
+               </div>
+          </section>
+
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -279,10 +291,6 @@ use yii\helpers\Url;
                                      alt="">
                             </div>
                             <div class="lp-name">Exclusive Leasing & Finance</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -359,10 +367,25 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.rupee-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rupe-img{
+    flex-basis: 50%;
+    text-align:right;
+}
+.rupe-img img{
+    width:300px;
+}
 .loan-college{
     text-align: center;  
     border: 1px solid #eee;
     margin-bottom: 15px;
+}
+.row{
+margin-bottom:30px;
 }
 .loan-college:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.1);
@@ -423,11 +446,13 @@ $this->registerCss('
 }
 .loan-text {
     padding-top: 140px;
+    
+    
 }
 .loan-text h1 {
     font-weight: 500;
-    font-size: 40px;
-    font-family: auto;
+    font-size: 50px;
+    font-family: lobster;
     margin-bottom: 0px;
 }
 .loan-text h3{
@@ -791,6 +816,26 @@ $this->registerCss('
 .edu-with-sec{
     padding:0px 0px 20px 0;
 }
+
+.edu-loans{
+ background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-bg1.png') . '); 
+    background-repeat:no-repeat;
+    padding: 0px 0 15px 0; 
+    text-align: center; 
+    background-size: cover;   
+ }
+ .us-flex1{
+  display: flex;
+    justify-content: right;
+    align-items: right;
+}
+.edu-loans-txt{
+   color: #fff; 
+    font-size: 50px;
+    flex-basis: 50%;
+    font-family: lobster;
+    text-align: center;
+}
 .edu-loan{ 
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-apply.png') . '); 
     background-repeat:no-repeat;
@@ -1017,6 +1062,23 @@ $this->registerCss('
         max-width: 250px;
     }
 }
+@media screen and (max-width:992px) and (min-width:769px){
+.edu-loans-txt{
+    font-size: 40px;
+    }
+    }
+@media screen and (max-width:768px) and (min-width:200px){
+.rupee-main {
+    display: block;
+}
+.rupe-img{
+    display: none;
+}
+.edu-loans-txt{
+    font-size: 35px;
+     text-align: center;
+}
+
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
 $this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
