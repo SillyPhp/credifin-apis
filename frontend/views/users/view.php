@@ -101,14 +101,6 @@ $this->params['header_dark'] = false;
                                 </a>
                             </li>
                         <?php }
-                        if (!empty($user['phone'])) { ?>
-                            <li>
-                                <a href="https://api.whatsapp.com/send?phone=<?= Html::encode($user['phone']) ?>"
-                                   target="_blank">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                            </li>
-                        <?php }
                         if (!empty($user['email'])) { ?>
                             <li>
                                 <a href="mailto:<?= Html::encode($user['email']) ?>"
@@ -121,6 +113,14 @@ $this->params['header_dark'] = false;
                             <li>
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
+                                </a>
+                            </li>
+                        <?php }
+                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            ?>
+                            <li>
+                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                    <i class="far fa-comment-dots"></i>
                                 </a>
                             </li>
                         <?php } ?>
@@ -353,6 +353,9 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
+if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    echo $this->render('@common/widgets/chat-main');
+}
 $this->registerCss('
 .down-r {
 	position: absolute;

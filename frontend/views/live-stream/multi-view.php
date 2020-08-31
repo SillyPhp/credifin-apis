@@ -316,7 +316,7 @@ function getTokenVarification(tokenId)
        }
        else
        {
-        alert("Authentication Failed");
+        alert("Not yet started");
        }
       }
     })  

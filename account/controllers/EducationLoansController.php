@@ -36,13 +36,14 @@ class EducationLoansController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
+
     public function actionTest()
     {
         $params['id'] = 'mKXM03kGoZak4E81xxmW79z4NJv6eW';
         $loansApplications = AssignedLoanProvider::find()
             ->alias('z')
             ->distinct()
-            ->where(['provider_enc_id'=>$params['id']])
+            ->where(['provider_enc_id' => $params['id']])
             ->select(['a.loan_app_enc_id',
                 'a.created_on as apply_date',
                 '(CASE
@@ -72,22 +73,20 @@ class EducationLoansController extends Controller
                 END) as gender',
                 'a.applicant_dob as dob',
             ])
-            ->joinWith(['loanApplicationEnc a'=>function($b)
-            {
+            ->joinWith(['loanApplicationEnc a' => function ($b) {
                 $b->joinWith(['loanCoApplicants h']);
-                $b->joinWith(['pathToClaimOrgLoanApplications c'=>function($b)
-                {
-                    $b->joinWith(['assignedCourseEnc d'=>function($v)
-                    {
-                        $v->joinWith(['courseEnc f'],false,'INNER JOIN');
-                        $v->joinWith(['organizationEnc g'],false,'INNER JOIN');
+                $b->joinWith(['pathToClaimOrgLoanApplications c' => function ($b) {
+                    $b->joinWith(['assignedCourseEnc d' => function ($v) {
+                        $v->joinWith(['courseEnc f'], false, 'INNER JOIN');
+                        $v->joinWith(['organizationEnc g'], false, 'INNER JOIN');
                     }]);
-                }],false,'INNER JOIN');
-            }],true,'LEFT JOIN')
+                }], false, 'INNER JOIN');
+            }], true, 'LEFT JOIN')
             ->asArray()
             ->all();
         print_r($loansApplications);
     }
+
     public function actionDashboard()
     {
         $model = new LoanSanctionedForm();
@@ -154,11 +153,11 @@ class EducationLoansController extends Controller
                     END) as employment_type',
                 ]);
             }])
-            ->joinWith(['currentScheme i' => function ($i) {
-                $i->andWhere(['i.loan_provider_id' => Yii::$app->user->identity->organization_enc_id]);
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
             }], false)
             ->andWhere(['a.status' => 1])
-            ->andWhere(['not', ['a.current_scheme_id' => null]])
+//            ->andWhere(['not', ['a.current_scheme_id' => null]])
             ->asArray()
             ->all();
         $stats = LoanApplications::find()
@@ -174,8 +173,8 @@ class EducationLoansController extends Controller
                 'COUNT(CASE WHEN a.loan_status = "5" THEN 1 END) as disbursed',
                 'COUNT(CASE WHEN a.loan_status = "10" THEN 1 END) as rejected',
             ])
-            ->joinWith(['currentScheme i' => function ($i) {
-                $i->andWhere(['i.loan_provider_id' => Yii::$app->user->identity->organization_enc_id]);
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
             }], false)
             ->andWhere(['a.status' => 1])
             ->asArray()
@@ -232,11 +231,13 @@ class EducationLoansController extends Controller
         return 'updated';
     }
 
-    public function actionCandidateDashboard(){
+    public function actionCandidateDashboard()
+    {
         return $this->render('candidate-dashboard');
     }
 
-    public function actionLoanProfileView(){
+    public function actionLoanProfileView()
+    {
         return $this->render('loan-profile-view');
     }
 }

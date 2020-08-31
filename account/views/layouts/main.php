@@ -171,7 +171,8 @@ $this->beginPage();
         <?= $this->render('/widgets/common/sidebar/user-profile-sidebar-right'); ?>
     </div>
     <?php
-    echo $this->render('/widgets/chat/main');
+    echo $this->render('@common/widgets/chat-main');
+//    echo $this->render('/widgets/chat/main');
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -22px;color: #fff;}
             .page-loading {
