@@ -230,7 +230,9 @@ $this->params['header_dark'] = false;
                                     </div>
                                     <div class="quelification s-text-2"><?= $exp['title'] ?>
                                     </div>
-                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to '?>
+                                        <?php if($exp['is_current']){ echo 'Present'; } else { ?>
+                                            <?php echo date("d/m/Y", strtotime($exp['to_date'])); } ?>
                                     </div>
                                     <div class="s-time s-text-2"><?= $exp['description'] ?>
                                     </div>
