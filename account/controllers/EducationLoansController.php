@@ -87,7 +87,7 @@ class EducationLoansController extends Controller
         print_r($loansApplications);
     }
 
-    public function actionDashboard()
+    public function actionDashboard($filter = null)
     {
         $model = new LoanSanctionedForm();
         $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
@@ -111,13 +111,13 @@ class EducationLoansController extends Controller
             ->select(['a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                 'a.created_on as apply_date',
                 '(CASE
-                    WHEN a.loan_status = "0" THEN "New Lead"
-                    WHEN a.loan_status = "1" THEN "Accepted"
-                    WHEN a.loan_status = "2" THEN "Pre Verification"
-                    WHEN a.loan_status = "3" THEN "Under Process"
-                    WHEN a.loan_status = "4" THEN "Sanctioned"
-                    WHEN a.loan_status = "5" THEN "Disbursed"
-                    WHEN a.loan_status = "10" THEN "Reject"
+                    WHEN i.status = "0" THEN "New Lead"
+                    WHEN i.status = "1" THEN "Accepted"
+                    WHEN i.status = "2" THEN "Pre Verification"
+                    WHEN i.status = "3" THEN "Under Process"
+                    WHEN i.status = "4" THEN "Sanctioned"
+                    WHEN i.status = "5" THEN "Disbursed"
+                    WHEN i.status = "10" THEN "Reject"
                     ELSE "N/A"
                 END) as loan_status',
                 'a.applicant_name',
@@ -155,23 +155,27 @@ class EducationLoansController extends Controller
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) {
                 $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
-            }], false)
-            ->andWhere(['a.status' => 1])
-//            ->andWhere(['not', ['a.current_scheme_id' => null]])
-            ->asArray()
-            ->all();
+            }])
+            ->andWhere(['a.status' => 1]);
+        if ($filter != null) {
+            if ($filter != 'all') {
+                $filter = explode(',', $filter);
+                $loans->andWhere(['in', 'a.loan_status', $filter]);
+            }
+        }
+        $loans = $loans->asArray()->all();
         $stats = LoanApplications::find()
             ->distinct()
             ->alias('a')
             ->select(['a.loan_app_enc_id',
                 'COUNT(a.loan_app_enc_id) as all_applications',
-                'COUNT(CASE WHEN a.loan_status = "0" THEN 1 END) as new_leads',
-                'COUNT(CASE WHEN a.loan_status = "1" THEN 1 END) as accepted',
-                'COUNT(CASE WHEN a.loan_status = "2" THEN 1 END) as pre_verification',
-                'COUNT(CASE WHEN a.loan_status = "3" THEN 1 END) as under_process',
-                'COUNT(CASE WHEN a.loan_status = "4" THEN 1 END) as sanctioned',
-                'COUNT(CASE WHEN a.loan_status = "5" THEN 1 END) as disbursed',
-                'COUNT(CASE WHEN a.loan_status = "10" THEN 1 END) as rejected',
+                'COUNT(CASE WHEN i.status = "0" THEN 1 END) as new_leads',
+                'COUNT(CASE WHEN i.status = "1" THEN 1 END) as accepted',
+                'COUNT(CASE WHEN i.status = "2" THEN 1 END) as pre_verification',
+                'COUNT(CASE WHEN i.status = "3" THEN 1 END) as under_process',
+                'COUNT(CASE WHEN i.status = "4" THEN 1 END) as sanctioned',
+                'COUNT(CASE WHEN i.status = "5" THEN 1 END) as disbursed',
+                'COUNT(CASE WHEN i.status = "10" THEN 1 END) as rejected',
             ])
             ->joinWith(['assignedLoanProviders i' => function ($i) {
                 $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
