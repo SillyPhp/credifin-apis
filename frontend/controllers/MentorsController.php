@@ -73,14 +73,26 @@ class MentorsController extends Controller
     {
         return $this->render('scool-mentorship');
     }
-
+    private function timeDifference($start_time, $date)
+    {
+        $datetime = new \DateTime();
+        $timezone = new \DateTimeZone('Asia/Kolkata');
+        $datetime->setTimezone($timezone);
+        $time1 = $datetime->format('y-m-d H:i:s');
+        $seconds = strtotime($date . $start_time) - strtotime($time1);
+        return $seconds;
+    }
     public function actionWebinarDetails($id)
     {
         $webinar = Webinars::find()
-            ->select(['webinar_enc_id','title','start_datetime','description','seats'])
+            ->select(['webinar_enc_id','session_enc_id','title','start_datetime','description','seats'])
             ->where(['webinar_enc_id' => $id])
             ->asArray()
             ->one();
+        $date = new \DateTime($webinar['start_datetime']);
+        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+        $webinar['seconds'] = $seconds;
+        $webinar['is_started'] = ($seconds < 0 ? true : false);
         $assignSpeaker = WebinarSpeakers::find()
             ->alias('z')
             ->distinct()
@@ -134,11 +146,94 @@ class MentorsController extends Controller
             ->where(['is_deleted' => 0,'webinar_enc_id' => $id])
             ->asArray()
             ->all();
+        $webinarRegistrations = WebinarRegistrations::find()
+            ->alias('z')
+            ->select(['z.webinar_enc_id','z.register_enc_id','z.interest_status','z.created_by','c.image','c.image_location'])
+            ->joinWith(['createdBy c'],false)
+            ->where(['z.webinar_enc_id' => $id,'z.is_deleted' => 0,'c.is_deleted' => 0])
+//            ->andWhere(['not', ['c.image' => null]])
+//            ->andWhere(['not', ['c.image' => '']])
+            ->asArray()
+            ->all();
+        $webResig = WebinarRegistrations::find()
+            ->where(['is_deleted' => 0,'webinar_enc_id'=> $id,'created_by'=> Yii::$app->user->identity->user_enc_id])
+            ->one();
         return $this->render('webinar-details',[
             'webinar' => $webinar,
             'assignSpeaker' => $assignSpeaker,
             'outComes' => $outComes,
+            'webinarRegistrations' => $webinarRegistrations,
+            'webResig' => $webResig,
         ]);
+    }
+    public function actionWebinarRegistation(){
+        if(Yii::$app->request->isAjax){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $uid = Yii::$app->user->identity->user_enc_id;
+        $wid = Yii::$app->request->post('wid');
+        $value = Yii::$app->request->post('value');
+        $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid,'created_by' => $uid]);
+            if(!empty($model)) {
+                switch ($value) {
+                    case 'interested':
+                        $model->interest_status = 1;
+                        break;
+                    case 'not interested':
+                        $model->interest_status = 2;
+                        break;
+                    case 'attending':
+                        $model->interest_status = 3;
+                }
+                $model->is_deleted = 0;
+                $model->last_updated_by = $uid;
+                $model->last_updated_on = date('Y-m-d H:i:s');
+                if ($model->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Updated Successfully',
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'error',
+                        'message' => 'something went wrong'
+                    ];
+                }
+            } else {
+                $register = new WebinarRegistrations();
+                $utilitiesModel = new  \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $register->register_enc_id = $utilitiesModel->encrypt();
+                $register->webinar_enc_id = $wid;
+                switch ($value) {
+                    case 'interested':
+                        $register->interest_status = 1;
+                        break;
+                    case 'not interested':
+                        $register->interest_status = 2;
+                        break;
+                    case 'attending':
+                        $register->interest_status = 3;
+                }
+                $register->status = 0;
+                $register->created_by = $uid;
+                $register->created_on = date('Y-m-d H:i:s');
+                if($register->save()){
+                    return [
+                        'status' => 200,
+                        'title' => 'success',
+                        'message' => 'Status added successfully'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'error',
+                        'message' => 'something went wrong'
+                    ];
+                }
+            }
+        }
     }
 
     public function actionWebinarSpeakers()

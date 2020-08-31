@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Url;
+$time = $webinar['start_datetime'];
+$interest_status = $webResig['interest_status'];
 ?>
 <section>
     <div class="full-width-light"
@@ -18,25 +20,31 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
+                        <?php if($webinar['is_started']){?>
+                        <div class="counter-item btn-u">
+                            <a class="btn joinBtn">Join Now</a>
+                        </div>
+                            <?php } else { ?>
                         <div class="counter-item">
-                            <span class="days">00</span>
+                            <span class="days" id="days">00</span>
                             <div class="smalltext">Days</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="hours">00</span>
+                            <span class="hours" id="hours">00</span>
                             <div class="smalltext">Hours</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="minutes">00</span>
+                            <span class="minutes" id="minutes">00</span>
                             <div class="smalltext">Minutes</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="seconds">00</span>
+                            <span class="seconds" id="seconds">00</span>
                             <div class="smalltext">Seconds</div>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -68,27 +76,20 @@ use yii\helpers\Url;
                         <div class="flex2">
                             <div class="avatars">
                                 <ul class="ask-people">
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker4.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker2.jpg') ?>">
-                                    </li>
+                                    <?php foreach($webinarRegistrations as $wr){ ?>
+                                        <li>
+                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$wr['image_location'].'/'.$wr['image']) ?>">
+                                        </li>
+                                    <?php } ?>
                                 </ul>
-                                <p><span><?= count($outComes) ?></span>
+                                <p><span><?= count($webinarRegistrations) ?></span>
                                     People Registered</p>
                             </div>
-<!--                            <div class="register-action">-->
-<!--                                <button class="ra-btn" id="interested">Interested</button>-->
-<!--                                <button class="ra-btn" id="notInterested">Not Interested</button>-->
-<!--                                <button class="ra-btn" id="attending">Attending</button>-->
-<!--                            </div>-->
+                            <div class="register-action">
+                                <button class="ra-btn registered <?php echo $interest_status == 1 ? 'active':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 2 ? 'active':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 3 ? 'active':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
+                            </div>
                         </div>
                     </div>
 
@@ -240,6 +241,14 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.joinBtn{
+    background-color: whitesmoke;
+}
+.ra-btn.active{
+  transform: scale(1.05);
+  background-color: green;
+  box-shadow: 0px 2px 10px 3px #ddd;
+}
 .mb2{
     margin-bottom: 20px
 }
@@ -1012,7 +1021,32 @@ div.icon span {
 }
 ');
 $script = <<<JS
-
+function countdown(e){
+    var countDownDate = new Date(e).getTime();
+    var x = setInterval(function() {
+        // Get today's date and time
+        var now = new Date().getTime();
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        // Time calculations for days, hours, minutes and seconds
+        $('#days').text(Math.floor(distance / (1000 * 60 * 60 * 24)));
+        $('#hours').text(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        $('#minutes').text(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+        $('#seconds').text(Math.floor((distance % (1000 * 60)) / 1000));
+    }, 1000);
+};
+countdown('$time');
+$(document).on('click','.registered',function(event){
+    event.preventDefault();
+     var btn = $(this);
+     var web_id = btn.attr('data-key');
+     var value = btn.attr('value');
+    $.ajax({
+        url: '/mentors/webinar-registation',
+        type: 'POST',
+        data: {wid: web_id,value: value},
+    });
+});
    $('.ts-image-popup').magnificPopup({
       type: 'inline',
       closeOnContentClick: false,
@@ -1028,15 +1062,7 @@ $script = <<<JS
       },
       mainClass: 'mfp-fade',
    });
-
-    if ($('.countdown').length > 0) {
-      $(".countdown").jCounter({
-         date: '21 October 2020 12:00:00',
-         fallback: function () {
-            console.log("count finished!")
-         }
-      });
-   }
+    
 
 
 JS;
@@ -1049,13 +1075,13 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
     let actionBtns = document.getElementsByClassName('ra-btn');
     for(let i = 0; i<actionBtns.length; i++){
         actionBtns[i].addEventListener('click', function () {
-           let actionColors = document.getElementsByClassName('actionColor');
+            let actionColors = document.getElementsByClassName('active');
             if(actionColors.length > 0){
-                actionColors[0].classList.remove('actionColor')
+                actionColors[0].classList.remove('active')
             }
             clickedEle = event.currentTarget;
             clickId = event.currentTarget.getAttribute('id');
-            clickedEle.classList.toggle('actionColor');
+            clickedEle.classList.toggle('active');
         })
     }
 </script>
