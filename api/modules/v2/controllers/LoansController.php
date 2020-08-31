@@ -16,6 +16,7 @@ use common\models\LoanApplicantResidentialInformation;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
@@ -164,6 +165,7 @@ class LoansController extends ApiBaseController
                     'a.status',
                     'f.payment_status',
                     'c1.course_name',
+                    'a.created_on',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
@@ -196,6 +198,7 @@ class LoansController extends ApiBaseController
                     ->offset(($page - 1) * $limit);
             }
             $loan_requests = $loan_requests
+                ->orderBy(['a.created_on'=> SORT_DESC])
                 ->asArray()
                 ->all();
 
@@ -597,6 +600,11 @@ class LoansController extends ApiBaseController
                     $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                     $e->joinWith(['feeComponentEnc e1'], false);
                 }])
+                ->joinWith(['assignedLoanProviders g'=>function($g){
+                    $g->select(['g.assigned_loan_provider_enc_id','g.loan_application_enc_id','g.status','g1.name provider_name']);
+                    $g->joinWith(['providerEnc g1'],false);
+                    $g->onCondition(['g.is_deleted'=>0]);
+                }])
                 ->where(['cc.organization_enc_id' => $college_id]);
             if (isset($params['name']) && !empty($params['name'])) {
                 $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
@@ -612,6 +620,7 @@ class LoansController extends ApiBaseController
                     ->offset(($page - 1) * $limit);
             }
             $loan_requests = $loan_requests
+                ->orderBy(['a.created_on'=> SORT_DESC])
                 ->asArray()
                 ->all();
 
@@ -918,7 +927,49 @@ class LoansController extends ApiBaseController
 
     private function saveCoApplicant($params, $id = null)
     {
+        if($user = $this->isAuthorized()) {
+            if ($id == null) {
+                $loan_co_applicants = new LoanCoApplicants();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $loan_co_applicants->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                $loan_co_applicants->loan_app_enc_id = $params['loan_app_id'];
+                $loan_co_applicants->name = $params['name'];
+                $loan_co_applicants->email = $params['email'];
+                $loan_co_applicants->phone = $params['phone'];
+                $loan_co_applicants->relation = $params['relation'];
+                $loan_co_applicants->employment_type = $params['employment_type'];
+                $loan_co_applicants->annual_income = $params['annual_income'];
+                $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
+                $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
+                $loan_co_applicants->occupation = $params['occupation'];
+                $loan_co_applicants->address = $params['address'];
+                $loan_co_applicants->created_by = $user->user_enc_id;
+                $loan_co_applicants->created_on = date('Y-m-d H:i:s');
+                if(!$loan_co_applicants->save()){
+                    print_r($loan_co_applicants->getErrors());
+                }
+            }else{
+                $loan_co_applicants = LoanCoApplicants::find()
+                    ->Where(['loan_co_app_enc_id'=>$id])
+                    ->one();
 
+                $loan_co_applicants->name = $params['name'];
+                $loan_co_applicants->email = $params['email'];
+                $loan_co_applicants->phone = $params['phone'];
+                $loan_co_applicants->employment_type = $params['employment_type'];
+                $loan_co_applicants->annual_income = $params['annual_income'];
+                $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
+                $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
+                $loan_co_applicants->occupation = $params['occupation'];
+                $loan_co_applicants->address = $params['address'];
+                $loan_co_applicants->updated_by = $user->user_enc_id;
+                $loan_co_applicants->updated_on = date('Y-m-d H:i:s');
+                if(!$loan_co_applicants->update()){
+                    print_r($loan_co_applicants->getErrors());
+                }
+            }
+        }
     }
 
 }

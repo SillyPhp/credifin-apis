@@ -36,6 +36,7 @@ use Yii;
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
  * @property int $is_deleted 0 as False, 1 as True
  *
+ * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property CollegeCourses $collegeCourseEnc
@@ -68,7 +69,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'aadhaar_number', 'source', 'created_on'], 'required'],
+            [['loan_app_enc_id', 'applicant_name', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount', 'aadhaar_number', 'source'], 'required'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status', 'loan_status', 'is_deleted'], 'integer'],
@@ -85,10 +86,13 @@ class LoanApplications extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
-     * @inheritdoc
+     * @return \yii\db\ActiveQuery
      */
+    public function getAssignedLoanProviders()
+    {
+        return $this->hasMany(AssignedLoanProvider::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
