@@ -160,7 +160,7 @@ class EducationLoansController extends Controller
         if ($filter != null) {
             if ($filter != 'all') {
                 $filter = explode(',', $filter);
-                $loans->andWhere(['in', 'a.loan_status', $filter]);
+                $loans->andWhere(['in', 'i.status', $filter]);
             }
         }
         $loans = $loans->asArray()->all();
