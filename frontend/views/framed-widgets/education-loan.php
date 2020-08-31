@@ -702,9 +702,45 @@ color:#e65332;
 .loan-purpose{
     padding-inline-start: 0px;
 }
-.lead text-muted
-{
-font-family: auto !important;
+.lead text-muted{
+    font-family: auto !important;
+}
+@media screen and (max-width: 500px){
+    .bg-blue{
+        display:flex;
+        flex-direction: column;
+    }
+    .sign-up-details{
+        position: relative;
+        width: 100vw;
+        min-height: unset;
+        order:2;
+        padding-bottom: 30px;
+    }
+    .college-logo{
+        width: 100vw;
+        position: relative;
+        margin-left: 0px;
+        min-height: unset;
+        height: auto !important;
+        order: 1;
+        padding-top: 50px; 
+    }
+    .cl-heading{
+        font-size:10px;
+        display:none;
+    }
+    .cl-text{
+        font-size: 14px;
+//        display:none;
+    }
+    .cl-icon img{
+        max-width: 100px;
+        margin: 20px auto;
+    }
+    .loan-benefits{
+        padding-inline-start: 0px;
+    }
 }
 ');
 $script = <<<JS

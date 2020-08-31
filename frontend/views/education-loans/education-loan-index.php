@@ -446,8 +446,6 @@ margin-bottom:30px;
 }
 .loan-text {
     padding-top: 140px;
-    
-    
 }
 .loan-text h1 {
     font-weight: 500;

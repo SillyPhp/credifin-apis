@@ -14,33 +14,6 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             height: 250px !important;
             float: left;
         }
-        #full-screen-video.sp1 > div{
-            width: 90% !Important;
-            height: 90vh !important;
-            margin-top: 5vh;
-        }
-        #full-screen-video.sp2 > div{
-            width: 48% !Important;
-            height: 80vh !important;
-            margin-top: 10vh;
-        }
-        #full-screen-video.sp3 > div{
-            width: 48% !Important;
-            height: 48vh !important;
-            margin-top: 0%;
-        }
-        #full-screen-video.sp3 > div:last-child{
-            width: 75% !Important;
-        }
-        #full-screen-video.sp4 > div{
-            width: 48% !Important;
-            height: 48vh !important;
-            margin-top: 0%;
-        }
-        #full-screen-video.spmultiple > div{
-            width: 250px !important;
-            height: 250px !important;
-        }
 
         .grid-container {
             display: grid;
