@@ -51,7 +51,7 @@ if (Yii::$app->user->identity->image) {
                                     $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
                                     foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
                                         ?>
-                                        <a target="_blank" href="/mentors/webinar-speakers"><?= $speaker['fullname'] ?></a>
+                                        <?= $speaker['fullname'] ?>
                                         <?php
                                         if ($key < $speakerCount) {
                                             echo ", ";
@@ -71,20 +71,6 @@ if (Yii::$app->user->identity->image) {
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-<section class="similar-webinars">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
-        <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card', [
-                'webinars' => $webinars,
-            ]) ?>
         </div>
     </div>
 </section>
