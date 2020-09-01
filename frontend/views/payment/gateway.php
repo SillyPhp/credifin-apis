@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+$baseUrl = Url::base("https");
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -12,7 +13,8 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var baseUrl = "' . $baseUrl . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var ptoken = "' . $token . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_id = "' . $loan_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var gst = "' . $gst . '"', \yii\web\View::POS_HEAD);
@@ -54,7 +56,7 @@ Yii::$app->view->registerJs('var pay_amount = "' . $amount . '"', \yii\web\View:
  function updateStatus(ptoken,loan_id,gst,pay_amount,payment_id=null,status)
  {
      $.ajax({
-         url : 'https://empoweryouth.com/api/v3/education-loan/retry-payment',
+         url : baseUrl + '/api/v3/education-loan/retry-payment',
          method : 'POST',
          data : {
              token:ptoken,
