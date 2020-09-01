@@ -100,7 +100,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                    print_r($model->add(null, $college_id,'CollegeWebsite'));
+                   return json_encode($model->add(null, $college_id,'CollegeWebsite'));
                     die();
                     if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
@@ -166,20 +166,7 @@ class EducationLoanController extends ApiBaseController
 
     public function actionSaveApplication()
     {
-        $params = Yii::$app->request->post();
-        if ($params['id']) {
-            $loansApplications = AssignedLoanProvider::find()
-                ->alias('a')
-                ->where(['provider_enc_id' => $params['id']])
-                ->joinWith(['loanApplicationEnc b' => fu])
-                ->asArray()
-                ->all();
-            if ($loansApplications) {
-                return $this->response(200, ['status' => 200, 'applicatons' => $loansApplications]);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
-        }
-    }
+
     }
 
     public function actionRetryPayment()
