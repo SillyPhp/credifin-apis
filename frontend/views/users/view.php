@@ -101,10 +101,26 @@ $this->params['header_dark'] = false;
                                 </a>
                             </li>
                         <?php }
+                        if (!empty($user['email'])) { ?>
+                            <li>
+                                <a href="mailto:<?= Html::encode($user['email']) ?>"
+                                   target="_blank">
+                                    <i class="far fa-envelope-open"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['skype'])) { ?>
                             <li>
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
+                                </a>
+                            </li>
+                        <?php }
+                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            ?>
+                            <li>
+                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                    <i class="far fa-comment-dots"></i>
                                 </a>
                             </li>
                         <?php } ?>
@@ -117,6 +133,14 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="col-md-8 col-sm-8">
                 <div class="container-detail-box">
+                    <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
+                    <div class="down-r">
+                        <?php
+                        $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                        ?>
+                        <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                    </div>
+                <?php } ?>
                     <div class="apply-job-header">
                         <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php
@@ -257,7 +281,7 @@ $this->params['header_dark'] = false;
             <?php
             if (array_filter($job_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -291,7 +315,7 @@ $this->params['header_dark'] = false;
             }
             if (array_filter($internship_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -327,7 +351,22 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
+if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    echo $this->render('@common/widgets/chat-main');
+}
 $this->registerCss('
+.down-r {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+.down-r a{
+	color: #fff;
+	background-color: #00a0e3;
+	padding: 5px 10px;
+	font-family: roboto;
+	font-size: 14px;
+}
 .prof-p {
 	width: 80px;
 	height: 80px;
@@ -426,7 +465,7 @@ body{background-color:#f9f9f9;}
     margin-bottom:5px;
 }
 .prefer-detail{
-    padding-top:50px;
+    padding:20px;
 }
 .prefer-detail > ul > li{
     font-size: 14px;
@@ -442,14 +481,10 @@ body{background-color:#f9f9f9;}
     display: inline-flex;
 }
 .prefer {
-    font-size: 20px;
-    font-family: sans-serif;
-    text-align: center;
-    background: #eee;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
+	font-size: 20px;
+	font-family: roboto;
+	text-align: center;
+	padding: 3px;
 }
 .set-color{
     background: #ff7803;
@@ -490,6 +525,7 @@ body{background-color:#f9f9f9;}
 	border-radius: 8px;
 	margin-bottom: 25px;
 	min-height: 270px;
+	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
@@ -610,6 +646,7 @@ body{background-color:#f9f9f9;}
 	padding: 37px 20px;
 	border-radius: 8px;
     min-height:270px;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .right-side-detail ul {
     padding: 0;
@@ -629,12 +666,12 @@ body{background-color:#f9f9f9;}
 	margin:5px;
 }
 .right-side-detail ul.social-info li a {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     display: inline-block;
     background: #e3e8ec;
     text-align: center;
-    line-height: 40px;
+    line-height: 35px;
     border-radius: 2px;
 }
 span.available-status {
@@ -652,7 +689,7 @@ span.available-status {
 	padding:30px 30px;
     margin-bottom: 30px;
     position: relative;
-    border: 1px solid #eaeff5;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .apply-job-detail{
 	margin-bottom:30px;
@@ -754,15 +791,16 @@ img.img-responsive.payment-img {
 }
 
 /*--------------- Sidebar: Detail For Freelancer ----------------*/
-.sidebar-container{
-    background: #ffffff;
-    overflow: hidden;
-    margin-bottom:30px;
-	position:relative;
+.sidebar-container {
+	background: #ffffff;
+	overflow: hidden;
+	margin-bottom: 30px;
+	position: relative;
 	transition: .4s;
-    padding: 0px 15px 10px 15px;
-    border: 1px solid #eee;
-    border-radius:5px;
+	/* padding: 0px 15px 10px 15px; */
+	/* border: 1px solid #eee; */
+	border-radius: 8px;
+	box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);

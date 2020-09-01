@@ -161,8 +161,12 @@ function initializeUi() {
             }
         }
     } else {
-        if (childrens > 10) {
-
+        var childrens = $('#full-screen-video > div').length;
+        $('#full-screen-video').attr('class','sp' + childrens);
+        if (childrens > 5) {
+            if(!$('#full-screen-video').hasClass('spmultiple')) {
+                $('#full-screen-video').addClass('spmultiple');
+            }
         }
     }
 }

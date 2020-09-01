@@ -5,6 +5,10 @@ use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+$filters = [];
+if (isset($_GET['filter'])) {
+    $filters = explode(',', $_GET['filter']);
+}
 ?>
 <div class="row">
     <?php
@@ -104,18 +108,26 @@ use yii\helpers\Html;
                         5 => 'Disbursed',
                         10 => 'Rejected',
                     ];
+                    $jsonFilterList = json_encode($filterList);
                     ?>
-                    <ul class="statusFilters">
+                    <ul class="statusFilters" id="status_filters">
                         <?php
                         foreach ($filterList as $key => $filter) {
+                            $checked = "";
+                            if ($key) {
+                                if (!empty($filters)) {
+                                    $checked = (in_array($key, $filters)) ? 'checked' : '';
+                                } else {
+                                    $checked = ($key == "all") ? 'checked' : '';
+                                }
+                            }
                             ?>
                             <li>
-                                <input id="lists[<?= $key ?>]" type="checkbox"
-                                       name="lists[<?= $key ?>]" <?= ($key === "all") ? 'checked' : '' ?>/>
-                                <label for="lists[<?= $key ?>]"><?= $filter ?></label>
+                                <input class="status_filters" id="list_<?= $key ?>" value="<?= $key ?>" type="checkbox"
+                                       name="list-loan" <?= $checked ?>/>
+                                <label for="list_<?= $key ?>"><?= $filter ?></label>
                             </li>
                             <?php
-                            break;
                         }
                         ?>
                     </ul>
@@ -206,6 +218,10 @@ use yii\helpers\Html;
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
                                                                 data-placement="top" title="Move to Next Phase">
                                                             <i class="fa fa-arrow-circle-right"></i>
+                                                        </button>
+                                                        <button class="viewStatus"
+                                                                style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
+                                                                onclick="viewStatus()">View Status
                                                         </button>
                                                         <button class="reconsider"
                                                                 data-key="<?= $loan['loan_app_enc_id'] ?>"
@@ -926,6 +942,41 @@ var ps = new PerfectScrollbar('#loanDetailScroll');
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
+});
+var filterList = $jsonFilterList;
+$(document).on('change', '.status_filters', function(e) {
+    var ths = $(this);
+    var thsValue = ths.val();
+    var obj = $('#status_filters').find('.status_filters');
+    var len = obj.length;
+    
+    // var parent = ths.parent();
+    // var childrens = parent.find('li > input');
+    var list = "";
+    $.each(filterList, function (k, v) {
+        var data = $('#list_' + k);
+        if(thsValue == 'all'){
+            data.prop('checked', false);
+            $('#list_all').prop('checked', true);
+        } else {
+            $('#list_all').prop('checked', false);
+        }
+        if(data.is(":checked")){
+            if(list == ""){
+                list = k;
+            } else {
+                list = list +','+ k;
+            }
+        }
+    });
+    var cur_params = '/account/education-loans/dashboard';
+    if(list){
+        history.pushState('data', 'title', cur_params + '?filter=' + list);
+    } else {
+        history.pushState('data', 'title', cur_params);
+        $('#list_all').prop('checked', true);
+    }
+    $.pjax.reload({container: '#list-container', async: false});
 });
 JS;
 $this->registerJS($script);
