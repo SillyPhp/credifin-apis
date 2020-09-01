@@ -79,7 +79,7 @@ $this->params['header_dark'] = false;
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
-                            <li>
+                            <li class="fbook">
                                 <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
                                    target="_blank">
                                     <i class="fab fa-facebook-f"></i>
@@ -87,14 +87,14 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
-                            <li>
+                            <li class="tter">
                                 <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fab fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
-                            <li>
+                            <li class="lin">
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
                                     <i class="fab fa-linkedin-in"></i>
@@ -102,7 +102,7 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['email'])) { ?>
-                            <li>
+                            <li class="mael">
                                 <a href="mailto:<?= Html::encode($user['email']) ?>"
                                    target="_blank">
                                     <i class="far fa-envelope-open"></i>
@@ -110,7 +110,7 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['skype'])) { ?>
-                            <li>
+                            <li class="skpe">
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
                                 </a>
@@ -118,12 +118,22 @@ $this->params['header_dark'] = false;
                         <?php }
                         if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                             ?>
-                            <li>
+                            <li class="talking">
                                 <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
                                     <i class="far fa-comment-dots"></i>
                                 </a>
                             </li>
                         <?php } ?>
+                        <div class="dwn">
+                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
+                                <div class="down-r">
+                                    <?php
+                                    $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                    ?>
+                                    <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                </div>
+                            <?php } ?>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -133,14 +143,6 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="col-md-8 col-sm-8">
                 <div class="container-detail-box">
-                    <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
-                    <div class="down-r">
-                        <?php
-                        $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
-                        ?>
-                        <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
-                    </div>
-                <?php } ?>
                     <div class="apply-job-header">
                         <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php
@@ -357,17 +359,34 @@ if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userA
     echo $this->render('@common/widgets/chat-main');
 }
 $this->registerCss('
-.down-r {
-	position: absolute;
-	right: 0px;
-	top: 0px;
+.fbook a {
+    background-color: #3b5998;
 }
-.down-r a{
+.tter a {
+	background-color: #00aced;
+}
+.lin a {
+	background-color: #007bb6;
+}
+.mael a {
+	background-color: #bb0000;
+}
+.skpe a {
+	background-color: #00a0e3;
+}
+.talking a {
+	background-color: #00bf8f;
+}
+.down-r {
+	text-align:center;
+}
+.down-r a {
 	color: #fff;
 	background-color: #00a0e3;
-	padding: 5px 10px;
+	padding: 8px 16px;
 	font-family: roboto;
-	font-size: 14px;
+	font-size: 13px;
+	border-radius: 4px;
 }
 .prof-p {
 	width: 80px;
@@ -645,7 +664,7 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail {
 	background-color: #fff;
-	padding: 37px 20px;
+	padding: 37px 20px 5px;
 	border-radius: 8px;
     min-height:270px;
     box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
@@ -671,10 +690,10 @@ body{background-color:#f9f9f9;}
     width: 35px;
     height: 35px;
     display: inline-block;
-    background: #e3e8ec;
     text-align: center;
     line-height: 35px;
     border-radius: 2px;
+    color:#fff;
 }
 span.available-status {
     margin-left: 10px;
