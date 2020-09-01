@@ -158,13 +158,15 @@ class MentorsController extends Controller
         $webResig = WebinarRegistrations::find()
             ->where(['is_deleted' => 0,'webinar_enc_id'=> $id,'created_by'=> Yii::$app->user->identity->user_enc_id])
             ->one();
-        return $this->render('webinar-details',[
-            'webinar' => $webinar,
-            'assignSpeaker' => $assignSpeaker,
-            'outComes' => $outComes,
-            'webinarRegistrations' => $webinarRegistrations,
-            'webResig' => $webResig,
-        ]);
+        if(Yii::$app->user->identity->user_enc_id) {
+            return $this->render('webinar-details', [
+                'webinar' => $webinar,
+                'assignSpeaker' => $assignSpeaker,
+                'outComes' => $outComes,
+                'webinarRegistrations' => $webinarRegistrations,
+                'webResig' => $webResig,
+            ]);
+        }
     }
     public function actionWebinarRegistation(){
         if(Yii::$app->request->isAjax){

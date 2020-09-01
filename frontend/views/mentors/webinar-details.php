@@ -22,7 +22,7 @@ $interest_status = $webResig['interest_status'];
                     <div class="countdown gradient clearfix">
                         <?php if($webinar['is_started']){?>
                         <div class="counter-item btn-u">
-                            <a class="btn joinBtn">Join Now</a>
+                            <a class="btn joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Join Now</a>
                         </div>
                             <?php } else { ?>
                         <div class="counter-item">
@@ -86,9 +86,9 @@ $interest_status = $webResig['interest_status'];
                                     People Registered</p>
                             </div>
                             <div class="register-action">
-                                <button class="ra-btn registered <?php echo $interest_status == 1 ? 'active':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
-                                <button class="ra-btn registered <?php echo $interest_status == 2 ? 'active':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
-                                <button class="ra-btn registered <?php echo $interest_status == 3 ? 'active':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
                             </div>
                         </div>
                     </div>
@@ -245,8 +245,8 @@ $this->registerCss('
     background-color: whitesmoke;
 }
 .ra-btn.active{
-  transform: scale(1.05);
   background-color: green;
+  transform: scale(1.05);
   box-shadow: 0px 2px 10px 3px #ddd;
 }
 .mb2{
@@ -1012,12 +1012,18 @@ div.icon span {
 }
 #attending.actionColor{
     background: #ff7803;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 #notInterested.actionColor{
     background: #FF0000;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 #interested.actionColor{
-    background: #32CD32
+    background: #32CD32;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 ');
 $script = <<<JS
@@ -1075,13 +1081,13 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
     let actionBtns = document.getElementsByClassName('ra-btn');
     for(let i = 0; i<actionBtns.length; i++){
         actionBtns[i].addEventListener('click', function () {
-            let actionColors = document.getElementsByClassName('active');
+            let actionColors = document.getElementsByClassName('actionColor');
             if(actionColors.length > 0){
-                actionColors[0].classList.remove('active')
+                actionColors[0].classList.remove('actionColor')
             }
             clickedEle = event.currentTarget;
             clickId = event.currentTarget.getAttribute('id');
-            clickedEle.classList.toggle('active');
+            clickedEle.classList.toggle('actionColor');
         })
     }
 </script>
