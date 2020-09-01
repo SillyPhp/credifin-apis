@@ -1,6 +1,8 @@
 <?php
 namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
+use api\modules\v3\models\Courses;
+use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLoanProvider;
 use common\models\CollegeCourses;
@@ -9,6 +11,7 @@ use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
+use common\models\Organizations;
 use Yii;
 use yii\web\Response;
 use yii\rest\Controller;
@@ -30,6 +33,8 @@ class EducationLoanController extends ApiBaseController
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
                 'loan-applications' => ['POST', 'OPTIONS'],
+                'course-pool-list' => ['GET'],
+                'save-application' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -95,6 +100,8 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
+                    print_r($model->add(null, $college_id,'CollegeWebsite'));
+                    die();
                     if ($data = $model->add(null, $college_id,'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
@@ -146,23 +153,39 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
-
-    public function actionLoanApplications()
+    public function actionCoursePoolList()
     {
-        $params = Yii::$app->request->post();
-        if ($params['id'])
-        {
-            $loansApplications = AssignedLoanProvider::find()
-                ->alias('a')
-                ->where(['provider_enc_id'=>$params['id']])
-                ->joinWith(['loanApplicationEnc b'=>fu])
-                ->asArray()
-                ->all();
-            if ($loansApplications) {
-                return $this->response(200, ['status' => 200, 'applicatons'=>$loansApplications]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'Applications Not found']);
-            }
+        $get = Courses::get();
+        if ($get) {
+            return $get;
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
+
+    public function actionSaveApplication()
+    {
+        $params = Yii::$app->request->post();
+        if ($params){
+            $obj = new OrganizationList();
+            $org = $obj->getOrgId($params['college_name']);
+            $college_id = $org['id'];
+            $orgDate = $params['applicant_dob'];
+            $model = new LoanApplicationsForm();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                if ($model->validate()) {
+                    if ($data = $model->add(null, $college_id,'Ey',$org['is_claim'])) {
+                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
 }
