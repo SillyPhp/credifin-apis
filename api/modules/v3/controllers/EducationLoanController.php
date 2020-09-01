@@ -100,7 +100,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                   return json_encode($model->add(null, $college_id,'CollegeWebsite'));
+                   return $model->add(null, $college_id,'CollegeWebsite');
                     die();
                     if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
