@@ -1,8 +1,8 @@
 <?php
-
 namespace api\modules\v3\controllers;
-
 use api\modules\v2\models\LoanApplicationsForm;
+use api\modules\v3\models\Courses;
+use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLoanProvider;
 use common\models\CollegeCourses;
@@ -11,6 +11,7 @@ use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
+use common\models\Organizations;
 use Yii;
 use yii\web\Response;
 use yii\rest\Controller;
@@ -32,6 +33,8 @@ class EducationLoanController extends ApiBaseController
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
                 'loan-applications' => ['POST', 'OPTIONS'],
+                'course-pool-list' => ['GET'],
+                'save-application' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -83,11 +86,10 @@ class EducationLoanController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        } else {
+        }else{
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
-
     public function actionSaveWidgetApplication()
     {
         $params = Yii::$app->request->post();
@@ -98,6 +100,8 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
+                    print_r($model->add(null, $college_id,'CollegeWebsite'));
+                    die();
                     if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
@@ -150,8 +154,17 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
+    public function actionCoursePoolList()
+    {
+        $get = Courses::get();
+        if ($get) {
+            return $get;
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 
-    public function actionLoanApplications()
+    public function actionSaveApplication()
     {
         $params = Yii::$app->request->post();
         if ($params['id']) {
@@ -163,10 +176,10 @@ class EducationLoanController extends ApiBaseController
                 ->all();
             if ($loansApplications) {
                 return $this->response(200, ['status' => 200, 'applicatons' => $loansApplications]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'Applications Not found']);
-            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+    }
     }
 
     public function actionRetryPayment()
@@ -199,4 +212,5 @@ class EducationLoanController extends ApiBaseController
             print_r($loan_payment->getErrors());
         }
     }
+
 }
