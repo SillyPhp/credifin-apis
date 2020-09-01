@@ -3,6 +3,7 @@
 
 namespace account\models\loanApplications;
 
+use common\models\AssignedLoanProvider;
 use common\models\CollectedDocuments;
 use common\models\LoanApplicationLogs;
 use common\models\LoanApplications;
@@ -92,8 +93,8 @@ class LoanSanctionedForm extends LoanApplications
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
-            $model->loan_status = $status;
+            $model = AssignedLoanProvider::findOne(['loan_application_enc_id' => $id, 'provider_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+            $model->status = $status;
             $model->updated_by = Yii::$app->user->identity->user_enc_id;
             $model->updated_on = date('Y-m-d H:i:s');
             if (!$model->save()) {
@@ -110,7 +111,8 @@ class LoanSanctionedForm extends LoanApplications
             $logModel->app_log_enc_id = $utilitiesModel->encrypt();
             $logModel->loan_app_enc_id = $id;
             $logModel->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
-            $logModel->scheme_enc_id = $model->current_scheme_id;
+//            $logModel->scheme_enc_id = $model->current_scheme_id;
+            $logModel->scheme_enc_id = NULL;
             $logModel->created_by = Yii::$app->user->identity->user_enc_id;
             $logModel->created_on = date('Y-m-d H:i:s');
             $logModel->loan_status = $status;
