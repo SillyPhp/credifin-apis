@@ -60,7 +60,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             Current city where you live
                                         </label>
                                         <input type="text" name="location" id="location" class="form-control"
-                                               autocomplete="off" placeholder="City or State"/>
+                                               autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -887,7 +887,7 @@ $script = <<<JS
 				    required:'Email Cannot Be Blank',
 				},
 				'location':{
-				    required:'City Or Sate Cannot Be Blank',
+				    required:'City Name Cannot Be Blank',
 				},
 				'loanamount':{
 				    required:'Laon Amount Cannot Be Blank',

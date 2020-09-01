@@ -15,7 +15,6 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-Yii::$app->view->registerJs('var college_id = 1', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 ?>
@@ -90,7 +89,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                             Current city where you live
                                         </label>
                                         <input type="text" name="location" id="location" class="form-control"
-                                               autocomplete="off" placeholder="City or State"/>
+                                               autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -108,40 +107,21 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
-                                    <?php echo '<label for="course_list_college_search" class="input-group-text">Course Name</label>';
-                                    echo Select2::widget([
-                                        'name' => 'course_list_college_search',
-                                        'id' => 'course_list_college_search',
-                                        'data' => \yii\helpers\ArrayHelper::map($data_collection, 'organization_enc_id', 'name'),
-                                        'options' => ['placeholder' => 'Enter Course Name'],
-                                        'pluginOptions' => [
-                                            'tags' => true,
-                                            'allowClear' => true
-                                        ],
-                                        'pluginEvents' => [
-                                            "select2:select" => "function(e) { $('#college_name').val($(this).val()); }",
-                                            "select2:unselect" => "function() { $('#college_name').val(''); }"
-                                        ],
-                                    ]); ?>
+                                    <div class="form-group">
+                                        <label for="college_name" class="input-group-text">
+                                            College / University Name
+                                        </label>
+                                        <input type="text" class="form-control" id="college_name" name="college_name" placeholder="Enter Your College/University Name">
+                                    </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
-                                <?php echo '<label for="college_name_search" class="input-group-text">College / University Name</label>';
-                                    echo Select2::widget([
-                                    'name' => 'college_name_search',
-                                    'id' => 'college_name_search',
-                                    'data' => \yii\helpers\ArrayHelper::map($data_collection, 'organization_enc_id', 'name'),
-                                    'options' => ['placeholder' => 'Enter College or University Name'],
-                                    'pluginOptions' => [
-                                        'tags' => true,
-                                        'allowClear' => true
-                                    ],
-                                    'pluginEvents' => [
-                                    "select2:select" => "function(e) { $('#college_name').val($(this).val()); }",
-                                    "select2:unselect" => "function() { $('#college_name').val(null); }"
-                                    ],
-                                ]); ?>
+                                    <div class="form-group">
+                                        <label for="course_name" class="input-group-text">
+                                            Course Name
+                                        </label>
+                                        <input type="text" class="form-control" id="course_name" name="course_name" placeholder="Enter Your College/University Name">
+                                    </div>
                                 </div>
-                                <input type="hidden"  class="hidden_name" id="college_name" name="college_name">
                                 <div class="col-md-6 padd-20">
                                     <div class="form-group">
                                         <div class="radio-heading input-group-text">
@@ -248,16 +228,16 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                                placeholder="Enter 12 digits Aadhaar Card Number">
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Purpose Of Loan (You Can Select Multiple)
-                                        </div>
-                                        <ul id="loan-purpose">
-
-                                        </ul>
-                                    </div>
-                                </div>
+<!--                                <div class="col-md-12 padd-20">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <div class="radio-heading input-group-text">-->
+<!--                                            Purpose Of Loan (You Can Select Multiple)-->
+<!--                                        </div>-->
+<!--                                        <ul id="loan-purpose">-->
+<!---->
+<!--                                        </ul>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="col-md-12 padd-20">
                                     <div id="addAnotherCo">
                                         <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
@@ -742,28 +722,120 @@ color:#e65332;
 {
 font-family: auto !important;
 }
+.twitter-typeahead{width:100%}
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 ');
-$script = <<<JS
-    getCourseList(id = college_id); 
-    getFeeComponents(id = college_id); 
-    getCountries(); 
-    function getCourseList(id) {
-        $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
-            method : 'POST',
-            data : {id: id},
-            success : function(res) {
-            var html = []; 
-            var res = res.response.courses;
-            html.push('<option value>Select Course</option>');
-            $.each(res,function(index,value) 
-                  {
-                   html.push('<option value="'+value.college_course_enc_id+'">'+value.course_name+'</option>');
-                 }); 
-             $('#course-list-college').html(html);   
-            }
-        });
-    }
+$script = <<< JS
+load_college_list();
+load_course_list();
+function load_college_list()
+{  
+var college_list = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  { 
+      url:'https://sneh.eygb.me/api/v3/companies/organization-list', 
+      cache:false,  
+      filter:function(res) {
+        return res;
+      } 
+ }
+});   
+$('#college_name').typeahead(null, {
+  display: 'value',
+  source: college_list,
+  minLength: 1,
+  limit: 20,
+});
+return true;
+} 
+function load_course_list()
+{  
+var course_list = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  { 
+      url:'https://sneh.eygb.me/api/v3/education-loan/course-pool-list', 
+      cache:false,  
+      filter:function(res) {
+        return res;
+      } 
+ }
+});   
+$('#course_name').typeahead(null, {
+  display: 'value', 
+  source: course_list,
+  minLength: 1,
+  limit: 20,
+});
+return true;
+}
+    getCountries();
     function getCountries() { 
         $.ajax({     
             url : 'https://sneh.eygb.me/api/v3/countries-list/get-countries-list', 
@@ -771,7 +843,8 @@ $script = <<<JS
             success : function(res) { 
             if (res.response.status==200){
                 var html = []; 
-                var res = res.response.countries;
+                //var res = res.response.countries;
+                 states = res.response.countries;
                 $.each(res,function(index,value) 
                   {   
                    html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
@@ -787,7 +860,8 @@ $script = <<<JS
     }
     function getFeeComponents(id) {
         $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
+            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
+            url : 'https://sneh.eygb.me/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -802,8 +876,6 @@ $script = <<<JS
         });
     } 
     $('#mobile, #aadhaarnumber').mask("#", {reverse: true}); 
-    //$('#loanamount, input[name="co-anualincome[1]"]').mask("#,#0,#00", {reverse: true});
-    //$('input[name="co-anualincome[2]"]').mask("#,#0,#00", {reverse: true}); 
     $('input[name="co-aadhaarnumber[1]"]').mask("#", {reverse: true});
     $('input[name="co-aadhaarnumber[2]"]').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
@@ -811,7 +883,6 @@ $script = <<<JS
        var error = $('.alert-danger', form);
        var success = $('.alert-success', form);
        form.validate({ 
-       ignore:'hidden_name',
        errorElement: 'span', //default input error message container
        errorClass: 'help-block help-block-error', // default input error message class
        focusInvalid: true, // do not focus the last invalid input 
@@ -819,7 +890,7 @@ $script = <<<JS
 				'applicant_name': {
 					required: true,
 				},
-				'course-list-college':{
+				'course_name':{
 				    required:true,
 				},
 				'dob':{
@@ -838,6 +909,9 @@ $script = <<<JS
 				    required:true,
 				},
 				'college_name':{
+				    required:true,
+				},
+				'course_name':{
 				    required:true,
 				},
 				'country_name':{
@@ -863,7 +937,7 @@ $script = <<<JS
 				    min:500
 				},
 				'co-pancard[1]':{
-				    required:true,
+				    required:false,
 				    minlength: 10,
 				    maxlength: 10,
 				},
@@ -884,7 +958,7 @@ $script = <<<JS
 				    min:500
 				},
 				'co-pancard[2]':{
-				    required:true,
+				    required:false,
 				    minlength: 10,
 				    maxlength: 10,
 				},
@@ -902,7 +976,7 @@ $script = <<<JS
 				'applicant_name': {
 					required: "Applicant Name Required",
 				},
-				'course-list-college': {
+				'course_name': {
 					required: "Course Name Cannot Be Blank",
 				},
 				'dob': {
@@ -915,7 +989,7 @@ $script = <<<JS
 				    required:'Email Cannot Be Blank',
 				},
 				'location':{
-				    required:'City Or Sate Cannot Be Blank',
+				    required:'Current City Cannot Be Blank',
 				},
 				'loanamount':{
 				    required:'Laon Amount Cannot Be Blank',
@@ -994,7 +1068,7 @@ $script = <<<JS
 			next_fs = $('#step2');
 			if (next_fs.is(':visible'))
 			    {
-			        ajaxSubmit(id = college_id);
+			        ajaxSubmit();
 			    }
 			else if (current_fs.is(':visible')) {
 			    next_fs.show(); 
@@ -1018,8 +1092,8 @@ $script = <<<JS
     startDate: '-3d'
 });
     
-function ajaxSubmit(id)
-{ 
+function ajaxSubmit()
+{  
     let co_applicants = [];
     var obj = {};
     obj['name'] = $('input[name="co-name[1]"]').val()
@@ -1042,15 +1116,15 @@ function ajaxSubmit(id)
         co_applicants.push(objCoBorrower);
         }
     }
-    let purpose = [];
-    $('input[name="loan_purpose_checkbox[]"]:checked').each(function() {
-      purpose.push(this.value);
-    });
+    // let purpose = [];
+    // $('input[name="loan_purpose_checkbox[]"]:checked').each(function() {
+    //   purpose.push(this.value);
+    // });
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/save-widget-application',
-            method : 'POST',
+            //url : 'https://www.empoweryouth.com/api/v3/education-loan/save-application',
+            url : 'https://sneh.eygb.me/api/v3/education-loan/save-application',
+            method : 'POST', 
             data : {
-                id:id,
                 applicant_name:$('#applicant_name').val(),
                 applicant_dob:$('#dob').val(),
                 applicant_current_city:$('#location').val(),
@@ -1062,12 +1136,12 @@ function ajaxSubmit(id)
                 amount:$('#loanamount').val(),  
                 gender:$('input[name="genderRadio"]:checked').val(),
                 aadhaar_number:$('#aadhaarnumber').val(),
-                college_course_enc_id:$('#course-list-college').val(),
-                purpose:purpose,
+                college_course:$('#course_name').val(),
+                college_name:$('#college_name').val(),
                 co_applicants:co_applicants,
                 },  
             beforeSend:function(e)
-            { 
+            {  
                 $('#subBtn').hide();     
                 $('#prevBtn').hide();     
                 $('#loadBtn').show();  
@@ -1079,20 +1153,6 @@ function ajaxSubmit(id)
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-//                        swal({
-//                        title: "",
-//                        text: "Your Application Is Processing Please Wait For Application Fee To Process ...",
-//                        type:'warning',
-//                        showCancelButton: false,  
-//                        confirmButtonClass: "btn-primary",
-//                        confirmButtonText: "Click To Proceed For Payment",
-//                        closeOnConfirm: true, 
-//                        closeOnCancel: true
-//                         },
-//                            function (isConfirm) { 
-//                             processPayment(ptoken,loan_id,education_loan_id);
-//                         }
-//                        );
                         processPayment(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
@@ -1359,10 +1419,13 @@ $this->registerJs($script);
         }
     </script>
 <?php
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://code.jquery.com/ui/1.10.4/jquery-ui.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
