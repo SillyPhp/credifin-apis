@@ -79,7 +79,7 @@ $this->params['header_dark'] = false;
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
-                            <li>
+                            <li class="fbook">
                                 <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
                                    target="_blank">
                                     <i class="fab fa-facebook-f"></i>
@@ -87,27 +87,53 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
-                            <li>
+                            <li class="tter">
                                 <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fab fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
-                            <li>
+                            <li class="lin">
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
                                     <i class="fab fa-linkedin-in"></i>
                                 </a>
                             </li>
                         <?php }
+                        if (!empty($user['email'])) { ?>
+                            <li class="mael">
+                                <a href="mailto:<?= Html::encode($user['email']) ?>"
+                                   target="_blank">
+                                    <i class="far fa-envelope-open"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['skype'])) { ?>
-                            <li>
+                            <li class="skpe">
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
                                 </a>
                             </li>
+                        <?php }
+                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            ?>
+                            <li class="talking">
+                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                    <i class="far fa-comment-dots"></i>
+                                </a>
+                            </li>
                         <?php } ?>
+                        <div class="dwn">
+                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
+                                <div class="down-r">
+                                    <?php
+                                    $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                    ?>
+                                    <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                </div>
+                            <?php } ?>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -206,7 +232,9 @@ $this->params['header_dark'] = false;
                                     </div>
                                     <div class="quelification s-text-2"><?= $exp['title'] ?>
                                     </div>
-                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to '?>
+                                        <?php if($exp['is_current']){ echo 'Present'; } else { ?>
+                                            <?php echo date("d/m/Y", strtotime($exp['to_date'])); } ?>
                                     </div>
                                     <div class="s-time s-text-2"><?= $exp['description'] ?>
                                     </div>
@@ -257,7 +285,7 @@ $this->params['header_dark'] = false;
             <?php
             if (array_filter($job_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -291,7 +319,7 @@ $this->params['header_dark'] = false;
             }
             if (array_filter($internship_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -327,7 +355,39 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
+if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    echo $this->render('@common/widgets/chat-main');
+}
 $this->registerCss('
+.fbook a {
+    background-color: #3b5998;
+}
+.tter a {
+	background-color: #00aced;
+}
+.lin a {
+	background-color: #007bb6;
+}
+.mael a {
+	background-color: #bb0000;
+}
+.skpe a {
+	background-color: #00a0e3;
+}
+.talking a {
+	background-color: #00bf8f;
+}
+.down-r {
+	text-align:center;
+}
+.down-r a {
+	color: #fff;
+	background-color: #00a0e3;
+	padding: 8px 16px;
+	font-family: roboto;
+	font-size: 13px;
+	border-radius: 4px;
+}
 .prof-p {
 	width: 80px;
 	height: 80px;
@@ -426,7 +486,7 @@ body{background-color:#f9f9f9;}
     margin-bottom:5px;
 }
 .prefer-detail{
-    padding-top:50px;
+    padding:20px;
 }
 .prefer-detail > ul > li{
     font-size: 14px;
@@ -442,14 +502,10 @@ body{background-color:#f9f9f9;}
     display: inline-flex;
 }
 .prefer {
-    font-size: 20px;
-    font-family: sans-serif;
-    text-align: center;
-    background: #eee;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
+	font-size: 20px;
+	font-family: roboto;
+	text-align: center;
+	padding: 3px;
 }
 .set-color{
     background: #ff7803;
@@ -490,6 +546,7 @@ body{background-color:#f9f9f9;}
 	border-radius: 8px;
 	margin-bottom: 25px;
 	min-height: 270px;
+	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
@@ -607,9 +664,10 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail {
 	background-color: #fff;
-	padding: 37px 20px;
+	padding: 37px 20px 5px;
 	border-radius: 8px;
     min-height:270px;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .right-side-detail ul {
     padding: 0;
@@ -629,13 +687,13 @@ body{background-color:#f9f9f9;}
 	margin:5px;
 }
 .right-side-detail ul.social-info li a {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     display: inline-block;
-    background: #e3e8ec;
     text-align: center;
-    line-height: 40px;
+    line-height: 35px;
     border-radius: 2px;
+    color:#fff;
 }
 span.available-status {
     margin-left: 10px;
@@ -652,7 +710,7 @@ span.available-status {
 	padding:30px 30px;
     margin-bottom: 30px;
     position: relative;
-    border: 1px solid #eaeff5;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .apply-job-detail{
 	margin-bottom:30px;
@@ -754,15 +812,16 @@ img.img-responsive.payment-img {
 }
 
 /*--------------- Sidebar: Detail For Freelancer ----------------*/
-.sidebar-container{
-    background: #ffffff;
-    overflow: hidden;
-    margin-bottom:30px;
-	position:relative;
+.sidebar-container {
+	background: #ffffff;
+	overflow: hidden;
+	margin-bottom: 30px;
+	position: relative;
 	transition: .4s;
-    padding: 0px 15px 10px 15px;
-    border: 1px solid #eee;
-    border-radius:5px;
+	/* padding: 0px 15px 10px 15px; */
+	/* border: 1px solid #eee; */
+	border-radius: 8px;
+	box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);

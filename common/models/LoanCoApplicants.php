@@ -38,7 +38,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'aadhaar_number', 'created_by', 'created_on'], 'required'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'relation', 'employment_type', 'annual_income', 'aadhaar_number', 'created_on'], 'required'],
             [['relation'], 'string'],
             [['employment_type'], 'integer'],
             [['annual_income'], 'number'],

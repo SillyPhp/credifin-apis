@@ -159,7 +159,7 @@ class IndividualSignup extends Model
 //            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
 //        }
 
-            $user_other_details->course_enc_id = $this->course_id;
+            $user_other_details->assigned_college_enc_id = $this->course_id;
             $user_other_details->section_enc_id = $this->section_id;
             $user_other_details->semester = $this->semester;
             $user_other_details->starting_year = $this->starting_year;

@@ -4,9 +4,8 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
-use common\models\CollegeCourses;
+use common\models\AssignedCollegeCourses;
 use common\models\CollegeSettings;
-use common\models\Companies;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
@@ -822,15 +821,17 @@ class CollegeIndexController extends ApiBaseController
         if ($this->isAuthorized()) {
             $college_id = $this->getOrgId();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -1089,16 +1090,18 @@ class CollegeIndexController extends ApiBaseController
                     'a.college_actions',
                     'c.name',
                     'a.cgpa',
-                    'cc.course_name',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                 }], true)
-                ->joinWith(['courseEnc cc'], false)
+                ->joinWith(['assignedCollegeEnc cc'=>function($cc){
+                    $cc->joinWith(['courseEnc c1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']]);
             if (isset($data['course_name']) && !empty($data['course_name'])) {
-                $candidates->andWhere(['cc.course_name' => $data['course_name']]);
+                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
             }
             if (isset($data['semester']) && !empty($data['semester']) && count($data['semester']) < 10) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);

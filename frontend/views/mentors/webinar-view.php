@@ -1,10 +1,11 @@
 <?php
-$this->params['header_dark'] = true;
-
 use yii\helpers\Url;
 
+$this->params['header_dark'] = true;
+$basePath = Url::base("https");
+
 if (Yii::$app->user->identity->image) {
-    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+    $image = $basePath . '/' . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
 } else {
     $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
@@ -50,7 +51,7 @@ if (Yii::$app->user->identity->image) {
                                     $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
                                     foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
                                         ?>
-                                        <a target="_blank" href=""><?= $speaker['fullname'] ?></a>
+                                        <?= $speaker['fullname'] ?>
                                         <?php
                                         if ($key < $speakerCount) {
                                             echo ", ";
@@ -66,24 +67,10 @@ if (Yii::$app->user->identity->image) {
                 </div>
                 <div class="col-md-3">
                     <div class="live-count">
-                        <i class="fas fa-circle"></i> Viewers: <span>700</span>
+                        <i class="fas fa-circle"></i> Viewers: <span id="viewers"></span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-<section class="similar-webinars">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
-        <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card', [
-                'webinars' => $webinars,
-            ]) ?>
         </div>
     </div>
 </section>
@@ -386,6 +373,20 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
         }
     }
+    var refs = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId)
+    refs.set({
+        'status': 'online',
+    });
+    var userLastOnlineRef = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId);
+    userLastOnlineRef.onDisconnect().remove();
+    var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
+    usersCount.on('value', function (data) {
+        var result2 = [];
+        for (var i in data.val()) {
+            result2.push([i, data.val()[i]]);
+        }
+        document.getElementById('viewers').innerText = result2.length;
+    });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
