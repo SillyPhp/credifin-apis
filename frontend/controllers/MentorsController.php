@@ -143,7 +143,20 @@ class MentorsController extends Controller
             });
         }
         $outComes = WebinarOutcomes::find()
-            ->where(['is_deleted' => 0,'webinar_enc_id' => $id])
+            ->alias('z')
+            ->select(['z.webinar_enc_id','z.outcome_pool_enc_id','oe.name','oe.icon_location','oe.icon','oe.bg_colour'])
+            ->joinWith(['outcomePoolEnc oe'],false)
+            ->where(['z.is_deleted' => 0,'z.webinar_enc_id' => $id])
+            ->asArray()
+            ->all();
+        $register = WebinarRegistrations::find()
+            ->alias('z')
+            ->select(['z.webinar_enc_id','z.register_enc_id','z.interest_status','z.created_by','c.image','c.image_location'])
+            ->joinWith(['createdBy c'],false)
+            ->where(['z.webinar_enc_id' => $id,'z.is_deleted' => 0,'c.is_deleted' => 0])
+            ->andWhere(['not', ['c.image' => null]])
+            ->andWhere(['not', ['c.image' => '']])
+            ->limit(6)
             ->asArray()
             ->all();
         $webinarRegistrations = WebinarRegistrations::find()
@@ -151,8 +164,6 @@ class MentorsController extends Controller
             ->select(['z.webinar_enc_id','z.register_enc_id','z.interest_status','z.created_by','c.image','c.image_location'])
             ->joinWith(['createdBy c'],false)
             ->where(['z.webinar_enc_id' => $id,'z.is_deleted' => 0,'c.is_deleted' => 0])
-//            ->andWhere(['not', ['c.image' => null]])
-//            ->andWhere(['not', ['c.image' => '']])
             ->asArray()
             ->all();
         $webResig = WebinarRegistrations::find()
@@ -163,6 +174,7 @@ class MentorsController extends Controller
                 'webinar' => $webinar,
                 'assignSpeaker' => $assignSpeaker,
                 'outComes' => $outComes,
+                'register' => $register,
                 'webinarRegistrations' => $webinarRegistrations,
                 'webResig' => $webResig,
             ]);

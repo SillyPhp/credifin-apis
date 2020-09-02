@@ -21,27 +21,27 @@ $interest_status = $webResig['interest_status'];
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
                         <?php if($webinar['is_started']){?>
-                        <div class="counter-item btn-u">
-                            <a class="btn joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Join Now</a>
+                        <div>
+                            <a class="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
                         </div>
                             <?php } else { ?>
                         <div class="counter-item">
-                            <span class="days" id="days">00</span>
+                            <span class="days" id="days"></span>
                             <div class="smalltext">Days</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="hours" id="hours">00</span>
+                            <span class="hours" id="hours"></span>
                             <div class="smalltext">Hours</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="minutes" id="minutes">00</span>
+                            <span class="minutes" id="minutes"></span>
                             <div class="smalltext">Minutes</div>
                             <b>:</b>
                         </div>
                         <div class="counter-item">
-                            <span class="seconds" id="seconds">00</span>
+                            <span class="seconds" id="seconds"></span>
                             <div class="smalltext">Seconds</div>
                         </div>
                         <?php } ?>
@@ -76,11 +76,23 @@ $interest_status = $webResig['interest_status'];
                         <div class="flex2">
                             <div class="avatars">
                                 <ul class="ask-people">
-                                    <?php foreach($webinarRegistrations as $wr){ ?>
+                                    <?php
+                                    if($register){
+                                    foreach($register as $reg){ ?>
                                         <li>
-                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$wr['image_location'].'/'.$wr['image']) ?>">
+                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$reg['image_location'].'/'.$reg['image']) ?>">
                                         </li>
-                                    <?php } ?>
+                                    <?php }
+                                    } else {
+                                        if(count($webinarRegistrations) !== 0) {
+                                        ?>
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                                        </li>
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                        </li>
+                                <?php } } ?>
                                 </ul>
                                 <p><span><?= count($webinarRegistrations) ?></span>
                                     People Registered</p>
@@ -209,30 +221,22 @@ $interest_status = $webResig['interest_status'];
             </div>
         </div><!-- row end-->
         <div class="row">
+            <?php foreach ($outComes as $oc){ ?>
             <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-cogs"></i>
-                    <h3 class="ts-title">Building</h3>
+                <?php if($oc['bg_colour']) { ?>
+                <div class="ts-single-outcome" style="background: <?= '#'.$oc['bg_colour']?>">
+                    <?php } else { ?>
+                <div class="ts-single-outcome" style="background: #000;">
+                    <?php } ?>
+                    <?php if($oc['icon']){ ?>
+                    <img src = "<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image. $oc['icon_location']. DIRECTORY_SEPARATOR . $oc['icon'])?>">
+                    <?php } else {?>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                   <?php } ?>
+                    <h3 class="ts-title"><?= $oc['name'] ?></h3>
                 </div><!-- single outcome end-->
             </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-bullhorn"></i>
-                    <h3 class="ts-title">Marketing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-brain"></i>
-                    <h3 class="ts-title">Planning</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-rupee-sign"></i>
-                    <h3 class="ts-title">Monetizing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
+            <?php } ?>
         </div>
     </div><!-- container end-->
 </section>
@@ -242,7 +246,11 @@ $interest_status = $webResig['interest_status'];
 <?php
 $this->registerCss('
 .joinBtn{
-    background-color: whitesmoke;
+    font-size: 25px;
+    padding: 35px;
+    display: block;
+    text-align: center;
+    color: #fff;
 }
 .ra-btn.active{
   background-color: green;
@@ -603,9 +611,9 @@ transform: rotate(100deg);
   -ms-border-radius: 50%;
   width: 250px;
   height: 250px;
-  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
   -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
   padding: 55px 0;
@@ -625,7 +633,7 @@ transform: rotate(100deg);
 .ts-single-outcome .ts-title {
     color: #fff; 
 }
-.ts-single-outcome:hover i {
+.ts-single-outcome:hover img {
     -webkit-animation-name: shake;
     animation-name: shake;
     -webkit-animation-duration: 1s;
@@ -634,26 +642,26 @@ transform: rotate(100deg);
     animation-fill-mode: both; 
 }
 
-.outcome-item:nth-of-type(1) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%); }
-
-.outcome-item:nth-of-type(2) .ts-single-outcome {
-  background-image: -webkit-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-  background-image: -o-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-  background-image: radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%); }
-
-.outcome-item:nth-of-type(3) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-  background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-  background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%); }
-
-.outcome-item:nth-of-type(4) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-  background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-  background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%); 
-}
+//.outcome-item:nth-of-type(1) .ts-single-outcome {
+//  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%); }
+//
+//.outcome-item:nth-of-type(2) .ts-single-outcome {
+//  background-image: -webkit-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+//  background-image: -o-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+//  background-image: radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%); }
+//
+//.outcome-item:nth-of-type(3) .ts-single-outcome {
+//  background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+//  background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+//  background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%); }
+//
+//.outcome-item:nth-of-type(4) .ts-single-outcome {
+//  background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+//  background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+//  background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%); 
+//}
 /**/
 
 .ts-count-down {
