@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use common\models\Speakers;
 use common\models\WebinarConversationMessages;
 use common\models\WebinarConversations;
+use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use Yii;
@@ -227,6 +228,27 @@ class WebinarsController extends ApiBaseController
                 ])
                 ->asArray()
                 ->one();
+
+            $register_user = WebinarRegistrations::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user->user_enc_id])
+                ->one();
+
+            if ($register_user) {
+                $register_user->status = 1;
+                $register_user->last_updated_on = date('Y-m-d H:i:s');
+                $register_user->last_updated_by = $user->user_enc_id;
+                $register_user->update();
+            }else{
+                $model = new WebinarRegistrations();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->register_enc_id = $utilitiesModel->encrypt();
+                $model->webinar_enc_id = $webinar['webinar_enc_id'];
+                $model->status = 1;
+                $model->created_by = $user->user_enc_id;
+                $model->created_on = date('Y-m-d h:i:s');
+                $model->save();
+            }
 
             if ($validate_s_id->session_id) {
                 return $this->response(200, ['status' => 200, 'data' => $webinar]);

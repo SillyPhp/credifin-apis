@@ -60,7 +60,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             Current city where you live
                                         </label>
                                         <input type="text" name="location" id="location" class="form-control"
-                                               autocomplete="off" placeholder="City or State"/>
+                                               autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -887,7 +887,7 @@ $script = <<<JS
 				    required:'Email Cannot Be Blank',
 				},
 				'location':{
-				    required:'City Or Sate Cannot Be Blank',
+				    required:'City Name Cannot Be Blank',
 				},
 				'loanamount':{
 				    required:'Laon Amount Cannot Be Blank',
@@ -1043,20 +1043,6 @@ function ajaxSubmit(id)
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-//                        swal({
-//                        title: "",
-//                        text: "Your Application Is Processing Please Wait For Application Fee To Process ...",
-//                        type:'warning',
-//                        showCancelButton: false,  
-//                        confirmButtonClass: "btn-primary",
-//                        confirmButtonText: "Click To Proceed For Payment",
-//                        closeOnConfirm: true, 
-//                        closeOnCancel: true
-//                         },
-//                            function (isConfirm) { 
-//                             processPayment(ptoken,loan_id,education_loan_id);
-//                         }
-//                        );
                         processPayment(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
@@ -1079,6 +1065,9 @@ function ajaxSubmit(id)
                             text: "Some Internal Server Error, Please Try After Some Time",
                             });
                     }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide(); 
             }
         });
     }
@@ -1089,8 +1078,6 @@ function processPayment(ptoken,loan_id,education_loan_id)
         accesskey: access_key
     }, 
     function(response) {
-          // response.payment_token_id
-           // response.payment_id  
         if (response.status == "captured") {
                swal({
                         title: "",
@@ -1114,8 +1101,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
         } else if (response.status == "failed") { 
            updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "cancelled") {
-          updateStatus(education_loan_id,loan_id,response.payment_id,response.status); 
-          location.reload(true);
+          updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         }
     },
     function(err) { 
