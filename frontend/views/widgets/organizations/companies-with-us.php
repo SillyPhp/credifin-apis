@@ -65,7 +65,7 @@ $companies = $companies->all();
                 ?>
 
             </div>
-            <div class="row">
+            <div class="row text-right">
                 <div class="all-coms"><a href="/organizations">View All Companies</a></div>
             </div>
         </div>
@@ -133,8 +133,5 @@ $this->registercss('
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
   overflow: hidden;
-}
-.row{
-    text-align: right;
 }
 ');
