@@ -1,6 +1,6 @@
 <?php
 
-//$this->title = Yii::t('frontend', 'Education Loans');
+$this->title = Yii::t('frontend', 'Education Loans');
 
 use yii\helpers\Url;
 
@@ -28,6 +28,18 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+    <div class="clearfix"></div>
+          <section class="edu-loans">
+               <div class="container">
+                   <div class="rupee-main">
+                      <div class="edu-loans-txt">Interest Free Loans For </br> All Your Educational Needs!!</div>
+                       <div class="rupe-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupee.png'); ?>"/>
+                       </div>
+                   </div>
+               </div>
+          </section>
 
     <section class="edu-with-sec">
         <div class="container">
@@ -92,67 +104,65 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
-        <div class="ptb50 bgEd">
-            <div class="container">
-                <div class="edu-flex">
-                    <div class="edu-hw-block">
-                        <div class="edu-hw-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad.png') ?>" alt=""/>
-                        </div>
-                    </div>
-                    <div class="edu-des">
-                        <div class="edu-hw-title">Study Abroad Education Loan</div>
-                        <p class="edu-hw-description">
-                            The desires of human beings are unlimited then why they should have limited opportunities. There
-                            are abundance of study opportunities that are available across the globe. Empoweryouth has vast
-                            personalized solutions that will help you to achieve your dreams of studying abroad.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ptb50">
-            <div class="container">
-                <div class="edu-flex">
-                    <div class="edu-hw-block order2">
-                        <div class="edu-hw-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-india-1.png') ?>" alt=""/>
-                        </div>
-                    </div>
-                    <div class="edu-des order1">
-                        <div class="edu-hw-title">Study in India Education Loan</div>
-                        <p class="edu-hw-description">
-                            The growth of educaton industry in India is immensely increasing. The colleges and universities
-                            are offering a variety of study programs and courses in almost every niche - You Name It And You
-                            Have It. Here, Empoweryouth with their student educaton loan will help you to pursue your
-                            desired education without getting worried about the money.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ptb50 bgEd">
-            <div class="container">
-                <div class="edu-flex">
-                    <div class="edu-hw-block">
-                        <div class="edu-hw-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>" alt=""/>
-                        </div>
-                    </div>
-                    <div class="edu-des">
-                        <div class="edu-hw-title">Education Institution Loans</div>
-                        <p class="edu-hw-description">
-                            We all know the importance of education and educational institutes in our lives as they provide
-                            a variety of learning environments and spaces. Empoweryouth with its education institute loans
-                            provides financial help to the education insitutes for their growth.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
+
+    <section class="bg-cl">
+        <div class="container">
+            <div class="col-md-4 col-sm-4">
+                <div class="edu-hw-block">
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad1.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Study Abroad Education Loan</div>
+                    <p class="edu-hw-description">
+                        The desires of human beings are unlimited then why they should have limited opportunities. There
+                        are abundance of study opportunities that are available across the globe. Empoweryouth has vast
+                        personalized solutions that will help you to achieve your dreams of studying abroad.
+                    </p>
+                    <!--                    <div class="edu-hw-text">Our online eligibility tool helps find the best possible-->
+                    <!--                        loan option for your requirements.-->
+                    <!--                    </div>-->
+
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="edu-hw-block">
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-india.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Study in India Education Loan</div>
+                    <p class="edu-hw-description">
+                        The growth of educaton industry in India is immensely increasing. The colleges and universities
+                        are offering a variety of study programs and courses in almost every niche - You Name It And You
+                        Have It. Here, Empoweryouth with their student educaton loan will help you to pursue your
+                        desired education without getting worried about the money.
+                    </p>
+                    <!--                    <div class="edu-hw-text">Our online eligibility tool helps find the best possible-->
+                    <!--                        loan option for your requirements.-->
+                    <!--                    </div>-->
+
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="edu-hw-block">
+                    <div class="edu-hw-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/institute-loan.png') ?>" alt=""/>
+                    </div>
+                    <div class="edu-hw-title">Education Institution Loans</div>
+                    <p class="edu-hw-description">
+                        We all know the importance of education and educational institutes in our lives as they provide
+                        a variety of learning environments and spaces. Empoweryouth with its education institute loans
+                        provides financial help to the education insitutes for their growth.
+                    </p>
+                    <!--                    <div class="edu-hw-text">Empower Youth team ensures that you do not have to worry about financing-->
+                    <!--                        during your study.-->
+                    <!--                        Any conflicts with the banks during disbursal are promptly resolved.-->
+                    <!--                    </div>-->
+                </div>
+            </div>
+        </div>
+
+    </section>
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -161,19 +171,19 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/suggest-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
                 </div>
@@ -186,10 +196,10 @@ use yii\helpers\Url;
     <section class="edu-loan">
         <div class="container">
             <div class="us-flex">
-                <div class="edu-loan-txt">
-                    Get No Security Loans upto 2 Lakhs.
+                <div class="edu-loan-txt col-md-6">
+                    Ready to get Started ?
                 </div>
-                <div class="">
+                <div class="col-md-6">
                     <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
                        class="hvr-sweep-to-bottom">
                         Apply Now
@@ -241,8 +251,7 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="heading-style"><?= Yii::t('frontend', 'Our Loaning Partners'); ?></div>
                 </div>
-            </div>
-            <div class="row">
+                <div class="row">
                     <div class="col-md-2">
                         <div class="lp-box">
                             <div class="loan-logo">
@@ -282,16 +291,12 @@ use yii\helpers\Url;
                                      alt="">
                             </div>
                             <div class="lp-name">Exclusive Leasing & Finance</div>
-                        </div>
-                    </div>
-                </div>
         </div>
     </section>
 
     <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
-            <div class="row">
             <div class="col-md-4">
                 <div class="l-help-block1">
                     <div class="l-help-title"><img
@@ -310,20 +315,19 @@ use yii\helpers\Url;
                                 src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
                                 alt=""/> Contact Us
                     </div>
-                    <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +8727985888</div>
-                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Call Us</a>
+                    <div class="callNumber"></div>
+                    <div class="l-help-txt-btn"><a href="tel:+8727985888">Contact Us</a>
                     </div>
                 </div>
             </div>
-<!--            <div class="col-md-4">-->
-<!--                <div class="l-help-block1">-->
-<!--                    <div class="l-help-title"><img-->
-<!--                                src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?><!--" alt=""/>-->
-<!--                        See our FAQs-->
-<!--                    </div>-->
-<!--                    <div class="l-help-txt">See answers to questions on how to use our services</div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="col-md-4">
+                <div class="l-help-block1">
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?>" alt=""/>
+                        See our FAQs
+                    </div>
+                    <div class="l-help-txt">See answers to questions on how to use our services</div>
+                </div>
             </div>
         </div>
     </section>
@@ -363,44 +367,25 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-.callNumber{
-    color: #666;
-    font-size: 18px;
-    margin-top: 10px;
-    font-family: roboto;
-    text-align: center;
-}
-.callNumber i{
-    color: #1b4145
-}
-.edu-flex{
+.rupee-main {
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-even
 }
-.edu-hw-block, .edu-des{
+.rupe-img{
     flex-basis: 50%;
+    text-align:right;
 }
-.edu-des{
-    padding: 10px 20px 10px 0;
-}
-.order2{
-    order: 2;
-}
-.order1{
-    order: 1;
-}
-.ptb50{
-    padding-top: 25px;
-    padding-bottom: 25px; 
-}
-.bgEd{
-    background: #EDF4FC
+.rupe-img img{
+    width:300px;
 }
 .loan-college{
     text-align: center;  
     border: 1px solid #eee;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+}
+.row{
+margin-bottom:30px;
 }
 .loan-college:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.1);
@@ -418,7 +403,6 @@ $this->registerCss('
     overflow: hidden;
     text-overflow: ellipsis;
     height: 60px;
-    font-family: roboto;
 }
 .loan-college-img{
     width: 100%;
@@ -438,18 +422,14 @@ $this->registerCss('
 .loan-ey-flex{
     display: flex;
     flex-wrap: wrap;
-    max-width: 1600px;
+    max-width: 1500px;
     margin: 0 auto;
     justify-content: center;
 }
 .loan-ey-flex .categories{
     width: 200px;
-    margin: 0 15px 10px;
+    margin: 0 10px 10px;
     text-transform: capitalize;
-}
-.loan-ey-flex .categories h4{
-    font-family: roboto;
-    font-size: 16px;
 }
 .loan-image{
     text-align: center;
@@ -469,8 +449,8 @@ $this->registerCss('
 }
 .loan-text h1 {
     font-weight: 500;
-    font-size: 40px;
-    font-family: auto;
+    font-size: 50px;
+    font-family: lobster;
     margin-bottom: 0px;
 }
 .loan-text h3{
@@ -526,23 +506,13 @@ $this->registerCss('
     background-repeat: no-repeat;
     padding-top: 50px;
 }
-@media screen and (max-width:768px){
-    .loan-text {
-        padding-top: 70px;
-    }
-    .backgrounds{
-        background-size: 100% 380px;
-        min-height:380px;
-    }
-       .loan-image img{
-        max-width: 300px;
-    }
-    .us-flex{
-        flex-direction: column;
-    }
-    .edu-loan-txt{
-        padding-right: 0px;
-        padding-bottom: 20px;
+@media (max-width:768px){
+.loan-text {
+    padding-top: 70px;
+}
+.backgrounds{
+    background-size: 100% 380px;
+    min-height:380px;
     }
 }
 @media (max-width:415px){
@@ -802,34 +772,29 @@ $this->registerCss('
 }
 .edu-hw-title{
     font-size: 20px; 
-    color:#000; 
+    color:#fff; 
     font-family: Roboto; 
     text-transform: uppercase; 
     font-weight: bold;
-    text-align: center;
 }
-.mt20{
-    margin-top: 20px;
-}
-.edu-hw-description{
-    color: #000;
-    text-align: center;
-    font-family: roboto;
-    font-size: 15px;
+.edu-hw-description
+{
+    color: #fff;
+    text-align: justify;
+   
 }
 .edu-hw-icon{ 
     padding: 20px; 
 }
 .edu-hw-icon img{
-    max-width: 400px;
-    width: 100%;
+    max-width: 80px
 }
 .edu-hw-text{
     font-size: 16px; 
     line-height: 20px; 
     color:#fff; 
     padding: 10px 30px; 
-    font-family: roboto; 
+    font-family: open sans 
 }
 .heading-style{
    font-family: lobster;
@@ -849,6 +814,26 @@ $this->registerCss('
 .edu-with-sec{
     padding:0px 0px 20px 0;
 }
+
+.edu-loans{
+ background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-bg1.png') . '); 
+    background-repeat:no-repeat;
+    padding: 0px 0 15px 0; 
+    text-align: center; 
+    background-size: cover;   
+ }
+ .us-flex1{
+  display: flex;
+    justify-content: right;
+    align-items: right;
+}
+.edu-loans-txt{
+   color: #fff; 
+    font-size: 50px;
+    flex-basis: 50%;
+    font-family: lobster;
+    text-align: center;
+}
 .edu-loan{ 
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-apply.png') . '); 
     background-repeat:no-repeat;
@@ -863,9 +848,8 @@ $this->registerCss('
 }
 .edu-loan-txt{ 
     color: #fff; 
-    font-size: 38px;
+    font-size: 45px;
     font-family: lobster;
-    padding-right: 20px; 
 }
 .edu-loan-btn{ 
     text-align: center; 
@@ -948,19 +932,18 @@ $this->registerCss('
     font-size: 20px !important; 
 }
 .l-help-txt-btn{
-    margin-top: 20px;
-    text-align: center;
+    margin-top: 40px;
 }
 .l-help-txt-btn a{
-    border: 1px solid #00a0e3; 
+    border: 1px solid #1cbcb2; 
     padding: 10px 20px; 
     color: #fff; 
-    background: #00a0e3;
+    background: #1cbcb2;
 }
 .l-help-txt-btn a:hover{
-    border: 2px solid #00a0e3; 
+    border: 2px solid #1cbcb2; 
     padding: 10px 20px; 
-    color: #00a0e3; 
+    color: #1cbcb2; 
     background: #fff; 
     text-decoration: none;
     transition: .3s ease-in-out;
@@ -968,7 +951,6 @@ $this->registerCss('
 .l-help-txt{
     font-size: 15px; 
     padding: 20px 30px 0 30px;
-    font-family: roboto;
 }
 /*Emi Calculator*/
 #ecww-formwrapper{
@@ -1066,17 +1048,6 @@ $this->registerCss('
     margin-bottom:0px !important; 
     background: #eee;
 } 
-@media screen and (max-width: 992px){
-    .edu-flex{
-        flex-direction: column;
-    }
-    .order2{
-        order: 1;
-    }
-    .order1{
-        order: 2;
-    }
-}
 @media screen and (max-width: 500px){
     .edu-loan-txt{
         line-height: 60px;
@@ -1089,6 +1060,23 @@ $this->registerCss('
         max-width: 250px;
     }
 }
+@media screen and (max-width:992px) and (min-width:769px){
+.edu-loans-txt{
+    font-size: 40px;
+    }
+    }
+@media screen and (max-width:768px) and (min-width:200px){
+.rupee-main {
+    display: block;
+}
+.rupe-img{
+    display: none;
+}
+.edu-loans-txt{
+    font-size: 35px;
+     text-align: center;
+}
+
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
 $this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
