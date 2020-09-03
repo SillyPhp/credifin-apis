@@ -41,8 +41,7 @@ $companies = $companies->all();
                 <div class="col-md-12">
                     <div class="com-grid">
                         <h1 class="heading-style">Featured Companies</h1>
-                        <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
-                        <div class="all-coms"><a href="/organizations">View All Companies</a></div>
+
                     </div>
                 </div>
             </div>
@@ -65,6 +64,9 @@ $companies = $companies->all();
                 }
                 ?>
 
+            </div>
+            <div class="row">
+                <div class="all-coms"><a href="/organizations">View All Companies</a></div>
             </div>
         </div>
     </section>
@@ -131,5 +133,8 @@ $this->registercss('
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+}
+.row{
+    text-align: right;
 }
 ');
