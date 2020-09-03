@@ -12,13 +12,8 @@ use yii\helpers\Url;
 class OrganizationList
 {
     public  $flag;
-    public static $DefaultType = ['College', 'School', 'Educational Institute'];
     public static function get($options)
     {
-        if (!isset($options['type']))
-        {
-            $options['type'] = self::$DefaultType;
-        }
         return self::getCompanies($options);
     }
 
@@ -41,32 +36,45 @@ class OrganizationList
     {
         $params1 = (new \yii\db\Query())
             ->select(['REPLACE(name, "&amp;", "&") as value', 'a.organization_enc_id id'])
-            ->from(UnclaimedOrganizations::tableName() . 'as a')
-            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['in', 'business_activity', $options['type']]);
+            ->from(Organizations::tableName() . 'as a')
+            ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
+            ->andWhere(['is_deleted' => 0]);
 
         $params2 = (new \yii\db\Query())
             ->select(['REPLACE(name, "&amp;", "&") as value', 'a.organization_enc_id id'])
-            ->from(Organizations::tableName() . 'as a')
-            ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['in', 'business_activity', $options['type']]);
+            ->from(UnclaimedOrganizations::tableName() . 'as a')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->andWhere(['is_deleted' => 0]);
 
-        return $params1->union($params2)->all();
+        if (isset($options['source'])&&!empty($options['source'])){
+            $params2->andWhere(['in', 'source', $options['source']]);
+        }
+        if (isset($options['type'])&&!empty($options['type'])){
+            $params1->andWhere(['in', 'business_activity', $options['type']]);
+            $params2->andWhere(['in', 'business_activity', $options['type']]);
+        }
+
+        if ($options['datatype']==0){
+            return $params1->union($params2)->all();
+         }elseif ($options['datatype']==1)
+        {
+            return $params1->all();
+        }elseif ($options['datatype']==2){
+            return $params2->all();
+        }
     }
 
-    public function getOrgId($name)
+    public function getOrgId($options=[])
     {
         $c1 = Organizations::find()
             ->select(['organization_enc_id'])
-            ->where(['name' => trim($name)])
+            ->where(['name' => trim($options['name'])])
             ->asArray()
             ->one();
 
         $c2 = UnclaimedOrganizations::find()
             ->select(['organization_enc_id'])
-            ->where(['name' => trim($name)])
+            ->where(['name' => trim($options['name'])])
             ->asArray()
             ->one();
 
@@ -81,53 +89,57 @@ class OrganizationList
                 'id' => $c2['organization_enc_id']
             ];
         } else {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model = new UnclaimedOrganizations();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->organization_enc_id = $utilitiesModel->encrypt();
-                $model->organization_type_enc_id = null;
-                $utilitiesModel->variables['name'] = $name;
-                $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
-                $utilitiesModel->variables['field_name'] = 'slug';
-                $slug = $utilitiesModel->create_slug();
-                $slug_replace_str = str_replace("-", "", $slug);
-                $model->slug = $slug_replace_str;
-                $model->name = $name;
-                $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : null);
-                $model->initials_color = RandomColors::one();
-                $model->status = 1;
-                if ($model->save()) {
-                    $username = new Usernames();
-                    $username->username = $slug_replace_str;
-                    $username->assigned_to = 3;
-                    if (!$username->save()) {
-                        $transaction->rollBack();
-                        return false;
-                    }
-                    $this->flag = true;
-                }
-                else
-                {
+            return $this->saveUnclaimOrganization($options);
+         }
+    }
+
+    private function saveUnclaimOrganization($options=[])
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model = new UnclaimedOrganizations();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->organization_enc_id = $utilitiesModel->encrypt();
+            $model->organization_type_enc_id = null;
+            $utilitiesModel->variables['name'] = $options['name'];
+            $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $slug = $utilitiesModel->create_slug();
+            $slug_replace_str = str_replace("-", "", $slug);
+            $model->slug = $slug_replace_str;
+            $model->name = $options['name'];
+            $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : null);
+            $model->initials_color = RandomColors::one();
+            $model->status = 1;
+            if ($model->save()) {
+                $username = new Usernames();
+                $username->username = $slug_replace_str;
+                $username->assigned_to = 3;
+                if (!$username->save()) {
                     $transaction->rollBack();
                     return false;
                 }
-             }
-            catch (\Exception $exception) {
+                $this->flag = true;
+            }
+            else
+            {
                 $transaction->rollBack();
                 return false;
             }
-
-            if ($this->flag) {
-                $transaction->commit();
-                return [
-                    'is_claim' => false,
-                    'id' => $model->organization_enc_id
-                ];
-            }
-         }
+        }
+        catch (\Exception $exception) {
+            $transaction->rollBack();
+            return false;
+        }
+        if ($this->flag) {
+            $transaction->commit();
+            return [
+                'is_claim' => false,
+                'id' => $model->organization_enc_id
+            ];
+        }
     }
-  }
+ }
