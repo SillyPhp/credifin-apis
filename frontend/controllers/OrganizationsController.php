@@ -911,7 +911,7 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
-                'status' => 1
+                'is_deleted' => 0,
             ])
             ->asArray()
             ->one();
