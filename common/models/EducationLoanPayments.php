@@ -57,30 +57,6 @@ class EducationLoanPayments extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('dsbedutech', 'ID'),
-            'education_loan_payment_enc_id' => Yii::t('dsbedutech', 'Education Loan Payment Enc ID'),
-            'loan_app_enc_id' => Yii::t('dsbedutech', 'Loan App Enc ID'),
-            'college_enc_id' => Yii::t('dsbedutech', 'College Enc ID'),
-            'payment_token' => Yii::t('dsbedutech', 'Payment Token'),
-            'payment_amount' => Yii::t('dsbedutech', 'Payment Amount'),
-            'payment_gst' => Yii::t('dsbedutech', 'Payment Gst'),
-            'payment_id' => Yii::t('dsbedutech', 'Payment ID'),
-            'payment_status' => Yii::t('dsbedutech', 'Payment Status'),
-            'payment_mode' => Yii::t('dsbedutech', 'Payment Mode'),
-            'reference_number' => Yii::t('dsbedutech', 'Reference Number'),
-            'created_by' => Yii::t('dsbedutech', 'Created By'),
-            'created_on' => Yii::t('dsbedutech', 'Created On'),
-            'updated_by' => Yii::t('dsbedutech', 'Updated By'),
-            'updated_on' => Yii::t('dsbedutech', 'Updated On'),
-        ];
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getLoanAppEnc()

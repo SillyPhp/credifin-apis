@@ -10,6 +10,7 @@ use common\models\LoanPurpose;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
+use common\models\PathToUnclaimOrgLoanApplication;
 use Yii;
 use yii\base\Model;
 
@@ -23,8 +24,8 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['purpose', 'applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants', 'loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
+            [['applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
+            [['co_applicants','purpose','loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -33,7 +34,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($userId, $college_id, $source = 'Mec')
+    public function add($userId, $college_id, $source = 'Mec',$is_claimed=true)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         $application_fee = OrganizationFeeAmount::find()
@@ -46,7 +47,6 @@ class LoanApplicationsForm extends LoanApplications
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $this->loan_app_enc_id = $utilitiesModel->encrypt();
-//            $this->college_enc_id = $college_id;
             $this->course_enc_id = $this->college_course_enc_id;
             $this->college_course_enc_id = NULL;
             $this->source = $source;
@@ -59,19 +59,33 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $this->_flag = true;
             }
-
-            $path_to_claim = new PathToClaimOrgLoanApplication();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
-            $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
-            $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
-            $path_to_claim->created_by = (($userId)?$userId:null);
-            if (!$path_to_claim->save()) {
-                $transaction->rollback();
-                return false;
-            } else {
-                $this->_flag = true;
+            if ($is_claimed){
+                $path_to_claim = new PathToClaimOrgLoanApplication();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
+                $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
+                $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
+                $path_to_claim->created_by = (($userId)?$userId:null);
+                if (!$path_to_claim->save()) {
+                    $transaction->rollback();
+                    return false;
+                } else {
+                    $this->_flag = true;
+                }
+            }else{
+                $path_to_Unclaim = new PathToUnclaimOrgLoanApplication();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $path_to_Unclaim->bridge_enc_id = $utilitiesModel->encrypt();
+                $path_to_Unclaim->loan_app_enc_id = $this->loan_app_enc_id;
+                $path_to_Unclaim->assigned_course_enc_id = $this->course_enc_id;
+                if (!$path_to_Unclaim->save()) {
+                    $transaction->rollback();
+                    return false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if (!empty($this->purpose)) {
@@ -134,7 +148,6 @@ class LoanApplicationsForm extends LoanApplications
             $args['contact'] = $this->phone;
 
             $response = $this->GetToken($args);
-
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();

@@ -1,6 +1,8 @@
 <?php
 namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
+use api\modules\v3\models\Courses;
+use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLoanProvider;
 use common\models\CollegeCourses;
@@ -9,6 +11,7 @@ use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
+use common\models\Organizations;
 use Yii;
 use yii\web\Response;
 use yii\rest\Controller;
@@ -30,6 +33,8 @@ class EducationLoanController extends ApiBaseController
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
                 'loan-applications' => ['POST', 'OPTIONS'],
+                'course-pool-list' => ['GET'],
+                'save-application' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -38,13 +43,12 @@ class EducationLoanController extends ApiBaseController
 
     public function actionGetCourseList()
     {
-        $params= Yii::$app->request->post();
-        if ($params['id'])
-        {
+        $params = Yii::$app->request->post();
+        if ($params['id']) {
             $courses = AssignedCollegeCourses::find()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id college_course_enc_id','b.course_name'])
-                ->joinWith(['courseEnc b'], false,'INNER JOIN')
+                ->select(['a.assigned_college_enc_id college_course_enc_id', 'b.course_name'])
+                ->joinWith(['courseEnc b'], false, 'INNER JOIN')
                 ->where(['a.organization_enc_id' => $params['id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -53,16 +57,16 @@ class EducationLoanController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
+        } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
 
     public function actionGetFeeComponents()
     {
-        $params= Yii::$app->request->post();
+        $params = Yii::$app->request->post();
         $college_id = $params['id'];
-        if ($college_id){
+        if ($college_id) {
             $fee_components = OrganizationFeeComponents::find()
                 ->distinct()
                 ->alias('a')
@@ -89,14 +93,14 @@ class EducationLoanController extends ApiBaseController
     public function actionSaveWidgetApplication()
     {
         $params = Yii::$app->request->post();
-        if ($params['id']){
+        if ($params['id']) {
             $college_id = $params['id'];
             $orgDate = $params['applicant_dob'];
             $model = new LoanApplicationsForm();
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                    if ($data = $model->add(null, $college_id,'CollegeWebsite')) {
+                    if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -108,6 +112,7 @@ class EducationLoanController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
     }
+
     public function actionUpdateWidgetLoanApplication()
     {
         $params = Yii::$app->request->post();
@@ -139,7 +144,7 @@ class EducationLoanController extends ApiBaseController
             ->where(['education_loan_payment_enc_id' => $loan_payment_id])
             ->one();
         if ($loan_payments) {
-            $loan_payments->payment_id = (($params['payment_id'])?$params['payment_id']: null);
+            $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
             $loan_payments->payment_status = $params['status'];
             $loan_payments->updated_by = null;
             $loan_payments->updated_on = date('Y-m-d H:i:s');
@@ -147,26 +152,24 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
-
-    public function actionLoanApplications()
+    public function actionCoursePoolList()
     {
-        $params = Yii::$app->request->post();
-        if ($params['id'])
-        {
-            $loansApplications = AssignedLoanProvider::find()
-                ->alias('a')
-                ->where(['provider_enc_id'=>$params['id']])
-                ->joinWith(['loanApplicationEnc b'=>fu])
-                ->asArray()
-                ->all();
-            if ($loansApplications) {
-                return $this->response(200, ['status' => 200, 'applicatons'=>$loansApplications]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'Applications Not found']);
-            }
+        $get = Courses::get();
+        if ($get) {
+            return $get;
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
-    public function actionRetryPayment(){
+
+    public function actionSaveApplication()
+    {
+
+    }
+
+    public function actionRetryPayment()
+    {
+        date_default_timezone_set('Asia/Kolkata');
         $params = Yii::$app->request->post();
         $token = $params['token'];
         $gst = $params['gst'];
@@ -184,10 +187,15 @@ class EducationLoanController extends ApiBaseController
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_gst = $gst;
-        $loan_payment->created_by = null;
+        if (Yii::$app->user->idendity->user_enc_id) {
+            $loan_payment->created_by = Yii::$app->user->idendity->user_enc_id;
+        }
         $loan_payment->created_on = date('Y-m-d H:i:s');
         if ($loan_payment->save()) {
-            return $this->response(200,['status' => 200, 'message' => 'success']);
+            return $this->response(200, ['status' => 200, 'message' => 'success']);
+        } else {
+            print_r($loan_payment->getErrors());
         }
     }
+
 }
