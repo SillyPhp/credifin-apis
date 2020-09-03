@@ -1037,11 +1037,60 @@ class LoansController extends ApiBaseController
 
     private function upload($params, $image)
     {
-        if (isset($params['loan_co_app_id']) && !empty($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
-            $co_applicant = LoanCoApplicants::find()
-                ->where(['loan_co_app_enc_id' => $params['loan_co_app_id']])
-                ->one();
+        if ($user = $this->isAuthorized()) {
 
+            if ($params['type'] == 'co_applicant') {
+
+                if (isset($params['loan_co_app_id']) && !empty($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
+                    $co_applicant = LoanCoApplicants::find()
+                        ->where(['loan_co_app_enc_id' => $params['loan_co_app_id']])
+                        ->one();
+
+                    if ($co_applicant) {
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $encrypted_string = $utilitiesModel->encrypt();
+                        if (substr($encrypted_string, -1) == '.') {
+                            $encrypted_string = substr($encrypted_string, 0, -1);
+                        }
+                        $co_applicant->image = $encrypted_string . '.' . $image->extension;
+                        $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                        $co_applicant->updated_by = $user->user_enc_id;
+                        $co_applicant->updated_on = date('Y-m-d H:i:s');
+                        if ($co_applicant->update()) {
+                            if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                                return $co_applicant->loan_co_app_enc_id;
+                            }
+                        } else {
+                            print_r($co_applicant->getErrors());
+                            die();
+                        }
+                    } else {
+                        $co_applicant = new LoanCoApplicants();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                        $co_applicant->loan_app_enc_id = $params['loan_app_id'];
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $encrypted_string = $utilitiesModel->encrypt();
+                        if (substr($encrypted_string, -1) == '.') {
+                            $encrypted_string = substr($encrypted_string, 0, -1);
+                        }
+                        $co_applicant->image = $encrypted_string . '.' . $image->extension;
+                        $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                        $co_applicant->created_by = $user->user_enc_id;
+                        $co_applicant->created_on = date('Y-m-d H:i:s');
+                        if ($co_applicant->save()) {
+                            return $co_applicant->loan_co_app_enc_id;
+                        } else {
+                            print_r($co_applicant->getErrors());
+                        }
+                    }
+
+                }
+            } else {
+
+            }
         }
     }
 

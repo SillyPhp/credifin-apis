@@ -1,19 +1,28 @@
 <?php
+
 namespace api\modules\v3\controllers;
+
 use api\modules\v2\models\LoanApplicationsForm;
 use api\modules\v3\models\Courses;
 use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLoanProvider;
+use common\models\CertificateTypes;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
+use common\models\LoanApplicantResidentialInformation;
 use common\models\LoanApplications;
+use common\models\LoanCandidateEducation;
+use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
+use common\models\LoanQualificationType;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
 use Yii;
 use yii\web\Response;
+use yii\helpers\Url;
 use yii\rest\Controller;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
@@ -36,6 +45,7 @@ class EducationLoanController extends ApiBaseController
                 'course-pool-list' => ['GET'],
                 'save-application' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
+                'get-loan' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -86,10 +96,11 @@ class EducationLoanController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
+        } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
+
     public function actionSaveWidgetApplication()
     {
         $params = Yii::$app->request->post();
@@ -152,6 +163,7 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
+
     public function actionCoursePoolList()
     {
         $get = Courses::get();
@@ -195,6 +207,357 @@ class EducationLoanController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'success']);
         } else {
             print_r($loan_payment->getErrors());
+        }
+    }
+
+    public function actionGetLoan()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id']) && empty($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $application = LoanApplications::find()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id',
+                'a.applicant_name',
+                'a.applicant_dob',
+                'a.degree',
+                'a.phone',
+                'a.email',
+                'c1.course_name',
+            ])
+            ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                $c->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userOtherInfo b1']);
+                }], false);
+                $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }]);
+            }], false)
+            ->joinWith(['loanCoApplicants d' => function ($d) {
+                $d->select([
+                    'd.loan_co_app_enc_id',
+                    'd.loan_app_enc_id',
+                    'd.name',
+                    'd.relation',
+                    'd.email',
+                    'd.phone',
+                    'd.co_applicant_dob',
+                    'd.employment_type',
+                    'd.annual_income',
+                    'd.address'
+                ]);
+            }])
+            ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        if ($application) {
+            $application['applicant_dob'] = date('d/m/Y', strtotime($application['applicant_dob']));
+            return $this->response(200, ['status' => 200, 'data' => $application]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+    }
+
+    public function actionLoanSecondForm()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['user_enc_id']) && !empty($params['user_enc_id'])) {
+            $user_id = $params['user_enc_id'];
+        } else {
+            if ($user = $this->isAuthorized()) {
+                $user_id = $user->user_enc_id;
+            } else {
+                return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            }
+        }
+
+        if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        if (!isset($params['type']) && empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $type = $params['type'];
+        $id = $params['id'];
+
+        if ($type == 'id_proof') {
+            $id = $this->saveIdProof($user_id, $params, $id);
+            if ($id) {
+                return $this->response(200, ['status' => 200, 'id' => $id]);
+            }
+        } elseif ($type == 'address') {
+            $id = $this->saveAddress($user_id, $params, $id);
+            if ($id) {
+                return $this->response(200, ['status' => 200, 'id' => $id]);
+            }
+        } elseif ($type == 'qualification') {
+            $id = $this->saveQualification($user_id, $params, $id);
+            if ($id) {
+                return $this->response(200, ['status' => 200, 'id' => $id]);
+            }
+        } elseif ($type == 'co_applicant') {
+            $id = $this->saveCoApplicant($user_id, $params, $id);
+            if ($id) {
+                return $this->response(200, ['status' => 200, 'id' => $id]);
+            }
+        }
+    }
+
+    private function saveIdProof($user_id, $params, $id = null)
+    {
+        if ($id != null) {
+
+            $certificate = CertificateTypes::find()
+                ->where(['name' => $params['proof_name']])
+                ->one();
+
+            if (!$certificate) {
+                $certificate = new CertificateTypes();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
+                $certificate->name = $params['proof_name'];
+                if (!$certificate->save()) {
+                    print_r($certificate->getErrors());
+                    return false;
+                }
+            }
+
+            $loan_certificates = LoanCertificates::find()
+                ->where(['certificate_enc_id' => $id])
+                ->one();
+
+            if ($loan_certificates) {
+                $loan_certificates->certificate_type_enc_id = $certificate->certificate_type_enc_id;
+                $loan_certificates->number = $params['number'];
+                $loan_certificates->updated_by = $user_id;
+                $loan_certificates->updated_on = date('Y-m-d H:i:s');
+                if ($loan_certificates->update()) {
+                    return $loan_certificates->certificate_enc_id;
+                } else {
+                    $loan_certificates->getErrors();
+                    return false;
+                }
+            }
+
+        } else {
+
+            $certificate = CertificateTypes::find()
+                ->where(['name' => $params['proof_name']])
+                ->one();
+
+            if (!$certificate) {
+                $certificate = new CertificateTypes();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
+                $certificate->name = $params['proof_name'];
+                if (!$certificate->save()) {
+                    print_r($certificate->getErrors());
+                    return false;
+                }
+            }
+
+            $loan_certificates = new LoanCertificates();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_certificates->certificate_enc_id = $utilitiesModel->encrypt();
+            if (isset($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
+                $loan_certificates->loan_co_app_enc_id = $params['loan_co_app_id'];
+            } else {
+                $loan_certificates->loan_app_enc_id = $params['loan_app_id'];
+            }
+            $loan_certificates->certificate_type_enc_id = $certificate->certificate_type_enc_id;
+            $loan_certificates->number = $params['number'];
+            $loan_certificates->created_by = $user_id;
+            $loan_certificates->created_on = date('Y-m-d H:i:s');
+            if ($loan_certificates->save()) {
+                return $loan_certificates->certificate_enc_id;
+            } else {
+                print_r($loan_certificates->getErrors());
+                return false;
+            }
+
+        }
+    }
+
+    private function saveAddress($user_id, $params, $id = null)
+    {
+        if ($id == null) {
+            $res_info = new LoanApplicantResidentialInformation();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $res_info->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+            if (isset($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
+                $res_info->loan_co_app_enc_id = $params['loan_co_app_id'];
+            } else {
+                $res_info->loan_app_enc_id = $params['loan_app_id'];
+            }
+            $res_info->residential_type = $params['address_type'];
+            $res_info->type = $params['res_type'];
+            $res_info->address = $params['address'];
+            $res_info->city = $params['city_id'];
+            $res_info->state = $params['state_id'];
+            $res_info->created_by = $user_id;
+            $res_info->created_on = date('Y-m-d H:i:s');
+            if ($res_info->save()) {
+                return $res_info->loan_app_res_info_enc_id;
+            } else {
+                print_r($res_info->getErrors());
+                return false;
+            }
+        } else {
+            $update_res_info = LoanApplicantResidentialInformation::find()
+                ->where(['loan_app_res_info_enc_id' => $id])
+                ->one();
+
+            if ($update_res_info) {
+                $update_res_info->residential_type = $params['address_type'];
+                $update_res_info->type = $params['res_type'];
+                $update_res_info->address = $params['address'];
+                $update_res_info->city = $params['city_id'];
+                $update_res_info->state = $params['state_id'];
+                $update_res_info->created_by = $user_id;
+                $update_res_info->created_on = date('Y-m-d H:i:s');
+                if ($update_res_info->update()) {
+                    return $update_res_info->loan_app_res_info_enc_id;
+                } else {
+                    print_r($update_res_info->getErrors());
+                    return false;
+                }
+            }
+        }
+    }
+
+    private function saveQualification($user_id, $params, $id = null)
+    {
+
+        if ($id == null) {
+
+            $qualification_type = LoanQualificationType::find()
+                ->where(['name' => $params['name']])
+                ->one();
+
+            if (!$qualification_type) {
+                $qualification_type = new LoanQualificationType();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                $qualification_type->name = $params['name'];
+                if (!$qualification_type->save()) {
+                    print_r($qualification_type->getErrors());
+                    return false;
+                }
+            }
+
+            $education = new LoanCandidateEducation();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $education->loan_candidate_edu_enc_id = $utilitiesModel->encrypt();
+            $education->loan_app_enc_id = $params['loan_app_id'];
+            $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            $education->institution = $params['institution'];
+            $education->obtained_marks = $params['obtained_marks'];
+            $education->created_by = $user_id;
+            $education->created_on = date('Y-m-d H:i:s');
+            if ($education->save()) {
+                return $education->loan_candidate_edu_enc_id;
+            } else {
+                print_r($education->getErrors());
+                return false;
+            }
+
+        } else {
+            $qualification_type = LoanQualificationType::find()
+                ->where(['name' => $params['name']])
+                ->one();
+
+            if (!$qualification_type) {
+                $qualification_type = new LoanQualificationType();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                $qualification_type->name = $params['name'];
+                if (!$qualification_type->save()) {
+                    print_r($qualification_type->getErrors());
+                    return false;
+                }
+            }
+
+            $education = LoanCandidateEducation::find()
+                ->where(['loan_candidate_edu_enc_id' => $id])
+                ->one();
+
+            $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            $education->institution = $params['institution'];
+            $education->obtained_marks = $params['obtained_marks'];
+            $education->created_by = $user_id;
+            $education->created_on = date('Y-m-d H:i:s');
+            if ($education->update()) {
+                return $education->loan_candidate_edu_enc_id;
+            } else {
+                print_r($education->getErrors());
+                return false;
+            }
+
+        }
+    }
+
+    private function saveCoApplicant($user_id, $params, $id = null)
+    {
+        if ($id == null) {
+            $loan_co_applicants = new LoanCoApplicants();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_co_applicants->loan_co_app_enc_id = $utilitiesModel->encrypt();
+            $loan_co_applicants->loan_app_enc_id = $params['loan_app_id'];
+            $loan_co_applicants->name = $params['name'];
+            $loan_co_applicants->email = $params['email'];
+            $loan_co_applicants->phone = $params['phone'];
+            $loan_co_applicants->relation = $params['relation'];
+            $loan_co_applicants->annual_income = $params['annual_income'];
+            $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
+            $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
+            $loan_co_applicants->occupation = $params['occupation'];
+            $loan_co_applicants->address = $params['address'];
+            $loan_co_applicants->created_by = $user_id;
+            $loan_co_applicants->created_on = date('Y-m-d H:i:s');
+            if ($loan_co_applicants->save()) {
+                return $loan_co_applicants->loan_co_app_enc_id;
+            } else {
+                print_r($loan_co_applicants->getErrors());
+                die();
+            }
+        } else {
+            $loan_co_applicants = LoanCoApplicants::find()
+                ->Where(['loan_co_app_enc_id' => $id])
+                ->one();
+
+            $loan_co_applicants->name = $params['name'];
+            $loan_co_applicants->email = $params['email'];
+            $loan_co_applicants->phone = $params['phone'];
+            $loan_co_applicants->employment_type = $params['employment_type'];
+            $loan_co_applicants->annual_income = $params['annual_income'];
+            $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
+            $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
+            $loan_co_applicants->occupation = $params['occupation'];
+            $loan_co_applicants->address = $params['address'];
+            $loan_co_applicants->updated_by = $user_id;
+            $loan_co_applicants->updated_on = date('Y-m-d H:i:s');
+            if ($loan_co_applicants->update()) {
+                return $loan_co_applicants->loan_co_app_enc_id;
+            } else {
+                print_r($loan_co_applicants->getErrors());
+                die();
+            }
         }
     }
 
