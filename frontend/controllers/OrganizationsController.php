@@ -915,7 +915,10 @@ class OrganizationsController extends Controller
             ])
             ->asArray()
             ->one();
-
+        if (empty($org)&&empty($unclaimed_org))
+        {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
         if (!empty($org)) {
             $review_type = 'claimed';
             $reviews = OrganizationReviews::find()
