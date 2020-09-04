@@ -5,6 +5,79 @@ use yii\widgets\Pjax;
 
 ?>
     <div class="container">
+        <div class="row">
+            <div class="job-det col-md-12 row">
+                <div class="col-md-4 col-sm-12">
+                    <div class="j-main">
+                        <div class="j-logo"><img
+                                    src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>"></div>
+                        <div class="j-data">
+                            <div class="j-title"><?= $application_name['job_title'] ?></div>
+                            <div class="j-app">12 applications</div>
+                            <div class="j-share">
+                                <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
+                                <a class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
+                                <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
+                                <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link ); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="j-detail">
+                        <div class="j-exp">
+                            <div class="e-logo"><i class="fa fa-clock-o"></i></div>
+                            <div class="e-detail">
+                                <h1>Experience</h1>
+                                <p>5-10 years</p>
+                            </div>
+                        </div>
+                        <div class="j-exp loc">
+                            <div class="e-logo"><i class="fa fa-map-marker"></i></div>
+                            <div class="e-detail">
+                                <h1>Locations</h1>
+                                <p>Ludhiana, Jalandhar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="j-detail">
+                        <div class="j-exp salry">
+                            <div class="e-logo"><i class="fa fa-money"></i></div>
+                            <div class="e-detail">
+                                <h1>Offered Salary</h1>
+                                <p>₹ 1000p.a.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <div class="ed-main">
+                        <div class="option-1">
+                            <span class="j-edt">
+                                <a href=""><a href="/account/<?= ($application_name['application_type'] == 'Jobs') ? 'job': 'internship'?> <?= '/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit job"><i class="fa fa-pencil-square-o"></i></a>
+                            </span>
+                                <span class="j-cln">
+                                <a href=""><i class="fa fa-clone"></i></a>
+                            </span>
+                                <span class="j-delt">
+                                <a href=""><i class="fa fa-trash-o"></i></a>
+                            </span>
+                                <span class="j-cls">
+                                <a href=""><i class="fa fa-times"></i></a>
+                            </span>
+                        </div>
+                        <div class="scd-btn">
+                            <a href="/account/schedular/interview">Schedule Interview</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
         <?php
         Pjax::begin(['id' => 'pjax_process']);
         ?>
@@ -36,9 +109,6 @@ use yii\widgets\Pjax;
                 </a>
             </li>
         </ul>
-        <div class="scd-btn text-right">
-            <a href="/account/schedular/interview">Schedule Interview</a>
-        </div>
         <ul class="hiring_process_list gallery_zoom">
             <?php
             if (!empty($fields)) {
@@ -77,7 +147,8 @@ use yii\widgets\Pjax;
                                                         height="80" font="35px"></canvas>
                                             <?php endif; ?>
                                         </a>
-                                        <a class="pr-user-n" href="<?= '/' . $arr['username'] ?>"><?= $arr['name'] ?></a>
+                                        <a class="pr-user-n"
+                                           href="<?= '/' . $arr['username'] ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
                                             foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -174,23 +245,27 @@ use yii\widgets\Pjax;
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
                                             <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
-<!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
-<!--                                            <a href="#">Request to Complete Profile</a>-->
+                                            <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+                                            <!--                                            <a href="#">Request to Complete Profile</a>-->
                                         </div>
                                         <ul>
-<!--                                            <li>-->
-<!--                                                <a href="#">-->
-<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
-<!--                                                </a>-->
-<!--                                            </li>-->
-<!--                                            <li>-->
-<!--                                                <a href="#" class="tt" title="Schedule Interview --><?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
-<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
-<!--                                                </a>-->
-<!--                                            </li>-->
+                                            <!--                                            <li>-->
+                                            <!--                                                <a href="#">-->
+                                            <!--                                                    <img src="-->
+                                            <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+                                            <!--                                                </a>-->
+                                            <!--                                            </li>-->
+                                            <!--                                            <li>-->
+                                            <!--                                                <a href="#" class="tt" title="Schedule Interview -->
+                                            <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
+                                            <!--                                                    <img src="-->
+                                            <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
+                                            <!--                                                </a>-->
+                                            <!--                                            </li>-->
                                             <li>
                                                 <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                                   data-key="<?= $arr['name']; ?>" title="Chat Now" data-toggle="tooltip">
+                                                   data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                                   data-toggle="tooltip">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                                 </a>
                                             </li>
@@ -274,7 +349,7 @@ use yii\widgets\Pjax;
                             <?php } else { ?>
                                 <div class="without-q">
                                     <h3>No Questionnaire To Display</h3>
-<!--                                    <a href="#">Set Questionnaire</a>-->
+                                    <!--                                    <a href="#">Set Questionnaire</a>-->
                                 </div>
                             <?php } ?>
                         </div>
@@ -290,6 +365,74 @@ use yii\widgets\Pjax;
     </div>
 <?php
 $this->registerCss('
+.job-det.col-md-12 {
+	box-shadow: 0px 3px 10px 2px #ddd;
+	margin: 30px 0;
+	padding: 20px;
+}
+.j-main {
+	display: flex;
+	border-right: 2px solid #333;
+}
+.j-logo img {
+	width: 70px;
+}
+.j-data {
+	margin-left: 15px;
+	text-align: center;
+}
+.j-app {
+	border: 2px solid #00a0e3;
+	color: #00a0e3;
+	border-radius: 4px;
+	margin-top: 5px !important;
+	padding: 4px 0;
+	width: 150px;
+	margin: auto;
+	margin-bottom: 5px !important;
+}
+.j-title {
+	font-size: 18px;
+}
+.j-share span {
+	margin: 0 5px;
+}
+.j-share span i {
+	font-size: 16px;
+	margin: 5px 0;
+}
+.j-exp {
+	display: flex;
+}
+.e-detail h1 {
+	margin: 0;
+	font-size: 16px;
+	font-family: roboto;
+	font-weight:400;
+}
+.e-detail p {
+	margin: 0;
+	margin-bottom: 10px !important;
+	font-size:12px;
+}
+.e-logo i {
+    font-size: 22px;
+    color: #00a0e3;
+}
+.e-logo {
+    width: 30px;
+}
+.ed-main {
+	text-align: center;
+}
+.option-1 {
+	margin: 20px 0;
+}
+.option-1 span i {
+	font-size: 18px;
+	margin: 0 8px;
+	color: #b95b0a;
+}
 .scd-btn a{
 	background-color: #ff7803;
 	color: #fff;
@@ -654,6 +797,12 @@ li{list-style: none;}
     .pr-process-tab li:last-child { 
         border-bottom: 1px solid #ccc !important;
         border-radius: 0px;
+    }
+}
+@media screen and (max-width: 991px){
+    .j-main{
+        margin-bottom:20px;
+        border:none;    
     }
 }
 ');
