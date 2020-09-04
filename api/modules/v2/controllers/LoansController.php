@@ -26,6 +26,7 @@ use common\models\Organizations;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use Yii;
+use common\models\Utilities;
 use yii\helpers\Url;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
@@ -1029,6 +1030,11 @@ class LoansController extends ApiBaseController
 
             $image = UploadedFile::getInstanceByName('image');
 
+            if ($id = $this->upload($params, $image)) {
+                return $this->response(200, ['status' => 200, 'id' => $id]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1081,7 +1087,9 @@ class LoansController extends ApiBaseController
                         $co_applicant->created_by = $user->user_enc_id;
                         $co_applicant->created_on = date('Y-m-d H:i:s');
                         if ($co_applicant->save()) {
-                            return $co_applicant->loan_co_app_enc_id;
+                            if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                                return $co_applicant->loan_co_app_enc_id;
+                            }
                         } else {
                             print_r($co_applicant->getErrors());
                         }
@@ -1089,7 +1097,30 @@ class LoansController extends ApiBaseController
 
                 }
             } else {
+                $loan_applicant = LoanApplications::find()
+                    ->where(['loan_app_enc_id' => $params['loan_app_id']])
+                    ->one();
 
+                if ($loan_applicant) {
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+                    $loan_applicant->image = $encrypted_string . '.' . $image->extension;
+                    $loan_applicant->image_location = 'loan-proofs-and-profile-images';
+                    $loan_applicant->updated_by = $user->user_enc_id;
+                    $loan_applicant->updated_on = date('Y-m-d H:i:s');
+                    if ($loan_applicant->update()) {
+                        if ($this->uploadFile($loan_applicant->image, $image->tempName)) {
+                            return $loan_applicant->loan_app_enc_id;
+                        }
+                    } else {
+                        print_r($loan_applicant->getErrors());
+                        die();
+                    }
+                }
             }
         }
     }
