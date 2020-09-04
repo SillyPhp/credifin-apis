@@ -71,6 +71,10 @@ class SiteController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
                 'successUrl' => 'oauth-verify',
             ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],

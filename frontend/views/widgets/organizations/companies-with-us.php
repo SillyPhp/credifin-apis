@@ -41,8 +41,7 @@ $companies = $companies->all();
                 <div class="col-md-12">
                     <div class="com-grid">
                         <h1 class="heading-style">Featured Companies</h1>
-                        <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
-                        <div class="all-coms"><a href="/organizations">View All Companies</a></div>
+
                     </div>
                 </div>
             </div>
@@ -65,6 +64,9 @@ $companies = $companies->all();
                 }
                 ?>
 
+            </div>
+            <div class="row text-right">
+                <div class="all-coms"><a href="/organizations">View All Companies</a></div>
             </div>
         </div>
     </section>
