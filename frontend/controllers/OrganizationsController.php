@@ -911,11 +911,14 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
-                'status' => 1
+                'is_deleted' => 0,
             ])
             ->asArray()
             ->one();
-
+        if (empty($org)&&empty($unclaimed_org))
+        {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
         if (!empty($org)) {
             $review_type = 'claimed';
             $reviews = OrganizationReviews::find()

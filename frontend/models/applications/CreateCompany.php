@@ -16,6 +16,7 @@ class CreateCompany extends Model
   public $type;
   public $contact;
   public $description;
+  public $verifyCode;
 
   public function formName()
   {
@@ -32,6 +33,7 @@ class CreateCompany extends Model
           [['contact'],'string','max'=>15],
           [['name','email','website','description'],'trim'],
           ['email','email'],
+          ['verifyCode', 'captcha'],
           [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpeg, jpg, gif'],
       ];
   }
