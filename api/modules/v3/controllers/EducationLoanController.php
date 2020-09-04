@@ -46,6 +46,7 @@ class EducationLoanController extends ApiBaseController
                 'save-application' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
                 'get-loan' => ['POST', 'OPTIONS'],
+                'upload-image' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -558,6 +559,152 @@ class EducationLoanController extends ApiBaseController
                 print_r($loan_co_applicants->getErrors());
                 die();
             }
+        }
+    }
+
+    public function actionUploadImage()
+    {
+
+        if (isset($params['user_enc_id']) && !empty($params['user_enc_id'])) {
+            $user_id = $params['user_enc_id'];
+        } else {
+            if ($user = $this->isAuthorized()) {
+                $user_id = $user->user_enc_id;
+            } else {
+                return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            }
+        }
+
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+        if (!isset($params['type']) && empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $image = UploadedFile::getInstanceByName('image');
+
+        if ($id = $this->upload($user_id, $params, $image)) {
+            return $this->response(200, ['status' => 200, 'id' => $id]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+
+    }
+
+    private function upload($user_id, $params, $image)
+    {
+
+        if ($params['type'] == 'co_applicant') {
+
+            if (isset($params['loan_co_app_id']) && !empty($params['loan_co_app_id']) && $params['loan_co_app_id'] != '') {
+                $co_applicant = LoanCoApplicants::find()
+                    ->where(['loan_co_app_enc_id' => $params['loan_co_app_id']])
+                    ->one();
+
+                if ($co_applicant) {
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+                    $co_applicant->image = $encrypted_string . '.' . $image->extension;
+                    $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                    $co_applicant->updated_by = $user_id;
+                    $co_applicant->updated_on = date('Y-m-d H:i:s');
+                    if ($co_applicant->update()) {
+                        if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                            return $co_applicant->loan_co_app_enc_id;
+                        }
+                    } else {
+                        print_r($co_applicant->getErrors());
+                        die();
+                    }
+                } else {
+                    $co_applicant = new LoanCoApplicants();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                    $co_applicant->loan_app_enc_id = $params['loan_app_id'];
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+                    $co_applicant->image = $encrypted_string . '.' . $image->extension;
+                    $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                    $co_applicant->created_by = $user_id;
+                    $co_applicant->created_on = date('Y-m-d H:i:s');
+                    if ($co_applicant->save()) {
+                        if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                            return $co_applicant->loan_co_app_enc_id;
+                        }
+                    } else {
+                        print_r($co_applicant->getErrors());
+                    }
+                }
+
+            }
+        } else {
+            $loan_applicant = LoanApplications::find()
+                ->where(['loan_app_enc_id' => $params['loan_app_id']])
+                ->one();
+
+            if ($loan_applicant) {
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+                $loan_applicant->image = $encrypted_string . '.' . $image->extension;
+                $loan_applicant->image_location = 'loan-proofs-and-profile-images';
+                $loan_applicant->updated_by = $user_id;
+                $loan_applicant->updated_on = date('Y-m-d H:i:s');
+                if ($loan_applicant->update()) {
+                    if ($this->uploadFile($loan_applicant->image, $image->tempName)) {
+                        return $loan_applicant->loan_app_enc_id;
+                    }
+                } else {
+                    print_r($loan_applicant->getErrors());
+                    die();
+                }
+            }
+        }
+
+    }
+
+    private function uploadFile($file_name, $file)
+    {
+        $bucketName = 'loan-uploads';
+        $access_key = 'AKIATDLKTDI76APKFGXO';
+        $secret_key = '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';
+        $s3 = new S3Client([
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key' => $access_key,
+                'secret' => $secret_key,
+            ]
+        ]);
+
+        $result = $s3->putObject([
+            'Bucket' => $bucketName,
+            'Key' => 'loan-proofs-and-profile-images/' . $file_name,
+            'SourceFile' => $file
+        ]);
+
+        if ($result) {
+            $s3->putObjectAcl([
+                'Bucket' => $bucketName,
+                'Key' => 'loan-proofs-and-profile-images/' . $file_name,
+                'ACL' => 'public-read'
+            ]);
+            return true;
+        } else {
+            return false;
         }
     }
 
