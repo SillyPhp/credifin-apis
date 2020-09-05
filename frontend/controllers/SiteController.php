@@ -1076,6 +1076,7 @@ class SiteController extends Controller
     }
     public function actionAdmissionForm()
     {
+        $this->layout = 'blank-layout';
         return $this->render('admission-form');
     }
 }
