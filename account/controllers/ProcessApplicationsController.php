@@ -25,12 +25,13 @@ class ProcessApplicationsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name job_title','a.interview_process_enc_id'])
+                ->select(['c.name job_title','a.interview_process_enc_id','ate.name application_type'])
                 ->where(['a.application_enc_id' => $aidk])
                 ->andWhere(['a.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id])
                 ->joinWith(['title b' => function ($b) {
                     $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
                 }], false, 'INNER JOIN')
+                ->joinWith(['applicationTypeEnc ate'],false)
                 ->joinWith(['interviewProcessEnc d' => function($d){
                     $d->select(['d.interview_process_enc_id']);
                     $d->joinWith(['interviewProcessFields']);
