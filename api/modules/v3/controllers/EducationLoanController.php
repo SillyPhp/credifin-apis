@@ -46,6 +46,7 @@ class EducationLoanController extends ApiBaseController
                 'save-application' => ['POST', 'OPTIONS'],
                 'retry-payment' => ['POST', 'OPTIONS'],
                 'get-loan' => ['POST', 'OPTIONS'],
+                'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -250,6 +251,21 @@ class EducationLoanController extends ApiBaseController
                     'd.annual_income',
                     'd.address'
                 ]);
+                $d->joinWith(['loanCertificates de' => function ($e) {
+                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number']);
+                    $e->joinWith(['certificateTypeEnc de1'],false);
+                    $e->onCondition(['de.is_deleted' => 0]);
+                }]);
+            }])
+            ->joinWith(['loanCertificates e' => function ($e) {
+                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number']);
+                $e->joinWith(['certificateTypeEnc e1'],false);
+                $e->onCondition(['e.is_deleted' => 0]);
+            }])
+            ->joinWith(['loanCandidateEducations f' => function ($f) {
+                $f->select(['f.loan_candidate_edu_enc_id', 'f.loan_app_enc_id', 'f.qualification_enc_id', 'f.institution', 'f.obtained_marks', 'f1.name']);
+                $f->joinWith(['qualificationEnc f1'],false);
+                $f->onCondition(['f.is_deleted' => 0]);
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
             ->asArray()
