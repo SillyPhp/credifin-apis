@@ -54,6 +54,7 @@ use Yii;
  * @property HiringProcessTemplates[] $hiringProcessEncs
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnnaireEncs
+ * @property OrganizationLabels[] $organizationLabels
  * @property ConversationParticipants[] $conversationParticipants
  * @property Designations[] $designations
  * @property EducationalRequirements[] $educationalRequirements
@@ -319,6 +320,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getOrganizationReviews()
     {
         return $this->hasMany(OrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationLabels()
+    {
+        return $this->hasMany(OrganizationLabels::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

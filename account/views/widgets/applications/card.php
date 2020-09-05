@@ -128,11 +128,28 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-<!--                            <a href="--><?//= Url::to($applications[$next]["link"], true); ?><!--">--><?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
-                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip" title="VIEW <?= strtoupper($applications[$next]['application_type'])?>"><i class="fa fa-info-circle"></i></a>
+                            <!--                            <a href="-->
+                            <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
+                            <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
+                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
+                               title="VIEW <?= strtoupper($applications[$next]['application_type']) ?>"><i
+                                        class="fa fa-info-circle"></i></a>
                             <div class="appl">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
-                                    <?= sizeof($applications[$next]['appliedApplications']) . ' Applications'; ?>
+                                    <?php
+                                    $appliedApp = sizeof($applications[$next]['appliedApplications']);
+                                    switch ($appliedApp) {
+                                        case 0:
+                                            echo '0 Application';
+                                            break;
+                                        case 1:
+                                            echo '1 Application';
+                                            break;
+                                        default:
+                                            echo $appliedApp . ' Applicants';
+                                            break;
+                                    }
+                                    ?>
                                 </a>
                             </div>
                         </div>

@@ -92,5 +92,4 @@ class EducationLoansController extends Controller
     {
         return $this->render('loan-college-index');
     }
-
 }

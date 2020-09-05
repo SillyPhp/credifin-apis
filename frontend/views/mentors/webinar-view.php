@@ -1,15 +1,18 @@
 <?php
-$this->params['header_dark'] = true;
-
 use yii\helpers\Url;
+
+$this->params['header_dark'] = true;
+$basePath = Url::base("https");
+
 if (Yii::$app->user->identity->image) {
-    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-} else{
-    $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+'. Yii::$app->user->identity->last_name .'&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
+    $image = $basePath . '/' . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+} else {
+    $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
 ?>
 <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
-<input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>" id="current-user-name">
+<input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>"
+       id="current-user-name">
 <input type="hidden" value="<?= $image; ?>" id="current-user-image">
 
 <section>
@@ -40,35 +43,34 @@ if (Yii::$app->user->identity->image) {
             <div class="row">
                 <div class="col-md-9">
                     <div class="video-action">
-                        <div class="webinar-video-title">Business Conferences 2020</div>
+                        <div class="webinar-video-title"><?= $webinarDetail['title'] ?></div>
                         <div class="webinar-speakers">
                             <p><span>Speakers:</span>
-                                <a target="_blank" href="mentor-profile">Tarandeep Singh Rakhra </a>,
-                                <a target="_blank" href="">Sneh Kaushal</a> ,
-                                <a target="_blank" href="">Ajay Juneja</a>
+                                <?php
+                                if ($webinarDetail['webinarSpeakers']) {
+                                    $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
+                                    foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
+                                        ?>
+                                        <?= $speaker['fullname'] ?>
+                                        <?php
+                                        if ($key < $speakerCount) {
+                                            echo ", ";
+                                        }
+                                    }
+                                } else {
+                                    echo 'N/A';
+                                }
+                                ?>
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="live-count">
-                        <i class="fas fa-circle"></i> Viewers: <span>700</span>
+                        <i class="fas fa-circle"></i> Viewers: <span id="viewers"></span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-<section class="similar-webinars">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
-        <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card') ?>
-            <?= $this->render('/widgets/mentorships/webinar-card') ?>
         </div>
     </div>
 </section>
@@ -255,6 +257,22 @@ $this->registerCss('
     padding-left: 0px;
     padding-right: 20px;
 }
+@media screen and (max-width: 550px){
+    .slide-section{
+        width: 100vw;  
+        height: 100vh;      
+    }
+    .video-section{
+        width: 100vw;
+        height: 50vh;
+    }
+    .videoFlex{
+        flex-direction: column;
+    }
+    .slide-close-btn{
+        display: none;
+    }
+}
 ');
 $script = <<<JS
 const ps = new PerfectScrollbar('#scroll-chat');
@@ -355,6 +373,20 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
         }
     }
+    var refs = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId)
+    refs.set({
+        'status': 'online',
+    });
+    var userLastOnlineRef = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId);
+    userLastOnlineRef.onDisconnect().remove();
+    var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
+    usersCount.on('value', function (data) {
+        var result2 = [];
+        for (var i in data.val()) {
+            result2.push([i, data.val()[i]]);
+        }
+        document.getElementById('viewers').innerText = result2.length;
+    });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
@@ -367,38 +399,39 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     function sendMessage() {
         let message = document.querySelector('.send-msg').value;
-        // let chat = document.querySelector('.chat');
-        //let chatBox = document.createElement('div');
-        //chatBox.setAttribute('class', 'chat-box');
-        //chatBox.innerHTML = `<div class="user-icon">
-        //                    <img src="<?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>//">
-        //                    </div>
-        //                    <div class="username-msg">
-        //                        <div class="us-name">`+ userName +`</div>
-        //                        <div class="us-msg">` + message + `</div>
-        //                    </div>`;
-        //chat.appendChild(chatBox);
-        document.querySelector('.send-msg').value = "";
-        var currentDate = new Date();
-        var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
-        var getMins = currentDate.getMinutes();
-        if (getMins < 10) {
-            getMins = "0" + getMins;
+        if (message.trim() != "") {
+            document.querySelector('.send-msg').value = "";
+            var currentDate = new Date();
+            var dateMain = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
+            var getMins = currentDate.getMinutes();
+            if (getMins < 10) {
+                getMins = "0" + getMins;
+            }
+            var timeMain = currentDate.getHours() + ":" + getMins;
+            var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+            ref.set({
+                'name': userName,
+                'sender': userId,
+                'is_public': true,
+                'reply_to': "",
+                'message': message.trim(),
+                'image': userImage,
+                'date': dateMain,
+                'time': timeMain,
+            });
+            var data = {
+                'webinar_enc_id': webinarId,
+                'message': message.trim(),
+                'reply_to': ''
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/mentors/save-conversation',
+                data: data
+            });
+            var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
+            document.getElementById('scroll-chat').scrollTop = myElement;
         }
-        var timeMain = currentDate.getHours() + ":" + getMins;
-        var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
-        ref.set({
-            'name': userName,
-            'sender': userId,
-            'is_public': true,
-            'reply_to': "",
-            'message': message,
-            'image': userImage,
-            'date': dateMain,
-            'time': timeMain,
-        });
-        var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
-        document.getElementById('scroll-chat').scrollTop = myElement;
     }
 
     function uniqueId() {

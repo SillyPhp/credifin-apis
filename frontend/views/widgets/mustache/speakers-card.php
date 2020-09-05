@@ -288,8 +288,12 @@ $this->registerCss('
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
-    padding: 60px 40px;
+    padding: 20px 40px;
     font-family: roboto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content .ts-title {
@@ -310,6 +314,7 @@ transform: rotate(100deg);
 }
 .ts-speaker-popup .ts-speaker-popup-content .company-logo {
     margin-bottom: 0px;
+    max-height: 80px;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content p {

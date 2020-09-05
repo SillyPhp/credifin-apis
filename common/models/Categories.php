@@ -55,8 +55,9 @@ class Categories extends \yii\db\ActiveRecord
         return [
             [['category_enc_id', 'name', 'slug'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['category_enc_id', 'name', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['icon', 'icon_png'], 'string', 'max' => 50],
+            [['name', 'slug'], 'string', 'max' => 255],
             [['category_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['name'], 'unique'],
