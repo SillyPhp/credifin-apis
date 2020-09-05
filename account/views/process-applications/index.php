@@ -2,23 +2,71 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+$base_url = 'https://empoweryouth.com';
 
+switch($application_name['application_type']){
+    case 'Jobs':
+        $app_type = 'job';
+        break;
+    case 'Internships':
+        $app_type = 'internship';
+        break;
+}
+if ($application_name['wage_type'] == 'Fixed') {
+            if ($application_name['wage_duration'] == 'Monthly') {
+                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 12;
+            } elseif ($application_name['wage_duration'] == 'Hourly') {
+                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 40 * 52;
+            } elseif ($application_name['wage_duration'] == 'Weekly') {
+                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['fixed_wage'])) . ' p.a.';
+        } else if ($application_name['wage_type'] == 'Negotiable') {
+            if ($application_name['wage_duration'] == 'Monthly') {
+                $application_name['min_wage'] = $application_name['min_wage'] * 12;
+                $application_name['max_wage'] = $application_name['max_wage'] * 12;
+            } elseif ($application_name['wage_duration'] == 'Hourly') {
+                $application_name['min_wage'] = $application_name['min_wage'] * 40 * 52;
+                $application_name['max_wage'] = $application_name['max_wage'] * 40 * 52;
+            } elseif ($application_name['wage_duration'] == 'Weekly') {
+                $application_name['min_wage'] = $application_name['min_wage'] * 52;
+                $application_name['max_wage'] = $application_name['max_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            if (!empty($application_name['min_wage']) && !empty($application_name['max_wage'])) {
+                $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
+            } elseif (!empty($application_name['min_wage'])) {
+                $amount = 'From ₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' p.a.';
+            } elseif (!empty($application_name['max_wage'])) {
+                $amount = 'Upto ₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
+            } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
+                $amount = 'Negotiable';
+            }
+        }
 ?>
     <div class="container">
         <div class="row">
             <div class="job-det col-md-12 row">
                 <div class="col-md-4 col-sm-12">
                     <div class="j-main">
-                        <div class="j-logo"><img
-                                    src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>"></div>
+                        <div class="j-logo">
+                           <?php if($application_name['icon']){ ?>
+                            <img src="<?= Url::to('@commonAssets/categories/' .$application_name['icon']); ?>">
+                        <?php } ?>
+                        </div>
                         <div class="j-data">
                             <div class="j-title"><?= $application_name['job_title'] ?></div>
-                            <div class="j-app">12 applications</div>
+                            <div class="j-app"><?php
+                                if($application_name['applicationPlacementLocations']){
+                                foreach($application_name['applicationPlacementLocations'] as $apl){
+                                    echo $apl['positions'].' applications';
+                                } } ?> </div>
                             <div class="j-share">
-                                <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                                <a class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
-                                <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
-                                <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link ); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
+                                <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
+                                <a class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
+                                <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
+                                <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
                             </div>
                         </div>
                     </div>
@@ -29,14 +77,18 @@ use yii\widgets\Pjax;
                             <div class="e-logo"><i class="fa fa-clock-o"></i></div>
                             <div class="e-detail">
                                 <h1>Experience</h1>
-                                <p>5-10 years</p>
+                                <p><?= $application_name['experience'] ?></p>
                             </div>
                         </div>
                         <div class="j-exp loc">
                             <div class="e-logo"><i class="fa fa-map-marker"></i></div>
                             <div class="e-detail">
                                 <h1>Locations</h1>
-                                <p>Ludhiana, Jalandhar</p>
+                                <p><?php
+                                    if($application_name['applicationPlacementLocations']){
+                                    foreach($application_name['applicationPlacementLocations'] as $apl){
+                                    echo $apl['name'].',';
+                                    } } ?></p>
                             </div>
                         </div>
                     </div>
@@ -47,7 +99,7 @@ use yii\widgets\Pjax;
                             <div class="e-logo"><i class="fa fa-money"></i></div>
                             <div class="e-detail">
                                 <h1>Offered Salary</h1>
-                                <p>₹ 1000p.a.</p>
+                                <p><?= $amount ?></p>
                             </div>
                         </div>
                     </div>
@@ -56,16 +108,18 @@ use yii\widgets\Pjax;
                     <div class="ed-main">
                         <div class="option-1">
                             <span class="j-edt">
-                                <a href=""><a href="/account/<?= ($application_name['application_type'] == 'Jobs') ? 'job': 'internship'?> <?= '/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit job"><i class="fa fa-pencil-square-o"></i></a>
+                                <a href="/account/<?= $app_type.'/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
                             </span>
                                 <span class="j-cln">
-                                <a href=""><i class="fa fa-clone"></i></a>
+                                <a href="/account/<?= $app_type.'/'.$application_id ?>/clone" target="_blank" data-toggle="tooltip" title="" data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
                             </span>
                                 <span class="j-delt">
-                                <a href=""><i class="fa fa-trash-o"></i></a>
+                                <a href="#" id="j-delete" data-toggle="tooltip"
+                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>" ><i class="fa fa-trash-o"></i></a>
                             </span>
                                 <span class="j-cls">
-                                <a href=""><i class="fa fa-times"></i></a>
+                                <a href="#" id="j-closed" data-toggle="tooltip"
+                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>" value="<?= $application_id ?>" ><i class="fa fa-times"></i></a>
                             </span>
                         </div>
                         <div class="scd-btn">
@@ -807,6 +861,47 @@ li{list-style: none;}
 }
 ');
 $script = <<<JS
+$(document).on('click','#j-delete',function(e){
+     e.preventDefault();
+     if (window.confirm("Do you really want to Delete the current Application?")) { 
+        var data = $(this).attr('value');
+        var url = "/account/jobs/delete-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            success:function(data){
+                  if(data==true) {
+                      toastr.success('Deleted Successfully', 'Success');
+                    }
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                   }
+                 }
+          });
+    }
+});
+$(document).on('click','#j-closed',function(e){
+     e.preventDefault();
+     var data_name = $(this).attr('data-name');
+     if (window.confirm("Do you really want to Close the current Application?")) { 
+        var data = $(this).attr('value');
+        var url = "/account/jobs/close-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            success:function(data){
+                  if(data==true) {
+                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
+                    }
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                   }
+                 }
+          });
+    }
+});
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
