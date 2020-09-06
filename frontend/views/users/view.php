@@ -2,7 +2,23 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+    $j = 0;
+    if($userApplied['status'] == 'Hired') {
+        $fieldName = "Hired";
+    } elseif ($userApplied['status'] == 'Rejected') {
+        $fieldName = "Rejected";
+    } else {
+        $fieldName = "Applied";
+    }
+    foreach($userApplied['appliedApplicationProcesses'] as $p){
+        if($j == $userApplied['active'] && $userApplied['status'] != 'Rejected'){
+            $fieldName = $p['field_name'];
+            break;
+        }
+        $j++;
+    }
+}
 $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
@@ -77,7 +93,10 @@ $this->params['header_dark'] = false;
                             <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
                         <li>
-                            <span class="detail-info">Application Status</span>Get Application
+                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){ ?>
+                            <span class="detail-info">
+                                Application Status</span><?= $fieldName ?>
+                    <?php } ?>
                         </li>
                     </ul>
                     <ul class="social-info">

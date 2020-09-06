@@ -193,7 +193,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <div class="col-md-12 col-sm-12 pr-user-inner-main">
                                 <div class="col-md-4">
                                     <div class="pr-user-detail">
-                                        <a class="pr-user-icon" href="<?= '/' . $arr['username'] ?>">
+                                        <a class="pr-user-icon" href="<?= '/' . $arr['username'].'?slug='.$application_id ?>">
                                             <?php if ($arr['image']): ?>
                                                 <img src="<?= $arr['image'] ?>"/>
                                             <?php else: ?>
@@ -202,7 +202,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             <?php endif; ?>
                                         </a>
                                         <a class="pr-user-n"
-                                           href="<?= '/' . $arr['username'] ?>"><?= $arr['name'] ?></a>
+                                           href="<?= '/' . $arr['username'].'?slug='.$application_id ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
                                             foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -256,6 +256,9 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         <?php
                                     }
                                     ?>
+                                    <div class="pr-user-past">
+                                        <span class="past-title">Date</span>  <h5><?= date('d M Y',strtotime($arr['created_on'])) ?></h5>
+                                    </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="pr-user-skills">
