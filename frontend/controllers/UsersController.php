@@ -181,7 +181,8 @@ class UsersController extends Controller
             ->asArray()
             ->one();
         $userApplied = "";
-        if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
                 ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','re.resume','re.resume_location'])
@@ -192,7 +193,7 @@ class UsersController extends Controller
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['resumeEnc re'],false)
-                ->andWhere(['z.applied_application_enc_id' => $_GET['id'], 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
         }
