@@ -1035,3 +1035,13 @@ ul.status-detail li>strong {
     }
 }
 ');
+
+$script = <<<JS
+var slug = "$slug";
+if(slug == '' || slug == 'null'){
+ console.log('n okkk');   
+}else{
+console.log(slug);
+}
+JS;
+$this->registerJs($script);
