@@ -235,9 +235,9 @@ class EducationLoansController extends Controller
         return 'updated';
     }
 
-    public function actionCandidateDashboard()
+    public function actionCandidateDashboard($id)
     {
-        return $this->render('candidate-dashboard');
+        return $this->render('candidate-dashboard',['loan_app_id' => $id]);
     }
 
     public function actionLoanProfileView()

@@ -373,11 +373,16 @@ display:none;
 .padd-20{
     padding-bottom: 20px;
 }
+.loan-benefits{
+    padding-inline-start: 0px;
+}
 .loan-benefits li{
     color:#f3f3f2;
     font-size: 16px;    
 }
-.loan-benefits{list-style:none}
+.loan-benefits{
+    list-style:none
+}
 .loan-benefits li span{
     font-weight: bold;
     color:#fff;
