@@ -466,6 +466,10 @@ $this->registerCss('
 }
 .j-title {
 	font-size: 18px;
+	display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;`
 }
 .j-share span {
 	margin: 0 5px;
@@ -826,6 +830,11 @@ li{list-style: none;}
     color:#999999;
     margin:0 20px; 
     display:none; 
+}
+@media screen and (max-width: 768px){
+    .loc{
+        margin-bottom:22px;
+    }
 }
 @media screen and (max-width: 600px){
     .pr-user-inner-main{
