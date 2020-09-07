@@ -26,7 +26,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="el-icons">
                         <img src="<?= Url::to('@eyAssets/images/pages/custom/upto-2lakhs.png')?>">
-                        <p>No Security Loans<br>Upto 2 Lakhs</p>
+                        <p>Collateral Free <br>Loans</p>
                     </div>
                 </div>
                 <h3>Only on
@@ -183,6 +183,11 @@ body{
 }
 .btn-frm:hover{
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+@media screen and (max-width: 1030px){
+    .flex-main {
+        height: calc(100vh - 150px);
+    }
 }
 @media screen and (max-width: 768px){
     .flex-main{
