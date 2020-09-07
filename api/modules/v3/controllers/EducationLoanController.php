@@ -187,8 +187,6 @@ class EducationLoanController extends ApiBaseController
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_gst = $gst;
-        print_r($params);
-        print_r($loan_payment);exit();
         $loan_payment->created_on = date('Y-m-d H:i:s');
         if ($loan_payment->save()) {
             return $this->response(200, ['status' => 200, 'message' => 'success']);
