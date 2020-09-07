@@ -11,7 +11,7 @@ use common\models\CertificateTypes;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
-use common\models\LoanApplicantResidentialInformation;
+use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
@@ -253,18 +253,18 @@ class EducationLoanController extends ApiBaseController
                 ]);
                 $d->joinWith(['loanCertificates de' => function ($e) {
                     $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number']);
-                    $e->joinWith(['certificateTypeEnc de1'],false);
+                    $e->joinWith(['certificateTypeEnc de1'], false);
                     $e->onCondition(['de.is_deleted' => 0]);
                 }]);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number']);
-                $e->joinWith(['certificateTypeEnc e1'],false);
+                $e->joinWith(['certificateTypeEnc e1'], false);
                 $e->onCondition(['e.is_deleted' => 0]);
             }])
             ->joinWith(['loanCandidateEducations f' => function ($f) {
                 $f->select(['f.loan_candidate_edu_enc_id', 'f.loan_app_enc_id', 'f.qualification_enc_id', 'f.institution', 'f.obtained_marks', 'f1.name']);
-                $f->joinWith(['qualificationEnc f1'],false);
+                $f->joinWith(['qualificationEnc f1'], false);
                 $f->onCondition(['f.is_deleted' => 0]);
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
@@ -409,7 +409,7 @@ class EducationLoanController extends ApiBaseController
     private function saveAddress($user_id, $params, $id = null)
     {
         if ($id == null) {
-            $res_info = new LoanApplicantResidentialInformation();
+            $res_info = new LoanApplicantResidentialInfo();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $res_info->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
@@ -421,8 +421,8 @@ class EducationLoanController extends ApiBaseController
             $res_info->residential_type = $params['address_type'];
             $res_info->type = $params['res_type'];
             $res_info->address = $params['address'];
-            $res_info->city = $params['city_id'];
-            $res_info->state = $params['state_id'];
+            $res_info->city_enc_id = $params['city_id'];
+            $res_info->state_enc_id = $params['state_id'];
             $res_info->created_by = $user_id;
             $res_info->created_on = date('Y-m-d H:i:s');
             if ($res_info->save()) {
@@ -432,7 +432,7 @@ class EducationLoanController extends ApiBaseController
                 return false;
             }
         } else {
-            $update_res_info = LoanApplicantResidentialInformation::find()
+            $update_res_info = LoanApplicantResidentialInfo::find()
                 ->where(['loan_app_res_info_enc_id' => $id])
                 ->one();
 
@@ -440,8 +440,8 @@ class EducationLoanController extends ApiBaseController
                 $update_res_info->residential_type = $params['address_type'];
                 $update_res_info->type = $params['res_type'];
                 $update_res_info->address = $params['address'];
-                $update_res_info->city = $params['city_id'];
-                $update_res_info->state = $params['state_id'];
+                $update_res_info->city_enc_id = $params['city_id'];
+                $update_res_info->state_enc_id = $params['state_id'];
                 $update_res_info->created_by = $user_id;
                 $update_res_info->created_on = date('Y-m-d H:i:s');
                 if ($update_res_info->update()) {

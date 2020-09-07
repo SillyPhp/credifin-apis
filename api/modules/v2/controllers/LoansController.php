@@ -12,7 +12,7 @@ use common\models\EducationLoanPayments;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
-use common\models\LoanApplicantResidentialInformation;
+use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
@@ -843,7 +843,7 @@ class LoansController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             if ($id == null) {
-                $res_info = new LoanApplicantResidentialInformation();
+                $res_info = new LoanApplicantResidentialInfo();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $res_info->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
@@ -855,8 +855,8 @@ class LoansController extends ApiBaseController
                 $res_info->residential_type = $params['address_type'];
                 $res_info->type = $params['res_type'];
                 $res_info->address = $params['address'];
-                $res_info->city = $params['city_id'];
-                $res_info->state = $params['state_id'];
+                $res_info->city_enc_id = $params['city_id'];
+                $res_info->state_enc_id = $params['state_id'];
                 $res_info->created_by = $user->user_enc_id;
                 $res_info->created_on = date('Y-m-d H:i:s');
                 if ($res_info->save()) {
@@ -866,7 +866,7 @@ class LoansController extends ApiBaseController
                     return false;
                 }
             } else {
-                $update_res_info = LoanApplicantResidentialInformation::find()
+                $update_res_info = LoanApplicantResidentialInfo::find()
                     ->where(['loan_app_res_info_enc_id' => $id])
                     ->one();
 
@@ -874,8 +874,8 @@ class LoansController extends ApiBaseController
                     $update_res_info->residential_type = $params['address_type'];
                     $update_res_info->type = $params['res_type'];
                     $update_res_info->address = $params['address'];
-                    $update_res_info->city = $params['city_id'];
-                    $update_res_info->state = $params['state_id'];
+                    $update_res_info->city_enc_id = $params['city_id'];
+                    $update_res_info->state_enc_id = $params['state_id'];
                     $update_res_info->created_by = $user->user_enc_id;
                     $update_res_info->created_on = date('Y-m-d H:i:s');
                     if ($update_res_info->update()) {
