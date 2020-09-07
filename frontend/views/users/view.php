@@ -2,22 +2,25 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+
 if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
-    $j = 0;
-    if($userApplied['status'] == 'Hired') {
-        $fieldName = "Hired";
-    } elseif ($userApplied['status'] == 'Rejected') {
-        $fieldName = "Rejected";
-    } else {
-        $fieldName = "Applied";
-    }
-    if(!empty($userApplied['appliedApplicationProcesses'])) {
-        foreach ($userApplied['appliedApplicationProcesses'] as $p) {
-            if ($j == $userApplied['active'] && $userApplied['status'] != 'Rejected') {
-                $fieldName = $p['field_name'];
-                break;
+    if (!empty($userApplied['applied_application_enc_id'])) {
+        $j = 0;
+        if ($userApplied['status'] == 'Hired') {
+            $fieldName = "Hired";
+        } elseif ($userApplied['status'] == 'Rejected') {
+            $fieldName = "Rejected";
+        } else {
+            $fieldName = "Applied";
+        }
+        if (!empty($userApplied['appliedApplicationProcesses'])) {
+            foreach ($userApplied['appliedApplicationProcesses'] as $p) {
+                if ($j == $userApplied['active'] && $userApplied['status'] != 'Rejected') {
+                    $fieldName = $p['field_name'];
+                    break;
+                }
+                $j++;
             }
-            $j++;
         }
     }
 }
@@ -95,10 +98,12 @@ $this->params['header_dark'] = false;
                             <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
                         <li>
-                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){ ?>
+                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+                        if (!empty($userApplied['applied_application_enc_id'])) {
+                        ?>
                             <span class="detail-info">
                                 Application Status</span><?= $fieldName ?>
-                    <?php } ?>
+                    <?php } } ?>
                         </li>
                     </ul>
                     <ul class="social-info">
@@ -141,22 +146,25 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            if (!empty($userApplied['applied_application_enc_id'])) {
                             ?>
                             <li class="talking">
                                 <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
                                     <i class="far fa-comment-dots"></i>
                                 </a>
                             </li>
-                        <?php } ?>
+                        <?php } } ?>
                         <li class="dwn">
-                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {?>
+                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                                ?>
                                 <div class="down-r">
                                     <?php
-                                    $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                     $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
                                     ?>
                                     <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i class="fas fa-download"></i></a>
                                 </div>
-                            <?php } ?>
+                            <?php } } ?>
                         </li>
                     </ul>
                 </div>
@@ -380,8 +388,9 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    if (!empty($userApplied['applied_application_enc_id'])) {
     echo $this->render('@common/widgets/chat-main');
-}
+} }
 $this->registerCss('
 .fbook a {
     background-color: #3b5998;

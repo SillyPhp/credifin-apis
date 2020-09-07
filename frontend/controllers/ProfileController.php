@@ -10,7 +10,7 @@ use common\models\Usernames;
 class ProfileController extends Controller
 {
 
-    public function actionIndex($username, $type = null, $slug = null)
+    public function actionIndex($username,$id = null, $type = null, $slug = null)
     {
         $user = Usernames::find()
             ->where(['username' => $username])
@@ -25,7 +25,7 @@ class ProfileController extends Controller
             if (empty($type)) {
                 return Yii::$app->runAction('users/profile', [
                     'username' => $user->username,
-                    'slug' => $slug
+                    'id' => $id
                 ]);
             }
 
