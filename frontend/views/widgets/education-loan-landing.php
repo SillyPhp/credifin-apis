@@ -52,7 +52,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .loan-heading {
-	font-size: 40px;
+	font-size: 25pt;
 	font-family: lobster;
 	text-align: center;
 }
@@ -60,10 +60,10 @@ $this->registerCss('
 	box-shadow: 0 1px 24px rgba(0, 0, 0, 0.2);
 	padding: 15px;
 	margin: 20px 0;
-	border-radius: 4px;
+	border-radius: 8px;
 }
 .loan-box h3 {
-	font-size: 24px;
+	font-size: 22px;
 	font-family: lora;
 	font-weight: 600;
 }
@@ -78,13 +78,13 @@ $this->registerCss('
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 8px;
-    margin: 10px 30px;
+    margin: 10px 0px;
 }
 .loan-data {
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
-	padding: 20px;
+	padding: 30px 20px;
 }
 .loan-txtt {
 	font-size: 20px;
@@ -124,9 +124,6 @@ $this->registerCss('
     }
 }
 @media only screen and (max-width: 550px){
-    .loan-req{
-        margin:10px 0px;
-    }
     .loan-heading {
         font-size: 25px;
     }
