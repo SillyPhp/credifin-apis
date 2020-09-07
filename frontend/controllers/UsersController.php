@@ -198,9 +198,9 @@ class UsersController extends Controller
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
-                    $c->andWhere(['c.is_deleted' => 0]);
+                    $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['z.application_enc_id' => $slug,'z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->andWhere(['z.application_enc_id' => $slug,'z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
         }

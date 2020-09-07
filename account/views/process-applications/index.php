@@ -58,13 +58,17 @@ if ($application_name['wage_type'] == 'Fixed') {
                         <div class="j-data">
                             <div class="j-title"><?= $application_name['job_title'] ?></div>
                             <div class="j-app"><?php
-                                if($application_name['applicationPlacementLocations']){
+                                if(!empty($application_name['applicationPlacementLocations'])){
                                 foreach($application_name['applicationPlacementLocations'] as $apl){
-                                    echo $apl['positions'].' applications';
+                                    if($apl['positions'] <= 1){
+                                    echo $apl['positions'].' Opening';
+                                    } else {
+                                        echo $apl['positions'].' Openings';
+                                    }
                                 } } ?> </div>
                             <div class="j-share">
                                 <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                                <a class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
+                                <span class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
                                 <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
                                 <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
                             </div>
@@ -73,7 +77,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="j-detail">
-                        <div class="j-exp">
+                        <div class="j-exp" style="margin-bottom: 22px;">
                             <div class="e-logo"><i class="fa fa-clock-o"></i></div>
                             <div class="e-detail">
                                 <h1>Experience</h1>
@@ -108,10 +112,10 @@ if ($application_name['wage_type'] == 'Fixed') {
                     <div class="ed-main">
                         <div class="option-1">
                             <span class="j-edt">
-                                <a href="/account/<?= $app_type.'/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
+                                <a href="/account/<?= strtolower($application_name['application_type']).'/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
                             </span>
                                 <span class="j-cln">
-                                <a href="/account/<?= $app_type.'/'.$application_id ?>/clone" target="_blank" data-toggle="tooltip" title="" data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
+                                <a href="/account/<?= strtolower($application_name['application_type']).'/'.$application_id ?>/clone" target="_blank" data-toggle="tooltip" title="" data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
                             </span>
                                 <span class="j-delt">
                                 <a href="#" id="j-delete" data-toggle="tooltip"
@@ -257,7 +261,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                     }
                                     ?>
                                     <div class="pr-user-past">
-                                        <span class="past-title">Date</span>  <h5><?= date('d M Y',strtotime($arr['created_on'])) ?></h5>
+                                        <span class="past-title">Applied Date</span>  <h5><?= date('d M Y',strtotime($arr['created_on'])) ?></h5>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -422,6 +426,18 @@ if ($application_name['wage_type'] == 'Fixed') {
     </div>
 <?php
 $this->registerCss('
+.wts a{
+	color: #00bf8f;
+}
+.twt a{
+	color: #00aced;
+}
+.mail a {
+	color: #b00;
+}
+.link a {
+	color: #007bb6;
+}
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
@@ -469,7 +485,7 @@ $this->registerCss('
 }
 .e-detail p {
 	margin: 0;
-	margin-bottom: 10px !important;
+//	margin-bottom: 11px !important;
 	font-size:12px;
 }
 .e-logo i {
