@@ -68,7 +68,7 @@ class CompaniesController extends ApiBaseController
         $args = Yii::$app->request->get();
         $get = OrganizationList::get($args);
         if ($get) {
-            return $this->response(200, ['status' => 200,'list' => $get]);
+            return $this->response(200, ['status' => 200,'results' => $get]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }

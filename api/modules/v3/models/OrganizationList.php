@@ -9,6 +9,7 @@ use common\models\Utilities;
 use Yii;
 use common\models\Organizations;
 use yii\helpers\Url;
+use yii\db\Expression;
 class OrganizationList
 {
     public  $flag;
@@ -35,13 +36,13 @@ class OrganizationList
     private static function getCompanies($options=[])
     {
         $params1 = (new \yii\db\Query())
-            ->select(['REPLACE(name, "&amp;", "&") as value', 'a.organization_enc_id id'])
+            ->select(['REPLACE(name, "&amp;", "&") as text', 'a.organization_enc_id id',new Expression('"claim" as pulled_from')])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->andWhere(['is_deleted' => 0]);
 
         $params2 = (new \yii\db\Query())
-            ->select(['REPLACE(name, "&amp;", "&") as value', 'a.organization_enc_id id'])
+            ->select(['REPLACE(name, "&amp;", "&") as text', 'a.organization_enc_id id',new Expression('"unclaim" as pulled_from')])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
             ->andWhere(['is_deleted' => 0]);
