@@ -112,7 +112,7 @@ AppAssets::register($this);
                                         <?php
                                     }
                                     ?>
-                                    <span class="logo-beta">Beta</span>
+<!--                                    <span class="logo-beta">Beta</span>-->
                                 </a>
                             </div>
                             <div class="ey-menu-main">

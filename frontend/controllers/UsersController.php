@@ -137,7 +137,7 @@ class UsersController extends Controller
         ];
     }
 
-    public function actionProfile($username)
+    public function actionProfile($username,$slug=null)
     {
         $user = Users::find()
             ->alias('a')
@@ -190,13 +190,20 @@ class UsersController extends Controller
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->one();
-        $userApplied = AppliedApplications::find()
-            ->alias('z')
-            ->joinWith(['applicationEnc ae'],false)
-            ->where(['z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->asArray()
-            ->one();
-
+        if($slug){
+            $userApplied = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active',])
+                ->joinWith(['applicationEnc ae'],false)
+                ->joinWith(['appliedApplicationProcesses c' => function ($c) {
+                    $c->joinWith(['fieldEnc d'], false);
+                    $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->andWhere(['z.application_enc_id' => $slug,'z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->one();
+        }
         $education = UserEducation::find()
             ->where(['user_enc_id' => $user['user_enc_id']])
             ->orderBy(['created_on' => SORT_DESC])
