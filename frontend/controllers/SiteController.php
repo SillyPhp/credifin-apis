@@ -71,6 +71,10 @@ class SiteController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
                 'successUrl' => 'oauth-verify',
             ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -937,6 +941,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');

@@ -244,9 +244,12 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.job-listing-company-logo img{
+    object-fit:contain;
+}
 .ai{
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;
 }
 .ai h3 {

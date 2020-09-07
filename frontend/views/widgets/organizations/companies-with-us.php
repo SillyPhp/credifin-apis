@@ -38,11 +38,19 @@ $companies = $companies->all();
     <section class="companies">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 col-sm-4 col-xs-12">
                     <div class="com-grid">
                         <h1 class="heading-style">Featured Companies</h1>
-                        <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
-                        <div class="all-coms"><a href="/organizations">View All Companies</a></div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-4 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/organizations'); ?>" class="btn btn-3">
+                                <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,7 +72,6 @@ $companies = $companies->all();
                     <?php
                 }
                 ?>
-
             </div>
         </div>
     </section>
