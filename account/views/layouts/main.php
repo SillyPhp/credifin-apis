@@ -43,7 +43,7 @@ $this->beginPage();
                                             <a class="ey-logo" href="/">
                                                 <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
                                                      src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                                <span class="logo_beta">Beta</span>
+<!--                                                <span class="logo_beta">Beta</span>-->
                                             </a>
                                         </div>
                                         <div class="ey-menu-main">
