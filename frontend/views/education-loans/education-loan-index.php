@@ -199,7 +199,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="us-flex">
                 <div class="edu-loan-txt">
-                    Get No Security Loans upto 2 Lakhs.
+                    Collateral Free Loans
                 </div>
                 <div class="">
                     <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
