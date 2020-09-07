@@ -11,12 +11,14 @@ if(!empty($userApplied) && Yii::$app->user->identity->organization->organization
     } else {
         $fieldName = "Applied";
     }
-    foreach($userApplied['appliedApplicationProcesses'] as $p){
-        if($j == $userApplied['active'] && $userApplied['status'] != 'Rejected'){
-            $fieldName = $p['field_name'];
-            break;
+    if(!empty($userApplied['appliedApplicationProcesses'])) {
+        foreach ($userApplied['appliedApplicationProcesses'] as $p) {
+            if ($j == $userApplied['active'] && $userApplied['status'] != 'Rejected') {
+                $fieldName = $p['field_name'];
+                break;
+            }
+            $j++;
         }
-        $j++;
     }
 }
 $this->params['header_dark'] = false;
