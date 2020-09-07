@@ -20,6 +20,7 @@ use common\models\States;
 use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\EmployerApplications;
 use common\models\ApplicationTypes;
 
@@ -36,7 +37,7 @@ class Cards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
+            ->select([new Expression('NULL as sector'), 'a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
                 'a.source',
@@ -51,6 +52,12 @@ class Cards
                 WHEN a.experience = "5-10" THEN "5-10 Years Experience"
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience"
                END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
@@ -87,7 +94,11 @@ class Cards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
+            ->select(['(CASE
+                WHEN a.source = 3 THEN v.job_level
+                WHEN a.source = 2 THEN v.job_level
+                ELSE NULL
+               END) as sector', 'a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
                 'a.source',
@@ -111,7 +122,10 @@ class Cards
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                '(CASE
+                WHEN g.name IS NULL THEN x.location_name
+                ELSE g.name
+               END) as city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
@@ -307,6 +321,11 @@ class Cards
             if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
                 $result[$i]['salary'] = $currency . ' View In Detail';
             }
+
+            if ($val['experience'] == 'No Experience') {
+                $result[$i]['experience'] = $val['sector'];
+            }
+
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
             unset($result[$i]['salary_duration']);
@@ -338,6 +357,8 @@ class Cards
             ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
+                'a.source',
+                'a.unique_source_id',
                 'a.last_date',
                 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
@@ -377,6 +398,8 @@ class Cards
             ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
                 'd.initials_color color',
                 'c.name as title',
+                'a.source',
+                'a.unique_source_id',
                 'a.last_date',
                 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
