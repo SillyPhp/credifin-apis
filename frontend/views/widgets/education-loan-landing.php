@@ -63,7 +63,7 @@ $this->registerCss('
 	border-radius: 8px;
 }
 .loan-box h3 {
-	font-size: 22px;
+	font-size: 20px;
 	font-family: lora;
 	font-weight: 600;
 }
