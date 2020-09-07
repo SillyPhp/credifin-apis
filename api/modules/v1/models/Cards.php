@@ -323,7 +323,9 @@ class Cards
             }
 
             if ($val['experience'] == 'No Experience') {
-                $result[$i]['experience'] = $val['sector'];
+                if ($val['sector'] != null) {
+                    $result[$i]['experience'] = $val['sector'];
+                }
             }
 
             unset($result[$i]['max_salary']);
