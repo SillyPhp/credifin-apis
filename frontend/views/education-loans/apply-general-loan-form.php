@@ -387,8 +387,6 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
             </div>
         </div>
     </section>
-<input type="hidden" name="college_id" id="college_id">
-<input type="hidden" name="course_id" id="course_id">
 <?php
 $this->registerCss('
 #loadBtn{
@@ -1134,16 +1132,7 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 });
     
 function ajaxSubmit()
-{  let college_id = $('#college_id').val();
-   let course_id = $('#course_id').val();
-    if (college_id.length==0||course_id.length==0)
-        { 
-            swal({ 
-              title:"Error",
-             text: "There Was Some Issue in College Or Course Name, Please Refresh and Try Again",
-             });
-            return false;
-        }
+{
     let co_applicants = [];
     var obj = {};
     obj['name'] = $('input[name="co-name[1]"]').val()
