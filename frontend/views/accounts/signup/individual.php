@@ -30,6 +30,7 @@ $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sig
         </div>
     </div>
 <?php endif; ?>
+
 <?php
 $form = ActiveForm::begin([
     'id' => 'user-form',
@@ -90,8 +91,30 @@ $form = ActiveForm::begin([
         </div>
     </div>
 <?php ActiveForm::end(); ?>
+<div class="col-md-12">
+    <div class="separator pb-10">
+        <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+    </div>
+    <div class="form-group mt-10">
+        <?=
+        \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+        ?>
+    </div>
+</div>
+
 <?php
 $this->registerCss('
+.separator{
+    margin:30px auto 5px !important;
+}
+.auth-clients {
+    display: flex;
+    /* text-align: center; */
+    /* list-style: none; */
+    padding: 0;
+    /* overflow: auto; */
+    justify-content: center;
+}
 .intl-tel-input, .iti {
     width: 100%;
 }
