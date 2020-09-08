@@ -62,15 +62,20 @@ $this->registerCss('
 	margin: 20px 0;
 	border-radius: 8px;
 }
+.loan-logo img {
+	width: 50px;
+}
 .loan-box h3 {
 	font-size: 20px;
 	font-family: lora;
 	font-weight: 600;
+	margin:8px 0 2px;
 }
 .loan-box p {
 	font-size: 16px;
 	font-family: roboto;
-	min-height:82px;
+	min-height: 75px;
+    line-height: 25px;
 }
 .loan-req{
     background:url(' . Url::to('@eyAssets/images/pages/educational-loans/blue-strip.png') . ');  
@@ -108,7 +113,7 @@ $this->registerCss('
         flex-basis:30%;
     }
     .loan-box p{
-        min-height: 136px;
+        min-height: 125px;
     }
 }
 @media only screen and (max-width: 768px)
