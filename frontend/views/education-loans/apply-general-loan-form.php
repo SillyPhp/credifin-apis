@@ -16,6 +16,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
     }
 }
 Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 ?>
     <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
@@ -111,7 +112,9 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="college_name" class="input-group-text">
                                             College / University Name
                                         </label>
-                                        <input type="text" class="form-control" id="college_name" name="college_name" placeholder="Enter Your College/University Name">
+                                        <select class="form-control" id="college_name" name="college_name">
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -119,7 +122,11 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="course_name" class="input-group-text">
                                             Course Name
                                         </label>
-                                        <input type="text" class="form-control" id="course_name" name="course_name" placeholder="Enter Your College/University Name">
+                                        <select class="form-control" disabled="disabled" id="course_name"
+                                                name="course_name">
+
+                                        </select>
+                                        <input type="text" disabled="disabled" placeholder="Enter Course Name" class="form-control" id="course_name_text" name="course_name_text">
                                     </div>
                                 </div>
                                 <div class="col-md-6 padd-20">
@@ -380,6 +387,8 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
             </div>
         </div>
     </section>
+<input type="hidden" name="college_id" id="college_id">
+<input type="hidden" name="course_id" id="course_id">
 <?php
 $this->registerCss('
 #loadBtn{
@@ -404,6 +413,7 @@ border: 1px solid #ddd !important;
 #countryName{
     display: none;
 }
+#course_name{display:none}
 #relationInput{
     display: none;
     margin-top: 10px; 
@@ -787,63 +797,88 @@ font-family: auto !important;
 .tt-suggestion p {
   margin: 0;
 }
+
 ');
 $script = <<< JS
-load_college_list();
-load_course_list();
-function load_college_list()
-{  
-var college_list = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: 
-  { 
-      url:'https://sneh.eygb.me/api/v3/companies/organization-list', 
-      cache:false,  
-      filter:function(res) {
-        return res;
-      } 
- }
-});   
-$('#college_name').typeahead(null, {
-  display: 'value',
-  source: college_list,
-  minLength: 1,
-  limit: 20,
-});
-return true;
-} 
-function load_course_list()
-{  
-var course_list = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: 
-  { 
-      url:'https://sneh.eygb.me/api/v3/education-loan/course-pool-list', 
-      cache:false,  
-      filter:function(res) {
-        return res;
-      } 
- }
-});   
-$('#course_name').typeahead(null, {
-  display: 'value', 
-  source: course_list,
-  minLength: 1,
-  limit: 20,
-});
-return true;
-}
-    getCountries();
+let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
+    getCountries();    
+    getCollegeList(datatype=0,source=3,type=['College']);
+    function getCollegeList(datatype, source, type) { 
+        $.ajax({ 
+            url : 'https://sneh.eygb.me/api/v3/companies/organization-list',
+            method : 'GET',  
+            data:{
+                datatype:datatype,
+                source:source,
+                type:type
+                },   
+            success : function(res) { 
+            var res = res.response.results;
+            $('#college_name').prepend('<option selected=""></option>').select2({
+                data:res,
+                placeholder: "Select College, Univerity",
+                allowClear: true,
+                tags:true,
+                createTag: function (params) {
+                var term = $.trim(params.term);
+                if (term === '') {
+                 return null;
+                }
+                return {  
+                id: 'self',
+                text: term,
+                pulled_from:'unclaim',
+                newTag: true // add additional parameters
+            }
+            },
+            insertTag: function (data, tag) {
+                data.push(tag);
+             }, 
+             maximumInputLength: 100 // only allow terms up to 20 characters long
+             }).on('select2:select', function (e) {
+                    var data = e.params.data;
+                    if (data.id!='self'&&data.pulled_from==='claim')
+                        {
+                            getCourseList(data.id);
+                            $('#course_name').show();
+                            $('#course_name').removeAttr('disabled','disabled');
+                            $('#course_name_text').hide(); 
+                        }
+                    else if (data.id==='self'&&data.pulled_from==='unclaim')
+                        {
+                            $('#course_name').hide(); 
+                            $('#course_name_text').removeAttr('disabled','disabled');  
+                            $('#course_name_text').show(); 
+                        }
+                }); 
+            }
+        });
+    }
+    function getCourseList(id) {
+        $.ajax({
+            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
+            url : 'https://sneh.eygb.me/api/v3/education-loan/get-course-list',
+            method : 'POST',
+            data : {id: id},
+            success : function(res) {
+            var html = []; 
+            var res = res.response.courses;
+            html.push('<option value>Select Course</option>');
+            $.each(res,function(index,value) 
+                  {
+                   html.push('<option value="'+value.college_course_enc_id+'">'+value.course_name+'</option>');
+                 }); 
+             $('#course_name').html(html);   
+            }
+        });
+    }
     function getCountries() { 
         $.ajax({     
             url : 'https://sneh.eygb.me/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
-                var html = []; 
-                //var res = res.response.countries;
+                var html = [];
                  states = res.response.countries;
                 $.each(res,function(index,value) 
                   {   
@@ -914,6 +949,9 @@ return true;
 				'course_name':{
 				    required:true,
 				},
+				'course_name_text':{
+				    required:true,
+				},
 				'country_name':{
 				    required:true,
 				},
@@ -934,7 +972,7 @@ return true;
 				},
 				'co-anualincome[1]':{
 				    required:true,
-				    min:500
+				    min:500 
 				},
 				'co-pancard[1]':{
 				    required:false,
@@ -977,6 +1015,9 @@ return true;
 					required: "Applicant Name Required",
 				},
 				'course_name': {
+					required: "Course Name Cannot Be Blank",
+				},
+				'course_name_text': {
 					required: "Course Name Cannot Be Blank",
 				},
 				'dob': {
@@ -1093,7 +1134,16 @@ return true;
 });
     
 function ajaxSubmit()
-{  
+{  let college_id = $('#college_id').val();
+   let course_id = $('#course_id').val();
+    if (college_id.length==0||course_id.length==0)
+        { 
+            swal({ 
+              title:"Error",
+             text: "There Was Some Issue in College Or Course Name, Please Refresh and Try Again",
+             });
+            return false;
+        }
     let co_applicants = [];
     var obj = {};
     obj['name'] = $('input[name="co-name[1]"]').val()
@@ -1136,9 +1186,10 @@ function ajaxSubmit()
                 amount:$('#loanamount').val(),  
                 gender:$('input[name="genderRadio"]:checked').val(),
                 aadhaar_number:$('#aadhaarnumber').val(),
-                college_course:$('#course_name').val(),
-                college_name:$('#college_name').val(),
+                college_course_id:$('#course_id').val(),
+                id:$('#college_id').val(),
                 co_applicants:co_applicants,
+                userID:userID,
                 },  
             beforeSend:function(e)
             {  
@@ -1419,7 +1470,8 @@ $this->registerJs($script);
         }
     </script>
 <?php
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@root/assets/common/select2Plugin/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@root/assets/common/select2Plugin/select2.min.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');

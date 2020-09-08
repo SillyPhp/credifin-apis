@@ -55,7 +55,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
                 $transaction->rollback();
-                return false;
+                return 12;
             } else {
                 $this->_flag = true;
             }
@@ -69,7 +69,7 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_claim->created_by = (($userId)?$userId:null);
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
-                    return false;
+                    return 13;
                 } else {
                     $this->_flag = true;
                 }
@@ -82,7 +82,7 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_Unclaim->assigned_course_enc_id = $this->course_enc_id;
                 if (!$path_to_Unclaim->save()) {
                     $transaction->rollback();
-                    return false;
+                    return 14;
                 } else {
                     $this->_flag = true;
                 }
@@ -100,7 +100,7 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
                         $transaction->rollback();
-                        return false;
+                        return 15;
                     } else {
                         $this->_flag = true;
                     }
@@ -122,7 +122,7 @@ class LoanApplicationsForm extends LoanApplications
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         $transaction->rollback();
-                        return false;
+                        return 16;
                     } else {
                         $this->_flag = true;
                     }

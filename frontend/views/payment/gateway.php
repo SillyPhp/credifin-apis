@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Url;
-$baseUrl = Url::base("https");
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -14,7 +13,6 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
     }
 }
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var baseUrl = "' . $baseUrl . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var ptoken = "' . $token . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_id = "' . $loan_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var gst = "' . $gst . '"', \yii\web\View::POS_HEAD);
@@ -31,17 +29,57 @@ Yii::$app->view->registerJs('var pay_amount = "' . $amount . '"', \yii\web\View:
             function(response) {
                 if (response.status == "captured") {
                     updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
-                    window.location.href = "/";
+                    swal({
+                            title: "",
+                            text: "Your Payment Has Updated Successfully",
+                            type:'success',
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Go To Home",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                        },
+                        function (isConfirm) {
+                            window.location.href = "/";
+                        }
+                    );
                 } else if (response.status == "created") {
                     updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
-                    window.location.href = "/";
+                    swal({
+                            title: "",
+                            text: "Your Payment Has Updated Successfully",
+                            type:'success',
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Go To Home",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                        },
+                        function (isConfirm) {
+                            window.location.href = "/";
+                        }
+                    );
                 } else if (response.status == "pending") {
                     updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
+                    swal({
+                            title: "",
+                            text: "Your Payment Will Be Updated Soon",
+                            type:'success',
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Home",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                        },
+                        function (isConfirm) {
+                            window.location.href = "/";
+                        }
+                    );
                 } else if (response.status == "failed") {
                     updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
                 } else if (response.status == "cancelled") {
                     updateStatus(ptoken,loan_id,gst,pay_amount,response.payment_id,response.status);
-                    location.reload(true);
+                    window.location.href = "/";
                 }
             },
             function(err) {
@@ -56,7 +94,7 @@ Yii::$app->view->registerJs('var pay_amount = "' . $amount . '"', \yii\web\View:
  function updateStatus(ptoken,loan_id,gst,pay_amount,payment_id=null,status)
  {
      $.ajax({
-         url : baseUrl + '/api/v3/education-loan/retry-payment',
+         url : 'https://www.empoweryouth.com/api/v3/payments/retry-payment',
          method : 'POST',
          data : {
              token:ptoken,
@@ -74,7 +112,8 @@ Yii::$app->view->registerJs('var pay_amount = "' . $amount . '"', \yii\web\View:
  }
 </script>
 <?php
-
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');

@@ -123,7 +123,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/our-services') ?>
+<?= $this->render('/widgets/education-loan-landing') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
@@ -1152,6 +1152,7 @@ if (!Yii::$app->user->isGuest) {
         'getLearningTopics',
         'getInternationalJobs',
         'getCompaniesWithUs',
+        'getOurServices',
         'getGovernmentJobs',
         'getTopCities',
 //        'getOpportunities',
@@ -1172,6 +1173,7 @@ if (!Yii::$app->user->isGuest) {
         'getLearningTopics',
         'getInternationalJobs',
         'getCompaniesWithUs',
+        'getOurServices',
         'getGovernmentJobs',
         'getTopCities',
 //        'getOpportunities',

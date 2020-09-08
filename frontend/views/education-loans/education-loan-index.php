@@ -199,7 +199,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="us-flex">
                 <div class="edu-loan-txt">
-                    Get No Security Loans upto 2 Lakhs.
+                    Collateral Free Loans
                 </div>
                 <div class="">
                     <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
@@ -231,7 +231,7 @@ use yii\helpers\Url;
                 <?php
                 foreach ($loan_org as $l) {
                     ?>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-4">
                         <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true)?>" target="_blank">
                             <div class="loan-college">
                                 <div class="loan-college-img">
@@ -255,7 +255,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="">
@@ -263,7 +263,7 @@ use yii\helpers\Url;
                         <div class="lp-name">Agile Finserv</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
@@ -271,7 +271,7 @@ use yii\helpers\Url;
                         <div class="lp-name">Amrit Malwa Private Limtied</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
@@ -279,7 +279,7 @@ use yii\helpers\Url;
                         <div class="lp-name">PHF Leasing</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="">
@@ -287,7 +287,7 @@ use yii\helpers\Url;
                         <div class="lp-name">EZ Capital</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
@@ -304,7 +304,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>" alt=""/>
@@ -316,7 +316,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
@@ -423,18 +423,23 @@ $this->registerCss('
 }
 .loan-college{
     text-align: center;  
-    border: 1px solid #eee;
+    box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
 }
 .loan-college:hover{
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 3px 5px 10px rgba(0,0,0,.2);
     transition:.3s ease; 
 }
+
+.loan-college:hover p{
+    color: #00a0e3;
+}
+
 .loan-college p{
     font-size: 17px;
     line-height: 25px;
     padding: 5px 10px;
-    border-top: 1px solid #eee;
+//    border-top: 1px solid #eee;
     position: relative;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -450,7 +455,7 @@ $this->registerCss('
     margin: 0 auto;
     display: flex;
     align-items: center;
-    background: #f7f7f7;
+//    background: #f7f7f7;
     
 }
 .loan-college-img img{

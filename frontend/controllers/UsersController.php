@@ -3,33 +3,24 @@
 namespace frontend\controllers;
 
 use common\models\AppliedApplications;
-use common\models\Countries;
-use common\models\Industries;
-use common\models\Skills;
-use common\models\User;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\States;
 use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
 use common\models\UserInterests;
 use common\models\UserPreferences;
-use common\models\UserPreferredIndustries;
-use common\models\UserPreferredJobProfile;
-use common\models\UserPreferredLocations;
-use common\models\UserPreferredSkills;
-use common\models\UserTypes;
+use common\models\Users;
 use common\models\UserWorkExperience;
+use frontend\models\profile\UserProfileBasicEdit;
+use frontend\models\profile\UserProfilePictureEdit;
+use frontend\models\profile\UserProfileSocialEdit;
 use Yii;
 use yii\web\Controller;
-use yii\web\Response;
 use yii\web\HttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
-use frontend\models\profile\UserProfileBasicEdit;
-use frontend\models\profile\UserProfileSocialEdit;
-use common\models\Categories;
-use common\models\Cities;
-use common\models\States;
-use common\models\Users;
-use frontend\models\profile\UserProfilePictureEdit;
 
 class UsersController extends Controller
 {
@@ -94,28 +85,27 @@ class UsersController extends Controller
         $countries = [];
         $profiles_name = [];
         $industry = [];
-        if (!empty($p['userPreferredIndustries'])){
-        foreach ($p['userPreferredIndustries'] as $i_slug) {
-            array_push($industry, $i_slug['industry']);
+        if (!empty($p['userPreferredIndustries'])) {
+            foreach ($p['userPreferredIndustries'] as $i_slug) {
+                array_push($industry, $i_slug['industry']);
+            }
         }
+        if (!empty($p['userPreferredJobProfiles'])) {
+            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
+                array_push($profiles_name, $p_slug['profile_name']);
+            }
         }
-        if (!empty($p['userPreferredJobProfiles'])){
-        foreach ($p['userPreferredJobProfiles'] as $p_slug) {
-            array_push($profiles_name, $p_slug['profile_name']);
+        if (!empty($p['userPreferredSkills'])) {
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
         }
-        }
-        if (!empty($p['userPreferredSkills'])){
-        foreach ($p['userPreferredSkills'] as $s) {
-            array_push($skills, $s['skill']);
-        }
-        }
-        if (!empty($p['userPreferredLocations']))
-        {
-        foreach ($p['userPreferredLocations'] as $l) {
-            array_push($cities, $l['city_name']);
-            array_push($states, $l['state_name']);
-            array_push($countries, $l['country_name']);
-        }
+        if (!empty($p['userPreferredLocations'])) {
+            foreach ($p['userPreferredLocations'] as $l) {
+                array_push($cities, $l['city_name']);
+                array_push($states, $l['state_name']);
+                array_push($countries, $l['country_name']);
+            }
         }
         return [
             'profiles_name' => implode(', ', array_unique($profiles_name)),
@@ -137,7 +127,7 @@ class UsersController extends Controller
         ];
     }
 
-    public function actionProfile($username,$slug=null)
+    public function actionProfile($username)
     {
         $user = Users::find()
             ->alias('a')
@@ -190,17 +180,20 @@ class UsersController extends Controller
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->one();
-        if($slug){
+        $userApplied = "";
+        $id = $_GET['id'];
+        if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
-                ->select(['z.*','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active',])
-                ->joinWith(['applicationEnc ae'],false)
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','re.resume','re.resume_location'])
+                ->joinWith(['applicationEnc ae'], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->andWhere(['z.application_enc_id' => $slug,'z.is_deleted' => 0,'z.created_by' => $user['user_enc_id'],'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->joinWith(['resumeEnc re'],false)
+                ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
         }
@@ -212,7 +205,7 @@ class UsersController extends Controller
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.user_enc_id','a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->select(['a.user_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
             ->where(['a.user_enc_id' => $user['user_enc_id']])
             ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->orderBy(['created_on' => SORT_DESC])
@@ -253,6 +246,7 @@ class UsersController extends Controller
             'achievement' => $achievement,
             'hobbies' => $hobbies,
             'interests' => $interests,
+            'slug' => $slug,
         ];
 
         if (Yii::$app->user->isGuest) {

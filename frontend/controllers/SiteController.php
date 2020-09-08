@@ -942,6 +942,9 @@ class SiteController extends Controller
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
                 break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
+                break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');
                 break;
@@ -1077,9 +1080,5 @@ class SiteController extends Controller
     public function actionTeachersHandbook()
     {
         return $this->render('teachers-handbook');
-    }
-    public function actionAdmissionForm()
-    {
-        return $this->render('admission-form');
     }
 }

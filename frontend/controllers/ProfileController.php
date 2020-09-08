@@ -24,8 +24,7 @@ class ProfileController extends Controller
         if ($user->assigned_to === 1) {
             if (empty($type)) {
                 return Yii::$app->runAction('users/profile', [
-                    'username' => $user->username,
-                    'slug' => $slug
+                    'username' => $user->username
                 ]);
             }
 
