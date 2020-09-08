@@ -220,6 +220,7 @@ class EducationLoanController extends ApiBaseController
         }
 
         $application = LoanApplications::find()
+            ->distinct()
             ->alias('a')
             ->select([
                 'a.loan_app_enc_id',
@@ -256,6 +257,10 @@ class EducationLoanController extends ApiBaseController
                     $e->joinWith(['certificateTypeEnc de1'], false);
                     $e->onCondition(['de.is_deleted' => 0]);
                 }]);
+                $d->joinWith(['loanApplicantResidentialInfos dg' => function ($g) {
+                    $g->select(['dg.loan_app_res_info_enc_id', 'dg.loan_app_enc_id', 'dg.loan_co_app_enc_id', 'dg.residential_type', 'dg.type', 'dg.address', 'dg.city_enc_id', 'dg.state_enc_id']);
+                    $g->onCondition(['dg.is_deleted' => 0]);
+                }]);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number']);
@@ -266,6 +271,10 @@ class EducationLoanController extends ApiBaseController
                 $f->select(['f.loan_candidate_edu_enc_id', 'f.loan_app_enc_id', 'f.qualification_enc_id', 'f.institution', 'f.obtained_marks', 'f1.name']);
                 $f->joinWith(['qualificationEnc f1'], false);
                 $f->onCondition(['f.is_deleted' => 0]);
+            }])
+            ->joinWith(['loanApplicantResidentialInfos g' => function ($g) {
+                $g->select(['g.loan_app_res_info_enc_id', 'g.loan_app_enc_id', 'g.loan_co_app_enc_id', 'g.residential_type', 'g.type', 'g.address', 'g.city_enc_id', 'g.state_enc_id']);
+                $g->onCondition(['g.is_deleted' => 0]);
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
             ->asArray()
@@ -459,19 +468,22 @@ class EducationLoanController extends ApiBaseController
 
         if ($id == null) {
 
-            $qualification_type = LoanQualificationType::find()
-                ->where(['name' => $params['name']])
-                ->one();
+            if (isset($params['name']) && !empty($params['name'])) {
 
-            if (!$qualification_type) {
-                $qualification_type = new LoanQualificationType();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
-                $qualification_type->name = $params['name'];
-                if (!$qualification_type->save()) {
-                    print_r($qualification_type->getErrors());
-                    return false;
+                $qualification_type = LoanQualificationType::find()
+                    ->where(['name' => $params['name']])
+                    ->one();
+
+                if (!$qualification_type) {
+                    $qualification_type = new LoanQualificationType();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                    $qualification_type->name = $params['name'];
+                    if (!$qualification_type->save()) {
+                        print_r($qualification_type->getErrors());
+                        return false;
+                    }
                 }
             }
 
@@ -480,7 +492,9 @@ class EducationLoanController extends ApiBaseController
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $education->loan_candidate_edu_enc_id = $utilitiesModel->encrypt();
             $education->loan_app_enc_id = $params['loan_app_id'];
-            $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            if (isset($params['name']) && !empty($params['name'])) {
+                $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            }
             $education->institution = $params['institution'];
             $education->obtained_marks = $params['obtained_marks'];
             $education->created_by = $user_id;
@@ -493,19 +507,23 @@ class EducationLoanController extends ApiBaseController
             }
 
         } else {
-            $qualification_type = LoanQualificationType::find()
-                ->where(['name' => $params['name']])
-                ->one();
 
-            if (!$qualification_type) {
-                $qualification_type = new LoanQualificationType();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
-                $qualification_type->name = $params['name'];
-                if (!$qualification_type->save()) {
-                    print_r($qualification_type->getErrors());
-                    return false;
+            if (isset($params['name']) && !empty($params['name'])) {
+
+                $qualification_type = LoanQualificationType::find()
+                    ->where(['name' => $params['name']])
+                    ->one();
+
+                if (!$qualification_type) {
+                    $qualification_type = new LoanQualificationType();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                    $qualification_type->name = $params['name'];
+                    if (!$qualification_type->save()) {
+                        print_r($qualification_type->getErrors());
+                        return false;
+                    }
                 }
             }
 
@@ -513,7 +531,9 @@ class EducationLoanController extends ApiBaseController
                 ->where(['loan_candidate_edu_enc_id' => $id])
                 ->one();
 
-            $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            if (isset($params['name']) && !empty($params['name'])) {
+                $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+            }
             $education->institution = $params['institution'];
             $education->obtained_marks = $params['obtained_marks'];
             $education->created_by = $user_id;

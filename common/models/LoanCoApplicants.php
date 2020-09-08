@@ -29,6 +29,7 @@ use Yii;
  * @property string $updated_on
  * @property string $updated_by
  *
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanCertificates[] $loanCertificates
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
@@ -50,7 +51,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation', 'created_on'], 'required'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
             [['relation'], 'string'],
             [['employment_type', 'years_in_current_house', 'address'], 'integer'],
             [['annual_income'], 'number'],
@@ -62,6 +63,14 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicantResidentialInfos()
+    {
+        return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 
     /**

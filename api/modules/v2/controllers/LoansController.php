@@ -895,19 +895,21 @@ class LoansController extends ApiBaseController
 
             if ($id == null) {
 
-                $qualification_type = LoanQualificationType::find()
-                    ->where(['name' => $params['name']])
-                    ->one();
+                if (isset($params['name']) && !empty($params['name'])) {
+                    $qualification_type = LoanQualificationType::find()
+                        ->where(['name' => $params['name']])
+                        ->one();
 
-                if (!$qualification_type) {
-                    $qualification_type = new LoanQualificationType();
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
-                    $qualification_type->name = $params['name'];
-                    if (!$qualification_type->save()) {
-                        print_r($qualification_type->getErrors());
-                        return false;
+                    if (!$qualification_type) {
+                        $qualification_type = new LoanQualificationType();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                        $qualification_type->name = $params['name'];
+                        if (!$qualification_type->save()) {
+                            print_r($qualification_type->getErrors());
+                            return false;
+                        }
                     }
                 }
 
@@ -916,7 +918,9 @@ class LoansController extends ApiBaseController
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $education->loan_candidate_edu_enc_id = $utilitiesModel->encrypt();
                 $education->loan_app_enc_id = $params['loan_app_id'];
-                $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+                if (isset($params['name']) && !empty($params['name'])) {
+                    $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+                }
                 $education->institution = $params['institution'];
                 $education->obtained_marks = $params['obtained_marks'];
                 $education->created_by = $user->user_enc_id;
@@ -929,19 +933,21 @@ class LoansController extends ApiBaseController
                 }
 
             } else {
-                $qualification_type = LoanQualificationType::find()
-                    ->where(['name' => $params['name']])
-                    ->one();
+                if (isset($params['name']) && !empty($params['name'])) {
+                    $qualification_type = LoanQualificationType::find()
+                        ->where(['name' => $params['name']])
+                        ->one();
 
-                if (!$qualification_type) {
-                    $qualification_type = new LoanQualificationType();
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
-                    $qualification_type->name = $params['name'];
-                    if (!$qualification_type->save()) {
-                        print_r($qualification_type->getErrors());
-                        return false;
+                    if (!$qualification_type) {
+                        $qualification_type = new LoanQualificationType();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $qualification_type->qualification_enc_id = $utilitiesModel->encrypt();
+                        $qualification_type->name = $params['name'];
+                        if (!$qualification_type->save()) {
+                            print_r($qualification_type->getErrors());
+                            return false;
+                        }
                     }
                 }
 
@@ -949,7 +955,9 @@ class LoansController extends ApiBaseController
                     ->where(['loan_candidate_edu_enc_id' => $id])
                     ->one();
 
-                $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+                if (isset($params['name']) && !empty($params['name'])) {
+                    $education->qualification_enc_id = $qualification_type->qualification_enc_id;
+                }
                 $education->institution = $params['institution'];
                 $education->obtained_marks = $params['obtained_marks'];
                 $education->created_by = $user->user_enc_id;

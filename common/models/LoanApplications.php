@@ -40,6 +40,7 @@ use Yii;
  *
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
@@ -102,6 +103,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getEducationLoanPayments()
     {
         return $this->hasMany(EducationLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicantResidentialInfos()
+    {
+        return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
