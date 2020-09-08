@@ -3,7 +3,6 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 $base_url = 'https://empoweryouth.com';
-
 switch($application_name['application_type']){
     case 'Jobs':
         $app_type = 'job';
@@ -197,7 +196,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <div class="col-md-12 col-sm-12 pr-user-inner-main">
                                 <div class="col-md-4">
                                     <div class="pr-user-detail">
-                                        <a class="pr-user-icon" href="<?= '/' . $arr['username'].'?slug='.$application_id ?>">
+                                        <a class="pr-user-icon" href="<?= '/' . $arr['username'].'?id='.$arr['applied_application_enc_id'] ?>">
                                             <?php if ($arr['image']): ?>
                                                 <img src="<?= $arr['image'] ?>"/>
                                             <?php else: ?>
@@ -206,7 +205,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             <?php endif; ?>
                                         </a>
                                         <a class="pr-user-n"
-                                           href="<?= '/' . $arr['username'].'?slug='.$application_id ?>"><?= $arr['name'] ?></a>
+                                           href="<?= '/' . $arr['username'].'?id='.$arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
                                             foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {

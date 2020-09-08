@@ -127,7 +127,7 @@ class UsersController extends Controller
         ];
     }
 
-    public function actionProfile($username, $slug = null)
+    public function actionProfile($username)
     {
         $user = Users::find()
             ->alias('a')
@@ -181,17 +181,19 @@ class UsersController extends Controller
             ->asArray()
             ->one();
         $userApplied = "";
-        if ($slug) {
+        $id = $_GET['id'];
+        if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
-                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active',])
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','re.resume','re.resume_location'])
                 ->joinWith(['applicationEnc ae'], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->andWhere(['z.application_enc_id' => $slug, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->joinWith(['resumeEnc re'],false)
+                ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
         }

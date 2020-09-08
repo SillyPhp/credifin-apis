@@ -298,7 +298,7 @@ $round_avg = round($overall_avg);
                             <div class="heading-style">
                                 Available Jobs
                                 <div class="pull-right">
-                                    <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                    <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
                                        class="write-review">View
                                         All</a>
                                 </div>
@@ -316,7 +316,7 @@ $round_avg = round($overall_avg);
                                 <div class="heading-style">
                                     Available Internships
                                     <div class="pull-right">
-                                        <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
+                                        <a href="/internships/list?slug=<?= $organization['slug'] ?>"
                                            class="write-review">View All</a>
                                     </div>
                                 </div>
