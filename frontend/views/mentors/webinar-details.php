@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 $time = $webinar['start_datetime'];
 $interest_status = $webResig['interest_status'];
+$status = $webinar['status'];
 ?>
 <section>
     <div class="full-width-light"
@@ -20,29 +21,38 @@ $interest_status = $webResig['interest_status'];
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <?php if($webinar['is_started']){?>
+                        <?php if($status == 2){ ?>
+                            <div>
+                                <a id="joinBtn">Webinar Expired</a>
+                            </div>
+                        <?php } elseif($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
+                        <div id="join">
+                            <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
+                        </div>
+                        <div id="counter">
+                            <div class="counter-item">
+                                <span class="days" id="days"></span>
+                                <div class="smalltext">Days</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="hours" id="hours"></span>
+                                <div class="smalltext">Hours</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="minutes" id="minutes"></span>
+                                <div class="smalltext">Minutes</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="seconds" id="seconds"></span>
+                                <div class="smalltext">Seconds</div>
+                            </div>
+                        </div>
+                        <?php } elseif($status == 4) { ?>
                         <div>
-                            <a class="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
-                        </div>
-                            <?php } else { ?>
-                        <div class="counter-item">
-                            <span class="days" id="days"></span>
-                            <div class="smalltext">Days</div>
-                            <b>:</b>
-                        </div>
-                        <div class="counter-item">
-                            <span class="hours" id="hours"></span>
-                            <div class="smalltext">Hours</div>
-                            <b>:</b>
-                        </div>
-                        <div class="counter-item">
-                            <span class="minutes" id="minutes"></span>
-                            <div class="smalltext">Minutes</div>
-                            <b>:</b>
-                        </div>
-                        <div class="counter-item">
-                            <span class="seconds" id="seconds"></span>
-                            <div class="smalltext">Seconds</div>
+                            <a id="joinBtn">Webinar Cancel</a>
                         </div>
                         <?php } ?>
                     </div>
@@ -50,6 +60,7 @@ $interest_status = $webResig['interest_status'];
             </div>
         </div>
     </div>
+    <?php if(!empty($webinar['description'])){ ?>
     <div class="webinar-details">
         <div class="container">
             <div class="row">
@@ -66,6 +77,7 @@ $interest_status = $webResig['interest_status'];
                             <?= $webinar['description'] ?>
                         </p>
                     </div>
+    <?php } ?>
                     <div class="sidebar text-center">
                         <div class="dis-flex">
                             <p><i class="fas fa-calendar-day"></i> <?= date('d F Y',strtotime($webinar['start_datetime']))?> </p>
@@ -97,11 +109,13 @@ $interest_status = $webResig['interest_status'];
                                 <p><span><?= count($webinarRegistrations) ?></span>
                                     People Registered</p>
                             </div>
+                            <?php if(Yii::$app->user->identity->user_enc_id){?>
                             <div class="register-action">
                                 <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
                                 <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
                                 <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -116,7 +130,7 @@ $interest_status = $webResig['interest_status'];
     <div class="row">
         <div class="col-md-12">
             <?php
-            $sharingLink = Url::base(true) .'/mentors/webinar-details/'.$webinar['webinar_enc_id'];
+            $sharingLink = Url::base(true) .'/mentors/webinar-details/?id='.$webinar['webinar_enc_id'];
             echo $this->render('/widgets/sharing-widget-webinar',[
                     'sharingLink' => $sharingLink
             ]) ?>
@@ -210,6 +224,7 @@ $interest_status = $webResig['interest_status'];
 </section>
 <!-- ts speaker end-->
 <!-- ts intro start -->
+<?php if(!empty($outComes)){ ?>
 <section class="ts-intro-outcome">
     <div class="container">
         <div class="row">
@@ -223,10 +238,16 @@ $interest_status = $webResig['interest_status'];
         <div class="row">
             <?php foreach ($outComes as $oc){ ?>
             <div class="col-lg-3 col-md-6 outcome-item">
-                <?php if($oc['bg_colour']) { ?>
-                <div class="ts-single-outcome" style="background: <?= '#'.$oc['bg_colour']?>">
-                    <?php } else { ?>
-                <div class="ts-single-outcome" style="background: #000;">
+                <?php if($oc['bg_colour']) {
+                    $color_code = '#'.$oc['bg_colour'];
+                    $reduceColor = createPalette($color_code, $colorCount=1);
+                ?>
+                <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
+                    <?php } else {
+                    $color_code = '#f00';
+                    $reduceColor = createPalette($color_code, $colorCount=1);
+                    ?>
+                <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
                     <?php } ?>
                     <?php if($oc['icon']){ ?>
                     <img src = "<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image. $oc['icon_location']. DIRECTORY_SEPARATOR . $oc['icon'])?>">
@@ -240,12 +261,58 @@ $interest_status = $webResig['interest_status'];
         </div>
     </div><!-- container end-->
 </section>
+<?php } ?>
 <!-- ts intro end-->
 <!-- ts sponsors start-->
 
 <?php
+function color_mod($hex, $diff) {
+     $rgb = str_split(trim($hex, '# '), 2);
+     foreach ($rgb as &$hex) {
+         $dec = hexdec($hex);
+         if ($diff >= 0) {
+             $dec += $diff;
+         }
+         else {
+             $dec -= abs($diff);
+         }
+         $dec = max(0, min(255, $dec));
+         $hex = str_pad(dechex($dec), 2, '0', STR_PAD_LEFT);
+     }
+     return '#'.implode($rgb);
+ }
+ function createPalette($color,$colorCount=4){
+     $colorPalette = array();
+     for($i=1; $i<=$colorCount; $i++){
+         if($i == 1){
+             $color = $color;
+             $colorVariation = -(($i*4) * 15);
+         }
+         if($i == 2){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         if($i == 3){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         if($i == 4){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         $newColor = color_mod($color, $colorVariation);
+         array_push($colorPalette, $newColor);
+     }
+     return $colorPalette;
+ }
 $this->registerCss('
-.joinBtn{
+#join{
+display:none;
+}
+#counter{
+display:none;
+}
+#joinBtn{
     font-size: 25px;
     padding: 35px;
     display: block;
@@ -642,28 +709,6 @@ transform: rotate(100deg);
     animation-fill-mode: both; 
 }
 
-//.outcome-item:nth-of-type(1) .ts-single-outcome {
-//  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-//  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-//  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%); }
-//
-//.outcome-item:nth-of-type(2) .ts-single-outcome {
-//  background-image: -webkit-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-//  background-image: -o-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-//  background-image: radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%); }
-//
-//.outcome-item:nth-of-type(3) .ts-single-outcome {
-//  background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-//  background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-//  background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%); }
-//
-//.outcome-item:nth-of-type(4) .ts-single-outcome {
-//  background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-//  background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-//  background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%); 
-//}
-/**/
-
 .ts-count-down {
     padding: 0;
     margin: -80px 0 0 0;
@@ -1047,6 +1092,14 @@ function countdown(e){
         $('#hours').text(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
         $('#minutes').text(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
         $('#seconds').text(Math.floor((distance % (1000 * 60)) / 1000));
+        if (distance <= 0) {
+            clearInterval(x);
+            $('#join').css('display','block');
+            $('#counter').css('display','none');
+        } else { 
+            $('#counter').css('display','block');
+            $('#join').css('display','none');
+        }
     }, 1000);
 };
 countdown('$time');

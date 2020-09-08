@@ -19,6 +19,8 @@ use Yii;
  * @property int $seats
  * @property string $description
  * @property int $session_for 0 as both, 1 as EY, 2 as Colleges
+ * @property double $price price of webinar
+ * @property int $status 0 as yet to start, 1 as ongoing, 2 as ended 3 as technical issues, 4 as cancelled
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -51,7 +53,7 @@ class Webinars extends \yii\db\ActiveRecord
         return [
             [['webinar_enc_id', 'title', 'start_datetime', 'duration', 'description', 'session_for', 'created_by'], 'required'],
             [['start_datetime', 'created_on', 'last_updated_on'], 'safe'],
-            [['duration', 'seats', 'session_for', 'is_deleted'], 'integer'],
+            [['duration', 'seats', 'session_for', 'status', 'is_deleted'], 'integer'],
             [['availability', 'description'], 'string'],
             [['webinar_enc_id', 'session_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['title'], 'string', 'max' => 255],
