@@ -21,7 +21,7 @@ $this->registercss('
 .popular-skills {
     padding: 20px 20px 40px 20px;
     background-image: linear-gradient(98deg, #ba0803, #c2582b);
-    margin-top: 30px;
+//    margin-top: 30px;
 }
 .popular-skills h3 {
 	color: #ef9f89;

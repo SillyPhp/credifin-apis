@@ -1,7 +1,9 @@
 <?php
 
 namespace frontend\controllers;
+use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -16,6 +18,7 @@ use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
+use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -68,6 +71,10 @@ class SiteController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
                 'successUrl' => 'oauth-verify',
             ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -79,6 +86,23 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            if((new OneTapAuth())->handle(Yii::$app->request->post()))
+            {
+                return $this->redirect('/site/oauth-verify');
+            }
+            else{
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
@@ -136,7 +160,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -535,66 +559,72 @@ class SiteController extends Controller
     {
 
         $model = new SignUpCandidateForm();
-        $jobprimaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
-            ->asArray()
-            ->all();
+        $job_profile = new ApplicationForm();
+        $primary_cat = $job_profile->getPrimaryFields();
 
-        $modelSignUp = new IndividualSignUpForm();
-        if ($model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $modelSignUp->username = $model->username;
-            $modelSignUp->first_name = $model->first_name;
-            $modelSignUp->last_name = $model->last_name;
-            $modelSignUp->email = $model->email;
-            $modelSignUp->phone = $model->phone;
-            $modelSignUp->new_password = $model->new_password;
-            $modelSignUp->confirm_password = $model->confirm_password;
-            $errors = ActiveForm::validate($modelSignUp);
-            if (empty($errors)) {
-                $session = Yii::$app->session;
-                $session->set('profile_job', $model->job_profile);
-                $session->set('city', $model->city);
-                $session->set('cityId', $model->city_id);
-                $session->set('salary', $model->salary);
-                $session->set('experience', $model->experience);
-
-                $modelSignUp->user_type = 'Individual';
-
-                if ($modelSignUp->add()) {
-                    $data['username'] = $modelSignUp->username;
-                    $data['password'] = $modelSignUp->new_password;
-                    if ($this->login($data)) {
-
-                        $profileJob = $session->get('profile_job');
-                        $cityJob = $session->get('city');
-                        $cityJobId = $session->get('cityId');
-                        $salaryJob = $session->get('salary');
-                        $experienceJob = $session->get('experience');
-                        if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
-                            return $this->redirect('/account/dashboard');
-                        } else {
-                            return [
-                                'status' => 'error',
-                                'title' => 'error',
-                                'message' => 'An error has occurred. Please try again later',
-                            ];
-                        }
-                    }
-                }
-            } else {
-                return $errors;
-            }
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
         }
+
         return $this->renderAjax('sign-up-candidate', [
             'model' => $model,
-            'jobprimaryfields' => $jobprimaryfields,
+            'primary_cat' => $primary_cat,
         ]);
     }
+    public function actionSignUp(){
+        $model = new SignUpCandidateForm();
+        $modelSignUp = new WidgetSignUpForm();
+        if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $modelSignUp->username = $model->username;
+                $modelSignUp->first_name = $model->first_name;
+                $modelSignUp->last_name = $model->last_name;
+                $modelSignUp->email = $model->email;
+                if($model->phone){
+                $modelSignUp->phone = $model->phone;
+                }
+                $modelSignUp->new_password = $model->new_password;
+                $modelSignUp->confirm_password = $model->confirm_password;
+                if (empty($errors)) {
+                    $session = Yii::$app->session;
+                    $session->set('profile_job', $model->job_profile);
+                    $session->set('city', $model->city);
+                    $session->set('cityId', $model->city_id);
+                    $session->set('salary', $model->salary);
+                    $session->set('experience', $model->experience);
 
+                    $modelSignUp->user_type = 'Individual';
+
+                    if ($modelSignUp->add()) {
+                        $data['username'] = $modelSignUp->username;
+                        $data['password'] = $modelSignUp->new_password;
+                        if ($this->login($data)) {
+
+                            $profileJob = $session->get('profile_job');
+                            $cityJob = $session->get('city');
+                            $cityJobId = $session->get('cityId');
+                            $salaryJob = $session->get('salary');
+                            $experienceJob = $session->get('experience');
+                            if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
+                                return $this->redirect('/account/dashboard');
+                            } else {
+                                return [
+                                    'status' => 'error',
+                                    'title' => 'error',
+                                    'message' => 'An error has occurred. Please try again later',
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    return $errors;
+                }
+            }
+        }
+    }
     private function login($data = [])
     {
         $loginFormModel = new LoginForm();
@@ -911,6 +941,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');

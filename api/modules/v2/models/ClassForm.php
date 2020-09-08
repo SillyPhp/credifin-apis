@@ -39,7 +39,7 @@ class ClassForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->class_enc_id = $utilitiesModel->encrypt();
         $model->teacher_enc_id = $this->teacher_id;
-        $model->course_enc_id = $this->course_id;
+        $model->assigned_college_enc_id = $this->course_id;
         $model->section_enc_id = $this->section_id;
         $model->subject_name = $this->subject_name;
         $model->semester = $this->semester;

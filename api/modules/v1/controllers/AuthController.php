@@ -5,11 +5,13 @@ namespace api\modules\v1\controllers;
 use api\modules\v1\models\ForgotPasswordForm;
 use api\modules\v1\models\SocialLogin;
 use common\components\AuthHandler;
+use common\models\Auth;
 use common\models\EmailLogs;
 use common\models\User;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
+use http\Env\Response;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
@@ -32,10 +34,33 @@ class AuthController extends ApiBaseController
                 'refresh-access-token' => ['POST'],
                 'forgot-password' => ['POST'],
                 'social-authentication' => ['POST'],
-                'social-login' => ['POST']
+                'social-login' => ['POST'],
+                'check-source-id' => ['POST']
             ]
         ];
         return $behaviors;
+    }
+
+    public function actionCheckSourceId()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['platform']) && empty($params['platform'])) {
+            return $this->response(422, 'missing information');
+        }
+
+        if (!isset($params['source_id']) && empty($params['source_id'])) {
+            return $this->response(422, 'missing information');
+        }
+        $auth = Auth::find()->where([
+            'source' => $params['platform'],
+            'source_id' => $params['source_id'],
+        ])->one();
+
+        if ($auth) {
+            return $this->response(200, 'success');
+        } else {
+            return $this->response(404, 'not found');
+        }
     }
 
     public function actionSocialAuthentication()

@@ -159,21 +159,21 @@ echo $this->render('/widgets/internships-by-tag');
     </div>
 </section>
 
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="heading-style">Blogs</div>
-                    </div>
-                </div>
-                <div id="whats-new" class="row">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-sm-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="heading-style">Blogs</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id="whats-new" class="row">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 <!--Subscribe Widget start-->
 <?php
@@ -801,10 +801,10 @@ $this->registerCss('
 }
 }
 ');
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-4 col-sm-4',
-    'is_ajax' => true
-]);
+//echo $this->render('/widgets/blogs/whats-new', [
+//    'size' => 'col-md-4 col-sm-4',
+//    'is_ajax' => true
+//]);
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),

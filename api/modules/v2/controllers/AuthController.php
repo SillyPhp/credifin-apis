@@ -443,9 +443,9 @@ class AuthController extends ApiBaseController
                     'a.username', 'a.phone', 'a.email',
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
-                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester',
+                    'd.cgpa', 'd.assigned_college_enc_id', 'd.section_enc_id', 'd.semester',
                     'e.has_loan_featured',
-                    'c1.business_activity_enc_id teacher_org_type'
+                    'c1.business_activity_enc_id teacher_org_type', 'ee.business_activity user_org_business_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
@@ -453,7 +453,9 @@ class AuthController extends ApiBaseController
                     $cc->joinWith(['collegeEnc c1']);
                 }])
                 ->joinWith(['userOtherInfo d' => function ($d) {
-                    $d->joinWith(['organizationEnc e']);
+                    $d->joinWith(['organizationEnc e' => function ($e) {
+                        $e->joinWith(['businessActivityEnc ee']);
+                    }]);
                 }], false)
                 ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
@@ -475,7 +477,9 @@ class AuthController extends ApiBaseController
                 foreach ($college_settings as $c) {
                     if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
                         if ($c['value'] == null) {
-                            $college_settings[$j]['value'] = 2;
+                            if ($user_detail['user_org_business_type'] == 'College') {
+                                $college_settings[$j]['value'] = 2;
+                            }
                         }
                     }
                     $j++;
@@ -484,6 +488,12 @@ class AuthController extends ApiBaseController
                 $settings = [];
                 foreach ($college_settings as $c) {
                     $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+
+                if($user_detail['user_org_business_type'] == 'School'){
+                    $settings['show_quiz'] = true;
+                }else{
+                    $settings['show_quiz'] = false;
                 }
             }
 
@@ -568,10 +578,8 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
-//            'education_loan' => (int)$user_detail['has_loan_featured'] == 1 ? true : false,
-//            'ceducation_loan' => (int)$education_loan_college['has_loan_featured'] == 1 ? true : false,
             'image' => $user_detail['image'],
-            'course_enc_id' => $user_detail['course_enc_id'],
+            'course_enc_id' => $user_detail['assigned_college_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
             'semester' => $user_detail['semester'],
             'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
@@ -604,6 +612,7 @@ class AuthController extends ApiBaseController
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
         } else {
+            $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
         }
 
@@ -657,7 +666,7 @@ class AuthController extends ApiBaseController
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-        $user_other_details->course_enc_id = $data['course_id'];
+        $user_other_details->assigned_college_enc_id = $data['course_id'];
         $user_other_details->section_enc_id = $data['section_id'];
         $user_other_details->semester = $data['semester'];
         $user_other_details->starting_year = $data['starting_year'];

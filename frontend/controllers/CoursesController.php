@@ -1,5 +1,7 @@
 <?php
+
 namespace frontend\controllers;
+
 use common\models\extended\Subscribers;
 use Yii;
 use yii\web\Controller;
@@ -7,9 +9,11 @@ use yii\web\Response;
 use yii\web\HttpException;
 use common\models\LearningVideos;
 use yii\db\Expression;
+
 class CoursesController extends Controller
 {
     public $cookieString = '__udmy_2_v57r=; ud_cache_price_country=IN;';
+
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
@@ -20,7 +24,7 @@ class CoursesController extends Controller
     public function actionIndex()
     {
         $model = new Subscribers();
-        if(Yii::$app->request->post() && $model->load(Yii::$app->request->post())){
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->subscribe();
         }
@@ -30,7 +34,7 @@ class CoursesController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
+            curl_setopt($ch, CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',
@@ -62,19 +66,24 @@ class CoursesController extends Controller
             $cat = Yii::$app->request->post('cat');
             $keyword = Yii::$app->request->post('keyword');
             $page = Yii::$app->request->post('page');
-            if($keyword || $cat){
-                if($cat){
+            $page_size = Yii::$app->request->post('limit');
+
+            if (!$page_size || $page_size == "") {
+                $page_size = 21;
+            }
+            if ($keyword || $cat) {
+                if ($cat) {
                     $keyword = $cat;
                 }
-                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=21&search=" .$keyword;
+                $url = "https://www.udemy.com/api-2.0/courses/?page=" . $page . "&page_size=" . $page_size . "&search=" . $keyword;
             } else {
-                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=21";
+                $url = "https://www.udemy.com/api-2.0/courses/?page=" . $page . "&page_size=" . $page_size . "";
             }
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
+            curl_setopt($ch, CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',
@@ -95,7 +104,7 @@ class CoursesController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
+        curl_setopt($ch, CURLOPT_COOKIE, $this->cookieString);
         $header = [
             'Accept: application/json, text/plain, */*',
             'Content-Type: application/json;charset=utf-8',
@@ -104,11 +113,11 @@ class CoursesController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
         $result = json_decode($result, true);
-        if($result['title']) {
+        if ($result['title']) {
             return $this->render('courses-detail-page', [
                 'data' => $result
             ]);
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
@@ -121,7 +130,7 @@ class CoursesController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
+            curl_setopt($ch, CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',

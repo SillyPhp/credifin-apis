@@ -32,8 +32,8 @@ class SocialLogin extends Model
     public function rules()
     {
         return [
-            [['email', 'source_id', 'platform', 'first_name', 'last_name'], 'required'],
-            [['source'], 'safe'],
+            [['source_id', 'platform', 'first_name', 'last_name'], 'required'],
+            [['source','email'], 'safe'],
             [['email', 'first_name', 'last_name', 'source_id', 'platform'], 'trim'],
             ['email', 'email'],
             ['email', 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],

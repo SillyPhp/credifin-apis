@@ -134,6 +134,12 @@ class JobsController extends ApiBaseController
                 $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
             }
 
+            if ($data['status'] != 'Active') {
+                $data['is_closed'] = true;
+            } else {
+                $data['is_closed'] = false;
+            }
+
             if ($data['wage_type'] == 'Fixed') {
                 if ($data['wage_duration'] == 'Monthly') {
                     $data['fixed_wage'] = $data['fixed_wage'] * 12;
@@ -262,7 +268,7 @@ class JobsController extends ApiBaseController
                 'x.industry',
                 'a.title',
                 '(CASE
-                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
+                     WHEN a.preferred_gender = "0" THEN "No preferred gender"
                     WHEN a.preferred_gender = "1" THEN "Male"
                     WHEN a.preferred_gender = "2" THEN "Female"
                     WHEN a.preferred_gender = "3" THEN "Transgender"
@@ -277,6 +283,7 @@ class JobsController extends ApiBaseController
                 'l.icon_png',
                 'a.type',
                 'a.slug',
+                'a.status',
                 'a.preferred_industry',
                 'a.interview_process_enc_id',
                 'a.timings_from',
@@ -304,7 +311,7 @@ class JobsController extends ApiBaseController
                 'b.interview_start_date',
                 'b.interview_end_date',
                 'w.organization_enc_id',
-                'w.name organization_name',
+                'REPLACE(w.name, "&amp;", "&") as organization_name',
                 'w.initials_color color',
                 'w.email',
                 'w.website',

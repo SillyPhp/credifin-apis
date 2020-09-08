@@ -55,7 +55,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="j-closed tt" data-toggle="tooltip"
-                                    title="Close <?= $tipvalue ?>"
+                                    title="Close <?= $tipvalue ?>" data-name="<?= $tipvalue ?>"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
@@ -128,11 +128,28 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-<!--                            <a href="--><?//= Url::to($applications[$next]["link"], true); ?><!--">--><?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
-                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip" title="VIEW <?= strtoupper($applications[$next]['application_type'])?>"><i class="fa fa-info-circle"></i></a>
+                            <!--                            <a href="-->
+                            <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
+                            <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
+                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
+                               title="VIEW <?= strtoupper($applications[$next]['application_type']) ?>"><i
+                                        class="fa fa-info-circle"></i></a>
                             <div class="appl">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
-                                    <?= sizeof($applications[$next]['appliedApplications']) . ' Applications'; ?>
+                                    <?php
+                                    $appliedApp = sizeof($applications[$next]['appliedApplications']);
+                                    switch ($appliedApp) {
+                                        case 0:
+                                            echo '0 Application';
+                                            break;
+                                        case 1:
+                                            echo '1 Application';
+                                            break;
+                                        default:
+                                            echo $appliedApp . ' Applicants';
+                                            break;
+                                    }
+                                    ?>
                                 </a>
                             </div>
                         </div>
@@ -317,8 +334,9 @@ $(document).on('click','.j-delete',function(e){
 
 $(document).on('click','.j-closed',function(e){
      e.preventDefault();
+     var data_name = $(this).attr('data-name');
      var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Delete the current Application?")) { 
+     if (window.confirm("Do you really want to Close the current Application?")) { 
         main_card.remove();
         var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
@@ -330,7 +348,7 @@ $(document).on('click','.j-closed',function(e){
                 $.pjax.reload({container: "#pjax_active_jobs", async: false});
                   if(data==true) {
                       $.pjax.reload({container: "#pjax_closed_jobs", async: false});
-                      toastr.success('Closed Successfully', 'Success');
+                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
                     }
                    else {
                       toastr.error('Something went wrong. Please try again.', 'Opps!!');
