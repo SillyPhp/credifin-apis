@@ -152,7 +152,6 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
-
     public function actionCoursePoolList()
     {
         $get = Courses::get();
@@ -193,4 +192,5 @@ class EducationLoanController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
     }
+
 }
