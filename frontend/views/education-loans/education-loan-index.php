@@ -195,22 +195,22 @@ use yii\helpers\Url;
 
 
     <div class="clearfix"></div>
-    <section class="edu-loan">
-        <div class="container">
-            <div class="us-flex">
-                <div class="edu-loan-txt">
-                    Collateral Free Loans
-                </div>
-                <div class="">
-                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
-                       class="hvr-sweep-to-bottom">
-                        Apply Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <div class="clearfix"></div>
+<!--    <section class="edu-loan">-->
+<!--        <div class="container">-->
+<!--            <div class="us-flex">-->
+<!--                <div class="edu-loan-txt">-->
+<!--                    Collateral Free Loans-->
+<!--                </div>-->
+<!--                <div class="">-->
+<!--                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"-->
+<!--                       class="hvr-sweep-to-bottom">-->
+<!--                        Apply Now-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+<!--    <div class="clearfix"></div>-->
 
 
     <!--    <section class="emicalcmain">-->
@@ -220,7 +220,7 @@ use yii\helpers\Url;
     <!--        <div id="ecww-widget-iframeinner"></div>-->
     <!--    </section>-->
     <div class="clearfix"></div>
-    <section>
+    <section class="bgEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -425,6 +425,7 @@ $this->registerCss('
     text-align: center;  
     box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
+    background: #fff;
 }
 .loan-college:hover{
     box-shadow: 3px 5px 10px rgba(0,0,0,.2);
