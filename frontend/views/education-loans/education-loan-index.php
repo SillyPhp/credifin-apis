@@ -423,18 +423,23 @@ $this->registerCss('
 }
 .loan-college{
     text-align: center;  
-    border: 1px solid #eee;
+    box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
 }
 .loan-college:hover{
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 3px 5px 10px rgba(0,0,0,.2);
     transition:.3s ease; 
 }
+
+.loan-college:hover p{
+    color: #00a0e3;
+}
+
 .loan-college p{
     font-size: 17px;
     line-height: 25px;
     padding: 5px 10px;
-    border-top: 1px solid #eee;
+//    border-top: 1px solid #eee;
     position: relative;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -450,7 +455,7 @@ $this->registerCss('
     margin: 0 auto;
     display: flex;
     align-items: center;
-    background: #f7f7f7;
+//    background: #f7f7f7;
     
 }
 .loan-college-img img{
