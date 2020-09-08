@@ -8,7 +8,7 @@ namespace common\models;
  * @property string $organization_type_enc_id Foreign Key to Business Activities Table
  * @property string $city_enc_id Foreign Key to CitiesTable
  * @property string $name Organization Name
- * @property int $source 0 as EY, 1 as GIT, 2 as Muse
+ * @property int $source 0 as EY, 1 as GIT, 2 as MUSE, 3 as Education Loans
  * @property string $logo Organization Logo
  * @property string $logo_location Location of the Logo
  * @property string $cover_image cover_image
