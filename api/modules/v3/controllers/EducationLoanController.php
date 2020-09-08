@@ -35,7 +35,6 @@ class EducationLoanController extends ApiBaseController
                 'loan-applications' => ['POST', 'OPTIONS'],
                 'course-pool-list' => ['GET'],
                 'save-application' => ['POST', 'OPTIONS'],
-                'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -86,10 +85,11 @@ class EducationLoanController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
+        } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
+
     public function actionSaveWidgetApplication()
     {
         $params = Yii::$app->request->post();
@@ -152,6 +152,7 @@ class EducationLoanController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
+
     public function actionCoursePoolList()
     {
         $get = Courses::get();
@@ -165,15 +166,14 @@ class EducationLoanController extends ApiBaseController
     public function actionSaveApplication()
     {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $organizationObject = new OrganizationList();
             $courseObject = new Courses();
             $options = [];
             $options['name'] = $params['college_name'];
             $org = $organizationObject->getOrgId($options);
             $college_id = $org['id'];
-            if (!$college_id)
-            {
+            if (!$college_id) {
                 return $this->response(500, ['status' => 500, 'message' => 'Error in Getting College Information']);
             }
             $orgDate = $params['applicant_dob'];
@@ -181,8 +181,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                    return $model->add($params['userID'], $college_id,'Ey',$org['is_claim']);
-                    if ($data = $model->add(null, $college_id,'Ey',$org['is_claim'])) {
+                    if ($data = $model->add(null, $college_id, 'Ey', $org['is_claim'])) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -194,33 +193,4 @@ class EducationLoanController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
     }
-
-    public function actionRetryPayment()
-    {
-        date_default_timezone_set('Asia/Kolkata');
-        $params = Yii::$app->request->post();
-        $token = $params['token'];
-        $gst = $params['gst'];
-        $pay_amount = $params['pay_amount'];
-        $loan_app_id = $params['loan_app_id'];
-        $payment_id = $params['payment_id'];
-        $status = $params['status'];
-        $loan_payment = new EducationLoanPayments();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-        $loan_payment->loan_app_enc_id = $loan_app_id;
-        $loan_payment->payment_token = $token;
-        $loan_payment->payment_amount = $pay_amount;
-        $loan_payment->payment_status = $status;
-        $loan_payment->payment_id = $payment_id;
-        $loan_payment->payment_gst = $gst;
-        $loan_payment->created_on = date('Y-m-d H:i:s');
-        if ($loan_payment->save()) {
-            return $this->response(200, ['status' => 200, 'message' => 'success']);
-        } else {
-            print_r($loan_payment->getErrors());
-        }
-    }
-
 }
