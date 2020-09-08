@@ -164,7 +164,35 @@ class EducationLoanController extends ApiBaseController
 
     public function actionSaveApplication()
     {
-
+        $params = Yii::$app->request->post();
+        if ($params){
+            $organizationObject = new OrganizationList();
+            $courseObject = new Courses();
+            $options = [];
+            $options['name'] = $params['college_name'];
+            $org = $organizationObject->getOrgId($options);
+            $college_id = $org['id'];
+            if (!$college_id)
+            {
+                return $this->response(500, ['status' => 500, 'message' => 'Error in Getting College Information']);
+            }
+            $orgDate = $params['applicant_dob'];
+            $model = new LoanApplicationsForm();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                if ($model->validate()) {
+                    return $model->add($params['userID'], $college_id,'Ey',$org['is_claim']);
+                    if ($data = $model->add(null, $college_id,'Ey',$org['is_claim'])) {
+                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
     }
 
     public function actionRetryPayment()
