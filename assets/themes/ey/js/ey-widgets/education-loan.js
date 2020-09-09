@@ -20,7 +20,7 @@
     };
     var onMessage = function(e) {
         var data;
-        if (e.origin === "https://www.sneh.eygb.me") {
+        if (e.origin === "https://www.empoweryouth.com") {
 // handle errors from parsing data
             try {
                 data = JSON.parse(e.data);
@@ -57,14 +57,14 @@
 // script can have query parameters and need to get those query params -
 // not using raw would evaluate an `&` to a `&amp;`
     script = document.querySelector("script[src$='/assets/themes/ey/js/ey-widgets/education-loan.js']");
-    var src = "https://sneh.eygb.me/framed-widgets/educations-loan"
+    var src = "https://empoweryouth.com/framed-widgets/educations-loan"
     var title = null;
-    src = addQueryParam(src, "parent_page_referrer", encodeURIComponent(document.referrer));
+   // src = addQueryParam(src, "parent_page_referrer", encodeURIComponent(document.referrer));
     iframe = document.createElement("iframe");
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("allowfullscreen", "true");
     iframe.setAttribute("scrolling", "yes");
-    iframe.setAttribute("src", src);
+    // iframe.setAttribute("src", src);
     iframe.setAttribute("width", "100%");
     //iframe.setAttribute("height", "100vh");
     iframe.style.height = "100vh";
@@ -76,7 +76,9 @@
     }
     window.addEventListener('load', function(e) {
         var elem = document.getElementById("ey-education-loan");
+        var col_id = elem.getAttribute("data-id");
         //script.parentNode.insertBefore(iframe, script.nextSibling);
+        iframe.setAttribute("src", src+"?id="+col_id);
         elem.appendChild(iframe);
     });
     if (window.addEventListener) {

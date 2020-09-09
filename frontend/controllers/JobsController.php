@@ -9,6 +9,8 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
+use common\models\CollegeCourses;
+use common\models\Courses;
 use common\models\Designations;
 use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
@@ -57,6 +59,7 @@ use yii\db\Query;
 use common\models\Utilities;
 use common\models\RandomColors;
 use yii\db\Expression;
+use yii\widgets\ActiveForm;
 
 class JobsController extends Controller
 {
@@ -397,6 +400,7 @@ class JobsController extends Controller
         }
         return $this->render('list');
     }
+
     public function actionApi($source = '', $slugparams = null, $eaidk = null)
     {
         if ($source == 'git-hub') {
@@ -404,14 +408,13 @@ class JobsController extends Controller
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
-        if ($get['title'])
-        {
+        if ($get['title']) {
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
                     'source' => $source, 'id' => $eaidk
                 ]);
-        }else{
+        } else {
             return 'Application Has Been Moved or Deleted';
         }
     }
@@ -454,7 +457,6 @@ class JobsController extends Controller
                 'is_deleted' => 0
             ])
             ->one();
-
         if (!$application_details) {
             return 'Not Found';
         }
@@ -491,21 +493,21 @@ class JobsController extends Controller
             ->orderBy(new Expression('rand()'))
             ->limit(6);
 
-        $popular_videos =  $related_videos
-               ->joinWith(['assignedCategoryEnc a'=>function($a){
-                   $a->joinWith(['parentEnc a1'],false);
-                   $a->joinWith(['categoryEnc a2'],false);
-                   $a->joinWith(['employerApplications b' => function($b){
-                       $b->joinWith(['designationEnc c'],false);
-                   }],false);
-               }],false)
-             ->andFilterWhere(['or',
-                 ['like','c.designation',$desi_name],
-                 ['like','a1.name',$pro_name],
-                 ['like','a2.name',$cat_name],
-             ])
-               ->asArray()->all();
-        if(count($popular_videos) < 6) {
+        $popular_videos = $related_videos
+            ->joinWith(['assignedCategoryEnc a' => function ($a) {
+                $a->joinWith(['parentEnc a1'], false);
+                $a->joinWith(['categoryEnc a2'], false);
+                $a->joinWith(['employerApplications b' => function ($b) {
+                    $b->joinWith(['designationEnc c'], false);
+                }], false);
+            }], false)
+            ->andFilterWhere(['or',
+                ['like', 'c.designation', $desi_name],
+                ['like', 'a1.name', $pro_name],
+                ['like', 'a2.name', $cat_name],
+            ])
+            ->asArray()->all();
+        if (count($popular_videos) < 6) {
             $limit = 6 - count($popular_videos);
             $xyz = LearningVideos::find()
                 ->alias('z')
@@ -516,16 +518,27 @@ class JobsController extends Controller
             $xz = $xyz->asArray()->all();
             $popular_videos = array_merge($popular_videos, $xz);
         }
-           if (empty($popular_videos) )
-           {
-               $xyz = LearningVideos::find()
-                   ->alias('z')
-                   ->where(['z.is_deleted' => 0,
-                       'z.status' => 1])
-                   ->orderBy(new Expression('rand()'))
-                   ->limit(6);
-               $popular_videos = $xyz->asArray()->all();
-           }
+        if (empty($popular_videos)) {
+            $xyz = LearningVideos::find()
+                ->alias('z')
+                ->where(['z.is_deleted' => 0,
+                    'z.status' => 1])
+                ->orderBy(new Expression('rand()'))
+                ->limit(6);
+            $popular_videos = $xyz->asArray()->all();
+        }
+        $app_title = $application_details->title0->categoryEnc->name;
+        $skills = ApplicationSkills::find()
+            ->alias('a')
+            ->select(['a.skill_enc_id', 'b.skill'])
+            ->joinWith(['skillEnc b'], false)
+            ->where(['a.application_enc_id' => $application_details->application_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        $searchItems = ArrayHelper::getColumn($skills, 'skill');
+        $industry = $application_details->preferredIndustry->industry;
+        array_push($searchItems, $app_title, $industry);
+        $searchItems = implode(',', $searchItems);
 
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
@@ -537,6 +550,7 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
             'popular_videos' => $popular_videos,
+            'searchItems' => $searchItems,
             'cat_name' => $cat_name,
         ]);
     }
@@ -573,6 +587,13 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
+            if (!$createCompany->validate()){
+                return [
+                    'status' => 'error',
+                    'message' => json_encode(ActiveForm::validate($createCompany)),
+                    'title' => 'Error',
+                ];
+            }
             if ($createCompany->save()) {
                 return [
                     'status' => 'success',
@@ -1435,6 +1456,17 @@ class JobsController extends Controller
                     }
                 }
             }
+        }
+    }
+    public function actionClearMyCache()
+    {
+        $cache = Yii::$app->cache->flush();
+
+        if ($cache) {
+            $this->redirect(Yii::$app->request->referrer);
+        } else {
+            $this->redirect('/jobs/clear-my-cache');
+            return 'something went wrong...! please try again later';
         }
     }
 }

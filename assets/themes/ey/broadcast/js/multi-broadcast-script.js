@@ -7,10 +7,9 @@ var channelName = channel_name; // set channel name
 // create client instance
 var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // h264 better detail at a higher motion
 var mainStreamId; // reference to main stream
-
 // set video profile
 // [full list: https://docs.agora.io/en/Interactive%20Broadcast/videoProfile_web?platform=Web#video-profile-table]
-var cameraVideoProfile = "720p_6"; // 960 × 720 @ 30fps  & 750kbs
+var cameraVideoProfile = "480p"; // 960 × 720 @ 30fps  & 750kbs
 
 // keep track of streams
 var localStreams = {
@@ -91,7 +90,9 @@ client.on("stream-subscribed", function (evt) {
     var remoteStream = evt.stream;
     var id = remoteStream.getId();
     // Play the remote stream.
-    $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
+    if($("#stream-player-"+ id).length == 0){
+        $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
+    }
     remoteStream.play("stream-player-"+id+"");
     console.log('stream-subscribed remote-uid: ', id);
     initializeUi();
@@ -106,50 +107,50 @@ client.on("stream-removed", function(evt) {
 
 //live transcoding events..
 client.on("liveStreamingStarted", function(evt) {
-    console.log("Live streaming started");
+    // console.log("Live streaming started");
 });
 
 client.on("liveStreamingFailed", function(evt) {
-    console.log("Live streaming failed");
+    // console.log("Live streaming failed");
 });
 
 client.on("liveStreamingStopped", function(evt) {
-    console.log("Live streaming stopped");
+    // console.log("Live streaming stopped");
 });
 
 client.on("liveTranscodingUpdated", function(evt) {
-    console.log("Live streaming updated");
+    // console.log("Live streaming updated");
 });
 
 // ingested live stream
 client.on("streamInjectedStatus", function(evt) {
-    console.log("Injected Steram Status Updated");
-    console.log(JSON.stringify(evt));
+    // console.log("Injected Steram Status Updated");
+    // console.log(JSON.stringify(evt));
 });
 
 // when a remote stream leaves the channel
 client.on("peer-leave", function(evt) {
     $('#stream-player-'+evt.stream.getId()+'').remove();
-    console.log("Remote stream has left the channel: " + evt.stream.getId());
+    // console.log("Remote stream has left the channel: " + evt.stream.getId());
     initializeUi();
 });
 
 // show mute icon whenever a remote has muted their mic
 client.on("mute-audio", function(evt) {
-    console.log("Mute Audio for: " + evt.uid);
+    // console.log("Mute Audio for: " + evt.uid);
 });
 
 client.on("unmute-audio", function(evt) {
-    console.log("Unmute Audio for: " + evt.uid);
+    // console.log("Unmute Audio for: " + evt.uid);
 });
 
 // show user icon whenever a remote has disabled their video
 client.on("mute-video", function(evt) {
-    console.log("Mute Video for: " + evt.uid);
+    // console.log("Mute Video for: " + evt.uid);
 });
 
 client.on("unmute-video", function(evt) {
-    console.log("Unmute Video for: " + evt.uid);
+    // console.log("Unmute Video for: " + evt.uid);
 });
 
 // join a channel
@@ -193,7 +194,7 @@ function joinChannel() {
 
 // video streams for channel
 function createCameraStream(uid, deviceIds) {
-    console.log("Creating stream with sources: " + JSON.stringify(deviceIds));
+    // console.log("Creating stream with sources: " + JSON.stringify(deviceIds));
 
     var localStream = AgoraRTC.createStream({
         streamID: uid,
@@ -583,8 +584,12 @@ function initializeUi() {
             }
         }
     } else {
-        if (childrens > 10) {
-
+        var childrens = $('#full-screen-video > div').length;
+        $('#full-screen-video').attr('class','sp' + childrens);
+        if (childrens > 5) {
+            if(!$('#full-screen-video').hasClass('spmultiple')) {
+                $('#full-screen-video').addClass('spmultiple');
+            }
         }
     }
 }

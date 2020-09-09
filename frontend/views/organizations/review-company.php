@@ -664,7 +664,7 @@ border: 2px solid #cadfe8 !important;
 }
 .logo-box img{
     width: 100%;
-    height: 100%;
+    //height: 100%;
     object-fit: fill;
     object-position: top center;
     position: absolute;

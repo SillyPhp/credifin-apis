@@ -230,7 +230,7 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -270,8 +270,8 @@ class ApplicationCards
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
-               END) as link',
-                'CONCAT("/job/", a.slug) organization_link',
+                END) as link',
+                'CONCAT("/", d.slug,"/reviews") organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -291,7 +291,7 @@ class ApplicationCards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN g.name IS NULL THEN x.location_name
@@ -428,33 +428,51 @@ class ApplicationCards
             $cards2->andWhere(['d.slug'=>$options['slug']]);
         }
         if (isset($options['keyword'])) {
-            $search = trim($options['keyword'], " ");
-            $search_pattern = self::makeSQL_search_pattern($search);
-            $cards1->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 'v.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
-                ['REGEXP', 'l.designation', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'h.industry', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
-            ]);
-            $cards2->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern],
-                ['REGEXP', 'x.location_name', $search_pattern]
-            ]);
+             $search = trim($options['keyword'], " ");
+            if ($search == "remote" || $search == "work from home")
+            {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['like', 'a.type', $search],
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['like', 'x.location_name', $search],
+                    ['like', 'a.type', $search],
+                    ['like', 'c.name', $search],
+                ]);
+            }
+            else{
+                $search_pattern = self::makeSQL_search_pattern($search);
+                $cards1->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 'v.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'x.name', $search_pattern],
+                    ['REGEXP', 'l.designation', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'h.industry', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'cy.name', $search_pattern]
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'x.location_name', $search_pattern]
+                ]);
+            }
         }
         if (isset($optLocation)) {
             $search_location = trim($optLocation, " ");
@@ -626,7 +644,7 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
@@ -667,7 +685,7 @@ class ApplicationCards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
@@ -902,7 +920,7 @@ class ApplicationCards
                 'CONCAT("/training/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link', 'd.initials_color color',
                 'c.name as title', 'i.icon',
-                'd.name as organization_name',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
                 '(CASE

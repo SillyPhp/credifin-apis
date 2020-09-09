@@ -4,9 +4,8 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
-use common\models\CollegeCourses;
+use common\models\AssignedCollegeCourses;
 use common\models\CollegeSettings;
-use common\models\Companies;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
@@ -14,6 +13,7 @@ use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
 use common\models\OrganizationEmployeeBenefits;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\Referral;
@@ -517,6 +517,7 @@ class CollegeIndexController extends ApiBaseController
                 ->select([
                     'a.application_enc_id',
                     'a.slug',
+                    'a.status',
                     'a.last_date',
                     'a.joining_date',
                     'b.employer_application_enc_id',
@@ -572,7 +573,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['applicationTypeEnc z'])
                 ->where([
                     'a.is_deleted' => 0,
-                    'a.status' => 'Active',
+//                    'a.status' => 'Active',
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
                     'z.name' => $type,
@@ -600,6 +601,12 @@ class CollegeIndexController extends ApiBaseController
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['college_enc_id'] = $j['college_enc_id'];
                 $data['is_college_approved'] = $j['is_college_approved'];
+                $data['last_date'] = $j['last_date'];
+                if ($j['status'] != 'Active') {
+                    $data['is_closed'] = true;
+                } else {
+                    $data['is_closed'] = false;
+                }
                 foreach ($j['applicationPlacementLocations'] as $l) {
                     if (!in_array($l['name'], $locations)) {
                         array_push($locations, $l['name']);
@@ -814,15 +821,17 @@ class CollegeIndexController extends ApiBaseController
         if ($this->isAuthorized()) {
             $college_id = $this->getOrgId();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -959,6 +968,50 @@ class CollegeIndexController extends ApiBaseController
             $i = 0;
             if ($companies) {
                 foreach ($companies as $c) {
+
+                    $org_labels = OrganizationLabels::find()
+                        ->alias('a')
+                        ->select([
+                            'a.org_label_enc_id',
+                            'a.label_enc_id',
+                            'b.name'
+                        ])
+                        ->joinWith(['labelEnc b'])
+                        ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    $labels = [];
+                    if ($org_labels) {
+                        foreach ($org_labels as $l) {
+                            switch ($l['name']) {
+                                case "Treanding":
+                                    $labels['Treanding'] = true;
+                                    break;
+                                case "Promoted":
+                                    $labels['Promoted'] = true;
+                                    break;
+                                case "New":
+                                    $labels['New'] = true;
+                                    break;
+                                case "Hot":
+                                    $labels['Hot'] = true;
+                                    break;
+                                case "Featured":
+                                    $labels['Featured'] = true;
+                                    break;
+                                case "trendd":
+                                    $labels['trendd'] = true;
+                                    break;
+                                case "Verified":
+                                    $labels['Verified'] = true;
+                                    break;
+                            }
+                        }
+                    }
+
+                    $companies[$i]['labels'] = $labels;
+
                     $reviews = OrganizationReviews::find()
                         ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
                         ->where(['organization_enc_id' => $c['organization_enc_id']])
@@ -1037,18 +1090,20 @@ class CollegeIndexController extends ApiBaseController
                     'a.college_actions',
                     'c.name',
                     'a.cgpa',
-                    'cc.course_name',
+                    'c1.course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                 }], true)
-                ->joinWith(['courseEnc cc'], false)
+                ->joinWith(['assignedCollegeEnc cc'=>function($cc){
+                    $cc->joinWith(['courseEnc c1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']]);
             if (isset($data['course_name']) && !empty($data['course_name'])) {
-                $candidates->andWhere(['cc.course_name' => $data['course_name']]);
+                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
             }
-            if (isset($data['semester']) && !empty($data['semester'])) {
+            if (isset($data['semester']) && !empty($data['semester']) && count($data['semester']) < 10) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);
             }
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {

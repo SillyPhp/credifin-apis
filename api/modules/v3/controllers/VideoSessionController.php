@@ -1,6 +1,7 @@
 <?php
 namespace api\modules\v3\controllers;
 use api\modules\v3\models\TokensModel;
+use common\models\WebinarSessions;
 use yii\widgets\ActiveForm;
 use Yii;
 use yii\web\Response;
@@ -29,6 +30,20 @@ class VideoSessionController extends ApiBaseController
         $result = $result->getToken($params);
         if ($result) {
             return $this->response(200, $result);
+        } else {
+            return $this->response(404, 'Not Found');
+        }
+    }
+
+    public function actionUpdateSession()
+    {
+        $session_id = Yii::$app->request->post('session_id');
+        $id = Yii::$app->request->post('id');
+
+        $model = WebinarSessions::findOne(['session_enc_id' => $id]);
+        $model->session_id = $session_id;
+        if ($model->save()) {
+            return $this->response(200, $session_id);
         } else {
             return $this->response(404, 'Not Found');
         }

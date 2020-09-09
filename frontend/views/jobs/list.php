@@ -76,6 +76,13 @@ color: #2b7cb7;
 .main-content{
     min-height:100vh !important;
 }
+.connected-sortable{
+    padding: 15px 0 0 0 !important;
+}
+.close{
+    right: 12px !important;
+    top: -3px !important;
+}
 ');
 ?>
 
@@ -184,3 +191,10 @@ getReviewList(sidebarpage);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
+<script>
+    setTimeout(function () {
+        let eyActiveMenu = document.getElementsByClassName('ey-active-menu');
+        eyActiveMenu[0].classList.remove('ey-active-menu');
+    }, 2000);
+</script>

@@ -562,7 +562,7 @@ $this->registerCss('
 }
 .hwn-icon img{
     width:100%;
-    height:100%;
+//    height:100%;
 }
 .hwn-title{
     margin-top:20px;
