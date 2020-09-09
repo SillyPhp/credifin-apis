@@ -1,5 +1,7 @@
 <?php
 namespace api\modules\v3\controllers;
+use api\modules\v3\models\RetryPayments;
+use common\models\EducationLoanPayments;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -14,6 +16,7 @@ class PaymentsController extends  ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'get-status' => ['GET'],
+                'retry-payment' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -59,6 +62,20 @@ class PaymentsController extends  ApiBaseController
             }
         }else{
             return $this->response(422, ['status' => 422, 'message' => 'Missing Arguments']);
+        }
+    }
+
+    public function actionRetryPayment()
+    {
+        date_default_timezone_set('Asia/Kolkata');
+        $model = new RetryPayments();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->insert()) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+            }
         }
     }
 }
