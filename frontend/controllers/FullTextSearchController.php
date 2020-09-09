@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\EmployerApplications;
+use common\models\JobDescription;
+use common\models\Organizations;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Html;
@@ -14,41 +17,6 @@ class FullTextSearchController extends Controller
         $result = Yii::$app->db->createCommand("SELECT name FROM {{%unclaimed_organizations}} WHERE MATCH (name) AGAINST ('{$query}' IN NATURAL LANGUAGE MODE);");
 
         print_r($result->queryAll());
-    }
-
-    public function actionPayments()
-    {
-        //Generation of REQUEST_SIGNATURE for a POST Request
-        $date = date_create();
-        $timestamp =  date_timestamp_get($date);
-
-        //params list start
-        $currency = 'INR';
-        $amount = 0.50;
-        $contact = 9592868808;
-        $email = 'sizzlyboysk@gmail.com';
-        //unique number string
-        $mtx = Yii::$app->getSecurity()->generateRandomString();
-        //params list end
-
-        $access_key = 'cbfba3d0-ba9e-11ea-8e90-4384c267ea22';
-        $secret_key = '1c29e11346b1b5a16814c41930a9b4dbf8540b04';
-        $params = 'currency='.$currency.'&amount='.$amount.'&contact='.$contact.'&mtx='.$mtx.'&email='.$email.'';
-        $url = "https://sandbox-icp-api.bankopen.co/api/payment_token?$params";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        $header = [
-            'Accept:*/*',
-            'X-O-Timestamp: '.$timestamp.'',
-            'Content-Type: application/json',
-            'Authorization: '.$access_key.':'.$secret_key.''
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        echo $result;
-        die();
     }
 
     public function actionPaymentsStatus()
@@ -90,4 +58,5 @@ class FullTextSearchController extends Controller
     public function actionWidget(){
         return $this->render('widget');
     }
+
 }
