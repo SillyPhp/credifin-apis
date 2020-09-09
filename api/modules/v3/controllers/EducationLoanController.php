@@ -8,6 +8,7 @@ use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
+use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
@@ -244,7 +245,9 @@ class EducationLoanController extends ApiBaseController
                     'd.co_applicant_dob',
                     'd.employment_type',
                     'd.annual_income',
-                    'd.address'
+                    'd.address',
+                    'd.years_in_current_house',
+                    'd.occupation'
                 ]);
                 $d->joinWith(['loanCertificates de' => function ($e) {
                     $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number']);
@@ -260,15 +263,18 @@ class EducationLoanController extends ApiBaseController
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number']);
                 $e->joinWith(['certificateTypeEnc e1'], false);
                 $e->onCondition(['e.is_deleted' => 0]);
+                $e->orderBy(['e.created_on' => SORT_ASC]);
             }])
             ->joinWith(['loanCandidateEducations f' => function ($f) {
                 $f->select(['f.loan_candidate_edu_enc_id', 'f.loan_app_enc_id', 'f.qualification_enc_id', 'f.institution', 'f.obtained_marks', 'f1.name']);
                 $f->joinWith(['qualificationEnc f1'], false);
                 $f->onCondition(['f.is_deleted' => 0]);
+                $f->orderBy(['f.created_on' => SORT_ASC]);
             }])
             ->joinWith(['loanApplicantResidentialInfos g' => function ($g) {
                 $g->select(['g.loan_app_res_info_enc_id', 'g.loan_app_enc_id', 'g.loan_co_app_enc_id', 'g.residential_type', 'g.type', 'g.address', 'g.city_enc_id', 'g.state_enc_id']);
                 $g->onCondition(['g.is_deleted' => 0]);
+                $g->orderBy(['g.created_on' => SORT_ASC]);
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
             ->asArray()
@@ -440,13 +446,13 @@ class EducationLoanController extends ApiBaseController
                 ->one();
 
             if ($update_res_info) {
-                $update_res_info->residential_type = $params['address_type'];
-                $update_res_info->type = $params['res_type'];
-                $update_res_info->address = $params['address'];
-                $update_res_info->city_enc_id = $params['city_id'];
-                $update_res_info->state_enc_id = $params['state_id'];
-                $update_res_info->created_by = $user_id;
-                $update_res_info->created_on = date('Y-m-d H:i:s');
+                $update_res_info->residential_type = $params['address_type'] ? $params['address_type'] : $update_res_info->residential_type;
+                $update_res_info->type = $params['res_type'] ? $params['res_type'] : $update_res_info->type;
+                $update_res_info->address = $params['address'] ? $params['address'] : $update_res_info->address;
+                $update_res_info->city_enc_id = $params['city_id'] ? $params['city_id'] : $update_res_info->city_enc_id;
+                $update_res_info->state_enc_id = $params['state_id'] ? $params['state_id'] : $update_res_info->state_enc_id;
+                $update_res_info->updated_by = $user_id;
+                $update_res_info->updated_on = date('Y-m-d H:i:s');
                 if ($update_res_info->update()) {
                     return $update_res_info->loan_app_res_info_enc_id;
                 } else {
@@ -528,10 +534,10 @@ class EducationLoanController extends ApiBaseController
             if (isset($params['name']) && !empty($params['name'])) {
                 $education->qualification_enc_id = $qualification_type->qualification_enc_id;
             }
-            $education->institution = $params['institution'];
-            $education->obtained_marks = $params['obtained_marks'];
-            $education->created_by = $user_id;
-            $education->created_on = date('Y-m-d H:i:s');
+            $education->institution = $params['institution'] ? $params['institution'] : $education->institution;
+            $education->obtained_marks = $params['obtained_marks'] ? $params['obtained_marks'] : $education->obtained_marks;
+            $education->updated_by = $user_id;
+            $education->updated_on = date('Y-m-d H:i:s');
             if ($education->update()) {
                 return $education->loan_candidate_edu_enc_id;
             } else {
@@ -555,7 +561,7 @@ class EducationLoanController extends ApiBaseController
             $loan_co_applicants->phone = $params['phone'];
             $loan_co_applicants->relation = $params['relation'];
             $loan_co_applicants->annual_income = $params['annual_income'];
-            $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
+            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob']));
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
             $loan_co_applicants->occupation = $params['occupation'];
             $loan_co_applicants->address = $params['address'];
@@ -572,15 +578,15 @@ class EducationLoanController extends ApiBaseController
                 ->Where(['loan_co_app_enc_id' => $id])
                 ->one();
 
-            $loan_co_applicants->name = $params['name'];
-            $loan_co_applicants->email = $params['email'];
-            $loan_co_applicants->phone = $params['phone'];
-            $loan_co_applicants->employment_type = $params['employment_type'];
-            $loan_co_applicants->annual_income = $params['annual_income'];
-            $loan_co_applicants->co_applicant_dob = $params['co_applicant_dob'];
-            $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
-            $loan_co_applicants->occupation = $params['occupation'];
-            $loan_co_applicants->address = $params['address'];
+            $loan_co_applicants->name = $params['name'] ? $params['name'] : $loan_co_applicants->name;
+            $loan_co_applicants->email = $params['email'] ? $params['email'] : $loan_co_applicants->email;
+            $loan_co_applicants->phone = $params['phone'] ? $params['phone'] : $loan_co_applicants->phone;
+            $loan_co_applicants->employment_type = $params['employment_type'] ? $params['employment_type'] : $loan_co_applicants->employment_type;
+            $loan_co_applicants->annual_income = $params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
+            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob'])) ? date('Y-m-d', strtotime($params['applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
+            $loan_co_applicants->years_in_current_house = $params['years_in_current_house'] ? $params['years_in_current_house'] : $loan_co_applicants->years_in_current_house;
+            $loan_co_applicants->occupation = $params['occupation'] ? $params['occupation'] : $loan_co_applicants->occupation;
+            $loan_co_applicants->address = $params['address'] ? $params['address'] : $loan_co_applicants->address;
             $loan_co_applicants->updated_by = $user_id;
             $loan_co_applicants->updated_on = date('Y-m-d H:i:s');
             if ($loan_co_applicants->update()) {
@@ -677,7 +683,35 @@ class EducationLoanController extends ApiBaseController
                 }
 
             }
-        } else {
+        } else if ($params['type'] == 'id_proof') {
+            if (isset($params['id']) && !empty($params['id'])) {
+                $proof = LoanCertificates::find()
+                    ->where(['certificate_enc_id' => $params['id']])
+                    ->one();
+
+                if ($proof) {
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+
+                    $proof->proof_image = $encrypted_string . '.' . $image->extension;
+                    $proof->proof_image_location = 'loan-proofs-and-profile-images';
+                    $proof->updated_by = $user_id;
+                    $proof->updated_on = date('Y-m-d H:i:s');
+                    if ($proof->update()) {
+                        if ($this->uploadFile($proof->proof_image, $image->tempName)) {
+                            return $proof->certificate_enc_idl;
+                        }
+                    } else {
+                        print_r($proof->getErrors());
+                        die();
+                    }
+                }
+            }
+        } else if ($params['type'] == 'applicant') {
             $loan_applicant = LoanApplications::find()
                 ->where(['loan_app_enc_id' => $params['loan_app_id']])
                 ->one();
@@ -736,6 +770,18 @@ class EducationLoanController extends ApiBaseController
         } else {
             return false;
         }
+    }
+
+    public function actionGetCity()
+    {
+        $city_name = Yii::$app->request->post('city');
+
+        $city = Cities::find()
+            ->where(['like', 'name', $city_name])
+            ->all();
+
+        return $city;
+
     }
 
 }
