@@ -133,6 +133,10 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </a>
                 </div>
             </div>
+             <?= $this->render('/widgets/templates-jobs', [
+            'jobs' => $jobs,
+             'type' => 'Jobs',
+        ]);?>
         </div>
         <div class="col-md-10 col-sm-9">
             <div class="row widget-row">
@@ -225,11 +229,11 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 </div>
                                 <div class="actions">
                                     <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
-                                       title="Add New">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                       title="Create AI Job" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"></a>
                                     <?php if ($erexx_applications['total'] > 8): ?>
                                         <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
-                                           title="View All">
+                                           title="View All" class="ai">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                     <?php endif; ?>
                                 </div>
@@ -421,6 +425,28 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
 <?php
 $this->registerCss('
+.total-jobs{
+    background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.total-int-p{
+    background: linear-gradient(145deg, #f41ea0, #f08143);
+}
+.total-qn{
+    background: linear-gradient(145deg, #1ea4f4, #4ed0d0);
+}
+.total-appl{
+    background: linear-gradient(145deg, #1e21f4, #43c7f0);
+}
+.widget-thumb .widget-thumb-heading{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    color:#fff;
+    font-size:32px !important;
+}
+.widget-thumb .widget-thumb-wrap .widget-thumb-icon{
+    font-size:45px ;
+}
 .create-new-j a {
 	background: #00a0e3;
 	color: #fff;
@@ -592,7 +618,8 @@ $this->registerCss('
     margin-right:10px;
 }
 .ai img, .view img{
-    height:31px;
+    height:31px !important;
+    margin: 0 !important;
 }
 .actions > a > img {
     height:22px;

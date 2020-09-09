@@ -125,6 +125,10 @@ use yii\widgets\Pjax;
                     </a>
                 </div>
             </div>
+            <?= $this->render('/widgets/templates-jobs', [
+                'jobs' => $internships,
+                'type' => 'Internships',
+            ]);?>
         </div>
         <div class="col-md-10">
             <div class="loader"><img
@@ -219,8 +223,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="actions">
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                                   title="Add New">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                   title="Create AI Internship" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"></a>
                                 <?php if ($erexx_applications['total'] > 8): ?>
                                     <a href="<?= Url::toRoute('/internships/active-erexx-internships'); ?>"
                                        data-toggle="tooltip" title="View All">
@@ -414,6 +418,28 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.total-intern{
+    background: linear-gradient(145deg, #1e21f4, #43c7f0);
+}
+.total-inter{
+    background: linear-gradient(145deg, #f41ea0, #f08143);
+}
+.total-qne{
+    background: linear-gradient(145deg, #1ea4f4, #4ed0d0);
+}
+.total-apply{
+    background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.widget-thumb .widget-thumb-heading{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    color:#fff;
+    font-size:32px !important;
+}
+.widget-thumb .widget-thumb-wrap .widget-thumb-icon{
+    font-size:45px ;
+}
 .create-new-i a {
 	background: #00a0e3;
 	color: #fff;
@@ -593,7 +619,8 @@ $this->registerCss('
     margin-right:10px;
 }
 .ai img, .view img{
-    height:31px;
+    height:31px !important;
+    margin: 0 !important;
 }
 .actions > a > img {
     height:22px;

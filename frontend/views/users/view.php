@@ -1,13 +1,34 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
+if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+    if (!empty($userApplied['applied_application_enc_id'])) {
+        $j = 0;
+        if ($userApplied['status'] == 'Hired') {
+            $fieldName = "Hired";
+        } elseif ($userApplied['status'] == 'Rejected') {
+            $fieldName = "Rejected";
+        } else {
+            $fieldName = "Applied";
+        }
+        if (!empty($userApplied['appliedApplicationProcesses'])) {
+            foreach ($userApplied['appliedApplicationProcesses'] as $p) {
+                if ($j == $userApplied['active'] && $userApplied['status'] != 'Rejected') {
+                    $fieldName = $p['field_name'];
+                    break;
+                }
+                $j++;
+            }
+        }
+    }
+}
 $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
                 <div class="left-side-container">
                     <div class="freelance-image">
                         <?php
@@ -51,7 +72,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4 bl-1 br-gary">
+            <div class="col-md-4 col-sm-6  br-gary">
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><span
@@ -76,10 +97,18 @@ $this->params['header_dark'] = false;
                         <li>
                             <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
+                        <li>
+                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+                        if (!empty($userApplied['applied_application_enc_id'])) {
+                        ?>
+                            <span class="detail-info">
+                                Application Status</span><?= $fieldName ?>
+                    <?php } } ?>
+                        </li>
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
-                            <li>
+                            <li class="fbook">
                                 <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
                                    target="_blank">
                                     <i class="fab fa-facebook-f"></i>
@@ -87,27 +116,56 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
-                            <li>
+                            <li class="tter">
                                 <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fab fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
-                            <li>
+                            <li class="lin">
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
                                     <i class="fab fa-linkedin-in"></i>
                                 </a>
                             </li>
                         <?php }
+                        if (!empty($user['email'])) { ?>
+                            <li class="mael">
+                                <a href="mailto:<?= Html::encode($user['email']) ?>"
+                                   target="_blank">
+                                    <i class="far fa-envelope-open"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['skype'])) { ?>
-                            <li>
+                            <li class="skpe">
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
                                 </a>
                             </li>
-                        <?php } ?>
+                        <?php }
+                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            if (!empty($userApplied['applied_application_enc_id'])) {
+                            ?>
+                            <li class="talking">
+                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                    <i class="far fa-comment-dots"></i>
+                                </a>
+                            </li>
+                        <?php } } ?>
+                        <li class="dwn">
+                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                                ?>
+                                <div class="down-r">
+                                    <?php
+                                     $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                    ?>
+                                    <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i class="fas fa-download"></i></a>
+                                </div>
+                            <?php } } ?>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -175,13 +233,17 @@ $this->params['header_dark'] = false;
                         foreach ($education as $edu) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i class="fas fa-university"></i><?= $edu['institute'] ?>
+                                <div class="prof-p">
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                    <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i
-                                            class="fas fa-user-graduate"></i><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-clock"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                    </div>
+                                    <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -194,13 +256,20 @@ $this->params['header_dark'] = false;
                         foreach ($experience as $exp) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i
-                                            class="fas fa-hotel"></i><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                <div class="prof-p">
+                                    <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80" font="30px"></canvas>
                                 </div>
-                                <div class="quelification s-text"><i class="fas fa-briefcase"></i><?= $exp['title'] ?>
-                                </div>
-                                <div class="s-time s-text"><i
-                                            class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                <div class="prof-inner">
+                                    <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                    </div>
+                                    <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to '?>
+                                        <?php if($exp['is_current']){ echo 'Present'; } else { ?>
+                                            <?php echo date("d/m/Y", strtotime($exp['to_date'])); } ?>
+                                    </div>
+                                    <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                    </div>
                                 </div>
                             </div>
                             <?php
@@ -248,7 +317,7 @@ $this->params['header_dark'] = false;
             <?php
             if (array_filter($job_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -282,7 +351,7 @@ $this->params['header_dark'] = false;
             }
             if (array_filter($internship_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -318,7 +387,58 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
+if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    if (!empty($userApplied['applied_application_enc_id'])) {
+    echo $this->render('@common/widgets/chat-main');
+} }
 $this->registerCss('
+.fbook a {
+    background-color: #3b5998;
+}
+.tter a {
+	background-color: #00aced;
+}
+.lin a {
+	background-color: #007bb6;
+}
+.mael a {
+	background-color: #bb0000;
+}
+.skpe a {
+	background-color: #00a0e3;
+}
+.talking a {
+	background-color: #00bf8f;
+}
+.down-r {
+	text-align:center;
+}
+.down-r a {
+	background-color: #00a0e3;
+}
+.prof-p {
+	width: 80px;
+	height: 80px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.prof-p img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.prof-inner {
+	margin: 0 0 0 10px;
+}
+.s-text-2 {
+    font-size: 14px;
+    color: #605c5c;
+}
+.user-icon.img-circle.img-responsive {
+    width: 236px;
+}
+body{background-color:#f9f9f9;}
 //.detail-section{
 //    filter: blur(5px);
 //    -webkit-filter: blur(5px);
@@ -329,6 +449,7 @@ $this->registerCss('
     font-family: roboto;
     padding-bottom: 3px;
     letter-spacing: 1px;
+    color:#000;
 }
 .education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
     padding-bottom: 20px;
@@ -337,10 +458,12 @@ $this->registerCss('
     margin-bottom: -1px;
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
+    display:flex;
 }
 .s-text {
-    font-size: 14px;
+    font-size: 18px;
     font-family: roboto;
+    color:#000;
 }
 .s-text > i{
     margin-right:7px;
@@ -353,7 +476,7 @@ $this->registerCss('
     border-radius: 6px;
     margin: 0 5px 0 0;
     font-weight: 500;
-    color: #657180;
+    color: #605c5c;
 }
 .skillss > ul > li {
     display: inline-block;
@@ -393,7 +516,7 @@ $this->registerCss('
     margin-bottom:5px;
 }
 .prefer-detail{
-    padding-top:50px;
+    padding:20px;
 }
 .prefer-detail > ul > li{
     font-size: 14px;
@@ -403,26 +526,26 @@ $this->registerCss('
 .set-width {
     width: 40%;
     display: inline-block;
+    font-family:roboto;
+    font-weight:500;
 }
 .position {
     width: 60%;
     display: inline-flex;
+    font-family:roboto;
 }
 .prefer {
-    font-size: 20px;
-    font-family: sans-serif;
-    text-align: center;
-    background: #eee;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
+	font-size: 20px;
+	font-family: roboto;
+	text-align: center;
+	padding: 3px;
 }
 .set-color{
     background: #ff7803;
     padding: 5px 15px;
     margin-left: -15px;
     color: #fff;
+    font-family:roboto;
 }
 .edit-profile-btn{
     text-align: center;
@@ -431,9 +554,10 @@ $this->registerCss('
     padding: 5px 25px;
     box-shadow: 0px 1px 12px 1px #a5a5a5;
     border-radius: 4px;
-    margin-top: 2px;
+    margin: 10px 5px 5px;
     font-size: 13px;
     display: inline-block;
+    font-family:roboto;
 }
 .edit-profile-btn:hover, .edit-profile-btn:focus{
     background-color:#0392ce;
@@ -441,40 +565,49 @@ $this->registerCss('
 }
 .freelance-image img{
     width:100%;
-    height:88%;
+    height:100%;
+    object-fit:fill;
 }
  .inner-header-page{
-    padding:150px 0 50px;
-	text-align:left;
-	background:#f5f6f7;
-    border-bottom:2px solid #00a0e3;	
+    padding:100px 0 0px;	
 }
 .left-side-container {
-    display: table;
-    width: 100%;
+	width: 100%;
+	background-color: #fff;
+	padding: 50px;
+	position: relative;
+	margin: auto;
+	border-radius: 8px;
+	margin-bottom: 25px;
+	min-height: 270px;
+	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
 }
 .inner-header-page .freelance-image {
-    height: 160px;
-    flex: 0 0 140px;
-    margin-right: 35px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.1);
-    display: inline-block;
-    padding: 0 20px;
-    line-height: 140px;
-    float: left;
+	height: 240px;
+	background: #fff;
+	border-radius: 100%;
+	box-shadow: 0 3px 12px rgba(0,0,0,.1);
+	padding: 2px;
+	position: absolute;
+	left: -19%;
+	top: 5%;
+	width: 240px;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
-	max-width:140px;
-	margin-top:10px;
+//	max-width:140px;
+//	margin-top:10px;
+}
+.header-details p{
+    font-size:16px;
+    font-family:roboto;
 }
 .header-details h4{
 	margin:0 0 5px 0;
-	font-size:24px;
+	font-size:34px;
+	font-family:lora;
 }
 .header-details h4 span{
 	font-size:17px;
@@ -490,6 +623,8 @@ $this->registerCss('
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 12px;
+    font-family:roboto;
+    font-size:16px;
 }
 .inner-header-page .header-details ul li img{
     height: 16px;
@@ -535,7 +670,7 @@ $this->registerCss('
     background-color: #0395d8;
 }
 .header-details {
-    margin-top: 20px;
+    padding-left: 100px;
 }
 .inner-header-page .header-details li .star-rating {
     position: relative;
@@ -561,6 +696,13 @@ $this->registerCss('
 .inner-header-page .header-details li .star-rating .fa.fill {
     color:#febe42;
 }
+.right-side-detail {
+	background-color: #fff;
+	padding: 30px 20px 5px;
+	border-radius: 8px;
+    min-height:270px;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
+}
 .right-side-detail ul {
     padding: 0;
     margin: 0;
@@ -573,19 +715,20 @@ $this->registerCss('
     width: 135px;
 	font-weight:500;
     display: inline-block;
+    font-family:roboto;
 }
 .right-side-detail ul.social-info li{
 	display:inline-block;
 	margin:5px;
 }
 .right-side-detail ul.social-info li a {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     display: inline-block;
-    background: #e3e8ec;
     text-align: center;
-    line-height: 40px;
+    line-height: 30px;
     border-radius: 2px;
+    color:#fff;
 }
 span.available-status {
     margin-left: 10px;
@@ -602,16 +745,24 @@ span.available-status {
 	padding:30px 30px;
     margin-bottom: 30px;
     position: relative;
-    border: 1px solid #eaeff5;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .apply-job-detail{
 	margin-bottom:30px;
+	font-family:roboto;
+	color:#605c5c;
 }
 .apply-job-detail h5{
 	font-size:18px;
+	font-family:roboto;
+	color:#000;
 }
 .apply-job-header a {
     margin-right: 15px;
+    font-family:roboto;
+}
+.apply-job-header span {
+	font-family: roboto;
 }
 .apply-job-header a i, .apply-job-header span i {
     margin-right: 5px;
@@ -621,6 +772,7 @@ span.available-status {
 }
 .apply-job-header h4{
 	font-size:22px;
+	font-family:roboto;
 }
 ul.skills,  ul.job-requirements{
     margin: 15px 0;
@@ -633,8 +785,9 @@ ul.skills li {
     border: 1px solid #b9c5ce;
     border-radius: 6px;
     margin: 5px;
-    font-weight: 500;
-    color: #657180;
+    font-weight: 400;
+    font-family:roboto;
+    color: #605c5c;
 }
 
 ul.job-requirements li{
@@ -704,15 +857,16 @@ img.img-responsive.payment-img {
 }
 
 /*--------------- Sidebar: Detail For Freelancer ----------------*/
-.sidebar-container{
-    background: #ffffff;
-    overflow: hidden;
-    margin-bottom:30px;
-	position:relative;
+.sidebar-container {
+	background: #ffffff;
+	overflow: hidden;
+	margin-bottom: 30px;
+	position: relative;
 	transition: .4s;
-    padding: 0px 15px 10px 15px;
-    border: 1px solid #eee;
-    border-radius:5px;
+	/* padding: 0px 15px 10px 15px; */
+	/* border: 1px solid #eee; */
+	border-radius: 8px;
+	box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
@@ -861,6 +1015,16 @@ ul.status-detail li>strong {
     .header-details {
         margin-top: 0px;
         display: inherit;
+        padding-left:0;
+        text-align:center;
+    }
+    .inner-header-page .freelance-image {
+        position: relative;
+        left: 0;
+        top: 0;
+        margin: auto;
+        width: 160px;
+        height: 160px;
     }
 }
 @media screen and (max-width: 991px) and (min-width: 768px) {
@@ -869,6 +1033,14 @@ ul.status-detail li>strong {
     }
     .edit-profile-btn {
         padding: 5px 20px;
+    }
+}
+@media screen and (max-width: 450px){
+    .set{
+        display:block;
+    }
+    .prof-inner {
+        margin: 5px 0 0 0;
     }
 }
 ');

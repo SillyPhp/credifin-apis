@@ -258,6 +258,7 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.status',
                     'b.last_date',
                     'b.joining_date',
                     'm.fixed_wage as fixed_salary',
@@ -309,7 +310,7 @@ class SearchController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
                     'b.application_for' => [0, 2],
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
@@ -356,6 +357,7 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.status',
                     'b.last_date',
                     'b.joining_date',
                     'm.fixed_wage as fixed_salary',
@@ -404,7 +406,7 @@ class SearchController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
                     'b.application_for' => [0, 2],
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
@@ -439,7 +441,7 @@ class SearchController extends ApiBaseController
 
         $i = 0;
         foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+//            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
                     $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
@@ -503,6 +505,11 @@ class SearchController extends ApiBaseController
             $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
+            if ($j['status'] != 'Active') {
+                $data['is_closed'] = true;
+            } else {
+                $data['is_closed'] = false;
+            }
             foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
                 if (!in_array($l['name'], $locations)) {
                     array_push($locations, $l['name']);
@@ -519,7 +526,7 @@ class SearchController extends ApiBaseController
             }
 
             $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
-            $data['location'] = implode(',', $locations);
+            $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
             $data['positions'] = $positions;
             $data['education'] = implode(',', $educational_requirement);
             $data['skills'] = implode(',', $skills);

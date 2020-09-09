@@ -46,7 +46,7 @@ use yii\helpers\Url;
 <?php
 $this->registercss('
 .news-updation {
-	background-color: #000;
+	background:linear-gradient(to bottom right, #141e30 0%, #243b55 100%);
 	padding:20px 0 40px;
 }
 .n-heading {
@@ -72,14 +72,14 @@ $this->registercss('
 	border:2px solid transparent;
 }
 .view-all-news:hover a{
-    background-color:#000;
+    background-color:#141e30;
     color:#fff;
     border:2px solid #fff;
 }
 .news-bx {
 	display: flex;
 	margin-bottom: 15px;
-	border: 1px dashed #fff;
+	border: 1px dotted #fff;
 	padding: 10px;
 	transition: all .3s;
 }

@@ -366,6 +366,23 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.col-item {
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+.col-item .photo img{
+    object-fit:cover !important;
+}
+.col-item .info{
+    text-align:center;
+    font-family:roboto;
+}
+.col-item .price h5{
+    font-size:16px;
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
 .view-all-articles {
 	text-align: center;
 	margin: 25px 0 0;
@@ -784,25 +801,20 @@ $this->registerCss('
     width: 253px;
     height: 320px;
     margin: 0 auto;
-    padding: 50px;
+    padding: 50px 0;
     top:-10px;
     left:-10px;
     transition-timing-function: linear;
     z-index:300;
 }
 .zoom img{
-    width:150px;
     height:200px;
     z-index:-500;
-    position:absolute;
 }
 .zoom:hover{
-    -ms-transform: scale(1.5,1.5); /* IE 9 */
-    -webkit-transform: scale(1.5,1.5); /* Safari 3-8 */
-    transform: scale(1.5,1.5); 
-    top:0%;
-    left:0;
-    position: absolute;
+    -ms-transform: scale(1.4); /* IE 9 */
+    -webkit-transform: scale(1.4); /* Safari 3-8 */
+    transform: scale(1.4);
     z-index: 999;
 }
 .c_content{

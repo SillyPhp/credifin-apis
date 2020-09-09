@@ -1,5 +1,10 @@
 <?php
 use yii\helpers\Url;
+if (Yii::$app->request->get('sortBy'))
+{
+    $is_selected = Yii::$app->request->get('sortBy');
+}
+Yii::$app->view->registerJs('var is_selected = "' . $is_selected . '"', \yii\web\View::POS_HEAD);
 ?>
     <div class="filters-main">
         <ul class="filters flex-container">
@@ -44,16 +49,37 @@ $this->registercss('
   justify-content:center;
 }
 .flex-container > li {
-	background-color:#a5c7e5;
 	width: 28px;
 	margin: 7px;
 	text-align: center;
 	line-height: 25px;
-	font-size: 16px;
+	font-size: 18px;
 	font-family: roboto;
 	border-radius: 4px;
 	font-weight: 500;
 }
-.flex-container > li a{color:#fff;display:block;}
+.flex-container > li a{display:block;transition:all .2s;}
+.flex-container > li a:hover {
+	color: #fff;
+	background-color: #00a0e3;
+	border-radius: 2px;
+}
+.change_color
+{
+    color: #fff;
+    background-color: #00a0e3;
+    border-radius: 2px;
+}
 ');
+$script = <<< JS
+let v = $('.filters li a');
+$.each(v,function(index,value) {
+    var x = $(this).data("id");
+  if (x==is_selected){
+      $(this).addClass('change_color');
+  }
+})
+JS;
+$this->registerJs($script);
+
 

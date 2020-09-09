@@ -25,7 +25,7 @@ use yii\helpers\Url;
                         <div class="mobile-flex">
                             <div class="col-md-6 col-md-offset-0 col-sm-2 col-sm-offset-1">
                                 <div class="social-main">
-                                    <a href="/social-community#whatsapp">
+                                    <a href="/social-community#WhatsApp">
                                         <div class="social-logo" style="background-color:#34bd34">
                                             <i class="fab fa-whatsapp"></i>
                                         </div>
@@ -34,7 +34,7 @@ use yii\helpers\Url;
                             </div>
                             <div class="col-md-6  col-sm-2">
                                 <div class="social-main">
-                                    <a href="/social-community#facebook">
+                                    <a href="/social-community#Facebook">
                                         <div class="social-logo" style="background-color:#fff">
                                             <i class="fab fa-facebook-f"></i>
                                         </div>
@@ -44,7 +44,7 @@ use yii\helpers\Url;
 
                             <div class="col-md-12  col-sm-2">
                                 <div class="social-main">
-                                    <a href="/social-community#telegram">
+                                    <a href="/social-community#Telegram">
                                         <div class="social-logo" style="background-color:#00a0e3">
                                             <i class="fab fa-telegram-plane"></i>
                                         </div>
@@ -54,7 +54,7 @@ use yii\helpers\Url;
 
                             <div class="col-md-6  col-sm-2">
                                 <div class="social-main">
-                                    <a href="/social-community#instagram">
+                                    <a href="/social-community#Instagram">
                                         <div class="social-logo" style="background-color:#dc004a">
                                             <i class="fab fa-instagram"></i>
                                         </div>
@@ -64,7 +64,8 @@ use yii\helpers\Url;
                             <div class="col-md-6  col-sm-2">
                                 <div class="social-main">
                                     <a href="/social-community#twitter">
-                                        <div class="social-logo" style="background-color:#85ceec">
+                                        <div class="social-logo"
+                                             style="background-color:#85ceec">
                                             <i class="fab fa-twitter"></i>
                                         </div>
                                     </a>

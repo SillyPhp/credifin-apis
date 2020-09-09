@@ -6,6 +6,12 @@ use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
 ?>
+<div id="g_id_onload"
+     data-client_id="758339221215-qbm8120ln6a178jbh387s5nb08f1g7ss.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-your_own_param_1_to_login="any_value"
+     data-your_own_param_2_to_login="any_value">
+</div>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
@@ -79,6 +85,14 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
+                                <div class="separator pb-10">
+                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                </div>
+                                <div class="form-group mt-10">
+                                    <?=
+                                    \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+                                    ?>
+                                </div>
                                 <div class="new-user">
                                     New User?
                                     <button type="button" onclick="changeSignup()"> Sign Up</button>
@@ -107,6 +121,10 @@ use borales\extensions\phoneInput\PhoneInput;
 </div>
 <?php
 $this->registerCss('
+.auth-clients{
+    display: flex !important;
+    justify-content: center !important;
+    } 
 .individual-form::-webkit-scrollbar { 
     width: 0 !important 
 }

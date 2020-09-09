@@ -6,14 +6,14 @@ use yii\helpers\Url;
 
     <section>
         <div class="container">
-            <div class="row">
+            <div class="row" id="featured-head">
                 <div class="col-md-6 col-sm-8 col-xs-12">
                     <h1 class="heading-style" id="prefer-heading">Prefered Jobs</h1>
                 </div>
                 <div class="col-md-6 col-sm-4 col-xs-12">
                     <div class="type-1">
                         <div>
-                            <a href="<?= Url::to('/jobs'); ?> " class="btn btn-3" id="65af4d5a" >
+                            <a href="<?= Url::to('/jobs'); ?> " class="btn btn-3" id="65af4d5a">
                                 <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
                                 <span class="round"><i class="fas fa-chevron-right"></i></span>
                             </a>
@@ -101,15 +101,16 @@ $script = <<<JS
 
  var x, lat, lng, city, state, country, geocoder, latlng, loc;
  $(document).ready(function() {
+     $('#featured-head').hide();
      getLocation();
  });
  function result() {
      loc = city + ', ' + state + ', ' + country;
      getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
-     if(city != ""){
-        $('#prefer-heading').html('Jobs in ' + city);
-        $('#65af4d5a').prop('href','/jobs-in-' + city)
-     }
+     // if(city != ""){
+     //    $('#prefer-heading').html('Jobs in ' + city);
+     //    $('#65af4d5a').prop('href','/jobs-in-' + city)
+     // }
  }
 function ipLookUp () {
     city = localStorage.getItem("city");

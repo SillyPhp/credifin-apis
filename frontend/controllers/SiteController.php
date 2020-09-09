@@ -1,7 +1,9 @@
 <?php
 
 namespace frontend\controllers;
-
+use account\models\applications\ApplicationForm;
+use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -11,9 +13,13 @@ use common\models\ExternalNewsUpdate;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
+use common\models\SocialPlatforms;
 use common\models\States;
+use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
+use frontend\models\accounts\WidgetSignUpForm;
+use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
 use frontend\models\SubscribeNewsletterForm;
@@ -60,12 +66,79 @@ class SiteController extends Controller
     public function actions()
     {
         return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+                'successUrl' => 'oauth-verify',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
         ];
     }
 
+    public function onAuthSuccess($client)
+    {
+        (new AuthHandler($client))->handle();
+    }
+
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            if((new OneTapAuth())->handle(Yii::$app->request->post()))
+            {
+                return $this->redirect('/site/oauth-verify');
+            }
+            else{
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
+    public function actionOauthVerify()
+    {
+        $this->layout = 'main-secondary';
+        $credentialsSetup = new CredentialsSetup();
+        if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->is_credential_change===1)
+        {
+            return $this->render('auth-varify',['credentialsSetup'=>$credentialsSetup]);
+        }
+        else{
+            return $this->redirect('/');
+        }
+    }
+    public function actionPostCredentials()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if ($credentialsSetup->load(Yii::$app->request->post()))
+        {
+         if ($credentialsSetup->save())
+         {
+             return $this->redirect('/');
+         }
+        }
+    }
+    public function actionValidateUser()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $credentialsSetup->load(Yii::$app->request->post());
+            if ($credentialsSetup->username===Yii::$app->user->identity->username)
+            {
+                return [];
+            }
+            return ActiveForm::validate($credentialsSetup);
+        }
+    }
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
@@ -87,9 +160,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', [
-            'model' => $model
-        ]);
+        return $this->render('index',['model'=>$model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -219,9 +290,14 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
+    public function actionOurPartners()
+    {
+        return $this->render('our-partners');
+    }
+
     public function actionCovid19()
     {
-       return $this->redirect('/covid-19/warning-posters');
+        return $this->redirect('/covid-19/warning-posters');
     }
 
     public function actionSocialCommunity()
@@ -240,8 +316,18 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $socials = SocialPlatforms::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function($b){
+//                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
+//                $b->joinWith(['groupEnc c']);
+            }])
+            ->asArray()
+            ->all();
+
         return $this->render('whatsapp-community', [
-            'data' => $data
+            'data' => $data,
+            'socials' => $socials
         ]);
     }
 
@@ -473,66 +559,72 @@ class SiteController extends Controller
     {
 
         $model = new SignUpCandidateForm();
-        $jobprimaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
-            ->asArray()
-            ->all();
+        $job_profile = new ApplicationForm();
+        $primary_cat = $job_profile->getPrimaryFields();
 
-        $modelSignUp = new IndividualSignUpForm();
-        if ($model->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $modelSignUp->username = $model->username;
-            $modelSignUp->first_name = $model->first_name;
-            $modelSignUp->last_name = $model->last_name;
-            $modelSignUp->email = $model->email;
-            $modelSignUp->phone = $model->phone;
-            $modelSignUp->new_password = $model->new_password;
-            $modelSignUp->confirm_password = $model->confirm_password;
-            $errors = ActiveForm::validate($modelSignUp);
-            if (empty($errors)) {
-                $session = Yii::$app->session;
-                $session->set('profile_job', $model->job_profile);
-                $session->set('city', $model->city);
-                $session->set('cityId', $model->city_id);
-                $session->set('salary', $model->salary);
-                $session->set('experience', $model->experience);
-
-                $modelSignUp->user_type = 'Individual';
-
-                if ($modelSignUp->add()) {
-                    $data['username'] = $modelSignUp->username;
-                    $data['password'] = $modelSignUp->new_password;
-                    if ($this->login($data)) {
-
-                        $profileJob = $session->get('profile_job');
-                        $cityJob = $session->get('city');
-                        $cityJobId = $session->get('cityId');
-                        $salaryJob = $session->get('salary');
-                        $experienceJob = $session->get('experience');
-                        if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
-                            return $this->redirect('/account/dashboard');
-                        } else {
-                            return [
-                                'status' => 'error',
-                                'title' => 'error',
-                                'message' => 'An error has occurred. Please try again later',
-                            ];
-                        }
-                    }
-                }
-            } else {
-                return $errors;
-            }
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
         }
+
         return $this->renderAjax('sign-up-candidate', [
             'model' => $model,
-            'jobprimaryfields' => $jobprimaryfields,
+            'primary_cat' => $primary_cat,
         ]);
     }
+    public function actionSignUp(){
+        $model = new SignUpCandidateForm();
+        $modelSignUp = new WidgetSignUpForm();
+        if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $modelSignUp->username = $model->username;
+                $modelSignUp->first_name = $model->first_name;
+                $modelSignUp->last_name = $model->last_name;
+                $modelSignUp->email = $model->email;
+                if($model->phone){
+                $modelSignUp->phone = $model->phone;
+                }
+                $modelSignUp->new_password = $model->new_password;
+                $modelSignUp->confirm_password = $model->confirm_password;
+                if (empty($errors)) {
+                    $session = Yii::$app->session;
+                    $session->set('profile_job', $model->job_profile);
+                    $session->set('city', $model->city);
+                    $session->set('cityId', $model->city_id);
+                    $session->set('salary', $model->salary);
+                    $session->set('experience', $model->experience);
 
+                    $modelSignUp->user_type = 'Individual';
+
+                    if ($modelSignUp->add()) {
+                        $data['username'] = $modelSignUp->username;
+                        $data['password'] = $modelSignUp->new_password;
+                        if ($this->login($data)) {
+
+                            $profileJob = $session->get('profile_job');
+                            $cityJob = $session->get('city');
+                            $cityJobId = $session->get('cityId');
+                            $salaryJob = $session->get('salary');
+                            $experienceJob = $session->get('experience');
+                            if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
+                                return $this->redirect('/account/dashboard');
+                            } else {
+                                return [
+                                    'status' => 'error',
+                                    'title' => 'error',
+                                    'message' => 'An error has occurred. Please try again later',
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    return $errors;
+                }
+            }
+        }
+    }
     private function login($data = [])
     {
         $loginFormModel = new LoginForm();
@@ -770,7 +862,7 @@ class SiteController extends Controller
                     ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
                     ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
                     ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
-                    ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
+//                    ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
                     ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
                     ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
                 $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
@@ -801,7 +893,7 @@ class SiteController extends Controller
                     ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
                     ->groupBy('city_enc_id')
                     ->orderBy(['jobs' => SORT_DESC])
-                    ->limit(4)
+                    ->limit(3)
                     ->all();
                 return $this->renderAjax('/widgets/top-cities', [
                     'cities_jobs' => $cities_jobs
@@ -819,12 +911,24 @@ class SiteController extends Controller
             case 'getInternationalJobs':
                 return $this->renderAjax('/widgets/international-jobs');
                 break;
+            case 'getSafetySigns':
+                return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getOnlineClasses':
+                $model = new ClassEnquiryForm();
+                return $this->renderAjax('/widgets/online-classes',[
+                    'model' => $model,
+                ]);
+                break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
                 break;
-            case 'getFeaturedJobs':
-                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
+            case 'getFeaturedApplications':
+                return $this->renderAjax('/widgets/employer_applications/preferred-applications');
                 break;
+//            case 'getFeaturedJobs':
+//                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
+//                break;
             case 'getHowItWorks':
                 if (Yii::$app->user->isGuest) {
                     return $this->renderAjax('/widgets/homepage_components/how-it-works');
@@ -837,6 +941,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');
@@ -976,4 +1083,8 @@ class SiteController extends Controller
         return $this->render('creator-handbook');
     }
 
+    public function actionTeachersHandbook()
+    {
+        return $this->render('teachers-handbook');
+    }
 }

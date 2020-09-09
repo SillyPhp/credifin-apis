@@ -9,10 +9,13 @@ use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
 use common\models\EmployerApplications;
+use common\models\ErexxEmployerApplications;
 use common\models\InterviewProcessFields;
+use common\models\OrganizationInterviewProcess;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
+use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use Yii;
 use yii\helpers\Url;
@@ -60,6 +63,20 @@ class JobsController extends ApiBaseController
         ]);
 
         return $user;
+    }
+
+    private function getOrgId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $organizations = Users::find()
+                ->alias('a')
+                ->select(['b.organization_enc_id college_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+            return $organizations['college_id'];
+        }
     }
 
     public function actionApplicationDetail()
@@ -115,6 +132,12 @@ class JobsController extends ApiBaseController
             if (!empty($data['timings_from']) && !empty($data['timings_to'])) {
                 $data['timings_from'] = date("H:i", strtotime($data['timings_from']));
                 $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
+            }
+
+            if ($data['status'] != 'Active') {
+                $data['is_closed'] = true;
+            } else {
+                $data['is_closed'] = false;
             }
 
             if ($data['wage_type'] == 'Fixed') {
@@ -184,6 +207,43 @@ class JobsController extends ApiBaseController
                 ];
             }
 
+            if ($this->getOrgId()) {
+                $is_approve = ErexxEmployerApplications::find()
+                    ->select(['is_college_approved', 'is_deleted'])
+                    ->where(['employer_application_enc_id' => $data['application_enc_id'], 'college_enc_id' => $this->getOrgId()])
+                    ->asArray()
+                    ->one();
+
+                $data['is_college_approved'] = $is_approve['is_college_approved'];
+                $data['is_college_deleted'] = $is_approve['is_deleted'];
+            }
+
+            $application_process = OrganizationInterviewProcess::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.interview_process_enc_id'])
+                ->joinWith(['interviewProcessFields b' => function ($b) {
+                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', '(CASE
+                        WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
+                        WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
+                        WHEN b.icon = "fa fa-user" THEN "fas fa-user"
+                        WHEN b.icon = "fa fa-cogs" THEN "fas fa-cogs"
+                        WHEN b.icon = "fa fa-user-circle" THEN "fas fa-user-circle"
+                        WHEN b.icon = "fa fa-users" THEN "fas fa-users"
+                        WHEN b.icon = "fa fa-video-camera" THEN "fas fa-video"
+                        WHEN b.icon = "fa fa-check" THEN "fas fa-check"
+                        WHEN b.icon = "fa fa-pencil-square-o" THEN "fas fa-pen-square"
+                        WHEN b.icon = "fa fa-envelope" THEN "fas fa-envelope"
+                        WHEN b.icon = "fa fa-question" THEN "fas fa-question"
+                        WHEN b.icon = "fa fa-paper-plane" THEN "fas fa-paper-plane"
+                        ELSE "fas fa-plus"
+                        END) as icon']);
+                }])
+                ->where(['a.interview_process_enc_id' => $data['interview_process_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $data['process'] = $application_process;
+
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
 
@@ -208,7 +268,7 @@ class JobsController extends ApiBaseController
                 'x.industry',
                 'a.title',
                 '(CASE
-                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
+                     WHEN a.preferred_gender = "0" THEN "No preferred gender"
                     WHEN a.preferred_gender = "1" THEN "Male"
                     WHEN a.preferred_gender = "2" THEN "Female"
                     WHEN a.preferred_gender = "3" THEN "Transgender"
@@ -223,6 +283,7 @@ class JobsController extends ApiBaseController
                 'l.icon_png',
                 'a.type',
                 'a.slug',
+                'a.status',
                 'a.preferred_industry',
                 'a.interview_process_enc_id',
                 'a.timings_from',
@@ -250,7 +311,7 @@ class JobsController extends ApiBaseController
                 'b.interview_start_date',
                 'b.interview_end_date',
                 'w.organization_enc_id',
-                'w.name organization_name',
+                'REPLACE(w.name, "&amp;", "&") as organization_name',
                 'w.initials_color color',
                 'w.email',
                 'w.website',
@@ -277,6 +338,7 @@ class JobsController extends ApiBaseController
             ->joinWith(['applicationSkills g' => function ($x) {
                 $x->joinWith(['skillEnc h'], false);
                 $x->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
+                $x->onCondition(['g.is_deleted' => 0]);
             }])
             ->joinWith(['applicationJobDescriptions i' => function ($x) {
                 $x->onCondition(['i.is_deleted' => 0]);

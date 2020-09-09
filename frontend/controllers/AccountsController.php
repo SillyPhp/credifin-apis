@@ -67,6 +67,10 @@ class AccountsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                if (Yii::$app->user->identity->organization)
+                {
+                    return $this->redirect('/account/dashboard');
+                }
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',

@@ -2,7 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationOptions;
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
+use common\models\EmployerApplications;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -20,6 +26,7 @@ use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
 use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
+use frontend\models\reviews\ReviewCardsMod;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -71,7 +78,7 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $get = new ReviewCards();
+            $get = new ReviewCardsMod();
             $options = [];
             $options = Yii::$app->request->post('params');
             if (Yii::$app->request->get('keyword')){
@@ -81,7 +88,7 @@ class OrganizationsController extends Controller
                 $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
             }
             $options['limit'] = 27;
-            $cards = $get->getReviewCards($options);
+            $cards = $get->getAllCompanies($options);
             if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
@@ -96,9 +103,8 @@ class OrganizationsController extends Controller
             }
             return $response;
         }
-        return $this->render('index-1');
+        return $this->render('index');
     }
-
     public function actionCompanies($q = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -121,7 +127,6 @@ class OrganizationsController extends Controller
         }
 
     }
-
     public function actionProfile($slug)
     {
         $organization = Organizations::find()
@@ -906,11 +911,14 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
-                'status' => 1
+                'is_deleted' => 0,
             ])
             ->asArray()
             ->one();
-
+        if (empty($org)&&empty($unclaimed_org))
+        {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
         if (!empty($org)) {
             $review_type = 'claimed';
             $reviews = OrganizationReviews::find()

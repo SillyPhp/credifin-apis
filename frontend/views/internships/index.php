@@ -102,7 +102,9 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
-])
+]);
+
+echo $this->render('/widgets/internships-by-tag');
 ?>
 
 <section class="bg-lighter">
@@ -157,21 +159,21 @@ echo $this->render('/widgets/top-cities', [
     </div>
 </section>
 
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="heading-style">Blogs</div>
-                    </div>
-                </div>
-                <div id="whats-new" class="row">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-sm-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="heading-style">Blogs</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id="whats-new" class="row">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 <!--Subscribe Widget start-->
 <?php
@@ -318,12 +320,9 @@ $this->registerCss('
 .wn-box-details{
     min-height:100px !important;
 }
-.wn-box-icon{
-    max-width: 270px !important;
-}
 .wn-box-icon img{
     height: 200px !important;
-    object-fit: fill;
+    object-fit: cover;
 }
 /* Top Search bar css start */
 .twitter-typeahead{
@@ -802,10 +801,10 @@ $this->registerCss('
 }
 }
 ');
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3',
-    'is_ajax' => true
-]);
+//echo $this->render('/widgets/blogs/whats-new', [
+//    'size' => 'col-md-4 col-sm-4',
+//    'is_ajax' => true
+//]);
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -853,7 +852,15 @@ $(document).on('submit','#search_bar_form',function(e) {
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
       }
-}) 
+});
+
+ $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+ 
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -886,9 +893,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
 
     function showMoreEvent() {
         hideMore('searches');
@@ -897,23 +901,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
+
 
     function showLessEvent() {
         hideLess('searches');

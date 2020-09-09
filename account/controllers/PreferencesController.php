@@ -39,15 +39,16 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
 
             $internprimaryfields = Categories::find()
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
