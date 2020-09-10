@@ -1088,6 +1088,7 @@ class SiteController extends Controller
         return $this->render('teachers-handbook');
     }
     public function actionAdmissionForm(){
+        $this->layout = 'blank-layout';
         return $this->render('admission-form');
     }
 }
