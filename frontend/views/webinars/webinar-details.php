@@ -130,7 +130,7 @@ $status = $webinar['status'];
     <div class="row">
         <div class="col-md-12">
             <?php
-            $sharingLink = Url::base('https') .'/webinars/webinar-details/'.$webinar['slug'];
+            $sharingLink = Url::base('https') .'/webinars/'.$webinar['slug'];
             echo $this->render('/widgets/sharing-widget-webinar',[
                 'sharingLink' => $sharingLink
             ]) ?>
@@ -166,11 +166,11 @@ $status = $webinar['status'];
                     </div>
                     <div class="ts-speaker-info">
                         <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <?php if($as['designation']){ ?>
                             <p>
-                                <?= $as['designation'] ?>
+                                <?php if($as['designation']){ ?>
+                                    <?= $as['designation'] ?>
+                                <?php } ?>
                             </p>
-                        <?php } ?>
                     </div>
                 </div>
                 <!-- popup start-->
@@ -486,13 +486,25 @@ transform: rotate(100deg);
 }
 
 .ts-speaker .ts-title {
-    margin-bottom: 5px;
+    margin-bottom: 0px;
+}
+.ts-title {
+    font-family: lora;
 }
 
 .ts-speaker .ts-title a {
     color: #222222;
+    text-transform: capitalize;
+    height: 34px;
+    font-size: 22px;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
-
+.ts-speaker-info p{
+    height:23px;
+}
 .ts-speaker:hover .speaker-img img {
     -webkit-transform: scale(1.2);
     -ms-transform: scale(1.2);
