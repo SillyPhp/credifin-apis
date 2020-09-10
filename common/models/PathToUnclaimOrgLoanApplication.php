@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%path_to_unclaim_org_loan_application}}".
@@ -8,6 +11,7 @@ namespace common\models;
  * @property string $bridge_enc_id Name
  * @property string $loan_app_enc_id
  * @property string $assigned_course_enc_id
+ * @property string $country_enc_id
  *
  * @property LoanApplications $loanAppEnc
  * @property AssignedUnclaimCollegeCourses $assignedCourseEnc
@@ -29,13 +33,16 @@ class PathToUnclaimOrgLoanApplication extends \yii\db\ActiveRecord
     {
         return [
             [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id'], 'required'],
-            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id'], 'string', 'max' => 100],
+            [['bridge_enc_id', 'loan_app_enc_id', 'assigned_course_enc_id', 'country_enc_id'], 'string', 'max' => 100],
             [['bridge_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['assigned_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedUnclaimCollegeCourses::className(), 'targetAttribute' => ['assigned_course_enc_id' => 'assigned_college_enc_id']],
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -51,5 +58,10 @@ class PathToUnclaimOrgLoanApplication extends \yii\db\ActiveRecord
     public function getAssignedCourseEnc()
     {
         return $this->hasOne(AssignedUnclaimCollegeCourses::className(), ['assigned_college_enc_id' => 'assigned_course_enc_id']);
+    }
+
+    public function getCountryEnc()
+    {
+        return $this->hasOne(Countries::className(), ['country_enc_id' => 'country_enc_id']);
     }
 }
