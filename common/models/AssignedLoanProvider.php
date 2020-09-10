@@ -8,7 +8,7 @@ namespace common\models;
  * @property string $loan_application_enc_id linked to loan application
  * @property string $provider_enc_id linked to organization_enc_id
  * @property string $scheme_enc_id linked to organization schemes
- * @property int $status 0 as Pending 1 Approved  2 as Rejected
+ * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
  * @property string $created_by linked to user table
  * @property string $created_on created on
  * @property string $updated_on updated on
