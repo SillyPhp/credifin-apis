@@ -66,7 +66,10 @@ class MentorsController extends Controller
 
     public function actionAllMentors()
     {
-        return $this->render('all-mentors');
+        $webinars = self::getWebianrs($id);
+        return $this->render('all-mentors',[
+            'webinars' =>$webinars,
+        ]);
     }
 
     public function actionScoolMentorship()
@@ -347,7 +350,7 @@ class MentorsController extends Controller
         return $webinar;
     }
 
-    private function getWebianrs($id)
+    private function getWebianrs($id = null)
     {
         $webinars = Webinars::find()
             ->distinct()
