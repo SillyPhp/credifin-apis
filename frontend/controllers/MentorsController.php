@@ -355,6 +355,7 @@ class MentorsController extends Controller
             ->select([
                 'a.webinar_enc_id',
                 'a.session_enc_id',
+                'a.slug',
                 'a.title',
                 'a.start_datetime',
                 'a.duration',

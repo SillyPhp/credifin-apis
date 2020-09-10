@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
+$base_url = Url::base('https');
 foreach ($webinars as $webinar) {
     ?>
     <div class="col-md-6">
@@ -75,11 +75,11 @@ foreach ($webinars as $webinar) {
                             id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
                 </div>
                 <div class="detail-btn naam">
-                    <button type="button">View Details</button>
+                    <button type="button" onclick="window.open('<?= Url::to($base_url.'/webinars/webinar-details/'.  $webinar['slug']); ?>', '_blank')">View Details</button>
                 </div>
-                <div class="sharing-btn naam">
-                    <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>
-                </div>
+<!--                <div class="sharing-btn naam">-->
+<!--                    <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>-->
+<!--                </div>-->
             </div>
         </div>
     </div>
