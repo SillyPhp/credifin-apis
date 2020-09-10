@@ -83,6 +83,101 @@ class WebinarsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'No detail found']);
     }
 
+    public function actionList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
+
+            $user_id = $user->user_enc_id;
+
+            $college_id = Users::find()
+                ->alias('a')
+                ->select(['b.organization_enc_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            $webinar = Webinars::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.webinar_enc_id',
+                    'a.session_enc_id',
+                    'a.title',
+                    'a.start_datetime',
+                    'a.duration',
+                    'a.availability',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                    'a.description',
+                ])
+                ->joinWith(['assignedWebinarTos b'], false)
+                ->joinWith(['webinarRegistrations d' => function ($d) {
+                    $d->select([
+                        'd.webinar_enc_id',
+                        'd.register_enc_id',
+                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    ]);
+                    $d->joinWith(['createdBy d1'], false);
+                    $d->limit(6);
+                    $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
+                }])
+                ->joinWith(['sessionEnc e'])
+                ->where([
+                    'b.organization_enc_id' => $college_id['organization_enc_id'],
+                    'a.is_deleted' => 0,
+                ])
+                ->andWhere(['not', ['a.session_for' => 1]])
+//                ->andWhere(['>=', 'a.end_datetime', $date_now])
+                ->asArray()
+                ->all();
+
+
+            $j = 0;
+            $data = [];
+            foreach ($webinar as $w) {
+                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
+                $end_time = date('Y-m-d H:i:s', $newtimestamp);
+                if ($end_time > $date_now) {
+                    array_push($data, $webinar[$j]);
+                }
+                $j++;
+            }
+
+            $webinar = $data;
+
+            if (!empty($webinar)) {
+                $i = 0;
+                foreach ($webinar as $w) {
+                    $registered_count = WebinarRegistrations::find()
+                        ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
+                        ->count();
+                    $webinar[$i]['count'] = $registered_count;
+                    $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
+                    $webinar[$i]['is_registered'] = $user_registered;
+                    $date = new \DateTime($w['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $webinar[$i]['seconds'] = $seconds;
+                    $webinar[$i]['is_started'] = ($seconds < 0 ? true : false);
+                    $i++;
+                }
+            }
+
+            if ($webinar) {
+                return $this->response(200, ['status' => 200, 'data' => $webinar]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionSpeakerDetail()
     {
         $params = Yii::$app->request->post();
