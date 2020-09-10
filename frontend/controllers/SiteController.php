@@ -1087,4 +1087,7 @@ class SiteController extends Controller
     {
         return $this->render('teachers-handbook');
     }
+    public function actionAdmissionForm(){
+        return $this->render('admission-form');
+    }
 }
