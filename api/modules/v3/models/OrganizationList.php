@@ -1,10 +1,13 @@
 <?php
 namespace api\modules\v3\models;
+use common\models\AssignedUnclaimCollegeCourses;
 use common\models\BusinessActivities;
+use common\models\CollegeCoursesPool;
 use common\models\EmployerApplications;
 use common\models\UnclaimedOrganizations;
 use common\models\Usernames;
 use common\models\RandomColors;
+use common\models\Users;
 use common\models\Utilities;
 use Yii;
 use common\models\Organizations;
@@ -67,11 +70,6 @@ class OrganizationList
 
     public function getOrgId($options=[])
     {
-        $c1 = Organizations::find()
-            ->select(['organization_enc_id'])
-            ->where(['name' => trim($options['name'])])
-            ->asArray()
-            ->one();
 
         $c2 = UnclaimedOrganizations::find()
             ->select(['organization_enc_id'])
@@ -79,12 +77,7 @@ class OrganizationList
             ->asArray()
             ->one();
 
-        if ($c1['organization_enc_id']) {
-            return [
-                'is_claim' => true,
-                'id' => $c1['organization_enc_id']
-            ];
-        } elseif ($c2['organization_enc_id']) {
+       if ($c2['organization_enc_id']) {
             return [
                 'is_claim' => false,
                 'id' => $c2['organization_enc_id']
@@ -141,6 +134,117 @@ class OrganizationList
                 'is_claim' => false,
                 'id' => $model->organization_enc_id
             ];
+        }
+    }
+
+    public function conditionParser($params)
+    {
+        if ($params['college_course_info'][0]['pulled_from']=='claim')
+        {
+            return [
+                'college_id'=>$params['college_course_info'][0]['colg_id'],
+                'is_claim' => true,
+            ];
+        }
+        else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
+        {
+            $options['name'] = trim($params['college_course_info'][0]['colg_text']);
+            $org = $this->getOrgId($options);
+            return [
+                'college_id'=>$org['id'],
+                'is_claim' => false,
+            ];
+        }
+        else if ($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']!='self'){
+            return [
+                'college_id'=>$params['college_course_info'][0]['colg_id'],
+                'is_claim' => false,
+            ];
+        }
+    }
+    public function conditionCourseParser($parser,$params)
+    {
+        if ($params['college_course_info'][0]['pulled_from']=='claim')
+        {
+            return [
+                'assigned_course_id'=>$params['college_course_info'][0]['course_id']
+            ];
+        }
+        else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
+        {
+            $course_name = trim($params['college_course_info'][0]['course_text']);
+            return [
+                'assigned_course_id'=>$this->getAssignUnclaimCourse($course_name,$parser['college_id'])
+            ];
+        }
+        else if ($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']!='self'){
+            $course_name = trim($params['college_course_info'][0]['course_text']);
+            return [
+                'assigned_course_id'=>$this->getAssignUnclaimCourse($course_name,$parser['college_id'])
+            ];
+        }
+    }
+
+    private function getAssignUnclaimCourse($course_name,$colleg_id)
+    {
+        $pool = CollegeCoursesPool::find()
+            ->select(['course_enc_id'])
+            ->where(['course_name'=>$course_name])
+            ->asArray()->one();
+
+        if (!empty($pool))
+        {
+            $assignUnclaim = AssignedUnclaimCollegeCourses::find()
+                            ->select(['assigned_college_enc_id'])
+                            ->where(['organization_enc_id'=>$colleg_id,'course_enc_id'=>$pool['course_enc_id']])
+                            ->asArray()
+                            ->one();
+            if (!empty($assignUnclaim)){
+                return $assignUnclaim['assigned_college_enc_id'];
+            }else{
+                return $this->saveUnclaimCourse($colleg_id,$pool['course_enc_id']);
+            }
+        }
+        else
+        {
+            $cousrse_enc_id = $this->saveCourseInPool($course_name);
+            return $this->saveUnclaimCourse($colleg_id,$cousrse_enc_id);
+        }
+    }
+
+    private function saveUnclaimCourse($colleg_id,$course_id)
+    {
+        $user = Users::findOne(['username'=>'admin'])->user_enc_id;
+        $model = new AssignedUnclaimCollegeCourses();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->assigned_college_enc_id =  $utilitiesModel->encrypt();
+        $model->course_enc_id = $course_id;
+        $model->organization_enc_id = $colleg_id;
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user;
+        if ($model->save())
+        {
+         return $model->assigned_college_enc_id;
+        }else{
+            return false;
+        }
+    }
+
+    private function saveCourseInPool($course_name)
+    {
+        $user = Users::findOne(['username' => 'admin'])->user_enc_id;
+        $model = new CollegeCoursesPool();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->course_enc_id = $utilitiesModel->encrypt();
+        $model->course_name = $course_name;
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user;
+        if ($model->save()) {
+            return $model->course_enc_id;
+        } else {
+            return false;
         }
     }
  }
