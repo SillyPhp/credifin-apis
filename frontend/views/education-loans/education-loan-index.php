@@ -14,7 +14,7 @@ use yii\helpers\Url;
                     <div class="loan-text">
                         <h1>Education Loan</h1>
                         <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
-                        <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
+                        <a href="<?= Url::to('/education-loans/apply') ?>"
                            class="hvr-sweep-to-bottom-2">
                             Apply Now
                         </a>
