@@ -44,7 +44,7 @@ class EducationLoansController extends Controller
     {
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
         return $this->render('apply-general-loan-form', [
-            'india' => $india
+            'india' => $india,
         ]);
     }
 

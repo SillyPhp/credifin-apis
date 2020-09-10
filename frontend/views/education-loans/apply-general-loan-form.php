@@ -387,8 +387,11 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
             </div>
         </div>
     </section>
-<input type="hidden" name="college_id" id="college_id">
+<input type="hidden" name="colg_text" id="colg_text">
+<input type="hidden" name="colg_id" id="colg_id">
+<input type="hidden" name="course_text" id="course_text">
 <input type="hidden" name="course_id" id="course_id">
+<input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
 #loadBtn{
@@ -800,12 +803,11 @@ font-family: auto !important;
 
 ');
 $script = <<< JS
-let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
     getCountries();    
     getCollegeList(datatype=0,source=3,type=['College']);
     function getCollegeList(datatype, source, type) { 
         $.ajax({ 
-            url : 'https://sneh.eygb.me/api/v3/companies/organization-list',
+            url : 'https://www.empoweryouth.com/api/v3/companies/organization-list',
             method : 'GET',  
             data:{
                 datatype:datatype,
@@ -840,12 +842,27 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
                     if (data.id!='self'&&data.pulled_from==='claim')
                         {
                             getCourseList(data.id);
+                            $('#pulled_from').val('claim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id);
                             $('#course_name').show();
                             $('#course_name').removeAttr('disabled','disabled');
                             $('#course_name_text').hide(); 
                         }
                     else if (data.id==='self'&&data.pulled_from==='unclaim')
                         {
+                            $('#pulled_from').val('unclaim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id);
+                            $('#course_name').hide(); 
+                            $('#course_name_text').removeAttr('disabled','disabled');  
+                            $('#course_name_text').show(); 
+                        }
+                    else if (data.id!='self'&&data.pulled_from==='unclaim')
+                        {
+                            $('#pulled_from').val('unclaim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id); 
                             $('#course_name').hide(); 
                             $('#course_name_text').removeAttr('disabled','disabled');  
                             $('#course_name_text').show(); 
@@ -856,8 +873,7 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
     }
     function getCourseList(id) {
         $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/get-course-list',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -874,12 +890,12 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
     }
     function getCountries() { 
         $.ajax({     
-            url : 'https://sneh.eygb.me/api/v3/countries-list/get-countries-list', 
+            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
                 var html = [];
-                 states = res.response.countries;
+                 res = res.response.countries;
                 $.each(res,function(index,value) 
                   {   
                    html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
@@ -895,8 +911,7 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
     }
     function getFeeComponents(id) {
         $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/get-fee-components',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -965,7 +980,7 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 				    min:500
 				},
 				'loan_purpose_checkbox[]':{
-				    required:true,
+				    required:false,
 				},
 				'co-name[1]':{
 				    required:true,
@@ -1134,18 +1149,21 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 });
     
 function ajaxSubmit()
-{  let college_id = $('#college_id').val();
-   let course_id = $('#course_id').val();
-    if (college_id.length==0||course_id.length==0)
-        { 
-            swal({ 
-              title:"Error",
-             text: "There Was Some Issue in College Or Course Name, Please Refresh and Try Again",
-             });
-            return false;
-        }
+{
+    console.log($('input[name="countryRadio"]:checked').val());
+    console.log($('#country_name').val());
+    $('#course_id').val($('#course_name').val());
+    $('#course_text').val($('#course_name_text').val());
     let co_applicants = [];
+    let college_course_info = [];
     var obj = {};
+    var object = {};  
+    object['pulled_from'] = $('#pulled_from').val();
+    object['course_text'] = $('#course_text').val();
+    object['course_id'] = $('#course_id').val();
+    object['colg_text'] = $('#colg_text').val();
+    object['colg_id'] = $('#colg_id').val();
+    college_course_info.push(object);
     obj['name'] = $('input[name="co-name[1]"]').val()
     obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
     obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
@@ -1171,8 +1189,7 @@ function ajaxSubmit()
     //   purpose.push(this.value);
     // });
     $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/save-application',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/save-application',
+            url : 'https://www.empoweryouth.com/api/v3/education-loan/save-application',
             method : 'POST', 
             data : {
                 applicant_name:$('#applicant_name').val(),
@@ -1186,10 +1203,11 @@ function ajaxSubmit()
                 amount:$('#loanamount').val(),  
                 gender:$('input[name="genderRadio"]:checked').val(),
                 aadhaar_number:$('#aadhaarnumber').val(),
-                college_course_id:$('#course_id').val(),
-                id:$('#college_id').val(),
                 co_applicants:co_applicants,
-                userID:userID,
+                college_course_info:college_course_info,
+                userID:userID, 
+                is_india:$('input[name="countryRadio"]:checked').val(),
+                country_enc_id:$('#country_name').val(),
                 },  
             beforeSend:function(e)
             {  
@@ -1239,6 +1257,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
           // response.payment_token_id
            // response.payment_id  
         if (response.status == "captured") {
+            updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
                swal({
                         title: "",
                         text: "Your Application Is Submitted Successfully",
@@ -1253,7 +1272,6 @@ function processPayment(ptoken,loan_id,education_loan_id)
                              location.reload(true);
                          }
                         );
-           updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "created") {
             updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "pending") {
@@ -1261,8 +1279,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
         } else if (response.status == "failed") { 
            updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "cancelled") {
-          updateStatus(education_loan_id,loan_id,response.payment_id,response.status); 
-          location.reload(true);
+          updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         }
     },
     function(err) { 
