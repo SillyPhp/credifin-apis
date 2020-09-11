@@ -264,14 +264,14 @@ function createSharingScreen()
     sharingStreams.uid = uid+"1";
     var screenStream = AgoraRTC.createStream({
         streamID: sharingStreams.uid,
-        audio: true,
+        audio: false,
         video: false,
         screen: true,
     });
     screenStream.setScreenProfile(sharingProfileRes);
     screenStream.init(function (){
         // Play the sharing stream.
-        $('#sharing_mode').css('display','block');
+        $('#sharing_mode').addClass('new_sharing');
         if($("#stream-player-"+ sharingStreams.uid).length == 0){
             $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+sharingStreams.uid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+sharingStreams.uid+'</div></div>');
         }
@@ -334,8 +334,8 @@ function leaveSharing()
             console.log("client leave failed ", err); //error handling
         }
     );
-
-    $('#sharing_mode').css('display','none');
+    //$('#sharing_mode').css('display','none');
+    $('#sharing_mode').removeClass('new_sharing');
 }
 
 // use tokens for added security
@@ -634,8 +634,8 @@ function toggleVideo() {
 
 function toggleBtnShare() {
     if ($("#share-sreen-btn").hasClass('share-screen-off')) {
-        leaveChannel();
-        $('#stream-player-'+localStreams.uid+'').remove();
+        // leaveChannel();
+        //$('#stream-player-'+localStreams.uid+'').remove();
         screenClient.init(
             agoraAppId,
             function () {
