@@ -14,8 +14,8 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                 <div class="mentor-heading-set">
-                    <h3 class="ment-up">Find The best mentor</h3>
-                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>
+                    <h3 class="ment-up">All Webinars</h3>
+<!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
 <!--                    <div class="search-box1">-->
 <!--                        <form action="--><?//= Url::to('#') ?><!--">-->
 <!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
@@ -58,8 +58,8 @@ $this->registerCss('
     width: 100%;
     height: auto;
 }
-.ment-up {
-	font-size: 32px;
+.ment-60 {
+	font-size: 60px;
 	font-family: lora;
 	margin: 0;
 	text-transform: capitalize;

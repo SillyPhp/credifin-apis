@@ -147,14 +147,15 @@ $this->registerCss('
 .webinar-title {
 	font-size: 24px;
 	text-align: center;
-	font-family: roboto;
+	font-family: lora;
 	line-height: 30px;
 	padding-top: 10px;
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	min-height: 70px;
+	min-height: 75px;
+	text-transform:capitalize;
 }
 .webinar-city {
     text-align: center;
