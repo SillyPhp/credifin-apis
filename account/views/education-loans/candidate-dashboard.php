@@ -2,6 +2,7 @@
 
 use yii\helpers\Url;
 
+$user_id = Yii::$app->user->identity->user_enc_id;
 ?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
@@ -131,32 +132,32 @@ use yii\helpers\Url;
                                     <div class="col-md-12">
                                         <p class="cd-heading-2">2 ID or Residential Proofs Required</p>
                                     </div>
-                                    <section id="idProofInformation1" data-key="" data-type="id_proof">
+                                    <section id="idProofInformation0" data-key="" data-type="id_proof">
                                         <div class="col-md-6 boder-left-1">
                                             <div class="row mt10">
                                                 <div class="col-md-6 padd-20">
                                                     <div class="form-group">
-                                                        <label class="radio-heading input-group-text" for="applicantID"
+                                                        <label class="radio-heading input-group-text" for="applicantID0"
                                                                data-field="proof_name">
                                                             ID Proof/Address Proof
                                                         </label>
                                                         <select class="form-control field-req" name="years"
-                                                                id="applicantID">
-                                                            <option value="1">PAN</option>
-                                                            <option value="2">Adhaar Card</option>
-                                                            <option value="3">Passport</option>
-                                                            <option value="4">Voter ID</option>
-                                                            <option value="5">Driving License</option>
+                                                                id="applicantID0">
+                                                            <option>Adhaar Card</option>
+                                                            <option>PAN</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 padd-20">
                                                     <div class="form-group">
-                                                        <label for="applicantIDnumber" class="input-group-text"
+                                                        <label for="applicantIDnumber0" class="input-group-text"
                                                                data-field="number">
                                                             Id Proof Number
                                                         </label>
-                                                        <input type="text" class="form-control" id="applicantIDnumber"
+                                                        <input type="text" class="form-control" id="applicantIDnumber0"
                                                                placeholder="Number">
                                                     </div>
                                                 </div>
@@ -175,32 +176,32 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </section>
-                                    <section id="idProofInformation2" data-key="" data-type="id_proof">
+                                    <section id="idProofInformation1" data-key="" data-type="id_proof">
                                         <div class="col-md-6">
                                             <div class="row mt10">
                                                 <div class="col-md-6 padd-20">
                                                     <div class="form-group">
                                                         <label class="radio-heading input-group-text"
-                                                               for="applicantIDtwo" data-field="proof_name">
+                                                               for="applicantID1" data-field="proof_name">
                                                             ID Proof/Address Proof
                                                         </label>
                                                         <select class="form-control field-req" name="years"
-                                                                id="applicantIDtwo">
-                                                            <option value="1">PAN</option>
-                                                            <option value="2">Adhaar Card</option>
-                                                            <option value="3">Passport</option>
-                                                            <option value="4">Voter ID</option>
-                                                            <option value="5">Driving License</option>
+                                                                id="applicantID1">
+                                                            <option>Adhaar Card</option>
+                                                            <option>PAN</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 padd-20">
                                                     <div class="form-group">
-                                                        <label for="applicantIDTwoNum" class="input-group-text"
+                                                        <label for="applicantIDnumber1" class="input-group-text"
                                                                data-field="number">
                                                             Id Proof Number
                                                         </label>
-                                                        <input type="text" class="form-control" id="applicantIDTwoNum"
+                                                        <input type="text" class="form-control" id="applicantIDnumber1"
                                                                placeholder="Number">
                                                     </div>
                                                 </div>
@@ -227,14 +228,15 @@ use yii\helpers\Url;
                                         <h4 class="cd-heading-3">Residential Information</h4>
                                     </div>
                                 </div>
-                                <section id="permanentAddressInformation" data-key="" data-type="address" data-address-type="0">
+                                <section id="permanentAddressInformation" data-key="" data-type="address"
+                                         data-address-type="0">
                                     <div class="row mt10 addressType">
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group">
                                                 <div class="radio-heading input-group-text">
                                                     Permanent Address
                                                 </div>
-                                                <ul class="displayInline" data-field="res_type">
+                                                <ul class="displayInline" id="per_res_type" data-field="res_type">
                                                     <li>
                                                         <label class="container-radio">Rented
                                                             <input type="radio" checked="checked" id="PA-rented"
@@ -277,14 +279,15 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </section>
-                                <section id="currentAddressInformation" data-key="" data-type="address" data-address-type="1">
+                                <section id="currentAddressInformation" data-key="" data-type="address"
+                                         data-address-type="1">
                                     <div class="row mt10 addressType">
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group ">
                                                 <div class="radio-heading input-group-text">
                                                     Current Address
                                                 </div>
-                                                <ul class="displayInline" data-field="res_type">
+                                                <ul class="displayInline" id="cur_res_type" data-field="res_type">
                                                     <li>
                                                         <label class="container-radio">Rented
                                                             <input type="radio" checked="checked" name="address2"
@@ -333,6 +336,39 @@ use yii\helpers\Url;
                                         <h4 class="cd-heading-3">Education</h4>
                                     </div>
                                 </div>
+                                <section id="qualificationInformation0" data-key="" data-type="qualification">
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="eduName0" class="input-group-text" data-field="name">
+                                                    Qualification
+                                                </label>
+                                                <input type="text" class="form-control" id="eduName0"
+                                                       placeholder="10th">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="instituteName0" class="input-group-text"
+                                                       data-field="institution">
+                                                    Name Of Institution
+                                                </label>
+                                                <input type="text" class="form-control" id="instituteName0"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="marksObtained0" class="input-group-text"
+                                                       data-field="obtained_marks">
+                                                    Marks Obtained
+                                                </label>
+                                                <input type="text" class="form-control" id="marksObtained0"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
                                 <section id="qualificationInformation1" data-key="" data-type="qualification">
                                     <div class="row mt10">
                                         <div class="col-md-4 padd-20">
@@ -340,7 +376,7 @@ use yii\helpers\Url;
                                                 <label for="eduName1" class="input-group-text" data-field="name">
                                                     Qualification
                                                 </label>
-                                                <input type="text" class="form-control" id="eduName1" placeholder="10th">
+                                                <input type="text" class="form-control" id="eduName1" placeholder="+2">
                                             </div>
                                         </div>
                                         <div class="col-md-4 padd-20">
@@ -365,42 +401,14 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </section>
-                                <section id="qualificationInformation2" data-key="" data-type="qualification">
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="eduName2" class="input-group-text"  data-field="name">
-                                                    Qualification
-                                                </label>
-                                                <input type="text" class="form-control" id="eduName2" placeholder="+2">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="instituteName2" class="input-group-text" data-field="institution">
-                                                    Name Of Institution
-                                                </label>
-                                                <input type="text" class="form-control" id="instituteName2"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="marksObtained2" class="input-group-text" data-field="obtained_marks">
-                                                    Marks Obtained
-                                                </label>
-                                                <input type="text" class="form-control" id="marksObtained2"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
                                 <div id="eduFields">
 
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 text-center">
-                                        <button type="button" class="eduBtn2" onclick="addEduField(this)" data-count="3">Add More</button>
+                                        <button type="button" id="addEduBtn" class="eduBtn2" onclick="addEduField(this)"
+                                                data-count="2">Add More
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="text-center">
@@ -456,7 +464,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group">
-                                                <label for="fatherDob" class="input-group-text" data-field="co_applicant_dob">
+                                                <label for="fatherDob" class="input-group-text"
+                                                       data-field="co_applicant_dob">
                                                     DOB
                                                 </label>
                                                 <input type="text" class="form-control" id="dob"
@@ -473,6 +482,38 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="yearsOFoccu" class="input-group-text"
+                                                       data-field="years_in_current_house">
+                                                    Years Of Occupancy In Current House
+                                                </label>
+                                                <input type="text" class="form-control" id="yearsOFoccu"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="fOccupation" class="input-group-text"
+                                                       data-field="occupation">
+                                                    Occupation
+                                                </label>
+                                                <input type="text" class="form-control" id="fOccupation"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="fIncome" class="input-group-text"
+                                                       data-field="annual_income">
+                                                    Annual Income
+                                                </label>
+                                                <input type="text" class="form-control" id="fIncome"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group ">
@@ -481,7 +522,8 @@ use yii\helpers\Url;
                                                 </div>
                                                 <ul class="displayInline">
                                                     <li>
-                                                        <label class="checkcontainer" data-field="same_address">Same As Applicant
+                                                        <label class="checkcontainer" data-field="same_address">Same As
+                                                            Applicant
                                                             <input type="checkbox" data-id="fAddress" id="fSame"
                                                                    onchange="hideAddress()">
                                                             <span class="Ch-checkmark"></span>
@@ -491,120 +533,110 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt10" id="fAddress">
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group ">
-                                                <div class="radio-heading input-group-text">
-                                                    Residence Type
-                                                </div>
-                                                <ul class="displayInline" data-field="res_type">
-                                                    <li>
-                                                        <label class="container-radio">Rented
-                                                            <input type="radio" checked="checked" name="FRT-rented"
-                                                                   id="FRT-rented">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="container-radio">Owned
-                                                            <input type="radio" name="address1" id="FRT-owned">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="fHouseNo" class="input-group-text" data-field="address">
-                                                    Address
-                                                </label>
-                                                <input type="text" class="form-control" id="fHouseNo" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="fCity" class="input-group-text" data-field="city_id">
-                                                    City
-                                                </label>
-                                                <input type="text" class="form-control" id="fCity" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="fState" class="input-group-text" data-field="state_id">
-                                                    State
-                                                </label>
-                                                <input type="text" class="form-control" id="fState" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label class="radio-heading input-group-text" for="fIDproof" data-field="proof_name">
-                                                    ID Proof/Address Proof
-                                                </label>
-                                                <select class="form-control field-req" name="years" id="fIDproof">
-                                                    <option value="1">PAN</option>
-                                                    <option value="2">Adhaar Card</option>
-                                                    <option value="3">Passport</option>
-                                                    <option value="4">Voter ID</option>
-                                                    <option value="5">Driving License</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="fIDproofnumber" class="input-group-text" data-field="number">
-                                                    Id Proof Number
-                                                </label>
-                                                <input type="text" class="form-control" id="fIDproofnumber"
-                                                       placeholder="Number">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group text-center">
-                                                <label for="idProofFather" class="">
-                                                    <div class="idPhoto">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                        Upload ID Proof's Photo
+                                    <div id="Father-other-info">
+                                        <article id="Father-address-info" data-key="" data-type="address">
+                                            <div class="row mt10" id="fAddress">
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group ">
+                                                        <div class="radio-heading input-group-text">
+                                                            Residence Type
+                                                        </div>
+                                                        <ul class="displayInline" data-field="res_type"
+                                                            data-id="coResidentInfo">
+                                                            <li>
+                                                                <label class="container-radio">Rented
+                                                                    <input type="radio" checked="checked"
+                                                                           name="FRT-rented"
+                                                                           id="FRT-rented">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Owned
+                                                                    <input type="radio" name="address1" id="FRT-owned">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </label>
-                                                <input type="file" class="form-control idProof-input" id="idProofFather"
-                                                       placeholder="">
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="fHouseNo" class="input-group-text"
+                                                               data-field="address">
+                                                            Address
+                                                        </label>
+                                                        <input type="text" class="form-control" id="fHouseNo"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="fCity" class="input-group-text"
+                                                               data-field="city_id">
+                                                            City
+                                                        </label>
+                                                        <input type="text" class="form-control" id="fCity"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="fState" class="input-group-text"
+                                                               data-field="state_id">
+                                                            State
+                                                        </label>
+                                                        <input type="text" class="form-control" id="fState"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="yearsOFoccu" class="input-group-text" data-field="years_in_current_house">
-                                                    Years Of Occupancy In Current House
-                                                </label>
-                                                <input type="text" class="form-control" id="yearsOFoccu" placeholder="">
+                                        </article>
+                                        <article id="Father-identity-info" data-key="" data-type="id_proof">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text" for="fIDproof"
+                                                               data-field="proof_name">
+                                                            ID Proof/Address Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="years"
+                                                                id="fIDproof" data-id="coProofInfo">
+                                                            <option>PAN</option>
+                                                            <option>Adhaar Card</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="fIDproofnumber" class="input-group-text"
+                                                               data-field="number">
+                                                            Id Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control" id="fIDproofnumber"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <label for="idProofFather" class="">
+                                                            <div class="idPhoto">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                                Upload ID Proof's Photo
+                                                            </div>
+                                                        </label>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="idProofFather"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="fOccupation" class="input-group-text" data-field="occupation">
-                                                    Occupation
-                                                </label>
-                                                <input type="text" class="form-control" id="fOccupation" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="fIncome" class="input-group-text" data-field="annual_income">
-                                                    Monthly Income
-                                                </label>
-                                                <input type="text" class="form-control" id="fIncome" placeholder="">
-                                            </div>
-                                        </div>
+                                        </article>
                                     </div>
                                 </section>
-
 
                                 <div class="FormDivider"></div>
 
@@ -649,7 +681,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group">
-                                                <label for="MDob" class="input-group-text" data-field="co_applicant_dob">
+                                                <label for="MDob" class="input-group-text"
+                                                       data-field="co_applicant_dob">
                                                     DOB
                                                 </label>
                                                 <input type="text" class="form-control" id="MDob"
@@ -664,6 +697,33 @@ use yii\helpers\Url;
                                                 <input type="text" class="form-control" id="M-mobile" placeholder="">
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="mOccupation" class="input-group-text"
+                                                       data-field="occupation">
+                                                    Occupation
+                                                </label>
+                                                <select class="form-control field-req" name="mOccupation">
+                                                    <option>Home-maker</option>
+                                                    <option>Salaried</option>
+                                                    <option>Self-employed</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="familyIncome" class="input-group-text"
+                                                       data-field="annual_income">
+                                                    Family Income(Anually)
+                                                </label>
+                                                <input type="text" class="form-control" id="familyIncome"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group ">
                                                 <div class="radio-heading input-group-text">
@@ -671,7 +731,8 @@ use yii\helpers\Url;
                                                 </div>
                                                 <ul class="displayInline">
                                                     <li>
-                                                        <label class="checkcontainer" data-field="same_address">Same As Applicant
+                                                        <label class="checkcontainer" data-field="same_address">Same As
+                                                            Applicant
                                                             <input type="checkbox" data-id="mAddress" id="mSame"
                                                                    onchange="hideAddress()">
                                                             <span class="Ch-checkmark"></span>
@@ -681,114 +742,111 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt10" id="mAddress">
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group ">
-                                                <div class="radio-heading input-group-text">
-                                                    Residence Type
-                                                </div>
-                                                <ul class="displayInline" data-field="res_type">
-                                                    <li>
-                                                        <label class="container-radio">Rented
-                                                            <input type="radio" checked="checked" name="MRT-rented"
-                                                                   id="MRT-rented">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="container-radio">Owned
-                                                            <input type="radio" name="MRT-owned" id="MRT-owned">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="MHouseNo" class="input-group-text" data-field="address">
-                                                    Address
-                                                </label>
-                                                <input type="text" class="form-control" id="MHouseNo" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="MCity" class="input-group-text" data-field="city_id">
-                                                    City
-                                                </label>
-                                                <input type="text" class="form-control" id="MCity" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="MState" class="input-group-text" data-field="state_id">
-                                                    State
-                                                </label>
-                                                <input type="text" class="form-control" id="MState" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label class="radio-heading input-group-text" for="MIdProof" data-field="proof_name">
-                                                    ID Proof/Address Proof
-                                                </label>
-                                                <select class="form-control field-req" name="years" id="MIdProof">
-                                                    <option value="1">PAN</option>
-                                                    <option value="2">Adhaar Card</option>
-                                                    <option value="3">Passport</option>
-                                                    <option value="4">Voter ID</option>
-                                                    <option value="5">Driving License</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="MIdProofNo" class="input-group-text" data-field="number">
-                                                    Id Proof Number
-                                                </label>
-                                                <input type="text" class="form-control" id="MIdProofNo"
-                                                       placeholder="Number">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group text-center">
-                                                <label for="idProofMother" class="">
-                                                    <div class="idPhoto">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                        Upload ID Proof's Photo
+                                    <div id="Mother-other-info">
+                                        <article id="Mother-address-info" data-key="" data-type="address">
+                                            <div class="row mt10" id="mAddress">
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group ">
+                                                        <div class="radio-heading input-group-text">
+                                                            Residence Type
+                                                        </div>
+                                                        <ul class="displayInline" data-field="res_type"
+                                                            data-id="coResidentInfo">
+                                                            <li>
+                                                                <label class="container-radio">Rented
+                                                                    <input type="radio" checked="checked"
+                                                                           name="MRT-rented"
+                                                                           id="MRT-rented">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Owned
+                                                                    <input type="radio" name="MRT-owned" id="MRT-owned">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </label>
-                                                <input type="file" class="form-control idProof-input" id="idProofMother"
-                                                       placeholder="">
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="MHouseNo" class="input-group-text"
+                                                               data-field="address">
+                                                            Address
+                                                        </label>
+                                                        <input type="text" class="form-control" id="MHouseNo"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="MCity" class="input-group-text"
+                                                               data-field="city_id">
+                                                            City
+                                                        </label>
+                                                        <input type="text" class="form-control" id="MCity"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="MState" class="input-group-text"
+                                                               data-field="state_id">
+                                                            State
+                                                        </label>
+                                                        <input type="text" class="form-control" id="MState"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </article>
+                                        <article id="Mother-identity-info" data-key="" data-type="id_proof">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text" for="MIdProof"
+                                                               data-field="proof_name">
+                                                            ID Proof/Address Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="years"
+                                                                id="MIdProof" data-id="coProofInfo">
+                                                            <option>PAN</option>
+                                                            <option>Adhaar Card</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="MIdProofNo" class="input-group-text"
+                                                               data-field="number">
+                                                            Id Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control" id="MIdProofNo"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <label for="idProofMother" class="">
+                                                            <div class="idPhoto">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                                Upload ID Proof's Photo
+                                                            </div>
+                                                        </label>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="idProofMother"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
                                     </div>
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="mOccupation" class="input-group-text" data-field="occupation">
-                                                    Occupation
-                                                </label>
-                                                <select class="form-control field-req" name="mOccupation">
-                                                    <option value="1">Salaried</option>
-                                                    <option value="2">Self-employed</option>
-                                                    <option value="3">Home-maker</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="familyIncome" class="input-group-text" data-field="annual_income">
-                                                    Family Income(Monthly)
-                                                </label>
-                                                <input type="text" class="form-control" id="familyIncome"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
+                                    <div class="row">
                                         <div class="col-md-4 padd-20">
                                             <div class="form-group">
                                                 <div class="radio-heading input-group-text">
@@ -826,7 +884,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-4 padd-20">
                                             <div class="form-group">
-                                                <label for="siblingDob" class="input-group-text" data-field="co_applicant_dob">
+                                                <label for="siblingDob" class="input-group-text"
+                                                       data-field="co_applicant_dob">
                                                     DOB
                                                 </label>
                                                 <input type="text" class="form-control" id="siblingDob"
@@ -835,7 +894,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-4 padd-20">
                                             <div class="form-group">
-                                                <label for="siblingOccupation" class="input-group-text" data-field="occupation">
+                                                <label for="siblingOccupation" class="input-group-text"
+                                                       data-field="occupation">
                                                     Occupation
                                                 </label>
                                                 <input type="text" class="form-control" id="siblingOccupation"
@@ -855,11 +915,6 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <div class="tab" id="guarantorProfile">
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-md-12">-->
-                                <!--                                        <h4 class="cd-heading">Guarantor's Profile</h4>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
                                 <section id="guarantor1Information" data-key="" data-type="co_applicant"
                                          data-relation="Guarantor">
                                     <div class="row mt10">
@@ -887,7 +942,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group">
-                                                <label for="G1Dob" class="input-group-text" data-field="co_applicant_dob">
+                                                <label for="G1Dob" class="input-group-text"
+                                                       data-field="co_applicant_dob">
                                                     DOB
                                                 </label>
                                                 <input type="text" class="form-control" id="G1Dob"
@@ -919,90 +975,107 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt10" id="gAddress1">
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group ">
-                                                <div class="radio-heading input-group-text">
-                                                    Residence Type
-                                                </div>
-                                                <ul class="displayInline" data-field="res_type">
-                                                    <li>
-                                                        <label class="container-radio">Rented
-                                                            <input type="radio" checked="checked" name="G1-RT"
-                                                                   id="G1-rented">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="container-radio">Owned
-                                                            <input type="radio" name="G1-RT" id="G1-owned">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G1Address" class="input-group-text" data-field="address">
-                                                    Address
-                                                </label>
-                                                <input type="text" class="form-control" id="G1Address" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G1City" class="input-group-text" data-field="city_id">
-                                                    City
-                                                </label>
-                                                <input type="text" class="form-control" id="G1City" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G1state" class="input-group-text" data-field="state_id">
-                                                    State
-                                                </label>
-                                                <input type="text" class="form-control" id="G1state" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label class="radio-heading input-group-text" for="G1ID" data-field="proof_name">
-                                                    ID Proof/Address Proof
-                                                </label>
-                                                <select class="form-control field-req" name="" id="G1ID">
-                                                    <option value="1">PAN</option>
-                                                    <option value="2">Adhaar Card</option>
-                                                    <option value="3">Passport</option>
-                                                    <option value="4">Voter ID</option>
-                                                    <option value="5">Driving License</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="G1IDnumber" class="input-group-text" data-field="number">
-                                                    Id Proof Number
-                                                </label>
-                                                <input type="text" class="form-control" id="G1IDnumber"
-                                                       placeholder="Number">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group text-center">
-                                                <label for="G1IDpic" class="">
-                                                    <div class="idPhoto">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                        Upload ID Proof's Photo
+                                    <div id="Guarantor1-other-info">
+                                        <article id="Guarantor1-address-info" data-key="" data-type="address">
+                                            <div class="row mt10" id="gAddress1">
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group ">
+                                                        <div class="radio-heading input-group-text">
+                                                            Residence Type
+                                                        </div>
+                                                        <ul class="displayInline" data-field="res_type"
+                                                            data-id="coResidentInfo">
+                                                            <li>
+                                                                <label class="container-radio">Rented
+                                                                    <input type="radio" checked="checked" name="G1-RT"
+                                                                           id="G1-rented">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Owned
+                                                                    <input type="radio" name="G1-RT" id="G1-owned">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </label>
-                                                <input type="file" class="form-control idProof-input" id="G1IDpic"
-                                                       placeholder="">
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G1Address" class="input-group-text"
+                                                               data-field="address">
+                                                            Address
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G1Address"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G1City" class="input-group-text"
+                                                               data-field="city_id">
+                                                            City
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G1City"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G1state" class="input-group-text"
+                                                               data-field="state_id">
+                                                            State
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G1state"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </article>
+                                        <article id="Guarantor1-identity-info" data-key="" data-type="address">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text" for="G1ID"
+                                                               data-field="proof_name">
+                                                            ID Proof/Address Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="" id="G1ID"
+                                                                data-id="coProofInfo">
+                                                            <option>PAN</option>
+                                                            <option>Adhaar Card</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G1IDnumber" class="input-group-text"
+                                                               data-field="number">
+                                                            Id Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G1IDnumber"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <label for="G1IDpic" class="">
+                                                            <div class="idPhoto">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                                Upload ID Proof's Photo
+                                                            </div>
+                                                        </label>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="G1IDpic"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
                                     </div>
                                 </section>
                                 <div class="FormDivider"></div>
@@ -1033,7 +1106,8 @@ use yii\helpers\Url;
                                         </div>
                                         <div class="col-md-3 padd-20">
                                             <div class="form-group">
-                                                <label for="G2Dob" class="input-group-text" data-field="co_applicant_dob">
+                                                <label for="G2Dob" class="input-group-text"
+                                                       data-field="co_applicant_dob">
                                                     DOB
                                                 </label>
                                                 <input type="text" class="form-control" id="G2Dob"
@@ -1065,89 +1139,107 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt10" id="gAddress2">
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group ">
-                                                <div class="radio-heading input-group-text">
-                                                    Residence Type
-                                                </div>
-                                                <ul class="displayInline" data-field="res_type">
-                                                    <li>
-                                                        <label class="container-radio">Rented
-                                                            <input type="radio" checked="checked" name="G2address">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="container-radio">Owned
-                                                            <input type="radio" name="G2address">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G2houseNo" class="input-group-text" data-field="address">
-                                                    Address
-                                                </label>
-                                                <input type="text" class="form-control" id="G2houseNo" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G2city" class="input-group-text" data-field="city_id">
-                                                    City
-                                                </label>
-                                                <input type="text" class="form-control" id="G2city" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 padd-20">
-                                            <div class="form-group">
-                                                <label for="G2state" class="input-group-text" data-field="state_id">
-                                                    State
-                                                </label>
-                                                <input type="text" class="form-control" id="G2state" placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label class="radio-heading input-group-text" for="G2ID" data-field="proof_name">
-                                                    ID Proof/Address Proof
-                                                </label>
-                                                <select class="form-control field-req" name="years" id="G2ID">
-                                                    <option value="1">PAN</option>
-                                                    <option value="2">Adhaar Card</option>
-                                                    <option value="3">Passport</option>
-                                                    <option value="4">Voter ID</option>
-                                                    <option value="5">Driving License</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="G2IDnumber" class="input-group-text" data-field="number">
-                                                    Id Proof Number
-                                                </label>
-                                                <input type="text" class="form-control" id="G2IDnumber"
-                                                       placeholder="Number">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group text-center">
-                                                <label for="G2IDpic" class="">
-                                                    <div class="idPhoto">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                        Upload ID Proof's Photo
+                                    <div id="Guarantor2-other-info">
+                                        <article id="Guarantor2-address-info" data-key="" data-type="address">
+                                            <div class="row mt10" id="gAddress2">
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group ">
+                                                        <div class="radio-heading input-group-text">
+                                                            Residence Type
+                                                        </div>
+                                                        <ul class="displayInline" data-field="res_type"
+                                                            data-id="coResidentInfo">
+                                                            <li>
+                                                                <label class="container-radio">Rented
+                                                                    <input type="radio" checked="checked"
+                                                                           name="G2address">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Owned
+                                                                    <input type="radio" name="G2address">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </label>
-                                                <input type="file" class="form-control idProof-input" id="G2IDpic"
-                                                       placeholder="">
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G2Address" class="input-group-text"
+                                                               data-field="address">
+                                                            Address
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G2Address"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G2city" class="input-group-text"
+                                                               data-field="city_id">
+                                                            City
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G2city"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G2state" class="input-group-text"
+                                                               data-field="state_id">
+                                                            State
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G2state"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </article>
+                                        <article id="Guarantor2-identity-info" data-key="" data-type="id_proof">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text" for="G2ID"
+                                                               data-field="proof_name">
+                                                            ID Proof/Address Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="years" id="G2ID"
+                                                                data-id="coProofInfo">
+                                                            <option>PAN</option>
+                                                            <option>Adhaar Card</option>
+                                                            <option>Passport</option>
+                                                            <option>Voter ID</option>
+                                                            <option>Driving License</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="G2IDnumber" class="input-group-text"
+                                                               data-field="number">
+                                                            Id Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control" id="G2IDnumber"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <label for="G2IDpic" class="">
+                                                            <div class="idPhoto">
+                                                                <i class="fa fa-cloud-upload"></i>
+                                                                Upload ID Proof's Photo
+                                                            </div>
+                                                        </label>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="G2IDpic"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
                                     </div>
                                 </section>
                                 <div class="text-center">
@@ -1448,11 +1540,23 @@ $this->registerCss('
     border: none;
     
 }
+#Father-other-info, #Mother-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
+    display:none;
+}
 ');
 $script = <<<JS
+var user_enc_id = "$user_id";
 var loan_app_id = "$loan_app_id";
 $(document).on('blur','input:text', function() {
+    var data = {};
     var elem = $(this);
+    var label_name = elem.prev('label').attr('data-field');
+    if(label_name == "number"){
+        var docChilds = elem.closest('.row').children().children();
+        var docFieldName = docChilds.children('label').attr('data-field');
+        var docName = docChilds.children('select').val();
+        data[docFieldName]= docName;
+    }
     var section = elem.closest('section');
     var key = section.attr('data-key');
     var type = section.attr('data-type');
@@ -1461,14 +1565,50 @@ $(document).on('blur','input:text', function() {
         res_type = section.attr('data-address-type');
     }
     var relation = section.attr('data-relation');
-    if(typeof relation === "undefined"){
-        relation = "";
+    var co_app_other_info = elem.attr('data-id');
+    var mainSection = section;
+    if(typeof co_app_other_info !== "undefined"){
+        var articalTag = elem.closest('article');
+        type = articalTag.attr('data-type');
+        data['loan_co_app_id']= key;
+        key = articalTag.attr('data-key');
+        mainSection = articalTag;
+    }
+    if(typeof relation !== "undefined"){
+        data['relation']= relation;
+    }
+    if(typeof relation !== "undefined"){
+        data['relation']= relation;
     }
     var value = elem.val();
-    console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + res_type);
-    // $.ajax({
-    //     url: ''
-    // });
+    if(key != ""){
+        data['id']= key;
+    }
+    if(type != ""){
+        data['type']= type;
+    }
+    if(res_type != ""){
+        data['address_type']= res_type;
+    }
+    data[label_name]= value;
+    data['user_enc_id'] = user_enc_id;
+    data['loan_app_id'] = loan_app_id;
+    console.log(value+" "+key);
+    // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + res_type);
+    if(value != "" || key != ""){
+        $.ajax({
+            url: 'https://ricky.eygb.me/api/v3/education-loan/loan-second-form',
+            method: 'POST',
+            data: data,
+            success: function(res) {
+                if(res.response.status == 200){
+                    mainSection.attr('data-key', res.response.id)
+                } else {
+                    alert('semothing went wrong..');
+                }
+            }
+        });
+    }
 });
 $(document).ready(function() {
     var data = "";
@@ -1488,27 +1628,99 @@ $(document).ready(function() {
                 $('#applicantNumber').val(data.phone);
                 $('#degreeApplied').val(data.degree);
                 $('#courseApplied').val(data.course_name);
+                var residentials = data.loanApplicantResidentialInfos;
+                var cur_addr = "";
+                var per_addr = "";
+                $.each(residentials, function(i, v) {
+                    if(i < 2){
+                        switch (v.residential_type) {
+                            case "0":
+                                per_addr = data.loanApplicantResidentialInfos[i];
+                            break;
+                            case "1":
+                                cur_addr = data.loanApplicantResidentialInfos[i];
+                            break;
+                            default:
+                        }
+                    }
+                });
+                if(per_addr != ""){
+                    $('#permanentAddressInformation').attr('data-key',per_addr.loan_app_res_info_enc_id);
+                    $('#houseNo').val(per_addr.address);
+                    $('#PA-city').val(per_addr.city_enc_id);
+                    $('#PA-state').val(per_addr.state_enc_id);
+                    $('#per_res_type').val(per_addr.type);
+                }
+                if(cur_addr != ""){
+                    $('#currentAddressInformation').attr('data-key',cur_addr.loan_app_res_info_enc_id);
+                    $('#CA-houseNo').val(cur_addr.address);
+                    $('#CA-city').val(cur_addr.city_enc_id);
+                    $('#CA-state').val(cur_addr.state_enc_id);
+                    $('#cur_res_type').val(cur_addr.type);
+                }
+                var loanCertificates = data.loanCertificates;
+                $.each(loanCertificates,function(i, v) {
+                    $('#idProofInformation' + i).attr('data-key',v.certificate_enc_id);
+                    $('#applicantID' + i).val(v.name);
+                    $('#applicantIDnumber' + i).val(v.number);
+                });
+                var qualifications = data.loanCandidateEducations;
+                $.each(qualifications, function(i, v) {
+                    if(i > 1){
+                        $('#addEduBtn').click();
+                    }
+                    $('#qualificationInformation' + i).attr('data-key',v.loan_candidate_edu_enc_id);
+                    $('#eduName' + i).val(v.name);
+                    $('#instituteName' + i).val(v.institution);
+                    $('#marksObtained' + i).val(v.obtained_marks);
+                });
+                
                 $.each(data.loanCoApplicants, function(k,v) {
+                    var residenceInfo = v.loanApplicantResidentialInfos[0];
+                    if(typeof residenceInfo === "undefined"){
+                        residenceInfo = {};
+                    }
+                    var coAppLoanCertificate = v.loanCertificates[0];
+                    if(typeof coAppLoanCertificate === "undefined"){
+                        coAppLoanCertificate = {};
+                    }
                     switch (v.relation) {
                         case 'Father' :
                             $('#fatherInformation').attr('data-key',v.loan_co_app_enc_id);
+                            $('#'+ v.relation +'-other-info').show();
                             $('#fatherName').val(v.name);
                             $('#fatherEmail').val(v.email);
                             $('#fatherNumber').val(v.phone);
                             $('#dob').val(v.co_applicant_dob);
+                            $('#yearsOFoccu').val(v.years_in_current_house);
+                            $('#fOccupation').val(v.occupation);
+                            $('#fIncome').val(v.annual_income);
                             if(v.address){
                                 $('#fSame').click();
                             }
+                            $('#Father-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            $('#fHouseNo').val(residenceInfo.address);
+                            $('#Father-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            $('#fIDproof').val(coAppLoanCertificate.name);
+                            $('#fIDproofnumber').val(coAppLoanCertificate.number);
                             break;
                         case 'Mother' :
                             $('#motherInformation').attr('data-key',v.loan_co_app_enc_id);
+                            $('#'+ v.relation +'-other-info').show();
                             $('#MName').val(v.name);
                             $('#MEmail').val(v.email);
                             $('#M-mobile').val(v.phone);
                             $('#MDob').val(v.co_applicant_dob);
+                            $('#mOccupation').val(v.occupation);
+                            $('#familyIncome').val(v.annual_income);
                             if(v.address){
                                 $('#mSame').click();
                             }
+                            $('#Mother-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            $('#MHouseNo').val(residenceInfo.address);
+                            $('#Mother-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            $('#MIdProof').val(coAppLoanCertificate.name);
+                            $('#MIdProofNo').val(coAppLoanCertificate.number);
                             break;
                         case 'Sibling' :
                             $('#sibling-avail').click();
@@ -1521,6 +1733,7 @@ $(document).ready(function() {
                             guarantorCount++;
                             if(guarantorCount <= 2){
                                 $('#guarantor'+guarantorCount+'Information').attr('data-key',v.loan_co_app_enc_id);
+                                $('#'+ v.relation + guarantorCount +'-other-info').show();
                                 $('#G'+guarantorCount+'Name').val(v.name);
                                 $('#G'+guarantorCount+'Email').val(v.email);
                                 $('#G'+guarantorCount+'Dob').val(v.co_applicant_dob);
@@ -1528,6 +1741,11 @@ $(document).ready(function() {
                                 if(v.address){
                                     $('#g'+guarantorCount+'Same').click();
                                 }
+                                $('#Guarantor'+guarantorCount+'-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                                $('#G'+guarantorCount+'Address').val(residenceInfo.address);
+                                $('#Guarantor'+guarantorCount+'-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                                $('#G'+guarantorCount+'ID').val(coAppLoanCertificate.name);
+                                $('#G'+guarantorCount+'IDnumber').val(coAppLoanCertificate.number);
                             }
                             break;
                         default:
@@ -1542,19 +1760,20 @@ $this->registerJS($script);
 ?>
 <script>
     function eduTemp(edu_count) {
-        return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName'+edu_count+'" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName'+edu_count+'" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName'+edu_count+'" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName'+edu_count+'" placeholder=""></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="marksObtained'+edu_count+'" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained'+edu_count+'" placeholder=""></div></div></div>';
+        return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
     }
+
     function addEduField(ths) {
         let count = ths.getAttribute('data-count');
         let eduFields = document.getElementById('eduFields');
         let newFields = document.createElement('section');
-        newFields.setAttribute('id', 'qualificationInformation'+count);
+        newFields.setAttribute('id', 'qualificationInformation' + count);
         newFields.setAttribute('data-key', '');
         newFields.setAttribute('data-type', 'qualification');
         newFields.innerHTML = eduTemp(count);
         eduFields.appendChild(newFields)
         count++;
-        ths.setAttribute('data-count',count);
+        ths.setAttribute('data-count', count);
     }
 
     function hideAddress() {
@@ -1567,7 +1786,6 @@ $this->registerJS($script);
         } else {
             elemHide.style.display = 'block';
         }
-        ;
     }
 
     function ShowSibling() {
@@ -1579,7 +1797,6 @@ $this->registerJS($script);
         } else {
             elemHide.style.display = 'none';
         }
-        ;
     }
 </script>
 

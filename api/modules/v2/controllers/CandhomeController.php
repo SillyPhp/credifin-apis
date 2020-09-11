@@ -860,6 +860,17 @@ class CandhomeController extends ApiBaseController
                     'a.seats'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
+                ->joinWith(['webinarOutcomes b1' => function($b1){
+                    $b1->select([
+                        'b1.webinar_enc_id',
+                        'b1.outcome_enc_id',
+                        'b2.name',
+                        'b2.bg_colour',
+                        'CASE WHEN b2.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->outcomes->image, 'https') . '", b2.icon_location, "/", b2.icon) END icon',
+                    ]);
+                    $b1->joinWith(['outcomePoolEnc b2'],false);
+                    $b1->andWhere(['b1.is_deleted' => 0]);
+                }])
                 ->joinWith(['webinarSpeakers c' => function ($bb) {
                     $bb->select([
                         'c.webinar_enc_id',
