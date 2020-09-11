@@ -277,7 +277,6 @@ if (top === self) {
 } 
 else{executeAll();}
 }
-//executeAll();
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {

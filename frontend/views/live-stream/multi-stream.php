@@ -230,6 +230,14 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         color: white;
         background-color: #33b5e5;
     }
+    .new_sharing
+    {
+        display: block !important;
+        width: 100% !Important;
+        height: 100% !Important;
+        position: absolute !important;
+        z-index: 9 !important;
+    }
 </style>
 <div class="toast toast-color" id="notification"
      data-delay="3000">
@@ -268,10 +276,11 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
                 </div>
             </div>
             <div class="flex-container">
+                <div id="sharing_mode">
+                    <h1 class="text-share"><i id="share-icon" class="fa fa-desktop"></i> Your Screen is in Sharing Mode</h1>
+                </div>
                 <div class="" id="full-screen-video">
-                    <div id="sharing_mode">
-                        <h1 class="text-share"><i id="share-icon" class="fa fa-desktop"></i> Your Screen is in Sharing Mode</h1>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -304,8 +313,7 @@ if (top === self) {
      $("body").html("Access Denied");
 } 
 else{executeAll();}
-}  
-//executeAll();
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {

@@ -2,6 +2,7 @@
  * Agora Broadcast Client
  */
 var peers_network = [];
+var left_network = [];
 var agoraAppId = app_id; // set app id
 var channelName = channel_name; // set channel name
 
@@ -42,6 +43,7 @@ client.on("stream-added", function(evt) {
     var streamId = stream.getId();
     console.log("New stream added: " + streamId);
     console.log("Subscribing to remote stream:" + streamId);
+    subscribe(streamId);
     // Subscribe to the stream.
     client.subscribe(stream, function(err) {
         console.log("[ERROR] : subscribe stream failed", err);
@@ -56,22 +58,30 @@ client.on("stream-removed", function(evt) {
     console.log("Remote stream is removed " + stream.getId());
     initializeUi();
 });
+function subscribe(sid)
+{
+    client.on("stream-subscribed", function(evt) {
+        var remoteStream = evt.stream;
+        // if($("#stream-player-"+ sid).length == 0){
+        //     $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+sid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+sid+'</div></div>');
+        // }
+        // remoteStream.play("stream-player-"+sid+"");
+        remoteStream.play("full-screen-video");
+        console.log(
+            "Successfully subscribed to remote stream: " + remoteStream.getId()
+        );
+        initializeUi();
+    });
+}
 
-client.on("stream-subscribed", function(evt) {
-    var remoteStream = evt.stream;
-    remoteStream.play("full-screen-video");
-    console.log(
-        "Successfully subscribed to remote stream: " + remoteStream.getId()
-    );
-    initializeUi();
-});
 // peer online status
 client.on("peer-online", function(evt) {
-
+    console.log(evt.uid+"peer online");
 });
 
 // remove the remote-container when a user leaves the channel
 client.on("peer-leave", function(evt) {
+     $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
 });
