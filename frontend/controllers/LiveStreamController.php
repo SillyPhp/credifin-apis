@@ -77,18 +77,18 @@ class LiveStreamController extends Controller
 
     public function actionMultiStream($id)
     {
-//        $data = WebinarSessions::findOne(['session_enc_id' => $id]);
-//        if (!$data->session_id) {
-//            $data = $data->webinars;
-//            foreach ($data as $d) {
-//                foreach ($d->webinarSpeakers as $speaker) {
-//                    $user_id = $speaker->speakerEnc->userEnc->user_enc_id;
-//                    break;
-//                }
-//                break;
-//            }
-//            return $this->renderAjax('generate-session', ['user_id' => $user_id, 'id' => $id]);
-//        }
+        $data = WebinarSessions::findOne(['session_enc_id' => $id]);
+        if (!$data->session_id) {
+            $data = $data->webinars;
+            foreach ($data as $d) {
+                foreach ($d->webinarSpeakers as $speaker) {
+                    $user_id = $speaker->speakerEnc->userEnc->user_enc_id;
+                    break;
+                }
+                break;
+            }
+            return $this->renderAjax('generate-session', ['user_id' => $user_id, 'id' => $id]);
+        }
         $this->layout = 'blank-layout';
         $session = Yii::$app->session;
         if (empty($session->get('uid'))) {
