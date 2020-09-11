@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 $time = $webinar['start_datetime'];
 $interest_status = $webResig['interest_status'];
 $status = $webinar['status'];
+$this->title = $webinar['title'];
 ?>
 <section>
     <div class="full-width-light"
@@ -140,7 +141,7 @@ $status = $webinar['status'];
     <div class="row">
         <div class="col-md-12">
             <?php
-            $sharingLink = Url::base('https') .'/webinars/'.$webinar['slug'];
+            $sharingLink = Url::base('https') .'/webinar/'.$webinar['slug'];
             echo $this->render('/widgets/sharing-widget-webinar',[
                 'sharingLink' => $sharingLink
             ]) ?>
@@ -259,7 +260,7 @@ $status = $webinar['status'];
                     ?>
                     <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                         <?php } else {
-                        $color_code = '#f00';
+                        $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount=1);
                         ?>
                         <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
@@ -732,12 +733,12 @@ transform: rotate(100deg);
 .ts-single-outcome .ts-title {
     color: #fff;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    width: 80%;
     overflow: hidden;
-    width: 90%;
-    font-size: 18px;
-    margin: 24px auto;
+    font-size: 16px;
+    margin: 10px auto;
     font-family: roboto;
 }
 .ts-single-outcome:hover img {
