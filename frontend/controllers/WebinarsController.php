@@ -355,7 +355,7 @@ class WebinarsController extends Controller
         return $webinars;
     }
 
-    public function actionAllWebinars()
+    public function actionIndex()
     {
         $webinars = self::getWebinars();
         return $this->render('all-webinars',[
@@ -393,10 +393,9 @@ class WebinarsController extends Controller
             ->where([
                 'a.is_deleted' => 0,
             ])
-            ->andWhere(['not', ['a.session_for' => 1]])
+            ->andWhere(['not', ['a.session_for' => 2]])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
-            ->limit(2)
             ->all();
         return $webinars;
     }

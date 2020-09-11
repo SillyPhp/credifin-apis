@@ -293,7 +293,7 @@ button.viewall-jobs {
 }
 .paid-candidate-box {
 	text-align: center;
-	padding: 20px 15px 5px;
+	padding: 20px 15px 10px;
 }
 .paid-candidate-status {
 	position: absolute;

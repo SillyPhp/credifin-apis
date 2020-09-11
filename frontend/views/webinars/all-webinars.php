@@ -3,12 +3,12 @@
 use yii\helpers\Url;
 ?>
 
-<section style="background:#c8e6f3;padding: 80px 0 20px;">
+<section style="background:#8bbed5;padding: 80px 0 20px;">
     <div class="container headsec">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="mentee-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/mentor/mentee-heading.png'); ?>" align="right"
+                    <img src="<?= Url::to('@eyAssets/images/pages/mentor/web-vector.png'); ?>" align="right"
                          class="responsive"/>
                 </div>
             </div>
@@ -58,7 +58,7 @@ $this->registerCss('
     width: 100%;
     height: auto;
 }
-.ment-60 {
+.ment-up {
 	font-size: 60px;
 	font-family: lora;
 	margin: 0;
