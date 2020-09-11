@@ -43,8 +43,12 @@ use yii\helpers\Url;
                     <div class="col-lg-6">
                         <div class="ts-speaker-popup-content">
                             <h3 class="ts-title">{{fullname}}</h3>
+                            {{#email}}
                             <span class="speakder-designation"><i class="fa fa-envelope"></i> {{email}}</span>
+                            {{/email}}
+                            {{#phone}}
                             <span class="speakder-designation mb2 phone-icon"><i class="fa fa-phone"></i> {{phone}}</span>
+                            {{/phone}}
                             {{#designation}}
                             <span class="speakder-designation mb2">{{designation}}</span>
                             {{/designation}}
