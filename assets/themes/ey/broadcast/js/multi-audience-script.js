@@ -48,6 +48,7 @@ client.on("stream-added", function(evt) {
     client.subscribe(stream, function(err) {
         console.log("[ERROR] : subscribe stream failed", err);
     });
+    initializeUi();
 });
 
 client.on("stream-removed", function(evt) {
@@ -81,6 +82,7 @@ client.on("peer-online", function(evt) {
 
 // remove the remote-container when a user leaves the channel
 client.on("peer-leave", function(evt) {
+    initializeUi();
      $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
