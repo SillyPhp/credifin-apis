@@ -14,6 +14,8 @@ use Yii;
  * @property string $college_course_enc_id organization_enc_id
  * @property string $loan_type_enc_id
  * @property string $applicant_name Course Name
+ * @property string $image
+ * @property string $image_location
  * @property string $applicant_dob
  * @property string $applicant_current_city
  * @property string $degree
@@ -38,6 +40,7 @@ use Yii;
  *
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
@@ -74,7 +77,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['degree', 'source'], 'string'],
             [['years', 'semesters', 'gender', 'status', 'loan_status', 'is_deleted'], 'integer'],
             [['amount', 'amount_received', 'amount_due', 'scholarship'], 'number'],
-            [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
@@ -100,6 +103,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getEducationLoanPayments()
     {
         return $this->hasMany(EducationLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicantResidentialInfos()
+    {
+        return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

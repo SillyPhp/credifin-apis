@@ -6,13 +6,24 @@ var channelName = channel_name; // set channel name
 
 // create client instance
 var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // h264 better detail at a higher motion
+var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'});
 var mainStreamId; // reference to main stream
 // set video profile
 // [full list: https://docs.agora.io/en/Interactive%20Broadcast/videoProfile_web?platform=Web#video-profile-table]
 var cameraVideoProfile = "480p"; // 960 × 720 @ 30fps  & 750kbs
+var sharingProfileRes = "720p_1";
 
 // keep track of streams
 var localStreams = {
+    uid: "",
+    camera: {
+        camId: "",
+        micId: "",
+        stream: {}
+    }
+};
+
+var sharingStreams = {
     uid: "",
     camera: {
         camId: "",
@@ -131,6 +142,7 @@ client.on("streamInjectedStatus", function(evt) {
 // when a remote stream leaves the channel
 client.on("peer-leave", function(evt) {
     $('#stream-player-'+evt.stream.getId()+'').remove();
+    $('#stream-player-'+sharingStreams.uid+'').remove();
     // console.log("Remote stream has left the channel: " + evt.stream.getId());
     initializeUi();
 });
@@ -200,7 +212,7 @@ function createCameraStream(uid, deviceIds) {
         streamID: uid,
         audio: true,
         video: true,
-        screen: false
+        screen: false,
     });
     localStream.setVideoProfile(cameraVideoProfile);
     // The user has granted access to the camera and mic.
@@ -232,6 +244,7 @@ function createCameraStream(uid, deviceIds) {
                 $("#mic-btn").prop("disabled", false);
                 $("#video-btn").prop("disabled", false);
                 $("#exit-btn").prop("disabled", false);
+                $("#share-sreen-btn").prop("disabled", false);
             }
 
             client.publish(localStream, function(err) {
@@ -245,7 +258,56 @@ function createCameraStream(uid, deviceIds) {
     );
 }
 
+function createSharingScreen()
+{
+    console.log('enabling sharing');
+    sharingStreams.uid = uid+"1";
+    var screenStream = AgoraRTC.createStream({
+        streamID: sharingStreams.uid,
+        audio: false,
+        video: false,
+        screen: true,
+    });
+    screenStream.setScreenProfile(sharingProfileRes);
+    screenStream.init(function (){
+        // Play the sharing stream.
+        $('#sharing_mode').addClass('new_sharing');
+        if($("#stream-player-"+ sharingStreams.uid).length == 0){
+            $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+sharingStreams.uid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+sharingStreams.uid+'</div></div>');
+        }
+        screenStream.play("stream-player-"+sharingStreams.uid+"");
+        // Publish thesharing stream.
+        screenClient.publish(screenStream, function(err) {
+            console.log("[ERROR] : publish local sharing error: " + err);
+        });
+    },function (err)
+    {
+        console.log(err);
+    });
+}
+
+function joinSharing()
+{
+    console.log('staring sharing');
+    var token = access_token;
+    var userID = null; // set to null to auto generate uid on successfull connection
+
+    screenClient.join(
+        token,
+        channelName,
+        userID,
+        function(uid) {
+            createSharingScreen(uid);
+            console.log("User " + uid + " joined channel successfully");
+        },
+        function(err) {
+            console.log("[ERROR] : sharing failed", err);
+        }
+    );
+}
+
 function leaveChannel() {
+    $('#stream-player-'+localStreams.uid+'').remove();
     client.leave(
         function() {
             console.log("client leaves channel");
@@ -258,6 +320,22 @@ function leaveChannel() {
             console.log("client leave failed ", err); //error handling
         }
     );
+}
+
+function leaveSharing()
+{
+    $('#stream-player-'+sharingStreams.uid+'').remove();
+    joinChannel();
+    screenClient.leave(
+        function() {
+            console.log("client leaves channel");
+        },
+        function(err) {
+            console.log("client leave failed ", err); //error handling
+        }
+    );
+    //$('#sharing_mode').css('display','none');
+    $('#sharing_mode').removeClass('new_sharing');
 }
 
 // use tokens for added security
@@ -481,6 +559,10 @@ function enableUiControls() {
         }
     });
 
+    $("#share-sreen-btn").click(function(){
+        toggleBtnShare();
+    });
+
     $("#start-RTMP-broadcast").click(function(){
         startLiveTranscoding();
         $('#addRtmpConfigModal').modal('toggle');
@@ -548,6 +630,26 @@ function toggleVideo() {
         console.log("unMuteVideo");
     }
     $("#video-btn").toggleClass('mute-video').toggleClass('unmute-video'); // toggle the video icon
+}
+
+function toggleBtnShare() {
+    if ($("#share-sreen-btn").hasClass('share-screen-off')) {
+        // leaveChannel();
+        //$('#stream-player-'+localStreams.uid+'').remove();
+        screenClient.init(
+            agoraAppId,
+            function () {
+                console.log("AgoraRTC client initialized");
+                joinSharing();
+            },
+            function (err) {
+                console.log("[ERROR] : AgoraRTC client init failed", err);
+            }
+        );
+    } else {
+        leaveSharing();
+    }
+    $("#share-sreen-btn").toggleClass('share-screen-off').toggleClass('share-screen-on'); // toggle the share screen icon
 }
 
 // keep the spinners honest

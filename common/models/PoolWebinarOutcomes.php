@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-
 /**
  * This is the model class for table "{{%pool_webinar_outcomes}}".
  *
@@ -45,7 +44,6 @@ class PoolWebinarOutcomes extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

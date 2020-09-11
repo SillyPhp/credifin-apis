@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var uid = "' . $uid . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
@@ -278,7 +276,7 @@ if (top === self) {
      $("body").html("Access Denied");
 } 
 else{executeAll();}
-}    
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
