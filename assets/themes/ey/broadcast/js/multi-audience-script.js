@@ -82,10 +82,10 @@ client.on("peer-online", function(evt) {
 
 // remove the remote-container when a user leaves the channel
 client.on("peer-leave", function(evt) {
-    initializeUi();
      $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
+    initializeUi();
 });
 
 // show mute icon whenever a remote has muted their mic
