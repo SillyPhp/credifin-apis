@@ -57,7 +57,6 @@ class WebinarsController extends Controller
     }
     public function actionWebinarDetails($slug)
     {
-        if (!Yii::$app->user->isGuest) {
             $webinar = Webinars::find()
                 ->select(['webinar_enc_id','slug', 'session_enc_id','status', 'title', 'start_datetime', 'description', 'seats'])
                 ->where(['slug' => $slug])
@@ -123,7 +122,8 @@ class WebinarsController extends Controller
                 ->alias('z')
                 ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'c.image', 'c.image_location'])
                 ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0,'z.interest_status' => 3,'c.is_deleted' => 0])
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0,'z.status' => 1, 'c.is_deleted' => 0])
+                ->andWhere(['not',['z.interest_status' => 2]])
                 ->andWhere(['not', ['c.image' => null]])
                 ->andWhere(['not', ['c.image' => '']])
                 ->limit(6)
@@ -131,17 +131,15 @@ class WebinarsController extends Controller
                 ->all();
             $webinarRegistrations = WebinarRegistrations::find()
                 ->alias('z')
-                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'c.image', 'c.image_location'])
+                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by','z.status'])
                 ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0,'z.interest_status' => 3,'c.is_deleted' => 0])
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0,'z.status' => 1, 'c.is_deleted' => 0])
+                ->andWhere(['not',['z.interest_status' => 2]])
                 ->asArray()
                 ->all();
             $webResig = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->one();
-        } else {
-            return $this->redirect('/login');
-        }
         return $this->render('webinar-details', [
             'webinar' => $webinar,
             'assignSpeaker' => $assignSpeaker,
@@ -151,8 +149,8 @@ class WebinarsController extends Controller
             'webResig' => $webResig,
         ]);
     }
-    public function actionWebinarRegistation(){
-        if(Yii::$app->request->isAjax){
+    public function actionRegistration(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             Yii::$app->response->format = Response::FORMAT_JSON;
             $uid = Yii::$app->user->identity->user_enc_id;
             $wid = Yii::$app->request->post('wid');
@@ -170,6 +168,7 @@ class WebinarsController extends Controller
                         $model->interest_status = 3;
                 }
                 $model->is_deleted = 0;
+                $model->status = 1;
                 $model->last_updated_by = $uid;
                 $model->last_updated_on = date('Y-m-d H:i:s');
                 if ($model->save()) {
@@ -201,7 +200,7 @@ class WebinarsController extends Controller
                     case 'attending':
                         $register->interest_status = 3;
                 }
-                $register->status = 0;
+                $register->status = 1;
                 $register->created_by = $uid;
                 $register->created_on = date('Y-m-d H:i:s');
                 if($register->save()){

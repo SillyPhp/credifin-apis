@@ -296,7 +296,8 @@ class MentorsController extends Controller
                 $model->register_enc_id = $utilitiesModel->encrypt();
                 $model->webinar_enc_id = $key;
                 $model->created_by = Yii::$app->user->identity->user_enc_id;
-                $model->status = 0;
+                $model->status = 1;
+                $model->interest_status = 1;
                 if ($model->save()) {
                     return [
                         'status' => 200,

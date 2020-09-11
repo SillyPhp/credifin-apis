@@ -20,11 +20,11 @@ use yii\helpers\Url;
                 </div>
                 <div class="ts-speaker-info">
                     <h3 class="ts-title"><a href="#">{{fullname}}</a></h3>
-                    {{#designation}}
                     <p>
-                        {{designation}}
+                        {{#designation}}
+                            {{designation}}
+                        {{/designation}}
                     </p>
-                    {{/designation}}
                 </div>
             </div>
             <!-- popup start-->
@@ -175,9 +175,22 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 
+.ts-title {
+    font-family: lora;
+}
+
 .ts-speaker .ts-title a {
-    color: #000;
-    text-transform:capitalize;
+    color: #222222;
+    text-transform: capitalize;
+    height: 34px;
+    font-size: 22px;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.ts-speaker-info p{
+    height:23px;
 }
 
 .ts-speaker:hover .speaker-img img {

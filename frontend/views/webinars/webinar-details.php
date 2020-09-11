@@ -29,7 +29,11 @@ $status = $webinar['status'];
                             </div>
                         <?php } elseif($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
-                                <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
+                                <?php if(Yii::$app->user->isGuest){?>
+                                <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal" >Click here to Join</a>
+                                <?php } else { ?>
+                                 <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
+                                <?php } ?>
                             </div>
                             <div id="counter">
                                 <div class="counter-item">
@@ -108,14 +112,20 @@ $status = $webinar['status'];
                                 ?>
                             </div>
                               <?php  Pjax::end(); ?>
-                            <?php if(Yii::$app->user->identity->user_enc_id){?>
                                 <div class="register-action">
+                            <?php
+                                if(Yii::$app->user->isGuest){
+                                ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn" value="interested">Interested</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn" value="not interested">Not Interested</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
+                            <?php } else { ?>
                                     <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
                                     <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
                                     <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
-                                </div>
-                            <?php }
+                           <?php     }
                             ?>
+                            </div>
                         </div>
                     </div>
 
@@ -242,12 +252,12 @@ $status = $webinar['status'];
                     $color_code = '#'.$oc['bg_colour'];
                     $reduceColor = createPalette($color_code, $colorCount=1);
                     ?>
-                    <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
+                    <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                         <?php } else {
                         $color_code = '#f00';
                         $reduceColor = createPalette($color_code, $colorCount=1);
                         ?>
-                        <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
+                        <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                             <?php } ?>
                             <?php if($oc['icon']){ ?>
                                 <img src = "<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image. $oc['icon_location']. DIRECTORY_SEPARATOR . $oc['icon'])?>">
@@ -715,7 +725,15 @@ transform: rotate(100deg);
     margin-bottom: 30px; 
 }
 .ts-single-outcome .ts-title {
-    color: #fff; 
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    width: 90%;
+    font-size: 18px;
+    margin: 24px auto;
+    font-family: roboto;
 }
 .ts-single-outcome:hover img {
     -webkit-animation-name: shake;
@@ -883,6 +901,7 @@ a:link, a:visited {
     height: 40px;
     padding: 0 0;
     width: 150px;
+    line-height: 40px;
     background: #00a0e3;
     color: #fff;
     border: none;
@@ -891,6 +910,7 @@ a:link, a:visited {
 .ra-btn:hover{
     box-shadow: 0 6px 8px rgba(0,0,0,.2);
     transition: .3s ease;
+    color:#fff;
 }
 /*--*/
 .bottom-social {
@@ -1126,7 +1146,7 @@ $(document).on('click','.registered',function(event){
      var web_id = btn.attr('data-key');
      var value = btn.attr('value');
     $.ajax({
-        url: '/webinars/webinar-registation',
+        url: '/webinars/registration',
         type: 'POST',
         data: {wid: web_id,value: value},
         success:function(res){
