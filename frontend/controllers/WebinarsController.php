@@ -181,14 +181,15 @@ class WebinarsController extends Controller
             $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
             if (!empty($model)) {
                 switch ($value) {
-                    case 'interested':
-                        $model->interest_status = 1;
-                        break;
                     case 'not interested':
                         $model->interest_status = 2;
                         break;
                     case 'attending':
                         $model->interest_status = 3;
+                        break;
+                    default :
+                        $model->interest_status = 1;
+
                 }
                 $model->is_deleted = 0;
                 $model->status = 1;
@@ -214,14 +215,15 @@ class WebinarsController extends Controller
                 $register->register_enc_id = $utilitiesModel->encrypt();
                 $register->webinar_enc_id = $wid;
                 switch ($value) {
-                    case 'interested':
-                        $register->interest_status = 1;
-                        break;
                     case 'not interested':
                         $register->interest_status = 2;
                         break;
                     case 'attending':
                         $register->interest_status = 3;
+                        break;
+                    default :
+                        $register->interest_status = 1;
+
                 }
                 $register->status = 1;
                 $register->created_by = $uid;
