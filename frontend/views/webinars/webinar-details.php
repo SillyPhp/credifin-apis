@@ -199,13 +199,6 @@ $this->title = $webinar['title'];
                         <div class="col-lg-6">
                             <div class="ts-speaker-popup-content">
                                 <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                <?php if($as['email']) { ?>
-                                <span class="speakder-designation"><i class="fa fa-envelope"></i> <?= $as['email'] ?></span>
-                                <?php }
-                                if($as['phone']) {
-                                ?>
-                                <span class="speakder-designation mb2 phone-icon"><i class="fa fa-phone"></i> <?= $as['phone'] ?></span>
-                                <?php } ?>
                                 <?php if($as['designation']) {?>
                                     <span class="speakder-designation"><?= $as['designation']?></span>
                                 <?php }
