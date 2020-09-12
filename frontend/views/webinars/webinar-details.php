@@ -129,16 +129,14 @@ $this->title = $webinar['title'];
                                     if ($register) {
                                         foreach ($register as $reg) { ?>
                                             <li>
-                                                <img src="
-                            <?= Url::to(Yii::$app->params->upload_directories->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
+                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
                                             </li>
                                         <?php }
                                     } ?>
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span>
-                            <?= count($webinarRegistrations) ?></span>
+                                    <p><span><?= count($webinarRegistrations) ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -233,51 +231,54 @@ $this->title = $webinar['title'];
                 <!-- popup start-->
                 <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-img">
-                                <?php if ($as['speaker_image']) { ?>
-                                    <img src="<?= $as['speaker_image'] ?>">
-                                <?php } else { ?>
-                                    <img src="<?= $as['speaker_image_fake'] ?>">
-                                <?php } ?>
-                            </div>
-                        </div><!-- col end-->
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                <?php if ($as['designation']) { ?>
-                                    <span class="speakder-designation"><?= $as['designation'] ?></span>
-                                <?php }
-                                if ($as['org_image']) {
-                                    ?>
-                                    <img class="company-logo"
-                                         src="<?= $as['org_image'] ?>">
-                                <?php }
-                                if ($as['org_name']) { ?>
-                                    <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                <?php }
-                                if ($as['description']) {
-                                    ?>
-                                    <p>
-                                        <?= $as['description'] ?>
-                                    </p>
-                                <?php } ?>
-                                <div class="ts-speakers-social">
-                                    <?php if ($as['facebook']) { ?><a
-                                        href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                    class="fab fa-facebook-f"></i></a><?php } ?>
-                                    <?php if ($as['twitter']) { ?><a href="https://twitter.com/<?= $as['twitter'] ?>"
-                                                                     target="_blank"><i class="fab fa-twitter"></i>
-                                        </a><?php } ?>
-                                    <?php if ($as['instagram']) { ?><a
-                                        href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                    class="fab fa-instagram"></i></a><?php } ?>
-                                    <?php if ($as['linkedin']) { ?><a
-                                        href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                    class="fab fa-linkedin-in"></i></a><?php } ?>
-                                </div>
-                            </div><!-- ts-speaker-popup-content end-->
-                        </div><!-- col end-->
+                        <div class="speaker-flex">
+                                <?php
+                                if ($as['speaker_image']) {
+                                    $image = $as['speaker_image'];
+                                } else {
+                                    $image = $as['speaker_image_fake'];
+                                }
+                                ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
+
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($as['designation']) { ?>
+                                        <span class="speakder-designation"><?= $as['designation'] ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a href="https://twitter.com/<?= $as['twitter'] ?>"
+                                                                         target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
                     </div><!-- row end-->
                 </div><!-- popup end-->
             </div>
@@ -377,25 +378,19 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
-.loc-set{
-    text-align:left !important;
-}
-.flex-use {
+.speaker-flex {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height:80vh;
 }
-.register-btn{text-align:right;}
-.register-btn a {
-    font-size: 16px;
-    height: 40px;
-    padding: 9px 20px;
-    width: 150px;
-    line-height: 40px;
-    background: #00a0e3;
-    color: #fff;
-    border: none;
-    margin: 5px 5px;
+.speak-img, .speak-cntnt {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.speak-img {
+    background-position: center;
+    background-size: cover;
 }
 #join{
 display:none;
@@ -511,7 +506,7 @@ transform: rotate(100deg);
 
 .ts-speaker .speaker-img {
     width: 255px;
-    height: 255px;
+    height: 270px;
     position: relative;
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -634,7 +629,7 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker .speaker-img {
     width: 100%;
-    height: auto;
+//    height: auto;
     border-radius: 0;
     -webkit-border-radius: 0;
     -ms-border-radius: 0;
@@ -655,7 +650,12 @@ transform: rotate(100deg);
 }
 
 .speaker-classic .ts-speaker .ts-speaker-info p {
-    margin-bottom: 0;
+    font-family: roboto;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 5px;
 }
 
 .speaker-shap img {
@@ -841,6 +841,7 @@ transform: rotate(100deg);
 }
 .ts-count-down .countdown {
     margin-bottom: 0;
+    min-height: 138px;
 }
 .ts-count-down .countdown .counter-item {
     width: 25%;
