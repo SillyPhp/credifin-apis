@@ -61,6 +61,7 @@ class LoanApplicationsForm extends LoanApplications
             if (!$this->save()) {
                 $transaction->rollback();
                 print_r($this->getErrors());
+                die();
             } else {
                 $this->_flag = true;
             }
@@ -76,6 +77,7 @@ class LoanApplicationsForm extends LoanApplications
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
                     print_r($path_to_claim->getErrors());
+                    die();
                 } else {
                     $this->_flag = true;
                 }
@@ -90,6 +92,7 @@ class LoanApplicationsForm extends LoanApplications
                 if (!$path_to_Unclaim->save()) {
                     $transaction->rollback();
                     print_r($path_to_Unclaim->getErrors());
+                    die();
                 } else {
                     $this->_flag = true;
                 }
@@ -108,6 +111,7 @@ class LoanApplicationsForm extends LoanApplications
                     if (!$purpose->save()) {
                         $transaction->rollback();
                        print_r($purpose->getErrors());
+                       die();
                     } else {
                         $this->_flag = true;
                     }
@@ -130,6 +134,7 @@ class LoanApplicationsForm extends LoanApplications
                     if (!$model->save()) {
                         $transaction->rollback();
                         print_r($model->getErrors());
+                        die();
                     } else {
                         $this->_flag = true;
                     }
@@ -169,7 +174,8 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->created_on = date('Y-m-d H:i:s');
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
-                    return false;
+                    print_r($loan_payment->getErrors());
+                    die();
                 } else {
                     $transaction->commit();
                     $data = [];
@@ -192,6 +198,8 @@ class LoanApplicationsForm extends LoanApplications
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
+            print_r($exception);
+            die(); 
             return false;
         }
     }
