@@ -2,9 +2,10 @@
 
 use yii\helpers\Url;
 
+$base_url = Url::base('https');
 foreach ($webinars as $webinar) {
     ?>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="webinar-box">
             <div class="webinar-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/jobs/default-cover.png') ?>">
@@ -19,11 +20,11 @@ foreach ($webinars as $webinar) {
                             class="far fa-clock"></i> <?= date('h:s A', strtotime($webinar['start_datetime'])) ?></div>
                 <div class="webinar-desc"><?= $webinar['description'] ?></div>
             </div>
-            <?php
-            $registrationCount = count($webinar['webinarRegistrations']);
-            if ($registrationCount) {
-                ?>
-                <div class="avatars">
+            <div class="avatars">
+                <?php
+                $registrationCount = count($webinar['webinarRegistrations']);
+                if ($registrationCount) {
+                    ?>
                     <span class="avatar">
                         <img src="https://picsum.photos/70">
                     </span>
@@ -38,10 +39,11 @@ foreach ($webinars as $webinar) {
                     </span>
                     <!-- Variable amount more avatars -->
                     <p><?= $registrationCount ?> People</p>
-                </div>
-                <?php
-            }
-            ?>
+                    <?php
+                }
+                ?>
+            </div>
+
             <div class="new-btns">
                 <div class="join-btn naam">
                     <?php
@@ -70,26 +72,34 @@ foreach ($webinars as $webinar) {
                             $btnValue = 'Join Now';
                         }
                     }
+                    if(Yii::$app->user->isGuest){
+                        ?>
+                        <button data-toggle="modal" data-target="#loginModal"><?= $btnValue ?></button>
+                        <?php
+                    } else {
+                        ?>
+                        <button data-key="<?= $s_id ?>" data-id="<?= $w_id ?>" id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
+                        <?php
+                    }
                     ?>
-                    <button data-key="<?= $s_id ?>" data-id="<?= $w_id ?>"
-                            id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
                 </div>
                 <div class="detail-btn naam">
-                    <button type="button">View Details</button>
+                    <button type="button" onclick="window.open('<?= Url::to($base_url.'/webinar/'.  $webinar['slug']); ?>', '_blank')">View Details</button>
                 </div>
-                <div class="sharing-btn naam">
-                    <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>
-                </div>
+                <!--                <div class="sharing-btn naam">-->
+                <!--                    <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>
     <?php
 }
 $this->registerCss('
-.new-btns{
+.new-btns {
     display: flex;
-    margin-top: 20px;
+    margin-top: 5px;
     justify-content: center;
+    margin-bottom: 15px;
 }
 .naam button {
 	background-color: #00a0e3;
@@ -102,10 +112,11 @@ $this->registerCss('
 	font-family: roboto;
 }
 .webinar-box{
-    padding: 15px;
+//    padding: 15px;
     border: 2px solid #eee;
     border-radius: 8px;
     background-color:#fff;
+    margin-bottom:20px;
 }
 .webinar-icon {
     position: relative;
@@ -114,8 +125,8 @@ $this->registerCss('
 .web-date {
 	border: 1px solid transparent;
 	text-align: center;
-	width: 130px;
-	height: 130px;
+	width: 115px;
+	height: 115px;
 	margin: auto;
 	background-color: #00a0e3;
 	color: #fff;
@@ -126,24 +137,32 @@ $this->registerCss('
     z-index: 1;
 }
 .cont{
-    font-size: 50px;
-    line-height: 50px;
+    font-size: 40px;
+    line-height: 36px;
     font-family: roboto;
     font-weight: 600;
     display: block;
 }
 .abs{
-    font-size: 18px;
+    font-size: 15px;
     text-transform: uppercase;
     font-family: roboto;
 }
+.webinar-details {
+    padding: 0 15px;
+}
 .webinar-title {
-    font-size: 28px;
-    text-align: center;
-    font-family: roboto;
-    font-weight: 600;
-    line-height: 35px;
-    padding-top: 10px;
+	font-size: 24px;
+	text-align: center;
+	font-family: lora;
+	line-height: 30px;
+	padding-top: 10px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	min-height: 75px;
+	text-transform:capitalize;
 }
 .webinar-city {
     text-align: center;
@@ -157,15 +176,23 @@ $this->registerCss('
     font-size: 16px;
     font-family: roboto;
     text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 9;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 241px;
+    height: 241px;
 }
 .webinar-icon > img {
-    width: 100%;
+    min-height: 150px;
+    object-fit: cover;
 }
 
 .avatars {
     display: inline-flex;
-    padding-left: 30px;
+    padding:0 30px;
     margin-top:20px;
+    min-height: 43px;
 }
 .avatars p{
     font-size: 16px;

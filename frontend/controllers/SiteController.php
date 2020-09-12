@@ -1076,9 +1076,19 @@ class SiteController extends Controller
     {
         return $this->render('transaction-table');
     }
+    public function actionSkillVideo(){
+        return $this->render('skill-video');
+    }
+    public function actionCreatorHandbook(){
+        return $this->render('creator-handbook');
+    }
 
     public function actionTeachersHandbook()
     {
         return $this->render('teachers-handbook');
+    }
+    public function actionAdmissionForm(){
+        $this->layout = 'blank-layout';
+        return $this->render('admission-form');
     }
 }

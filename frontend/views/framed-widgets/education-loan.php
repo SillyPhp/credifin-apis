@@ -348,7 +348,6 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
                                 <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
-                                <li>- <span>0%</span> rate of interest</li>
                                 <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
                                     the students in a particular <span>academic year</span>.
                                 </li>

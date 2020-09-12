@@ -12,7 +12,7 @@ use yii\helpers\Url;
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest.png') ?>"></div>
-                    <h3>Interest- Free Loans</h3>
+                    <h3>Interest - Free Loans</h3>
                     <p>We are providing loans at 0% interest rate to the students without any hassle.</p>
                 </div>
             </div>

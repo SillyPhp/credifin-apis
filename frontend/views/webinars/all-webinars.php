@@ -3,25 +3,25 @@
 use yii\helpers\Url;
 ?>
 
-<section style="background:#c8e6f3;padding: 80px 0 20px;">
+<section style="background:#8bbed5;padding: 80px 0 20px;">
     <div class="container headsec">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
-                    <div class="mentee-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/mentor/mentee-heading.png'); ?>" align="right"
-                             class="responsive"/>
-                    </div>
+                <div class="mentee-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/mentor/web-vector.png'); ?>" align="right"
+                         class="responsive"/>
+                </div>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                 <div class="mentor-heading-set">
-                    <h3 class="ment-up">Find The best mentor</h3>
-                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>
-                    <div class="search-box1">
-                        <form action="<?= Url::to('#') ?>">
-                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">
-                            <button type="submit"><i class="fas fa-search"></i></button>
-                        </form>
-                    </div>
+                    <h3 class="ment-up">All Webinars</h3>
+<!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
+<!--                    <div class="search-box1">-->
+<!--                        <form action="--><?//= Url::to('#') ?><!--">-->
+<!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
+<!--                            <button type="submit"><i class="fas fa-search"></i></button>-->
+<!--                        </form>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -31,29 +31,8 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p class="mentee-heading">Top Webinars</p>
-            </div>
-        </div>
-        <div class="row">
             <?= $this->render('/widgets/mentorships/webinar-card',[
-                'webinars'=>$webinars,
+                    'webinars'=>$webinars,
             ]) ?>
         </div>
     </div>
@@ -80,7 +59,7 @@ $this->registerCss('
     height: auto;
 }
 .ment-up {
-	font-size: 32px;
+	font-size: 60px;
 	font-family: lora;
 	margin: 0;
 	text-transform: capitalize;
