@@ -132,6 +132,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             margin: auto;
         }
         .full-vid{
+            cursor: pointer;
             position: absolute;
             bottom: 0;
             right: 0;
@@ -142,6 +143,9 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             border-top-left-radius: 5px;
         }
         .hidden{
+            display: none;
+        }
+        .sp1 > div .full-vid, .elem1 > div .full-vid{
             display: none;
         }
         #full-screen-video.expanded >div >div > video{
