@@ -193,7 +193,7 @@ function joinChannel() {
             console.log("User " + uid + " joined channel successfully");
         },
         function(err) {
-            alert("[ERROR] : Stream Expired !!", err);
+            alert("[ERROR] : Broadcast Session Expired !!", err);
             console.log("[ERROR] : join channel failed", err);
         }
     );
@@ -272,6 +272,7 @@ function createSharingScreen()
     screenStream.init(function (){
         // Play the sharing stream.
         $('#sharing_mode').addClass('new_sharing');
+        $('#stream-player-'+localStreams.uid+'').addClass('adjust_sharing');
         if($("#stream-player-"+ sharingStreams.uid).length == 0){
             $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+sharingStreams.uid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+sharingStreams.uid+'</div></div>');
         }
@@ -325,7 +326,6 @@ function leaveChannel() {
 function leaveSharing()
 {
     $('#stream-player-'+sharingStreams.uid+'').remove();
-    joinChannel();
     screenClient.leave(
         function() {
             console.log("client leaves channel");
@@ -334,6 +334,7 @@ function leaveSharing()
             console.log("client leave failed ", err); //error handling
         }
     );
+    $('#stream-player-'+localStreams.uid+'').removeClass('adjust_sharing');
     //$('#sharing_mode').css('display','none');
     $('#sharing_mode').removeClass('new_sharing');
 }
@@ -634,7 +635,6 @@ function toggleVideo() {
 
 function toggleBtnShare() {
     if ($("#share-sreen-btn").hasClass('share-screen-off')) {
-        // leaveChannel();
         //$('#stream-player-'+localStreams.uid+'').remove();
         screenClient.init(
             agoraAppId,
