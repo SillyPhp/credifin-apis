@@ -238,6 +238,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         position: absolute !important;
         z-index: 9 !important;
     }
+
 </style>
 <div class="toast toast-color" id="notification"
      data-delay="3000">
@@ -289,6 +290,14 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
 <input type="hidden" id="share_link_aud" value="<?= Url::base('https').'/mentors/webinar-view?id='.$tokenId?>">
 <?php
 $this->registerCss("
+ #full-screen-video.sp1 > .adjust_sharing{
+        position: absolute;
+        z-index: 999;
+        top: 8px;
+        left: 16px;
+        width: 16% !important;
+        height: 20% !important;
+    }
 #sharing_mode {
     position: absolute;
     z-index: 1;

@@ -63,11 +63,12 @@ function subscribe(sid)
 {
     client.on("stream-subscribed", function(evt) {
         var remoteStream = evt.stream;
-        // if($("#stream-player-"+ sid).length == 0){
-        //     $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+sid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+sid+'</div></div>');
-        // }
-        // remoteStream.play("stream-player-"+sid+"");
-        remoteStream.play("full-screen-video");
+        var rid = remoteStream.getId();
+        if($("#stream-player-"+ rid).length == 0){
+            $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+rid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+rid+'</div><span class="full-vid" value="'+rid+'"><i class="fas fa-expand"></i></span></div>');
+        }
+        remoteStream.play("stream-player-"+rid+"");
+        //remoteStream.play("full-screen-video");
         console.log(
             "Successfully subscribed to remote stream: " + remoteStream.getId()
         );
@@ -182,3 +183,22 @@ function initializeUi() {
         }
     }
 }
+
+$(document).on('click', '.full-vid' ,function ()
+{
+    var fid = $(this).attr('value');
+    if(!$(this).parentsUntil('#full-screen-video').parent().children('div').hasClass('hidden')) {
+        $('#full-screen-video > div').addClass('hidden');
+        $(this).parent('div').removeClass('hidden');
+        $(this).children('i').removeClass('fa-expand');
+        $(this).children('i').addClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().addClass('expanded');
+    } else {
+        $('#full-screen-video > div').removeClass('hidden');
+        $(this).children('i').addClass('fa-expand');
+        $(this).children('i').removeClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().removeClass('expanded');
+    }
+    f_elem = "stream-player-"+fid;
+    console.log(f_elem);
+})
