@@ -161,6 +161,7 @@ function generateToken() {
 }
 
 function initializeUi() {
+    $('#full-screen-video > div').removeClass('hidden');
     var window_width = window.outerWidth;
     if(window.innerHeight < $('#full-screen-video').height()){
         $('body').css('overflow-y','scroll');
