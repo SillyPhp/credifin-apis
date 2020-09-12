@@ -45,13 +45,13 @@ class WebinarsController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionLive($id)
+    public function actionLive($slug)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
-        $webinarDetail = self::getWebianrDetails($id);
+        $webinarDetail = self::getWebianrDetails($slug);
         $webinars = self::getWebianrs($id);
         $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
-        if(in_array($user_id,$speakerUserIds)){
+        if (in_array($user_id, $speakerUserIds)) {
             $type = 'multi-host';
         } else {
             $type = 'audience';
@@ -62,112 +62,124 @@ class WebinarsController extends Controller
             'webinarDetail' => $webinarDetail
         ]);
     }
+
     public function actionWebinarDetails($slug)
     {
-            $webinar = Webinars::find()
-                ->select(['webinar_enc_id','session_for','slug', 'session_enc_id','status', 'title', 'start_datetime', 'description', 'seats'])
-                ->where(['slug' => $slug])
+        $user_id = Yii::$app->user->identity->user_enc_id;
+        $webinarDetail = self::getWebianrDetails($slug);
+        $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
+        if (in_array($user_id, $speakerUserIds)) {
+            $share_link = 'live';
+        } else {
+            $share_link = 'view';
+        }
+        $webinar = Webinars::find()
+            ->select(['webinar_enc_id', 'session_for', 'slug', 'session_enc_id', 'status', 'title', 'start_datetime', 'description', 'seats'])
+            ->where(['slug' => $slug])
+            ->asArray()
+            ->one();
+        if ($webinar['session_for'] != 2) {
+            $assignSpeaker = WebinarSpeakers::find()
+                ->alias('z')
+                ->distinct()
+                ->select([
+                    'z.webinar_enc_id',
+                    'z.speaker_enc_id',
+                    'a.unclaimed_org_id',
+                    'a.designation_enc_id',
+                    'b.designation',
+                    'CONCAT(f.first_name, " ", f.last_name) fullname',
+                    'f.email', 'f.phone',
+                    'f.image', 'f.image_location',
+                    'f.description',
+                    'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
+                    'c.logo org_logo', 'c.logo_location org_logo_location',
+                    'c.name org_name'
+                ])
+                ->joinWith(['speakerEnc a' => function ($a) {
+                    $a->andWhere(['a.is_deleted' => 0]);
+                    $a->joinWith(['designationEnc b'], false);
+                    $a->joinWith(['unclaimedOrg c'], false);
+                    $a->joinWith(['speakerExpertises d' => function ($d) {
+                        $d->select(['d.speaker_enc_id', 'd.skill_enc_id', 'e.skill']);
+                        $d->joinWith(['skillEnc e'], false);
+                    }]);
+                    $a->joinWith(['userEnc f'], false);
+                }])
+                ->andWhere(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->asArray()
-                ->one();
-            if($webinar['session_for'] != 2) {
-                $assignSpeaker = WebinarSpeakers::find()
-                    ->alias('z')
-                    ->distinct()
-                    ->select([
-                        'z.webinar_enc_id',
-                        'z.speaker_enc_id',
-                        'a.unclaimed_org_id',
-                        'a.designation_enc_id',
-                        'b.designation',
-                        'CONCAT(f.first_name, " ", f.last_name) fullname',
-                        'f.email', 'f.phone',
-                        'f.image', 'f.image_location',
-                        'f.description',
-                        'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
-                        'c.logo org_logo', 'c.logo_location org_logo_location',
-                        'c.name org_name'
-                    ])
-                    ->joinWith(['speakerEnc a' => function ($a) {
-                        $a->andWhere(['a.is_deleted' => 0]);
-                        $a->joinWith(['designationEnc b'], false);
-                        $a->joinWith(['unclaimedOrg c'], false);
-                        $a->joinWith(['speakerExpertises d' => function ($d) {
-                            $d->select(['d.speaker_enc_id', 'd.skill_enc_id', 'e.skill']);
-                            $d->joinWith(['skillEnc e'], false);
-                        }]);
-                        $a->joinWith(['userEnc f'], false);
-                    }])
-                    ->andWhere(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
-                    ->asArray()
-                    ->all();
-                if ($assignSpeaker) {
-                    array_walk($assignSpeaker, function (&$item) {
-                        if ($item['image']) {
-                            $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-                            if (file_exists($image_path)) {
-                                $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-                            }
+                ->all();
+            if ($assignSpeaker) {
+                array_walk($assignSpeaker, function (&$item) {
+                    if ($item['image']) {
+                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        if (file_exists($image_path)) {
+                            $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                         }
-                        $item['speaker_image'] = $image;
-                        $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                        if ($item['org_logo']) {
-                            $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
-                        }
-                        unset($item['image']);
-                        unset($item['image_location']);
-                        unset($item['org_logo']);
-                        unset($item['org_logo_location']);
-                    });
-                }
-                $outComes = WebinarOutcomes::find()
-                    ->alias('z')
-                    ->select(['z.webinar_enc_id', 'z.outcome_pool_enc_id', 'oe.name', 'oe.icon_location', 'oe.icon', 'oe.bg_colour'])
-                    ->joinWith(['outcomePoolEnc oe'], false)
-                    ->where(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
-                    ->asArray()
-                    ->all();
-                $register = WebinarRegistrations::find()
-                    ->alias('z')
-                    ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'c.image', 'c.image_location'])
-                    ->joinWith(['createdBy c'], false)
-                    ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1, 'c.is_deleted' => 0])
-                    ->andWhere(['not', ['z.interest_status' => 2]])
-                    ->andWhere(['not', ['c.image' => null]])
-                    ->andWhere(['not', ['c.image' => '']])
-                    ->limit(6)
-                    ->asArray()
-                    ->all();
-                $webinarRegistrations = WebinarRegistrations::find()
-                    ->alias('z')
-                    ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'z.status'])
-                    ->joinWith(['createdBy c'], false)
-                    ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1, 'c.is_deleted' => 0])
-                    ->andWhere(['not', ['z.interest_status' => 2]])
-                    ->asArray()
-                    ->all();
-                $webResig = WebinarRegistrations::find()
-                    ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
-                    ->one();
-                return $this->render('webinar-details', [
-                    'webinar' => $webinar,
-                    'assignSpeaker' => $assignSpeaker,
-                    'outComes' => $outComes,
-                    'register' => $register,
-                    'webinarRegistrations' => $webinarRegistrations,
-                    'webResig' => $webResig,
-                ]);
-            } else {
-                return $this->redirect('/');
+                    }
+                    $item['speaker_image'] = $image;
+                    $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                    if ($item['org_logo']) {
+                        $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                    }
+                    unset($item['image']);
+                    unset($item['image_location']);
+                    unset($item['org_logo']);
+                    unset($item['org_logo_location']);
+                });
             }
+            $outComes = WebinarOutcomes::find()
+                ->alias('z')
+                ->select(['z.webinar_enc_id', 'z.outcome_pool_enc_id', 'oe.name', 'oe.icon_location', 'oe.icon', 'oe.bg_colour'])
+                ->joinWith(['outcomePoolEnc oe'], false)
+                ->where(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
+                ->asArray()
+                ->all();
+            $register = WebinarRegistrations::find()
+                ->alias('z')
+                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'c.image', 'c.image_location'])
+                ->joinWith(['createdBy c'], false)
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1, 'c.is_deleted' => 0])
+                ->andWhere(['not', ['z.interest_status' => 2]])
+                ->andWhere(['not', ['c.image' => null]])
+                ->andWhere(['not', ['c.image' => '']])
+                ->limit(6)
+                ->asArray()
+                ->all();
+            $webinarRegistrations = WebinarRegistrations::find()
+                ->alias('z')
+                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.interest_status', 'z.created_by', 'z.status'])
+                ->joinWith(['createdBy c'], false)
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1, 'c.is_deleted' => 0])
+                ->andWhere(['not', ['z.interest_status' => 2]])
+                ->asArray()
+                ->all();
+            $webResig = WebinarRegistrations::find()
+                ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->one();
+            return $this->render('webinar-details', [
+                'webinar' => $webinar,
+                'assignSpeaker' => $assignSpeaker,
+                'outComes' => $outComes,
+                'register' => $register,
+                'webinarRegistrations' => $webinarRegistrations,
+                'webResig' => $webResig,
+                'share_link' => $share_link,
+            ]);
+        } else {
+            return $this->redirect('/');
+        }
     }
-    public function actionRegistration(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+
+    public function actionRegistration()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $uid = Yii::$app->user->identity->user_enc_id;
             $wid = Yii::$app->request->post('wid');
             $value = Yii::$app->request->post('value');
-            $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid,'created_by' => $uid]);
-            if(!empty($model)) {
+            $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
+            if (!empty($model)) {
                 switch ($value) {
                     case 'interested':
                         $model->interest_status = 1;
@@ -214,7 +226,7 @@ class WebinarsController extends Controller
                 $register->status = 1;
                 $register->created_by = $uid;
                 $register->created_on = date('Y-m-d H:i:s');
-                if($register->save()){
+                if ($register->save()) {
                     return [
                         'status' => 200,
                         'title' => 'success',
@@ -230,6 +242,7 @@ class WebinarsController extends Controller
             }
         }
     }
+
     public function actionMultiHost($id)
     {
         $data = WebinarSessions::findOne(['session_enc_id' => $id]);
@@ -283,7 +296,7 @@ class WebinarsController extends Controller
         }
     }
 
-    private function getWebianrDetails($id)
+    private function getWebianrDetails($slug)
     {
         $webinar = Webinars::find()
             ->alias('a')
@@ -310,7 +323,7 @@ class WebinarsController extends Controller
                 $d->andWhere(['d.is_deleted' => 0]);
             }])
             ->joinWith(['sessionEnc e'])
-            ->andWhere(['a.session_enc_id' => $id])
+            ->andWhere(['a.slug' => $slug])
             ->asArray()
             ->one();
         return $webinar;
@@ -358,10 +371,11 @@ class WebinarsController extends Controller
     public function actionIndex()
     {
         $webinars = self::getWebinars();
-        return $this->render('all-webinars',[
-            'webinars' =>$webinars,
+        return $this->render('all-webinars', [
+            'webinars' => $webinars,
         ]);
     }
+
     private function getWebinars()
     {
         $webinars = Webinars::find()
