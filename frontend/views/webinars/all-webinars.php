@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-
 ?>
 
 <section style="background:#8bbed5;padding: 80px 0 20px;">
@@ -15,14 +14,15 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                 <div class="mentor-heading-set">
-                    <h3 class="ment-up">All Webinars</h3>
-                    <!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
-                    <!--                    <div class="search-box1">-->
-                    <!--                        <form action="--><? //= Url::to('#') ?><!--">-->
-                    <!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
-                    <!--                            <button type="submit"><i class="fas fa-search"></i></button>-->
-                    <!--                        </form>-->
-                    <!--                    </div>-->
+                    <h3 class="ment-up">WEBINARS</h3>
+                    <p>Webinars to Broaden your career horizon. Introducing EmpowerYouth Masterclass, a Webinar series created to help you understand and immerse yourself in the latest career options.</p>
+<!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
+<!--                    <div class="search-box1">-->
+<!--                        <form action="--><?//= Url::to('#') ?><!--">-->
+<!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
+<!--                            <button type="submit"><i class="fas fa-search"></i></button>-->
+<!--                        </form>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -32,8 +32,8 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card', [
-                'webinars' => $webinars,
+            <?= $this->render('/widgets/mentorships/webinar-card',[
+                    'webinars'=>$webinars,
             ]) ?>
         </div>
     </div>
@@ -52,7 +52,7 @@ $this->registerCss('
     margin-top: 80px !important;
 }
 .mentee-img{
-    width: 400px;
+    width: 300px;
     margin: auto;
 }
 .mentee-img img {
@@ -60,12 +60,21 @@ $this->registerCss('
     height: auto;
 }
 .ment-up {
-	font-size: 60px;
+	font-size: 45px;
 	font-family: lora;
 	margin: 0;
 	text-transform: capitalize;
 	color: #fff;
-	padding-left: 10px;
+	font-weight:600;
+//	padding-left: 10px;
+//	text-align:center;
+}
+.mentor-heading-set p {
+    font-size: 16px;
+    font-family: roboto;
+    text-align: left;
+    color: #fff;
+    text-transform: capitalize;
 }
 .ment-down {
 	font-size: 36px;
@@ -137,11 +146,11 @@ $this->registerJS($script);
 ?>
 <script>
     let demoBtn = document.querySelectorAll('.mentor-demo button');
-    for (let i = 0; i < demoBtn.length; i++) {
-        demoBtn[i].addEventListener('mouseover', function (e) {
+    for (let i=0; i<demoBtn.length; i++){
+        demoBtn[i].addEventListener('mouseover', function(e){
             e.currentTarget.innerHTML = 'Apply For Demo';
         })
-        demoBtn[i].addEventListener('mouseleave', function (e) {
+        demoBtn[i].addEventListener('mouseleave', function(e){
             e.currentTarget.innerHTML = 'Demo Available';
         })
     }
