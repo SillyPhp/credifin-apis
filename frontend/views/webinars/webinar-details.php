@@ -74,10 +74,33 @@ $this->title = $webinar['title'];
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 mx-auto">
-                    <h2 class="section-title text-center">
-                        Webinar Details
-                    </h2>
+                <div class="flex-use">
+                    <div class="col-md-7 mx-auto">
+                        <h2 class="section-title loc-set">
+                            Webinar Details
+                        </h2>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="register-btn">
+                            <?php
+                            if($interest_status == 1 || $interest_status == 3){
+                                $btnName = 'Registered';
+                            } else {
+                                $btnName = 'Register Now';
+                            }
+                            if (Yii::$app->user->isGuest) {
+                                ?>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
+                                   value="interested"><?= $btnName ?></a>
+                            <?php } else { ?>
+                                <button class="ra-btn registered"
+                                        data-type="register" id="registerBtn" data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                        value="registered"><?= $btnName ?>
+                                </button>
+                            <?php }
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -218,11 +241,6 @@ $this->title = $webinar['title'];
                                 ?>
                             <div class="speak-img" style="background-image: url('<?= $image; ?>');">
 
-    <!--                            --><?php //if($as['speaker_image']) {?>
-    <!--                                <img src="--><?//= $as['speaker_image'] ?><!--">-->
-    <!--                            --><?php //} else { ?>
-    <!--                                <img src="--><?//= $as['speaker_image_fake'] ?><!--">-->
-    <!--                            --><?php //} ?>
                             </div><!-- col end-->
                             <div class="speak-cntnt">
                                 <div class="ts-speaker-popup-content">
@@ -373,6 +391,26 @@ $this->registerCss('
 .speak-img {
     background-position: center;
     background-size: cover;
+}
+.loc-set{
+    text-align:left !important;
+}
+.flex-use {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.register-btn{text-align:right;}
+.register-btn a {
+    font-size: 16px;
+    height: 40px;
+    padding: 9px 20px;
+    width: 150px;
+    line-height: 40px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin: 5px 5px;
 }
 #join{
 display:none;
@@ -1209,11 +1247,23 @@ $(document).on('click','.registered',function(event){
      var btn = $(this);
      var web_id = btn.attr('data-key');
      var value = btn.attr('value');
+     var btnType = btn.attr('data-type');
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
         data: {wid: web_id,value: value},
+        beforeSend: function(){
+            btn.text('Registered');
+        },
         success:function(res){
+            if(btnType == 'register'){
+                toastr.success('Registered Successfully..', 'Success');
+                btn.text('Registered');
+            } else {
+                if(value == 'attending' || value == 'interested' ){
+                    $('#registerBtn').text('Registered');
+                }
+            }
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
@@ -1243,6 +1293,8 @@ $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/jquery-jCounter.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     let actionBtns = document.getElementsByClassName('ra-btn');
