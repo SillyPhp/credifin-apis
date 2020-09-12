@@ -104,6 +104,7 @@ class OrganizationList
             $slug = $utilitiesModel->create_slug();
             $slug_replace_str = str_replace("-", "", $slug);
             $model->slug = $slug_replace_str;
+            $model->source = $options['source'];
             $model->name = $options['name'];
             $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : null);
             $model->initials_color = RandomColors::one();
@@ -149,6 +150,7 @@ class OrganizationList
         else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
         {
             $options['name'] = trim($params['college_course_info'][0]['colg_text']);
+            $options['source'] = 3;
             $org = $this->getOrgId($options);
             return [
                 'college_id'=>$org['id'],
@@ -239,6 +241,7 @@ class OrganizationList
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->course_enc_id = $utilitiesModel->encrypt();
         $model->course_name = $course_name;
+        $model->status = 'Pending';
         $model->created_on = date('Y-m-d H:i:s');
         $model->created_by = $user;
         if ($model->save()) {
