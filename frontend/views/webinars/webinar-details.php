@@ -33,7 +33,7 @@ $this->title = $webinar['title'];
                                 <?php if(Yii::$app->user->isGuest){?>
                                 <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal" >Click here to Join</a>
                                 <?php } else { ?>
-                                 <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
+                                 <a id="joinBtn" href="/mentors/webinar-view?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
                                 <?php } ?>
                             </div>
                             <div id="counter">
