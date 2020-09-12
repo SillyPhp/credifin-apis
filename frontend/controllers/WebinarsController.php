@@ -404,9 +404,8 @@ class WebinarsController extends Controller
                 $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
             }])
             ->joinWith(['sessionEnc e'])
-            ->where([
-                'a.is_deleted' => 0,
-            ])
+            ->andWhere(['in', 'a.status', [0, 1]])
+            ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['not', ['a.session_for' => 2]])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()

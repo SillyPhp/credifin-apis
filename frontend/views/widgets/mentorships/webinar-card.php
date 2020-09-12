@@ -1,9 +1,9 @@
 <?php
 
 use yii\helpers\Url;
-
 $base_url = Url::base('https');
 foreach ($webinars as $webinar) {
+    $start_time = $webinar['start_datetime'];
     ?>
     <div class="col-md-4">
         <div class="webinar-box">
@@ -17,7 +17,7 @@ foreach ($webinars as $webinar) {
             <div class="webinar-details">
                 <div class="webinar-title"><?= $webinar['title'] ?></div>
                 <div class="webinar-city"><i
-                            class="far fa-clock"></i> <?= date('h:s A', strtotime($webinar['start_datetime'])) ?></div>
+                            class="far fa-clock"></i> <?= date('h:i A', strtotime($start_time)) ?></div>
                 <div class="webinar-desc"><?= $webinar['description'] ?></div>
             </div>
             <div class="avatars">
