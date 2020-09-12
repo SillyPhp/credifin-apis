@@ -392,6 +392,26 @@ $this->registerCss('
     background-position: center;
     background-size: cover;
 }
+.loc-set{
+    text-align:left !important;
+}
+.flex-use {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.register-btn{text-align:right;}
+.register-btn a {
+    font-size: 16px;
+    height: 40px;
+    padding: 9px 20px;
+    width: 150px;
+    line-height: 40px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin: 5px 5px;
+}
 #join{
 display:none;
 }
