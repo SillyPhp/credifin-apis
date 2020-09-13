@@ -888,13 +888,13 @@ class CandhomeController extends ApiBaseController
                     $bb->joinWith(['speakerEnc c1' => function ($c1) {
                         $c1->select(['c1.speaker_enc_id']);
                         $c1->joinWith(['userEnc cc1'], false);
-                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
-                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
-                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
-                                $g1->onCondition(['g1.is_deleted' => 0]);
-                            }], false);
-                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
-                        }]);
+//                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
+//                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
+//                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
+//                                $g1->onCondition(['g1.is_deleted' => 0]);
+//                            }], false);
+//                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
+//                        }]);
                         $c1->joinWith(['designationEnc c2' => function ($c2) {
                             $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
                         }], false);
