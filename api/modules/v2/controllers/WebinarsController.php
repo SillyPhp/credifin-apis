@@ -411,8 +411,6 @@ class WebinarsController extends ApiBaseController
                         'c.speaker_enc_id',
                         'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
                         'CASE WHEN cc1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", cc1.image_location, "/", cc1.image) END image',
-                        'cc1.email',
-                        'cc1.phone',
                         'cc1.facebook',
                         'cc1.twitter',
                         'cc1.linkedin',
@@ -422,16 +420,14 @@ class WebinarsController extends ApiBaseController
                     $bb->joinWith(['speakerEnc c1' => function ($c1) {
                         $c1->select(['c1.speaker_enc_id']);
                         $c1->joinWith(['userEnc cc1'], false);
-                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
-                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
-                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
-                                $g1->onCondition(['g1.is_deleted' => 0]);
-                            }], false);
-                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
-                        }]);
-                        $c1->joinWith(['designationEnc c2' => function ($c2) {
-                            $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
-                        }], false);
+//                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
+//                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
+//                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
+//                                $g1->onCondition(['g1.is_deleted' => 0]);
+//                            }], false);
+//                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
+//                        }]);
+                        $c1->joinWith(['designationEnc c2'], false);
                         $c1->onCondition(['c1.is_deleted' => 0]);
                     }]);
                     $bb->onCondition(['c.is_deleted' => 0]);
