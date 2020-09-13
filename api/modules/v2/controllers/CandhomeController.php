@@ -468,7 +468,7 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                ->joinWith(['assignedCollegeEnc d' => function ($d) {
                     $d->joinWith(['courseEnc dd']);
                 }], false)
                 ->where([
@@ -549,7 +549,7 @@ class CandhomeController extends ApiBaseController
                         $b->joinWith(['userEnc b2'], false);
                         $b->joinWith(['collegeEnc b3'], false);
                     }], false);
-                    $b->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $b->joinWith(['assignedCollegeEnc d' => function ($d) {
                         $d->joinWith(['courseEnc dd']);
                     }], false);
                 }], false)
@@ -639,7 +639,7 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                ->joinWith(['assignedCollegeEnc d' => function ($d) {
                     $d->joinWith(['courseEnc dd']);
                 }], false)
                 ->where([
@@ -709,6 +709,7 @@ class CandhomeController extends ApiBaseController
                     'a.availability',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                     'a.description',
+                    'a.status'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
                 ->joinWith(['webinarRegistrations d' => function ($d) {
@@ -725,25 +726,25 @@ class CandhomeController extends ApiBaseController
                 ->where([
                     'b.organization_enc_id' => $college_id['organization_enc_id'],
                     'a.is_deleted' => 0,
+                    'a.status' => [0, 1]
                 ])
                 ->andWhere(['not', ['a.session_for' => 1]])
-//                ->andWhere(['>=', 'a.end_datetime', $date_now])
                 ->asArray()
                 ->all();
 
 
-            $j = 0;
-            $data = [];
-            foreach ($webinar as $w) {
-                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
-                $end_time = date('Y-m-d H:i:s', $newtimestamp);
-                if ($end_time > $date_now) {
-                    array_push($data, $webinar[$j]);
-                }
-                $j++;
-            }
+//            $j = 0;
+//            $data = [];
+//            foreach ($webinar as $w) {
+//                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
+//                $end_time = date('Y-m-d H:i:s', $newtimestamp);
+//                if ($end_time > $date_now) {
+//                    array_push($data, $webinar[$j]);
+//                }
+//                $j++;
+//            }
 
-            $webinar = $data;
+//            $webinar = $data;
 
             if (!empty($webinar)) {
                 $i = 0;
@@ -857,10 +858,11 @@ class CandhomeController extends ApiBaseController
                     'a.duration',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                     'a.description',
-                    'a.seats'
+                    'a.seats',
+                    'a.status'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
-                ->joinWith(['webinarOutcomes b1' => function($b1){
+                ->joinWith(['webinarOutcomes b1' => function ($b1) {
                     $b1->select([
                         'b1.webinar_enc_id',
                         'b1.outcome_enc_id',
@@ -868,7 +870,7 @@ class CandhomeController extends ApiBaseController
                         'b2.bg_colour',
                         'CASE WHEN b2.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->outcomes->image, 'https') . '", b2.icon_location, "/", b2.icon) END icon',
                     ]);
-                    $b1->joinWith(['outcomePoolEnc b2'],false);
+                    $b1->joinWith(['outcomePoolEnc b2'], false);
                     $b1->andWhere(['b1.is_deleted' => 0]);
                 }])
                 ->joinWith(['webinarSpeakers c' => function ($bb) {
@@ -888,13 +890,13 @@ class CandhomeController extends ApiBaseController
                     $bb->joinWith(['speakerEnc c1' => function ($c1) {
                         $c1->select(['c1.speaker_enc_id']);
                         $c1->joinWith(['userEnc cc1'], false);
-                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
-                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
-                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
-                                $g1->onCondition(['g1.is_deleted' => 0]);
-                            }], false);
-                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
-                        }]);
+//                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
+//                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
+//                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
+//                                $g1->onCondition(['g1.is_deleted' => 0]);
+//                            }], false);
+//                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
+//                        }]);
                         $c1->joinWith(['designationEnc c2' => function ($c2) {
                             $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
                         }], false);
@@ -928,7 +930,6 @@ class CandhomeController extends ApiBaseController
                 $webinar['seconds'] = $seconds;
                 $webinar['is_started'] = ($seconds < 0 ? true : false);
             }
-
 
             if ($webinar) {
                 return $this->response(200, ['status' => 200, 'data' => $webinar]);
