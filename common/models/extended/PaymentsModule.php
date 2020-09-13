@@ -1,8 +1,9 @@
 <?php
 namespace common\models\extended;
+use Yii;
 class PaymentsModule
 {
-    public function GetToken($args)
+    public static function GetToken($args)
     {
         //Generation of REQUEST_SIGNATURE for a POST Request
         $date = date_create();
