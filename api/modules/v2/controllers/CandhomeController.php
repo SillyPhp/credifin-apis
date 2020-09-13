@@ -877,8 +877,6 @@ class CandhomeController extends ApiBaseController
                         'c.speaker_enc_id',
                         'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
                         'CASE WHEN cc1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", cc1.image_location, "/", cc1.image) END image',
-                        'cc1.email',
-                        'cc1.phone',
                         'cc1.facebook',
                         'cc1.twitter',
                         'cc1.linkedin',
