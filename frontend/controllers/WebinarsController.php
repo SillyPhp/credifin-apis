@@ -398,6 +398,11 @@ class WebinarsController extends Controller
 
     private function getWebinars()
     {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $date_now = $dt->format('Y-m-d H:i:s');
+
         $webinars = Webinar::find()
             ->distinct()
             ->alias('a')
@@ -408,8 +413,9 @@ class WebinarsController extends Controller
                 'a.availability',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
+                'a1.start_datetime',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use($date_now){
                 $a1->select([
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',
@@ -420,6 +426,8 @@ class WebinarsController extends Controller
                 $a1->joinWith(['sessionEnc e']);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);
+                $a1->andWhere(['>', 'a1.start_datetime', $date_now]);
+                $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
             }])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {
