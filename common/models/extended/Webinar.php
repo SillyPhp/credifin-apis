@@ -5,6 +5,7 @@ namespace common\models\extended;
 
 use common\models\WebinarEvents;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use Yii;
 
 class Webinar extends \common\models\Webinar
@@ -123,30 +124,31 @@ class Webinar extends \common\models\Webinar
             ->one();
 
         if ($webinar_detail) {
-            $dates = [];
-            $e = [];
-            foreach ($webinar_detail['webinarEvents'] as $e) {
-                $date = strtotime($e['start_datetime']);
-                $date = date('Y-m-d', $date);
-                array_push($dates, $date);
-            }
-            $d = array_unique($dates);
 
-            foreach ($d as $da) {
-                $ij = 0;
-                $eventss = [];
-                foreach ($webinar_detail['webinarEvents'] as $w) {
-                    $date = strtotime($w['start_datetime']);
-                    $date = date('Y-m-d', $date);
-                    if ($da == $date) {
-                        array_push($eventss, $webinar_detail['webinarEvents'][$ij]);
-                    }
-                    $ij++;
-                }
-                if ($eventss) {
-                    $e[$da] = $eventss;
-                }
-            }
+            $events = WebinarEvents::find()
+                ->alias('a')
+                ->select(["a.event_enc_id", 'a.duration', "DATE_FORMAT(a.start_datetime, '%d-%m-%Y') event_date", "DATE_FORMAT(a.start_datetime, '%H:%i') event_time", "ADDTIME(DATE_FORMAT(a.start_datetime, '%H:%i'), SEC_TO_TIME(a.duration*60)) endtime", "a.description"])
+                ->joinWith(['webinarSpeakers d' => function ($d) {
+                    $d->select([
+                        'd.webinar_event_enc_id',
+                        'd.speaker_enc_id',
+                        'd1.user_enc_id',
+                        'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
+                        'd2.image',
+                        'd2.image_location',
+                        'CASE WHEN d2.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d2.image_location, "/", d2.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d2.first_name, "&size=200&rounded=false&background=", REPLACE(d2.initials_color, "#", ""), "&color=ffffff") END image'
+                    ]);
+                    $d->joinWith(['speakerEnc d1' => function ($d1) {
+                        $d1->joinWith(['userEnc d2']);
+                    }],false);
+                    $d->andWhere(['d.is_deleted' => 0]);
+                }])
+                ->where(['a.webinar_enc_id' => $webinar_detail['webinar_enc_id']])
+                ->andWhere(['a.is_deleted' => 0])
+                ->orderBy(['a.start_datetime' => SORT_ASC])
+                ->asArray()
+                ->all();
+            $dateEvents = ArrayHelper::index($events, null, 'event_date');
 
             $events = WebinarEvents::find()
                 ->select(['start_datetime'])
@@ -155,7 +157,7 @@ class Webinar extends \common\models\Webinar
                 ->asArray()
                 ->one();
             $webinar_detail['event'] = $events;
-            $webinar_detail['events'] = $e;
+            $webinar_detail['events'] = $dateEvents;
         }
 
         return $webinar_detail;
