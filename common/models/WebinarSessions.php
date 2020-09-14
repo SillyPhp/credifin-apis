@@ -1,5 +1,5 @@
 <?php
-namespace dsbedutech\models;
+namespace common\models;
 
 
 /**
