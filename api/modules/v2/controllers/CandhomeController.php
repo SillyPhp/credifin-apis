@@ -10,6 +10,7 @@ use common\models\OnlineClasses;
 use common\models\ShortlistedApplications;
 use common\models\UserOtherDetails;
 use common\models\Users;
+use common\models\Webinar;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\Utilities;
@@ -468,7 +469,7 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['userEnc b1'], false);
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
-                ->joinWith(['assignedCollegeEnc d'=>function($d){
+                ->joinWith(['assignedCollegeEnc d' => function ($d) {
                     $d->joinWith(['courseEnc dd']);
                 }], false)
                 ->where([
@@ -549,7 +550,7 @@ class CandhomeController extends ApiBaseController
                         $b->joinWith(['userEnc b2'], false);
                         $b->joinWith(['collegeEnc b3'], false);
                     }], false);
-                    $b->joinWith(['assignedCollegeEnc d'=>function($d){
+                    $b->joinWith(['assignedCollegeEnc d' => function ($d) {
                         $d->joinWith(['courseEnc dd']);
                     }], false);
                 }], false)
@@ -684,11 +685,6 @@ class CandhomeController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $dt = new \DateTime();
-            $tz = new \DateTimeZone('Asia/Kolkata');
-            $dt->setTimezone($tz);
-            $date_now = $dt->format('Y-m-d H:i:s');
-
             $user_id = $user->user_enc_id;
 
             $college_id = UserOtherDetails::find()
@@ -697,55 +693,40 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = Webinars::find()
+            $webinar = Webinar::find()
                 ->distinct()
                 ->alias('a')
                 ->select([
                     'a.webinar_enc_id',
                     'a.session_enc_id',
                     'a.title',
-                    'a.start_datetime',
-                    'a.duration',
-                    'a.availability',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                    'a.name',
                     'a.description',
-                    'a.status'
+                    'a.price',
+                    'a.seats',
+                    'a.slug'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
                 ->joinWith(['webinarRegistrations d' => function ($d) {
                     $d->select([
                         'd.webinar_enc_id',
                         'd.register_enc_id',
-                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image',
                     ]);
                     $d->joinWith(['createdBy d1'], false);
-                    $d->limit(6);
                     $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
                 }])
-                ->joinWith(['sessionEnc e'])
-                ->where([
-                    'b.organization_enc_id' => $college_id['organization_enc_id'],
-                    'a.is_deleted' => 0,
-                    'a.status' => [0, 1]
-                ])
-                ->andWhere(['not', ['a.session_for' => 1]])
+                ->joinWith(['webinarEvents c' => function ($c) {
+                    $c->select(['c.event_enc_id', 'c.webinar_enc_id', 'c.start_datetime']);
+                    $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
+                    $c->orderBy(['c.start_datetime' => SORT_ASC]);
+                }])
+                ->where(['a.is_deleted' => 0, 'b.organization_enc_id' => $college_id['organization_enc_id']])
+                ->andWhere(['a.session_for' => [0, 2]])
                 ->asArray()
                 ->all();
 
-
-//            $j = 0;
-//            $data = [];
-//            foreach ($webinar as $w) {
-//                $newtimestamp = strtotime($w['start_datetime'] . ' + ' . $w['duration'] . ' minute');
-//                $end_time = date('Y-m-d H:i:s', $newtimestamp);
-//                if ($end_time > $date_now) {
-//                    array_push($data, $webinar[$j]);
-//                }
-//                $j++;
-//            }
-
-//            $webinar = $data;
-
+            $webinars = [];
             if (!empty($webinar)) {
                 $i = 0;
                 foreach ($webinar as $w) {
@@ -755,16 +736,16 @@ class CandhomeController extends ApiBaseController
                     $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
-                    $date = new \DateTime($w['start_datetime']);
-                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                    $webinar[$i]['seconds'] = $seconds;
-                    $webinar[$i]['is_started'] = ($seconds < 0 ? true : false);
+                    $webinar[$i]['is_paid'] = $w['price'] ? true : false;
+                    if ($w['webinarEvents']) {
+                        array_push($webinars, $webinar[$i]);
+                    }
                     $i++;
                 }
             }
 
-            if ($webinar) {
-                return $this->response(200, ['status' => 200, 'data' => $webinar]);
+            if ($webinars) {
+                return $this->response(200, ['status' => 200, 'data' => $webinars]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
@@ -846,65 +827,66 @@ class CandhomeController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $webinar = Webinars::find()
-                ->distinct()
+            $webinar = Webinar::find()
                 ->alias('a')
                 ->select([
                     'a.webinar_enc_id',
-                    'a.title',
                     'a.session_enc_id',
-                    'a.start_datetime',
-                    'a.availability',
-                    'a.duration',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                    'a.title',
+                    'a.name',
                     'a.description',
+                    'a.price',
                     'a.seats',
-                    'a.status'
+                    'a.slug',
+                    'a.availability'
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
-                ->joinWith(['webinarOutcomes b1' => function ($b1) {
-                    $b1->select([
-                        'b1.webinar_enc_id',
-                        'b1.outcome_enc_id',
-                        'b2.name',
-                        'b2.bg_colour',
-                        'CASE WHEN b2.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->outcomes->image, 'https') . '", b2.icon_location, "/", b2.icon) END icon',
-                    ]);
-                    $b1->joinWith(['outcomePoolEnc b2'], false);
-                    $b1->andWhere(['b1.is_deleted' => 0]);
-                }])
-                ->joinWith(['webinarSpeakers c' => function ($bb) {
-                    $bb->select([
+                ->joinWith(['webinarEvents c' => function ($c) {
+                    $c->select([
+                        'c.event_enc_id',
                         'c.webinar_enc_id',
-                        'c.speaker_enc_id',
-                        'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
-                        'CASE WHEN cc1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", cc1.image_location, "/", cc1.image) END image',
-                        'cc1.facebook',
-                        'cc1.twitter',
-                        'cc1.linkedin',
-                        'cc1.instagram',
-                        'c2.designation',
+                        'c.title event_title',
+                        'c.description event_description',
+                        'c.start_datetime',
+                        'c.duration',
+                        'c.status'
                     ]);
-                    $bb->joinWith(['speakerEnc c1' => function ($c1) {
-                        $c1->select(['c1.speaker_enc_id']);
-                        $c1->joinWith(['userEnc cc1'], false);
-//                        $c1->joinWith(['speakerExpertises ccc1' => function ($ccc1) {
-//                            $ccc1->select(['ccc1.expertise_enc_id', 'ccc1.speaker_enc_id', 'ccc1.skill_enc_id', 'g1.skill']);
-//                            $ccc1->joinWith(['skillEnc g1' => function ($g1) {
-//                                $g1->onCondition(['g1.is_deleted' => 0]);
-//                            }], false);
-//                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
-//                        }]);
-                        $c1->joinWith(['designationEnc c2'], false);
+                    $c->joinWith(['webinarOutcomes c1' => function ($c1) {
+                        $c1->select(['c1.outcome_enc_id',
+                            'c1.webinar_event_enc_id',
+                            'c1.outcome_pool_enc_id',
+                            'c2.name',
+                            'c2.bg_colour'
+                        ]);
+                        $c1->joinWith(['outcomePoolEnc c2'], false);
                         $c1->onCondition(['c1.is_deleted' => 0]);
                     }]);
-                    $bb->onCondition(['c.is_deleted' => 0]);
+                    $c->joinWith(['webinarSpeakers c3' => function ($c2) {
+                        $c2->select([
+                            'c3.webinar_event_enc_id',
+                            'c3.speaker_enc_id',
+                            'c6.designation',
+                            'CONCAT(c5.first_name," ",c5.last_name) full_name',
+                            'CASE WHEN c5.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", c5.image_location, "/", c5.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", c5.first_name, "&size=200&rounded=false&background=", REPLACE(c5.initials_color, "#", ""), "&color=ffffff") END image',
+                            'c5.facebook',
+                            'c5.twitter',
+                            'c5.linkedin',
+                            'c5.instagram',
+                        ]);
+                        $c2->joinWith(['speakerEnc c4' => function ($c4) {
+                            $c4->joinWith(['userEnc c5']);
+                            $c4->joinWith(['designationEnc c6']);
+                        }], false);
+                        $c2->onCondition(['c3.is_deleted' => 0]);
+                    }]);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                    $c->orderBy(['c.start_datetime' => SORT_ASC]);
                 }])
                 ->joinWith(['webinarRegistrations d' => function ($d) {
                     $d->select([
                         'd.webinar_enc_id',
                         'd.register_enc_id',
-                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image'
                     ]);
                     $d->joinWith(['createdBy d1'], false);
                     $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
@@ -921,10 +903,6 @@ class CandhomeController extends ApiBaseController
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
-                $date = new \DateTime($webinar['start_datetime']);
-                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                $webinar['seconds'] = $seconds;
-                $webinar['is_started'] = ($seconds < 0 ? true : false);
             }
 
             if ($webinar) {

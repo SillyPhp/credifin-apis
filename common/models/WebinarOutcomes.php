@@ -7,7 +7,7 @@ namespace common\models;
  *
  * @property int $id Primary Key
  * @property string $outcome_enc_id Encrypted Encrypted ID
- * @property string $webinar_enc_id
+ * @property string $webinar_event_enc_id
  * @property string $outcome_pool_enc_id Webinar Title
  * @property string $created_on
  * @property string $created_by
@@ -18,7 +18,7 @@ namespace common\models;
  * @property PoolWebinarOutcomes $outcomePoolEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
- * @property Webinars $webinarEnc
+ * @property WebinarEvents $webinarEventEnc
  */
 class WebinarOutcomes extends \yii\db\ActiveRecord
 {
@@ -36,16 +36,16 @@ class WebinarOutcomes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['outcome_enc_id', 'webinar_enc_id', 'outcome_pool_enc_id', 'created_by'], 'required'],
+            [['outcome_enc_id', 'webinar_event_enc_id', 'outcome_pool_enc_id', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['outcome_enc_id', 'webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['outcome_enc_id', 'webinar_event_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['outcome_pool_enc_id'], 'string', 'max' => 255],
             [['outcome_enc_id'], 'unique'],
             [['outcome_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => PoolWebinarOutcomes::className(), 'targetAttribute' => ['outcome_pool_enc_id' => 'outcome_pool_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinars::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
+            [['webinar_event_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => WebinarEvents::className(), 'targetAttribute' => ['webinar_event_enc_id' => 'event_enc_id']],
         ];
     }
 
@@ -76,8 +76,8 @@ class WebinarOutcomes extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinarEnc()
+    public function getWebinarEventEnc()
     {
-        return $this->hasOne(Webinars::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasOne(WebinarEvents::className(), ['event_enc_id' => 'webinar_event_enc_id']);
     }
 }

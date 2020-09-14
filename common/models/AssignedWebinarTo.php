@@ -16,8 +16,8 @@ use Yii;
  * @property int $is_deleted 0 as False, 1 as True
  *
  * @property Organizations $organizationEnc
- * @property Webinars $webinarEnc
  * @property Users $createdBy
+ * @property Webinar $webinarEnc
  */
 class AssignedWebinarTo extends \yii\db\ActiveRecord
 {
@@ -41,8 +41,8 @@ class AssignedWebinarTo extends \yii\db\ActiveRecord
             [['assigned_to_enc_id', 'webinar_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],
             [['assigned_to_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-            [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinars::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
         ];
     }
 
@@ -57,16 +57,16 @@ class AssignedWebinarTo extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinarEnc()
+    public function getCreatedBy()
     {
-        return $this->hasOne(Webinars::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy()
+    public function getWebinarEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+        return $this->hasOne(Webinar::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 }
