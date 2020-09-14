@@ -4,7 +4,18 @@ use common\models\WebinarPayments;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-$access_key = 'cbfba3d0-ba9e-11ea-8e90-4384c267ea22';
+if (Yii::$app->params->paymentGateways->mec->icici) {
+    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+    if ($configuration->mode === "production") {
+        $access_key = $configuration->credentials->production->access_key;
+        $secret_key = $configuration->credentials->production->secret_key;
+        $url = $configuration->credentials->production->url;
+    } else {
+        $access_key = $configuration->credentials->sandbox->access_key;
+        $secret_key = $configuration->credentials->sandbox->secret_key;
+        $url = $configuration->credentials->sandbox->url;
+    }
+}
 $time = $webinar['start_datetime'];
 //$interest_status = $webResig['interest_status'];
 $interest_status = $userInterest['interest_status'];
@@ -14,7 +25,7 @@ Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . 
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
-<script id="context" type="text/javascript" src="https://sandbox-payments.open.money/layer"></script>
+<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
     <div class="full-width-light"
          style="">
@@ -152,6 +163,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
+                            <p><i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price'])?ceil($webinar['price']):"Free" ?></p>
                         </div>
                         <div class="flex2">
                             <?php Pjax::begin(['id' => 'webinar_registations']); ?>
@@ -233,23 +245,26 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                 </h2>
                 <div class="ts-schedule-nav">
                     <ul class="nav nav-tabs justify-content-center" role="tablist">
-                        <li class="nav-item active">
-                            <a class="" title="Click Me" href="#date1" role="tab" data-toggle="tab">
-                                <h3>5th June</h3>
-                                <span>Friday</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="" href="#date2" title="Click Me" role="tab" data-toggle="tab"><h3>6th June</h3>
-                                <span>Saturday</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="" href="#date3" title="Click Me" role="tab" data-toggle="tab">
-                                <h3>7th June</h3>
-                                <span>Sunday</span>
-                            </a>
-                        </li>
+                        <?php
+                        $dcount = 1;
+                        foreach ($dateEvents as $key => $de) {
+                            $active = "";
+                            if ($dcount == 1) {
+                                $active = 'active';
+                            }
+                            ?>
+                            <li class="nav-item <?= $active ?>">
+                                <a class="" title="Click Me" href="#<?= $key ?>" role="tab"
+                                   data-toggle="tab">
+                                    <!--                                    <h3>5th June</h3>-->
+                                    <h3><?= $key ?></h3>
+                                    <span>Friday</span>
+                                </a>
+                            </li>
+                            <?php
+                            $dcount++;
+                        }
+                        ?>
                     </ul>
                     <!-- Tab panes -->
                 </div>
@@ -259,320 +274,51 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         <div class="row">
             <div class="col-lg-12">
                 <div class="tab-content schedule-tabs schedule-tabs-item">
-                    <div role="tabpanel" class="tab-pane active" id="date1">
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 07.30 - 11.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/user_avatar.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Marketing Matters!
-                                        <strong>@ Fredric Martinsson</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
+                    <?php
+                    $ddcount = 1;
+                    foreach ($dateEvents as $key => $de) {
+                        $active = "";
+                        if ($ddcount == 1) {
+                            $active = "active";
+                        }
+                        ?>
+                        <div role="tabpanel" class="tab-pane <?= $active ?>" id="<?= $key ?>">
+                            <?php
+                            foreach ($de as $k => $v) {
+                                ?>
+                                <div class="schedule-listing">
+                                    <div class="schedule-slot-time">
+                                        <!--                                                <span> 07.30 - 11.30 PM</span>-->
+                                        <span><?= date('H:i A', strtotime($v['event_time'])) ?> - <?= date('H:i A', strtotime($v['endtime'])) ?></span>
+                                        <!--                                                Workshop-->
+                                    </div>
+                                    <div class="schedule-slot-info">
+                                        <a href="#">
+                                            <?php
+                                            $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                                            if ($v['image']) {
+                                                $image = Yii::$app->params->upload_directories->users->image . $v['image_location'] . DIRECTORY_SEPARATOR . $v['image'];
+                                            }
+                                            ?>
+                                            <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
+                                        </a>
+                                        <div class="schedule-slot-info-content">
+                                            <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
+                                                <!--                                                <strong>@ Fredric Martinsson</strong>-->
+                                            </h3>
+                                            <p><?= $v['description'] ?></p>
+                                        </div>
+                                        <!--Info content end -->
+                                    </div><!-- Slot info end -->
                                 </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 9.30 - 10.30 AM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Reinventing Experiences
-                                        <strong>@ Melisa Lundryn</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 10.30 - 11.30 AM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Cultures of Creativity
-                                        <strong>@ Johnsson Agaton</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing launce">
-                            <div class="schedule-slot-time">
-                                <span> 11.30 - 12.30 PM</span>
-                            </div>
-                            <div class="schedule-slot-info">
-
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Lunch Break
-                                        <strong>@ Rebecca Henrikon</strong>
-                                    </h3>
-                                    <a href="#">
-                                        <img src="images/schedule_lunch.png" alt="">
-                                    </a>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 12.30 - 01.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Human Centered Design
-                                        <strong>@ Agaton Johnsson</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                    </div><!-- tab pane end-->
-
-                    <div role="tabpanel" class="tab-pane" id="date2">
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 02.30 - 03.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/shshank.jpg" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Marketing Matters!
-                                        <strong>@ Johnsson Agaton</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 03.30 - 04.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Reinventing Experiences
-                                        <strong>@ Fredric Martinsson</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 04.30 - 05.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Cultures of Creativity
-                                        <strong>@ Hall Building</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 05.30 - 06.30 PM</span>
-                            </div>
-                            <div class="schedule-slot-info">
-
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Lunch Break
-                                        <strong>@ Agaton Johnsson</strong>
-                                    </h3>
-                                    <a href="#">
-                                        <img src="images/schedule_lunch.png" alt="">
-                                    </a>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 06.30 - 07.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Human Centered Design
-                                        <strong>@ Henrikon Rebecca</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="date3">
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 9.30 - 10.30 AM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/user_avatar.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Marketing Matters!
-                                        <strong>@ Fredric Martinsson</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 10.30 - 11.30 AM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Reinventing Experiences
-                                        <strong>@ Melisa Lundryn</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 11.30 - 12.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Cultures of Creativity
-                                        <strong>@ Johnsson Agaton</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-                        <div class="schedule-listing launce">
-                            <div class="schedule-slot-time">
-                                <span> 12.30 - 01.30 PM</span>
-                            </div>
-                            <div class="schedule-slot-info">
-
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Lunch Break
-                                        <strong>@ Rebecca Henrikon</strong>
-                                    </h3>
-                                    <a href="#">
-                                        <img src="images/schedule_lunch.png" alt="">
-                                    </a>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                        <!--schedule-listing end -->
-
-                        <div class="schedule-listing">
-                            <div class="schedule-slot-time">
-                                <span> 01.30 - 02.30 PM</span>
-                                Workshop
-                            </div>
-                            <div class="schedule-slot-info">
-                                <a href="#">
-                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
-                                </a>
-                                <div class="schedule-slot-info-content">
-                                    <h3 class="schedule-slot-title">Human Centered Design
-                                        <strong>@ Agaton Johnsson</strong>
-                                    </h3>
-                                    <p>How you transform your business as
-                                        technology, consumer, habits industry dynamics change? Find out from
-                                        those leading the charge. How you transform </p>
-                                </div>
-                                <!--Info content end -->
-                            </div><!-- Slot info end -->
-                        </div>
-                    </div>
+                                <?php
+                            }
+                            ?>
+                        </div><!-- tab pane end-->
+                        <?php
+                        $ddcount++;
+                    }
+                    ?>
                 </div>
 
             </div>
@@ -582,104 +328,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
 <!-- Schedules event section end here -->
 
 <!-- ts speaker start-->
-<section id="ts-speakers" class="ts-speakers speaker-classic">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    <span>Listen to the</span>
-                    Event Speakers
-                </h2>
-            </div><!-- col end-->
-        </div><!-- row end-->
-        <div class="row">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
 
-            as $as){
-            ?>
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker open-sp-modal">
-                    <div class="speaker-img">
-                        <?php if ($as['speaker_image']) { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
-                        <?php } else { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
-                        <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
-                           data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <p>
-                            <?php if ($as['designation']) { ?>
-                                <?= $as['designation'] ?>
-                            <?php } ?>
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="speaker-flex">
-                            <?php
-                            if ($as['speaker_image']) {
-                                $image = $as['speaker_image'];
-                            } else {
-                                $image = $as['speaker_image_fake'];
-                            }
-                            ?>
-                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
-
-                            </div><!-- col end-->
-                            <div class="speak-cntnt">
-                                <div class="ts-speaker-popup-content">
-                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($as['designation']) { ?>
-                                        <span class="speakder-designation"><?= $as['designation'] ?></span>
-                                    <?php }
-                                    if ($as['org_image']) {
-                                        ?>
-                                        <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
-                                    <?php }
-                                    if ($as['org_name']) { ?>
-                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                    <?php }
-                                    if ($as['description']) {
-                                        ?>
-                                        <p>
-                                            <?= $as['description'] ?>
-                                        </p>
-                                    <?php } ?>
-                                    <div class="ts-speakers-social">
-                                        <?php if ($as['facebook']) { ?><a
-                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                        class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a
-                                            href="https://twitter.com/<?= $as['twitter'] ?>"
-                                            target="_blank"><i class="fab fa-twitter"></i>
-                                            </a><?php } ?>
-                                        <?php if ($as['instagram']) { ?><a
-                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                        class="fab fa-instagram"></i></a><?php } ?>
-                                        <?php if ($as['linkedin']) { ?><a
-                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
-                                    </div>
-                                </div><!-- ts-speaker-popup-content end-->
-                            </div><!-- col end-->
-                        </div>
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div>
-            <?php }
-            } ?><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
-</section>
 <!-- ts speaker end-->
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
