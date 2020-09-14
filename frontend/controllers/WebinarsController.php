@@ -71,12 +71,12 @@ class WebinarsController extends Controller
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinarDetail = self::getWebianrDetails($slug);
-        $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
-        if (in_array($user_id, $speakerUserIds)) {
-            $share_link = 'live';
-        } else {
-            $share_link = 'view';
-        }
+//        $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
+//        if (in_array($user_id, $speakerUserIds)) {
+//            $share_link = 'live';
+//        } else {
+//            $share_link = 'view';
+//        }
         $webinar = Webinar::find()
             ->select(['webinar_enc_id', 'price', 'session_for', 'slug', 'title', 'description', 'seats'])
             ->where(['slug' => $slug, 'is_deleted' => 0])

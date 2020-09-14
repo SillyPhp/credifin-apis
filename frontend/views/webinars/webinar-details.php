@@ -221,6 +221,366 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </div>
 </div>
 <!-- sharing widget end -->
+
+<!-- Schedules event section start here -->
+<section class="ts-schedule">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Schedule Details</span>
+                    Event Schedules
+                </h2>
+                <div class="ts-schedule-nav">
+                    <ul class="nav nav-tabs justify-content-center" role="tablist">
+                        <li class="nav-item active">
+                            <a class="" title="Click Me" href="#date1" role="tab" data-toggle="tab">
+                                <h3>5th June</h3>
+                                <span>Friday</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="" href="#date2" title="Click Me" role="tab" data-toggle="tab"><h3>6th June</h3>
+                                <span>Saturday</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="" href="#date3" title="Click Me" role="tab" data-toggle="tab">
+                                <h3>7th June</h3>
+                                <span>Sunday</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                </div>
+            </div><!-- col end-->
+
+        </div><!-- row end-->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tab-content schedule-tabs schedule-tabs-item">
+                    <div role="tabpanel" class="tab-pane active" id="date1">
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 07.30 - 11.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/user_avatar.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Marketing Matters!
+                                        <strong>@ Fredric Martinsson</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 9.30 - 10.30 AM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Reinventing Experiences
+                                        <strong>@ Melisa Lundryn</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 10.30 - 11.30 AM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Cultures of Creativity
+                                        <strong>@ Johnsson Agaton</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing launce">
+                            <div class="schedule-slot-time">
+                                <span> 11.30 - 12.30 PM</span>
+                            </div>
+                            <div class="schedule-slot-info">
+
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Lunch Break
+                                        <strong>@ Rebecca Henrikon</strong>
+                                    </h3>
+                                    <a href="#">
+                                        <img src="images/schedule_lunch.png" alt="">
+                                    </a>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 12.30 - 01.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Human Centered Design
+                                        <strong>@ Agaton Johnsson</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                    </div><!-- tab pane end-->
+
+                    <div role="tabpanel" class="tab-pane" id="date2">
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 02.30 - 03.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/shshank.jpg" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Marketing Matters!
+                                        <strong>@ Johnsson Agaton</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 03.30 - 04.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Reinventing Experiences
+                                        <strong>@ Fredric Martinsson</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 04.30 - 05.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Cultures of Creativity
+                                        <strong>@ Hall Building</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 05.30 - 06.30 PM</span>
+                            </div>
+                            <div class="schedule-slot-info">
+
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Lunch Break
+                                        <strong>@ Agaton Johnsson</strong>
+                                    </h3>
+                                    <a href="#">
+                                        <img src="images/schedule_lunch.png" alt="">
+                                    </a>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 06.30 - 07.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Human Centered Design
+                                        <strong>@ Henrikon Rebecca</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="date3">
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 9.30 - 10.30 AM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/user_avatar.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Marketing Matters!
+                                        <strong>@ Fredric Martinsson</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 10.30 - 11.30 AM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/shalyag.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Reinventing Experiences
+                                        <strong>@ Melisa Lundryn</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 11.30 - 12.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/ajay.jpg" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Cultures of Creativity
+                                        <strong>@ Johnsson Agaton</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+                        <div class="schedule-listing launce">
+                            <div class="schedule-slot-time">
+                                <span> 12.30 - 01.30 PM</span>
+                            </div>
+                            <div class="schedule-slot-info">
+
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Lunch Break
+                                        <strong>@ Rebecca Henrikon</strong>
+                                    </h3>
+                                    <a href="#">
+                                        <img src="images/schedule_lunch.png" alt="">
+                                    </a>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                        <!--schedule-listing end -->
+
+                        <div class="schedule-listing">
+                            <div class="schedule-slot-time">
+                                <span> 01.30 - 02.30 PM</span>
+                                Workshop
+                            </div>
+                            <div class="schedule-slot-info">
+                                <a href="#">
+                                    <img class="schedule-slot-speakers" src="images/logos-com/tarang.png" alt="">
+                                </a>
+                                <div class="schedule-slot-info-content">
+                                    <h3 class="schedule-slot-title">Human Centered Design
+                                        <strong>@ Agaton Johnsson</strong>
+                                    </h3>
+                                    <p>How you transform your business as
+                                        technology, consumer, habits industry dynamics change? Find out from
+                                        those leading the charge. How you transform </p>
+                                </div>
+                                <!--Info content end -->
+                            </div><!-- Slot info end -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div><!-- container end-->
+</section>
+<!-- Schedules event section end here -->
+
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -411,6 +771,139 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.ts-schedule-nav {
+  text-align: center;
+  margin-bottom: 90px;
+}
+
+.ts-schedule-nav ul {
+  border: none;
+  justify-content: center;
+  display: flex;
+}
+
+.ts-schedule-nav ul li {
+  margin: 0 3px;
+}
+
+.ts-schedule-nav ul li a {
+  font-size: 12px;
+  color: #222222;
+  text-transform: uppercase;
+  background: #f1f0f6;
+  display: block;
+  padding: 20px 50px;
+  position: relative;
+}
+
+.ts-schedule-nav ul li a:before {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 15px 15px 0;
+  border-color: transparent #00a0e3 transparent transparent;
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  content: \'\';
+  opacity: 0;
+  -o-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  -moz-transition: all 0.4s ease;
+  -ms-transition: all 0.4s ease;
+}
+
+.ts-schedule-nav ul li a h3 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #222222;
+  margin-bottom: 0;
+  text-transform: capitalize;
+}
+
+.ts-schedule-nav ul li.active a, .ts-schedule-nav ul li:hover a {
+  background: #00a0e3 !important;
+  color: #fff;
+}
+
+.ts-schedule-nav ul li.active a h3 {
+  color: #fff;
+}
+
+.ts-schedule-nav ul li.active a:before {
+  opacity: 1;
+}
+
+.schedule-listing {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+.schedule-listing .schedule-slot-time {
+  background: #008fca;
+  color: #fff;
+  padding: 60px 28px;
+  font-size: 18px;
+  font-weight: 700;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 18%;
+  flex: 0 0 18%;
+  max-width: 18%;
+}
+
+.schedule-listing .schedule-slot-time span {
+  display: block;
+  line-height: 26px;
+}
+
+.schedule-listing .schedule-slot-info {
+  position: relative;
+  padding: 35px 40px 35px 170px;
+  border: 1px dashed #e5e5e5;
+  border-left: none;
+  width: 100%;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-speakers {
+  position: absolute;
+  left: 40px;
+  top: 0;
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -ms-border-radius: 50%;
+  bottom: 0;
+  margin: auto;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-title {
+  font-size: 24px;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-title strong {
+  font-size: 14px;
+  color: #888888;
+  margin-left: 12px;
+}
+
+.schedule-listing .schedule-slot-info p {
+  margin-bottom: 0;
+}
+
+.schedule-listing:hover .schedule-slot-title {
+  color: #3b1d82;
+}
+
+.schedule-listing:nth-of-type(even) .schedule-slot-time {
+  background: #00a0e3;
+}
 .speaker-flex {
     display: flex;
     justify-content: center;
@@ -509,6 +1002,11 @@ transform: rotate(100deg);
     .flex2 {
     display: block;
     }
+    .speak-img, .speak-cntnt {
+    flex: inherit;
+    max-width: 100%;
+    width: 90% !important;
+}
 }
 .ask-people{
     margin-top: 10px;
@@ -1249,6 +1747,42 @@ div.icon span {
     background: #32CD32;
     transform: scale(1.05);
   box-shadow: 0px 2px 10px 3px #ddd;
+}
+@media (max-width: 767px) {
+.schedule-listing {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column; }
+    .schedule-listing .schedule-slot-time {
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 20px 35px; }
+    .schedule-listing .schedule-slot-info {
+      padding: 35px 40px 35px 35px;
+      border-left: 1px dashed #e5e5e5; }
+      .schedule-listing .schedule-slot-info .schedule-slot-speakers {
+        display: none; }
+  .schedule-listing-btn {
+    margin-top: 40px; }
+  .ts-schedule-nav {
+    margin-bottom: 40px; }
+    .ts-schedule-nav ul li a {
+      display: inline-block;
+      padding: 20px 20px;
+      margin: 5px 0; }
+  .schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
+    display: none; }
+  .schedule-tabs-item .schedule-listing-item.schedule-left {
+    margin-top: 0;
+    padding: 0px 110px 20px 0; }
+  .schedule-tabs-item .schedule-listing-item.schedule-right {
+    padding: 0px 20px 0px 110px;
+    margin-bottom: 30px; }
+  .schedule-tabs-item .schedule-listing-item .schedule-slot-speakers {
+    top: 5px; }
 }
 ');
 $script = <<<JS
