@@ -426,21 +426,25 @@ if ($application_name['wage_type'] == 'Fixed') {
 <?php
 $this->registerCss('
 .wts a{
-	color: #00bf8f;
+	color: #4AC959;
 }
 .twt a{
-	color: #00aced;
+	color: #00acee;
 }
 .mail a {
-	color: #b00;
+	color: #db1102;
 }
 .link a {
-	color: #007bb6;
+	color: #000080;
 }
 .job-det.col-md-12 {
+    background-image: url(' . Url::to('@eyAssets/images/pages/Process-Application/jaspreet.png') . '); 
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 20px;
+	background-position: top;
+    padding: 20px;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 .j-main {
 	display: flex;
@@ -507,10 +511,10 @@ $this->registerCss('
 .option-1 span i {
 	font-size: 18px;
 	margin: 0 8px;
-	color: #b95b0a;
+	color: #000;
 }
 .scd-btn a{
-	background-color: #ff7803;
+	background-color: #00a0e3;
 	color: #fff;
 	font-size: 14px;
 	font-family: roboto;

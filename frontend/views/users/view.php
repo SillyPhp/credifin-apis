@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+if (!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         $j = 0;
         if ($userApplied['status'] == 'Hired') {
@@ -98,12 +98,13 @@ $this->params['header_dark'] = false;
                             <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
                         <li>
-                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
-                        if (!empty($userApplied['applied_application_enc_id'])) {
-                        ?>
-                            <span class="detail-info">
+                            <?php if (!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id) {
+                                if (!empty($userApplied['applied_application_enc_id'])) {
+                                    ?>
+                                    <span class="detail-info">
                                 Application Status</span><?= $fieldName ?>
-                    <?php } } ?>
+                                <?php }
+                            } ?>
                         </li>
                     </ul>
                     <ul class="social-info">
@@ -145,26 +146,30 @@ $this->params['header_dark'] = false;
                                 </a>
                             </li>
                         <?php }
-                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                             if (!empty($userApplied['applied_application_enc_id'])) {
-                            ?>
-                            <li class="talking">
-                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
-                                    <i class="far fa-comment-dots"></i>
-                                </a>
-                            </li>
-                        <?php } } ?>
-                        <li class="dwn">
-                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
-                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
                                 ?>
-                                <div class="down-r">
-                                    <?php
-                                     $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                <li class="talking">
+                                    <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
+                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                        <i class="fa fa-comment-alt"></i>
+                                    </a>
+                                </li>
+                            <?php }
+                        } ?>
+                        <li class="dwn">
+                            <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
                                     ?>
-                                    <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i class="fas fa-download"></i></a>
-                                </div>
-                            <?php } } ?>
+                                    <div class="down-r">
+                                        <?php
+                                        $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                        ?>
+                                        <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i
+                                                    class="fas fa-download"></i></a>
+                                    </div>
+                                <?php }
+                            } ?>
                         </li>
                     </ul>
                 </div>
@@ -227,56 +232,75 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
                 <div class="container-detail-box">
-                    <div class="education-detail">
-                        <div class="education-head">Education</div>
-                        <?php
-                        foreach ($education as $edu) {
-                            ?>
-                            <div class="set">
-                                <div class="prof-p">
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
-                                    <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80" font="30px"></canvas>
-                                </div>
-                                <div class="prof-inner">
-                                    <div class="uni-name s-text"><?= $edu['institute'] ?>
-                                    </div>
-                                    <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                    </div>
-                                    <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php
-                        }
+                    <?php
+                    if ($education) {
                         ?>
-                    </div>
-                    <div class="experience-detail">
-                        <div class="education-head">Work Experience</div>
-                        <?php
-                        foreach ($experience as $exp) {
-                            ?>
-                            <div class="set">
-                                <div class="prof-p">
-                                    <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80" font="30px"></canvas>
-                                </div>
-                                <div class="prof-inner">
-                                    <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
-                                    </div>
-                                    <div class="quelification s-text-2"><?= $exp['title'] ?>
-                                    </div>
-                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to '?>
-                                        <?php if($exp['is_current']){ echo 'Present'; } else { ?>
-                                            <?php echo date("d/m/Y", strtotime($exp['to_date'])); } ?>
-                                    </div>
-                                    <div class="s-time s-text-2"><?= $exp['description'] ?>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="education-detail">
+                            <div class="education-head">Education</div>
                             <?php
-                        }
+                            foreach ($education as $edu) {
+                                ?>
+                                <div class="set">
+                                    <div class="prof-p">
+                                        <!--                                    <img src="-->
+                                        <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                        <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80"
+                                                font="30px"></canvas>
+                                    </div>
+                                    <div class="prof-inner">
+                                        <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                        </div>
+                                        <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                        </div>
+                                        <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                    if ($experience) {
                         ?>
-                    </div>
+                        <div class="experience-detail">
+                            <div class="education-head">Work Experience</div>
+                            <?php
+                            foreach ($experience as $exp) {
+                                ?>
+                                <div class="set">
+                                    <div class="prof-p">
+                                        <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80"
+                                                font="30px"></canvas>
+                                    </div>
+                                    <div class="prof-inner">
+                                        <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                        </div>
+                                        <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                        </div>
+                                        <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
+                                            <?php if ($exp['is_current']) {
+                                                echo 'Present';
+                                            } else { ?>
+                                                <?php echo date("d/m/Y", strtotime($exp['to_date']));
+                                            } ?>
+                                        </div>
+                                        <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
                     <div class="achievements-detail set-li">
+                    <?php
+                    if ($achievement) {
+                        ?>
                         <div class="education-head">Achievements</div>
                         <ul>
                             <?php
@@ -288,7 +312,13 @@ $this->params['header_dark'] = false;
                             ?>
                         </ul>
                     </div>
+    <?php
+    }
+    ?>
                     <div class="hobbies-detail set-li">
+                        <?php
+                        if ($hobbies) {
+                        ?>
                         <div class="education-head">Hobbies</div>
                         <ul>
                             <?php
@@ -300,7 +330,13 @@ $this->params['header_dark'] = false;
                             ?>
                         </ul>
                     </div>
+                            <?php
+                            }
+                            ?>
                     <div class="Interests-detail set-li">
+                        <?php
+                        if ($interests) {
+                        ?>
                         <div class="education-head">Interests</div>
                         <ul>
                             <?php
@@ -312,6 +348,9 @@ $this->params['header_dark'] = false;
                             ?>
                         </ul>
                     </div>
+                            <?php
+                            }
+                            ?>
                 </div>
             </div>
             <?php
@@ -387,10 +426,11 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
-if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
-    echo $this->render('@common/widgets/chat-main');
-} }
+        echo $this->render('@common/widgets/chat-main');
+    }
+}
 $this->registerCss('
 .fbook a {
     background-color: #3b5998;
@@ -408,7 +448,7 @@ $this->registerCss('
 	background-color: #00a0e3;
 }
 .talking a {
-	background-color: #00bf8f;
+	background-color: #3b5998;
 }
 .down-r {
 	text-align:center;

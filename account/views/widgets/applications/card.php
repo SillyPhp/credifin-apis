@@ -132,7 +132,7 @@ if (!empty($total_applications)) {
                             <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
                             <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
                             <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
-                               title="VIEW <?= strtoupper($applications[$next]['application_type']) ?>"><i
+                               title="View Details"><i
                                         class="fa fa-info-circle"></i></a>
                             <div class="appl">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
@@ -150,6 +150,7 @@ if (!empty($total_applications)) {
                                             break;
                                     }
                                     ?>
+                                    <span>1</span>
                                 </a>
                             </div>
                         </div>
@@ -175,6 +176,14 @@ if (!empty($total_applications)) {
 Pjax::end();
 
 $this->registerCss("
+.appl a span {
+    background-color: #ff7803;
+    color: #fff;
+    border-radius: 100px;
+    font-family: roboto;
+    font-weight: 600;
+    padding: 2px 5px;
+}
 .hr-com-jobs{
     font-size:13px; 
     color:#080808; 
@@ -210,6 +219,7 @@ $this->registerCss("
     display: block;
     margin-left: 10px;
     flex-basis: 50%;
+    position: relative;
 }
 .appl a:hover {
     background: #00a0e3 !important;
