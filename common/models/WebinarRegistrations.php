@@ -49,6 +49,7 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
      * @return \yii\db\ActiveQuery
      */

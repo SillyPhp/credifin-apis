@@ -2,6 +2,7 @@
 namespace common\models\extended;
 use common\models\Utilities;
 use common\models\Webinar;
+use common\models\WebinarRegistrations;
 use Yii;
 class WebinarPayments extends \common\models\WebinarPayments
 {
@@ -12,6 +13,7 @@ class WebinarPayments extends \common\models\WebinarPayments
   public $payment_gst;
   public $payment_amount;
   public $payment_enc_id;
+  public $registration_enc_id;
 
   public function checkout()
   {
@@ -35,6 +37,22 @@ class WebinarPayments extends \common\models\WebinarPayments
       $response = PaymentsModule::GetToken($args);
       $transaction = Yii::$app->db->beginTransaction();
       try {
+          $Registration = new WebinarRegistrations();
+          $utilitiesModel = new \common\models\Utilities();
+          $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+          $Registration->register_enc_id = $utilitiesModel->encrypt();
+          $Registration->webinar_enc_id = $this->webinar_enc_id;
+          $Registration->created_by = $this->created_by;
+          $Registration->created_on = date('Y-m-d H:i:s');
+          if (!$Registration->save())
+          {
+              $transaction->rollBack();
+              $this->_flag = false;
+              return false;
+          }else{
+              $this->_flag = true;
+          }
+
           if (isset($response['status']) && $response['status'] == 'created') {
               $token = $response['id'];
               $payment = new \common\models\WebinarPayments();
@@ -42,6 +60,7 @@ class WebinarPayments extends \common\models\WebinarPayments
               $utilitiesModel->variables['string'] = time() . rand(100, 100000);
               $payment->payment_enc_id = $utilitiesModel->encrypt();
               $payment->webinar_enc_id = $this->webinar_enc_id;
+              $payment->registration_enc_id = $Registration->register_enc_id;
               $payment->created_by = $this->created_by;
               $payment->payment_token = $token;
               $payment->payment_amount = $this->payment_amount;
@@ -49,17 +68,25 @@ class WebinarPayments extends \common\models\WebinarPayments
               $payment->created_on = date('Y-m-d H:i:s');
               if (!$payment->save()) {
                   $transaction->rollBack();
+                  $this->_flag = false;
                   return false;
               } else {
-                  $transaction->commit();
-                  $data = [];
-                  $data['webinar_enc_id'] = $this->webinar_enc_id;
-                  $data['payment_enc_id'] = $payment->payment_enc_id;
-                  $data['payment_token'] = $payment->payment_token;
-                  return $data;
+                 $this->_flag = true;
               }
           }else{
+              $this->_flag = false;
               return false;
+          }
+
+          if ($this->_flag)
+          {
+              $transaction->commit();
+              $data = [];
+              $data['webinar_enc_id'] = $this->webinar_enc_id;
+              $data['payment_enc_id'] = $payment->payment_enc_id;
+              $data['payment_token'] = $payment->payment_token;
+              $data['registration_enc_id'] = $Registration->register_enc_id;
+              return $data;
           }
       }
       catch (\Exception $exception) {
@@ -76,7 +103,18 @@ class WebinarPayments extends \common\models\WebinarPayments
       {
           return false;
       }else{
-          return true;
+         if ($this->payment_status=='captured'||$this->payment_status=='created')
+         {
+             $Registration = WebinarRegistrations::findOne(['register_enc_id'=>$this->registration_enc_id]);
+             $Registration->status = 1;
+             if (!$Registration->save())
+             {
+                 return false;
+             }else{
+                 return true;
+             }
+         }
+         return true;
       }
 
   }

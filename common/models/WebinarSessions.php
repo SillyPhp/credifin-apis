@@ -1,6 +1,6 @@
 <?php
+namespace dsbedutech\models;
 
-namespace common\models;
 
 /**
  * This is the model class for table "{{%webinar_sessions}}".
@@ -14,7 +14,7 @@ namespace common\models;
  * @property int $status 1 as running, 2 as finished
  * @property int $is_deleted
  *
- * @property Webinar[] $webinars
+ * @property WebinarEvents[] $webinarEvents
  * @property Users $createdBy
  */
 class WebinarSessions extends \yii\db\ActiveRecord
@@ -44,11 +44,15 @@ class WebinarSessions extends \yii\db\ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+
+    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinars()
+    public function getWebinarEvents()
     {
-        return $this->hasMany(Webinar::className(), ['session_enc_id' => 'session_enc_id']);
+        return $this->hasMany(WebinarEvents::className(), ['session_enc_id' => 'session_enc_id']);
     }
 
     /**

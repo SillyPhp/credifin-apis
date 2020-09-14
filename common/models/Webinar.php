@@ -1,8 +1,6 @@
 <?php
-
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%webinar}}".
@@ -63,6 +61,7 @@ class Webinar extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

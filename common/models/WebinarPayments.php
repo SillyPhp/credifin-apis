@@ -8,6 +8,7 @@ namespace common\models;
  * @property int $id random id
  * @property string $payment_enc_id payment encrypted id
  * @property string $webinar_enc_id group enc id
+ * @property string $registration_enc_id registration_enc_id
  * @property string $payment_token payment id
  * @property double $payment_amount amount
  * @property double $payment_gst gst if applicable
@@ -23,6 +24,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Webinar $webinarEnc
+ * @property WebinarRegistrations $registrationEnc
  */
 class WebinarPayments extends \yii\db\ActiveRecord
 {
@@ -40,19 +42,23 @@ class WebinarPayments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['payment_enc_id', 'webinar_enc_id', 'payment_token', 'payment_amount', 'created_by'], 'required'],
+            [['payment_enc_id', 'webinar_enc_id', 'registration_enc_id', 'payment_token', 'payment_amount', 'created_by'], 'required'],
             [['payment_amount', 'payment_gst'], 'number'],
             [['payment_mode'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['payment_enc_id', 'webinar_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['payment_enc_id', 'webinar_enc_id', 'registration_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['reference_number'], 'string', 'max' => 50],
             [['payment_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
+            [['registration_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => WebinarRegistrations::className(), 'targetAttribute' => ['registration_enc_id' => 'register_enc_id']],
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -75,5 +81,13 @@ class WebinarPayments extends \yii\db\ActiveRecord
     public function getWebinarEnc()
     {
         return $this->hasOne(Webinar::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRegistrationEnc()
+    {
+        return $this->hasOne(WebinarRegistrations::className(), ['register_enc_id' => 'registration_enc_id']);
     }
 }

@@ -1,8 +1,6 @@
 <?php
-
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%assigned_webinar_to}}".
@@ -45,6 +43,7 @@ class AssignedWebinarTo extends \yii\db\ActiveRecord
             [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
