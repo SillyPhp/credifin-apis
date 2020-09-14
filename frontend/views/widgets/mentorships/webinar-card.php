@@ -1,9 +1,9 @@
 <?php
 
 use yii\helpers\Url;
-
 $base_url = Url::base('https');
 foreach ($webinars as $webinar) {
+    $start_time = $webinar['start_datetime'];
     ?>
     <div class="col-md-4">
         <div class="webinar-box">
@@ -17,7 +17,7 @@ foreach ($webinars as $webinar) {
             <div class="webinar-details">
                 <div class="webinar-title"><?= $webinar['title'] ?></div>
                 <div class="webinar-city"><i
-                            class="far fa-clock"></i> <?= date('h:s A', strtotime($webinar['start_datetime'])) ?></div>
+                            class="far fa-clock"></i> <?= date('h:i A', strtotime($start_time)) ?></div>
                 <div class="webinar-desc"><?= $webinar['description'] ?></div>
             </div>
             <div class="avatars">
@@ -72,9 +72,16 @@ foreach ($webinars as $webinar) {
                             $btnValue = 'Join Now';
                         }
                     }
+                    if(Yii::$app->user->isGuest){
+                        ?>
+                        <button data-toggle="modal" data-target="#loginModal"><?= $btnValue ?></button>
+                        <?php
+                    } else {
+                        ?>
+                        <button data-key="<?= $s_id ?>" data-id="<?= $w_id ?>" id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
+                        <?php
+                    }
                     ?>
-                    <button data-key="<?= $s_id ?>" data-id="<?= $w_id ?>"
-                            id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
                 </div>
                 <div class="detail-btn naam">
                     <button type="button" onclick="window.open('<?= Url::to($base_url.'/webinar/'.  $webinar['slug']); ?>', '_blank')">View Details</button>
@@ -170,10 +177,11 @@ $this->registerCss('
     font-family: roboto;
     text-align: center;
     display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
-  overflow: hidden;
-  min-height:55px;
+    -webkit-line-clamp: 9;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 241px;
+    height: 241px;
 }
 .webinar-icon > img {
     min-height: 150px;

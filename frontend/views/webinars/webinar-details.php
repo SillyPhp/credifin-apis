@@ -24,16 +24,19 @@ $this->title = $webinar['title'];
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <?php if($status == 2){ ?>
+                        <?php if ($status == 2) { ?>
                             <div>
                                 <a id="joinBtn">Webinar Expired</a>
                             </div>
-                        <?php } elseif($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
+                        <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
-                                <?php if(Yii::$app->user->isGuest){?>
-                                <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal" >Click here to Join</a>
+                                <?php if (Yii::$app->user->isGuest) { ?>
+                                    <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal">Click
+                                        here to Join</a>
                                 <?php } else { ?>
-                                 <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
+                                    <a id="joinBtn"
+                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $webinar['session_enc_id'] ?>">Click
+                                        here to Join</a>
                                 <?php } ?>
                             </div>
                             <div id="counter">
@@ -57,7 +60,7 @@ $this->title = $webinar['title'];
                                     <div class="smalltext">Seconds</div>
                                 </div>
                             </div>
-                        <?php } elseif($status == 4) { ?>
+                        <?php } elseif ($status == 4) { ?>
                             <div>
                                 <a id="joinBtn">Webinar Cancel</a>
                             </div>
@@ -67,14 +70,37 @@ $this->title = $webinar['title'];
             </div>
         </div>
     </div>
-    <?php if(!empty($webinar['description'])){ ?>
+    <?php if (!empty($webinar['description'])){ ?>
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 mx-auto">
-                    <h2 class="section-title text-center">
-                        Webinar Details
-                    </h2>
+                <div class="flex-use">
+                    <div class="col-md-7 mx-auto">
+                        <h2 class="section-title loc-set">
+                            Webinar Details
+                        </h2>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="register-btn">
+                            <?php
+                            if($interest_status == 1 || $interest_status == 3){
+                                $btnName = 'Registered';
+                            } else {
+                                $btnName = 'Register Now';
+                            }
+                            if (Yii::$app->user->isGuest) {
+                                ?>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
+                                   value="interested"><?= $btnName ?></a>
+                            <?php } else { ?>
+                                <button class="ra-btn registered"
+                                        data-type="register" id="registerBtn" data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                        value="registered"><?= $btnName ?>
+                                </button>
+                            <?php }
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -87,45 +113,59 @@ $this->title = $webinar['title'];
                     <?php } ?>
                     <div class="sidebar text-center">
                         <div class="dis-flex">
-                            <p><i class="fas fa-calendar-day"></i> <?= date('d F Y',strtotime($webinar['start_datetime']))?> </p>
-                            <p><i class="far fa-clock"></i> <?= date('h:i A',strtotime($webinar['start_datetime']))?></p>
+                            <p>
+                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($webinar['start_datetime'])) ?>
+                            </p>
+                            <p><i class="far fa-clock"></i> <?= date('h:i A', strtotime($webinar['start_datetime'])) ?>
+                            </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
                         </div>
                         <div class="flex2">
-                        <?php Pjax::begin(['id' => 'webinar_registations']); ?>
+                            <?php Pjax::begin(['id' => 'webinar_registations']); ?>
                             <div class="avatars">
                                 <ul class="ask-people">
                                     <?php
-                                    if($register){
-                                        foreach($register as $reg){ ?>
+                                    if ($register) {
+                                        foreach ($register as $reg) { ?>
                                             <li>
-                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$reg['image_location'].'/'.$reg['image']) ?>">
+                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
                                             </li>
                                         <?php }
                                     } ?>
                                 </ul>
                                 <?php
-                                if(!empty($webinarRegistrations)) { ?>
-                                <p><span><?= count($webinarRegistrations) ?></span>
-                                    People Registered</p>
+                                if (!empty($webinarRegistrations)) { ?>
+                                    <p><span><?= count($webinarRegistrations) ?></span>
+                                        People Registered</p>
                                 <?php }
                                 ?>
                             </div>
-                              <?php  Pjax::end(); ?>
-                                <div class="register-action">
-                            <?php
-                                if(Yii::$app->user->isGuest){
-                                ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn" value="interested">Interested</a>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn" value="not interested">Not Interested</a>
+                            <?php Pjax::end(); ?>
+                            <div class="register-action">
+                                <?php
+                                if (Yii::$app->user->isGuest) {
+                                    ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
+                                       value="interested">Interested</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
+                                       value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
-                            <?php } else { ?>
-                                    <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
-                           <?php     }
-                            ?>
+                                <?php } else { ?>
+                                    <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
+                                            id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="interested">Interested
+                                    </button>
+                                    <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
+                                            id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="not interested">Not Interested
+                                    </button>
+                                    <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
+                                            id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="attending">Attending
+                                    </button>
+                                <?php }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -141,8 +181,8 @@ $this->title = $webinar['title'];
     <div class="row">
         <div class="col-md-12">
             <?php
-            $sharingLink = Url::base('https') .'/webinar/'.$webinar['slug'];
-            echo $this->render('/widgets/sharing-widget-webinar',[
+            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
+            echo $this->render('/widgets/sharing-widget-webinar', [
                 'sharingLink' => $sharingLink
             ]) ?>
         </div>
@@ -161,79 +201,95 @@ $this->title = $webinar['title'];
             </div><!-- col end-->
         </div><!-- row end-->
         <div class="row">
-            <?php if(!empty($assignSpeaker)) {
-            foreach ($assignSpeaker as $as){?>
+            <?php if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker
+
+            as $as){
+            ?>
             <div class="col-lg-3 col-md-6">
                 <div class="ts-speaker open-sp-modal">
                     <div class="speaker-img">
-                        <?php if($as['speaker_image']){?>
+                        <?php if ($as['speaker_image']) { ?>
                             <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
                         <?php } else { ?>
                             <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
                         <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
+                           data-effect="mfp-zoom-in">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
                     <div class="ts-speaker-info">
                         <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                            <p>
-                                <?php if($as['designation']){ ?>
-                                    <?= $as['designation'] ?>
-                                <?php } ?>
-                            </p>
+                        <p>
+                            <?php if ($as['designation']) { ?>
+                                <?= $as['designation'] ?>
+                            <?php } ?>
+                        </p>
                     </div>
                 </div>
                 <!-- popup start-->
                 <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-img">
-                                <?php if($as['speaker_image']) {?>
-                                    <img src="<?= $as['speaker_image'] ?>">
-                                <?php } else { ?>
-                                    <img src="<?= $as['speaker_image_fake'] ?>">
-                                <?php } ?>
-                            </div>
-                        </div><!-- col end-->
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                <?php if($as['designation']) {?>
-                                    <span class="speakder-designation"><?= $as['designation']?></span>
-                                <?php }
-                                if($as['org_image']) {
-                                    ?>
-                                    <img class="company-logo"
-                                         src="<?= $as['org_image'] ?>">
-                                <?php }
-                                if($as['org_name']){ ?>
-                                    <span class="speakder-designation"><?= $as['org_name']?></span>
-                                <?php }
-                                if($as['description']) {
-                                    ?>
-                                    <p>
-                                        <?= $as['description'] ?>
-                                    </p>
-                                <?php } ?>
-                                <div class="ts-speakers-social">
-                                    <?php if($as['facebook']){?><a href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i class="fab fa-facebook-f"></i></a><?php } ?>
-                                    <?php if($as['twitter']){?><a href="https://twitter.com/<?= $as['twitter'] ?>" target="_blank"><i class="fab fa-twitter"></i></a><?php } ?>
-                                    <?php if($as['instagram']){?><a href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i class="fab fa-instagram"></i></a><?php } ?>
-                                    <?php if($as['linkedin']){?><a href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i class="fab fa-linkedin-in"></i></a><?php } ?>
-                                </div>
-                            </div><!-- ts-speaker-popup-content end-->
-                        </div><!-- col end-->
+                        <div class="speaker-flex">
+                                <?php
+                                if ($as['speaker_image']) {
+                                    $image = $as['speaker_image'];
+                                } else {
+                                    $image = $as['speaker_image_fake'];
+                                }
+                                ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
+
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($as['designation']) { ?>
+                                        <span class="speakder-designation"><?= $as['designation'] ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a href="https://twitter.com/<?= $as['twitter'] ?>"
+                                                                         target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
                     </div><!-- row end-->
                 </div><!-- popup end-->
             </div>
-            <?php } } ?><!-- col end-->
+            <?php }
+            } ?><!-- col end-->
         </div><!-- row end-->
     </div><!-- container end-->
 </section>
 <!-- ts speaker end-->
 <!-- ts intro start -->
-<?php if(!empty($outComes)){ ?>
+<?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
         <div class="container">
             <div class="row">
@@ -245,22 +301,26 @@ $this->title = $webinar['title'];
                 </div>
             </div><!-- row end-->
             <div class="row">
-                <?php foreach ($outComes as $oc){ ?>
+                <?php foreach ($outComes
+
+                as $oc){ ?>
                 <div class="col-lg-3 col-md-6 outcome-item">
-                    <?php if($oc['bg_colour']) {
-                    $color_code = '#'.$oc['bg_colour'];
-                    $reduceColor = createPalette($color_code, $colorCount=1);
+                    <?php if ($oc['bg_colour']) {
+                    $color_code = '#' . $oc['bg_colour'];
+                    $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
-                    <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                    <div class="ts-single-outcome"
+                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                         <?php } else {
                         $color_code = '#000';
-                        $reduceColor = createPalette($color_code, $colorCount=1);
+                        $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
-                        <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                        <div class="ts-single-outcome"
+                             style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                             <?php } ?>
-                            <?php if($oc['icon']){ ?>
-                                <img src = "<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image. $oc['icon_location']. DIRECTORY_SEPARATOR . $oc['icon'])?>">
-                            <?php } else {?>
+                            <?php if ($oc['icon']) { ?>
+                                <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                            <?php } else { ?>
                                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
                             <?php } ?>
                             <h3 class="ts-title"><?= $oc['name'] ?></h3>
@@ -275,37 +335,39 @@ $this->title = $webinar['title'];
 <!-- ts sponsors start-->
 
 <?php
-function color_mod($hex, $diff) {
+function color_mod($hex, $diff)
+{
     $rgb = str_split(trim($hex, '# '), 2);
     foreach ($rgb as &$hex) {
         $dec = hexdec($hex);
         if ($diff >= 0) {
             $dec += $diff;
-        }
-        else {
+        } else {
             $dec -= abs($diff);
         }
         $dec = max(0, min(255, $dec));
         $hex = str_pad(dechex($dec), 2, '0', STR_PAD_LEFT);
     }
-    return '#'.implode($rgb);
+    return '#' . implode($rgb);
 }
-function createPalette($color,$colorCount=4){
+
+function createPalette($color, $colorCount = 4)
+{
     $colorPalette = array();
-    for($i=1; $i<=$colorCount; $i++){
-        if($i == 1){
+    for ($i = 1; $i <= $colorCount; $i++) {
+        if ($i == 1) {
             $color = $color;
-            $colorVariation = -(($i*4) * 15);
+            $colorVariation = -(($i * 4) * 15);
         }
-        if($i == 2){
+        if ($i == 2) {
             $color = $newColor;
             $colorVariation = -($i * 15);
         }
-        if($i == 3){
+        if ($i == 3) {
             $color = $newColor;
             $colorVariation = -($i * 15);
         }
-        if($i == 4){
+        if ($i == 4) {
             $color = $newColor;
             $colorVariation = -($i * 15);
         }
@@ -314,7 +376,42 @@ function createPalette($color,$colorCount=4){
     }
     return $colorPalette;
 }
+
 $this->registerCss('
+.speaker-flex {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height:80vh;
+}
+.speak-img, .speak-cntnt {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.speak-img {
+    background-position: center;
+    background-size: cover;
+}
+.loc-set{
+    text-align:left !important;
+}
+.flex-use {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.register-btn{text-align:right;}
+.register-btn a {
+    font-size: 16px;
+    height: 40px;
+    padding: 9px 20px;
+    width: 150px;
+    line-height: 40px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin: 5px 5px;
+}
 #join{
 display:none;
 }
@@ -429,7 +526,7 @@ transform: rotate(100deg);
 
 .ts-speaker .speaker-img {
     width: 255px;
-    height: 255px;
+    height: 270px;
     position: relative;
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -552,7 +649,7 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker .speaker-img {
     width: 100%;
-    height: auto;
+//    height: auto;
     border-radius: 0;
     -webkit-border-radius: 0;
     -ms-border-radius: 0;
@@ -573,7 +670,12 @@ transform: rotate(100deg);
 }
 
 .speaker-classic .ts-speaker .ts-speaker-info p {
-    margin-bottom: 0;
+    font-family: roboto;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 5px;
 }
 
 .speaker-shap img {
@@ -759,6 +861,7 @@ transform: rotate(100deg);
 }
 .ts-count-down .countdown {
     margin-bottom: 0;
+    min-height: 138px;
 }
 .ts-count-down .countdown .counter-item {
     width: 25%;
@@ -1144,11 +1247,23 @@ $(document).on('click','.registered',function(event){
      var btn = $(this);
      var web_id = btn.attr('data-key');
      var value = btn.attr('value');
+     var btnType = btn.attr('data-type');
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
         data: {wid: web_id,value: value},
+        beforeSend: function(){
+            btn.text('Registered');
+        },
         success:function(res){
+            if(btnType == 'register'){
+                toastr.success('Registered Successfully..', 'Success');
+                btn.text('Registered');
+            } else {
+                if(value == 'attending' || value == 'interested' ){
+                    $('#registerBtn').text('Registered');
+                }
+            }
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
@@ -1178,13 +1293,15 @@ $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/jquery-jCounter.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     let actionBtns = document.getElementsByClassName('ra-btn');
-    for(let i = 0; i<actionBtns.length; i++){
+    for (let i = 0; i < actionBtns.length; i++) {
         actionBtns[i].addEventListener('click', function () {
             let actionColors = document.getElementsByClassName('actionColor');
-            if(actionColors.length > 0){
+            if (actionColors.length > 0) {
                 actionColors[0].classList.remove('actionColor')
             }
             clickedEle = event.currentTarget;

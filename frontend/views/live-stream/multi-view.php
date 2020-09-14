@@ -131,7 +131,30 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             flex: 1;
             margin: auto;
         }
-
+        .full-vid{
+            cursor: pointer;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 10;
+            padding: 5px 10px;
+            background-color: #00000078;
+            color: #fff;
+            border-top-left-radius: 5px;
+        }
+        .hidden{
+            display: none;
+        }
+        .sp1 > div .full-vid, .elem1 > div .full-vid{
+            display: none;
+        }
+        #full-screen-video.expanded >div >div > video{
+            object-fit: contain !Important;
+        }
+        .stream-uid
+        {
+            max-width: inherit !important;
+        }
         /* Respomnsive design */
         @media only screen and (max-width: 500px) {
             #full-screen-video.elem1 > div{
@@ -322,7 +345,8 @@ function getTokenVarification(tokenId)
 } 
 ');
 $this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-Multistream/static/css/main.419b49bd.chunk.css');
-$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+//$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+$this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

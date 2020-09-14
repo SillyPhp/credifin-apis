@@ -412,8 +412,6 @@ class WebinarsController extends ApiBaseController
                         'c.speaker_enc_id',
                         'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
                         'CASE WHEN cc1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", cc1.image_location, "/", cc1.image) END image',
-                        'cc1.email',
-                        'cc1.phone',
                         'cc1.facebook',
                         'cc1.twitter',
                         'cc1.linkedin',
@@ -430,9 +428,7 @@ class WebinarsController extends ApiBaseController
 //                            }], false);
 //                            $ccc1->onCondition(['ccc1.is_deleted' => 0]);
 //                        }]);
-                        $c1->joinWith(['designationEnc c2' => function ($c2) {
-                            $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
-                        }], false);
+                        $c1->joinWith(['designationEnc c2'], false);
                         $c1->onCondition(['c1.is_deleted' => 0]);
                     }]);
                     $bb->onCondition(['c.is_deleted' => 0]);
