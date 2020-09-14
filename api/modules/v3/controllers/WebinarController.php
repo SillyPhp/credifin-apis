@@ -67,6 +67,7 @@ class WebinarController extends ApiBaseController
             $payment = new \common\models\extended\WebinarPayments();
             if ($payment->load($args,''))
             {
+                $payment->registration_enc_id = $args['registration_enc_id'];
                 if ($payment->updateStatus()) {
                     return $this->response(200, ['status' => 200, 'message' => 'success']);
                 } else {
