@@ -101,12 +101,13 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <div class="col-md-5">
                         <div class="register-btn">
                             <?php
+                            $btnName = 'Register';
                             if (Yii::$app->user->isGuest) {
                                 ?>
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                    value="interested"><?= $btnName ?></a>
                             <?php } else {
-                                if ($webinar['price']) {
+                                if ((int)$webinar['price']) {
                                     $paymentStatus = WebinarPayments::find()
                                         ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
                                         ->asArray()
@@ -257,8 +258,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 <a class="" title="Click Me" href="#<?= $key ?>" role="tab"
                                    data-toggle="tab">
                                     <!--                                    <h3>5th June</h3>-->
-                                    <h3><?= $key ?></h3>
-                                    <span>Friday</span>
+                                    <h3><?= date('jS M', strtotime($key)) ?></h3>
+                                    <span><?= date('l', strtotime($key)) ?></span>
                                 </a>
                             </li>
                             <?php
