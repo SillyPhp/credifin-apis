@@ -31,7 +31,7 @@ class Webinar extends \common\models\Webinar
                     'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image',
                 ]);
                 $d->joinWith(['createdBy d1'], false);
-                $d->onCondition(['d.is_deleted' => 0]);
+                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
             }])
             ->joinWith(['webinarEvents c' => function ($c) {
                 $c->select(['c.event_enc_id', 'c.webinar_enc_id', 'c.start_datetime', 'c.session_enc_id']);
@@ -102,7 +102,7 @@ class Webinar extends \common\models\Webinar
                     'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
-                $d->onCondition(['d.is_deleted' => 0]);
+                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
             }])
             ->joinWith(['webinarOutcomes e' => function ($e) {
                 $e->select([
@@ -123,6 +123,31 @@ class Webinar extends \common\models\Webinar
             ->one();
 
         if ($webinar_detail) {
+            $dates = [];
+            $e = [];
+            foreach ($webinar_detail['webinarEvents'] as $e) {
+                $date = strtotime($e['start_datetime']);
+                $date = date('Y-m-d', $date);
+                array_push($dates, $date);
+            }
+            $d = array_unique($dates);
+
+            foreach ($d as $da) {
+                $ij = 0;
+                $eventss = [];
+                foreach ($webinar_detail['webinarEvents'] as $w) {
+                    $date = strtotime($w['start_datetime']);
+                    $date = date('Y-m-d', $date);
+                    if ($da == $date) {
+                        array_push($eventss, $webinar_detail['webinarEvents'][$ij]);
+                    }
+                    $ij++;
+                }
+                if ($eventss) {
+                    $e[$da] = $eventss;
+                }
+            }
+
             $events = WebinarEvents::find()
                 ->select(['start_datetime'])
                 ->where(['webinar_enc_id' => $webinar_detail['webinar_enc_id'], 'status' => [0, 1]])
@@ -130,6 +155,7 @@ class Webinar extends \common\models\Webinar
                 ->asArray()
                 ->one();
             $webinar_detail['event'] = $events;
+            $webinar_detail['events'] = $e;
         }
 
         return $webinar_detail;

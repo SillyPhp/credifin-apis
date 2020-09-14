@@ -9,6 +9,7 @@ use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarConversationMessages;
 use common\models\WebinarConversations;
+use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
@@ -35,6 +36,8 @@ class WebinarsController extends ApiBaseController
                 'speaker-detail' => ['POST', 'OPTIONS'],
                 'validate-session' => ['POST', 'OPTIONS'],
                 'save-conversation' => ['POST', 'OPTIONS'],
+                'join-webinar' => ['POST', 'OPTIONS'],
+                'update-status' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -387,7 +390,7 @@ class WebinarsController extends ApiBaseController
             ->exists();
     }
 
-    public function actionRegisterWebinar()
+    public function actionJoinWebinar()
     {
         if ($user = $this->isAuthorized()) {
             $param = Yii::$app->request->post();
@@ -401,7 +404,22 @@ class WebinarsController extends ApiBaseController
 
             if ($webinar) {
                 if ($webinar['price']) {
-
+                    $webinar_payments = WebinarPayments::find()
+                        ->where(['webinar_enc_id' => $webinar_id, 'created_by' => $user->user_enc_id])->andWhere(['payment_status' => 'captured'])
+                        ->one();
+                    if (!empty($webinar_payments)) {
+                        return $this->response(422, ['status' => 422, 'message' => 'User Already Paid The Amount']);
+                    } else {
+                        $payment = new \common\models\extended\WebinarPayments();
+                        $args = ['created_by' => $user->user_enc_id, 'webinar_enc_id' => $webinar_id];
+                        if ($payment->load($args, '')) {
+                            if ($data = $payment->checkout()) {
+                                return $this->response(200, ['status' => 200, 'callback' => $data]);
+                            } else {
+                                return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
+                            }
+                        }
+                    }
                 } else {
                     $model = new WebinarRegistrations();
                     $utilitiesModel = new Utilities();
@@ -412,11 +430,38 @@ class WebinarsController extends ApiBaseController
                     $model->created_by = $user->user_enc_id;
                     $model->created_on = date('Y-m-d h:i:s');
                     if ($model->save()) {
-                        return $this->response(200, ['status' => 200, 'message' => 'Registered Successfully']);
+                        return $this->response(201, ['status' => 201, 'message' => 'Successfully Registered']);
                     }
                 }
             }
 
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (!isset($params['payment_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information1']);
+            }
+            $args = [
+                'payment_enc_id' => $params['payment_enc_id'],
+                'payment_status' => $params['status'],
+                'registration_enc_id' => $params['registration_enc_id'],
+                'payment_id' => $params['payment_id']
+            ];
+            $payment = new \common\models\extended\WebinarPayments();
+            if ($payment->load($args, '')) {
+                $payment->registration_enc_id = $args['registration_enc_id'];
+                if ($payment->updateStatus()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
+                }
+            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
