@@ -2,20 +2,22 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%webinar_registrations}}".
  *
  * @property int $id Primary Key
  * @property string $register_enc_id Webinar Registration Encrypted Encrypted ID
  * @property string $webinar_enc_id
+ * @property int $status 0 as Pending 1 as Approved
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
  * @property string $last_updated_by
- * @property int $interest_status 1 interested,2 not interested,3 attending
- * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Failed
  * @property int $is_deleted 0 as False, 1 as True
  *
+ * @property WebinarPayments[] $webinarPayments
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property Webinar $webinarEnc
@@ -36,15 +38,23 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['register_enc_id', 'webinar_enc_id', 'created_by', 'status'], 'required'],
+            [['register_enc_id', 'webinar_enc_id', 'created_by'], 'required'],
+            [['status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['interest_status', 'status', 'is_deleted'], 'integer'],
             [['register_enc_id', 'webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['register_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarPayments()
+    {
+        return $this->hasMany(WebinarPayments::className(), ['registration_enc_id' => 'register_enc_id']);
     }
 
     /**

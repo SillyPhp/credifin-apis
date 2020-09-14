@@ -9,7 +9,6 @@ use Yii;
  *
  * @property int $id Primary Key
  * @property string $webinar_enc_id Webinar Encrypted Encrypted ID
- * @property string $session_enc_id
  * @property string $name
  * @property string $title
  * @property string $description
@@ -28,10 +27,11 @@ use Yii;
  * @property int $is_deleted 0 as False, 1 as True
  *
  * @property AssignedWebinarTo[] $assignedWebinarTos
+ * @property UserWebinarInterest[] $userWebinarInterests
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
- * @property WebinarSessions $sessionEnc
  * @property WebinarEvents[] $webinarEvents
+ * @property WebinarOutcomes[] $webinarOutcomes
  * @property WebinarPayments[] $webinarPayments
  * @property WebinarRegistrations[] $webinarRegistrations
  */
@@ -46,11 +46,38 @@ class Webinar extends \yii\db\ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['webinar_enc_id', 'name', 'title', 'description', 'session_for', 'seats', 'slug', 'created_by'], 'required'],
+            [['description', 'availability'], 'string'],
+            [['session_for', 'seats', 'is_deleted'], 'integer'],
+            [['price', 'gst'], 'number'],
+            [['created_on', 'last_updated_on'], 'safe'],
+            [['webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['name', 'title', 'slug', 'image', 'image_location'], 'string', 'max' => 200],
+            [['webinar_enc_id'], 'unique'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedWebinarTos()
     {
         return $this->hasMany(AssignedWebinarTo::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserWebinarInterests()
+    {
+        return $this->hasMany(UserWebinarInterest::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
@@ -72,17 +99,17 @@ class Webinar extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSessionEnc()
+    public function getWebinarEvents()
     {
-        return $this->hasOne(WebinarSessions::className(), ['session_enc_id' => 'session_enc_id']);
+        return $this->hasMany(WebinarEvents::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinarEvents()
+    public function getWebinarOutcomes()
     {
-        return $this->hasMany(WebinarEvents::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasMany(WebinarOutcomes::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
