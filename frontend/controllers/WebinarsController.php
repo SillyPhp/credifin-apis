@@ -185,6 +185,7 @@ class WebinarsController extends Controller
             $webResig = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->one();
+
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
             if ($webinar) {
