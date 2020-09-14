@@ -1,6 +1,6 @@
 <?php
-
 namespace common\models;
+
 
 /**
  * This is the model class for table "{{%webinar_outcomes}}".
@@ -18,7 +18,7 @@ namespace common\models;
  * @property PoolWebinarOutcomes $outcomePoolEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
- * @property Webinars $webinarEnc
+ * @property Webinar $webinarEnc
  */
 class WebinarOutcomes extends \yii\db\ActiveRecord
 {
@@ -45,9 +45,10 @@ class WebinarOutcomes extends \yii\db\ActiveRecord
             [['outcome_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => PoolWebinarOutcomes::className(), 'targetAttribute' => ['outcome_pool_enc_id' => 'outcome_pool_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinars::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
+            [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -78,6 +79,6 @@ class WebinarOutcomes extends \yii\db\ActiveRecord
      */
     public function getWebinarEnc()
     {
-        return $this->hasOne(Webinars::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+        return $this->hasOne(Webinar::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 }

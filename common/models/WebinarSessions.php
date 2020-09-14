@@ -14,8 +14,8 @@ namespace common\models;
  * @property int $status 1 as running, 2 as finished
  * @property int $is_deleted
  *
+ * @property WebinarEvents[] $webinarEvents
  * @property Users $createdBy
- * @property Webinars[] $webinars
  */
 class WebinarSessions extends \yii\db\ActiveRecord
 {
@@ -46,16 +46,16 @@ class WebinarSessions extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy()
+    public function getWebinarEvents()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+        return $this->hasMany(WebinarEvents::className(), ['session_enc_id' => 'session_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinars()
+    public function getCreatedBy()
     {
-        return $this->hasMany(Webinars::className(), ['session_enc_id' => 'session_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 }

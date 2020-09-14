@@ -1,13 +1,20 @@
 <?php
 
+use common\models\WebinarPayments;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+$access_key = 'cbfba3d0-ba9e-11ea-8e90-4384c267ea22';
 $time = $webinar['start_datetime'];
-$interest_status = $webResig['interest_status'];
+//$interest_status = $webResig['interest_status'];
+$interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
+Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
+<script id="context" type="text/javascript" src="https://sandbox-payments.open.money/layer"></script>
 <section>
     <div class="full-width-light"
          style="">
@@ -83,20 +90,45 @@ $this->title = $webinar['title'];
                     <div class="col-md-5">
                         <div class="register-btn">
                             <?php
-                            if($interest_status == 1 || $interest_status == 3){
-                                $btnName = 'Registered';
-                            } else {
-                                $btnName = 'Register Now';
-                            }
                             if (Yii::$app->user->isGuest) {
                                 ?>
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                    value="interested"><?= $btnName ?></a>
-                            <?php } else { ?>
-                                <button class="ra-btn registered"
-                                        data-type="register" id="registerBtn" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                        value="registered"><?= $btnName ?>
-                                </button>
+                            <?php } else {
+                                if ($webinar['price']) {
+                                    $paymentStatus = WebinarPayments::find()
+                                        ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
+                                        ->asArray()
+                                        ->one();
+                                    if ($paymentStatus['payment_status'] != 'captured') {
+                                        ?>
+                                        <button class="ra-btn"
+                                                data-type="register" id="paidRegisterBtn"
+                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                value="registered"><?= $btnName ?>
+                                        </button>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button class="ra-btn"
+                                                data-type="register" id=""
+                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                value="registered"> Registered
+                                        </button>
+                                        <?php
+                                    }
+                                    ?>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <button class="ra-btn registered"
+                                            data-type="register" id="registerBtn"
+                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="registered"><?= $btnName ?>
+                                    </button>
+                                    <?php
+                                }
+                                ?>
                             <?php }
                             ?>
                         </div>
@@ -154,15 +186,15 @@ $this->title = $webinar['title'];
                                 <?php } else { ?>
                                     <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="interested">Interested
+                                            value="1">Interested
                                     </button>
                                     <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="not interested">Not Interested
+                                            value="2">Not Interested
                                     </button>
                                     <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="attending">Attending
+                                            value="3">Attending
                                     </button>
                                 <?php }
                                 ?>
@@ -232,13 +264,13 @@ $this->title = $webinar['title'];
                 <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
                     <div class="row">
                         <div class="speaker-flex">
-                                <?php
-                                if ($as['speaker_image']) {
-                                    $image = $as['speaker_image'];
-                                } else {
-                                    $image = $as['speaker_image_fake'];
-                                }
-                                ?>
+                            <?php
+                            if ($as['speaker_image']) {
+                                $image = $as['speaker_image'];
+                            } else {
+                                $image = $as['speaker_image_fake'];
+                            }
+                            ?>
                             <div class="speak-img" style="background-image: url('<?= $image; ?>');">
 
                             </div><!-- col end-->
@@ -266,8 +298,9 @@ $this->title = $webinar['title'];
                                         <?php if ($as['facebook']) { ?><a
                                             href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
                                                         class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a href="https://twitter.com/<?= $as['twitter'] ?>"
-                                                                         target="_blank"><i class="fab fa-twitter"></i>
+                                        <?php if ($as['twitter']) { ?><a
+                                            href="https://twitter.com/<?= $as['twitter'] ?>"
+                                            target="_blank"><i class="fab fa-twitter"></i>
                                             </a><?php } ?>
                                         <?php if ($as['instagram']) { ?><a
                                             href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
@@ -1242,28 +1275,51 @@ function countdown(e){
     }, 1000);
 };
 countdown('$time');
+$(document).on('click','#paidRegisterBtn',function(event){
+    $.ajax({
+        url: 'https://www.sneh.eygb.me/api/v3/webinar/request-payment',
+        method: 'POST',
+        data: {webinar_enc_id: webinar_id, created_by : user_id},
+        success: function(res) {
+            if(res.response.status == "200"){
+                var callback = res.response.callback;
+                var ptoken = callback.payment_token;
+                var payment_enc_id = callback.payment_enc_id;
+                var reg_id = callback.registration_enc_id;
+                console.log(ptoken);
+                if (ptoken!=null || ptoken !=""){
+                    processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                } else{
+                    swal({
+                        title:"Error",
+                        text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                    });
+                }
+            } else {
+                swal({
+                    title: "Error",
+                    text: res.response.message,
+                });    
+            }
+            
+            swal({
+                title: res.response.status,
+                text: res.response.message,
+            });
+        }
+    });
+});
 $(document).on('click','.registered',function(event){
     event.preventDefault();
      var btn = $(this);
      var web_id = btn.attr('data-key');
      var value = btn.attr('value');
-     var btnType = btn.attr('data-type');
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
         data: {wid: web_id,value: value},
-        beforeSend: function(){
-            btn.text('Registered');
-        },
         success:function(res){
-            if(btnType == 'register'){
-                toastr.success('Registered Successfully..', 'Success');
-                btn.text('Registered');
-            } else {
-                if(value == 'attending' || value == 'interested' ){
-                    $('#registerBtn').text('Registered');
-                }
-            }
+            toastr.success('Registered Successfully..', 'Success');
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
@@ -1287,6 +1343,73 @@ $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
 });  
 
+function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
+{
+    Layer.checkout({ 
+        token: ptoken,
+        accesskey: access_key
+    }, 
+    function(response) {
+          // response.payment_token_id
+           // response.payment_id  
+        if (response.status == "captured") {
+            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+               swal({
+                    title: "",
+                    text: "Your Registration Successfully",
+                    type:'success',
+                    showCancelButton: false,  
+                    confirmButtonClass: "btn-primary",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true, 
+                    closeOnCancel: true
+                     },
+                        function (isConfirm) { 
+                         location.reload(true);
+                     }
+                );
+        } else if (response.status == "created") {
+            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "pending") {
+          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "failed") { 
+           updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "cancelled") {
+          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        }
+    },
+    function(err) { 
+        swal({ 
+                title:"Error",
+                text: "Some Internal Server Error, Please Try After Some Time",
+         });
+    }
+);
+} 
+
+function updateStatus(payment_enc_id, payment_id, status,reg_id)
+{
+    $.ajax({
+            url : 'https://www.sneh.eygb.me/api/v3/webinar/update-status',
+            method : 'POST', 
+            data : {
+              payment_status:status,
+              payment_enc_id:payment_enc_id,
+              payment_id: payment_id, 
+              registration_enc_id: reg_id, 
+            },
+            success:function(resp)
+            {
+                if(res.response.status != 200){
+                    swal({ 
+                        title:"Message",
+                        text: "Payment Successfully Captured & It will reflect in sometime..",
+                     });
+                }
+            }
+            
+    })
+}
 
 JS;
 $this->registerJs($script);
@@ -1295,6 +1418,9 @@ $this->registerJsFile('@eyAssets/js/jquery-jCounter.min.js', ['depends' => [\yii
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>
     let actionBtns = document.getElementsByClassName('ra-btn');
