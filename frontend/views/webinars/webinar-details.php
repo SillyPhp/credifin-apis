@@ -1,13 +1,31 @@
 <?php
 
+use common\models\WebinarPayments;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+if (Yii::$app->params->paymentGateways->mec->icici) {
+    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+    if ($configuration->mode === "production") {
+        $access_key = $configuration->credentials->production->access_key;
+        $secret_key = $configuration->credentials->production->secret_key;
+        $url = $configuration->credentials->production->url;
+    } else {
+        $access_key = $configuration->credentials->sandbox->access_key;
+        $secret_key = $configuration->credentials->sandbox->secret_key;
+        $url = $configuration->credentials->sandbox->url;
+    }
+}
 $time = $webinar['start_datetime'];
-$interest_status = $webResig['interest_status'];
+//$interest_status = $webResig['interest_status'];
+$interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
+Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
+<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
     <div class="full-width-light"
          style="">
@@ -83,20 +101,46 @@ $this->title = $webinar['title'];
                     <div class="col-md-5">
                         <div class="register-btn">
                             <?php
-                            if($interest_status == 1 || $interest_status == 3){
-                                $btnName = 'Registered';
-                            } else {
-                                $btnName = 'Register Now';
-                            }
+                            $btnName = 'Register';
                             if (Yii::$app->user->isGuest) {
                                 ?>
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                    value="interested"><?= $btnName ?></a>
-                            <?php } else { ?>
-                                <button class="ra-btn registered"
-                                        data-type="register" id="registerBtn" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                        value="registered"><?= $btnName ?>
-                                </button>
+                            <?php } else {
+                                if ((int)$webinar['price']) {
+                                    $paymentStatus = WebinarPayments::find()
+                                        ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
+                                        ->asArray()
+                                        ->one();
+                                    if ($paymentStatus['payment_status'] != 'captured') {
+                                        ?>
+                                        <button class="ra-btn"
+                                                data-type="register" id="paidRegisterBtn"
+                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                value="registered"><?= $btnName ?>
+                                        </button>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button class="ra-btn"
+                                                data-type="register" id=""
+                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                value="registered"> Registered
+                                        </button>
+                                        <?php
+                                    }
+                                    ?>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <button class="ra-btn registered"
+                                            data-type="register" id="registerBtn"
+                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="registered"><?= $btnName ?>
+                                    </button>
+                                    <?php
+                                }
+                                ?>
                             <?php }
                             ?>
                         </div>
@@ -120,6 +164,7 @@ $this->title = $webinar['title'];
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
+                            <p><i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price'])?ceil($webinar['price']):"Free" ?></p>
                         </div>
                         <div class="flex2">
                             <?php Pjax::begin(['id' => 'webinar_registations']); ?>
@@ -154,15 +199,15 @@ $this->title = $webinar['title'];
                                 <?php } else { ?>
                                     <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="interested">Interested
+                                            value="1">Interested
                                     </button>
                                     <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="not interested">Not Interested
+                                            value="2">Not Interested
                                     </button>
                                     <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="attending">Attending
+                                            value="3">Attending
                                     </button>
                                 <?php }
                                 ?>
@@ -189,104 +234,102 @@ $this->title = $webinar['title'];
     </div>
 </div>
 <!-- sharing widget end -->
-<!-- ts speaker start-->
-<section id="ts-speakers" class="ts-speakers speaker-classic">
+
+<!-- Schedules event section start here -->
+<section class="ts-schedule">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 mx-auto">
                 <h2 class="section-title text-center">
-                    <span>Listen to the</span>
-                    Event Speakers
+                    <span>Schedule Details</span>
+                    Event Schedules
                 </h2>
+                <div class="ts-schedule-nav">
+                    <ul class="nav nav-tabs justify-content-center" role="tablist">
+                        <?php
+                        $dcount = 1;
+                        foreach ($dateEvents as $key => $de) {
+                            $active = "";
+                            if ($dcount == 1) {
+                                $active = 'active';
+                            }
+                            ?>
+                            <li class="nav-item <?= $active ?>">
+                                <a class="" title="Click Me" href="#<?= $key ?>" role="tab"
+                                   data-toggle="tab">
+                                    <!--                                    <h3>5th June</h3>-->
+                                    <h3><?= date('jS M', strtotime($key)) ?></h3>
+                                    <span><?= date('l', strtotime($key)) ?></span>
+                                </a>
+                            </li>
+                            <?php
+                            $dcount++;
+                        }
+                        ?>
+                    </ul>
+                    <!-- Tab panes -->
+                </div>
             </div><!-- col end-->
+
         </div><!-- row end-->
         <div class="row">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
-
-            as $as){
-            ?>
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker open-sp-modal">
-                    <div class="speaker-img">
-                        <?php if ($as['speaker_image']) { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
-                        <?php } else { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
-                        <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
-                           data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <p>
-                            <?php if ($as['designation']) { ?>
-                                <?= $as['designation'] ?>
-                            <?php } ?>
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="speaker-flex">
-                                <?php
-                                if ($as['speaker_image']) {
-                                    $image = $as['speaker_image'];
-                                } else {
-                                    $image = $as['speaker_image_fake'];
-                                }
+            <div class="col-lg-12">
+                <div class="tab-content schedule-tabs schedule-tabs-item">
+                    <?php
+                    $ddcount = 1;
+                    foreach ($dateEvents as $key => $de) {
+                        $active = "";
+                        if ($ddcount == 1) {
+                            $active = "active";
+                        }
+                        ?>
+                        <div role="tabpanel" class="tab-pane <?= $active ?>" id="<?= $key ?>">
+                            <?php
+                            foreach ($de as $k => $v) {
                                 ?>
-                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
-
-                            </div><!-- col end-->
-                            <div class="speak-cntnt">
-                                <div class="ts-speaker-popup-content">
-                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($as['designation']) { ?>
-                                        <span class="speakder-designation"><?= $as['designation'] ?></span>
-                                    <?php }
-                                    if ($as['org_image']) {
-                                        ?>
-                                        <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
-                                    <?php }
-                                    if ($as['org_name']) { ?>
-                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                    <?php }
-                                    if ($as['description']) {
-                                        ?>
-                                        <p>
-                                            <?= $as['description'] ?>
-                                        </p>
-                                    <?php } ?>
-                                    <div class="ts-speakers-social">
-                                        <?php if ($as['facebook']) { ?><a
-                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                        class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a href="https://twitter.com/<?= $as['twitter'] ?>"
-                                                                         target="_blank"><i class="fab fa-twitter"></i>
-                                            </a><?php } ?>
-                                        <?php if ($as['instagram']) { ?><a
-                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                        class="fab fa-instagram"></i></a><?php } ?>
-                                        <?php if ($as['linkedin']) { ?><a
-                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                <div class="schedule-listing">
+                                    <div class="schedule-slot-time">
+                                        <!--                                                <span> 07.30 - 11.30 PM</span>-->
+                                        <span><?= date('H:i A', strtotime($v['event_time'])) ?> - <?= date('H:i A', strtotime($v['endtime'])) ?></span>
+                                        <!--                                                Workshop-->
                                     </div>
-                                </div><!-- ts-speaker-popup-content end-->
-                            </div><!-- col end-->
-                        </div>
-                    </div><!-- row end-->
-                </div><!-- popup end-->
+                                    <div class="schedule-slot-info">
+                                        <a href="#">
+                                            <?php
+                                            $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                                            if ($v['image']) {
+                                                $image = Yii::$app->params->upload_directories->users->image . $v['image_location'] . DIRECTORY_SEPARATOR . $v['image'];
+                                            }
+                                            ?>
+                                            <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
+                                        </a>
+                                        <div class="schedule-slot-info-content">
+                                            <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
+                                                <!--                                                <strong>@ Fredric Martinsson</strong>-->
+                                            </h3>
+                                            <p><?= $v['description'] ?></p>
+                                        </div>
+                                        <!--Info content end -->
+                                    </div><!-- Slot info end -->
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div><!-- tab pane end-->
+                        <?php
+                        $ddcount++;
+                    }
+                    ?>
+                </div>
+
             </div>
-            <?php }
-            } ?><!-- col end-->
-        </div><!-- row end-->
+        </div>
     </div><!-- container end-->
 </section>
+<!-- Schedules event section end here -->
+
+<!-- ts speaker start-->
+
 <!-- ts speaker end-->
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
@@ -378,6 +421,139 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.ts-schedule-nav {
+  text-align: center;
+  margin-bottom: 90px;
+}
+
+.ts-schedule-nav ul {
+  border: none;
+  justify-content: center;
+  display: flex;
+}
+
+.ts-schedule-nav ul li {
+  margin: 0 3px;
+}
+
+.ts-schedule-nav ul li a {
+  font-size: 12px;
+  color: #222222;
+  text-transform: uppercase;
+  background: #f1f0f6;
+  display: block;
+  padding: 20px 50px;
+  position: relative;
+}
+
+.ts-schedule-nav ul li a:before {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 15px 15px 0;
+  border-color: transparent #00a0e3 transparent transparent;
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  content: \'\';
+  opacity: 0;
+  -o-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  -moz-transition: all 0.4s ease;
+  -ms-transition: all 0.4s ease;
+}
+
+.ts-schedule-nav ul li a h3 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #222222;
+  margin-bottom: 0;
+  text-transform: capitalize;
+}
+
+.ts-schedule-nav ul li.active a, .ts-schedule-nav ul li:hover a {
+  background: #00a0e3 !important;
+  color: #fff;
+}
+
+.ts-schedule-nav ul li.active a h3 {
+  color: #fff;
+}
+
+.ts-schedule-nav ul li.active a:before {
+  opacity: 1;
+}
+
+.schedule-listing {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+.schedule-listing .schedule-slot-time {
+  background: #008fca;
+  color: #fff;
+  padding: 60px 28px;
+  font-size: 18px;
+  font-weight: 700;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 18%;
+  flex: 0 0 18%;
+  max-width: 18%;
+}
+
+.schedule-listing .schedule-slot-time span {
+  display: block;
+  line-height: 26px;
+}
+
+.schedule-listing .schedule-slot-info {
+  position: relative;
+  padding: 35px 40px 35px 170px;
+  border: 1px dashed #e5e5e5;
+  border-left: none;
+  width: 100%;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-speakers {
+  position: absolute;
+  left: 40px;
+  top: 0;
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -ms-border-radius: 50%;
+  bottom: 0;
+  margin: auto;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-title {
+  font-size: 24px;
+}
+
+.schedule-listing .schedule-slot-info .schedule-slot-title strong {
+  font-size: 14px;
+  color: #888888;
+  margin-left: 12px;
+}
+
+.schedule-listing .schedule-slot-info p {
+  margin-bottom: 0;
+}
+
+.schedule-listing:hover .schedule-slot-title {
+  color: #3b1d82;
+}
+
+.schedule-listing:nth-of-type(even) .schedule-slot-time {
+  background: #00a0e3;
+}
 .speaker-flex {
     display: flex;
     justify-content: center;
@@ -476,6 +652,11 @@ transform: rotate(100deg);
     .flex2 {
     display: block;
     }
+    .speak-img, .speak-cntnt {
+    flex: inherit;
+    max-width: 100%;
+    width: 90% !important;
+}
 }
 .ask-people{
     margin-top: 10px;
@@ -1217,6 +1398,42 @@ div.icon span {
     transform: scale(1.05);
   box-shadow: 0px 2px 10px 3px #ddd;
 }
+@media (max-width: 767px) {
+.schedule-listing {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column; }
+    .schedule-listing .schedule-slot-time {
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 20px 35px; }
+    .schedule-listing .schedule-slot-info {
+      padding: 35px 40px 35px 35px;
+      border-left: 1px dashed #e5e5e5; }
+      .schedule-listing .schedule-slot-info .schedule-slot-speakers {
+        display: none; }
+  .schedule-listing-btn {
+    margin-top: 40px; }
+  .ts-schedule-nav {
+    margin-bottom: 40px; }
+    .ts-schedule-nav ul li a {
+      display: inline-block;
+      padding: 20px 20px;
+      margin: 5px 0; }
+  .schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
+    display: none; }
+  .schedule-tabs-item .schedule-listing-item.schedule-left {
+    margin-top: 0;
+    padding: 0px 110px 20px 0; }
+  .schedule-tabs-item .schedule-listing-item.schedule-right {
+    padding: 0px 20px 0px 110px;
+    margin-bottom: 30px; }
+  .schedule-tabs-item .schedule-listing-item .schedule-slot-speakers {
+    top: 5px; }
+}
 ');
 $script = <<<JS
 function countdown(e){
@@ -1242,28 +1459,51 @@ function countdown(e){
     }, 1000);
 };
 countdown('$time');
+$(document).on('click','#paidRegisterBtn',function(event){
+    $.ajax({
+        url: 'https://www.sneh.eygb.me/api/v3/webinar/request-payment',
+        method: 'POST',
+        data: {webinar_enc_id: webinar_id, created_by : user_id},
+        success: function(res) {
+            if(res.response.status == "200"){
+                var callback = res.response.callback;
+                var ptoken = callback.payment_token;
+                var payment_enc_id = callback.payment_enc_id;
+                var reg_id = callback.registration_enc_id;
+                console.log(ptoken);
+                if (ptoken!=null || ptoken !=""){
+                    processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                } else{
+                    swal({
+                        title:"Error",
+                        text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                    });
+                }
+            } else {
+                swal({
+                    title: "Error",
+                    text: res.response.message,
+                });    
+            }
+            
+            swal({
+                title: res.response.status,
+                text: res.response.message,
+            });
+        }
+    });
+});
 $(document).on('click','.registered',function(event){
     event.preventDefault();
      var btn = $(this);
      var web_id = btn.attr('data-key');
      var value = btn.attr('value');
-     var btnType = btn.attr('data-type');
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
         data: {wid: web_id,value: value},
-        beforeSend: function(){
-            btn.text('Registered');
-        },
         success:function(res){
-            if(btnType == 'register'){
-                toastr.success('Registered Successfully..', 'Success');
-                btn.text('Registered');
-            } else {
-                if(value == 'attending' || value == 'interested' ){
-                    $('#registerBtn').text('Registered');
-                }
-            }
+            toastr.success('Registered Successfully..', 'Success');
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
@@ -1287,6 +1527,73 @@ $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
 });  
 
+function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
+{
+    Layer.checkout({ 
+        token: ptoken,
+        accesskey: access_key
+    }, 
+    function(response) {
+          // response.payment_token_id
+           // response.payment_id  
+        if (response.status == "captured") {
+            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+               swal({
+                    title: "",
+                    text: "Your Registration Successfully",
+                    type:'success',
+                    showCancelButton: false,  
+                    confirmButtonClass: "btn-primary",
+                    confirmButtonText: "Close",
+                    closeOnConfirm: true, 
+                    closeOnCancel: true
+                     },
+                        function (isConfirm) { 
+                         location.reload(true);
+                     }
+                );
+        } else if (response.status == "created") {
+            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "pending") {
+          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "failed") { 
+           updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        } else if (response.status == "cancelled") {
+          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
+        }
+    },
+    function(err) { 
+        swal({ 
+                title:"Error",
+                text: "Some Internal Server Error, Please Try After Some Time",
+         });
+    }
+);
+} 
+
+function updateStatus(payment_enc_id, payment_id, status,reg_id)
+{
+    $.ajax({
+            url : 'https://www.sneh.eygb.me/api/v3/webinar/update-status',
+            method : 'POST', 
+            data : {
+              payment_status:status,
+              payment_enc_id:payment_enc_id,
+              payment_id: payment_id, 
+              registration_enc_id: reg_id, 
+            },
+            success:function(resp)
+            {
+                if(res.response.status != 200){
+                    swal({ 
+                        title:"Message",
+                        text: "Payment Successfully Captured & It will reflect in sometime..",
+                     });
+                }
+            }
+            
+    })
+}
 
 JS;
 $this->registerJs($script);
@@ -1295,6 +1602,9 @@ $this->registerJsFile('@eyAssets/js/jquery-jCounter.min.js', ['depends' => [\yii
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>
     let actionBtns = document.getElementsByClassName('ra-btn');
