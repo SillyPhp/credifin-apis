@@ -98,7 +98,7 @@ class WebinarsController extends Controller
                 $d->joinWith(['speakerEnc d1' => function ($d1) {
                     $d1->joinWith(['userEnc d2']);
                     $d1->joinWith(['designationEnc d3']);
-                }],false);
+                }], false);
                 $d->andWhere(['d.is_deleted' => 0]);
             }])
             ->where(['a.webinar_enc_id' => $webinar['webinar_enc_id']])
@@ -171,7 +171,7 @@ class WebinarsController extends Controller
                 ->alias('z')
                 ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location'])
                 ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0])
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
                 ->andWhere(['not', ['c.image' => null]])
                 ->andWhere(['not', ['c.image' => '']])
                 ->limit(6)
@@ -185,9 +185,13 @@ class WebinarsController extends Controller
                 ->asArray()
                 ->all();
             $webResig = WebinarRegistrations::find()
-                ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->where([
+                    'is_deleted' => 0,
+                    'webinar_enc_id' => $webinar['webinar_enc_id'],
+                    'created_by' => Yii::$app->user->identity->user_enc_id,
+                    'status' => 1,
+                ])
                 ->one();
-
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
             if ($webinar) {
@@ -417,7 +421,7 @@ class WebinarsController extends Controller
                 'a.description',
                 'a1.start_datetime',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use($date_now){
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',

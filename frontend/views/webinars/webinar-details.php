@@ -17,7 +17,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
     }
 }
 $time = $webinar['start_datetime'];
-//$interest_status = $webResig['interest_status'];
+$registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
@@ -109,41 +109,57 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <?php } else {
                                 ?>
                                 <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register">
-                                    Loading...
+                                    Processing <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                                 <?php
-                                if ((int)$webinar['price']) {
-                                    $paymentStatus = WebinarPayments::find()
-                                        ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
-                                        ->asArray()
-                                        ->one();
-                                    if ($paymentStatus['payment_status'] != 'captured') {
+                                if ($registeration_status == 1) {
+                                    ?>
+                                    <button class="ra-btn"
+                                            data-type="register" id=""
+                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="registered"> Registered
+                                    </button>
+                                    <?php
+                                } else {
+                                    if ((int)$webinar['price']) {
+                                        $paymentStatus = WebinarPayments::find()
+                                            ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
+                                                'created_by' => $user_id])
+                                            ->andWhere([
+                                                'or',
+                                                ['payment_status' => 'captured'],
+                                                ['payment_status' => 'created']
+                                            ])
+                                            ->asArray()
+                                            ->one();
+                                        if (empty($paymentStatus)) {
+                                            ?>
+                                            <button class="ra-btn"
+                                                    data-type="register" id="paidRegisterBtn"
+                                                    data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                    value="registered"><?= $btnName ?>
+                                            </button>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <button class="ra-btn"
+                                                    data-type="register" id=""
+                                                    data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                                    value="registered"> Registered
+                                            </button>
+                                            <?php
+                                        }
                                         ?>
-                                        <button class="ra-btn"
-                                                data-type="register" id="paidRegisterBtn"
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button class="ra-btn registered"
+                                                data-type="register" id="registerBtn"
                                                 data-key="<?= $webinar['webinar_enc_id'] ?>"
                                                 value="registered"><?= $btnName ?>
                                         </button>
                                         <?php
-                                    } else {
-                                        ?>
-                                        <button class="ra-btn"
-                                                data-type="register" id=""
-                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                                value="registered"> Registered
-                                        </button>
-                                        <?php
                                     }
-                                    ?>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <button class="ra-btn registered"
-                                            data-type="register" id="registerBtn"
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"><?= $btnName ?>
-                                    </button>
-                                    <?php
                                 }
                                 ?>
                             <?php }
@@ -1485,7 +1501,7 @@ $(document).on('click','#paidRegisterBtn',function(event){
         beforeSend: function(res) {
             demobtn.show();
             btn.hide();
-        },
+        },  
         success: function(res) {
             if(res.response.status == "200"){
                 var callback = res.response.callback;
@@ -1495,21 +1511,19 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
-                    btn.show();
-                    demobtn.hide();
                     swal({
                         title:"Error",
                         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
                     });
                 }
             } else {
-                btn.show();
-                demobtn.hide();
                 swal({
                     title: "Error",
                     text: res.response.message,
                 });    
             }
+            btn.show();
+            demobtn.hide();
         }
     });
 });
