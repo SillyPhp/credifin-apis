@@ -497,13 +497,13 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
                     <div class="ts-single-outcome"
-                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
                         <?php } else {
                         $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
                         <div class="ts-single-outcome"
-                             style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                             style="background: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
@@ -809,6 +809,7 @@ transform: rotate(100deg);
     flex: inherit;
     max-width: 100%;
     width: 90% !important;
+    min-height:50vh;
 }
 }
 .ask-people{
