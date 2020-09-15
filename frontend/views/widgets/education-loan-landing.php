@@ -11,23 +11,23 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest.png') ?>"></div>
+                    <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
                     <h3>Interest - Free Loans</h3>
-                    <p>We are providing loans at 0% interest rate to the students without any hassle.</p>
+                    <p>The loans provided are interest free thus decreasing the financial burden off you..</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
-                    <h3>Collateral Free Loans</h3>
-                    <p>The applicant does not need to provide any security or asset to the company for the generation of loans.</p>
+                    <h3>Online Application</h3>
+                    <p>Apply from the comfort of your home with quick, simple and easy documentation process and get fast approval of your application.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
                     <h3>Quick disbursement</h3>
-                    <p>We are making great efforts to complete the disbursement of loans in less than 10 days.</p>
+                    <p>with the state of the art system, we strive to complete the disbursement of loan within 10 days.</p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="loan-req">
                     <div class="loan-data">
-                        <div class="loan-txtt">Accelerate the lending process with EmpowerYouth.com <br> Launch your loan request today.</div>
+                        <div class="loan-txtt">Get your application approved quickly with EmpowerYouth.com<br> Launch your loan request today.</div>
                         <div class="loan-btn">
                             <a href="/education-loans">Apply Now!</a>
                         </div>
@@ -72,7 +72,7 @@ $this->registerCss('
 	margin:8px 0 2px;
 }
 .loan-box p {
-	font-size: 16px;
+	font-size: 15px;
 	font-family: roboto;
 	min-height: 75px;
     line-height: 25px;
@@ -104,6 +104,10 @@ $this->registerCss('
 	font-size: 18px;
 	font-family: roboto;
 	font-weight: 500;
+	transition: ease-out .3s;
+}
+.loan-btn:hover a{
+    box-shadow:0 0 5px #fff;
 }
 @media only screen and (max-width: 991px) {
     .loan-txtt {
