@@ -799,14 +799,16 @@ font-family: auto !important;
 .tt-suggestion p {
   margin: 0;
 }
-
+.select2-selection__clear{
+    padding-right: revert !important;
+}
 ');
 $script = <<< JS
     getCountries();    
     getCollegeList(datatype=0,source=3,type=['College']);
     function getCollegeList(datatype, source, type) { 
         $.ajax({ 
-            url : 'https://www.empoweryouth.com/api/v3/companies/organization-list',
+            url : '/api/v3/companies/organization-list',
             method : 'GET',  
             data:{
                 datatype:datatype,
@@ -872,7 +874,7 @@ $script = <<< JS
     }
     function getCourseList(id) {
         $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
+            url : '/api/v3/education-loan/get-course-list',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -889,7 +891,7 @@ $script = <<< JS
     }
     function getCountries() { 
         $.ajax({     
-            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
+            url : '/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
@@ -910,7 +912,7 @@ $script = <<< JS
     }
     function getFeeComponents(id) {
         $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
+            url : '/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -1188,7 +1190,7 @@ function ajaxSubmit()
     //   purpose.push(this.value);
     // });
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/save-application',
+            url : '/api/v3/education-loan/save-application',
             method : 'POST', 
             data : {
                 applicant_name:$('#applicant_name').val(),
@@ -1293,13 +1295,13 @@ function processPayment(ptoken,loan_id,education_loan_id)
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
 {
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
+            url : '/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
             data : {
               loan_payment_id:education_loan_id,
               loan_app_id:loan_app_enc_id,
               payment_id:payment_id, 
-              status:status,
+              status:status, 
             },
             success:function(e)
             {
