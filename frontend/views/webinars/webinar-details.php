@@ -108,7 +108,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                    value="interested"><?= $btnName ?></a>
                             <?php } else {
                                 ?>
-                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Loading... </button>
+                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Processing <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> </button>
                                 <?php
                                 if ((int)$webinar['price']) {
                                     $paymentStatus = WebinarPayments::find()
@@ -1480,8 +1480,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
-                    btn.show();
-                    demobtn.hide();
                     swal({
                         title:"Error",
                         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
@@ -1495,6 +1493,8 @@ $(document).on('click','#paidRegisterBtn',function(event){
                     text: res.response.message,
                 });    
             }
+            btn.show();
+            demobtn.hide(); 
         }
     });
 });
