@@ -357,7 +357,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
-                                            <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
+                                            <p><?= ucwords($v['webinarSpeakers'][0]['designation']) ?></p>
                                         </div>
                                         <!--Info content end -->
                                     </div><!-- Slot info end -->
@@ -392,6 +392,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         <div class="row">
             <?php if (!empty($assignSpeaker)) {
             foreach ($assignSpeaker as $as) {
+                $designation = ucwords($designation);
             ?>
             <div class="col-lg-3 col-md-6">
                 <div class="ts-speaker open-sp-modal">
@@ -409,8 +410,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <div class="ts-speaker-info">
                         <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
                         <p>
-                            <?php if ($as['designation']) { ?>
-                                <?= $as['designation'] ?>
+                            <?php if ($designation) { ?>
+                                <?= $designation ?>
                             <?php } ?>
                         </p>
                     </div>
@@ -432,8 +433,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <div class="speak-cntnt">
                                 <div class="ts-speaker-popup-content">
                                     <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($as['designation']) { ?>
-                                        <span class="speakder-designation"><?= $as['designation'] ?></span>
+                                    <?php if ($designation) { ?>
+                                        <span class="speakder-designation"><?= $designation ?></span>
                                     <?php }
                                     if ($as['org_image']) {
                                         ?>
