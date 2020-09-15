@@ -93,9 +93,11 @@ class WebinarsController extends Controller
                     'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
                     'd2.image',
                     'd2.image_location',
+                    'd3.designation',
                 ]);
                 $d->joinWith(['speakerEnc d1' => function ($d1) {
                     $d1->joinWith(['userEnc d2']);
+                    $d1->joinWith(['designationEnc d3']);
                 }],false);
                 $d->andWhere(['d.is_deleted' => 0]);
             }])
