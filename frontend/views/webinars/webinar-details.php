@@ -310,7 +310,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
-                                            <p><?= $v['description'] ?></p>
+                                            <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
                                         </div>
                                         <!--Info content end -->
                                     </div><!-- Slot info end -->
