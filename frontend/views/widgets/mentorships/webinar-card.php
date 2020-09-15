@@ -45,44 +45,6 @@ foreach ($webinars as $webinar) {
             </div>
 
             <div class="new-btns">
-                <div class="join-btn naam">
-                    <?php
-                    $dt = new \DateTime();
-                    $tz = new \DateTimeZone('Asia/Kolkata');
-                    $dt->setTimezone($tz);
-                    $current_time = $dt->format('Y-m-d H:i:s');
-                    $webinar_start_time = $webinar['start_datetime'];
-                    $btn_id = 'join_btn';
-                    $btnValue = 'Join Event';
-                    $s_id = $webinar['session_enc_id'];
-                    $w_id = $webinar['webinar_enc_id'];
-                    $chkRegisteration = \common\models\WebinarRegistrations::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id]);
-                    if ($current_time < $webinar_start_time) {
-                        if (!$chkRegisteration) {
-                            $btn_id = 'register_btn';
-                            $btnValue = 'Register';
-                        } else {
-                            $s_id = "";
-                        }
-                    } else {
-                        if (!$chkRegisteration) {
-                            $btnValue = 'Register & Join';
-                            $btn_id = 'register_join_btn';
-                        } else {
-                            $btnValue = 'Join Now';
-                        }
-                    }
-                    if(Yii::$app->user->isGuest){
-                        ?>
-                        <button data-toggle="modal" data-target="#loginModal"><?= $btnValue ?></button>
-                        <?php
-                    } else {
-                        ?>
-                        <button data-key="<?= $s_id ?>" data-id="<?= $w_id ?>" id="<?= $btn_id ?>" type="button"><?= $btnValue ?></button>
-                        <?php
-                    }
-                    ?>
-                </div>
                 <div class="detail-btn naam">
                     <button type="button" onclick="window.open('<?= Url::to($base_url.'/webinar/'.  $webinar['slug']); ?>', '_blank')">View Details</button>
                 </div>
@@ -177,11 +139,11 @@ $this->registerCss('
     font-family: roboto;
     text-align: center;
     display: -webkit-box;
-    -webkit-line-clamp: 9;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 241px;
-    height: 241px;
+    min-height: 80px;
+    height: 80px;
 }
 .webinar-icon > img {
     min-height: 150px;
