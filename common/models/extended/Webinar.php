@@ -134,8 +134,6 @@ class Webinar extends \common\models\Webinar
                         'd.speaker_enc_id',
                         'd1.user_enc_id',
                         'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
-                        'd2.image',
-                        'd2.image_location',
                         'CASE WHEN d2.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d2.image_location, "/", d2.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d2.first_name, "&size=200&rounded=false&background=", REPLACE(d2.initials_color, "#", ""), "&color=ffffff") END image'
                     ]);
                     $d->joinWith(['speakerEnc d1' => function ($d1) {
