@@ -1470,7 +1470,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 var ptoken = callback.payment_token;
                 var payment_enc_id = callback.payment_enc_id;
                 var reg_id = callback.registration_enc_id;
-                console.log(ptoken);
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
@@ -1485,11 +1484,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
                     text: res.response.message,
                 });    
             }
-            
-            swal({
-                title: res.response.status,
-                text: res.response.message,
-            });
         }
     });
 });
