@@ -107,6 +107,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                    value="interested"><?= $btnName ?></a>
                             <?php } else {
+                                ?>
+                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Loading... </button>
+                                <?php
                                 if ((int)$webinar['price']) {
                                     $paymentStatus = WebinarPayments::find()
                                         ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
@@ -1460,10 +1463,16 @@ function countdown(e){
 };
 countdown('$time');
 $(document).on('click','#paidRegisterBtn',function(event){
+    var btn = $(this);
+    var demobtn = $('#loadingBtn');
     $.ajax({
         url: '/api/v3/webinar/request-payment',
         method: 'POST',
         data: {webinar_enc_id: webinar_id, created_by : user_id},
+        beforeSend: function(res) {
+            demobtn.show();
+            btn.hide();
+        },
         success: function(res) {
             if(res.response.status == "200"){
                 var callback = res.response.callback;
@@ -1473,12 +1482,16 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
+                    btn.show();
+                    demobtn.hide();
                     swal({
                         title:"Error",
                         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
                     });
                 }
             } else {
+                btn.show();
+                demobtn.hide();
                 swal({
                     title: "Error",
                     text: res.response.message,
