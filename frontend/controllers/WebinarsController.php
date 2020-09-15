@@ -98,7 +98,7 @@ class WebinarsController extends Controller
                 $d->joinWith(['speakerEnc d1' => function ($d1) {
                     $d1->joinWith(['userEnc d2']);
                     $d1->joinWith(['designationEnc d3']);
-                }],false);
+                }], false);
                 $d->andWhere(['d.is_deleted' => 0]);
             }])
             ->where(['a.webinar_enc_id' => $webinar['webinar_enc_id']])
@@ -120,7 +120,7 @@ class WebinarsController extends Controller
                     'a.designation_enc_id',
                     'b.designation',
                     'CONCAT(f.first_name, " ", f.last_name) fullname',
-                    'f.image', 'f.image_location',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE "' . Url::to('@eyAssets/images/pages/webinar/default-user.png') . '" END image',
                     'f.description',
                     'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
                     'c.logo org_logo', 'c.logo_location org_logo_location',
@@ -141,25 +141,7 @@ class WebinarsController extends Controller
                 ->groupBy('d.speaker_enc_id')
                 ->asArray()
                 ->all();
-            if ($assignSpeaker) {
-                array_walk($assignSpeaker, function (&$item) {
-                    if ($item['image']) {
-                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-                        if (file_exists($image_path)) {
-                            $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-                        }
-                    }
-                    $item['speaker_image'] = $image;
-                    $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                    if ($item['org_logo']) {
-                        $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
-                    }
-                    unset($item['image']);
-                    unset($item['image_location']);
-                    unset($item['org_logo']);
-                    unset($item['org_logo_location']);
-                });
-            }
+
             $outComes = WebinarOutcomes::find()
                 ->alias('z')
                 ->select(['z.webinar_enc_id', 'z.outcome_pool_enc_id', 'oe.name', 'oe.icon_location', 'oe.icon', 'oe.bg_colour'])
@@ -417,7 +399,7 @@ class WebinarsController extends Controller
                 'a.description',
                 'a1.start_datetime',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use($date_now){
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',

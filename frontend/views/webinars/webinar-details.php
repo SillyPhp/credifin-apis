@@ -297,18 +297,11 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
-                                        <a href="#">
-                                            <?php
-                                            $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                                            if ($v['image']) {
-                                                $image = Yii::$app->params->upload_directories->users->image . $v['image_location'] . DIRECTORY_SEPARATOR . $v['image'];
-                                            }
-                                            ?>
-                                            <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
+                                        <a href="javascript:;">
+                                            <img class="schedule-slot-speakers" src="<?= $v['image'] ?>" alt="<?= $v['webinarSpeakers'][0]['fullname'] ?>">
                                         </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
-                                                <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
                                             <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
                                         </div>
@@ -347,9 +340,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                 </div>
             </div><!-- row end-->
             <div class="row">
-                <?php foreach ($outComes
-
-                as $oc){ ?>
+                <?php foreach ($outComes as $oc){ ?>
                 <div class="col-lg-3 col-md-6 outcome-item">
                     <?php if ($oc['bg_colour']) {
                     $color_code = '#' . $oc['bg_colour'];
