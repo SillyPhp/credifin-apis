@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 ?>
 
-<section style="background:#8bbed5;padding: 80px 0 20px;">
+<section style="background:#102e3c;padding: 80px 0 20px;">
     <div class="container headsec">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
@@ -16,13 +16,6 @@ use yii\helpers\Url;
                 <div class="mentor-heading-set">
                     <h3 class="ment-up">WEBINARS</h3>
                     <p>Webinars to Broaden your career horizon. Introducing EmpowerYouth Masterclass, a Webinar series created to help you understand and immerse yourself in the latest career options.</p>
-<!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
-<!--                    <div class="search-box1">-->
-<!--                        <form action="--><?//= Url::to('#') ?><!--">-->
-<!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
-<!--                            <button type="submit"><i class="fas fa-search"></i></button>-->
-<!--                        </form>-->
-<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -52,7 +45,7 @@ $this->registerCss('
     margin-top: 80px !important;
 }
 .mentee-img{
-    width: 300px;
+    width: 350px;
     margin: auto;
 }
 .mentee-img img {

@@ -69,6 +69,10 @@ class WebinarsController extends Controller
 
     public function actionWebinarDetails($slug)
     {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $date_now = $dt->format('Y-m-d H:i:s');
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinarDetail = self::getWebianrDetails($slug);
         $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
@@ -98,12 +102,13 @@ class WebinarsController extends Controller
                 $d->joinWith(['speakerEnc d1' => function ($d1) {
                     $d1->joinWith(['userEnc d2']);
                     $d1->joinWith(['designationEnc d3']);
-                }],false);
+                }], false);
                 $d->andWhere(['d.is_deleted' => 0]);
             }])
             ->where(['a.webinar_enc_id' => $webinar['webinar_enc_id']])
             ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.start_datetime' => SORT_ASC])
+            ->groupBy(['a.event_enc_id'])
             ->asArray()
             ->all();
         $dateEvents = ArrayHelper::index($events, null, 'event_date');
@@ -171,7 +176,7 @@ class WebinarsController extends Controller
                 ->alias('z')
                 ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location'])
                 ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0])
+                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
                 ->andWhere(['not', ['c.image' => null]])
                 ->andWhere(['not', ['c.image' => '']])
                 ->limit(6)
@@ -185,16 +190,23 @@ class WebinarsController extends Controller
                 ->asArray()
                 ->all();
             $webResig = WebinarRegistrations::find()
-                ->where(['is_deleted' => 0, 'webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->where([
+                    'is_deleted' => 0,
+                    'webinar_enc_id' => $webinar['webinar_enc_id'],
+                    'created_by' => Yii::$app->user->identity->user_enc_id,
+                    'status' => 1,
+                ])
                 ->one();
-
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
+
             if ($webinar) {
                 $webinar_event = WebinarEvents::find()
                     ->select(['start_datetime'])
                     ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'status' => [0, 1]])
+                    ->andWhere(['>', "ADDDATE(start_datetime, INTERVAL duration MINUTE)", $date_now])
                     ->orderBy(['start_datetime' => SORT_ASC])
+                    ->groupBy('event_enc_id')
                     ->asArray()
                     ->one();
                 $webinar['start_datetime'] = $webinar_event['start_datetime'];
@@ -415,20 +427,22 @@ class WebinarsController extends Controller
                 'a.availability',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
-                'a1.start_datetime',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use($date_now){
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
+                    'a1.event_enc_id',
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',
                     'a1.title',
                     'a1.start_datetime',
                     'a1.duration',
+                    "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
+                    'a1.created_on',
                 ]);
-                $a1->joinWith(['sessionEnc e']);
+                $a1->joinWith(['sessionEnc e'], false);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);
-                $a1->andWhere(['>', 'a1.start_datetime', $date_now]);
+                $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
                 $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
             }])
             ->joinWith(['assignedWebinarTos b'], false)
@@ -445,6 +459,7 @@ class WebinarsController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['not', ['a.session_for' => 2]])
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->groupBy('a.webinar_enc_id')
             ->asArray()
             ->all();
         return $webinars;

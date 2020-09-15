@@ -16,11 +16,38 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$time = $webinar['start_datetime'];
-//$interest_status = $webResig['interest_status'];
+$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
+$registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-details.png');
+$keywords = $webinar['title'];
+$description = $webinar['description'];
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
@@ -32,6 +59,72 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         <div class="title-main">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
+                <div class="register-btn">
+                    <?php
+                    $btnName = 'Register Now';
+                    if (Yii::$app->user->isGuest) {
+                        ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
+                           value="interested"><?= $btnName ?></a>
+                    <?php } else {
+                        ?>
+                        <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register">
+                            Processing <i class="fas fa-spinner fa-spin"></i>
+                        </button>
+                        <?php
+                        if ($registeration_status == 1) {
+                            ?>
+                            <button class="ra-btn"
+                                    data-type="register" id=""
+                                    data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                    value="registered"> Registered
+                            </button>
+                            <?php
+                        } else {
+                            if ((int)$webinar['price']) {
+                                $paymentStatus = WebinarPayments::find()
+                                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
+                                        'created_by' => $user_id])
+                                    ->andWhere([
+                                        'or',
+                                        ['payment_status' => 'captured'],
+                                        ['payment_status' => 'created']
+                                    ])
+                                    ->asArray()
+                                    ->one();
+                                if (empty($paymentStatus)) {
+                                    ?>
+                                    <button class="ra-btn"
+                                            data-type="register" id="paidRegisterBtn"
+                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="registered"><?= $btnName ?>
+                                    </button>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <button class="ra-btn"
+                                            data-type="register" id=""
+                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                            value="registered"> Registered
+                                    </button>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                            } else {
+                                ?>
+                                <button class="ra-btn registered"
+                                        data-type="register" id="registerBtn"
+                                        data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                        value="registered"><?= $btnName ?>
+                                </button>
+                                <?php
+                            }
+                        }
+                        ?>
+                    <?php }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
@@ -92,61 +185,11 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="flex-use">
-                    <div class="col-md-7 mx-auto">
+                <div class="">
+                    <div class="col-md-12 mx-auto">
                         <h2 class="section-title loc-set">
                             Webinar Details
                         </h2>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="register-btn">
-                            <?php
-                            $btnName = 'Register';
-                            if (Yii::$app->user->isGuest) {
-                                ?>
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                   value="interested"><?= $btnName ?></a>
-                            <?php } else {
-                                ?>
-                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Loading... </button>
-                                <?php
-                                if ((int)$webinar['price']) {
-                                    $paymentStatus = WebinarPayments::find()
-                                        ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
-                                        ->asArray()
-                                        ->one();
-                                    if ($paymentStatus['payment_status'] != 'captured') {
-                                        ?>
-                                        <button class="ra-btn"
-                                                data-type="register" id="paidRegisterBtn"
-                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                                value="registered"><?= $btnName ?>
-                                        </button>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <button class="ra-btn"
-                                                data-type="register" id=""
-                                                data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                                value="registered"> Registered
-                                        </button>
-                                        <?php
-                                    }
-                                    ?>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <button class="ra-btn registered"
-                                            data-type="register" id="registerBtn"
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"><?= $btnName ?>
-                                    </button>
-                                    <?php
-                                }
-                                ?>
-                            <?php }
-                            ?>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -167,7 +210,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
-                            <p><i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price'])?ceil($webinar['price']):"Free" ?></p>
+                            <p>
+                                <i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price']) ? ceil($webinar['price']) : "Free" ?>
+                            </p>
                         </div>
                         <div class="flex2">
                             <?php Pjax::begin(['id' => 'webinar_registations']); ?>
@@ -237,7 +282,105 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </div>
 </div>
 <!-- sharing widget end -->
+<!-- ts speaker start-->
+<section id="ts-speakers" class="ts-speakers speaker-classic">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Listen to the</span>
+                    Event Speakers
+                </h2>
+            </div><!-- col end-->
+        </div><!-- row end-->
+        <div class="row">
+            <?php if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker as $as) {
+            $designation = ucwords($designation);
+            ?>
+            <div class="col-lg-3 col-md-6">
+                <div class="ts-speaker open-sp-modal">
+                    <div class="speaker-img">
+                        <?php if ($as['speaker_image']) { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
+                        <?php } else { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
+                        <?php } ?>
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
+                           data-effect="mfp-zoom-in">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <div class="ts-speaker-info">
+                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
+                        <p>
+                            <?php if ($designation) { ?>
+                                <?= $designation ?>
+                            <?php } ?>
+                        </p>
+                    </div>
+                </div>
+                <!-- popup start-->
+                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
+                    <div class="row">
+                        <div class="speaker-flex">
+                            <?php
+                            if ($as['speaker_image']) {
+                                $image = $as['speaker_image'];
+                            } else {
+                                $image = $as['speaker_image_fake'];
+                            }
+                            ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
 
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($designation) { ?>
+                                        <span class="speakder-designation"><?= $designation ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a
+                                            href="https://twitter.com/<?= $as['twitter'] ?>"
+                                            target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
+                    </div><!-- row end-->
+                </div><!-- popup end-->
+            </div>
+            <?php }
+            } ?><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
+<!-- ts speaker end-->
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -245,7 +388,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
             <div class="col-lg-12 mx-auto">
                 <h2 class="section-title text-center">
                     <span>Schedule Details</span>
-                    Event Schedules
+                    Event Schedule
                 </h2>
                 <div class="ts-schedule-nav">
                     <ul class="nav nav-tabs justify-content-center" role="tablist">
@@ -293,15 +436,17 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 <div class="schedule-listing">
                                     <div class="schedule-slot-time">
                                         <!--                                                <span> 07.30 - 11.30 PM</span>-->
-                                        <span><?= date('H:i A', strtotime($v['event_time'])) ?> - <?= date('H:i A', strtotime($v['endtime'])) ?></span>
+                                        <span><?= date('h:i A', strtotime($v['event_time'])) ?> - <?= date('h:i A', strtotime($v['endtime'])) ?></span>
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
                                         <a href="#">
                                             <?php
                                             $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                                            if ($v['image']) {
-                                                $image = Yii::$app->params->upload_directories->users->image . $v['image_location'] . DIRECTORY_SEPARATOR . $v['image'];
+                                            $speaker_icon = $v['webinarSpeakers'][0]['image'];
+                                            $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
+                                            if ($speaker_icon) {
+                                                $image = Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
                                             }
                                             ?>
                                             <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
@@ -310,7 +455,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
-                                            <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
+                                            <p><?= ucwords($v['webinarSpeakers'][0]['designation']) ?></p>
                                         </div>
                                         <!--Info content end -->
                                     </div><!-- Slot info end -->
@@ -330,10 +475,6 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
-
-<!-- ts speaker start-->
-
-<!-- ts speaker end-->
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
@@ -356,18 +497,22 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
                     <div class="ts-single-outcome"
-                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
                         <?php } else {
                         $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
                         <div class="ts-single-outcome"
-                             style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
+                             style="background: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                <div class="out-img">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                </div>
                             <?php } else { ?>
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                                <div class="out-img">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                                </div>
                             <?php } ?>
                             <h3 class="ts-title"><?= $oc['name'] ?></h3>
                         </div><!-- single outcome end-->
@@ -579,7 +724,12 @@ $this->registerCss('
     justify-content: flex-end;
     align-items: center;
 }
-.register-btn{text-align:right;}
+.register-btn{text-align:center;}
+.register-btn .ra-btn {
+    width: 200px;
+    height: 50px;
+    font-size:18px;
+}
 .register-btn a {
     font-size: 16px;
     height: 40px;
@@ -659,6 +809,7 @@ transform: rotate(100deg);
     flex: inherit;
     max-width: 100%;
     width: 90% !important;
+    min-height:50vh;
 }
 }
 .ask-people{
@@ -984,25 +1135,36 @@ transform: rotate(100deg);
 }
 
 .ts-single-outcome {
-  text-align: center;
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -ms-border-radius: 50%;
-  width: 250px;
-  height: 250px;
-//  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-//  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-//  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
-  -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
-  box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
-  padding: 55px 0;
-  -o-transition: all 0.4s ease;
-  transition: all 0.4s ease;
-  -webkit-transition: all 0.4s ease;
-  -moz-transition: all 0.4s ease;
-  -ms-transition: all 0.4s ease;
-  margin-bottom: 30px;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -ms-border-radius: 50%;
+    width: 250px;
+    height: 250px;
+    // background-image: -webkit-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
+    // background-image: -o-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
+    // background-image: linear-gradient(110deg, #FC6076 0%, #FF9A44 100%);
+    -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
+    padding: 55px 0;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    -webkit-transition: all 0.4s ease;
+    -moz-transition: all 0.4s ease;
+    -ms-transition: all 0.4s ease;
+    margin-bottom: 30px !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    margin: auto;
 }
+.out-img {
+    width: 80px;
+    height: 80px;
+    margin: auto;
+}
+
 .ts-single-outcome i {
     font-size: 80px;
     color: #fff;
@@ -1227,25 +1389,18 @@ a:link, a:visited {
 }
 
 .element-percent {
-    background: #00a0e3b8;
+    background:#5e6a6fb8;
     width: 100%;
     margin: 0 auto;
-//    padding-left: 12%;
     height: 90vh;
     display: inline-block;
-//    -webkit-clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 100%);
-//    clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center
+    padding-top: 28vh;
 }
-
 .element-percent h1 {
     color: #fff;
     font-weight: 700;
-    max-width: 70%;
+    text-align: center;
 }
-
 .webinar-description, .sidebar {
 //    padding-top: 30px;
 }
@@ -1472,7 +1627,7 @@ $(document).on('click','#paidRegisterBtn',function(event){
         beforeSend: function(res) {
             demobtn.show();
             btn.hide();
-        },
+        },  
         success: function(res) {
             if(res.response.status == "200"){
                 var callback = res.response.callback;
@@ -1482,21 +1637,19 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
-                    btn.show();
-                    demobtn.hide();
                     swal({
                         title:"Error",
                         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
                     });
                 }
             } else {
-                btn.show();
-                demobtn.hide();
                 swal({
                     title: "Error",
                     text: res.response.message,
                 });    
             }
+            btn.show();
+            demobtn.hide();
         }
     });
 });

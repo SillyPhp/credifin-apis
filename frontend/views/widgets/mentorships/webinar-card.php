@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 $base_url = Url::base('https');
 foreach ($webinars as $webinar) {
-    $start_time = $webinar['start_datetime'];
+    $start_time = $webinar['webinarEvents'][0]['start_datetime'];
     ?>
     <div class="col-md-4">
         <div class="webinar-box">
@@ -11,8 +11,8 @@ foreach ($webinars as $webinar) {
                 <img src="<?= Url::to('@eyAssets/images/pages/jobs/default-cover.png') ?>">
             </div>
             <div class="web-date">
-                <span class="cont"><?= date('d', strtotime($webinar['start_datetime'])) ?></span>
-                <span class="abs"><?= date('F', strtotime($webinar['start_datetime'])) ?></span>
+                <span class="cont"><?= date('d', strtotime($start_time)) ?></span>
+                <span class="abs"><?= date('F', strtotime($start_time)) ?></span>
             </div>
             <div class="webinar-details">
                 <div class="webinar-title"><?= $webinar['title'] ?></div>
@@ -139,11 +139,11 @@ $this->registerCss('
     font-family: roboto;
     text-align: center;
     display: -webkit-box;
-    -webkit-line-clamp: 9;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 241px;
-    height: 241px;
+    min-height: 80px;
+    height: 80px;
 }
 .webinar-icon > img {
     min-height: 150px;
