@@ -16,7 +16,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$time = $webinar['start_datetime'];
+$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
