@@ -229,7 +229,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= count($webinarRegistrations) ?></span>
+                                    <p><span><?= (300 + count($webinarRegistrations)) ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
