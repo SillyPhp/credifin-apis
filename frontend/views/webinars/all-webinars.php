@@ -15,14 +15,7 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                 <div class="mentor-heading-set">
                     <h3 class="ment-up">WEBINARS</h3>
-                    <p>Empoweryouth introduces the webinar feature to broaden your career horizon. An exclusively designed webinar series created to help you understand and immerse yourself in different career options. Let us help you convert your passions into reality and your ideas into successful businesses.</p>
-<!--                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>-->
-<!--                    <div class="search-box1">-->
-<!--                        <form action="--><?//= Url::to('#') ?><!--">-->
-<!--                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">-->
-<!--                            <button type="submit"><i class="fas fa-search"></i></button>-->
-<!--                        </form>-->
-<!--                    </div>-->
+                    <p>Webinars to Broaden your career horizon. Introducing EmpowerYouth Masterclass, a Webinar series created to help you understand and immerse yourself in the latest career options.</p>
                 </div>
             </div>
         </div>
