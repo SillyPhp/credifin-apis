@@ -108,7 +108,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                    value="interested"><?= $btnName ?></a>
                             <?php } else {
                                 ?>
-                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Loading... </button>
+                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register">
+                                    Loading...
+                                </button>
                                 <?php
                                 if ((int)$webinar['price']) {
                                     $paymentStatus = WebinarPayments::find()
@@ -167,7 +169,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
-                            <p><i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price'])?ceil($webinar['price']):"Free" ?></p>
+                            <p>
+                                <i class="fas fa-rupee-sign"></i> <?= ((int)$webinar['price']) ? ceil($webinar['price']) : "Free" ?>
+                            </p>
                         </div>
                         <div class="flex2">
                             <?php Pjax::begin(['id' => 'webinar_registations']); ?>
@@ -365,9 +369,13 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                              style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                <div class="out-img">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                </div>
                             <?php } else { ?>
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                                <div class="out-img">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                                </div>
                             <?php } ?>
                             <h3 class="ts-title"><?= $oc['name'] ?></h3>
                         </div><!-- single outcome end-->
@@ -424,6 +432,11 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.out-img {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
 .ts-schedule-nav {
   text-align: center;
   margin-bottom: 90px;

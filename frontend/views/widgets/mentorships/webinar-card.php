@@ -139,11 +139,11 @@ $this->registerCss('
     font-family: roboto;
     text-align: center;
     display: -webkit-box;
-    -webkit-line-clamp: 9;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 241px;
-    height: 241px;
+    min-height: 80px;
+    height: 80px;
 }
 .webinar-icon > img {
     min-height: 150px;
