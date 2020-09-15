@@ -702,7 +702,7 @@ class CandhomeController extends ApiBaseController
                 $i = 0;
                 foreach ($webinar as $w) {
                     $registered_count = WebinarRegistrations::find()
-                        ->where(['is_deleted' => 0, 'webinar_enc_id' => $w['webinar_enc_id']])
+                        ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
                     $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
@@ -821,7 +821,7 @@ class CandhomeController extends ApiBaseController
     private function userRegistered($webinar_id, $user_id)
     {
         return WebinarRegistrations::find()
-            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'is_deleted' => 0])
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1, 'is_deleted' => 0])
             ->exists();
     }
 
