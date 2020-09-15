@@ -56,6 +56,8 @@ class WebinarsController extends ApiBaseController
 
     public function actionSpeakers()
     {
+        $params = Yii::$app->request->post();
+
         $webSpeaker = Speakers::find()
             ->distinct()
             ->alias('a')
@@ -78,8 +80,11 @@ class WebinarsController extends ApiBaseController
                 $d->select(['d.speaker_enc_id', 'd.skill_enc_id', 'e.skill']);
                 $d->joinWith(['skillEnc e'], false);
             }])
-            ->joinWith(['userEnc f'], false)
-            ->orderBy(['a.created_on' => SORT_DESC])
+            ->joinWith(['userEnc f'], false);
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $webSpeaker->limit($params['limit']);
+        }
+        $webSpeaker = $webSpeaker->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
