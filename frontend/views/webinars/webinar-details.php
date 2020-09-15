@@ -298,7 +298,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                     </div>
                                     <div class="schedule-slot-info">
                                         <a href="javascript:;">
-                                            <img class="schedule-slot-speakers" src="<?= $v['image'] ?>" alt="<?= $v['webinarSpeakers'][0]['fullname'] ?>">
+                                            <img class="schedule-slot-speakers" src="<?= $v[0]['image'] ?>" alt="<?= $v['webinarSpeakers'][0]['fullname'] ?>">
                                         </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>

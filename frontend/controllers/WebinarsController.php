@@ -141,7 +141,6 @@ class WebinarsController extends Controller
                 ->groupBy('d.speaker_enc_id')
                 ->asArray()
                 ->all();
-
             $outComes = WebinarOutcomes::find()
                 ->alias('z')
                 ->select(['z.webinar_enc_id', 'z.outcome_pool_enc_id', 'oe.name', 'oe.icon_location', 'oe.icon', 'oe.bg_colour'])
