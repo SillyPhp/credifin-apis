@@ -370,7 +370,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
                                 </div>
                             <?php } else { ?>
                                 <div class="out-img">
