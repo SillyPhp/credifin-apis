@@ -25,7 +25,7 @@ Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . 
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
-<script id="context" type="text/javascript" src="<?= $url; ?>"></script>
+<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
     <div class="full-width-light"
          style="">
