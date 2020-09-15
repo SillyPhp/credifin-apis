@@ -107,6 +107,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                    value="interested"><?= $btnName ?></a>
                             <?php } else {
+                                ?>
+                                <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register"> Loading... </button>
+                                <?php
                                 if ((int)$webinar['price']) {
                                     $paymentStatus = WebinarPayments::find()
                                         ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])
@@ -307,7 +310,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
-                                            <p><?= $v['description'] ?></p>
+                                            <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
                                         </div>
                                         <!--Info content end -->
                                     </div><!-- Slot info end -->
@@ -362,7 +365,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                              style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
                             <?php } else { ?>
                                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
                             <?php } ?>
@@ -1460,36 +1463,40 @@ function countdown(e){
 };
 countdown('$time');
 $(document).on('click','#paidRegisterBtn',function(event){
+    var btn = $(this);
+    var demobtn = $('#loadingBtn');
     $.ajax({
-        url: 'https://www.sneh.eygb.me/api/v3/webinar/request-payment',
+        url: '/api/v3/webinar/request-payment',
         method: 'POST',
         data: {webinar_enc_id: webinar_id, created_by : user_id},
+        beforeSend: function(res) {
+            demobtn.show();
+            btn.hide();
+        },
         success: function(res) {
             if(res.response.status == "200"){
                 var callback = res.response.callback;
                 var ptoken = callback.payment_token;
                 var payment_enc_id = callback.payment_enc_id;
                 var reg_id = callback.registration_enc_id;
-                console.log(ptoken);
                 if (ptoken!=null || ptoken !=""){
                     processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
                 } else{
+                    btn.show();
+                    demobtn.hide();
                     swal({
                         title:"Error",
                         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
                     });
                 }
             } else {
+                btn.show();
+                demobtn.hide();
                 swal({
                     title: "Error",
                     text: res.response.message,
                 });    
             }
-            
-            swal({
-                title: res.response.status,
-                text: res.response.message,
-            });
         }
     });
 });
@@ -1574,7 +1581,7 @@ function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
 function updateStatus(payment_enc_id, payment_id, status,reg_id)
 {
     $.ajax({
-            url : 'https://www.sneh.eygb.me/api/v3/webinar/update-status',
+            url : '/api/v3/webinar/update-status',
             method : 'POST', 
             data : {
               payment_status:status,

@@ -111,7 +111,7 @@ class Webinar extends \common\models\Webinar
                     'e.webinar_enc_id',
                     'e1.name',
                     'e1.bg_colour',
-                    'e1.icon'
+                    'CASE WHEN e1.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon, 'https') . '", e1.icon_location, "/", e1.icon) ELSE "' . Url::to('@eyAssets/images/pages/webinar/default-outcome.png', 'https') . '" END icon'
                 ]);
                 $e->joinWith(['outcomePoolEnc e1'], false);
             }])
@@ -138,7 +138,7 @@ class Webinar extends \common\models\Webinar
                     ]);
                     $d->joinWith(['speakerEnc d1' => function ($d1) {
                         $d1->joinWith(['userEnc d2']);
-                    }],false);
+                    }], false);
                     $d->andWhere(['d.is_deleted' => 0]);
                 }])
                 ->where(['a.webinar_enc_id' => $webinar_detail['webinar_enc_id']])
