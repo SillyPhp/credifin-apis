@@ -365,7 +365,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                              style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 136%)">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
                             <?php } else { ?>
                                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
                             <?php } ?>
