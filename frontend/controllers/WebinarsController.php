@@ -11,6 +11,7 @@ use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\WebinarSpeakers;
+use frontend\models\webinars\webinarFunctions;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -74,6 +75,7 @@ class WebinarsController extends Controller
         $dt->setTimezone($tz);
         $date_now = $dt->format('Y-m-d H:i:s');
         $user_id = Yii::$app->user->identity->user_enc_id;
+        $model = new webinarFunctions();
         $webinarDetail = self::getWebianrDetails($slug);
         $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
@@ -172,23 +174,8 @@ class WebinarsController extends Controller
                 ->where(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->asArray()
                 ->all();
-            $register = WebinarRegistrations::find()
-                ->alias('z')
-                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location'])
-                ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
-                ->andWhere(['not', ['c.image' => null]])
-                ->andWhere(['not', ['c.image' => '']])
-                ->limit(6)
-                ->asArray()
-                ->all();
-            $webinarRegistrations = WebinarRegistrations::find()
-                ->alias('z')
-                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by'])
-                ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
-                ->asArray()
-                ->all();
+            $register = $model->getRegisteration($webinar['webinar_enc_id']);
+            $webinarRegistrations = $model->getWebinarRegisteration($webinar['webinar_enc_id']);
             $webResig = WebinarRegistrations::find()
                 ->where([
                     'is_deleted' => 0,
@@ -404,7 +391,6 @@ class WebinarsController extends Controller
     public function actionIndex()
     {
         $webinars = self::getWebinars();
-
         return $this->render('all-webinars', [
             'webinars' => $webinars,
         ]);
