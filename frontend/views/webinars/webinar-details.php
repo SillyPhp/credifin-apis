@@ -298,10 +298,17 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                     </div>
                                     <div class="schedule-slot-info">
                                         <a href="javascript:;">
-                                            <img class="schedule-slot-speakers" src="<?= $v[0]['image'] ?>" alt="<?= $v['webinarSpeakers'][0]['fullname'] ?>">
+                                            <?php
+                                            $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                                            if ($v['image']) {
+                                                $image = Yii::$app->params->upload_directories->users->image . $v['image_location'] . DIRECTORY_SEPARATOR . $v['image'];
+                                            }
+                                            ?>
+                                            <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
                                         </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
+                                                <!--                                                <strong>@ Fredric Martinsson</strong>-->
                                             </h3>
                                             <p><?= $v['webinarSpeakers'][0]['designation'] ?></p>
                                         </div>
