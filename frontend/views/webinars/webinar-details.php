@@ -1461,7 +1461,7 @@ function countdown(e){
 countdown('$time');
 $(document).on('click','#paidRegisterBtn',function(event){
     $.ajax({
-        url: 'https://www.sneh.eygb.me/api/v3/webinar/request-payment',
+        url: '/api/v3/webinar/request-payment',
         method: 'POST',
         data: {webinar_enc_id: webinar_id, created_by : user_id},
         success: function(res) {
@@ -1574,7 +1574,7 @@ function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
 function updateStatus(payment_enc_id, payment_id, status,reg_id)
 {
     $.ajax({
-            url : 'https://www.sneh.eygb.me/api/v3/webinar/update-status',
+            url : '/api/v3/webinar/update-status',
             method : 'POST', 
             data : {
               payment_status:status,
