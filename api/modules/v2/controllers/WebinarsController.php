@@ -13,6 +13,7 @@ use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
+use common\models\Utilities;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\auth\HttpBearerAuth;
