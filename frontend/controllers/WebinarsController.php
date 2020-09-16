@@ -176,7 +176,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionRegistration()
+    public function actionRecordInterest()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -211,6 +211,51 @@ class WebinarsController extends Controller
                     'title' => 'error',
                     'message' => 'something went wrong'
                 ];
+            }
+        }
+    }
+
+    public function actionRegistration()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $uid = Yii::$app->user->identity->user_enc_id;
+            $wid = Yii::$app->request->post('wid');
+            $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
+            if ($model->status == 1) {
+                return [
+                    'status' => 203,
+                    'title' => 'Message',
+                    'message' => 'You already registered..'
+                ];
+            } else {
+                if (!empty($model)) {
+                    $model->is_deleted = 0;
+                    $model->last_updated_by = $uid;
+                    $model->last_updated_on = date('Y-m-d H:i:s');
+                } else {
+                    $model = new WebinarRegistrations();
+                    $utilitiesModel = new  \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->register_enc_id = $utilitiesModel->encrypt();
+                    $model->webinar_enc_id = $wid;
+                    $model->created_by = $uid;
+                    $model->created_on = date('Y-m-d H:i:s');
+                }
+                $model->status = 1;
+                if ($model->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Registered Successfully',
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'error',
+                        'message' => 'something went wrong, Please try after sometime..'
+                    ];
+                }
             }
         }
     }

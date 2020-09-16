@@ -52,6 +52,7 @@ $this->params['seo_tags'] = [
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -60,43 +61,31 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         <div class="title-main">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
-                <div class="register-btn">
+                <div class="register-btn" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
                     if (Yii::$app->user->isGuest) {
                         ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                           value="interested"><?= $btnName ?></a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                           class="ra-btn"><?= $btnName ?></a>
                     <?php } else {
                         ?>
-                        <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register">
+                        <button id="loadingBtn" style="display: none" class="ra-btn">
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
                         if ($registeration_status == 1) {
                             ?>
-                            <button class="ra-btn"
-                                    data-type="register" id=""
-                                    data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                    value="registered"> Registered
-                            </button>
+                            <button class="ra-btn">Registered</button>
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
                                 ?>
-                                <button class="ra-btn"
-                                        data-type="register" id="paidRegisterBtn"
-                                        data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                        value="not registered"><?= $btnName ?>
-                                </button>
+                                <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
                                 <?php
                             } else {
                                 ?>
-                                <button class="ra-btn registered"
-                                        data-type="register" id="registerBtn"
-                                        data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                        value="registered"><?= $btnName ?>
-                                </button>
+                                <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
                                 <?php
                             }
                         }
@@ -185,7 +174,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <p>
                                 <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($recentEvent['start_datetime'])) ?>
                             </p>
-                            <p><i class="far fa-clock"></i> <?= date('h:i A', strtotime($recentEvent['start_datetime'])) ?>
+                            <p>
+                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($recentEvent['start_datetime'])) ?>
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
@@ -224,15 +214,15 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                 <?php } else { ?>
-                                    <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="1">Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="2">Not Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="3">Attending
                                     </button>
@@ -518,22 +508,31 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
                         <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
                     </ul>
-                    <div class="text-center">
+                    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
+                    <div class="text-center" v-if="userType === 'Individual'">
                         <?php
-                            if($user_id){
+                        if ($user_id) {
+                            if ($registeration_status == 1) {
                                 ?>
-                                <button onclick="registerEvent()" class="vc-ra-btn" id="register3"
-                                        :data-key="detail.webinar_enc_id">Join Webinar to know more
-                                </button>
-                        <?php
+                                <button class="vc-ra-btn">Joined</button>
+                                <?php
                             } else {
                                 ?>
-                                <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
-                                   value="interested">Join Webinar to know more</button>
-                        <?php
+                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
+                                <?php
                             }
+                            ?>
+                            <?php
+                        } else {
+                            ?>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
+                                Join Webinar to learn more
+                            </button>
+                            <?php
+                        }
                         ?>
                     </div>
+                    <?php Pjax::end(); ?>
                 </div><!-- book seat end-->
             </div><!-- col end-->
             <div class="col-md-6 ts-book-seat second">
@@ -1759,7 +1758,7 @@ $(document).on('click','#paidRegisterBtn',function(event){
         url: '/api/v3/webinar/request-payment',
         method: 'POST',
         data: {webinar_enc_id: webinar_id, created_by : user_id},
-        beforeSend: function(res) {
+        beforeSend: function() {
             demobtn.show();
             btn.hide();
         },  
@@ -1785,39 +1784,84 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-        }
-    });
-});
-$(document).on('click','.registered',function(event){
-    event.preventDefault();
-     var btn = $(this);
-     var web_id = btn.attr('data-key');
-     var value = btn.attr('value');
-    $.ajax({
-        url: '/webinars/registration',
-        type: 'POST',
-        data: {wid: web_id,value: value},
-        success:function(res){
-            toastr.success('Registered Successfully..', 'Success');
+            $.pjax.reload({container: '#webinar_join_registations', async: false});
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
 });
-   $('.ts-image-popup').magnificPopup({
-      type: 'inline',
-      closeOnContentClick: false,
-      midClick: true,
-      callbacks: {
-         beforeOpen: function () {
-            this.st.mainClass = this.st.el.attr('data-effect');
-         }
-      },
-      zoom: {
-         enabled: true,
-         duration: 500, // don't foget to change the duration also in CSS
-      },
-      mainClass: 'mfp-fade',
-   });
+$(document).on('click','.interestBtn',function(event){
+    event.preventDefault();
+     var btn = $(this);
+     var value = btn.attr('value');
+     if(value != interest_status){
+        $.ajax({
+            url: '/webinars/record-interest',
+            type: 'POST',
+            data: {wid: webinar_id,value: value},
+            beforeSend:function(){
+                $("button.interestBtn").attr("disabled","disabled");  
+            },
+            success:function(res){
+                if(res.status == 200){
+                    toastr.success(res.message, res.title);
+                } else {
+                    toastr.error(res.message, res.title);
+                }
+                $("button.interestBtn").attr("disabled",false);  
+            }
+        });
+        interest_status = value;
+     } else {
+        toastr.info('Message', 'Already Updated..');
+     }
+});
+$(document).on('click','#registerBtn',function(event){
+    event.preventDefault();
+     var btn = $(this);
+     var demobtn = $('#loadingBtn');
+    $.ajax({
+        url: '/webinars/registration',
+        type: 'POST',
+        data: {wid: webinar_id},
+        beforeSend: function() {
+            demobtn.show();
+            btn.hide();
+        },
+        success:function(res){
+            btn.show();
+            demobtn.hide();
+            switch (res.status) {
+                case 200 :
+                    toastr.success(res.message, res.title);
+                    btn.text("Registered");
+                    btn.attr("id","");
+                    break;
+                case 203 :
+                    toastr.info(res.message, res.title);
+                    break;
+                default :
+                    toastr.error(res.message, res.title);
+            }
+            $.pjax.reload({container: '#webinar_join_registations', async: false});
+            $.pjax.reload({container: '#webinar_registations', async: false});
+        }
+    });
+});
+$('.ts-image-popup').magnificPopup({
+  type: 'inline',
+  closeOnContentClick: false,
+  midClick: true,
+  callbacks: {
+     beforeOpen: function () {
+        this.st.mainClass = this.st.el.attr('data-effect');
+     }
+  },
+  zoom: {
+     enabled: true,
+     duration: 500, // don't foget to change the duration also in CSS
+  },
+  mainClass: 'mfp-fade',
+});
 $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
 });  
@@ -1889,6 +1933,11 @@ function updateStatus(payment_enc_id, payment_id, status,reg_id)
             
     })
 }
+
+$(document).on("click","#joinRegisterBtn", function() {
+    $('#registerEventSection').find('button:visible').click();
+});
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
