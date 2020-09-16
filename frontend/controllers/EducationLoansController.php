@@ -2,12 +2,14 @@
 
 namespace frontend\controllers;
 
+use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
+use frontend\models\applications\LeadsForm;
 use frontend\models\EducationalLoans;
 use Yii;
 use yii\helpers\Url;
@@ -75,5 +77,26 @@ class EducationLoansController extends Controller
     public function actionLoanCollegeIndex()
     {
         return $this->render('loan-college-index');
+    }
+
+    public function actionLeads()
+    {
+        $this->layout = 'main-secondary';
+        $model = new LeadsForm();
+        $options = ['source'=>3,'datatype'=>0,'type'=>['College']];
+        $data = OrganizationList::get($options);
+        if ($model->load(Yii::$app->request->post())){
+            $session = Yii::$app->session;
+            $session->set('app_number', '');
+            if ($model->save())
+            {
+                Yii::$app->session->setFlash('success', 'Success');
+            }else{
+                Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
+            }
+            return $this->refresh();
+        }else{
+            return $this->render('leads-form',['model'=>$model,'data'=>$data]);
+        }
     }
 }
