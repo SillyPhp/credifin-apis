@@ -1780,7 +1780,11 @@ $(document).on('click','.registered',function(event){
         type: 'POST',
         data: {wid: web_id,value: value},
         success:function(res){
-            toastr.success('Registered Successfully..', 'Success');
+            if(res.status == 200){
+                toastr.success(res.message, res.title);
+            } else {
+                toastr.error(res.message, res.title);
+            }
             $.pjax.reload({container: '#webinar_registations', async: false});
         }
     });
