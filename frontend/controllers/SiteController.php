@@ -112,7 +112,10 @@ class SiteController extends Controller
             return $this->render('auth-varify',['credentialsSetup'=>$credentialsSetup]);
         }
         else{
-            return $this->redirect('/');
+            if (!Yii::$app->session->has("backURL")) {
+                Yii::$app->session->set("backURL", Yii::$app->request->referrer);
+            }
+            return $this->redirect(Yii::$app->session->get("backURL"));
         }
     }
     public function actionPostCredentials()
@@ -122,7 +125,10 @@ class SiteController extends Controller
         {
          if ($credentialsSetup->save())
          {
-             return $this->redirect('/');
+             if (!Yii::$app->session->has("backURL")) {
+                 Yii::$app->session->set("backURL", Yii::$app->request->referrer);
+             }
+             return $this->redirect(Yii::$app->session->get("backURL"));
          }
         }
     }
