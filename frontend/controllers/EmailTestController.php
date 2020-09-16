@@ -49,13 +49,12 @@ class EmailTestController extends Controller
     public function actionSendGrid()
     {
         $email = new Mail();
-        $email->setFrom("test@example.com", "Example User");
+        $email->setFrom("tarandeep@empoweryouth.com", "Tarandeep Singh");
         $email->setSubject("Sending with Twilio SendGrid for testing");
         $emails = [
             "ravindersani15697@gmail.com" => "Ravinder singh",
             "ravindersinghsaini48@gmail.com" => "Tony",
             "ajayjuneja52@gmail.coim" => "Ajay Juneja",
-            "tarandeep@empoweryouth.com" => "Tarandeep Singh"
         ];
         $email->addTos($emails);
         $email->addContent(
