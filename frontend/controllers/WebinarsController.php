@@ -165,17 +165,6 @@ class WebinarsController extends Controller
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
 
-//            if ($webinar) {
-//                $webinar_event = WebinarEvents::find()
-//                    ->select(['start_datetime'])
-//                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'status' => [0, 1]])
-//                    ->andWhere(['>', "ADDDATE(start_datetime, INTERVAL duration MINUTE)", $date_now])
-//                    ->orderBy(['start_datetime' => SORT_ASC])
-//                    ->groupBy('event_enc_id')
-//                    ->asArray()
-//                    ->one();
-//                $webinar['start_datetime'] = $webinar_event['start_datetime'];
-//            }
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
                 'assignSpeaker' => $assignSpeaker,
