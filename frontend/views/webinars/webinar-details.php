@@ -503,10 +503,10 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
 <?php } ?>
 <!-- ts intro end-->
 <!-- ts VC start-->
-<section class="ts-book-seat">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
+<section>
+    <div class="container-fluid">
+        <div class="row md-flex">
+            <div class="col-md-6 ts-book-seat">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/>
@@ -519,12 +519,12 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
                         <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
                     </ul>
-                    <div class="text-center" v-if="userType === 'Individual'">
+                    <div class="text-center">
                         <?php
                             if($user_id){
                                 ?>
                                 <button onclick="registerEvent()" class="vc-ra-btn" id="register3" v-on:click="registerWebinar($event)"
-                                        :data-key="detail.webinar_enc_id" v-if="!detail.is_registered">Join Webinar to learn more
+                                        :data-key="detail.webinar_enc_id">Join Webinar to learn more
                                 </button>
                         <?php
                             } else {
@@ -537,16 +537,10 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     </div>
                 </div><!-- book seat end-->
             </div><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
-</section>
-
-<section class="ts-book-seat second">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
+            <div class="col-md-6 ts-book-seat second">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/>
                         <span>Hurry up!</span>
                         Redbull Basement<br/><br/>
                         Redbull Basement Competition is also inviting applications for startup ideas that are creative and unique.
@@ -819,6 +813,11 @@ transform: rotate(100deg);
 .dis-flex p i{
     color: #00a0e3;
     padding-right: 5px;
+}
+@media screen and (min-width: 991px){
+    .md-flex{
+        display:flex;
+    }
 }
 @media screen and (max-width: 768px){
     .dis-flex p{
@@ -1605,7 +1604,7 @@ div.icon span {
   background-size: cover;
   background-position: center center;
   position: relative;
-  padding: 100px 0;
+  padding: 40px 0;
 }
 .ts-book-seat:before {
   position: absolute;
@@ -1635,9 +1634,12 @@ div.icon span {
 .ts-book-seat .book-seat-content .section-title {
   margin-bottom: 40px;
   font-size: 24px;
+  max-width:600px;
+  margin:auto;
 }
 .ts-book-seat .book-seat-content .section-title span{
   margin-top: 15px;
+  color:#fff;
 }
 .ts-book-seat .book-seat-content p {
   color: #fff;
@@ -1654,6 +1656,9 @@ div.icon span {
   color: #fff;
   margin-bottom: 20px;
 }
+.section-title img {
+    max-height: 80px;
+}
 .section-list{
   color: #fff;
   text-align: left;
@@ -1666,9 +1671,12 @@ div.icon span {
   font-size: 16px;
 }
 .ts-book-seat.second {
-  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/redbull1.png") . ');
+  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/redbull.png") . ');
 }
 @media (max-width: 767px) {
+.section-list{
+    padding:10px 30px;
+}
 .schedule-listing {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
