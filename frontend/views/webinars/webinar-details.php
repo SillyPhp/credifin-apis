@@ -395,7 +395,6 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <!-- Tab panes -->
                 </div>
             </div><!-- col end-->
-
         </div><!-- row end-->
         <div class="row">
             <div class="col-lg-12">
@@ -523,14 +522,14 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                         <?php
                             if($user_id){
                                 ?>
-                                <button onclick="registerEvent()" class="vc-ra-btn" id="register3" v-on:click="registerWebinar($event)"
-                                        :data-key="detail.webinar_enc_id">Join Webinar to learn more
+                                <button onclick="registerEvent()" class="vc-ra-btn" id="register3"
+                                        :data-key="detail.webinar_enc_id">Join Webinar to know more
                                 </button>
                         <?php
                             } else {
                                 ?>
                                 <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
-                                   value="interested">Join Webinar to learn more</button>
+                                   value="interested">Join Webinar to know more</button>
                         <?php
                             }
                         ?>
@@ -542,9 +541,25 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <h3 class="section-title white">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/>
                         <span>Hurry up!</span>
-                        Redbull Basement<br/><br/>
-                        Redbull Basement Competition is also inviting applications for startup ideas that are creative and unique.
+                        Red Bull Basement<br/><br/>
+                        Red Bull Basement University is where students come to innovate, collaborate, and drive change on campus through DIY-based technological solutions.
                     </h3>
+                    <div class="text-center">
+                        <?php
+                        if($user_id){
+                            ?>
+                            <button onclick="registerEvent()" class="vc-ra-btn" id="register3"
+                                    :data-key="detail.webinar_enc_id">Join Webinar to know more
+                            </button>
+                            <?php
+                        } else {
+                            ?>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
+                                    value="interested">Join Webinar to know more</button>
+                            <?php
+                        }
+                        ?>
+                    </div>
                 </div><!-- book seat end-->
             </div><!-- col end-->
         </div><!-- row end-->
