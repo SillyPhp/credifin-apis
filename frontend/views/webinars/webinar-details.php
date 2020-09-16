@@ -52,6 +52,7 @@ $this->params['seo_tags'] = [
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -213,15 +214,15 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                 <?php } else { ?>
-                                    <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="1">Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="2">Not Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="3">Attending
                                     </button>
@@ -1770,24 +1771,31 @@ $(document).on('click','#paidRegisterBtn',function(event){
         }
     });
 });
-$(document).on('click','.registered',function(event){
+$(document).on('click','.interestBtn',function(event){
     event.preventDefault();
      var btn = $(this);
-     var web_id = btn.attr('data-key');
      var value = btn.attr('value');
-    $.ajax({
-        url: '/webinars/record-interest',
-        type: 'POST',
-        data: {wid: web_id,value: value},
-        success:function(res){
-            if(res.status == 200){
-                toastr.success(res.message, res.title);
-            } else {
-                toastr.error(res.message, res.title);
+     if(value != interest_status){
+        $.ajax({
+            url: '/webinars/record-interest',
+            type: 'POST',
+            data: {wid: webinar_id,value: value},
+            beforeSend:function(){
+                $("button.interestBtn").attr("disabled","disabled");  
+            },
+            success:function(res){
+                if(res.status == 200){
+                    toastr.success(res.message, res.title);
+                } else {
+                    toastr.error(res.message, res.title);
+                }
+                $("button.interestBtn").attr("disabled",false);  
             }
-            $.pjax.reload({container: '#webinar_registations', async: false});
-        }
-    });
+        });
+        interest_status = value;
+     } else {
+        toastr.info('Message', 'Already Updated..');
+     }
 });
 $(document).on('click','#registerBtn',function(event){
     event.preventDefault();
