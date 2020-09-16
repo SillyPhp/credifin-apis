@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
 
 <section style="background:#102e3c;padding: 80px 0 20px;">
@@ -15,7 +16,8 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                 <div class="mentor-heading-set">
                     <h3 class="ment-up">WEBINARS</h3>
-                    <p>Webinars to Broaden your career horizon. Introducing EmpowerYouth Masterclass, a Webinar series created to help you understand and immerse yourself in the latest career options.</p>
+                    <p>Webinars to Broaden your career horizon. Introducing EmpowerYouth Masterclass, a Webinar series
+                        created to help you understand and immerse yourself in the latest career options.</p>
                 </div>
             </div>
         </div>
@@ -25,8 +27,8 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card',[
-                    'webinars'=>$webinars,
+            <?= $this->render('/widgets/mentorships/webinar-card', [
+                'webinars' => $webinars,
             ]) ?>
         </div>
     </div>
@@ -139,11 +141,11 @@ $this->registerJS($script);
 ?>
 <script>
     let demoBtn = document.querySelectorAll('.mentor-demo button');
-    for (let i=0; i<demoBtn.length; i++){
-        demoBtn[i].addEventListener('mouseover', function(e){
+    for (let i = 0; i < demoBtn.length; i++) {
+        demoBtn[i].addEventListener('mouseover', function (e) {
             e.currentTarget.innerHTML = 'Apply For Demo';
         })
-        demoBtn[i].addEventListener('mouseleave', function(e){
+        demoBtn[i].addEventListener('mouseleave', function (e) {
             e.currentTarget.innerHTML = 'Demo Available';
         })
     }
