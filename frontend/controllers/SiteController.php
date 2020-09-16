@@ -109,7 +109,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
-            return $this->redirect(Yii::$app->request->referrer);
+            return $this->redirect('/');
         }
     }
 
