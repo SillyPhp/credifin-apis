@@ -69,8 +69,8 @@ class MentorsController extends Controller
     public function actionAllMentors()
     {
         $webinars = self::getWebianrs($id);
-        return $this->render('all-mentors',[
-            'webinars' =>$webinars,
+        return $this->render('all-mentors', [
+            'webinars' => $webinars,
         ]);
     }
 
@@ -78,6 +78,7 @@ class MentorsController extends Controller
     {
         return $this->render('scool-mentorship');
     }
+
     private function timeDifference($start_time, $date)
     {
         $datetime = new \DateTime();
@@ -87,11 +88,12 @@ class MentorsController extends Controller
         $seconds = strtotime($date . $start_time) - strtotime($time1);
         return $seconds;
     }
+
     public function actionWebinarDetails($id)
     {
         if (!Yii::$app->user->isGuest) {
             $webinar = Webinars::find()
-                ->select(['webinar_enc_id', 'session_enc_id','status', 'title', 'start_datetime', 'description', 'seats'])
+                ->select(['webinar_enc_id', 'session_enc_id', 'status', 'title', 'start_datetime', 'description', 'seats'])
                 ->where(['webinar_enc_id' => $id])
                 ->asArray()
                 ->one();
@@ -174,23 +176,25 @@ class MentorsController extends Controller
         } else {
             return $this->redirect('/login');
         }
-            return $this->render('webinar-details', [
-                'webinar' => $webinar,
-                'assignSpeaker' => $assignSpeaker,
-                'outComes' => $outComes,
-                'register' => $register,
-                'webinarRegistrations' => $webinarRegistrations,
-                'webResig' => $webResig,
-            ]);
+        return $this->render('webinar-details', [
+            'webinar' => $webinar,
+            'assignSpeaker' => $assignSpeaker,
+            'outComes' => $outComes,
+            'register' => $register,
+            'webinarRegistrations' => $webinarRegistrations,
+            'webResig' => $webResig,
+        ]);
     }
-    public function actionWebinarRegistation(){
-        if(Yii::$app->request->isAjax){
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $uid = Yii::$app->user->identity->user_enc_id;
-        $wid = Yii::$app->request->post('wid');
-        $value = Yii::$app->request->post('value');
-        $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid,'created_by' => $uid]);
-            if(!empty($model)) {
+
+    public function actionWebinarRegistation()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $uid = Yii::$app->user->identity->user_enc_id;
+            $wid = Yii::$app->request->post('wid');
+            $value = Yii::$app->request->post('value');
+            $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
+            if (!empty($model)) {
                 switch ($value) {
                     case 'interested':
                         $model->interest_status = 1;
@@ -236,7 +240,7 @@ class MentorsController extends Controller
                 $register->status = 0;
                 $register->created_by = $uid;
                 $register->created_on = date('Y-m-d H:i:s');
-                if($register->save()){
+                if ($register->save()) {
                     return [
                         'status' => 200,
                         'title' => 'success',
@@ -277,14 +281,8 @@ class MentorsController extends Controller
         $type = 'multi-stream';
         $webinarDetail = self::getWebianrDetails($id);
         $webinars = self::getWebianrs($id);
-        $speakerUserIds = [];
-        foreach ($webinarDetail['webinarEvents'] as $event) {
-            if ($event['webinarSpeakers']) {
-                foreach ($event['webinarSpeakers'] as $speaker) {
-                    array_push($speakerUserIds, $speaker['user_enc_id']);
-                }
-            }
-        }
+        $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
+        $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
             return $this->render('webinar-view', [
                 'type' => $type,
@@ -402,19 +400,6 @@ class MentorsController extends Controller
             ->asArray()
             ->one();
         return $webinar;
-
-
-//            if ($webinar) {
-//                $webinar_event = WebinarEvents::find()
-//                    ->select(['start_datetime'])
-//                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'status' => [0, 1]])
-//                    ->andWhere(['>', "ADDDATE(start_datetime, INTERVAL duration MINUTE)", $date_now])
-//                    ->orderBy(['start_datetime' => SORT_ASC])
-//                    ->groupBy('event_enc_id')
-//                    ->asArray()
-//                    ->one();
-//                $webinar['start_datetime'] = $webinar_event['start_datetime'];
-//            }
     }
 
     private function getWebianrs($id = null)
@@ -541,7 +526,7 @@ class MentorsController extends Controller
                     }
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                    if($item['org_logo']){
+                    if ($item['org_logo']) {
                         $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
                     }
                     unset($item['image']);

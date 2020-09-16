@@ -77,14 +77,8 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug);
-        $speakerUserIds = [];
-        foreach ($webinar['webinarEvents'] as $event) {
-            if ($event['webinarSpeakers']) {
-                foreach ($event['webinarSpeakers'] as $speaker) {
-                    array_push($speakerUserIds, $speaker['user_enc_id']);
-                }
-            }
-        }
+        $speakers = $webinar['webinarEvents'][0]['webinarSpeakers'];
+        $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
             $share_link = 'live';
         } else {
