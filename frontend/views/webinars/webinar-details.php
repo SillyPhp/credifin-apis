@@ -16,7 +16,9 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
+$recentEvent = $webinar['webinarEvents'][0];
+//$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
+$time = date('Y/m/d H:i:s', strtotime($recentEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
@@ -82,34 +84,12 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                $paymentStatus = WebinarPayments::find()
-                                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
-                                        'created_by' => $user_id])
-                                    ->andWhere([
-                                        'or',
-                                        ['payment_status' => 'captured'],
-                                        ['payment_status' => 'created']
-                                    ])
-                                    ->asArray()
-                                    ->one();
-                                if (empty($paymentStatus)) {
-                                    ?>
-                                    <button class="ra-btn"
-                                            data-type="register" id="paidRegisterBtn"
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"><?= $btnName ?>
-                                    </button>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <button class="ra-btn"
-                                            data-type="register" id=""
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"> Registered
-                                    </button>
-                                    <?php
-                                }
                                 ?>
+                                <button class="ra-btn"
+                                        data-type="register" id="paidRegisterBtn"
+                                        data-key="<?= $webinar['webinar_enc_id'] ?>"
+                                        value="not registered"><?= $btnName ?>
+                                </button>
                                 <?php
                             } else {
                                 ?>
@@ -523,7 +503,24 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </section>
 <?php } ?>
 <!-- ts intro end-->
-<!-- ts sponsors start-->
+<!-- ts VC start-->
+<section class="ts-book-seat">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mx-auto">
+                <div class="book-seat-content text-center">
+                    <h3 class="section-title white">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/>
+                        <span>Hurry up!</span>
+                        Edupreneur Village (EV), an early-stage Venture Capital fund is accepting the applications of EdTech startups for funding till 1st November 2020<br/><br/>
+                        All the qualifying EdTech startups will get funding up to 25 lakh
+                    </h3>
+                    <button onclick="registerEvent()" class="ra-btn">Register Now</button>
+                </div><!-- book seat end-->
+            </div><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
 
 <?php
 function color_mod($hex, $diff)
@@ -1556,6 +1553,50 @@ div.icon span {
     transform: scale(1.05);
   box-shadow: 0px 2px 10px 3px #ddd;
 }
+.ts-book-seat {
+  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/funding1.png") . ');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  padding: 100px 0;
+}
+.ts-book-seat:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  content: \'\';
+  background: rgba(0, 0, 0, 0.5);
+}
+.ts-book-seat:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+//  background-image: url(../../../public/images/lines-2.png);
+  content: \'\';
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+}
+.ts-book-seat .book-seat-content {
+  position: relative;
+  z-index: 1;
+}
+.ts-book-seat .book-seat-content .section-title {
+  margin-bottom: 40px;
+  font-size: 24px;
+}
+.ts-book-seat .book-seat-content .section-title span{
+  margin-top: 15px;
+}
+.ts-book-seat .book-seat-content p {
+  color: #fff;
+  margin-bottom: 20px;
+}
 @media (max-width: 767px) {
 .schedule-listing {
     -webkit-box-orient: vertical;
@@ -1754,7 +1795,6 @@ function updateStatus(payment_enc_id, payment_id, status,reg_id)
             
     })
 }
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1778,5 +1818,9 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             clickId = event.currentTarget.getAttribute('id');
             clickedEle.classList.toggle('actionColor');
         })
+    }
+
+    function registerEvent() {
+        $('#paidRegisterBtn').click();
     }
 </script>
