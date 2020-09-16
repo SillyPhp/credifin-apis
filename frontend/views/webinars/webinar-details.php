@@ -506,15 +506,51 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
 <section class="ts-book-seat">
     <div class="container">
         <div class="row">
-            <div class="col-md-12 mx-auto">
-                <div class="book-seat-content text-center">
+            <div class="col-lg-12 mx-auto">
+                <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/>
                         <span>Hurry up!</span>
-                        Edupreneur Village (EV), an early-stage Venture Capital fund is accepting the applications of EdTech startups for funding till 1st November 2020<br/><br/>
-                        All the qualifying EdTech startups will get funding up to 25 lakh
+                        Edupreneur Village Challenge 2.0<br/><br/>
                     </h3>
-                    <button onclick="registerEvent()" class="ra-btn">Register Now</button>
+                    <ul class="section-list">
+                        <li>For EdTech startups at an ideation / Validation stage</li>
+                        <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
+                        <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
+                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
+                    </ul>
+                    <div class="text-center" v-if="userType === 'Individual'">
+                        <?php
+                            if($user_id){
+                                ?>
+                                <button onclick="registerEvent()" class="vc-ra-btn" id="register3" v-on:click="registerWebinar($event)"
+                                        :data-key="detail.webinar_enc_id" v-if="!detail.is_registered">Join Webinar to learn more
+                                </button>
+                        <?php
+                            } else {
+                                ?>
+                                <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
+                                   value="interested">Join Webinar to learn more</button>
+                        <?php
+                            }
+                        ?>
+                    </div>
+                </div><!-- book seat end-->
+            </div><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
+
+<section class="ts-book-seat second">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <div class="book-seat-content text-center mb-100">
+                    <h3 class="section-title white">
+                        <span>Hurry up!</span>
+                        Redbull Basement<br/><br/>
+                        Redbull Basement Competition is also inviting applications for startup ideas that are creative and unique.
+                    </h3>
                 </div><!-- book seat end-->
             </div><!-- col end-->
         </div><!-- row end-->
@@ -1351,6 +1387,17 @@ a:link, a:visited {
     border: none;
     margin:5px 5px;
 }
+.vc-ra-btn{
+    font-size: 14px;
+    height: 40px;
+    padding: 0 15px;
+    /* width: 150px; */
+    line-height: 40px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin: 5px 5px;
+}
 .ra-btn:hover{
     box-shadow: 0 6px 8px rgba(0,0,0,.2);
     transition: .3s ease;
@@ -1595,6 +1642,31 @@ div.icon span {
 .ts-book-seat .book-seat-content p {
   color: #fff;
   margin-bottom: 20px;
+}
+.ts-book-seat .book-seat-content .section-title {
+  margin-bottom: 0px;
+  font-size: 28px;
+}
+.ts-book-seat .book-seat-content .section-title span{
+  margin-top: 15px;
+}
+.ts-book-seat .book-seat-content p {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.section-list{
+  color: #fff;
+  text-align: left;
+  line-height: 20px;
+  max-width: 600px;
+  margin: auto;
+  list-style: disc;
+}
+.section-list li{
+  font-size: 16px;
+}
+.ts-book-seat.second {
+  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/redbull1.png") . ');
 }
 @media (max-width: 767px) {
 .schedule-listing {
