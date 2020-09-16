@@ -17,7 +17,6 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
     }
 }
 $recentEvent = $webinar['webinarEvents'][0];
-//$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
 $time = date('Y/m/d H:i:s', strtotime($recentEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
@@ -184,9 +183,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <div class="sidebar text-center">
                         <div class="dis-flex">
                             <p>
-                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($webinar['start_datetime'])) ?>
+                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($recentEvent['start_datetime'])) ?>
                             </p>
-                            <p><i class="far fa-clock"></i> <?= date('h:i A', strtotime($webinar['start_datetime'])) ?>
+                            <p><i class="far fa-clock"></i> <?= date('h:i A', strtotime($recentEvent['start_datetime'])) ?>
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
