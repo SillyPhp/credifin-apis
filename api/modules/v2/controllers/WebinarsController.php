@@ -9,6 +9,7 @@ use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarConversationMessages;
 use common\models\WebinarConversations;
+use common\models\WebinarEvents;
 use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
@@ -189,6 +190,7 @@ class WebinarsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $data = Yii::$app->request->post();
+            $webinar = WebinarEvents::findOne(['session_enc_id' => $data['session_enc_id']]);
             $conversation_id = WebinarConversations::find()
                 ->where(['webinar_enc_id' => $webinar->webinar_enc_id])
                 ->one();
@@ -218,7 +220,7 @@ class WebinarsController extends ApiBaseController
                     $conversation = new WebinarConversations();
                     $conversation->conversation_enc_id = $utilitiesModel->encrypt();
                     $conversation->conversation_type = 2;
-                    $conversation->webinar_enc_id = $webinar->webinar_enc_id;
+                    $conversation->webinar_event_enc_id = $webinar->event_enc_id;
                     $conversation->created_by = Yii::$app->user->identity->user_enc_id;
                     $conversation->created_on = date('Y-m-d H:i:s');
                     if (!$conversation->save()) {
@@ -262,33 +264,19 @@ class WebinarsController extends ApiBaseController
                 ->where(['session_enc_id' => $session_enc_id])
                 ->one();
 
-            $webinar = Webinars::find()
-                ->distinct()
+            $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select([
-                    'a.webinar_enc_id',
-                    'a.title',
-                ])
-                ->joinWith(['webinarSpeakers c' => function ($bb) {
-                    $bb->select([
-                        'c.webinar_enc_id',
-                        'c.speaker_enc_id',
-                        'CONCAT(cc1.first_name," ",cc1.last_name) full_name',
+                ->select(['a.event_enc_id'])
+                ->joinWith(['webinarSpeakers b' => function ($b) {
+                    $b->select(['b.webinar_event_enc_id',
+                        'b.speaker_enc_id',
+                        'CONCAT(d.first_name," ",d.last_name) full_name'
                     ]);
-                    $bb->joinWith(['speakerEnc c1' => function ($c1) {
-                        $c1->select(['c1.speaker_enc_id']);
-                        $c1->joinWith(['userEnc cc1'], false);
-                        $c1->joinWith(['designationEnc c2' => function ($c2) {
-                            $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
-                        }], false);
-                        $c1->onCondition(['c1.is_deleted' => 0]);
-                    }]);
-                    $bb->onCondition(['c.is_deleted' => 0]);
+                    $b->joinWith(['speakerEnc c' => function ($c) {
+                        $c->joinWith(['userEnc d']);
+                    }], false);
                 }])
-                ->where([
-                    'a.is_deleted' => 0,
-                    'a.session_enc_id' => $session_enc_id
-                ])
+                ->where(['a.is_deleted' => 0, 'a.session_enc_id' => $session_enc_id])
                 ->asArray()
                 ->one();
 

@@ -141,7 +141,7 @@ class Webinar extends \common\models\Webinar
                 ->count();
 
             $events = WebinarEvents::find()
-                ->select(["DATE_FORMAT(start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime"])
+                ->select(["DATE_FORMAT(start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'session_enc_id'])
                 ->where(['webinar_enc_id' => $webinar_detail['webinar_enc_id'], 'status' => [0, 1]])
                 ->orderBy(['start_datetime' => SORT_ASC])
                 ->asArray()
