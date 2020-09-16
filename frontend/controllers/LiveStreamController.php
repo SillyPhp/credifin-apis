@@ -79,7 +79,7 @@ class LiveStreamController extends Controller
     {
         $data = WebinarSessions::findOne(['session_enc_id' => $id]);
         if (!$data->session_id) {
-            $data = $data->webinars;
+            $data = $data->webinarEvents;
             foreach ($data as $d) {
                 foreach ($d->webinarSpeakers as $speaker) {
                     $user_id = $speaker->speakerEnc->userEnc->user_enc_id;
