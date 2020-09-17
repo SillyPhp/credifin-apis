@@ -296,7 +296,7 @@ class WebinarsController extends ApiBaseController
                     ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
                         'created_by' => $user->user_enc_id,
                         'status' => 1,
-                        'id_deleted' => 0])
+                        'is_deleted' => 0])
                     ->one();
 
                 $price = Webinar::find()
