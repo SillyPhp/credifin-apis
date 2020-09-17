@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -81,19 +82,20 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         } else {
                             if ((int)$webinar['price']) {
                                 $r = \common\models\Referral::find()
-                                    ->where(['code'=>$refcode])
-                                    ->andWhere(['organization_enc_id'=>\common\models\Organizations::findOne(['slug'=>'dsbedutech'])])
+                                    ->where(['code' => $refcode])
+                                    ->andWhere(['organization_enc_id' => \common\models\Organizations::findOne(['slug' => 'dsbedutech'])])
                                     ->asArray()->one();
-                                if (!empty($r)){
+                                if (!empty($r)) {
                                     $refCount = \common\models\WebinarRegistrations::find()
-                                                ->andWhere(['referral_enc_id'=>$r['referral_enc_id'],'status'=>1])
-                                                ->count();
-                                    if ($refCount<=50){ ?>
+                                        ->andWhere(['referral_enc_id' => $r['referral_enc_id'], 'status' => 1])
+                                        ->count();
+                                    if ($refCount <= 50) { ?>
                                         <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                                  <?php  } else {?> <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
-                              <?php  }else{
-                                ?>
-                                <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
+                                    <?php } else { ?>
+                                        <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
+                                <?php } else {
+                                    ?>
+                                    <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
                                 <?php }
                             } else {
                                 ?>
@@ -210,7 +212,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= (300 + count($webinarRegistrations)) ?></span>
+                                    <p><span><?= (320 + count($webinarRegistrations)) ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -276,7 +278,9 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
         </div><!-- row end-->
         <div class="row">
             <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker as $as) {
+            foreach ($assignSpeaker
+
+            as $as) {
             $designation = ucwords($designation);
             ?>
             <div class="col-lg-3 col-md-6">
@@ -518,7 +522,9 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <li>For EdTech startups at an ideation / Validation stage</li>
                         <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
-                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
+                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification
+                            Program
+                        </li>
                     </ul>
                     <div class="text-center us-marg" v-if="userType === 'Individual'">
                         <?php
@@ -545,7 +551,8 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
-                        Red Bull Basement University is where students come to innovate, collaborate, and drive change on campus through DIY-based technological solutions.
+                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus
+                        through DIY-based technological solutions.
                     </h3>
                     <div class="text-center">
                         <?php
@@ -1624,18 +1631,9 @@ div.icon span {
   box-shadow: 0px 2px 10px 3px #ddd;
 }
 .ts-book-seat {
-   background-image:linear-gradient(110deg, rgb(255 143 68) 50%, #fff 143%);
+  background-image:linear-gradient(110deg, #FF7803 50%, #fff 143%);
   position: relative;
   padding: 40px 0;
-}
-.ts-book-seat:before {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  content: \'\';
-  background: rgba(0, 0, 0, 0.2);
 }
 .ts-book-seat:after {
   position: absolute;
@@ -1694,7 +1692,7 @@ div.icon span {
   font-size: 16px;
 }
 .ts-book-seat.second {
-  background:linear-gradient(110deg, #00A0E3 35%, #FFFFFF 120%);
+  background:#00008b;
 }
 @media (max-width: 767px) {
 .section-list{
