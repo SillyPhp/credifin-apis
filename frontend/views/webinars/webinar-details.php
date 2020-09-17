@@ -1884,16 +1884,24 @@ $(document).on('click','#joinBtn', function (e){
     var open_link = ths.attr('data-link');
     var id = ths.attr('data-id');
     var link = "/mentors/webinar-" + open_link + "?id=" + id;
-    if(registeration_status != ""){
-        // use is registered
-        if(typeof open_link !== "undefined" || typeof id !== "undefined"){
-            window.location.href = link;
-        } else {
-            toastr.error("Something went worng", "Undefined");
-        }
+    if(open_link == "live"){
+           if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
     } else {
-        // not registered
-        $('#registerEventSection').find('button:visible').click();
+        if(registeration_status != ""){
+            // use is registered
+            if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
+        } else {
+            // not registered
+            $('#registerEventSection').find('button:visible').click();
+        }   
     }
 });  
 
