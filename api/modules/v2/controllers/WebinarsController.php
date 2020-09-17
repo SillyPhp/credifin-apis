@@ -266,40 +266,82 @@ class WebinarsController extends ApiBaseController
 
             $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select(['a.event_enc_id'])
+                ->select(['a.event_enc_id', 'a.webinar_enc_id'])
                 ->joinWith(['webinarSpeakers b' => function ($b) {
                     $b->select(['b.webinar_event_enc_id',
                         'b.speaker_enc_id',
-                        'CONCAT(d.first_name," ",d.last_name) full_name'
+                        'CONCAT(d.first_name," ",d.last_name) full_name',
+                        'e.designation',
+                        'CASE WHEN d.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d.image_location, "/", d.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(d.first_name, " ", d.last_name), "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END image',
+                        'e.designation',
+                        'd.facebook',
+                        'd.twitter',
+                        'd.linkedin',
+                        'd.instagram',
+                        'REPLACE(f.name, "&amp;", "&") as org_name',
+                        'd.description',
+                        'CASE WHEN f.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", f.logo_location, "/", f.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f.name, "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END logo',
                     ]);
                     $b->joinWith(['speakerEnc c' => function ($c) {
                         $c->joinWith(['userEnc d']);
+                        $c->joinWith(['designationEnc e']);
+                        $c->joinWith(['unclaimedOrg f']);
                     }], false);
                 }])
                 ->where(['a.is_deleted' => 0, 'a.session_enc_id' => $session_enc_id])
                 ->asArray()
                 ->one();
 
-            $register_user = WebinarRegistrations::find()
-                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user->user_enc_id])
-                ->one();
+            if ($webinar) {
+                $register_user = WebinarRegistrations::find()
+                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
+                        'created_by' => $user->user_enc_id,
+                        'status' => 1,
+                        'id_deleted' => 0])
+                    ->one();
 
-            if ($register_user) {
-                $register_user->status = 1;
-                $register_user->last_updated_on = date('Y-m-d H:i:s');
-                $register_user->last_updated_by = $user->user_enc_id;
-                $register_user->update();
-            } else {
-                $model = new WebinarRegistrations();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->register_enc_id = $utilitiesModel->encrypt();
-                $model->webinar_enc_id = $webinar['webinar_enc_id'];
-                $model->status = 1;
-                $model->created_by = $user->user_enc_id;
-                $model->created_on = date('Y-m-d h:i:s');
-                $model->save();
+                $price = Webinar::find()
+                    ->select(['price'])
+                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                if ($register_user) {
+
+                } else {
+                    if ($price) {
+
+                    } else {
+                        $model = new WebinarRegistrations();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $model->register_enc_id = $utilitiesModel->encrypt();
+                        $model->webinar_enc_id = $webinar['webinar_enc_id'];
+                        $model->status = 1;
+                        $model->created_by = $user->user_enc_id;
+                        $model->created_on = date('Y-m-d h:i:s');
+                        $model->save();
+                    }
+                }
+
             }
+
+//            if ($register_user) {
+//                $register_user->status = 1;
+//                $register_user->last_updated_on = date('Y-m-d H:i:s');
+//                $register_user->last_updated_by = $user->user_enc_id;
+//                $register_user->update();
+//            } else {
+//                $model = new WebinarRegistrations();
+//                $utilitiesModel = new Utilities();
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $model->register_enc_id = $utilitiesModel->encrypt();
+//                $model->webinar_enc_id = $webinar['webinar_enc_id'];
+//                $model->status = 1;
+//                $model->created_by = $user->user_enc_id;
+//                $model->created_on = date('Y-m-d h:i:s');
+//                $model->save();
+//            }
 
             if ($validate_s_id->session_id) {
                 return $this->response(200, ['status' => 200, 'data' => $webinar]);
