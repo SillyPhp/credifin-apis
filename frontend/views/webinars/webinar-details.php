@@ -1794,7 +1794,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-            window.location.reload();
             // $.pjax.reload({container: '#webinar_join_registations', async: false});
             // $.pjax.reload({container: '#webinar_registations', async: false});
             // $.pjax.reload({container: '#webinar_join_link', async: false});
@@ -1847,14 +1846,15 @@ $(document).on('click','#registerBtn',function(event){
                     toastr.success(res.message, res.title);
                     btn.text("Registered");
                     btn.attr("id","");
+                    window.location.reload();
                     break;
                 case 203 :
                     toastr.info(res.message, res.title);
                     break;
                 default :
                     toastr.error(res.message, res.title);
+                    
             }
-            window.location.reload();
             // $.pjax.reload({container: '#webinar_join_registations', async: false});
             // $.pjax.reload({container: '#webinar_registations', async: false});
             // $.pjax.reload({container: '#webinar_join_link', async: false});
