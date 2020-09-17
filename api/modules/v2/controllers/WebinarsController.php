@@ -296,7 +296,7 @@ class WebinarsController extends ApiBaseController
                     ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
                         'created_by' => $user->user_enc_id,
                         'status' => 1,
-                        'id_deleted' => 0])
+                        'is_deleted' => 0])
                     ->one();
 
                 $price = Webinar::find()
@@ -306,10 +306,14 @@ class WebinarsController extends ApiBaseController
                     ->one();
 
                 if ($register_user) {
-
+                    if ($validate_s_id->session_id) {
+                        return $this->response(200, ['status' => 200, 'data' => $webinar]);
+                    } else {
+                        return $this->response(404, ['status' => 404, 'data' => $webinar]);
+                    }
                 } else {
-                    if ($price) {
-
+                    if ($price['price']) {
+                        return $this->response(409, ['status' => 409, 'message' => 'Register']);
                     } else {
                         $model = new WebinarRegistrations();
                         $utilitiesModel = new Utilities();
@@ -320,33 +324,16 @@ class WebinarsController extends ApiBaseController
                         $model->created_by = $user->user_enc_id;
                         $model->created_on = date('Y-m-d h:i:s');
                         $model->save();
+                        if ($validate_s_id->session_id) {
+                            return $this->response(200, ['status' => 200, 'data' => $webinar]);
+                        } else {
+                            return $this->response(404, ['status' => 404, 'data' => $webinar]);
+                        }
                     }
                 }
 
             }
 
-//            if ($register_user) {
-//                $register_user->status = 1;
-//                $register_user->last_updated_on = date('Y-m-d H:i:s');
-//                $register_user->last_updated_by = $user->user_enc_id;
-//                $register_user->update();
-//            } else {
-//                $model = new WebinarRegistrations();
-//                $utilitiesModel = new Utilities();
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $model->register_enc_id = $utilitiesModel->encrypt();
-//                $model->webinar_enc_id = $webinar['webinar_enc_id'];
-//                $model->status = 1;
-//                $model->created_by = $user->user_enc_id;
-//                $model->created_on = date('Y-m-d h:i:s');
-//                $model->save();
-//            }
-
-            if ($validate_s_id->session_id) {
-                return $this->response(200, ['status' => 200, 'data' => $webinar]);
-            } else {
-                return $this->response(404, ['status' => 404, 'data' => $webinar]);
-            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -378,6 +365,10 @@ class WebinarsController extends ApiBaseController
             $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
 
             if (!empty($webinar)) {
+                $registered_count = WebinarRegistrations::find()
+                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                    ->count();
+                $webinar['registered_count'] = $registered_count;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);

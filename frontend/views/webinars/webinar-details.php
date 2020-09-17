@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 if (Yii::$app->params->paymentGateways->mec->icici) {
@@ -15,8 +16,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$recentEvent = $webinar['webinarEvents'][0];
-$time = date('Y/m/d H:i:s', strtotime($recentEvent['start_datetime']));
+$time = date('Y/m/d H:i:s', strtotime($nextEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
@@ -126,7 +126,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $recentEvent['session_enc_id'] ?>">Click
+                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -184,10 +184,10 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                     <div class="sidebar text-center">
                         <div class="dis-flex">
                             <p>
-                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($recentEvent['start_datetime'])) ?>
+                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
                             <p>
-                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($recentEvent['start_datetime'])) ?>
+                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
@@ -505,13 +505,13 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
 <!-- ts intro end-->
 <!-- ts VC start-->
 <section>
+    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
     <div class="container-fluid">
         <div class="row md-flex">
             <div class="col-md-6 ts-book-seat">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/>
-                        <span>Hurry up!</span>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/><br>
                         Edupreneur Village Challenge 2.0<br/><br/>
                     </h3>
                     <ul class="section-list">
@@ -520,15 +520,10 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
                         <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
                     </ul>
-                    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
-                    <div class="text-center" v-if="userType === 'Individual'">
+                    <div class="text-center us-marg" v-if="userType === 'Individual'">
                         <?php
                         if ($user_id) {
-                            if ($registeration_status == 1) {
-                                ?>
-                                <button class="vc-ra-btn">Joined</button>
-                                <?php
-                            } else {
+                            if ($registeration_status != 1) {
                                 ?>
                                 <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
                                 <?php
@@ -544,29 +539,29 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         }
                         ?>
                     </div>
-                    <?php Pjax::end(); ?>
                 </div><!-- book seat end-->
             </div><!-- col end-->
             <div class="col-md-6 ts-book-seat second">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/>
-                        <span>Hurry up!</span>
-                        Red Bull Basement<br/><br/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
                         Red Bull Basement University is where students come to innovate, collaborate, and drive change on campus through DIY-based technological solutions.
                     </h3>
                     <div class="text-center">
                         <?php
-                        if($user_id){
+                        if ($user_id) {
+                            if ($registeration_status != 1) {
+                                ?>
+                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
+                                <?php
+                            }
                             ?>
-                            <button onclick="registerEvent()" class="vc-ra-btn" id="register3"
-                                    :data-key="detail.webinar_enc_id">Join Webinar to know more
-                            </button>
                             <?php
                         } else {
                             ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
-                                    value="interested">Join Webinar to know more</button>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
+                                Join Webinar to learn more
+                            </button>
                             <?php
                         }
                         ?>
@@ -575,6 +570,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
             </div><!-- col end-->
         </div><!-- row end-->
     </div><!-- container end-->
+    <?php Pjax::end(); ?>
 </section>
 
 <?php
@@ -621,6 +617,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.us-marg{
+    margin-top:2px;
+}
 .ts-schedule-nav {
   text-align: center;
   margin-bottom: 90px;
@@ -1625,10 +1624,7 @@ div.icon span {
   box-shadow: 0px 2px 10px 3px #ddd;
 }
 .ts-book-seat {
-  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/funding1.png") . ');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
+   background-image:linear-gradient(110deg, rgb(255 143 68) 50%, #fff 143%);
   position: relative;
   padding: 40px 0;
 }
@@ -1639,7 +1635,7 @@ div.icon span {
   width: 100%;
   height: 100%;
   content: \'\';
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
 }
 .ts-book-seat:after {
   position: absolute;
@@ -1684,6 +1680,7 @@ div.icon span {
 }
 .section-title img {
     max-height: 80px;
+    margin-bottom:20px;
 }
 .section-list{
   color: #fff;
@@ -1697,7 +1694,7 @@ div.icon span {
   font-size: 16px;
 }
 .ts-book-seat.second {
-  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/redbull.png") . ');
+  background:linear-gradient(110deg, #00A0E3 35%, #FFFFFF 120%);
 }
 @media (max-width: 767px) {
 .section-list{

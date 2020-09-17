@@ -2,15 +2,31 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+
 ?>
-<section class="non-a">
-    <div class="Card">
-        <div>
-            <h2>You are not Authorized Speaker</h2>
-            <a href="#">Join Webinar</a>
+    <section class="non-a">
+        <div class="Card">
+            <?php
+            switch ($type == 1) {
+                case 1:
+                    ?>
+                    <div>
+                        <h2>Webinar Finished</h2>
+                        <a href="/webinars">Explore More</a>
+                    </div>
+                    <?php
+                    break;
+                default :
+                    ?>
+                    <div>
+                        <h2>You are not Authorized Speaker</h2>
+                        <a href="#">Join Webinar</a>
+                    </div>
+                <?php
+            }
+            ?>
         </div>
-    </div>
-</section>
+    </section>
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss('

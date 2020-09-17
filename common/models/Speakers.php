@@ -1,5 +1,4 @@
 <?php
-
 namespace common\models;
 
 /**
@@ -10,9 +9,10 @@ namespace common\models;
  * @property string $user_enc_id
  * @property string $unclaimed_org_id
  * @property string $designation_enc_id
- * @property string $details
  * @property string $created_by
  * @property string $created_on
+ * @property string $updated_by
+ * @property string $updated_on
  * @property int $is_deleted 0 false,1 true
  *
  * @property SpeakerExpertises[] $speakerExpertises
@@ -20,6 +20,8 @@ namespace common\models;
  * @property Designations $designationEnc
  * @property UnclaimedOrganizations $unclaimedOrg
  * @property Users $userEnc
+ * @property Users $updatedBy
+ * @property WebinarModerators[] $webinarModerators
  * @property WebinarSpeakers[] $webinarSpeakers
  */
 class Speakers extends \yii\db\ActiveRecord
@@ -39,16 +41,18 @@ class Speakers extends \yii\db\ActiveRecord
     {
         return [
             [['speaker_enc_id', 'user_enc_id', 'created_by'], 'required'],
-            [['created_on'], 'safe'],
+            [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['speaker_enc_id', 'user_enc_id', 'unclaimed_org_id', 'designation_enc_id', 'details', 'created_by'], 'string', 'max' => 100],
+            [['speaker_enc_id', 'user_enc_id', 'unclaimed_org_id', 'designation_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['speaker_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
             [['unclaimed_org_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['unclaimed_org_id' => 'organization_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -88,6 +92,22 @@ class Speakers extends \yii\db\ActiveRecord
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarModerators()
+    {
+        return $this->hasMany(WebinarModerators::className(), ['speaker_enc_id' => 'speaker_enc_id']);
     }
 
     /**
