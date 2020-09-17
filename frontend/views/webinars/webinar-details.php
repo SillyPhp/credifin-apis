@@ -505,6 +505,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
 <!-- ts intro end-->
 <!-- ts VC start-->
 <section>
+    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
     <div class="container-fluid">
         <div class="row md-flex">
             <div class="col-md-6 ts-book-seat">
@@ -519,15 +520,10 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
                         <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
                     </ul>
-                    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
                     <div class="text-center us-marg" v-if="userType === 'Individual'">
                         <?php
                         if ($user_id) {
-                            if ($registeration_status == 1) {
-                                ?>
-                                <button class="vc-ra-btn">Joined</button>
-                                <?php
-                            } else {
+                            if ($registeration_status != 1) {
                                 ?>
                                 <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
                                 <?php
@@ -543,7 +539,6 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         }
                         ?>
                     </div>
-                    <?php Pjax::end(); ?>
                 </div><!-- book seat end-->
             </div><!-- col end-->
             <div class="col-md-6 ts-book-seat second">
@@ -554,16 +549,19 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                     </h3>
                     <div class="text-center">
                         <?php
-                        if($user_id){
+                        if ($user_id) {
+                            if ($registeration_status != 1) {
+                                ?>
+                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
+                                <?php
+                            }
                             ?>
-                            <button onclick="registerEvent()" class="vc-ra-btn" id="register3"
-                                    :data-key="detail.webinar_enc_id">Join Webinar to know more
-                            </button>
                             <?php
                         } else {
                             ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn"
-                                    value="interested">Join Webinar to know more</button>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
+                                Join Webinar to learn more
+                            </button>
                             <?php
                         }
                         ?>
@@ -572,6 +570,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
             </div><!-- col end-->
         </div><!-- row end-->
     </div><!-- container end-->
+    <?php Pjax::end(); ?>
 </section>
 
 <?php
