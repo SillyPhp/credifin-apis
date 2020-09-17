@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 if (Yii::$app->params->paymentGateways->mec->icici) {
@@ -15,8 +16,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$recentEvent = $webinar['webinarEvents'][0];
-$time = date('Y/m/d H:i:s', strtotime($recentEvent['start_datetime']));
+$time = date('Y/m/d H:i:s', strtotime($nextEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
@@ -126,7 +126,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $recentEvent['session_enc_id'] ?>">Click
+                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -184,10 +184,10 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                     <div class="sidebar text-center">
                         <div class="dis-flex">
                             <p>
-                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($recentEvent['start_datetime'])) ?>
+                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
                             <p>
-                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($recentEvent['start_datetime'])) ?>
+                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
