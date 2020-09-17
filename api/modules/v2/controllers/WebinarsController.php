@@ -365,6 +365,10 @@ class WebinarsController extends ApiBaseController
             $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
 
             if (!empty($webinar)) {
+                $registered_count = WebinarRegistrations::find()
+                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                    ->count();
+                $webinar['registered_count'] = $registered_count;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
