@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\VideoSessions;
+use common\models\Webinar;
 use common\models\WebinarEvents;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
@@ -52,7 +53,8 @@ class LiveStreamController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinar_id = WebinarEvents::findOne(['session_enc_id' => $id])['webinar_enc_id'];
         $chkRegistration = WebinarRegistrations::findOne(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1]);
-        if (empty($chkRegistration)) {
+        $webinar = Webinar::findOne(['webinar_enc_id' => $webinar_id]);
+        if (empty($chkRegistration) && !(int)$webinar->price) {
             self::webinarRegistration($user_id, $webinar_id);
         }
         $this->layout = 'blank-layout';
