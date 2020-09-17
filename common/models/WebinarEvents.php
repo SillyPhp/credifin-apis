@@ -1,5 +1,4 @@
 <?php
-
 namespace common\models;
 
 /**
@@ -27,7 +26,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Webinar $webinarEnc
  * @property WebinarSessions $sessionEnc
- * @property WebinarOutcomes[] $webinarOutcomes
+ * @property WebinarModerators[] $webinarModerators
  * @property WebinarSpeakers[] $webinarSpeakers
  */
 class WebinarEvents extends \yii\db\ActiveRecord
@@ -60,9 +59,6 @@ class WebinarEvents extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -107,9 +103,9 @@ class WebinarEvents extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWebinarOutcomes()
+    public function getWebinarModerators()
     {
-        return $this->hasMany(WebinarOutcomes::className(), ['webinar_event_enc_id' => 'event_enc_id']);
+        return $this->hasMany(WebinarModerators::className(), ['webinar_event_enc_id' => 'event_enc_id']);
     }
 
     /**
