@@ -1,9 +1,8 @@
 <?php
-
-use common\models\WebinarPayments;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
+$cookies_request = Yii::$app->request->cookies;
+$refcode = $cookies_request->get('ref_csrf-webinar');
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -53,6 +52,7 @@ Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . 
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -80,9 +80,21 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
+                                $r = \common\models\Referral::find()
+                                    ->where(['code'=>$refcode])
+                                    ->andWhere(['organization_enc_id'=>\common\models\Organizations::findOne(['slug'=>'dsbedutech'])])
+                                    ->asArray()->one();
+                                if (!empty($r)){
+                                    $refCount = \common\models\WebinarRegistrations::find()
+                                                ->andWhere(['referral_enc_id'=>$r['referral_enc_id'],'status'=>1])
+                                                ->count();
+                                    if ($refCount<=2){ ?>
+                                        <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
+                                  <?php  } else {?> <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
+                              <?php  }else{
                                 ?>
                                 <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                <?php
+                                <?php }
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -1822,7 +1834,7 @@ $(document).on('click','#registerBtn',function(event){
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
-        data: {wid: webinar_id},
+        data: {wid: webinar_id,refcode:refcode},
         beforeSend: function() {
             demobtn.show();
             btn.hide();

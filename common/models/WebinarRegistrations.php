@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-use Yii;
 
 /**
  * This is the model class for table "{{%webinar_registrations}}".
@@ -10,6 +7,7 @@ use Yii;
  * @property int $id Primary Key
  * @property string $register_enc_id Webinar Registration Encrypted Encrypted ID
  * @property string $webinar_enc_id
+ * @property string $referral_enc_id
  * @property int $status 0 as Pending 1 as Approved
  * @property string $created_on
  * @property string $created_by
@@ -21,6 +19,7 @@ use Yii;
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property Webinar $webinarEnc
+ * @property Referral $referralEnc
  */
 class WebinarRegistrations extends \yii\db\ActiveRecord
 {
@@ -41,14 +40,14 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
             [['register_enc_id', 'webinar_enc_id', 'created_by'], 'required'],
             [['status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['register_enc_id', 'webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['register_enc_id', 'webinar_enc_id', 'referral_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['register_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['webinar_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Webinar::className(), 'targetAttribute' => ['webinar_enc_id' => 'webinar_enc_id']],
+            [['referral_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Referral::className(), 'targetAttribute' => ['referral_enc_id' => 'referral_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -80,5 +79,13 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
     public function getWebinarEnc()
     {
         return $this->hasOne(Webinar::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferralEnc()
+    {
+        return $this->hasOne(Referral::className(), ['referral_enc_id' => 'referral_enc_id']);
     }
 }
