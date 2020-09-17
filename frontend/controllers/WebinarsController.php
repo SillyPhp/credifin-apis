@@ -80,6 +80,12 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
+        $nextEvent = $webinar['webinarEvents'][0];
+        if(empty($nextEvent)){
+            return $this->render('/mentors/non-authorized', [
+                'type' => 1
+            ]);
+        }
         $speakers = $webinar['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
@@ -174,6 +180,7 @@ class WebinarsController extends Controller
                 'user_id' => $user_id,
                 'userInterest' => $userInterest,
                 'dateEvents' => $dateEvents,
+                'nextEvent' => $nextEvent,
             ]);
         } else {
             return $this->redirect('/');
