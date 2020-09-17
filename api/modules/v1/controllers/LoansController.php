@@ -5,6 +5,7 @@ namespace api\modules\v1\controllers;
 
 
 use common\models\AssignedCollegeCourses;
+use common\models\Countries;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
@@ -21,7 +22,8 @@ class LoansController extends ApiBaseController
             'except' => [
                 'college-list',
                 'college-courses',
-                'fee-components'
+                'loan-purpose',
+                'country-list'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -30,7 +32,8 @@ class LoansController extends ApiBaseController
             'actions' => [
                 'college-list' => ['POST'],
                 'college-courses' => ['POST'],
-                'fee-components' => ['POST'],
+                'loan-purpose' => ['POST'],
+                'country-list' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -93,7 +96,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    public function actionFeeComponents()
+    public function actionLoanPurpose()
     {
 
         $params = Yii::$app->request->post();
@@ -124,5 +127,19 @@ class LoansController extends ApiBaseController
             return $this->response(404, 'not found');
         }
 
+    }
+
+    public function actionCountryList()
+    {
+        $countries = Countries::find()
+            ->select(['country_enc_id', 'name'])
+            ->asArray()
+            ->all();
+
+        if ($countries) {
+            return $this->response(200, $countries);
+        } else {
+            return $this->response(404, 'not found');
+        }
     }
 }
