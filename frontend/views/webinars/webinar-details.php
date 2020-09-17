@@ -54,6 +54,7 @@ Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -115,6 +116,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
     <div class="ts-count-down">
         <div class="container">
             <div class="row">
+                <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
                         <?php if ($status == 2) { ?>
@@ -128,7 +130,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $nextEvent['session_enc_id'] ?>">Click
+                                       href="javascript:;" data-link="<?= $share_link ?>" data-id="<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -160,6 +162,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <?php } ?>
                     </div>
                 </div>
+                <?php Pjax::end(); ?>
             </div>
         </div>
     </div>
@@ -807,7 +810,7 @@ display:none;
 }
 #joinBtn{
     font-size: 25px;
-    padding: 35px;
+    padding: 48px;
     display: block;
     text-align: center;
     color: #fff;
@@ -1791,8 +1794,10 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-            $.pjax.reload({container: '#webinar_join_registations', async: false});
-            $.pjax.reload({container: '#webinar_registations', async: false});
+            window.location.reload();
+            // $.pjax.reload({container: '#webinar_join_registations', async: false});
+            // $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1849,8 +1854,10 @@ $(document).on('click','#registerBtn',function(event){
                 default :
                     toastr.error(res.message, res.title);
             }
-            $.pjax.reload({container: '#webinar_join_registations', async: false});
-            $.pjax.reload({container: '#webinar_registations', async: false});
+            window.location.reload();
+            // $.pjax.reload({container: '#webinar_join_registations', async: false});
+            // $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1871,6 +1878,23 @@ $('.ts-image-popup').magnificPopup({
 });
 $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
+}); 
+$(document).on('click','#joinBtn', function (e){
+    var ths = $(this);
+    var open_link = ths.attr('data-link');
+    var id = ths.attr('data-id');
+    var link = "/mentors/webinar-" + open_link + "?id=" + id;
+    if(registeration_status != ""){
+        // use is registered
+        if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+            window.location.href = link;
+        } else {
+            toastr.error("Something went worng", "Undefined");
+        }
+    } else {
+        // not registered
+        $('#registerEventSection').find('button:visible').click();
+    }
 });  
 
 function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
