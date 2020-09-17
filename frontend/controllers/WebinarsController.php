@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use api\modules\v3\models\widgets\Referral;
+use common\models\User;
 use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarEvents;
@@ -68,8 +70,15 @@ class WebinarsController extends Controller
         ]);
     }
 
-    public function actionWebinarDetails($slug)
+    public function actionWebinarDetails($slug,$referral=null)
     {
+        if (!empty($referral)){
+            $cookies = Yii::$app->response->cookies;
+            $cookies->add(new \yii\web\Cookie([
+                'name' => 'ref_csrf-webinar',
+                'value' => $referral,
+            ]));
+        }
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -221,6 +230,7 @@ class WebinarsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $uid = Yii::$app->user->identity->user_enc_id;
             $wid = Yii::$app->request->post('wid');
+            $refcode = Yii::$app->request->post('refcode');
             $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
             if ($model->status == 1) {
                 return [
@@ -241,6 +251,13 @@ class WebinarsController extends Controller
                     $model->webinar_enc_id = $wid;
                     $model->created_by = $uid;
                     $model->created_on = date('Y-m-d H:i:s');
+                }
+                if (!empty($refcode))
+                {
+                    $refId = \common\models\Referral::findOne(['code'=>$refcode])->referral_enc_id;
+                    if ($refId){
+                        $model->referral_enc_id = $refId;
+                    }
                 }
                 $model->status = 1;
                 if ($model->save()) {
