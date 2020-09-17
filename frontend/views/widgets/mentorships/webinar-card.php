@@ -37,7 +37,7 @@ foreach ($webinars as $webinar) {
                 } ?>
                 <?php
                 if (!empty($webinarRegistrations)) { ?>
-                    <p><?= (300 + count($webinarRegistrations)) ?> People Registered</p>
+                    <p><?= (320 + count($webinarRegistrations)) ?> People Registered</p>
                 <?php }
                 ?>
             </div>
