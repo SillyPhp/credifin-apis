@@ -498,8 +498,7 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
             <div class="col-md-6 ts-book-seat">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/>
-                        <span>Hurry up!</span>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/><br>
                         Edupreneur Village Challenge 2.0<br/><br/>
                     </h3>
                     <ul class="section-list">
@@ -509,7 +508,7 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
                         <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
                     </ul>
                     <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
-                    <div class="text-center" v-if="userType === 'Individual'">
+                    <div class="text-center us-marg" v-if="userType === 'Individual'">
                         <?php
                         if ($user_id) {
                             if ($registeration_status == 1) {
@@ -538,9 +537,7 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
             <div class="col-md-6 ts-book-seat second">
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/>
-                        <span>Hurry up!</span>
-                        Red Bull Basement<br/><br/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
                         Red Bull Basement University is where students come to innovate, collaborate, and drive change on campus through DIY-based technological solutions.
                     </h3>
                     <div class="text-center">
@@ -609,6 +606,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.us-marg{
+    margin-top:2px;
+}
 .ts-schedule-nav {
   text-align: center;
   margin-bottom: 90px;
@@ -1613,10 +1613,7 @@ div.icon span {
   box-shadow: 0px 2px 10px 3px #ddd;
 }
 .ts-book-seat {
-  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/funding1.png") . ');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
+   background-image:linear-gradient(110deg, rgb(255 143 68) 50%, #fff 143%);
   position: relative;
   padding: 40px 0;
 }
@@ -1627,7 +1624,7 @@ div.icon span {
   width: 100%;
   height: 100%;
   content: \'\';
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
 }
 .ts-book-seat:after {
   position: absolute;
@@ -1672,6 +1669,7 @@ div.icon span {
 }
 .section-title img {
     max-height: 80px;
+    margin-bottom:20px;
 }
 .section-list{
   color: #fff;
@@ -1685,7 +1683,7 @@ div.icon span {
   font-size: 16px;
 }
 .ts-book-seat.second {
-  background-image: url( '. Url::to("@eyAssets/images/pages/webinar/redbull.png") . ');
+  background:linear-gradient(110deg, #00A0E3 35%, #FFFFFF 120%);
 }
 @media (max-width: 767px) {
 .section-list{
