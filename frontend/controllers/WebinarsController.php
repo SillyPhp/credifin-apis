@@ -2,8 +2,6 @@
 
 namespace frontend\controllers;
 
-use api\modules\v3\models\widgets\Referral;
-use common\models\User;
 use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarEvents;
@@ -55,7 +53,7 @@ class WebinarsController extends Controller
     public function actionLive($slug)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
-        $webinarDetail = self::getWebianrDetail($slug);
+        $webinarDetail = self::getWebianrDetail($slug, true);
 //        $webinars = self::getWebianrs($id);
         $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
@@ -79,13 +77,9 @@ class WebinarsController extends Controller
                 'value' => $referral,
             ]));
         }
-        $dt = new \DateTime();
-        $tz = new \DateTimeZone('Asia/Kolkata');
-        $dt->setTimezone($tz);
-        $date_now = $dt->format('Y-m-d H:i:s');
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
-        $webinar = self::getWebianrDetail($slug);
+        $webinar = self::getWebianrDetail($slug, true);
         $speakers = $webinar['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
@@ -94,7 +88,8 @@ class WebinarsController extends Controller
             $share_link = 'view';
         }
 
-        $dateEvents = ArrayHelper::index($webinar['webinarEvents'], null, 'event_date');
+        $webinarEvents = self::getWebianrDetail($slug, false);;
+        $dateEvents = ArrayHelper::index($webinarEvents['webinarEvents'], null, 'event_date');
         $event_ids = ArrayHelper::getColumn($webinar['webinarEvents'], 'event_enc_id');
 
         if ($webinar['session_for'] != 2) {
@@ -330,7 +325,7 @@ class WebinarsController extends Controller
         }
     }
 
-    private function getWebianrDetail($slug)
+    private function getWebianrDetail($slug, $recent)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -348,7 +343,7 @@ class WebinarsController extends Controller
                 'a.description',
                 'a.seats',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
                 $a1->select([
                     'a1.event_enc_id',
                     'a1.webinar_enc_id',
@@ -381,8 +376,10 @@ class WebinarsController extends Controller
                     $d->andWhere(['a2.is_deleted' => 0]);
                 }]);
                 $a1->andWhere(['a1.is_deleted' => 0]);
-                $a1->andWhere(['in', 'a1.status', [0, 1]]);
-                $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
+                if ($recent) {
+                    $a1->andWhere(['in', 'a1.status', [0, 1]]);
+                    $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
+                }
                 $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
                 $a1->groupBy('a1.event_enc_id');
             }])
