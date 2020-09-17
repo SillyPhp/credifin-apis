@@ -88,7 +88,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                     $refCount = \common\models\WebinarRegistrations::find()
                                                 ->andWhere(['referral_enc_id'=>$r['referral_enc_id'],'status'=>1])
                                                 ->count();
-                                    if ($refCount<=2){ ?>
+                                    if ($refCount<=50){ ?>
                                         <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
                                   <?php  } else {?> <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
                               <?php  }else{
