@@ -37,7 +37,7 @@ foreach ($webinars as $webinar) {
                 } ?>
                 <?php
                 if (!empty($webinarRegistrations)) { ?>
-                    <p><?= (300 + count($webinarRegistrations)) ?> People</p>
+                    <p><?= (300 + count($webinarRegistrations)) ?> People Registered</p>
                 <?php }
                 ?>
             </div>
@@ -172,6 +172,7 @@ $this->registerCss('
     overflow: hidden;
     width: 40px;
     height: 40px;
+    background-color:#eee;
 }
 
 .avatar img {
