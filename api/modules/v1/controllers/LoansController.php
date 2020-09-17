@@ -23,7 +23,6 @@ class LoansController extends ApiBaseController
                 'college-list',
                 'college-courses',
                 'loan-purpose',
-                'country-list'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -33,7 +32,6 @@ class LoansController extends ApiBaseController
                 'college-list' => ['POST'],
                 'college-courses' => ['POST'],
                 'loan-purpose' => ['POST'],
-                'country-list' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -129,17 +127,4 @@ class LoansController extends ApiBaseController
 
     }
 
-    public function actionCountryList()
-    {
-        $countries = Countries::find()
-            ->select(['country_enc_id', 'name'])
-            ->asArray()
-            ->all();
-
-        if ($countries) {
-            return $this->response(200, $countries);
-        } else {
-            return $this->response(404, 'not found');
-        }
-    }
 }
