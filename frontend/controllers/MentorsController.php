@@ -317,6 +317,10 @@ class MentorsController extends Controller
         $webinars = self::getWebianrs($id);
         $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
+        $nextEvent = $webinarDetail['webinarEvents'][0];
+        if($nextEvent['session_enc_id'] != $id){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
             return $this->render('webinar-view', [
                 'type' => $type,
