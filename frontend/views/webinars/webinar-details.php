@@ -130,7 +130,8 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>" data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                       href="javascript:;" data-link="<?= $share_link ?>"
+                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -215,7 +216,8 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= (320 + count($webinarRegistrations)) ?></span>
+                                    <p>
+                                        <span><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
