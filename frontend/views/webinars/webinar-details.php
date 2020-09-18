@@ -172,7 +172,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             <div class="row">
                 <div class="">
                     <div class="col-md-12 mx-auto">
-                        <h2 class="section-title loc-set">
+                        <h2 class="section-title">
                             Webinar Details
                         </h2>
                     </div>
