@@ -55,7 +55,9 @@ class LiveStreamController extends Controller
         $chkRegistration = WebinarRegistrations::findOne(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1]);
         $webinar = Webinar::findOne(['webinar_enc_id' => $webinar_id]);
         if (empty($chkRegistration) && !(int)$webinar->price) {
+
             self::webinarRegistration($user_id, $webinar_id);
+
         }
         $this->layout = 'blank-layout';
         if ($id) {
