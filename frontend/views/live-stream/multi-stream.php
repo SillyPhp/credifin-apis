@@ -330,15 +330,14 @@ color:#fff;
 }
 ");
 $script = <<< JS
-// browserAccess();
-// function browserAccess()
-// { 
-// if (top === self) {
-//      $("body").html("Access Denied");
-// } 
-// else{executeAll();}
-// } 
-executeAll();
+browserAccess();
+function browserAccess()
+{ 
+if (top === self) {
+     $("body").html("Access Denied");
+} 
+else{executeAll();}
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
@@ -399,6 +398,8 @@ function getTokenVarification(tokenId)
     });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-Multistream/static/css/main.419b49bd.chunk.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

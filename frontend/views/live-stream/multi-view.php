@@ -119,7 +119,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             display: flex;
             position: relative;
             align-items: center;
-            background-color: #666;
+            background-color: #000;
             height: 100vh;
         }
 
@@ -292,15 +292,14 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     </div>
 <?php
 $this->registerJs('
-//browserAccess();
-//function browserAccess()
-//{ 
-//if (top === self) {
-//     $("body").html("Access Denied");
-//} 
-//else{executeAll();}
-//}
-executeAll();
+browserAccess();
+function browserAccess()
+{ 
+if (top === self) {
+     $("body").html("Access Denied");
+} 
+else{executeAll();}
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
