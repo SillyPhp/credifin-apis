@@ -291,6 +291,18 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         </div>
     </div>
 <?php
+$this->registerCss("
+#session_expired 
+{
+    width: 100%;
+    text-align: center;
+   display:none;
+}
+#session_expired h3
+{
+color:#fff;
+}
+");
 $this->registerJs('
 browserAccess();
 function browserAccess()
