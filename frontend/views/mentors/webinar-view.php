@@ -432,7 +432,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             for (var i in data.val()) {
                 result2.push([i, data.val()[i]]);
             }
-            document.getElementById('viewers').innerText = result2.length + tempData-;
+            document.getElementById('viewers').innerText = result2.length + tempData;
         });
     });
 
