@@ -1833,9 +1833,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-            // $.pjax.reload({container: '#webinar_join_registations', async: false});
-            // $.pjax.reload({container: '#webinar_registations', async: false});
-            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1892,11 +1889,7 @@ $(document).on('click','#registerBtn',function(event){
                     break;
                 default :
                     toastr.error(res.message, res.title);
-                    
             }
-            // $.pjax.reload({container: '#webinar_join_registations', async: false});
-            // $.pjax.reload({container: '#webinar_registations', async: false});
-            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1991,24 +1984,23 @@ function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
 function updateStatus(payment_enc_id, payment_id, status,reg_id)
 {
     $.ajax({
-            url : '/api/v3/webinar/update-status',
-            method : 'POST', 
-            data : {
-              payment_status:status,
-              payment_enc_id:payment_enc_id,
-              payment_id: payment_id, 
-              registration_enc_id: reg_id, 
-            },
-            success:function(resp)
-            {
-                if(res.response.status != 200){
-                    swal({ 
-                        title:"Message",
-                        text: "Payment Successfully Captured & It will reflect in sometime..",
-                     });
-                }
+        url : '/api/v3/webinar/update-status',
+        method : 'POST', 
+        data : {
+          payment_status:status,
+          payment_enc_id:payment_enc_id,
+          payment_id: payment_id, 
+          registration_enc_id: reg_id, 
+        },
+        success:function(resp)
+        {
+            if(res.response.status != 200){
+                swal({ 
+                    title:"Message",
+                    text: "Payment Successfully Captured & It will reflect in sometime..",
+                 });
             }
-            
+        }
     })
 }
 
@@ -2024,7 +2016,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerCssFile('ps://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>
