@@ -292,14 +292,15 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     </div>
 <?php
 $this->registerJs('
-browserAccess();
-function browserAccess()
-{ 
-if (top === self) {
-     $("body").html("Access Denied");
-} 
-else{executeAll();}
-}
+//browserAccess();
+//function browserAccess()
+//{ 
+//if (top === self) {
+//     $("body").html("Access Denied");
+//} 
+//else{executeAll();}
+//}
+executeAll();
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {

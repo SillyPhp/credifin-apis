@@ -3,7 +3,8 @@
  */
 var agoraAppId = app_id; // set app id
 var channelName = channel_name; // set channel name
-
+$('#session_expired').html('<h3>Connecting..!!</h3>');
+$('#session_expired').css('display','block');
 // create client instance
 var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // h264 better detail at a higher motion
 var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'});
@@ -76,6 +77,7 @@ AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 //set source host
 // client callbacks
 client.on("stream-published", function(evt) {
+    $('#session_expired').css('display','none');
     console.log("Publish local stream successfully");
     initializeUi();
 });
@@ -193,7 +195,8 @@ function joinChannel() {
             console.log("User " + uid + " joined channel successfully");
         },
         function(err) {
-            alert("[ERROR] : Broadcast Session Expired !!", err);
+            //alert("[ERROR] : Broadcast Session Expired !!", err);
+            $('#session_expired').html('<h3>Broadcast Session Expired</h3>');
             console.log("[ERROR] : join channel failed", err);
         }
     );
