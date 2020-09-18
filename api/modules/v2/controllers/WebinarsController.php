@@ -316,7 +316,7 @@ class WebinarsController extends ApiBaseController
                     }
                 } else {
                     if ($price['price']) {
-                        return $this->response(409, ['status' => 409, 'message' => 'Register']);
+                        return $this->response(409, ['status' => 409, 'data' => $webinar]);
                     } else {
                         $model = new WebinarRegistrations();
                         $utilitiesModel = new Utilities();
