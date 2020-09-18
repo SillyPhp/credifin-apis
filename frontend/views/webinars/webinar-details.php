@@ -268,6 +268,18 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div>
 </div>
 <!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:9501771965">+919501771965</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -627,6 +639,31 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.cntct{
+    background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
+    padding-bottom: 20px;
+}
+.contact-req {
+    text-align: center;
+}
+.contact-req h3 {
+	font-size: 25px;
+	font-family: lora;
+	text-transform: uppercase;
+	color: #fff;
+	font-weight: 600;
+	margin: 5px 0 15px 0;
+}
+.contact-req a {
+    color: #fff;
+    background-color: #ff7803e8;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: roboto;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
 .us-marg{
     margin-top:2px;
 }
@@ -677,7 +714,7 @@ $this->registerCss('
   font-size: 24px;
   font-weight: 400;
   color: #222222;
-  margin-bottom: 0;
+  margin: 0;
   text-transform: capitalize;
 }
 
