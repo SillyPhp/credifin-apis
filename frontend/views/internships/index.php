@@ -46,6 +46,9 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         </div>
     </nav>
 </section>
+
+<?= $this->render('/widgets/event-poster') ?>
+
 <section>
     <div class="container">
         <div class="row">

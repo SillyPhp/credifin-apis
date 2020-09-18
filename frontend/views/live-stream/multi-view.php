@@ -119,7 +119,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             display: flex;
             position: relative;
             align-items: center;
-            background-color: #666;
+            background-color: #000;
             height: 100vh;
         }
 

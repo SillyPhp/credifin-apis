@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -53,6 +54,7 @@ Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -81,19 +83,20 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         } else {
                             if ((int)$webinar['price']) {
                                 $r = \common\models\Referral::find()
-                                    ->where(['code'=>$refcode])
-                                    ->andWhere(['organization_enc_id'=>\common\models\Organizations::findOne(['slug'=>'dsbedutech'])])
+                                    ->where(['code' => $refcode])
+                                    ->andWhere(['organization_enc_id' => \common\models\Organizations::findOne(['slug' => 'dsbedutech'])])
                                     ->asArray()->one();
-                                if (!empty($r)){
+                                if (!empty($r)) {
                                     $refCount = \common\models\WebinarRegistrations::find()
-                                                ->andWhere(['referral_enc_id'=>$r['referral_enc_id'],'status'=>1])
-                                                ->count();
-                                    if ($refCount<=50){ ?>
+                                        ->andWhere(['referral_enc_id' => $r['referral_enc_id'], 'status' => 1])
+                                        ->count();
+                                    if ($refCount <= 50) { ?>
                                         <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                                  <?php  } else {?> <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
-                              <?php  }else{
-                                ?>
-                                <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
+                                    <?php } else { ?>
+                                        <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
+                                <?php } else {
+                                    ?>
+                                    <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
                                 <?php }
                             } else {
                                 ?>
@@ -113,6 +116,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
     <div class="ts-count-down">
         <div class="container">
             <div class="row">
+                <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
                         <?php if ($status == 2) { ?>
@@ -126,7 +130,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $nextEvent['session_enc_id'] ?>">Click
+                                       href="javascript:;" data-link="<?= $share_link ?>" data-id="<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -158,6 +162,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <?php } ?>
                     </div>
                 </div>
+                <?php Pjax::end(); ?>
             </div>
         </div>
     </div>
@@ -210,7 +215,7 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= (300 + count($webinarRegistrations)) ?></span>
+                                    <p><span><?= (320 + count($webinarRegistrations)) ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -276,7 +281,9 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
         </div><!-- row end-->
         <div class="row">
             <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker as $as) {
+            foreach ($assignSpeaker
+
+            as $as) {
             $designation = ucwords($designation);
             ?>
             <div class="col-lg-3 col-md-6">
@@ -518,7 +525,9 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                         <li>For EdTech startups at an ideation / Validation stage</li>
                         <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
                         <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
-                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification Program</li>
+                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification
+                            Program
+                        </li>
                     </ul>
                     <div class="text-center us-marg" v-if="userType === 'Individual'">
                         <?php
@@ -545,7 +554,8 @@ Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::P
                 <div class="book-seat-content text-center mb-100">
                     <h3 class="section-title white">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
-                        Red Bull Basement University is where students come to innovate, collaborate, and drive change on campus through DIY-based technological solutions.
+                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus
+                        through DIY-based technological solutions.
                     </h3>
                     <div class="text-center">
                         <?php
@@ -800,7 +810,7 @@ display:none;
 }
 #joinBtn{
     font-size: 25px;
-    padding: 35px;
+    padding: 48px;
     display: block;
     text-align: center;
     color: #fff;
@@ -1624,18 +1634,9 @@ div.icon span {
   box-shadow: 0px 2px 10px 3px #ddd;
 }
 .ts-book-seat {
-   background-image:linear-gradient(110deg, rgb(255 143 68) 50%, #fff 143%);
+  background-image:linear-gradient(110deg, #FF7803 50%, #fff 143%);
   position: relative;
   padding: 40px 0;
-}
-.ts-book-seat:before {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  content: \'\';
-  background: rgba(0, 0, 0, 0.2);
 }
 .ts-book-seat:after {
   position: absolute;
@@ -1694,7 +1695,7 @@ div.icon span {
   font-size: 16px;
 }
 .ts-book-seat.second {
-  background:linear-gradient(110deg, #00A0E3 35%, #FFFFFF 120%);
+  background:#00008b;
 }
 @media (max-width: 767px) {
 .section-list{
@@ -1793,8 +1794,9 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-            $.pjax.reload({container: '#webinar_join_registations', async: false});
-            $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_registations', async: false});
+            // $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1844,15 +1846,18 @@ $(document).on('click','#registerBtn',function(event){
                     toastr.success(res.message, res.title);
                     btn.text("Registered");
                     btn.attr("id","");
+                    window.location.reload();
                     break;
                 case 203 :
                     toastr.info(res.message, res.title);
                     break;
                 default :
                     toastr.error(res.message, res.title);
+                    
             }
-            $.pjax.reload({container: '#webinar_join_registations', async: false});
-            $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_registations', async: false});
+            // $.pjax.reload({container: '#webinar_registations', async: false});
+            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1873,6 +1878,31 @@ $('.ts-image-popup').magnificPopup({
 });
 $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
+}); 
+$(document).on('click','#joinBtn', function (e){
+    var ths = $(this);
+    var open_link = ths.attr('data-link');
+    var id = ths.attr('data-id');
+    var link = "/mentors/webinar-" + open_link + "?id=" + id;
+    if(open_link == "live"){
+           if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
+    } else {
+        if(registeration_status != ""){
+            // use is registered
+            if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
+        } else {
+            // not registered
+            $('#registerEventSection').find('button:visible').click();
+        }   
+    }
 });  
 
 function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
