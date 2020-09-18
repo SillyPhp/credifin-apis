@@ -403,11 +403,37 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     userLastOnlineRef.onDisconnect().remove();
     var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
     usersCount.on('value', function (data) {
+        var tempData;
+        var usersCount2 = db.ref(specialKey + '/userStatusAdd/');
+        usersCount2.on('value', function (data2) {
+            var resultData2 = [];
+            for (var k in data2.val()) {
+                resultData2.push([k, data2.val()[k]]);
+            }
+            tempData = data2.val();
+        });
         var result2 = [];
         for (var i in data.val()) {
             result2.push([i, data.val()[i]]);
         }
-        document.getElementById('viewers').innerText = result2.length;
+        document.getElementById('viewers').innerText = result2.length + tempData;
+    });
+    var usersCount3 = db.ref(specialKey + '/userStatusAdd/');
+    usersCount3.on('value', function (data2) {
+        var tempData;
+        var resultData2 = [];
+        for (var k in data2.val()) {
+            resultData2.push([k, data2.val()[k]]);
+        }
+        tempData = data2.val();
+        var usersCountg = db.ref(specialKey + '/userStatus/' + webinarId);
+        usersCountg.on('value', function (data) {
+            var result2 = [];
+            for (var i in data.val()) {
+                result2.push([i, data.val()[i]]);
+            }
+            document.getElementById('viewers').innerText = result2.length + tempData;
+        });
     });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
