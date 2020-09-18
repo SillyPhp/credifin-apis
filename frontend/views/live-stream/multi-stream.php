@@ -395,9 +395,9 @@ function getTokenVarification(tokenId)
         channel_name = response.response.channel_name;
         access_token = response.response.token;
         console.log(channel_name);
-        console.log(access_token);
+        console.log(access_token); 
         addScript("/assets/themes/ey/broadcast/js/multi-broadcast-script.js");
-       }
+       } 
        else 
        {
         $('#session_expired').html('<h3>Authentication Failed</h3>');
