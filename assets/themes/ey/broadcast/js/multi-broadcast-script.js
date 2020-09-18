@@ -557,10 +557,28 @@ function enableUiControls() {
     });
 
     $("#exit-btn").click(function(){
-        if (confirm('Do you want to leave this page')) {
-            leaveChannel();
-            alert('You ended this session');
-        }
+        swal({
+                title: "",
+                text: "Do you want to leave this Session",
+                type:'error',
+                showCancelButton: true,
+                confirmButtonClass: "btn-primary",
+                confirmButtonText: "Yes",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if(isConfirm) {
+                    leaveChannel();
+                } else {
+                    return false;
+                }
+            }
+        );
+        // if (confirm('Do you want to leave this page')) {
+        //     leaveChannel();
+        //     alert('You ended this session');
+        // }
     });
 
     $("#share-sreen-btn").click(function(){
