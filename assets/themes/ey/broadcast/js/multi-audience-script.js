@@ -78,7 +78,8 @@ function subscribe(sid)
 
 // peer online status
 client.on("peer-online", function(evt) {
-    console.log(evt.uid+"peer online");
+    console.log(evt.uid+" peer online");
+    initializeUi();
 });
 
 // remove the remote-container when a user leaves the channel
@@ -86,6 +87,10 @@ client.on("peer-leave", function(evt) {
      $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
+    console.log('peer leave');
+    if($('#full-screen-video > h3').length == 0) {
+        $('#full-screen-video').append('<h3 style="color: #fff;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);">Your Teacher left or ended this class</h3>');
+    }
     initializeUi();
 });
 
@@ -101,15 +106,18 @@ client.on("unmute-audio", function(evt) {
 // show user icon whenever a remote has disabled their video
 client.on("mute-video", function(evt) {
     var remoteId = evt.uid;
+    $('#stream-player-'+remoteId).css('display','none');
 });
 
 client.on("unmute-video", function(evt) {
     var remoteId = evt.uid;
+    $('#stream-player-'+remoteId).css('display','block');
 });
 
 // ingested live stream
 client.on("streamInjectedStatus", function(evt) {
     console.log("Injected Steram Status Updated");
+    console.log('stream inject');
     // evt.stream.play('full-screen-video');
     console.log(JSON.stringify(evt));
 });
