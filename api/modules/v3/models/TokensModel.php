@@ -1,7 +1,7 @@
 <?php
 
 namespace api\modules\v3\models;
-
+use Yii;
 use api\modules\v3\models\RtcTokenBuilder;
 use common\models\VideoSessions;
 use common\models\Utilities;
