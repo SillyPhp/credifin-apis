@@ -77,14 +77,14 @@ if (Yii::$app->user->identity->image) {
 </section>
 <section class="similar-webinars">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
         <?php
         if (!empty($webinars)) {
             ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mentor-heading">Similar Webinars</div>
+                </div>
+            </div>
             <div class="row">
                 <?= $this->render('/widgets/mentorships/webinar-card', [
                     'webinars' => $webinars,
