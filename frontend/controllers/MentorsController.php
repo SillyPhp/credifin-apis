@@ -266,9 +266,22 @@ class MentorsController extends Controller
     public function actionWebinarView($id)
     {
         $type = 'audience';
-        $webinarDetail = self::getWebianrDetails($id);
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $user_id = Yii::$app->user->identity->user_enc_id;
+        $webinarDetail = self::getWebianrDetails($id, true);
         $nextEvent = $webinarDetail['webinarEvents'][0];
-//        $dateEvents = ArrayHelper::index($webinarDetail['webinarEvents'], null, 'event_date');
+        $upcomingEvent = $webinarDetail['webinarEvents'][1];
+        $upcomingEventTime = date('Y-m-d', strtotime($upcomingEvent['start_datetime']));
+        $currentDate = $dt->format('Y-m-d');
+        $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
+        $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
+        $upcomingDateTime = "";
+        if(!in_array($user_id, $speakerUserIds) && $upcomingEventTime == $currentDate){
+            $upcomingDateTime = $upcomingEvent['start_datetime'];
+        }
+        $dateEvents = ArrayHelper::index($webinarDetail['webinarEvents'], null, 'event_date');
         if(empty($nextEvent)){
 //            webinar finished
             return $this->render('/mentors/non-authorized', [
@@ -308,14 +321,16 @@ class MentorsController extends Controller
             'type' => $type,
             'webinars' => $webinars,
             'webinarDetail' => $webinarDetail,
-//            'dateEvents' => $dateEvents
+            'dateEvents' => $dateEvents,
+            'upcomingEvent' => $upcomingEvent,
+            'upcomingDateTime' => $upcomingDateTime,
         ]);
     }
 
     public function actionWebinarLive($id)
     {
         $type = 'multi-stream';
-        $webinarDetail = self::getWebianrDetails($id);
+        $webinarDetail = self::getWebianrDetails($id, true);
         $webinars = self::getWebianrs($id);
         $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
@@ -366,7 +381,7 @@ class MentorsController extends Controller
         }
     }
 
-    private function getWebianrDetails($id)
+    private function getWebianrDetails($id, $recent)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -387,7 +402,7 @@ class MentorsController extends Controller
                 'a.description',
                 'a.seats',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
                 $a1->select([
                     'a1.event_enc_id',
                     'a1.webinar_enc_id',
@@ -420,8 +435,10 @@ class MentorsController extends Controller
                     $d->andWhere(['a2.is_deleted' => 0]);
                 }]);
                 $a1->andWhere(['a1.is_deleted' => 0]);
-                $a1->andWhere(['in', 'a1.status', [0, 1]]);
-                $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
+                if ($recent) {
+                    $a1->andWhere(['in', 'a1.status', [0, 1]]);
+                    $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
+                }
                 $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
                 $a1->groupBy('a1.event_enc_id');
             }])
