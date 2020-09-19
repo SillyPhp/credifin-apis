@@ -11,6 +11,7 @@ use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\WebinarSpeakers;
+use frontend\models\webinars\webinarFunctions;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -22,6 +23,7 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
+use yii\web\HttpException;
 
 class WebinarsController extends Controller
 {
@@ -52,8 +54,8 @@ class WebinarsController extends Controller
     public function actionLive($slug)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
-        $webinarDetail = self::getWebianrDetails($slug);
-        $webinars = self::getWebianrs($id);
+        $webinarDetail = self::getWebianrDetail($slug, true);
+//        $webinars = self::getWebianrs($id);
         $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
             $type = 'multi-host';
@@ -62,52 +64,44 @@ class WebinarsController extends Controller
         }
         return $this->render('live', [
             'type' => $type,
-            'webinars' => $webinars,
+//            'webinars' => $webinars,
             'webinarDetail' => $webinarDetail
         ]);
     }
 
-    public function actionWebinarDetails($slug)
+    public function actionWebinarDetails($slug,$referral=null)
     {
+        if (!empty($referral)){
+            $cookies = Yii::$app->response->cookies;
+            $cookies->add(new \yii\web\Cookie([
+                'name' => 'ref_csrf-webinar',
+                'value' => $referral,
+            ]));
+        }
         $user_id = Yii::$app->user->identity->user_enc_id;
-        $webinarDetail = self::getWebianrDetails($slug);
-        $speakerUserIds = ArrayHelper::getColumn($webinarDetail['webinarSpeakers'], 'user_enc_id');
+        $model = new webinarFunctions();
+        $webinar = self::getWebianrDetail($slug, true);
+        if(empty($webinar)){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
+        $nextEvent = $webinar['webinarEvents'][0];
+        if(empty($nextEvent)){
+//                webinar finished
+            return $this->render('/mentors/non-authorized', [
+                'type' => 1
+            ]);
+        }
+        $speakers = $webinar['webinarEvents'][0]['webinarSpeakers'];
+        $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         if (in_array($user_id, $speakerUserIds)) {
             $share_link = 'live';
         } else {
             $share_link = 'view';
         }
-        $webinar = Webinar::find()
-            ->select(['webinar_enc_id', 'price', 'session_for', 'slug', 'title', 'description', 'seats'])
-            ->where(['slug' => $slug, 'is_deleted' => 0])
-            ->asArray()
-            ->one();
-        $events = WebinarEvents::find()
-            ->alias('a')
-            ->select(["a.event_enc_id", 'a.duration', "DATE_FORMAT(a.start_datetime, '%d-%m-%Y') event_date", "DATE_FORMAT(a.start_datetime, '%H:%i') event_time", "ADDTIME(DATE_FORMAT(a.start_datetime, '%H:%i'), SEC_TO_TIME(a.duration*60)) endtime", "a.description"])
-            ->joinWith(['webinarSpeakers d' => function ($d) {
-                $d->select([
-                    'd.webinar_event_enc_id',
-                    'd.speaker_enc_id',
-                    'd1.user_enc_id',
-                    'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
-                    'd2.image',
-                    'd2.image_location',
-                    'd3.designation',
-                ]);
-                $d->joinWith(['speakerEnc d1' => function ($d1) {
-                    $d1->joinWith(['userEnc d2']);
-                    $d1->joinWith(['designationEnc d3']);
-                }], false);
-                $d->andWhere(['d.is_deleted' => 0]);
-            }])
-            ->where(['a.webinar_enc_id' => $webinar['webinar_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.start_datetime' => SORT_ASC])
-            ->asArray()
-            ->all();
-        $dateEvents = ArrayHelper::index($events, null, 'event_date');
-        $event_ids = ArrayHelper::getColumn($events, 'event_enc_id');
+
+        $webinarEvents = self::getWebianrDetail($slug, false);;
+        $dateEvents = ArrayHelper::index($webinarEvents['webinarEvents'], null, 'event_date');
+        $event_ids = ArrayHelper::getColumn($webinar['webinarEvents'], 'event_enc_id');
 
         if ($webinar['session_for'] != 2) {
             $assignSpeaker = WebinarSpeakers::find()
@@ -167,23 +161,8 @@ class WebinarsController extends Controller
                 ->where(['z.is_deleted' => 0, 'z.webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->asArray()
                 ->all();
-            $register = WebinarRegistrations::find()
-                ->alias('z')
-                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location'])
-                ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
-                ->andWhere(['not', ['c.image' => null]])
-                ->andWhere(['not', ['c.image' => '']])
-                ->limit(6)
-                ->asArray()
-                ->all();
-            $webinarRegistrations = WebinarRegistrations::find()
-                ->alias('z')
-                ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by'])
-                ->joinWith(['createdBy c'], false)
-                ->where(['z.webinar_enc_id' => $webinar['webinar_enc_id'], 'z.is_deleted' => 0, 'z.status' => 1])
-                ->asArray()
-                ->all();
+            $register = $model->getRegisteration($webinar['webinar_enc_id']);
+            $webinarRegistrations = $model->getWebinarRegisteration($webinar['webinar_enc_id']);
             $webResig = WebinarRegistrations::find()
                 ->where([
                     'is_deleted' => 0,
@@ -194,15 +173,7 @@ class WebinarsController extends Controller
                 ->one();
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
-            if ($webinar) {
-                $webinar_event = WebinarEvents::find()
-                    ->select(['start_datetime'])
-                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'status' => [0, 1]])
-                    ->orderBy(['start_datetime' => SORT_ASC])
-                    ->asArray()
-                    ->one();
-                $webinar['start_datetime'] = $webinar_event['start_datetime'];
-            }
+
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
                 'assignSpeaker' => $assignSpeaker,
@@ -214,13 +185,14 @@ class WebinarsController extends Controller
                 'user_id' => $user_id,
                 'userInterest' => $userInterest,
                 'dateEvents' => $dateEvents,
+                'nextEvent' => $nextEvent,
             ]);
         } else {
             return $this->redirect('/');
         }
     }
 
-    public function actionRegistration()
+    public function actionRecordInterest()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -255,6 +227,59 @@ class WebinarsController extends Controller
                     'title' => 'error',
                     'message' => 'something went wrong'
                 ];
+            }
+        }
+    }
+
+    public function actionRegistration()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $uid = Yii::$app->user->identity->user_enc_id;
+            $wid = Yii::$app->request->post('wid');
+            $refcode = Yii::$app->request->post('refcode');
+            $model = WebinarRegistrations::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
+            if ($model->status == 1) {
+                return [
+                    'status' => 203,
+                    'title' => 'Message',
+                    'message' => 'You already registered..'
+                ];
+            } else {
+                if (!empty($model)) {
+                    $model->is_deleted = 0;
+                    $model->last_updated_by = $uid;
+                    $model->last_updated_on = date('Y-m-d H:i:s');
+                } else {
+                    $model = new WebinarRegistrations();
+                    $utilitiesModel = new  \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->register_enc_id = $utilitiesModel->encrypt();
+                    $model->webinar_enc_id = $wid;
+                    $model->created_by = $uid;
+                    $model->created_on = date('Y-m-d H:i:s');
+                }
+                if (!empty($refcode))
+                {
+                    $refId = \common\models\Referral::findOne(['code'=>$refcode])->referral_enc_id;
+                    if ($refId){
+                        $model->referral_enc_id = $refId;
+                    }
+                }
+                $model->status = 1;
+                if ($model->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Registered Successfully',
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'error',
+                        'message' => 'something went wrong, Please try after sometime..'
+                    ];
+                }
             }
         }
     }
@@ -312,63 +337,64 @@ class WebinarsController extends Controller
         }
     }
 
-    private function getWebianrDetails($slug)
+    private function getWebianrDetail($slug, $recent)
     {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $date_now = $dt->format('Y-m-d H:i:s');
         $webinar = Webinar::find()
+            ->distinct()
             ->alias('a')
             ->select([
                 'a.webinar_enc_id',
+                'a.price',
+                'a.session_for',
+                'a.slug',
                 'a.title',
-                'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
+                'a.seats',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
                 $a1->select([
                     'a1.event_enc_id',
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',
                     'a1.title',
-                    'a1.start_datetime',
                     'a1.duration',
+                    "DATE_FORMAT(a1.start_datetime, '%d-%m-%Y') event_date",
+                    "DATE_FORMAT(a1.start_datetime, '%H:%i') event_time",
+                    "ADDTIME(DATE_FORMAT(a1.start_datetime, '%H:%i'), SEC_TO_TIME(a1.duration*60)) endtime",
+                    'a1.start_datetime',
+                    'a1.description',
+                    "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
+                    'a1.status',
                 ]);
-                $a1->joinWith(['sessionEnc e']);
-                $a1->joinWith(['webinarSpeakers d' => function ($d) {
+                $a1->joinWith(['sessionEnc e'], false);
+                $a1->joinWith(['webinarSpeakers a2' => function ($d) {
                     $d->select([
-                        'd.webinar_event_enc_id',
-                        'd.speaker_enc_id',
-                        'd1.user_enc_id',
-                        'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
+                        'a2.webinar_event_enc_id',
+                        'a2.speaker_enc_id',
+                        'a3.user_enc_id',
+                        'CONCAT(a4.first_name, " ", a4.last_name) as fullname',
+                        'a4.image',
+                        'a4.image_location',
+                        'a5.designation',
                     ]);
-                    $d->joinWith(['speakerEnc d1' => function ($d1) {
-                        $d1->joinWith(['userEnc d2']);
+                    $d->joinWith(['speakerEnc a3' => function ($d1) {
+                        $d1->joinWith(['userEnc a4']);
+                        $d1->joinWith(['designationEnc a5']);
                     }], false);
-                    $d->andWhere(['d.is_deleted' => 0]);
+                    $d->andWhere(['a2.is_deleted' => 0]);
                 }]);
                 $a1->andWhere(['a1.is_deleted' => 0]);
-                $a1->andWhere(['in', 'a1.status', [0, 1]]);
+                if ($recent) {
+                    $a1->andWhere(['in', 'a1.status', [0, 1]]);
+                    $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
+                }
+                $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
+                $a1->groupBy('a1.event_enc_id');
             }])
-            ->andWhere(['a.slug' => $slug])
-            ->asArray()
-            ->one();
-        return $webinar;
-    }
-
-    private function getWebianrs($id)
-    {
-        $webinars = Webinars::find()
-            ->distinct()
-            ->alias('a')
-            ->select([
-                'a.webinar_enc_id',
-                'a.session_enc_id',
-                'a.title',
-                'a.start_datetime',
-                'a.duration',
-                'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
-                'a.description',
-            ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {
                 $d->select([
@@ -380,23 +406,15 @@ class WebinarsController extends Controller
                 $d->limit(6);
                 $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
             }])
-            ->joinWith(['sessionEnc e'])
-            ->where([
-                'a.is_deleted' => 0,
-            ])
-            ->andWhere(['not', ['a.session_for' => 1]])
-            ->andWhere(['not', ['a.session_enc_id' => $id]])
-            ->orderBy(['a.created_on' => SORT_DESC])
+            ->where(['a.slug' => $slug, 'a.is_deleted' => 0])
             ->asArray()
-            ->limit(2)
-            ->all();
-        return $webinars;
+            ->one();
+        return $webinar;
     }
 
     public function actionIndex()
     {
         $webinars = self::getWebinars();
-
         return $this->render('all-webinars', [
             'webinars' => $webinars,
         ]);
@@ -419,20 +437,22 @@ class WebinarsController extends Controller
                 'a.availability',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
-                'a1.start_datetime',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
+                    'a1.event_enc_id',
                     'a1.webinar_enc_id',
                     'a1.session_enc_id',
                     'a1.title',
                     'a1.start_datetime',
                     'a1.duration',
+                    "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
+                    'a1.created_on',
                 ]);
-                $a1->joinWith(['sessionEnc e']);
+                $a1->joinWith(['sessionEnc e'], false);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);
-                $a1->andWhere(['>', 'a1.start_datetime', $date_now]);
+                $a1->andWhere(['>', "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE)", $date_now]);
                 $a1->orderBy(['a1.start_datetime' => SORT_ASC]);
             }])
             ->joinWith(['assignedWebinarTos b'], false)
@@ -449,6 +469,7 @@ class WebinarsController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['not', ['a.session_for' => 2]])
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->groupBy('a.webinar_enc_id')
             ->asArray()
             ->all();
         return $webinars;

@@ -1,9 +1,14 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+
 $base_url = Url::base('https');
+$model = new \frontend\models\webinars\webinarFunctions();
 foreach ($webinars as $webinar) {
-    $start_time = $webinar['start_datetime'];
+    $register = $model->getRegisteration($webinar['webinar_enc_id']);
+    $webinarRegistrations = $model->getWebinarRegisteration($webinar['webinar_enc_id']);
+    $start_time = $webinar['webinarEvents'][0]['start_datetime'];
     ?>
     <div class="col-md-4">
         <div class="webinar-box">
@@ -11,8 +16,8 @@ foreach ($webinars as $webinar) {
                 <img src="<?= Url::to('@eyAssets/images/pages/jobs/default-cover.png') ?>">
             </div>
             <div class="web-date">
-                <span class="cont"><?= date('d', strtotime($webinar['start_datetime'])) ?></span>
-                <span class="abs"><?= date('F', strtotime($webinar['start_datetime'])) ?></span>
+                <span class="cont"><?= date('d', strtotime($start_time)) ?></span>
+                <span class="abs"><?= date('F', strtotime($start_time)) ?></span>
             </div>
             <div class="webinar-details">
                 <div class="webinar-title"><?= $webinar['title'] ?></div>
@@ -20,33 +25,30 @@ foreach ($webinars as $webinar) {
                             class="far fa-clock"></i> <?= date('h:i A', strtotime($start_time)) ?></div>
                 <div class="webinar-desc"><?= $webinar['description'] ?></div>
             </div>
+            <?php Pjax::begin(['id' => 'webinar_registations']); ?>
             <div class="avatars">
                 <?php
-                $registrationCount = count($webinar['webinarRegistrations']);
-                if ($registrationCount) {
-                    ?>
-                    <span class="avatar">
-                        <img src="https://picsum.photos/70">
-                    </span>
-                    <span class="avatar">
-                        <img src="https://picsum.photos/80">
-                    </span>
-                    <span class="avatar">
-                        <img src="https://picsum.photos/90">
-                    </span>
-                    <span class="avatar">
-                       <img src="https://picsum.photos/100">
-                    </span>
-                    <!-- Variable amount more avatars -->
-                    <p><?= $registrationCount ?> People</p>
-                    <?php
-                }
+                if ($register) {
+                    foreach ($register as $reg) { ?>
+                        <span class="avatar">
+                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
+                        </span>
+                    <?php }
+                } ?>
+                <?php
+                if (!empty($webinarRegistrations)) { ?>
+                    <p><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?> People Registered</p>
+                <?php }
                 ?>
             </div>
+            <?php Pjax::end(); ?>
 
             <div class="new-btns">
                 <div class="detail-btn naam">
-                    <button type="button" onclick="window.open('<?= Url::to($base_url.'/webinar/'.  $webinar['slug']); ?>', '_blank')">View Details</button>
+                    <button type="button"
+                            onclick="window.open('<?= Url::to($base_url . '/webinar/' . $webinar['slug']); ?>', '_blank')">
+                        View Details
+                    </button>
                 </div>
                 <!--                <div class="sharing-btn naam">-->
                 <!--                    <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>-->
@@ -170,6 +172,7 @@ $this->registerCss('
     overflow: hidden;
     width: 40px;
     height: 40px;
+    background-color:#eee;
 }
 
 .avatar img {

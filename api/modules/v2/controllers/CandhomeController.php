@@ -704,7 +704,7 @@ class CandhomeController extends ApiBaseController
                     $registered_count = WebinarRegistrations::find()
                         ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
-                    $webinar[$i]['count'] = $registered_count;
+                    $webinar[$i]['count'] = $registered_count + 320;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
                     $webinar[$i]['is_paid'] = $w['price'] ? true : false;
@@ -802,9 +802,28 @@ class CandhomeController extends ApiBaseController
             $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
 
             if (!empty($webinar)) {
+                $registered_count = WebinarRegistrations::find()
+                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                    ->count();
+                $webinar['registered_count'] = $registered_count + 320;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
+                $date = new \DateTime($webinar['event']['start_datetime']);
+                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                $webinar['seconds'] = $seconds;
+                $webinar['is_started'] = ($seconds < 0 ? true : false);
+                foreach ($webinar['events'] as $k => $a) {
+                    $j = 0;
+                    foreach ($a as $t) {
+                        $date = new \DateTime($t['start_datetime']);
+                        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                        $is_started = ($seconds < 0 ? true : false);
+                        $webinar['events'][$k][$j]['seconds'] = $seconds;
+                        $webinar['events'][$k][$j]['is_started'] = $is_started;
+                        $j++;
+                    }
+                }
             }
 
             if ($webinar) {

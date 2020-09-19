@@ -1,9 +1,10 @@
 <?php
 
-use common\models\WebinarPayments;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+$cookies_request = Yii::$app->request->cookies;
+$refcode = $cookies_request->get('ref_csrf-webinar');
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -16,12 +17,12 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$time = date('Y/m/d H:i:s', strtotime($webinar['start_datetime']));
+$time = date('Y/m/d H:i:s', strtotime($nextEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-details.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-promote.png');
 $keywords = $webinar['title'];
 $description = $webinar['description'];
 $this->params['seo_tags'] = [
@@ -51,6 +52,9 @@ $this->params['seo_tags'] = [
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 ?>
 <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
 <section>
@@ -59,65 +63,44 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         <div class="title-main">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
-                <div class="register-btn">
+                <div class="register-btn" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
                     if (Yii::$app->user->isGuest) {
                         ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                           value="interested"><?= $btnName ?></a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                           class="ra-btn"><?= $btnName ?></a>
                     <?php } else {
                         ?>
-                        <button id="loadingBtn" style="display: none" class="ra-btn" data-type="register">
+                        <button id="loadingBtn" style="display: none" class="ra-btn">
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
                         if ($registeration_status == 1) {
                             ?>
-                            <button class="ra-btn"
-                                    data-type="register" id=""
-                                    data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                    value="registered"> Registered
-                            </button>
+                            <button class="ra-btn">Registered</button>
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                $paymentStatus = WebinarPayments::find()
-                                    ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
-                                        'created_by' => $user_id])
-                                    ->andWhere([
-                                        'or',
-                                        ['payment_status' => 'captured'],
-                                        ['payment_status' => 'created']
-                                    ])
-                                    ->asArray()
-                                    ->one();
-                                if (empty($paymentStatus)) {
+                                $r = \common\models\Referral::find()
+                                    ->where(['code' => $refcode])
+                                    ->andWhere(['organization_enc_id' => \common\models\Organizations::findOne(['slug' => 'dsbedutech'])])
+                                    ->asArray()->one();
+                                if (!empty($r)) {
+                                    $refCount = \common\models\WebinarRegistrations::find()
+                                        ->andWhere(['referral_enc_id' => $r['referral_enc_id'], 'status' => 1])
+                                        ->count();
+                                    if ($refCount <= 50) { ?>
+                                        <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
+                                    <?php } else { ?>
+                                        <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
+                                <?php } else {
                                     ?>
-                                    <button class="ra-btn"
-                                            data-type="register" id="paidRegisterBtn"
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"><?= $btnName ?>
-                                    </button>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <button class="ra-btn"
-                                            data-type="register" id=""
-                                            data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="registered"> Registered
-                                    </button>
-                                    <?php
-                                }
-                                ?>
-                                <?php
+                                    <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
+                                <?php }
                             } else {
                                 ?>
-                                <button class="ra-btn registered"
-                                        data-type="register" id="registerBtn"
-                                        data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                        value="registered"><?= $btnName ?>
-                                </button>
+                                <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
                                 <?php
                             }
                         }
@@ -133,6 +116,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     <div class="ts-count-down">
         <div class="container">
             <div class="row">
+                <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
                         <?php if ($status == 2) { ?>
@@ -146,7 +130,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="/mentors/webinar-<?= $share_link ?>?id=<?= $webinar['session_enc_id'] ?>">Click
+                                       href="javascript:;" data-link="<?= $share_link ?>"
+                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -178,6 +163,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                         <?php } ?>
                     </div>
                 </div>
+                <?php Pjax::end(); ?>
             </div>
         </div>
     </div>
@@ -187,7 +173,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
             <div class="row">
                 <div class="">
                     <div class="col-md-12 mx-auto">
-                        <h2 class="section-title loc-set">
+                        <h2 class="section-title">
                             Webinar Details
                         </h2>
                     </div>
@@ -204,9 +190,10 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <div class="sidebar text-center">
                         <div class="dis-flex">
                             <p>
-                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($webinar['start_datetime'])) ?>
+                                <i class="fas fa-calendar-day"></i> <?= date('d F Y', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
-                            <p><i class="far fa-clock"></i> <?= date('h:i A', strtotime($webinar['start_datetime'])) ?>
+                            <p>
+                                <i class="far fa-clock"></i> <?= date('h:i A', strtotime($nextEvent['start_datetime'])) ?>
                             </p>
                             <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
                             <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
@@ -229,7 +216,8 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= count($webinarRegistrations) ?></span>
+                                    <p>
+                                        <span><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -245,15 +233,15 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                 <?php } else { ?>
-                                    <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="1">Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="2">Not Interested
                                     </button>
-                                    <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
+                                    <button class="ra-btn interestBtn <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="3">Attending
                                     </button>
@@ -282,6 +270,18 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </div>
 </div>
 <!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:9501771965">+919501771965</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -295,7 +295,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
         </div><!-- row end-->
         <div class="row">
             <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker as $as) {
+            foreach ($assignSpeaker
+
+            as $as) {
             $designation = ucwords($designation);
             ?>
             <div class="col-lg-3 col-md-6">
@@ -416,7 +418,6 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                     <!-- Tab panes -->
                 </div>
             </div><!-- col end-->
-
         </div><!-- row end-->
         <div class="row">
             <div class="col-lg-12">
@@ -523,7 +524,78 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
     </section>
 <?php } ?>
 <!-- ts intro end-->
-<!-- ts sponsors start-->
+<!-- ts VC start-->
+<section>
+    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
+    <div class="container-fluid">
+        <div class="row md-flex">
+            <div class="col-md-6 ts-book-seat">
+                <div class="book-seat-content text-center mb-100">
+                    <h3 class="section-title white">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/><br>
+                        Edupreneur Village Challenge 2.0<br/><br/>
+                    </h3>
+                    <ul class="section-list">
+                        <li>For EdTech startups at an ideation / Validation stage</li>
+                        <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
+                        <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
+                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification
+                            Program
+                        </li>
+                    </ul>
+                    <div class="text-center us-marg" v-if="userType === 'Individual'">
+                        <?php
+                        if ($user_id) {
+                            if ($registeration_status != 1) {
+                                ?>
+                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
+                                <?php
+                            }
+                            ?>
+                            <?php
+                        } else {
+                            ?>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
+                                Join Webinar to learn more
+                            </button>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div><!-- book seat end-->
+            </div><!-- col end-->
+            <div class="col-md-6 ts-book-seat second">
+                <div class="book-seat-content text-center mb-100">
+                    <h3 class="section-title white">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
+                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus
+                        through DIY-based technological solutions.
+                    </h3>
+                    <div class="text-center">
+                        <?php
+                        if ($user_id) {
+                            if ($registeration_status != 1) {
+                                ?>
+                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
+                                <?php
+                            }
+                            ?>
+                            <?php
+                        } else {
+                            ?>
+                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
+                                Join Webinar to learn more
+                            </button>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div><!-- book seat end-->
+            </div><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+    <?php Pjax::end(); ?>
+</section>
 
 <?php
 function color_mod($hex, $diff)
@@ -569,6 +641,34 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.cntct{
+    background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
+    padding-bottom: 20px;
+}
+.contact-req {
+    text-align: center;
+}
+.contact-req h3 {
+	font-size: 25px;
+	font-family: lora;
+	text-transform: uppercase;
+	color: #fff;
+	font-weight: 600;
+	margin: 5px 0 15px 0;
+}
+.contact-req a {
+    color: #fff;
+    background-color: #ff7803e8;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: roboto;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.us-marg{
+    margin-top:2px;
+}
 .ts-schedule-nav {
   text-align: center;
   margin-bottom: 90px;
@@ -616,7 +716,7 @@ $this->registerCss('
   font-size: 24px;
   font-weight: 400;
   color: #222222;
-  margin-bottom: 0;
+  margin: 0;
   text-transform: capitalize;
 }
 
@@ -749,7 +849,7 @@ display:none;
 }
 #joinBtn{
     font-size: 25px;
-    padding: 35px;
+    padding: 48px;
     display: block;
     text-align: center;
     color: #fff;
@@ -787,6 +887,11 @@ transform: rotate(100deg);
 .dis-flex p i{
     color: #00a0e3;
     padding-right: 5px;
+}
+@media screen and (min-width: 991px){
+    .md-flex{
+        display:flex;
+    }
 }
 @media screen and (max-width: 768px){
     .dis-flex p{
@@ -1355,6 +1460,17 @@ a:link, a:visited {
     border: none;
     margin:5px 5px;
 }
+.vc-ra-btn{
+    font-size: 14px;
+    height: 40px;
+    padding: 0 15px;
+    /* width: 150px; */
+    line-height: 40px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin: 5px 5px;
+}
 .ra-btn:hover{
     box-shadow: 0 6px 8px rgba(0,0,0,.2);
     transition: .3s ease;
@@ -1556,7 +1672,74 @@ div.icon span {
     transform: scale(1.05);
   box-shadow: 0px 2px 10px 3px #ddd;
 }
+.ts-book-seat {
+  background-image:linear-gradient(110deg, #FF7803 50%, #fff 143%);
+  position: relative;
+  padding: 40px 0;
+}
+.ts-book-seat:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+//  background-image: url(../../../public/images/lines-2.png);
+  content: \'\';
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+}
+.ts-book-seat .book-seat-content {
+  position: relative;
+  z-index: 1;
+}
+.ts-book-seat .book-seat-content .section-title {
+  margin-bottom: 40px;
+  font-size: 24px;
+  max-width:600px;
+  margin:auto;
+}
+.ts-book-seat .book-seat-content .section-title span{
+  margin-top: 15px;
+  color:#fff;
+}
+.ts-book-seat .book-seat-content p {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.ts-book-seat .book-seat-content .section-title {
+  margin-bottom: 0px;
+  font-size: 28px;
+}
+.ts-book-seat .book-seat-content .section-title span{
+  margin-top: 15px;
+}
+.ts-book-seat .book-seat-content p {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.section-title img {
+    max-height: 80px;
+    margin-bottom:20px;
+}
+.section-list{
+  color: #fff;
+  text-align: left;
+  line-height: 20px;
+  max-width: 600px;
+  margin: auto;
+  list-style: disc;
+}
+.section-list li{
+  font-size: 16px;
+}
+.ts-book-seat.second {
+  background:#00008b;
+}
 @media (max-width: 767px) {
+.section-list{
+    padding:10px 30px;
+}
 .schedule-listing {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -1624,7 +1807,7 @@ $(document).on('click','#paidRegisterBtn',function(event){
         url: '/api/v3/webinar/request-payment',
         method: 'POST',
         data: {webinar_enc_id: webinar_id, created_by : user_id},
-        beforeSend: function(res) {
+        beforeSend: function() {
             demobtn.show();
             btn.hide();
         },  
@@ -1653,38 +1836,105 @@ $(document).on('click','#paidRegisterBtn',function(event){
         }
     });
 });
-$(document).on('click','.registered',function(event){
+$(document).on('click','.interestBtn',function(event){
     event.preventDefault();
      var btn = $(this);
-     var web_id = btn.attr('data-key');
      var value = btn.attr('value');
+     if(value != interest_status){
+        $.ajax({
+            url: '/webinars/record-interest',
+            type: 'POST',
+            data: {wid: webinar_id,value: value},
+            beforeSend:function(){
+                $("button.interestBtn").attr("disabled","disabled");  
+            },
+            success:function(res){
+                if(res.status == 200){
+                    toastr.success(res.message, res.title);
+                } else {
+                    toastr.error(res.message, res.title);
+                }
+                $("button.interestBtn").attr("disabled",false);  
+            }
+        });
+        interest_status = value;
+     } else {
+        toastr.info('Message', 'Already Updated..');
+     }
+});
+$(document).on('click','#registerBtn',function(event){
+    event.preventDefault();
+     var btn = $(this);
+     var demobtn = $('#loadingBtn');
     $.ajax({
         url: '/webinars/registration',
         type: 'POST',
-        data: {wid: web_id,value: value},
+        data: {wid: webinar_id,refcode:refcode},
+        beforeSend: function() {
+            demobtn.show();
+            btn.hide();
+        },
         success:function(res){
-            toastr.success('Registered Successfully..', 'Success');
-            $.pjax.reload({container: '#webinar_registations', async: false});
+            btn.show();
+            demobtn.hide();
+            switch (res.status) {
+                case 200 :
+                    toastr.success(res.message, res.title);
+                    btn.text("Registered");
+                    btn.attr("id","");
+                    window.location.reload();
+                    break;
+                case 203 :
+                    toastr.info(res.message, res.title);
+                    break;
+                default :
+                    toastr.error(res.message, res.title);
+            }
         }
     });
 });
-   $('.ts-image-popup').magnificPopup({
-      type: 'inline',
-      closeOnContentClick: false,
-      midClick: true,
-      callbacks: {
-         beforeOpen: function () {
-            this.st.mainClass = this.st.el.attr('data-effect');
-         }
-      },
-      zoom: {
-         enabled: true,
-         duration: 500, // don't foget to change the duration also in CSS
-      },
-      mainClass: 'mfp-fade',
-   });
+$('.ts-image-popup').magnificPopup({
+  type: 'inline',
+  closeOnContentClick: false,
+  midClick: true,
+  callbacks: {
+     beforeOpen: function () {
+        this.st.mainClass = this.st.el.attr('data-effect');
+     }
+  },
+  zoom: {
+     enabled: true,
+     duration: 500, // don't foget to change the duration also in CSS
+  },
+  mainClass: 'mfp-fade',
+});
 $(document).on('click','.open-sp-modal', function (){
    $(this).children().children('a').trigger('click');
+}); 
+$(document).on('click','#joinBtn', function (e){
+    var ths = $(this);
+    var open_link = ths.attr('data-link');
+    var id = ths.attr('data-id');
+    var link = "/mentors/webinar-" + open_link + "?id=" + id;
+    if(open_link == "live"){
+           if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
+    } else {
+        if(registeration_status != ""){
+            // use is registered
+            if(typeof open_link !== "undefined" || typeof id !== "undefined"){
+                window.location.href = link;
+            } else {
+                toastr.error("Something went wrong..", "Undefined");
+            }
+        } else {
+            // not registered
+            $('#registerEventSection').find('button:visible').click();
+        }   
+    }
 });  
 
 function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
@@ -1734,26 +1984,29 @@ function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
 function updateStatus(payment_enc_id, payment_id, status,reg_id)
 {
     $.ajax({
-            url : '/api/v3/webinar/update-status',
-            method : 'POST', 
-            data : {
-              payment_status:status,
-              payment_enc_id:payment_enc_id,
-              payment_id: payment_id, 
-              registration_enc_id: reg_id, 
-            },
-            success:function(resp)
-            {
-                if(res.response.status != 200){
-                    swal({ 
-                        title:"Message",
-                        text: "Payment Successfully Captured & It will reflect in sometime..",
-                     });
-                }
+        url : '/api/v3/webinar/update-status',
+        method : 'POST', 
+        data : {
+          payment_status:status,
+          payment_enc_id:payment_enc_id,
+          payment_id: payment_id, 
+          registration_enc_id: reg_id, 
+        },
+        success:function(resp)
+        {
+            if(res.response.status != 200){
+                swal({ 
+                    title:"Message",
+                    text: "Payment Successfully Captured & It will reflect in sometime..",
+                 });
             }
-            
+        }
     })
 }
+
+$(document).on("click","#joinRegisterBtn", function() {
+    $('#registerEventSection').find('button:visible').click();
+});
 
 JS;
 $this->registerJs($script);
@@ -1763,7 +2016,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerCssFile('ps://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>
@@ -1778,5 +2031,9 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             clickId = event.currentTarget.getAttribute('id');
             clickedEle.classList.toggle('actionColor');
         })
+    }
+
+    function registerEvent() {
+        $('#paidRegisterBtn').click();
     }
 </script>
