@@ -268,6 +268,7 @@ class MentorsController extends Controller
         $type = 'audience';
         $webinarDetail = self::getWebianrDetails($id);
         $nextEvent = $webinarDetail['webinarEvents'][0];
+//        $dateEvents = ArrayHelper::index($webinarDetail['webinarEvents'], null, 'event_date');
         if(empty($nextEvent)){
 //            webinar finished
             return $this->render('/mentors/non-authorized', [
@@ -306,7 +307,8 @@ class MentorsController extends Controller
         return $this->render('webinar-view', [
             'type' => $type,
             'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail
+            'webinarDetail' => $webinarDetail,
+//            'dateEvents' => $dateEvents
         ]);
     }
 
