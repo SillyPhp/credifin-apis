@@ -23,6 +23,7 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
+use yii\web\HttpException;
 
 class WebinarsController extends Controller
 {
@@ -80,8 +81,12 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
+        if(empty($webinar)){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
         $nextEvent = $webinar['webinarEvents'][0];
         if(empty($nextEvent)){
+//                webinar finished
             return $this->render('/mentors/non-authorized', [
                 'type' => 1
             ]);
