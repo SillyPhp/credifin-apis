@@ -98,13 +98,15 @@ class Webinar extends \common\models\Webinar
                 ->select([
                     "a.event_enc_id",
                     'a.duration',
+                    'a.start_datetime',
                     "DATE_FORMAT(ADDDATE(a.start_datetime, INTERVAL duration MINUTE), '%H:%i:%s') endtime",
                     "DATE_FORMAT(a.start_datetime, '%d/%m/%Y') event_date",
                     "DATE_FORMAT(a.start_datetime, '%H:%i:%s') event_time",
 //                    "ADDTIME(DATE_FORMAT(a.start_datetime, '%H:%i:%s'), SEC_TO_TIME(a.duration*60)) endtime",
                     "a.description event_description",
                     'a.title event_title',
-                    'a.session_enc_id'
+                    'a.session_enc_id',
+                    'a.status'
                 ])
                 ->joinWith(['webinarSpeakers d' => function ($d) {
                     $d->select([
@@ -187,5 +189,51 @@ class Webinar extends \common\models\Webinar
         }
 
         return $webinar_detail;
+    }
+
+    public function nextEvent($webinar_enc_id, $date)
+    {
+        $events = WebinarEvents::find()
+            ->alias('a')
+            ->select([
+                "a.event_enc_id",
+                'a.duration',
+                'a.start_datetime',
+                "DATE_FORMAT(ADDDATE(a.start_datetime, INTERVAL duration MINUTE), '%H:%i:%s') endtime",
+                "DATE_FORMAT(a.start_datetime, '%d/%m/%Y') event_date",
+                "DATE_FORMAT(a.start_datetime, '%H:%i:%s') event_time",
+                "a.description event_description",
+                'a.title event_title',
+                'a.session_enc_id',
+                'a.status'
+            ])
+            ->joinWith(['webinarSpeakers d' => function ($d) {
+                $d->select([
+                    'd.webinar_event_enc_id',
+                    'd.speaker_enc_id',
+                    'd1.user_enc_id',
+                    'CONCAT(d2.first_name, " ", d2.last_name) as fullname',
+                    'CASE WHEN d2.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d2.image_location, "/", d2.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(d2.first_name, " ", d2.last_name), "&size=200&rounded=false&background=", REPLACE(d2.initials_color, "#", ""), "&color=ffffff") END image',
+                    'd3.designation',
+                    'd2.facebook',
+                    'd2.twitter',
+                    'd2.linkedin',
+                    'd2.instagram',
+                ]);
+                $d->joinWith(['speakerEnc d1' => function ($d1) {
+                    $d1->joinWith(['userEnc d2']);
+                    $d1->joinWith(['designationEnc d3']);
+                }], false);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }])
+            ->where(['a.webinar_enc_id' => $webinar_enc_id, "DATE_FORMAT(a.start_datetime, '%Y-%m-%d')" => $date])
+            ->andWhere(['a.is_deleted' => 0, 'a.status' => [0, 1]])
+            ->groupBy(['a.event_enc_id'])
+            ->orderBy(['a.start_datetime' => SORT_ASC])
+            ->offset(1)
+            ->asArray()
+            ->all();
+
+        return $events;
     }
 }

@@ -21,6 +21,7 @@ use yii\web\Response;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\helpers\ArrayHelper;
+use yii\web\HttpException;
 
 class MentorsController extends Controller
 {
@@ -266,13 +267,48 @@ class MentorsController extends Controller
     {
         $type = 'audience';
         $webinarDetail = self::getWebianrDetails($id);
-
+        $nextEvent = $webinarDetail['webinarEvents'][0];
+//        $dateEvents = ArrayHelper::index($webinarDetail['webinarEvents'], null, 'event_date');
+        if(empty($nextEvent)){
+//            webinar finished
+            return $this->render('/mentors/non-authorized', [
+                'type' => 1
+            ]);
+        }
+        if($nextEvent['session_enc_id'] != $id){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
+        $statustype = "";
+        switch ($nextEvent['status']){
+            case 0:
+//                yet to start
+                $statustype = 2;
+                break;
+            case 2:
+//                ended
+                $statustype = 3;
+                break;
+            case 3:
+//                technical issues
+                $statustype = 4;
+                break;
+            case 4:
+//                cancelled
+                $statustype = 5;
+                break;
+        }
+        if($statustype){
+            return $this->render('/mentors/non-authorized', [
+                'type' => $statustype,
+                'nextEvent' => $nextEvent,
+            ]);
+        }
         $webinars = self::getWebianrs($id);
-//        $iframeUrl = '/live-stream/' . $type . '?id=' . $id;
         return $this->render('webinar-view', [
             'type' => $type,
             'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail
+            'webinarDetail' => $webinarDetail,
+//            'dateEvents' => $dateEvents
         ]);
     }
 
@@ -283,6 +319,10 @@ class MentorsController extends Controller
         $webinars = self::getWebianrs($id);
         $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
+        $nextEvent = $webinarDetail['webinarEvents'][0];
+        if($nextEvent['session_enc_id'] != $id){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
             return $this->render('webinar-view', [
                 'type' => $type,

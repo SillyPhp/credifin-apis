@@ -23,6 +23,7 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
+use yii\web\HttpException;
 
 class WebinarsController extends Controller
 {
@@ -80,8 +81,12 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
+        if(empty($webinar)){
+            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+        }
         $nextEvent = $webinar['webinarEvents'][0];
         if(empty($nextEvent)){
+//                webinar finished
             return $this->render('/mentors/non-authorized', [
                 'type' => 1
             ]);
@@ -95,7 +100,7 @@ class WebinarsController extends Controller
         }
 
         $webinarEvents = self::getWebianrDetail($slug, false);;
-        $dateEvents = ArrayHelper::index($webinarEvents['webinarEvents'], null, 'event_date');
+        $dateEvents = ArrayHelper::index($webinar['webinarEvents'], null, 'event_date');
         $event_ids = ArrayHelper::getColumn($webinar['webinarEvents'], 'event_enc_id');
 
         if ($webinar['session_for'] != 2) {
@@ -458,7 +463,7 @@ class WebinarsController extends Controller
                     'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
-                $d->limit(6);
+                $d->limit(3);
                 $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
             }])
             ->andWhere(['a.is_deleted' => 0])

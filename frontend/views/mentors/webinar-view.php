@@ -77,14 +77,14 @@ if (Yii::$app->user->identity->image) {
 </section>
 <section class="similar-webinars">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
         <?php
         if (!empty($webinars)) {
             ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mentor-heading">Similar Webinars</div>
+                </div>
+            </div>
             <div class="row">
                 <?= $this->render('/widgets/mentorships/webinar-card', [
                     'webinars' => $webinars,
@@ -305,8 +305,11 @@ db
             function gotData(data) {
                 var result = [];
                 for (var i in data.val()) {
-                    result.push([i, data.val()[i]]);
+                    result.push([i, data.val()[i], Date.parse(data.val()[i].full_date_time)]);
                 }
+                result.sort(function (a, b) {
+                    return a[2] - b[2];
+                });
                 for (var z = 0; z < result.length; z++) {
                     if (!document.getElementById(result[z][0])) {
                         if(result[z][1].sender != userId){
@@ -403,11 +406,37 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     userLastOnlineRef.onDisconnect().remove();
     var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
     usersCount.on('value', function (data) {
+        var tempData;
+        var usersCount2 = db.ref(specialKey + '/userStatusAdd/');
+        usersCount2.on('value', function (data2) {
+            var resultData2 = [];
+            for (var k in data2.val()) {
+                resultData2.push([k, data2.val()[k]]);
+            }
+            tempData = data2.val();
+        });
         var result2 = [];
         for (var i in data.val()) {
             result2.push([i, data.val()[i]]);
         }
-        document.getElementById('viewers').innerText = result2.length;
+        document.getElementById('viewers').innerText = result2.length + tempData;
+    });
+    var usersCount3 = db.ref(specialKey + '/userStatusAdd/');
+    usersCount3.on('value', function (data2) {
+        var tempData;
+        var resultData2 = [];
+        for (var k in data2.val()) {
+            resultData2.push([k, data2.val()[k]]);
+        }
+        tempData = data2.val();
+        var usersCountg = db.ref(specialKey + '/userStatus/' + webinarId);
+        usersCountg.on('value', function (data) {
+            var result2 = [];
+            for (var i in data.val()) {
+                result2.push([i, data.val()[i]]);
+            }
+            document.getElementById('viewers').innerText = result2.length + tempData;
+        });
     });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
@@ -440,6 +469,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 'image': userImage,
                 'date': dateMain,
                 'time': timeMain,
+                'full_date_time': String(currentDate),
             });
             var data = {
                 'webinar_enc_id': webinarId,
