@@ -168,8 +168,9 @@ class OrganizationList
     {
         if ($params['college_course_info'][0]['pulled_from']=='claim')
         {
+            $course_name = trim($params['college_course_info'][0]['course_text']);
             return [
-                'assigned_course_id'=>$params['college_course_info'][0]['course_id']
+                'assigned_course_id'=>$this->getAssignCourse($course_name,$parser['college_id'])
             ];
         }
         else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
@@ -185,6 +186,11 @@ class OrganizationList
                 'assigned_course_id'=>$this->getAssignUnclaimCourse($course_name,$parser['college_id'])
             ];
         }
+    }
+
+    private function getAssignCourse()
+    {
+
     }
 
     private function getAssignUnclaimCourse($course_name,$colleg_id)

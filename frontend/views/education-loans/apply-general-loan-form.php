@@ -37,7 +37,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="number" class="input-group-text">
                                             Name of Applicant (Student Name)
                                         </label>
-                                        <input type="text" class="form-control" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -89,7 +89,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control"
+                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
@@ -122,11 +122,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="course_name" class="input-group-text">
                                             Course Name
                                         </label>
-                                        <select class="form-control" disabled="disabled" id="course_name"
-                                                name="course_name">
-
-                                        </select>
-                                        <input type="text" disabled="disabled" placeholder="Enter Course Name" class="form-control" id="course_name_text" name="course_name_text">
+                                        <input type="text" placeholder="Enter Course Name" class="form-control text-capitalize" id="course_name_text" name="course_name_text">
                                     </div>
                                 </div>
                                 <div class="col-md-6 padd-20">
@@ -254,7 +250,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                                     <label for="co-name[]" class="input-group-text">
                                                         Name
                                                     </label>
-                                                    <input type="text" name="co-name[1]" class="form-control" id="co-name" placeholder="Enter Full Name">
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 padd-20">
@@ -389,7 +385,6 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
 <input type="hidden" name="colg_text" id="colg_text">
 <input type="hidden" name="colg_id" id="colg_id">
 <input type="hidden" name="course_text" id="course_text">
-<input type="hidden" name="course_id" id="course_id">
 <input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
@@ -415,7 +410,6 @@ border: 1px solid #ddd !important;
 #countryName{
     display: none;
 }
-#course_name{display:none}
 #relationInput{
     display: none;
     margin-top: 10px; 
@@ -812,7 +806,7 @@ $script = <<< JS
             method : 'GET',  
             data:{
                 datatype:datatype,
-                source:source,
+                source:source, 
                 type:type
                 },   
             success : function(res) { 
@@ -846,27 +840,18 @@ $script = <<< JS
                             $('#pulled_from').val('claim');
                             $('#colg_text').val(data.text);
                             $('#colg_id').val(data.id);
-                            $('#course_name').show();
-                            $('#course_name').removeAttr('disabled','disabled');
-                            $('#course_name_text').hide(); 
                         }
                     else if (data.id==='self'&&data.pulled_from==='unclaim')
                         {
                             $('#pulled_from').val('unclaim');
                             $('#colg_text').val(data.text);
                             $('#colg_id').val(data.id);
-                            $('#course_name').hide(); 
-                            $('#course_name_text').removeAttr('disabled','disabled');  
-                            $('#course_name_text').show(); 
                         }
                     else if (data.id!='self'&&data.pulled_from==='unclaim')
                         {
                             $('#pulled_from').val('unclaim');
                             $('#colg_text').val(data.text);
-                            $('#colg_id').val(data.id); 
-                            $('#course_name').hide(); 
-                            $('#course_name_text').removeAttr('disabled','disabled');  
-                            $('#course_name_text').show(); 
+                            $('#colg_id').val(data.id);
                         }
                 }); 
             }
@@ -962,9 +947,6 @@ $script = <<< JS
 				'college_name':{
 				    required:true,
 				},
-				'course_name':{
-				    required:true,
-				},
 				'course_name_text':{
 				    required:true,
 				},
@@ -1029,9 +1011,6 @@ $script = <<< JS
 			messages: {
 				'applicant_name': {
 					required: "Applicant Name Required",
-				},
-				'course_name': {
-					required: "Course Name Cannot Be Blank",
 				},
 				'course_name_text': {
 					required: "Course Name Cannot Be Blank",
@@ -1153,7 +1132,6 @@ function ajaxSubmit()
 {
     console.log($('input[name="countryRadio"]:checked').val());
     console.log($('#country_name').val());
-    $('#course_id').val($('#course_name').val());
     $('#course_text').val($('#course_name_text').val());
     let co_applicants = [];
     let college_course_info = [];
@@ -1161,7 +1139,6 @@ function ajaxSubmit()
     var object = {};  
     object['pulled_from'] = $('#pulled_from').val();
     object['course_text'] = $('#course_text').val();
-    object['course_id'] = $('#course_id').val();
     object['colg_text'] = $('#colg_text').val();
     object['colg_id'] = $('#colg_id').val();
     college_course_info.push(object);
