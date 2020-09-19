@@ -463,7 +463,7 @@ class WebinarsController extends Controller
                     'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
-                $d->limit(6);
+                $d->limit(3);
                 $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
             }])
             ->andWhere(['a.is_deleted' => 0])
