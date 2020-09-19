@@ -305,8 +305,11 @@ db
             function gotData(data) {
                 var result = [];
                 for (var i in data.val()) {
-                    result.push([i, data.val()[i]]);
+                    result.push([i, data.val()[i], Date.parse(data.val()[i].full_date_time)]);
                 }
+                result.sort(function (a, b) {
+                    return a[2] - b[2];
+                });
                 for (var z = 0; z < result.length; z++) {
                     if (!document.getElementById(result[z][0])) {
                         if(result[z][1].sender != userId){
@@ -466,6 +469,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 'image': userImage,
                 'date': dateMain,
                 'time': timeMain,
+                'full_date_time': String(currentDate),
             });
             var data = {
                 'webinar_enc_id': webinarId,
