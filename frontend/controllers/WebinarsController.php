@@ -100,7 +100,7 @@ class WebinarsController extends Controller
         }
 
         $webinarEvents = self::getWebianrDetail($slug, false);;
-        $dateEvents = ArrayHelper::index($webinarEvents['webinarEvents'], null, 'event_date');
+        $dateEvents = ArrayHelper::index($webinar['webinarEvents'], null, 'event_date');
         $event_ids = ArrayHelper::getColumn($webinar['webinarEvents'], 'event_enc_id');
 
         if ($webinar['session_for'] != 2) {
