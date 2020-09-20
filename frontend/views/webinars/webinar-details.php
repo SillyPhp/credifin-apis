@@ -1,10 +1,11 @@
 <?php
-
+use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
+$promo = false;
+$promo = \frontend\models\referral\PromoCodes::getVarify($refcode);
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -82,22 +83,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                $r = \common\models\Referral::find()
-                                    ->where(['code' => $refcode])
-                                    ->andWhere(['organization_enc_id' => \common\models\Organizations::findOne(['slug' => 'dsbedutech'])])
-                                    ->asArray()->one();
-                                if (!empty($r)) {
-                                    $refCount = \common\models\WebinarRegistrations::find()
-                                        ->andWhere(['referral_enc_id' => $r['referral_enc_id'], 'status' => 1])
-                                        ->count();
-                                    if ($refCount <= 50) { ?>
-                                        <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                                    <?php } else { ?>
-                                        <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
-                                <?php } else {
-                                    ?>
+                                if ($promo){ ?>
+                                    <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
+                               <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                <?php }
+                                 <?php }
+                                  ?>
+                             <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
