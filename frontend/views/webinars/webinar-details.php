@@ -2,6 +2,8 @@
 use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+$session = Yii::$app->session;
+$session->set('current_url', Yii::$app->request->url);
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
