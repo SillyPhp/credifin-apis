@@ -330,12 +330,13 @@ class MentorsController extends Controller
     public function actionWebinarLive($id)
     {
         $type = 'multi-stream';
+        $user_id = Yii::$app->user->identity->user_enc_id;
         $webinarDetail = self::getWebianrDetails($id, true);
         $webinars = self::getWebianrs($id);
         $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         $nextEvent = $webinarDetail['webinarEvents'][0];
-        if($nextEvent['session_enc_id'] != $id){
+        if(!in_array($user_id, $speakerUserIds) && $nextEvent['session_enc_id'] != $id){
             throw new HttpException(404, Yii::t('frontend', 'Page not found'));
         }
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
