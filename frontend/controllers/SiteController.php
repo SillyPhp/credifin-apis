@@ -109,7 +109,13 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
-            return $this->redirect('/');
+            $session = Yii::$app->session;
+            $o = $session->get('current_url');
+            if ($o):
+            return $this->redirect($o);
+            else :
+                return $this->redirect('/');
+            endif;
         }
     }
 
@@ -118,7 +124,13 @@ class SiteController extends Controller
         $credentialsSetup = new CredentialsSetup();
         if ($credentialsSetup->load(Yii::$app->request->post())) {
             if ($credentialsSetup->save()) {
-                return $this->redirect('/');
+                $session = Yii::$app->session;
+                $o = $session->get('current_url');
+                if ($o):
+                    return $this->redirect($o);
+                else :
+                    return $this->redirect('/');
+                endif;
             }
         }
     }
