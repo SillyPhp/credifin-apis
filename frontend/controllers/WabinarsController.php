@@ -10,6 +10,7 @@ use yii\httpclient\Client;
 
 class WebinarsController extends Controller
 {
+
    public function actionSendMessage()
    {
        $ch = curl_init("https://rest.messengerpeople.com/api/v11/chat");

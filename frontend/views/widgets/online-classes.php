@@ -173,7 +173,7 @@ $this->registerCss('
 .virus-bg{
     position: ralative;
     overflow: hidden;
-    background:#eee ;
+    background:#fff ;
     background-size: contain;
     padding:30px 0 50px 0;
 }

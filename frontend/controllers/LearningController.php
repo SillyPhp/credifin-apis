@@ -457,7 +457,7 @@ class LearningController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
                 'status' => 200,
-                'result' => $this->__getCategories(12)
+                'result' => $this->__getCategories(6)
             ];
         }
     }

@@ -3,63 +3,62 @@
 use yii\helpers\Url;
 ?>
 
-<section class="admission-form">
-    <div class="oa-container">
-        <div class="ey-logo">
-            <a href="/"> <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>"></a>
-        </div>
-        <div class="flex-main">
-            <div class="left-sec">
-
-                <p>Online Admission</p>
-                <h2>Get Noticed By Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
-                <div class="ls-divider"></div>
-                <h4>Enjoy The Benefits Of Interest Free <span class="colorOrange">Education Loans</span></h4>
-                <div class="el-icons-flex">
-                    <div class="el-icons">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application.png')?>">
-                        <p>Online <br>Application</p>
-                    </div>
-                    <div class="el-icons">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-sanction.png')?>">
-                        <p>Quick <br>Sanction</p>
-                    </div>
-                    <div class="el-icons">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/upto-2lakhs.png')?>">
-                        <p>Collateral Free <br>Loans</p>
-                    </div>
-                </div>
-                <h3>Only on
-                    <a href="/education-loans">
-                        <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com
-                    </a>
-                </h3>
+    <section class="admission-form">
+        <div class="oa-container">
+            <div class="ey-logo">
+                <a href="/"> <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>"></a>
             </div>
-            <div class="right-sec">
-                <div class="ls-box-shadow">
-                    <p>Fill Me For Your Bright Future</p>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="First Name">
+            <div class="flex-main">
+                <div class="left-sec">
 
-                            <input type="text" class="form-control" placeholder="Last Name">
-
-                            <input type="email" class="form-control" placeholder="Email">
-
-                            <input type="tel" class="form-control" placeholder="Contact Number">
-
-                            <input type="text" class="form-control" placeholder="Course Name">
-
-                            <div class="button-form">
-                                <button type="submit" class="btn-frm" name="submit button">Submit</button>
-                            </div>
+                    <h2>Get Noticed By Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
+                    <div class="ls-divider"></div>
+                    <h4>Enjoy The Benefits Of Interest Free <span class="colorOrange">Education Loans</span></h4>
+                    <div class="el-icons-flex">
+                        <div class="el-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application.png')?>">
+                            <p>Online <br>Application</p>
                         </div>
-                    </form>
+                        <div class="el-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-sanction.png')?>">
+                            <p>Quick <br>Sanction</p>
+                        </div>
+                        <div class="el-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/upto-2-lakhs.png')?>">
+                            <p>Collateral Free <br>Loans</p>
+                        </div>
+                    </div>
+                    <h3>Only on
+                        <a href="/education-loans">
+                            <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com
+                        </a>
+                    </h3>
+                </div>
+                <div class="right-sec">
+                    <div class="ls-box-shadow">
+                        <p>Fill Me For Your Bright Future</p>
+                        <form>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="First Name">
+
+                                <input type="text" class="form-control" placeholder="Last Name">
+
+                                <input type="email" class="form-control" placeholder="Email">
+
+                                <input type="tel" class="form-control" placeholder="Contact Number">
+
+                                <input type="text" class="form-control" placeholder="Course Name">
+
+                                <div class="button-form">
+                                    <button type="submit" class="btn-frm" name="submit button">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <?php
 $this->registerCss('

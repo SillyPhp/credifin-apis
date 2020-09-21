@@ -202,7 +202,7 @@ use yii\helpers\Url;
                     Collateral Free Loans
                 </div>
                 <div class="">
-                    <a href="https://www.empoweryouth.com/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv"
+                    <a href="<?= Url::to('/education-loans/apply') ?>"
                        class="hvr-sweep-to-bottom">
                         Apply Now
                     </a>
