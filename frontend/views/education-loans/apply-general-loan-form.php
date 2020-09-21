@@ -839,7 +839,6 @@ $script = <<< JS
                     var data = e.params.data;
                     if (data.id!='self'&&data.pulled_from==='claim')
                         {
-                            getCourseList(data.id);
                             $('#pulled_from').val('claim');
                             $('#colg_text').val(data.text);
                             $('#colg_id').val(data.id);
