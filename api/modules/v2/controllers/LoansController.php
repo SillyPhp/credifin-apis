@@ -180,7 +180,6 @@ class LoansController extends ApiBaseController
                         $cc->joinWith(['courseEnc c1']);
                     }]);
                 }], false)
-                ->joinWith(['loanSanctionReports cc'])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select([
                         'd.loan_co_app_enc_id',
