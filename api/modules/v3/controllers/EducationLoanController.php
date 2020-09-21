@@ -170,7 +170,7 @@ class EducationLoanController extends ApiBaseController
     {
         $get = Courses::get();
         if ($get) {
-            return $get;
+            return $this->response(200, ['status' => 200, 'course' => $get]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
