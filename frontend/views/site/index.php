@@ -123,7 +123,6 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/event-poster') ?>
 <?= $this->render('/widgets/education-loan-landing') ?>
 
 <div id="app-data"></div>
