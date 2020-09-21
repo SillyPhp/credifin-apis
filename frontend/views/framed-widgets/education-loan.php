@@ -1,8 +1,6 @@
 <?php
 $this->title = $title . ' | Empower Youth';
-
 use yii\helpers\Url;
-
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -752,7 +750,7 @@ $script = <<<JS
     getFeeComponents(id = college_id); 
     function getCourseList(id) {
         $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
+            url : '/api/v3/education-loan/get-course-list',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -770,7 +768,7 @@ $script = <<<JS
     
     function getFeeComponents(id) {
         $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
+            url : '/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -1015,7 +1013,7 @@ function ajaxSubmit(id)
       purpose.push(this.value);
     });
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/save-widget-application',
+            url : '/api/v3/education-loan/save-widget-application',
             method : 'POST',
             data : {
                 id:id,
@@ -1120,7 +1118,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
 {
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
+            url : '/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
             data : {
               loan_payment_id:education_loan_id,
