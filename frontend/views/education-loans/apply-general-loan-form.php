@@ -122,7 +122,9 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="course_name" class="input-group-text">
                                             Course Name
                                         </label>
-                                        <input type="text" placeholder="Enter Course Name" class="form-control text-capitalize" id="course_name_text" name="course_name_text">
+                                        <div id="the-basics">
+                                            <input type="text" placeholder="Enter Course Name" class="typeahead form-control text-capitalize" id="course_name_text" name="course_name_text">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 padd-20">
@@ -798,6 +800,7 @@ font-family: auto !important;
 }
 ');
 $script = <<< JS
+    getCourses(); 
     getCountries();    
     getCollegeList(datatype=0,source=3,type=['College']);
     function getCollegeList(datatype, source, type) { 
@@ -857,23 +860,6 @@ $script = <<< JS
             }
         });
     }
-    function getCourseList(id) {
-        $.ajax({
-            url : '/api/v3/education-loan/get-course-list',
-            method : 'POST',
-            data : {id: id},
-            success : function(res) {
-            var html = []; 
-            var res = res.response.courses;
-            html.push('<option value>Select Course</option>');
-            $.each(res,function(index,value) 
-                  {
-                   html.push('<option value="'+value.college_course_enc_id+'">'+value.course_name+'</option>');
-                 }); 
-             $('#course_name').html(html);   
-            }
-        });
-    }
     function getCountries() { 
         $.ajax({     
             url : '/api/v3/countries-list/get-countries-list', 
@@ -910,6 +896,56 @@ $script = <<< JS
             $('#loan-purpose').html(html);   
             }
         });
+    } 
+    function getCourses()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _courses = [];
+         $.ajax({     
+            url : '/api/v3/education-loan/course-pool-list', 
+            method : 'GET',
+            success : function(res) {  
+                console.log
+            if (res.response.status==200){
+                 res = res.response.course;
+                $.each(res,function(index,value) 
+                  {   
+                   _courses.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('courses could not fetch');
+                }
+            } 
+        });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_courses',
+         source: substringMatcher(_courses)
+        }); 
     } 
     $('#mobile, #aadhaarnumber').mask("#", {reverse: true}); 
     $('input[name="co-aadhaarnumber[1]"]').mask("#", {reverse: true});
@@ -958,7 +994,7 @@ $script = <<< JS
 				    minlength: 12,
 				    maxlength: 12,
 				},
-				'loanamount':{
+				'loanamount':{ 
 				    required:true,
 				    min:500
 				},
@@ -1465,6 +1501,7 @@ $this->registerJs($script);
         }
     </script>
 <?php
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/common/select2Plugin/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@root/assets/common/select2Plugin/select2.min.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
