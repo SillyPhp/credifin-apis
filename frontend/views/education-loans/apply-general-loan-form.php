@@ -923,8 +923,7 @@ $script = <<< JS
          $.ajax({     
             url : '/api/v3/education-loan/course-pool-list', 
             method : 'GET',
-            success : function(res) {  
-                console.log
+            success : function(res) {
             if (res.response.status==200){
                  res = res.response.course;
                 $.each(res,function(index,value) 
