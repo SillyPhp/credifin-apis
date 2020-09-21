@@ -10,6 +10,7 @@ if (Yii::$app->user->identity->image) {
 } else {
     $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
+$time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
 ?>
 <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
 <input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>"
@@ -64,6 +65,37 @@ if (Yii::$app->user->identity->image) {
                                 ?>
                             </p>
                         </div>
+                        <?php
+                        if ($upcomingDateTime) {
+                            ?>
+                            <div class="upcoming-event-link">
+                                <div id="counter">
+                                    <span class="nxt-e">Next Event:</span>
+                                    <div id="timepart" style="display: none">
+                                        <div class="time-part">
+                                            <div class="counter-item">
+                                                <span class="days" id="days"></span><b>d</b>
+                                            </div>
+                                            <div class="counter-item">
+                                                <span class="hours" id="hours"></span><b>h</b>
+                                            </div>
+                                            <div class="counter-item">
+                                                <span class="minutes" id="minutes"></span><b>m</b>
+                                            </div>
+                                            <div class="counter-item">
+                                                <span class="seconds" id="seconds"></span><b>s</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="join-bb" id="join-upcoming" style="display: none">
+                                        <a href="<?= Url::to('/mentors/webinar-view?id=' . $upcomingEvent['session_enc_id']) ?>" target="_blank">Join Now</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -77,14 +109,14 @@ if (Yii::$app->user->identity->image) {
 </section>
 <section class="similar-webinars">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="mentor-heading">Similar Webinars</div>
-            </div>
-        </div>
         <?php
         if (!empty($webinars)) {
             ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mentor-heading">Similar Webinars</div>
+                </div>
+            </div>
             <div class="row">
                 <?= $this->render('/widgets/mentorships/webinar-card', [
                     'webinars' => $webinars,
@@ -107,6 +139,25 @@ if (Yii::$app->user->identity->image) {
 </script>
 <?php
 $this->registerCss('
+.time-part {
+    display: flex !important;
+}
+.webinar-speakers p{margin-bottom:5px;}
+div#counter {
+    display: flex !important;
+}
+.nxt-e{font-weight:600;margin-right:10px;color:#333;}
+.counter-item {
+    color: #f00;
+    margin:0 5px
+}
+.join-bb a {
+    color: #fff;
+    background-color: #00a0e3;
+    padding: 2px 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
 .msg-input{
     border:1px solid #eee;
     width: 100%;
@@ -305,8 +356,11 @@ db
             function gotData(data) {
                 var result = [];
                 for (var i in data.val()) {
-                    result.push([i, data.val()[i]]);
+                    result.push([i, data.val()[i], Date.parse(data.val()[i].full_date_time)]);
                 }
+                result.sort(function (a, b) {
+                    return a[2] - b[2];
+                });
                 for (var z = 0; z < result.length; z++) {
                     if (!document.getElementById(result[z][0])) {
                         if(result[z][1].sender != userId){
@@ -341,6 +395,32 @@ db
                 var myElement = document.getElementsByClassName('chat')[0].offsetHeight - 80;
                 document.getElementById('scroll-chat').scrollTop = myElement;
             }
+            
+function countdown(e){
+    var countDownDate = new Date(e).getTime();
+    var x = setInterval(function() {
+        // Get today's date and time
+        var now = new Date().getTime();
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        // Time calculations for days, hours, minutes and seconds
+        $('#days').text(Math.floor(distance / (1000 * 60 * 60 * 24)));
+        $('#hours').text(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        $('#minutes').text(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+        $('#seconds').text(Math.floor((distance % (1000 * 60)) / 1000));
+        if (distance <= 0) {
+            clearInterval(x);
+            $('#join-upcoming').show();
+            $('#timepart').hide();
+        } else { 
+            $('#timepart').show();
+            $('#join').hide();
+        }
+    }, 1000);
+}
+if("$upcomingDateTime" != ""){
+    countdown('$time');
+}
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
@@ -403,11 +483,37 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     userLastOnlineRef.onDisconnect().remove();
     var usersCount = db.ref(specialKey + '/userStatus/' + webinarId);
     usersCount.on('value', function (data) {
+        var tempData;
+        var usersCount2 = db.ref(specialKey + '/userStatusAdd/');
+        usersCount2.on('value', function (data2) {
+            var resultData2 = [];
+            for (var k in data2.val()) {
+                resultData2.push([k, data2.val()[k]]);
+            }
+            tempData = data2.val();
+        });
         var result2 = [];
         for (var i in data.val()) {
             result2.push([i, data.val()[i]]);
         }
-        document.getElementById('viewers').innerText = result2.length;
+        document.getElementById('viewers').innerText = result2.length + tempData;
+    });
+    var usersCount3 = db.ref(specialKey + '/userStatusAdd/');
+    usersCount3.on('value', function (data2) {
+        var tempData;
+        var resultData2 = [];
+        for (var k in data2.val()) {
+            resultData2.push([k, data2.val()[k]]);
+        }
+        tempData = data2.val();
+        var usersCountg = db.ref(specialKey + '/userStatus/' + webinarId);
+        usersCountg.on('value', function (data) {
+            var result2 = [];
+            for (var i in data.val()) {
+                result2.push([i, data.val()[i]]);
+            }
+            document.getElementById('viewers').innerText = result2.length + tempData;
+        });
     });
 
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
@@ -440,6 +546,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 'image': userImage,
                 'date': dateMain,
                 'time': timeMain,
+                'full_date_time': String(currentDate),
             });
             var data = {
                 'webinar_enc_id': webinarId,

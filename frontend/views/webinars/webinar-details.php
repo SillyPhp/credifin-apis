@@ -1,10 +1,13 @@
 <?php
-
+use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
+$session = Yii::$app->session;
+$session->set('current_url', Yii::$app->request->url);
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
+$promo = false;
+$promo = \frontend\models\referral\PromoCodes::getVarify($refcode);
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -82,22 +85,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                $r = \common\models\Referral::find()
-                                    ->where(['code' => $refcode])
-                                    ->andWhere(['organization_enc_id' => \common\models\Organizations::findOne(['slug' => 'dsbedutech'])])
-                                    ->asArray()->one();
-                                if (!empty($r)) {
-                                    $refCount = \common\models\WebinarRegistrations::find()
-                                        ->andWhere(['referral_enc_id' => $r['referral_enc_id'], 'status' => 1])
-                                        ->count();
-                                    if ($refCount <= 50) { ?>
-                                        <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                                    <?php } else { ?>
-                                        <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>  <?php } ?>
-                                <?php } else {
-                                    ?>
+                                if ($promo){ ?>
+                                    <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
+                               <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                <?php }
+                                 <?php }
+                                  ?>
+                             <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -130,7 +124,8 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                         here to Join</a>
                                 <?php } else { ?>
                                     <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>" data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                       href="javascript:;" data-link="<?= $share_link ?>"
+                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
                                         here to Join</a>
                                 <?php } ?>
                             </div>
@@ -172,7 +167,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             <div class="row">
                 <div class="">
                     <div class="col-md-12 mx-auto">
-                        <h2 class="section-title loc-set">
+                        <h2 class="section-title">
                             Webinar Details
                         </h2>
                     </div>
@@ -215,7 +210,8 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 </ul>
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
-                                    <p><span><?= (320 + count($webinarRegistrations)) ?></span>
+                                    <p>
+                                        <span><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -268,6 +264,18 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div>
 </div>
 <!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:9501771965">+919501771965</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -627,6 +635,31 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.cntct{
+    background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
+    padding-bottom: 20px;
+}
+.contact-req {
+    text-align: center;
+}
+.contact-req h3 {
+	font-size: 25px;
+	font-family: lora;
+	text-transform: uppercase;
+	color: #fff;
+	font-weight: 600;
+	margin: 5px 0 15px 0;
+}
+.contact-req a {
+    color: #fff;
+    background-color: #ff7803e8;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: roboto;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
 .us-marg{
     margin-top:2px;
 }
@@ -677,7 +710,7 @@ $this->registerCss('
   font-size: 24px;
   font-weight: 400;
   color: #222222;
-  margin-bottom: 0;
+  margin: 0;
   text-transform: capitalize;
 }
 
@@ -1794,9 +1827,6 @@ $(document).on('click','#paidRegisterBtn',function(event){
             }
             btn.show();
             demobtn.hide();
-            // $.pjax.reload({container: '#webinar_join_registations', async: false});
-            // $.pjax.reload({container: '#webinar_registations', async: false});
-            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1853,11 +1883,7 @@ $(document).on('click','#registerBtn',function(event){
                     break;
                 default :
                     toastr.error(res.message, res.title);
-                    
             }
-            // $.pjax.reload({container: '#webinar_join_registations', async: false});
-            // $.pjax.reload({container: '#webinar_registations', async: false});
-            // $.pjax.reload({container: '#webinar_join_link', async: false});
         }
     });
 });
@@ -1952,24 +1978,23 @@ function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
 function updateStatus(payment_enc_id, payment_id, status,reg_id)
 {
     $.ajax({
-            url : '/api/v3/webinar/update-status',
-            method : 'POST', 
-            data : {
-              payment_status:status,
-              payment_enc_id:payment_enc_id,
-              payment_id: payment_id, 
-              registration_enc_id: reg_id, 
-            },
-            success:function(resp)
-            {
-                if(res.response.status != 200){
-                    swal({ 
-                        title:"Message",
-                        text: "Payment Successfully Captured & It will reflect in sometime..",
-                     });
-                }
+        url : '/api/v3/webinar/update-status',
+        method : 'POST', 
+        data : {
+          payment_status:status,
+          payment_enc_id:payment_enc_id,
+          payment_id: payment_id, 
+          registration_enc_id: reg_id, 
+        },
+        success:function(resp)
+        {
+            if(res.response.status != 200){
+                swal({ 
+                    title:"Message",
+                    text: "Payment Successfully Captured & It will reflect in sometime..",
+                 });
             }
-            
+        }
     })
 }
 
@@ -1985,7 +2010,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-$this->registerCssFile('https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerCssFile('ps://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>

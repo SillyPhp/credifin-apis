@@ -191,7 +191,7 @@ class WebinarsController extends ApiBaseController
             $data = Yii::$app->request->post();
             $webinar = WebinarEvents::findOne(['session_enc_id' => $data['session_enc_id']]);
             $conversation_id = WebinarConversations::find()
-                ->where(['webinar_enc_id' => $webinar->webinar_enc_id])
+                ->where(['webinar_event_enc_id' => $webinar->event_enc_id])
                 ->one();
 
             if ($conversation_id) {
@@ -220,7 +220,7 @@ class WebinarsController extends ApiBaseController
                     $conversation->conversation_enc_id = $utilitiesModel->encrypt();
                     $conversation->conversation_type = 2;
                     $conversation->webinar_event_enc_id = $webinar->event_enc_id;
-                    $conversation->created_by = Yii::$app->user->identity->user_enc_id;
+                    $conversation->created_by = $user->user_enc_id;
                     $conversation->created_on = date('Y-m-d H:i:s');
                     if (!$conversation->save()) {
                         $transaction->rollBack();
@@ -236,7 +236,7 @@ class WebinarsController extends ApiBaseController
                         $comment->parent_enc_id = $data['reply_to'];
                     }
                     $comment->created_on = date('Y-m-d H:i:s');
-                    $comment->created_by = Yii::$app->user->identity->user_enc_id;
+                    $comment->created_by = $user->user_enc_id;
                     if (!$comment->save()) {
                         $transaction->rollBack();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);

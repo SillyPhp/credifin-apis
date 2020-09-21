@@ -15,12 +15,12 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     #full-screen-video.sp1 > div{
         width: 90% !Important;
         height: 90vh !important;
-        margin-top: 5vh;
+        margin-top: 0vh;
     }
     #full-screen-video.sp2 > div{
         width: 48% !Important;
         height: 80vh !important;
-        margin-top: 10vh;
+        margin-top: 0vh;
     }
     #full-screen-video.sp3 > div{
         width: 48% !Important;
@@ -130,6 +130,10 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     @media only screen and (min-width: 1200px) {
         #full-screen-video {
             max-width: 90%;
+            margin-top: 6vh;
+        }
+        #full-screen-video.sp1 {
+            margin-top: auto;
         }
     }
     @media (min-width:600px) {
@@ -167,7 +171,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
 </style>
 <style data-jss="" data-meta="makeStyles">
     .jss1 {
-        height: 150px;
+        height: 90px;
         display: flex;
         z-index: 10;
         align-items: center;
@@ -198,6 +202,23 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         position: absolute;
         flex-direction: column;
         justify-content: flex-end;
+    }
+    .full-vid{
+        cursor: pointer;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 10;
+        padding: 5px 10px;
+        background-color: #00000078;
+        color: #fff;
+        border-top-left-radius: 5px;
+    }
+    .hidden{
+        display: none;
+    }
+    .sp1 > div .full-vid, .elem1 > div .full-vid{
+        display: none;
     }
     .exit_btn
     {
@@ -266,7 +287,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             </div>
             <div class="jss5">
                 <div class="jss1">
-                    <i class="jss2 margin-right-19 mute-video" id="video-btn" title="mute-video"></i>
+                    <i class="jss2 margin-right-19 mute-video" id="video-btn" title="Turn Off Video"></i>
                     <i class="jss2 margin-right-19 mute-audio" id="mic-btn" title="mute-audio"></i>
                     <div class="dropdown">
                         <button type="button" class="jss2 btn cs_btn margin-right-19" data-toggle="dropdown">
@@ -275,7 +296,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
                         </div>
                     </div>
                     <i class="jss2 margin-right-19 share-screen-off" id="share-sreen-btn" title="share-screen"></i>
-                    <div class="jss2 margin-right-19 exit_btn" id="exit-btn"></div>
+                    <div class="jss2 margin-right-19 exit_btn" id="exit-btn" title="End Session"></div>
 <!--                    <span class="jss2 share-link" title="share audience link">-->
 <!--                    </span>-->
                 </div>
@@ -300,6 +321,7 @@ $this->registerCss("
     width: 100%;
     text-align: center;
    display:none;
+   z-index: 999;
 }
 #session_expired h3
 {
@@ -330,15 +352,14 @@ color:#fff;
 }
 ");
 $script = <<< JS
-// browserAccess();
-// function browserAccess()
-// { 
-// if (top === self) {
-//      $("body").html("Access Denied");
-// } 
-// else{executeAll();}
-// } 
-executeAll();
+browserAccess();
+function browserAccess()
+{ 
+if (top === self) {
+     $("body").html("Access Denied");
+} 
+else{executeAll();}
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
@@ -374,12 +395,13 @@ function getTokenVarification(tokenId)
         channel_name = response.response.channel_name;
         access_token = response.response.token;
         console.log(channel_name);
-        console.log(access_token);
+        console.log(access_token); 
         addScript("/assets/themes/ey/broadcast/js/multi-broadcast-script.js");
-       }
+       } 
        else 
        {
-        alert("Authentication Failed");
+        $('#session_expired').html('<h3>Authentication Failed</h3>');
+        $('#session_expired').css('display','block');
        }
       },  
     })  
@@ -399,6 +421,9 @@ function getTokenVarification(tokenId)
     });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-Multistream/static/css/main.419b49bd.chunk.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

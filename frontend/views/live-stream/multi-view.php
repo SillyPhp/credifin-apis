@@ -119,7 +119,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             display: flex;
             position: relative;
             align-items: center;
-            background-color: #666;
+            background-color: #000;
             height: 100vh;
         }
 
@@ -143,7 +143,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             border-top-left-radius: 5px;
         }
         .hidden{
-            display: none;
+            display: none !important;
         }
         .sp1 > div .full-vid, .elem1 > div .full-vid{
             display: none;
@@ -291,16 +291,27 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         </div>
     </div>
 <?php
+$this->registerCss("
+#session_expired 
+{
+    width: 100%;
+    text-align: center;
+   display:none;
+}
+#session_expired h3
+{
+color:#fff;
+}
+");
 $this->registerJs('
-//browserAccess();
-//function browserAccess()
-//{ 
-//if (top === self) {
-//     $("body").html("Access Denied");
-//} 
-//else{executeAll();}
-//}
-executeAll();
+browserAccess();
+function browserAccess()
+{ 
+if (top === self) {
+     $("body").html("Access Denied");
+} 
+else{executeAll();}
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
@@ -333,7 +344,7 @@ function getTokenVarification(tokenId)
        {
         app_id = response.response.app_id;
         channel_name = response.response.channel_name;
-        access_token = response.response.token;
+        access_token = response.response.token; 
         addScript("/assets/themes/ey/broadcast/js/multi-audience-script.js");
        }
        else
