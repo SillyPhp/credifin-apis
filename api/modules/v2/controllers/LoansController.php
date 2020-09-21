@@ -180,6 +180,7 @@ class LoansController extends ApiBaseController
                         $cc->joinWith(['courseEnc c1']);
                     }]);
                 }], false)
+                ->joinWith(['loanSanctionReports cc'])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select([
                         'd.loan_co_app_enc_id',
@@ -202,7 +203,7 @@ class LoansController extends ApiBaseController
                     ->offset(($page - 1) * $limit);
             }
             $loan_requests = $loan_requests
-                ->orderBy(['a.created_on' => SORT_DESC])
+                ->orderBy(['a.status' => SORT_ASC, 'a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
 
