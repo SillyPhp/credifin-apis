@@ -184,7 +184,7 @@ class EducationLoanController extends ApiBaseController
             $parser = $organizationObject->conditionParser($params);
             if (!$parser['college_id']){
                 return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
-            } 
+            }
             $parser2 = $organizationObject->conditionCourseParser($parser,$params);
             if (!$parser2['assigned_course_id']){
                 return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
