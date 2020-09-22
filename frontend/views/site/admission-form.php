@@ -38,9 +38,9 @@ use yii\helpers\Url;
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
-                        <p>Fill Me For Your Bright Future</p>
+                        <p id="headingText">Fill Me For Your Bright Future</p>
                         <form>
-                            <div class="form-group">
+                            <div class="form-group" id="step1">
                                 <div class="form-flex">
                                     <div class="ff-input">
                                         <input type="text" class="form-control" placeholder="First Name">
@@ -120,11 +120,30 @@ use yii\helpers\Url;
                                         <input type="text" class="form-control" placeholder="Loan Amount Required (Optional)">
                                     </div>
                                 </div>
-
-                                <div class="button-form">
-                                    <button type="submit" class="btn-frm" name="submit button">Next</button>
+                            </div>
+                            <div class="form-group" id="step2">
+                                <div class="form-flex">
+                                    <div class="fw-input">
+                                        <input type="text" class="form-control" placeholder="Username">
+                                    </div>
+                                </div>
+                                <div class="form-flex">
+                                    <div class="fw-input">
+                                        <input type="text" class="form-control" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div class="form-flex">
+                                    <div class="fw-input">
+                                        <input type="text" class="form-control" placeholder="Confirm Password">
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="button-form">
+                                <button type="button" class="btn-frm" id="nextBtn" name="submitButton">Next</button>
+                                <button type="Submit" class="btn-frm" id="submitBtn" name="submitButton">Sumbit</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -243,6 +262,8 @@ body{
 }
 .button-form{
     text-align: center;
+    display: flex;
+    justify-content: center;
 }
 .btn-frm{
     width:100px;
@@ -251,10 +272,13 @@ body{
     border: 0px solid #c2cad8;
     color: #fff;
     border-radius: 6px;
-    margin-top: 10px;
+    margin: 10px 5px 0;
 }
 .btn-frm:hover{
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+.btn-frm:focus{
+    outline: none;
 }
 .form-flex{
     display: flex;
@@ -358,6 +382,9 @@ label {
 .mt10{
     margin-top: 10px;
 }
+#step2, #submitBtn{
+    display: none;
+}
 @media screen and (max-width: 1030px){
     .flex-main {
         height: calc(100vh - 150px);
@@ -409,3 +436,21 @@ label {
     }
 }
 ');
+?>
+<script>
+    let nextBtn = document.getElementById('nextBtn');
+    nextBtn.onclick = function () {
+        let step1 = document.getElementById('step1');
+        let step2 = document.getElementById('step2');
+        step1.style.display = "none";
+        step2.style.display = "block";
+
+        let submitBtn = document.getElementById('submitBtn');
+        submitBtn.style.display = "block";
+
+        let headingText = document.getElementById('headingText');
+        headingText.innerHTML = "Please Sign Up";
+
+        nextBtn.innerHTML = "Previous";
+    }
+</script>
