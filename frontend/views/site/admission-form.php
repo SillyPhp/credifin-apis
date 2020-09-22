@@ -442,15 +442,27 @@ label {
     nextBtn.onclick = function () {
         let step1 = document.getElementById('step1');
         let step2 = document.getElementById('step2');
-        step1.style.display = "none";
-        step2.style.display = "block";
-
-        let submitBtn = document.getElementById('submitBtn');
-        submitBtn.style.display = "block";
-
         let headingText = document.getElementById('headingText');
-        headingText.innerHTML = "Please Sign Up";
+        let submitBtn = document.getElementById('submitBtn');
 
-        nextBtn.innerHTML = "Previous";
+        let stepActive = document.getElementsByClassName('stepActive');
+        if (stepActive.length == 1){
+            step1.style.display = "block";
+            step2.style.display = "none";
+            step2.classList.remove('stepActive');
+
+            submitBtn.style.display = "none";
+            nextBtn.innerHTML = "Next";
+            headingText.innerHTML = "Fill Me For Your Bright Future";
+        }else{
+            step1.style.display = "none";
+            step2.style.display = "block";
+            step2.classList.add('stepActive');
+
+            submitBtn.style.display = "block";
+            headingText.innerHTML = "Please Sign Up";
+            nextBtn.innerHTML = "Previous";
+
+        }
     }
 </script>
