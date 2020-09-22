@@ -142,7 +142,7 @@ class CollegeProfileController extends ApiBaseController
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0])
-//                ->groupBy(['a.course_name'])
+                ->orderBy(['c.course_name' => SORT_ASC])
                 ->asArray()
                 ->all();
 

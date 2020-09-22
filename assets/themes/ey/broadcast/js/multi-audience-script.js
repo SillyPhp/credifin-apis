@@ -2,6 +2,7 @@
  * Agora Broadcast Client
  */
 var peers_network = [];
+var left_network = [];
 var agoraAppId = app_id; // set app id
 var channelName = channel_name; // set channel name
 
@@ -42,10 +43,12 @@ client.on("stream-added", function(evt) {
     var streamId = stream.getId();
     console.log("New stream added: " + streamId);
     console.log("Subscribing to remote stream:" + streamId);
+    subscribe(streamId);
     // Subscribe to the stream.
     client.subscribe(stream, function(err) {
         console.log("[ERROR] : subscribe stream failed", err);
     });
+    initializeUi();
 });
 
 client.on("stream-removed", function(evt) {
@@ -56,24 +59,34 @@ client.on("stream-removed", function(evt) {
     console.log("Remote stream is removed " + stream.getId());
     initializeUi();
 });
+function subscribe(sid)
+{
+    client.on("stream-subscribed", function(evt) {
+        var remoteStream = evt.stream;
+        var rid = remoteStream.getId();
+        if($("#stream-player-"+ rid).length == 0){
+            $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+rid+'" style="grid-area: auto"> <div class="stream-uid">UID: '+rid+'</div><span class="full-vid" value="'+rid+'"><i class="fas fa-expand"></i></span></div>');
+        }
+        remoteStream.play("stream-player-"+rid+"");
+        //remoteStream.play("full-screen-video");
+        console.log(
+            "Successfully subscribed to remote stream: " + remoteStream.getId()
+        );
+        initializeUi();
+    });
+}
 
-client.on("stream-subscribed", function(evt) {
-    var remoteStream = evt.stream;
-    remoteStream.play("full-screen-video");
-    console.log(
-        "Successfully subscribed to remote stream: " + remoteStream.getId()
-    );
-    initializeUi();
-});
 // peer online status
 client.on("peer-online", function(evt) {
-
+    console.log(evt.uid+"peer online");
 });
 
 // remove the remote-container when a user leaves the channel
 client.on("peer-leave", function(evt) {
+     $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
+    initializeUi();
 });
 
 // show mute icon whenever a remote has muted their mic
@@ -148,6 +161,7 @@ function generateToken() {
 }
 
 function initializeUi() {
+    $('#full-screen-video > div').removeClass('hidden');
     var window_width = window.outerWidth;
     if(window.innerHeight < $('#full-screen-video').height()){
         $('body').css('overflow-y','scroll');
@@ -170,3 +184,22 @@ function initializeUi() {
         }
     }
 }
+
+$(document).on('click', '.full-vid' ,function ()
+{
+    var fid = $(this).attr('value');
+    if(!$(this).parentsUntil('#full-screen-video').parent().children('div').hasClass('hidden')) {
+        $('#full-screen-video > div').addClass('hidden');
+        $(this).parent('div').removeClass('hidden');
+        $(this).children('i').removeClass('fa-expand');
+        $(this).children('i').addClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().addClass('expanded');
+    } else {
+        $('#full-screen-video > div').removeClass('hidden');
+        $(this).children('i').addClass('fa-expand');
+        $(this).children('i').removeClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().removeClass('expanded');
+    }
+    f_elem = "stream-player-"+fid;
+    console.log(f_elem);
+})

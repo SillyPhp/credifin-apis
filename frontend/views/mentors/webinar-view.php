@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
@@ -47,9 +48,9 @@ if (Yii::$app->user->identity->image) {
                         <div class="webinar-speakers">
                             <p><span>Speakers:</span>
                                 <?php
-                                if ($webinarDetail['webinarSpeakers']) {
-                                    $speakerCount = count($webinarDetail['webinarSpeakers']) - 1;
-                                    foreach ($webinarDetail['webinarSpeakers'] as $key => $speaker) {
+                                if ($webinarDetail['webinarEvents'][0]['webinarSpeakers']) {
+                                    $speakerCount = count($webinarDetail['webinarEvents'][0]['webinarSpeakers']) - 1;
+                                    foreach ($webinarDetail['webinarEvents'][0]['webinarSpeakers'] as $key => $speaker) {
                                         ?>
                                         <?= $speaker['fullname'] ?>
                                         <?php
@@ -72,6 +73,26 @@ if (Yii::$app->user->identity->image) {
                 </div>
             </div>
         </div>
+    </div>
+</section>
+<section class="similar-webinars">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mentor-heading">Similar Webinars</div>
+            </div>
+        </div>
+        <?php
+        if (!empty($webinars)) {
+            ?>
+            <div class="row">
+                <?= $this->render('/widgets/mentorships/webinar-card', [
+                    'webinars' => $webinars,
+                ]) ?>
+            </div>
+            <?php
+        }
+        ?>
     </div>
 </section>
 <script type="text/javascript">
@@ -373,6 +394,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
         }
     }
+
     var refs = db.ref(specialKey + '/userStatus/' + webinarId + '/' + userId)
     refs.set({
         'status': 'online',

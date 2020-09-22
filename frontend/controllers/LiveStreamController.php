@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\VideoSessions;
+use common\models\Webinar;
+use common\models\WebinarEvents;
 use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
@@ -49,9 +51,10 @@ class LiveStreamController extends Controller
     public function actionAudience($id)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
-        $webinar_id = Webinars::findOne(['session_enc_id' => $id])['webinar_enc_id'];
-        $chkRegistration = WebinarRegistrations::findOne(['created_by' => $user_id]);
-        if (empty($chkRegistration)) {
+        $webinar_id = WebinarEvents::findOne(['session_enc_id' => $id])['webinar_enc_id'];
+        $chkRegistration = WebinarRegistrations::findOne(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id, 'status' => 1]);
+        $webinar = Webinar::findOne(['webinar_enc_id' => $webinar_id]);
+        if (empty($chkRegistration) && !(int)$webinar->price) {
             self::webinarRegistration($user_id, $webinar_id);
         }
         $this->layout = 'blank-layout';
@@ -79,7 +82,7 @@ class LiveStreamController extends Controller
     {
         $data = WebinarSessions::findOne(['session_enc_id' => $id]);
         if (!$data->session_id) {
-            $data = $data->webinars;
+            $data = $data->webinarEvents;
             foreach ($data as $d) {
                 foreach ($d->webinarSpeakers as $speaker) {
                     $user_id = $speaker->speakerEnc->userEnc->user_enc_id;

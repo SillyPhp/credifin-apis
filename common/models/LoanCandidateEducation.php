@@ -40,14 +40,13 @@ class LoanCandidateEducation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'loan_candidate_edu_enc_id', 'loan_app_enc_id', 'created_by'], 'required'],
-            [['id', 'is_deleted'], 'integer'],
+            [['loan_candidate_edu_enc_id', 'loan_app_enc_id', 'created_by'], 'required'],
             [['obtained_marks'], 'number'],
             [['created_on', 'updated_on'], 'safe'],
+            [['is_deleted'], 'integer'],
             [['loan_candidate_edu_enc_id', 'loan_app_enc_id', 'qualification_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['institution'], 'string', 'max' => 250],
             [['loan_candidate_edu_enc_id'], 'unique'],
-            [['id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],

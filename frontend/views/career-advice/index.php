@@ -86,6 +86,9 @@ $careerAdviceCategories = [
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/event-poster') ?>
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">

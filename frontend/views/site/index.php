@@ -123,6 +123,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
+<?= $this->render('/widgets/event-poster') ?>
 <?= $this->render('/widgets/education-loan-landing') ?>
 
 <div id="app-data"></div>
@@ -1147,19 +1148,19 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getOurServices',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
-        'getWhatsappCommunity',
         'getSafetySigns',
         'getOnlineClasses',
-        'getNewsUpdate',
+        'getWhatsappCommunity',
+//        'getNewsUpdate',
 //        'getTweets',
         'getShortcuts'
     ];
@@ -1167,21 +1168,21 @@ if (!Yii::$app->user->isGuest) {
 } else {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getOurServices',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
-        'getWhatsappCommunity',
         'getSafetySigns',
         'getOnlineClasses',
+        'getWhatsappCommunity',
         'getHowItWorks',
-        'getNewsUpdate',
+//        'getNewsUpdate',
 //        'getTweets',
         'getNewsletter',
         'getShortcuts'
