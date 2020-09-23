@@ -189,6 +189,11 @@ class OrganizationList
         }
     }
 
+    public  function getAssigneWidgetCourse($course_name,$colleg_id)
+    {
+        return $this->getAssignCourse($course_name,$colleg_id);
+    }
+
     private function getAssignCourse($course_name,$colleg_id)
     {
         $pool = CollegeCoursesPool::find()
