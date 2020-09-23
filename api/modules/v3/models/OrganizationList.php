@@ -107,7 +107,7 @@ class OrganizationList
             $model->slug = $slug_replace_str;
             $model->source = $options['source'];
             $model->name = $options['name'];
-            $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : null);
+            $model->created_by = (($options['userId']) ? $options['userId'] : null);
             $model->initials_color = RandomColors::one();
             $model->status = 1;
             if ($model->save()) {
@@ -152,6 +152,7 @@ class OrganizationList
         {
             $options['name'] = trim($params['college_course_info'][0]['colg_text']);
             $options['source'] = 3;
+            $options['userId'] = $params['userID'];
             $org = $this->getOrgId($options);
             return [
                 'college_id'=>$org['id'],
@@ -187,6 +188,11 @@ class OrganizationList
                 'assigned_course_id'=>$this->getAssignUnclaimCourse($course_name,$parser['college_id'])
             ];
         }
+    }
+
+    public  function getAssigneWidgetCourse($course_name,$colleg_id)
+    {
+        return $this->getAssignCourse($course_name,$colleg_id);
     }
 
     private function getAssignCourse($course_name,$colleg_id)
