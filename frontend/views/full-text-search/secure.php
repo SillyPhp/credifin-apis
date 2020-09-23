@@ -6,7 +6,7 @@
     //You can bind the Layer.checkout initialization script to a button click event.
     //Binding inside a click event open Layer payment page on click of a button
     Layer.checkout({
-            token: "sb_pt_H80nduGzBfMC9X",
+            token: "sb_pt_H9hFQwU4dEHC55",
             accesskey: "cbfba3d0-ba9e-11ea-8e90-4384c267ea22"
         },
         function(response) {

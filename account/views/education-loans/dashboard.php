@@ -151,6 +151,9 @@ if (isset($_GET['filter'])) {
                                             <th class="loanAction">Loan Status</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
+                                            <th class="amountReceived">Amount Received</th>
+                                            <th class="amountDue">Amount Due</th>
+                                            <th class="scholarship">Scholarship</th>
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
                                             <th class="collegeName">College/University Name</th>
@@ -231,6 +234,9 @@ if (isset($_GET['filter'])) {
                                                     </td>
                                                     <td><?= $loan['applicant_name'] ?></td>
                                                     <td><?= $loan['amount'] ?></td>
+                                                    <td><?= $loan['amount_received'] ?></td>
+                                                    <td><?= $loan['amount_due'] ?></td>
+                                                    <td><?= $loan['scholarship'] ?></td>
                                                     <td><?= $loan['degree'] ?></td>
                                                     <td><?= $loan['course_name'] ?></td>
                                                     <td><?= $loan['org_name'] ?></td>

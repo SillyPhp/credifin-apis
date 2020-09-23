@@ -37,7 +37,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="number" class="input-group-text">
                                             Name of Applicant (Student Name)
                                         </label>
-                                        <input type="text" class="form-control" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -89,7 +89,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control"
+                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
@@ -122,11 +122,9 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="course_name" class="input-group-text">
                                             Course Name
                                         </label>
-                                        <select class="form-control" disabled="disabled" id="course_name"
-                                                name="course_name">
-
-                                        </select>
-                                        <input type="text" disabled="disabled" placeholder="Enter Course Name" class="form-control" id="course_name_text" name="course_name_text">
+                                        <div id="the-basics">
+                                            <input type="text" placeholder="Enter Course Name" class="typeahead form-control text-capitalize" id="course_name_text" name="course_name_text">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 padd-20">
@@ -254,7 +252,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                                     <label for="co-name[]" class="input-group-text">
                                                         Name
                                                     </label>
-                                                    <input type="text" name="co-name[1]" class="form-control" id="co-name" placeholder="Enter Full Name">
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
                                                 </div>
                                             </div>
                                             <div class="col-md-12 padd-20">
@@ -372,7 +370,6 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
                                 <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
-                                <li>- <span>0%</span> rate of interest</li>
                                 <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
                                     the students in a particular <span>academic year</span>.</li>
                                 <li>- Loan will be <span>repaid</span> with in the semester</li>
@@ -387,8 +384,10 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
             </div>
         </div>
     </section>
-<input type="hidden" name="college_id" id="college_id">
-<input type="hidden" name="course_id" id="course_id">
+<input type="hidden" name="colg_text" id="colg_text">
+<input type="hidden" name="colg_id" id="colg_id">
+<input type="hidden" name="course_text" id="course_text">
+<input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
 #loadBtn{
@@ -413,7 +412,6 @@ border: 1px solid #ddd !important;
 #countryName{
     display: none;
 }
-#course_name{display:none}
 #relationInput{
     display: none;
     margin-top: 10px; 
@@ -797,19 +795,21 @@ font-family: auto !important;
 .tt-suggestion p {
   margin: 0;
 }
-
+.select2-selection__clear{
+    padding-right: revert !important;
+}
 ');
 $script = <<< JS
-let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
+    getCourses(); 
     getCountries();    
     getCollegeList(datatype=0,source=3,type=['College']);
     function getCollegeList(datatype, source, type) { 
         $.ajax({ 
-            url : 'https://sneh.eygb.me/api/v3/companies/organization-list',
+            url : '/api/v3/companies/organization-list',
             method : 'GET',  
             data:{
                 datatype:datatype,
-                source:source,
+                source:source, 
                 type:type
                 },   
             success : function(res) { 
@@ -839,47 +839,34 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
                     var data = e.params.data;
                     if (data.id!='self'&&data.pulled_from==='claim')
                         {
-                            getCourseList(data.id);
-                            $('#course_name').show();
-                            $('#course_name').removeAttr('disabled','disabled');
-                            $('#course_name_text').hide(); 
+                            $('#pulled_from').val('claim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id);
                         }
                     else if (data.id==='self'&&data.pulled_from==='unclaim')
                         {
-                            $('#course_name').hide(); 
-                            $('#course_name_text').removeAttr('disabled','disabled');  
-                            $('#course_name_text').show(); 
+                            $('#pulled_from').val('unclaim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id);
+                        }
+                    else if (data.id!='self'&&data.pulled_from==='unclaim')
+                        {
+                            $('#pulled_from').val('unclaim');
+                            $('#colg_text').val(data.text);
+                            $('#colg_id').val(data.id);
                         }
                 }); 
             }
         });
     }
-    function getCourseList(id) {
-        $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-course-list',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/get-course-list',
-            method : 'POST',
-            data : {id: id},
-            success : function(res) {
-            var html = []; 
-            var res = res.response.courses;
-            html.push('<option value>Select Course</option>');
-            $.each(res,function(index,value) 
-                  {
-                   html.push('<option value="'+value.college_course_enc_id+'">'+value.course_name+'</option>');
-                 }); 
-             $('#course_name').html(html);   
-            }
-        });
-    }
     function getCountries() { 
         $.ajax({     
-            url : 'https://sneh.eygb.me/api/v3/countries-list/get-countries-list', 
+            url : '/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
                 var html = [];
-                 states = res.response.countries;
+                 res = res.response.countries;
                 $.each(res,function(index,value) 
                   {   
                    html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
@@ -895,8 +882,7 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
     }
     function getFeeComponents(id) {
         $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/get-fee-components',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/get-fee-components',
+            url : '/api/v3/education-loan/get-fee-components',
             method : 'POST',
             data : {id: id},
             success : function(res) {
@@ -909,6 +895,55 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
             $('#loan-purpose').html(html);   
             }
         });
+    } 
+    function getCourses()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _courses = [];
+         $.ajax({     
+            url : '/api/v3/education-loan/course-pool-list', 
+            method : 'GET',
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.course;
+                $.each(res,function(index,value) 
+                  {   
+                   _courses.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('courses could not fetch');
+                }
+            } 
+        });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_courses',
+         source: substringMatcher(_courses)
+        }); 
     } 
     $('#mobile, #aadhaarnumber').mask("#", {reverse: true}); 
     $('input[name="co-aadhaarnumber[1]"]').mask("#", {reverse: true});
@@ -946,9 +981,6 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 				'college_name':{
 				    required:true,
 				},
-				'course_name':{
-				    required:true,
-				},
 				'course_name_text':{
 				    required:true,
 				},
@@ -960,12 +992,12 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 				    minlength: 12,
 				    maxlength: 12,
 				},
-				'loanamount':{
+				'loanamount':{ 
 				    required:true,
 				    min:500
 				},
 				'loan_purpose_checkbox[]':{
-				    required:true,
+				    required:false,
 				},
 				'co-name[1]':{
 				    required:true,
@@ -1013,9 +1045,6 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 			messages: {
 				'applicant_name': {
 					required: "Applicant Name Required",
-				},
-				'course_name': {
-					required: "Course Name Cannot Be Blank",
 				},
 				'course_name_text': {
 					required: "Course Name Cannot Be Blank",
@@ -1134,18 +1163,19 @@ let url2 = 'https://sneh.eygb.me/api/v3/education-loan/course-pool-list';
 });
     
 function ajaxSubmit()
-{  let college_id = $('#college_id').val();
-   let course_id = $('#course_id').val();
-    if (college_id.length==0||course_id.length==0)
-        { 
-            swal({ 
-              title:"Error",
-             text: "There Was Some Issue in College Or Course Name, Please Refresh and Try Again",
-             });
-            return false;
-        }
+{
+    console.log($('input[name="countryRadio"]:checked').val());
+    console.log($('#country_name').val());
+    $('#course_text').val($('#course_name_text').val());
     let co_applicants = [];
+    let college_course_info = [];
     var obj = {};
+    var object = {};  
+    object['pulled_from'] = $('#pulled_from').val();
+    object['course_text'] = $('#course_text').val();
+    object['colg_text'] = $('#colg_text').val();
+    object['colg_id'] = $('#colg_id').val();
+    college_course_info.push(object);
     obj['name'] = $('input[name="co-name[1]"]').val()
     obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
     obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
@@ -1171,8 +1201,7 @@ function ajaxSubmit()
     //   purpose.push(this.value);
     // });
     $.ajax({
-            //url : 'https://www.empoweryouth.com/api/v3/education-loan/save-application',
-            url : 'https://sneh.eygb.me/api/v3/education-loan/save-application',
+            url : '/api/v3/education-loan/save-application',
             method : 'POST', 
             data : {
                 applicant_name:$('#applicant_name').val(),
@@ -1186,10 +1215,11 @@ function ajaxSubmit()
                 amount:$('#loanamount').val(),  
                 gender:$('input[name="genderRadio"]:checked').val(),
                 aadhaar_number:$('#aadhaarnumber').val(),
-                college_course_id:$('#course_id').val(),
-                id:$('#college_id').val(),
                 co_applicants:co_applicants,
-                userID:userID,
+                college_course_info:college_course_info,
+                userID:userID, 
+                is_india:$('input[name="countryRadio"]:checked').val(),
+                country_enc_id:$('#country_name').val(),
                 },  
             beforeSend:function(e)
             {  
@@ -1239,6 +1269,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
           // response.payment_token_id
            // response.payment_id  
         if (response.status == "captured") {
+            updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
                swal({
                         title: "",
                         text: "Your Application Is Submitted Successfully",
@@ -1253,7 +1284,6 @@ function processPayment(ptoken,loan_id,education_loan_id)
                              location.reload(true);
                          }
                         );
-           updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "created") {
             updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "pending") {
@@ -1261,8 +1291,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
         } else if (response.status == "failed") { 
            updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         } else if (response.status == "cancelled") {
-          updateStatus(education_loan_id,loan_id,response.payment_id,response.status); 
-          location.reload(true);
+          updateStatus(education_loan_id,loan_id,response.payment_id,response.status);
         }
     },
     function(err) { 
@@ -1277,13 +1306,13 @@ function processPayment(ptoken,loan_id,education_loan_id)
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
 {
     $.ajax({
-            url : 'https://www.empoweryouth.com/api/v3/education-loan/update-widget-loan-application',
+            url : '/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
             data : {
               loan_payment_id:education_loan_id,
               loan_app_id:loan_app_enc_id,
               payment_id:payment_id, 
-              status:status,
+              status:status, 
             },
             success:function(e)
             {
@@ -1470,6 +1499,7 @@ $this->registerJs($script);
         }
     </script>
 <?php
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/common/select2Plugin/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@root/assets/common/select2Plugin/select2.min.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');

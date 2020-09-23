@@ -52,7 +52,9 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="row">
-            <?= $this->render('/widgets/mentorships/webinar-card') ?>
+            <?= $this->render('/widgets/mentorships/webinar-card',[
+                'webinars'=>$webinars,
+            ]) ?>
         </div>
     </div>
 </section>

@@ -15,7 +15,6 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
-use common\models\Webinars;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -284,35 +283,7 @@ class DashboardController extends Controller
 
         $servicesModel = new \account\models\services\ServiceSelectionForm();
 
-        $webinars = Webinars::find()
-            ->distinct()
-            ->alias('a')
-            ->select([
-                'a.webinar_enc_id',
-                'a.title',
-                'a.start_datetime',
-                'a.duration',
-                'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
-                'a.description',
-            ])
-            ->joinWith(['assignedWebinarTos b'], false)
-            ->joinWith(['webinarRegistrations d' => function ($d) {
-                $d->select([
-                    'd.webinar_enc_id',
-                    'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
-                ]);
-                $d->joinWith(['createdBy d1'], false);
-                $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
-            }])
-            ->where(['a.is_deleted' => 0])
-            ->andWhere(['not', ['a.session_for' => 2]])
-            ->asArray()
-            ->all();
-
         return $this->render('index', [
-            'webinars' => $webinars,
             'applied' => $applied_app,
             'services' => $services,
             'model' => $servicesModel,

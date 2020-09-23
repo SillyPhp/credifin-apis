@@ -173,7 +173,7 @@ $this->params['header_dark'] = false;
     </section>
     <section class="detail-section">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-8 col-sm-12">
                 <div class="container-detail-box">
                     <div class="apply-job-header">
                         <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
@@ -459,6 +459,7 @@ body{background-color:#f9f9f9;}
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
     display:flex;
+    flex-wrap: wrap;
 }
 .s-text {
     font-size: 18px;

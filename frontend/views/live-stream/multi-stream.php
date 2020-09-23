@@ -15,12 +15,12 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     #full-screen-video.sp1 > div{
         width: 90% !Important;
         height: 90vh !important;
-        margin-top: 5vh;
+        margin-top: 0vh;
     }
     #full-screen-video.sp2 > div{
         width: 48% !Important;
         height: 80vh !important;
-        margin-top: 10vh;
+        margin-top: 0vh;
     }
     #full-screen-video.sp3 > div{
         width: 48% !Important;
@@ -93,7 +93,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         display: flex;
         position: relative;
         align-items: center;
-        background-color: #666;
+        background-color: #000;
         height: 100vh;
         width: 100%;
         margin-right: auto;
@@ -130,6 +130,10 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
     @media only screen and (min-width: 1200px) {
         #full-screen-video {
             max-width: 90%;
+            margin-top: 6vh;
+        }
+        #full-screen-video.sp1 {
+            margin-top: auto;
         }
     }
     @media (min-width:600px) {
@@ -167,7 +171,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
 </style>
 <style data-jss="" data-meta="makeStyles">
     .jss1 {
-        height: 150px;
+        height: 90px;
         display: flex;
         z-index: 10;
         align-items: center;
@@ -199,6 +203,34 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         flex-direction: column;
         justify-content: flex-end;
     }
+    .full-vid{
+        cursor: pointer;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 10;
+        padding: 5px 10px;
+        background-color: #00000078;
+        color: #fff;
+        border-top-left-radius: 5px;
+    }
+    .hidden{
+        display: none;
+    }
+    .sp1 > div .full-vid, .elem1 > div .full-vid{
+        display: none;
+    }
+    .exit_btn
+    {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAQAAADa613fAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfkCRELBQWl/E6UAAACtElEQVR42u1bS3LbMAylNd1lU89kvM81nPgTXyC9rX0Ifexk1TRHyNjZdNvXRVRGTESXlAGS4uCtLcKPAJ4IEFJKIBAIBAKBQCAQCOJg8r8fwPcBIvja/ea0aqGu1ZV6UyelEIRKS2Oqvqvf6lX9IVkSBX6gwgk7zKHwZa84aEBBYY4dTqjwgAIki85Q4R0V7jHhptLSWHaszmiI3OCIf6ix4PVKS+NO0wCOuKEhMsUOH9jjlo9KS+MW+47FLaYgWnqOsrNwgzUPFR1Udcda/Z6ZdIubVBhyxWJpQ2ZJR23TMXDAktYrOqi63njEinTD+I2E2Sx2t4cLX1sikqS99kZpeOOeTRt1gDVGgC0v2zeeVYPvXbvi4pOfV+xHIdpoZhdcb33ZD9EXHVSVEVTrIDSsYvzkK8a9hxEOwXWK7NLwikeufDnhcgrugD/iKMaXbwT3OfXRJTR6BfeJWXAHJetZKtobTWDBpRXj3ifqCLnhtL972/72+vDAVd1QHDF6I94iuIskaLhrUK/O1Yl4w/2t0Eu2iSS4w9/TlsJsGT3F/U9ONKezuGK8SVRwB1UXnyuYdbLeOJsrv/BsBNVd8jSsVWQ3qFajoGHNlXQF18krPw0aL5zeKIIynKgx4WxobZKWXY9kb0YgvVb5fTbk9zAC+XV+IaatXdbqL1yDmvHQuIIa1aHxfPVH09KLVVgZ1V9SnSyGUjclMXa/3xje0ovVDmpsf25YSy+m4Po16GKL8bB2m19LL7rg0rT0khDcy3UuluA2o7vooWm3Rb96y+QyNJPr6UwGBjIZ4chkqCaTMadMBs8yGQXMZjgzp3HZ2APMO6oB5mxGymc6sOIM+ZdUQ/4FHlDiiG3wzy62OKJ0++zC7YuezocwKtKHMBMSIj4P0FIJblcgEAgEAoFAIBAIfPEXSb0a7PgMIq0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMDktMTdUMTE6MDQ6NTUrMDA6MDD7KnFTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTA5LTE3VDExOjA0OjU1KzAwOjAwinfJ7wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=');
+    }
+    .share-screen-on {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAKN2lDQ1BzUkdCIElFQzYxOTY2LTIuMQAAeJydlndUU9kWh8+9N71QkhCKlNBraFICSA29SJEuKjEJEErAkAAiNkRUcERRkaYIMijggKNDkbEiioUBUbHrBBlE1HFwFBuWSWStGd+8ee/Nm98f935rn73P3Wfvfda6AJD8gwXCTFgJgAyhWBTh58WIjYtnYAcBDPAAA2wA4HCzs0IW+EYCmQJ82IxsmRP4F726DiD5+yrTP4zBAP+flLlZIjEAUJiM5/L42VwZF8k4PVecJbdPyZi2NE3OMErOIlmCMlaTc/IsW3z2mWUPOfMyhDwZy3PO4mXw5Nwn4405Er6MkWAZF+cI+LkyviZjg3RJhkDGb+SxGXxONgAoktwu5nNTZGwtY5IoMoIt43kA4EjJX/DSL1jMzxPLD8XOzFouEiSniBkmXFOGjZMTi+HPz03ni8XMMA43jSPiMdiZGVkc4XIAZs/8WRR5bRmyIjvYODk4MG0tbb4o1H9d/JuS93aWXoR/7hlEH/jD9ld+mQ0AsKZltdn6h21pFQBd6wFQu/2HzWAvAIqyvnUOfXEeunxeUsTiLGcrq9zcXEsBn2spL+jv+p8Of0NffM9Svt3v5WF485M4knQxQ143bmZ6pkTEyM7icPkM5p+H+B8H/nUeFhH8JL6IL5RFRMumTCBMlrVbyBOIBZlChkD4n5r4D8P+pNm5lona+BHQllgCpSEaQH4eACgqESAJe2Qr0O99C8ZHA/nNi9GZmJ37z4L+fVe4TP7IFiR/jmNHRDK4ElHO7Jr8WgI0IABFQAPqQBvoAxPABLbAEbgAD+ADAkEoiARxYDHgghSQAUQgFxSAtaAYlIKtYCeoBnWgETSDNnAYdIFj4DQ4By6By2AE3AFSMA6egCnwCsxAEISFyBAVUod0IEPIHLKFWJAb5AMFQxFQHJQIJUNCSAIVQOugUqgcqobqoWboW+godBq6AA1Dt6BRaBL6FXoHIzAJpsFasBFsBbNgTzgIjoQXwcnwMjgfLoK3wJVwA3wQ7oRPw5fgEVgKP4GnEYAQETqiizARFsJGQpF4JAkRIauQEqQCaUDakB6kH7mKSJGnyFsUBkVFMVBMlAvKHxWF4qKWoVahNqOqUQdQnag+1FXUKGoK9RFNRmuizdHO6AB0LDoZnYsuRlegm9Ad6LPoEfQ4+hUGg6FjjDGOGH9MHCYVswKzGbMb0445hRnGjGGmsVisOtYc64oNxXKwYmwxtgp7EHsSewU7jn2DI+J0cLY4X1w8TogrxFXgWnAncFdwE7gZvBLeEO+MD8Xz8MvxZfhGfA9+CD+OnyEoE4wJroRIQiphLaGS0EY4S7hLeEEkEvWITsRwooC4hlhJPEQ8TxwlviVRSGYkNimBJCFtIe0nnSLdIr0gk8lGZA9yPFlM3kJuJp8h3ye/UaAqWCoEKPAUVivUKHQqXFF4pohXNFT0VFysmK9YoXhEcUjxqRJeyUiJrcRRWqVUo3RU6YbStDJV2UY5VDlDebNyi/IF5UcULMWI4kPhUYoo+yhnKGNUhKpPZVO51HXURupZ6jgNQzOmBdBSaaW0b2iDtCkVioqdSrRKnkqNynEVKR2hG9ED6On0Mvph+nX6O1UtVU9Vvuom1TbVK6qv1eaoeajx1UrU2tVG1N6pM9R91NPUt6l3qd/TQGmYaYRr5Grs0Tir8XQObY7LHO6ckjmH59zWhDXNNCM0V2ju0xzQnNbS1vLTytKq0jqj9VSbru2hnaq9Q/uE9qQOVcdNR6CzQ+ekzmOGCsOTkc6oZPQxpnQ1df11Jbr1uoO6M3rGelF6hXrtevf0Cfos/ST9Hfq9+lMGOgYhBgUGrQa3DfGGLMMUw12G/YavjYyNYow2GHUZPTJWMw4wzjduNb5rQjZxN1lm0mByzRRjyjJNM91tetkMNrM3SzGrMRsyh80dzAXmu82HLdAWThZCiwaLG0wS05OZw2xljlrSLYMtCy27LJ9ZGVjFW22z6rf6aG1vnW7daH3HhmITaFNo02Pzq62ZLde2xvbaXPJc37mr53bPfW5nbse322N3055qH2K/wb7X/oODo4PIoc1h0tHAMdGx1vEGi8YKY21mnXdCO3k5rXY65vTW2cFZ7HzY+RcXpkuaS4vLo3nG8/jzGueNueq5clzrXaVuDLdEt71uUnddd457g/sDD30PnkeTx4SnqWeq50HPZ17WXiKvDq/XbGf2SvYpb8Tbz7vEe9CH4hPlU+1z31fPN9m31XfKz95vhd8pf7R/kP82/xsBWgHcgOaAqUDHwJWBfUGkoAVB1UEPgs2CRcE9IXBIYMj2kLvzDecL53eFgtCA0O2h98KMw5aFfR+OCQ8Lrwl/GGETURDRv4C6YMmClgWvIr0iyyLvRJlESaJ6oxWjE6Kbo1/HeMeUx0hjrWJXxl6K04gTxHXHY+Oj45vipxf6LNy5cDzBPqE44foi40V5iy4s1licvvj4EsUlnCVHEtGJMYktie85oZwGzvTSgKW1S6e4bO4u7hOeB28Hb5Lvyi/nTyS5JpUnPUp2Td6ePJninlKR8lTAFlQLnqf6p9alvk4LTduf9ik9Jr09A5eRmHFUSBGmCfsytTPzMoezzLOKs6TLnJftXDYlChI1ZUPZi7K7xTTZz9SAxESyXjKa45ZTk/MmNzr3SJ5ynjBvYLnZ8k3LJ/J9879egVrBXdFboFuwtmB0pefK+lXQqqWrelfrry5aPb7Gb82BtYS1aWt/KLQuLC98uS5mXU+RVtGaorH1futbixWKRcU3NrhsqNuI2ijYOLhp7qaqTR9LeCUXS61LK0rfb+ZuvviVzVeVX33akrRlsMyhbM9WzFbh1uvb3LcdKFcuzy8f2x6yvXMHY0fJjpc7l+y8UGFXUbeLsEuyS1oZXNldZVC1tep9dUr1SI1XTXutZu2m2te7ebuv7PHY01anVVda926vYO/Ner/6zgajhop9mH05+x42Rjf2f836urlJo6m06cN+4X7pgYgDfc2Ozc0tmi1lrXCrpHXyYMLBy994f9Pdxmyrb6e3lx4ChySHHn+b+O31w0GHe4+wjrR9Z/hdbQe1o6QT6lzeOdWV0iXtjusePhp4tLfHpafje8vv9x/TPVZzXOV42QnCiaITn07mn5w+lXXq6enk02O9S3rvnIk9c60vvG/wbNDZ8+d8z53p9+w/ed71/LELzheOXmRd7LrkcKlzwH6g4wf7HzoGHQY7hxyHui87Xe4Znjd84or7ldNXva+euxZw7dLI/JHh61HXb95IuCG9ybv56Fb6ree3c27P3FlzF3235J7SvYr7mvcbfjT9sV3qID0+6j068GDBgztj3LEnP2X/9H686CH5YcWEzkTzI9tHxyZ9Jy8/Xvh4/EnWk5mnxT8r/1z7zOTZd794/DIwFTs1/lz0/NOvm1+ov9j/0u5l73TY9P1XGa9mXpe8UX9z4C3rbf+7mHcTM7nvse8rP5h+6PkY9PHup4xPn34D94Tz+49wZioAAAAJcEhZcwAALiMAAC4jAXilP3YAAAPASURBVHic7Zy/axNhHMZzyfXSodGlFApCoa1DiwjFTWyzVC2i/0BBXAoiqBR1cCrS0R+zaCdx6iiIIDjYwQ6im7ZLRSOdSl26NL/P5yBCLBXkfb+nT5LnA+EuB3ny3vfz3vveC8mFcRxnBA/h/26A+B0JIUNCyJAQMiSEDAkhQ0LIkBAyJIQMCSFDQsiQEDIkhAwJIUNCyJAQMiSEDAkhw0xIuVweiaLofBAEx/C2zyqXnFocx9vVavV1f39/ySLQW8jGxkY0MTHxMJ/PX7PI6zTQATM49zrEPN7c3LwzOTlZ9cnzKuDa2lo4MzPzArtzPjldQFLHG+iYx1GTS8Vise4T5Mz09PStjGS0M9eqyX3XAGch2Ww2aDQai66f71YwhC2iNg+azabT76uchezv749iM3zg8CdIuorxdM81t5NA8Y/kcrkn2D3Rdni4VZsvLpnOQtCQwYPHIGI1DMN118xOBFfCKsS0C/lVm38rBASHHGt65HUqjUOOHVabv6LnblPZkRAyJIQMCSFDQsiQEDIkhAwJIUNCyJAQMiSEDAkhQ0LIkBAyJIQMCSFDQsiQEDIkhAwJIUNCyJAQMiSEDAkhQ0LIkBAyJIQMCSFDQvxx/mH1YZgKCYKguLW19Wh8fLximcsKzjU/NjZWtMy0vkLOoYF7cRx7/fGxU8C5RthElplpDFnmjewlNIeQISFkSAgZEkKGhJAhIWQ4C+mVtYYLPrVxFlIul0sDAwPJ/9KzrhldSrNSqXzv63N7QpWzkEKh8AM9IXlqwxnXjC5lHR111/XDXnNIo9G4m8vl3vrmdBH1pCZh6F4Or0Lii981m82FIAhWMr3zFLk/kTxdbiGpiU+Id8/OZrPP6vX6Z1wpy3g7m+k9MTW83uDKWIKMD75hJkNNqyEXSqVS/9DQ0CAkmQ1hmBwv4wpctshCD16q1WrPLbISMDrUd3Z2dkdGRso+w1Q7pmN/0jBsti0zUcSCVRbEHs3n89+s8hJwzpZxHTEZzxpmnTXMSgVqIRhepjAUTBlGnsR8dwqZHw0zTaEWgsKZP9MRNx83sblinWsFrRCsdkejKJpPIXoe2fcwl3xNIdsbWiGQcT2TTvvCVvbtFLK9oRUCRlPMHksx2wtaIbjHf4r1zEXs5oyjG8hewVxiHGsDrRAU7BXuiE5jm0ixWv3XsKJ+iZuF90Z55tAKSWgVzrR4VivqtOBuXQ8iIWRICBkSQoaEkCEhZEgIGRJChoSQISFkSAgZEkKGhJAhIWRICBkSQoaEkCEhZPwEqX3XOYpac9cAAAAASUVORK5CYII=')
+    }
+    .share-screen-off
+    {
+        background-image: url('data:image/png;base64,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');
+    }
     .stream-uid
     {
         padding: 0px !important;
@@ -223,6 +255,15 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         color: white;
         background-color: #33b5e5;
     }
+    .new_sharing
+    {
+        display: block !important;
+        width: 100% !Important;
+        height: 100% !Important;
+        position: absolute !important;
+        z-index: 9 !important;
+    }
+
 </style>
 <div class="toast toast-color" id="notification"
      data-delay="3000">
@@ -243,11 +284,10 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         <div class="current-view">
             <div class="nav">
                 <div></div>
-                <div class="quit" id="exit-btn"></div>
             </div>
             <div class="jss5">
                 <div class="jss1">
-                    <i class="jss2 margin-right-19 mute-video" id="video-btn" title="mute-video"></i>
+                    <i class="jss2 margin-right-19 mute-video" id="video-btn" title="Turn Off Video"></i>
                     <i class="jss2 margin-right-19 mute-audio" id="mic-btn" title="mute-audio"></i>
                     <div class="dropdown">
                         <button type="button" class="jss2 btn cs_btn margin-right-19" data-toggle="dropdown">
@@ -255,11 +295,17 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
                         <div class="dropdown-menu" id="camera-list">
                         </div>
                     </div>
-                    <span class="jss2 share-link" title="share audience link">
-                    </span>
+                    <i class="jss2 margin-right-19 share-screen-off" id="share-sreen-btn" title="share-screen"></i>
+                    <div class="jss2 margin-right-19 exit_btn" id="exit-btn" title="End Session"></div>
+<!--                    <span class="jss2 share-link" title="share audience link">-->
+<!--                    </span>-->
                 </div>
             </div>
             <div class="flex-container">
+                <div id="session_expired"></div>
+                <div id="sharing_mode">
+                    <h1 class="text-share"><i id="share-icon" class="fa fa-desktop"></i> Your Screen is in Sharing Mode</h1>
+                </div>
                 <div class="" id="full-screen-video">
 
                 </div>
@@ -269,6 +315,42 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
 </div>
 <input type="hidden" id="share_link_aud" value="<?= Url::base('https').'/mentors/webinar-view?id='.$tokenId?>">
 <?php
+$this->registerCss("
+#session_expired 
+{
+    width: 100%;
+    text-align: center;
+   display:none;
+   z-index: 999;
+}
+#session_expired h3
+{
+color:#fff;
+}
+ #full-screen-video.sp1 > .adjust_sharing{
+        position: absolute;
+        z-index: 999;
+        top: 8px;
+        left: 16px;
+        width: 16% !important;
+        height: 20% !important;
+    }
+#sharing_mode {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100vh;
+    background-color: #00a0e3;
+    display:none;
+}
+.text-share {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+");
 $script = <<< JS
 browserAccess();
 function browserAccess()
@@ -277,7 +359,7 @@ if (top === self) {
      $("body").html("Access Denied");
 } 
 else{executeAll();}
-}  
+}
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
@@ -299,6 +381,7 @@ link.rel = "stylesheet";
 document.head.appendChild(link);
 }
 getTokenVarification(tokenId);
+console.log(tokenId);
 function getTokenVarification(tokenId)
 {
    $.ajax({
@@ -312,12 +395,13 @@ function getTokenVarification(tokenId)
         channel_name = response.response.channel_name;
         access_token = response.response.token;
         console.log(channel_name);
-        console.log(access_token);
+        console.log(access_token); 
         addScript("/assets/themes/ey/broadcast/js/multi-broadcast-script.js");
-       }
+       } 
        else 
        {
-        alert("Authentication Failed");
+        $('#session_expired').html('<h3>Authentication Failed</h3>');
+        $('#session_expired').css('display','block');
        }
       },  
     })  
@@ -337,6 +421,9 @@ function getTokenVarification(tokenId)
     });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-Multistream/static/css/main.419b49bd.chunk.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

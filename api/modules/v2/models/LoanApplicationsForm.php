@@ -3,6 +3,7 @@
 
 namespace api\modules\v2\models;
 
+use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
@@ -20,12 +21,13 @@ class LoanApplicationsForm extends LoanApplications
     public $purpose;
     public $_flag;
     public $course_enc_id;
+    public $country_enc_id;
 
     public function rules()
     {
         return [
             [['applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants','purpose','loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
+            [['co_applicants','country_enc_id','purpose','loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -37,6 +39,9 @@ class LoanApplicationsForm extends LoanApplications
     public function add($userId, $college_id, $source = 'Mec',$is_claimed=true)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
+        if (empty($this->country_enc_id)){
+            $this->country_enc_id = Countries::findOne(['name'=>'India'])->country_enc_id;
+        }
         $application_fee = OrganizationFeeAmount::find()
             ->select(['application_fee_amount_enc_id', 'amount', 'gst'])
             ->where(['organization_enc_id' => $college_id, 'loan_type_enc_id' => $loan_type, 'status' => 1])
@@ -55,7 +60,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
                 $transaction->rollback();
-                return 12;
+                return false;
             } else {
                 $this->_flag = true;
             }
@@ -66,10 +71,11 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
                 $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
+                $path_to_claim->country_enc_id = $this->country_enc_id;
                 $path_to_claim->created_by = (($userId)?$userId:null);
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
-                    return 13;
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
@@ -80,9 +86,10 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_Unclaim->bridge_enc_id = $utilitiesModel->encrypt();
                 $path_to_Unclaim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_Unclaim->assigned_course_enc_id = $this->course_enc_id;
+                $path_to_Unclaim->country_enc_id = $this->country_enc_id;
                 if (!$path_to_Unclaim->save()) {
                     $transaction->rollback();
-                    return 14;
+                     return false;
                 } else {
                     $this->_flag = true;
                 }
@@ -100,7 +107,7 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
                         $transaction->rollback();
-                        return 15;
+                         return false;
                     } else {
                         $this->_flag = true;
                     }
@@ -122,7 +129,7 @@ class LoanApplicationsForm extends LoanApplications
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         $transaction->rollback();
-                        return 16;
+                        return false;
                     } else {
                         $this->_flag = true;
                     }

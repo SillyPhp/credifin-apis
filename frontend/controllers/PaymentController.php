@@ -13,11 +13,17 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\helpers\Url;
+use yii\web\HttpException;
 use yii\web\Response;
 
 class PaymentController extends Controller
 {
  public function actionGateway($id){
+     $chk = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
+     if (!$chk)
+     {
+         throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+     }
      $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
      $loanApplication = LoanApplications::find()
          ->select(['loan_app_enc_id','email','phone'])

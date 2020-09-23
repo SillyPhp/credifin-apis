@@ -145,7 +145,7 @@ class TwitterJobsForm extends Model
             $model->website = null;
             $model->name = $this->company_name;
             $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            $model->initials_color = '#73ef9c';
+            $model->initials_color = '#3174dc';
             $model->status = 1;
             if ($model->save()) {
                 $username = new Usernames();

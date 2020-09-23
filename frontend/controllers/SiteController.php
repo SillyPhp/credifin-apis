@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+
 use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
 use common\components\OneTapAuth;
@@ -88,13 +89,10 @@ class SiteController extends Controller
 
     public function actionOneTapAuth()
     {
-        if (Yii::$app->request->isPost)
-        {
-            if((new OneTapAuth())->handle(Yii::$app->request->post()))
-            {
+        if (Yii::$app->request->isPost) {
+            if ((new OneTapAuth())->handle(Yii::$app->request->post())) {
                 return $this->redirect('/site/oauth-verify');
-            }
-            else{
+            } else {
                 $response = [
                     'status' => 201,
                     'title' => 'Error',
@@ -103,42 +101,53 @@ class SiteController extends Controller
             }
         }
     }
+
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();
-        if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->is_credential_change===1)
-        {
-            return $this->render('auth-varify',['credentialsSetup'=>$credentialsSetup]);
-        }
-        else{
-            return $this->redirect('/');
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
+            return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
+        } else {
+            $session = Yii::$app->session;
+            $o = $session->get('current_url');
+            if ($o):
+            return $this->redirect($o);
+            else :
+                return $this->redirect('/');
+            endif;
         }
     }
+
     public function actionPostCredentials()
     {
         $credentialsSetup = new CredentialsSetup();
-        if ($credentialsSetup->load(Yii::$app->request->post()))
-        {
-         if ($credentialsSetup->save())
-         {
-             return $this->redirect('/');
-         }
+        if ($credentialsSetup->load(Yii::$app->request->post())) {
+            if ($credentialsSetup->save()) {
+                $session = Yii::$app->session;
+                $o = $session->get('current_url');
+                if ($o):
+                    return $this->redirect($o);
+                else :
+                    return $this->redirect('/');
+                endif;
+            }
         }
     }
+
     public function actionValidateUser()
     {
         $credentialsSetup = new CredentialsSetup();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $credentialsSetup->load(Yii::$app->request->post());
-            if ($credentialsSetup->username===Yii::$app->user->identity->username)
-            {
+            if ($credentialsSetup->username === Yii::$app->user->identity->username) {
                 return [];
             }
             return ActiveForm::validate($credentialsSetup);
         }
     }
+
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
@@ -160,7 +169,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index',['model'=>$model]);
+        return $this->render('index', ['model' => $model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -318,7 +327,7 @@ class SiteController extends Controller
 
         $socials = SocialPlatforms::find()
             ->alias('a')
-            ->joinWith(['socialLinks b' => function($b){
+            ->joinWith(['socialLinks b' => function ($b) {
 //                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
 //                $b->joinWith(['groupEnc c']);
             }])
@@ -573,18 +582,20 @@ class SiteController extends Controller
             'primary_cat' => $primary_cat,
         ]);
     }
-    public function actionSignUp(){
+
+    public function actionSignUp()
+    {
         $model = new SignUpCandidateForm();
         $modelSignUp = new WidgetSignUpForm();
-        if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $modelSignUp->username = $model->username;
                 $modelSignUp->first_name = $model->first_name;
                 $modelSignUp->last_name = $model->last_name;
                 $modelSignUp->email = $model->email;
-                if($model->phone){
-                $modelSignUp->phone = $model->phone;
+                if ($model->phone) {
+                    $modelSignUp->phone = $model->phone;
                 }
                 $modelSignUp->new_password = $model->new_password;
                 $modelSignUp->confirm_password = $model->confirm_password;
@@ -625,6 +636,7 @@ class SiteController extends Controller
             }
         }
     }
+
     private function login($data = [])
     {
         $loginFormModel = new LoginForm();
@@ -916,7 +928,7 @@ class SiteController extends Controller
                 break;
             case 'getOnlineClasses':
                 $model = new ClassEnquiryForm();
-                return $this->renderAjax('/widgets/online-classes',[
+                return $this->renderAjax('/widgets/online-classes', [
                     'model' => $model,
                 ]);
                 break;
@@ -1077,8 +1089,24 @@ class SiteController extends Controller
         return $this->render('transaction-table');
     }
 
+    public function actionSkillVideo()
+    {
+        return $this->render('skill-video');
+    }
+
+    public function actionCreatorHandbook()
+    {
+        return $this->render('creator-handbook');
+    }
+
     public function actionTeachersHandbook()
     {
         return $this->render('teachers-handbook');
+    }
+
+    public function actionAdmissionForm()
+    {
+        $this->layout = 'blank-layout';
+        return $this->render('admission-form');
     }
 }
