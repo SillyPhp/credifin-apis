@@ -99,7 +99,7 @@ class EducationLoanController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return $this->response(404, ['status' => 404, 'message' => 'Parameters Not Found']);
         }
     }
 
@@ -110,8 +110,14 @@ class EducationLoanController extends ApiBaseController
             $college_id = $params['id'];
             $orgDate = $params['applicant_dob'];
             $model = new LoanApplicationsForm();
+            $modelOrg = new OrganizationList();
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->college_course_enc_id = $modelOrg->getAssigneWidgetCourse($model->college_course_enc_id,$college_id);
+                if (!$model->college_course_enc_id)
+                {
+                    return $this->response(401, ['status' => 422, 'message' => 'Course Inforation Not Found']);
+                }
                 if ($model->validate()) {
                     if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);

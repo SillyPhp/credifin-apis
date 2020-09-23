@@ -202,7 +202,7 @@ class LoansController extends ApiBaseController
                     ->offset(($page - 1) * $limit);
             }
             $loan_requests = $loan_requests
-                ->orderBy(['a.created_on' => SORT_DESC])
+                ->orderBy(['a.status' => SORT_ASC, 'a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
 
