@@ -108,13 +108,18 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
-                                    <div class="form-group">
+                                    <div class="form-group position-relative">
                                         <label for="college_name" class="input-group-text">
                                             College / University Name
                                         </label>
                                         <select class="form-control" id="college_name" name="college_name">
 
                                         </select>
+                                        <input type="text" class="form-control" id="collegeName" name="collegeName"
+                                               placeholder="College Or University Name">
+                                        <ul class="collegeNameList" id="collegeNameList">
+
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -390,6 +395,33 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
 <input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
+.collegeNameList{
+    position: absolute !important;
+    border: 1px solid #c2cad8;
+    border-top: none;
+    max-height: 200px;   
+    width: 100%;
+    z-index: 999; 
+    background: #fff;
+    box-shadow: 0 7px 10px rgba(0,0,0,.1);
+    display: none;
+    overflow-y: scroll;
+}
+.collegeNameList li{
+    padding: 6px 12px;
+    background: #fff;
+    border-bottom: 1px solid #c2cad8;
+    cursor: pointer;
+}
+.collegeNameList li:last-child{
+    border-bottom: none;   
+}
+.collegeListShow{
+    display: block;
+}
+.position-relative{
+    position: relative;
+}
 #loadBtn{
 display:none;
 }
@@ -805,7 +837,7 @@ $script = <<< JS
     getCollegeList(datatype=0,source=3,type=['College']);
     function getCollegeList(datatype, source, type) { 
         $.ajax({ 
-            url : '/api/v3/companies/organization-list',
+            url : 'https://sneh.eygb.me/api/v3/companies/organization-list',
             method : 'GET',  
             data:{
                 datatype:datatype,
@@ -814,6 +846,9 @@ $script = <<< JS
                 },   
             success : function(res) { 
             var res = res.response.results;
+            for(let i = 0; i < res.length; i++){
+                $('#collegeNameList').append('<li>'+ res[i].text +'</li>');
+            }
             $('#college_name').prepend('<option selected=""></option>').select2({
                 data:res,
                 placeholder: "Select College, Univerity",
@@ -1496,6 +1531,15 @@ $this->registerJs($script);
             }else{
                 countryName.style.display = "none";
             }
+        }
+
+        let collegeName = document.getElementById('collegeName');
+        let collegeNameList = document.getElementById('collegeNameList');
+        collegeName.onfocus = function () {
+            collegeNameList.classList.add('collegeListShow');
+        }
+        collegeName.onfocusout = function () {
+            collegeNameList.classList.remove('collegeListShow');
         }
     </script>
 <?php
