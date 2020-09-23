@@ -1,6 +1,8 @@
 <?php
 $this->title = $title . ' | Empower Youth';
+
 use yii\helpers\Url;
+
 if (Yii::$app->params->paymentGateways->mec->icici) {
     $configuration = Yii::$app->params->paymentGateways->mec->icici;
     if ($configuration->mode === "production") {
@@ -34,7 +36,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         <label for="number" class="input-group-text">
                                             Name of Applicant (Student Name)
                                         </label>
-                                        <input type="text" class="form-control" id="applicant_name"
+                                        <input type="text" class="form-control text-capitalize" id="applicant_name"
                                                name="applicant_name" placeholder="Enter Full Name">
                                     </div>
                                 </div>
@@ -57,7 +59,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control"
+                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
@@ -80,10 +82,9 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         <div class="radio-heading input-group-text">
                                             Select Course
                                         </div>
-                                        <select class="form-control" id="course-list-college"
-                                                name="course-list-college">
-
-                                        </select>
+                                       <div id="the-basics">
+                                           <input type="text" id="course-list-college" placeholder="Enter Course Name" name="course-list-college" class="form-control text-capitalize typeahead">
+                                       </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 padd-20">
@@ -107,7 +108,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                         </div>
                                         <select class="form-control" value="semesters" id="semesters">
                                             <option value="1">1st Semester</option>
-                                            <option value="2">2st Semester</option>
+                                            <option value="2">2nd Semester</option>
                                             <option value="3">3rd Semester</option>
                                             <option value="4">4th Semester</option>
                                             <option value="5">5th Semester</option>
@@ -192,14 +193,16 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                                placeholder="Enter 12 digits Aadhaar Card Number">
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Purpose Of Loan (You Can Select Multiple)
-                                        </div>
-                                        <ul id="loan-purpose">
+                                <div id="loan_purpose_div">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Purpose Of Loan (You Can Select Multiple)
+                                            </div>
+                                            <ul id="loan-purpose">
 
-                                        </ul>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -212,7 +215,7 @@ Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\V
                                                     <label for="co-name[]" class="input-group-text">
                                                         Name
                                                     </label>
-                                                    <input type="text" name="co-name[1]" class="form-control"
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize"
                                                            id="co-name" placeholder="Enter Full Name">
                                                 </div>
                                             </div>
@@ -478,6 +481,7 @@ border: 1px solid #ddd !important;
     position:absolute;
     min-height:100vh;
 }
+#loan_purpose_div{display:none}
 .college-logo {
     margin-left:50vw;
     padding:60px 25px 0 25px;
@@ -744,28 +748,125 @@ color:#e65332;
         padding-inline-start: 0px;
     }
 }
+
+.twitter-typeahead{width:100%}
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 ');
 $script = <<<JS
-    getCourseList(id = college_id); 
+    getCourses();
     getFeeComponents(id = college_id); 
-    function getCourseList(id) {
-        $.ajax({
-            url : '/api/v3/education-loan/get-course-list',
-            method : 'POST',
-            data : {id: id},
+    function getCourses()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _courses = [];
+         $.ajax({     
+            url : '/api/v3/education-loan/course-pool-list', 
+            method : 'GET',
             success : function(res) {
-            var html = []; 
-            var res = res.response.courses;
-            html.push('<option value>Select Course</option>');
-            $.each(res,function(index,value) 
-                  {
-                   html.push('<option value="'+value.college_course_enc_id+'">'+value.course_name+'</option>');
-                 }); 
-             $('#course-list-college').html(html);   
-            }
+            if (res.response.status==200){
+                 res = res.response.course;
+                $.each(res,function(index,value) 
+                  {   
+                   _courses.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('courses could not fetch');
+                }
+            } 
         });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_courses',
+         source: substringMatcher(_courses)
+        }); 
     }
-    
     function getFeeComponents(id) {
         $.ajax({
             url : '/api/v3/education-loan/get-fee-components',
@@ -773,18 +874,21 @@ $script = <<<JS
             data : {id: id},
             success : function(res) {
             var html = []; 
-            var res = res.response.fee_components;
-            $.each(res,function(index,value) 
+            if (res.response.status==200){
+                var res = res.response.fee_components;
+               $.each(res,function(index,value) 
                   {
                    html.push('<li class="service-list"><input type="checkbox" name="loan_purpose_checkbox[]" id="'+value.fee_component_enc_id+'" value="'+value.fee_component_enc_id+'" class="checkbox-input services"/><label for="'+value.fee_component_enc_id+'">'+value.name+'</label></li>');
-                 }); 
-            $('#loan-purpose').html(html);   
+                  }); 
+                $('#loan_purpose_div').show();
+                $('#loan-purpose').html(html);
+            }else{
+                $('#loan_purpose_div').hide();
+            }
             }
         });
     } 
     $('#mobile, #aadhaarnumber').mask("#", {reverse: true}); 
-    //$('#loanamount, input[name="co-anualincome[1]"]').mask("#,#0,#00", {reverse: true});
-    //$('input[name="co-anualincome[2]"]').mask("#,#0,#00", {reverse: true}); 
     $('input[name="co-aadhaarnumber[1]"]').mask("#", {reverse: true});
     $('input[name="co-aadhaarnumber[2]"]').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
@@ -1190,7 +1294,7 @@ $this->registerJs($script);
             '                                            <label for="co-name-' + randomVal + '" class="input-group-text">\n' +
             '                                                Name\n' +
             '                                            </label>\n' +
-            '                                            <input type="text" name="co-name[2]" class="form-control" id="co-name-' + randomVal + '"\n' +
+            '                                            <input type="text" name="co-name[2]" class="form-control text-capitalize" id="co-name-' + randomVal + '"\n' +
             '                                                   placeholder="Enter Full Name">\n' +
             '                                        </div>\n' +
             '                                    </div>\n' +
@@ -1304,6 +1408,7 @@ $this->registerJs($script);
         }
     </script>
 <?php
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');

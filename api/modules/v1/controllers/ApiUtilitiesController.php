@@ -51,9 +51,9 @@ class ApiUtilitiesController extends ApiBaseController
             if (count($cities) > 0) {
                 return $this->response(200, $cities);
             }
-            return $this->response(404,'Not found');
+            return $this->response(404, 'Not found');
         }
-        return $this->response(422,'Missing Information');
+        return $this->response(422, 'Missing Information');
     }
 
 //    public function actionJobProfiles($n){
@@ -122,5 +122,19 @@ class ApiUtilitiesController extends ApiBaseController
             ->all();
 
         return $this->response(200, $edu_stream);
+    }
+
+    public function actionCountryList()
+    {
+        $countries = Countries::find()
+            ->select(['country_enc_id', 'name'])
+            ->asArray()
+            ->all();
+
+        if ($countries) {
+            return $this->response(200, $countries);
+        } else {
+            return $this->response(404, 'not found');
+        }
     }
 }
