@@ -1,5 +1,6 @@
 <?php
 namespace api\modules\v3\models;
+use common\models\AssignedCollegeCourses;
 use common\models\AssignedUnclaimCollegeCourses;
 use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
@@ -168,8 +169,9 @@ class OrganizationList
     {
         if ($params['college_course_info'][0]['pulled_from']=='claim')
         {
+            $course_name = trim($params['college_course_info'][0]['course_text']);
             return [
-                'assigned_course_id'=>$params['college_course_info'][0]['course_id']
+                'assigned_course_id'=>$this->getAssignCourse($course_name,$parser['college_id'])
             ];
         }
         else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
@@ -184,6 +186,38 @@ class OrganizationList
             return [
                 'assigned_course_id'=>$this->getAssignUnclaimCourse($course_name,$parser['college_id'])
             ];
+        }
+    }
+
+    public  function getAssigneWidgetCourse($course_name,$colleg_id)
+    {
+        return $this->getAssignCourse($course_name,$colleg_id);
+    }
+
+    private function getAssignCourse($course_name,$colleg_id)
+    {
+        $pool = CollegeCoursesPool::find()
+            ->select(['course_enc_id'])
+            ->where(['course_name'=>$course_name])
+            ->asArray()->one();
+
+        if (!empty($pool))
+        {
+            $assignClaim = AssignedCollegeCourses::find()
+                ->select(['assigned_college_enc_id'])
+                ->where(['organization_enc_id'=>$colleg_id,'course_enc_id'=>$pool['course_enc_id']])
+                ->asArray()
+                ->one();
+            if (!empty($assignClaim)){
+                return $assignClaim['assigned_college_enc_id'];
+            }else{
+                return $this->saveClaimCourse($colleg_id,$pool['course_enc_id']);
+            }
+        }
+        else
+        {
+            $cousrse_enc_id = $this->saveCourseInPool($course_name);
+            return $this->saveClaimCourse($colleg_id,$cousrse_enc_id);
         }
     }
 
@@ -232,7 +266,24 @@ class OrganizationList
             return false;
         }
     }
-
+    private function saveClaimCourse($colleg_id,$course_id)
+    {
+        $user = Users::findOne(['username'=>'admin'])->user_enc_id;
+        $model = new AssignedCollegeCourses();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->assigned_college_enc_id =  $utilitiesModel->encrypt();
+        $model->course_enc_id = $course_id;
+        $model->organization_enc_id = $colleg_id;
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user;
+        if ($model->save())
+        {
+            return $model->assigned_college_enc_id;
+        }else{
+            return false;
+        }
+    }
     private function saveCourseInPool($course_name)
     {
         $user = Users::findOne(['username' => 'admin'])->user_enc_id;
