@@ -570,6 +570,7 @@ class LoansController extends ApiBaseController
                     'a.applicant_dob',
                     'a.applicant_current_city',
                     'a.degree',
+                    'a.amount_received',
                     'a.years',
                     'a.semesters',
                     'a.phone',
