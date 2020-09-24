@@ -15,7 +15,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
-$keywords = 'Education Loan | Empower Youth'; 
+$keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/sharing-loan-image.png');
 $this->params['seo_tags'] = [
