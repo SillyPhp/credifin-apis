@@ -30,17 +30,17 @@ use yii\helpers\Url;
                             <p>Collateral Free <br>Loans</p>
                         </div>
                     </div>
-                    <h3>Only on
-                        <a href="/education-loans">
-                            <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com
-                        </a>
-                    </h3>
+<!--                    <h3>Only on-->
+<!--                        <a href="/education-loans">-->
+<!--                            <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com-->
+<!--                        </a>-->
+<!--                    </h3>-->
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
                         <p id="headingText">Fill Me For Your Bright Future</p>
-                        <form>
-                            <div class="form-group" id="step1">
+                        <form id="regForm">
+                            <div class="form-group tab" data-id="step1">
                                 <div class="form-flex">
                                     <div class="ff-input">
                                         <input type="text" class="form-control" placeholder="First Name">
@@ -76,72 +76,135 @@ use yii\helpers\Url;
                                         <input type="text" class="form-control" placeholder="Course Name">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-flex">
-                                    <div class="fw-input">
-                                        <input type="text" class="form-control" placeholder="College Or University Name">
-                                    </div>
-                                </div>
-
+                            <div class="form-group tab" data-id="step2">
                                 <div class="form-flex-2">
-                                    <div class="font14">Have You Already Applied In This College</div>
+                                    <div class="font14">Have You Already Applied In A College</div>
                                     <div class="radio-container">
-                                    <input type="radio" name="field" id="Uno"/>
-                                    <label for="Uno">
-                                        <svg class="check" viewbox="0 0 40 40">
-                                            <defs>
-                                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                    <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                    <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                </linearGradient>
-                                            </defs>
-                                            <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                            <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                        </svg>Yes
-                                    </label>
-                                    <input type="radio" name="field" id="Dos"/>
-                                    <label for="Dos">
-                                        <svg class="check" viewbox="0 0 40 40">
-                                            <defs>
-                                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                    <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                    <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                </linearGradient>
-                                            </defs>
-                                            <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                            <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                        </svg>No
-                                    </label>
+                                        <input type="radio" name="appliedCollege" id="yes" onchange="showNxtStep()" value="yes">
+                                        <label for="yes">
+                                            <svg class="check" viewbox="0 0 40 40">
+                                                <defs>
+                                                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                        <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                        <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                    </linearGradient>
+                                                </defs>
+                                                <circle id="border" r="18px" cx="20px" cy="20px"></circle>
+                                                <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
+                                            </svg>Yes
+                                        </label>
+                                        <input type="radio" name="appliedCollege" id="no" onchange="showNxtStep()" value="no">
+                                        <label for="no">
+                                            <svg class="check" viewbox="0 0 40 40">
+                                                <defs>
+                                                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                        <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                        <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                    </linearGradient>
+                                                </defs>
+                                                <circle id="border" r="18px" cx="20px" cy="20px"></circle>
+                                                <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
+                                            </svg>No
+                                        </label>
+                                    </div>
                                 </div>
+                                <div class="form-group" id="appliedYes">
+                                    <div class="form-flex">
+                                        <div class="fw-input">
+                                            <input type="text" class="form-control" placeholder="College Or University Name">
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-flex">
-                                    <div class="fw-input">
-                                        <input type="text" class="form-control" placeholder="Loan Amount Required (Optional)">
+                                <div class="form-group" id="appliedNo">
+                                    <p>Please Mention Your Three Preferred Colleges</p>
+                                    <div class="form-flex">
+                                        <div class="fw-input">
+                                            <input type="text" class="form-control" placeholder="College Or University Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-flex">
+                                        <div class="fw-input">
+                                            <input type="text" class="form-control" placeholder="College Or University Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-flex">
+                                        <div class="fw-input">
+                                            <input type="text" class="form-control" placeholder="College Or University Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-flex-2">
+                                        <div class="font14">Do You Require Education Loan ?</div>
+                                        <div class="radio-container">
+                                            <input type="radio" name="loan" id="LoanYes" onchange="showLoanPage()" value="Loanyes">
+                                            <label for="LoanYes">
+                                                <svg class="check" viewbox="0 0 40 40">
+                                                    <defs>
+                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
+                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
+                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
+                                                </svg>Yes
+                                            </label>
+                                            <input type="radio" name="loan" id="LoanNo" onchange="showLoanFields()" value="LoanNo">
+                                            <label for="LoanNo">
+                                                <svg class="check" viewbox="0 0 40 40">
+                                                    <defs>
+                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
+                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
+                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
+                                                </svg>No, I am Just Inquiring.
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="loanFields">
+                                        <div class="form-flex">
+                                            <div class="ff-input">
+                                                <input type="text" class="form-control" placeholder="Total Fee">
+                                            </div>
+                                            <div class="ff-input">
+                                                <input type="text" class="form-control" placeholder="Loan Amount Required">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" id="step2">
-                                <div class="form-flex">
-                                    <div class="fw-input">
-                                        <input type="text" class="form-control" placeholder="Username">
-                                    </div>
-                                </div>
-                                <div class="form-flex">
-                                    <div class="fw-input">
-                                        <input type="text" class="form-control" placeholder="Password">
-                                    </div>
-                                </div>
-                                <div class="form-flex">
-                                    <div class="fw-input">
-                                        <input type="text" class="form-control" placeholder="Confirm Password">
-                                    </div>
-                                </div>
-                            </div>
+<!--                            <div class="form-group tab" data-id="step3">-->
+<!--                                <div class="form-flex">-->
+<!--                                    <div class="fw-input">-->
+<!--                                        <input type="text" class="form-control" placeholder="Username">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-flex">-->
+<!--                                    <div class="fw-input">-->
+<!--                                        <input type="text" class="form-control" placeholder="Password">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-flex">-->
+<!--                                    <div class="fw-input">-->
+<!--                                        <input type="text" class="form-control" placeholder="Confirm Password">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                             <div class="button-form">
-                                <button type="button" class="btn-frm" id="nextBtn" name="submitButton">Next</button>
-                                <button type="Submit" class="btn-frm" id="submitBtn" name="submitButton">Sumbit</button>
+                                <button type="button" id="prevBtn" class="btn-frm" onclick="nextPrev(-1)">Previous</button>
+                                <button type="button" id="nextBtn" class="btn-frm" onclick="nextPrev(1)">Next</button>
+
+<!--                                <button type="button" class="btn-frm" id="prevBtn" name="submitButton">Previous</button>-->
+<!--                                <button type="button" class="btn-frm" id="nextBtn"  name="submitButton">Next</button>-->
+<!--                                <button type="Submit" class="btn-frm" id="submitBtn" name="submitButton">Sumbit</button>-->
                             </div>
 
                         </form>
@@ -153,7 +216,6 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
-
 body{
     margin: 0px;
     padding:0px; 
@@ -181,7 +243,6 @@ body{
     display: flex;
     height: calc(100vh - 60px);
     align-items: center;
-    
 }
 .left-sec{
     flex-basis: 50%;
@@ -216,10 +277,10 @@ body{
     font-family: roboto;
     font-weight: 500;
 }
-.right-sec form .form-group{
-    display: flex;
-    flex-direction: column;
-}
+//.right-sec form .form-group{
+//    display: flex;
+//    flex-direction: column;
+//}
 .ls-divider{
     height: 2px; 
     background: #666;
@@ -339,35 +400,42 @@ label {
   width: 1.35rem;
   height: 1.35rem;
 }
-.check #border {
+.check #border, .check #border2 {
   fill: none;
   stroke: #7a7a8c;
   stroke-width: 3;
   stroke-linecap: round;
 }
-.check #dot {
+.check #dot, .check #dot2 {
   fill: url(#gradient);
   transform: scale(0);
   transform-origin: 50% 50%;
 }
-
+.check #dot2{
+  fill: url(#gradient2);
+}
 .radio-container input {
   display: none;
 }
 .radio-container input:checked + label {
-  background: linear-gradient(180deg, #0db6fc, #00a0e3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+    background: linear-gradient(180deg, #0db6fc, #00a0e3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-.radio-container input:checked + label svg #border {
-  stroke: url(#gradient);
-  stroke-dasharray: 145;
-  stroke-dashoffset: 145;
-  animation: checked 500ms ease forwards;
+.radio-container input:checked + label svg #border,
+.radio-container input:checked + label svg #border2{
+    stroke: url(#gradient);
+    stroke-dasharray: 145;
+    stroke-dashoffset: 145;
+    animation: checked 500ms ease forwards;
 }
-.radio-container input:checked + label svg #dot {
-  transform: scale(1);
-  transition: transform 500ms cubic-bezier(0.57, 0.21, 0.69, 3.25);
+.radio-container input:checked + label svg #border2{
+    stroke: url(#gradient2);
+}
+.radio-container input:checked + label svg #dot,
+.radio-container input:checked + label svg #dot2{
+    transform: scale(1);
+    transition: transform 500ms cubic-bezier(0.57, 0.21, 0.69, 3.25);
 }
 
 @keyframes checked {
@@ -382,8 +450,21 @@ label {
 .mt10{
     margin-top: 10px;
 }
-#step2, #submitBtn{
+#appliedNo, #appliedYes, #loanFields {
     display: none;
+}
+
+.tab {
+  display: none;
+}
+.formActive{
+    display: block !important;
+}
+#appliedNo p{
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 0px;
+    padding-left: 6px;
 }
 @media screen and (max-width: 1030px){
     .flex-main {
@@ -438,31 +519,53 @@ label {
 ');
 ?>
 <script>
-    let nextBtn = document.getElementById('nextBtn');
-    nextBtn.onclick = function () {
-        let step1 = document.getElementById('step1');
-        let step2 = document.getElementById('step2');
-        let headingText = document.getElementById('headingText');
-        let submitBtn = document.getElementById('submitBtn');
-
-        let stepActive = document.getElementsByClassName('stepActive');
-        if (stepActive.length == 1){
-            step1.style.display = "block";
-            step2.style.display = "none";
-            step2.classList.remove('stepActive');
-
-            submitBtn.style.display = "none";
-            nextBtn.innerHTML = "Next";
-            headingText.innerHTML = "Fill Me For Your Bright Future";
+    let headingText = document.getElementById('headingText');
+    function showNxtStep(){
+        let clickVal = event.currentTarget.value;
+        if(clickVal == 'yes'){
+            document.getElementById('appliedYes').style.display = "block";
+            document.getElementById('appliedNo').style.display = "none";
         }else{
-            step1.style.display = "none";
-            step2.style.display = "block";
-            step2.classList.add('stepActive');
-
-            submitBtn.style.display = "block";
-            headingText.innerHTML = "Please Sign Up";
-            nextBtn.innerHTML = "Previous";
-
+            document.getElementById('appliedNo').style.display = "block";
+            document.getElementById('appliedYes').style.display = "none";
         }
+    }
+
+
+    var currentTab = 0;
+    showTab(currentTab);
+
+    function showTab(n) {
+        var x = document.getElementsByClassName("tab");
+        x[n].style.display = "block";
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+            document.getElementById("nextBtn").innerHTML = "Submit";
+        } else {
+            document.getElementById("nextBtn").innerHTML = "Next";
+        }
+    }
+
+    function nextPrev(n) {
+        var x = document.getElementsByClassName("tab");
+        x[currentTab].style.display = "none";
+        currentTab = currentTab + n;
+        if (currentTab >= x.length) {
+            document.getElementById("regForm").submit();
+            return false;
+        }
+        showTab(currentTab);
+    }
+
+    function showLoanPage(){
+        window.location.replace("/education-loans/apply")
+    }
+
+    function showLoanFields(){
+        document.getElementById('loanFields').style.display = "block";
     }
 </script>
