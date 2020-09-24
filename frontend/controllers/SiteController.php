@@ -1121,56 +1121,11 @@ class SiteController extends Controller
     public function actionAdmission()
     {
         $model = new AdmissionForm();
-        $modelSignUp = new IndividualSignUpForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 print_r(Yii::$app->request->post());exit();
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                $modelSignUp->username = $model->username;
-                $modelSignUp->first_name = $model->first_name;
-                $modelSignUp->last_name = $model->last_name;
-                $modelSignUp->email = $model->email;
-                $modelSignUp->phone = $model->phone;
-                $modelSignUp->new_password = $model->new_password;
-                $modelSignUp->confirm_password = $model->confirm_password;
-                if (empty($errors)) {
-                    $session = Yii::$app->session;
-                    $session->set('degree', $model->degree);
-                    $session->set('course', $model->course);
-                    $session->set('college', $model->college);
-                    $session->set('field', $model->field);
-                    $session->set('preference_college1', $model->preference_college1);
-                    $session->set('preference_college2', $model->preference_college2);
-                    $session->set('preference_college3', $model->preference_college3);
-
-                    $modelSignUp->user_type = 'Individual';
-
-                    if ($modelSignUp->add()) {
-                        $data['username'] = $modelSignUp->username;
-                        $data['password'] = $modelSignUp->new_password;
-                        if ($this->login($data)) {
-
-                            $degree = $session->get('degree');
-                            $course = $session->get('course');
-                            $college = $session->get('college');
-                            $field = $session->get('field');
-                            $preference_college1 = $session->get('preference_college1');
-                            $preference_college2 = $session->get('preference_college2');
-                            $preference_college3 = $session->get('preference_college3');
-                            if ($model->save($degree, $course, $college, $field, $preference_college1,$preference_college2,$preference_college3)) {
-                                return $this->redirect('/account/dashboard');
-                            } else {
-                                return [
-                                    'status' => 'error',
-                                    'title' => 'error',
-                                    'message' => 'An error has occurred. Please try again later',
-                                ];
-                            }
-                        }
-                    }
                 } else {
-                    return $errors;
-                }
             }
         }
     }

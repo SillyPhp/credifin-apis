@@ -1,6 +1,10 @@
 <?php
 
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use borales\extensions\phoneInput\PhoneInput;
 ?>
 
     <section class="admission-form">
@@ -10,11 +14,10 @@ use yii\helpers\Url;
             </div>
             <div class="flex-main">
                 <div class="left-sec">
-
                     <h2>Get Admission In Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
                     <div class="ls-divider"></div>
                     <h4 class="mb0">Don’t Let Money Stop You From Getting into Your Dream College!</h4>
-                    <h4 class="mt10">Get Interest Free <span class="colorOrange">Education Loans</span> both in
+                    <h4 class="mt10"><span class="colorOrange">Education Loans</span> available for
                         <span class="colorOrange">India</span> and <span class="colorOrange">Abroad</span>.</h4>
                     <div class="el-icons-flex">
                         <div class="el-icons">
@@ -30,6 +33,8 @@ use yii\helpers\Url;
                             <p>Collateral Free <br>Loans</p>
                         </div>
                     </div>
+                    <h4>Interest Free Loans available for select Colleges/Universities</h4>
+                    <h4>Loan Starting from as low as 9% p.a.</h4>
 <!--                    <h3>Only on-->
 <!--                        <a href="/education-loans">-->
 <!--                            <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com-->
@@ -39,50 +44,45 @@ use yii\helpers\Url;
                 <div class="right-sec">
                     <div class="ls-box-shadow">
                         <p id="headingText">Fill Me For Your Bright Future</p>
+                        <?php $form = ActiveForm::begin([
+                            'id' => 'application_form',
+                            'options' => [
+                                'class' => 'clearfix',
+                            ],
+                            'fieldConfig' => [
+//                                'options' => ['class' => ''],
+                                'template' => '',
+                                'labelOptions' => ['class' => ''],
+                            ],
+                        ]); ?>
                         <form id="regForm">
                             <div class="form-group tab" data-id="step1">
                                 <div class="form-flex">
-                                    <div class="ff-input">
-                                        <input type="text" class="form-control" placeholder="First Name">
-                                    </div>
-                                    <div class="ff-input">
-                                        <input type="text" class="form-control" placeholder="Last Name">
-                                    </div>
+                                    <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'First Name'])->label(false); ?>
+                                    <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Last Name'])->label(false); ?>
                                 </div>
 
                                 <div class="form-flex">
-                                    <div class="ff-input">
-                                        <input type="email" class="form-control" placeholder="Email">
-                                    </div>
-                                    <div class="ff-input">
-                                        <input type="tel" class="form-control" placeholder="Contact Number (WhatsApp)">
-                                    </div>
+                                    <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Email'])->label(false); ?>
+                                    <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Contact Number (WhatsApp)'])->widget(PhoneInput::className(), [
+                                        'jsOptions' => [
+                                            'allowExtensions' => false,
+                                            'preferredCountries' => ['in'],
+                                            'nationalMode' => false,
+                                        ]
+                                    ])->label(false); ?>
                                 </div>
 
                                 <div class="form-flex">
-<!--                                    <div class="ff-input">-->
-<!--                                        <select class="form-control">-->
-<!--                                            <option>Degree</option>-->
-<!--                                            <option value="diploma">Diploma</option>-->
-<!--                                            <option value="under graduation">Under Graduation</option>-->
-<!--                                            <option value="post graduation">Post Graduation</option>-->
-<!--                                            <option value="phd">PhD</option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-                                    <div class="ff-input">
-                                        <input type="text" class="form-control" placeholder="Degree">
-                                    </div>
-                                    <div class="ff-input">
-                                        <input type="text" class="form-control" placeholder="Course Name">
-                                    </div>
+                                    <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name'])->label(false); ?>
                                 </div>
                             </div>
 
                             <div class="form-group tab" data-id="step2">
                                 <div class="form-flex-2">
-                                    <div class="font14">Have You Already Applied In A College</div>
+                                    <div class="font14">Have You Already Taken Admission In College?</div>
                                     <div class="radio-container">
-                                        <input type="radio" name="appliedCollege" id="yes" onchange="showNxtStep()" value="yes">
+                                        <input type="radio" name="appliedCollege" id="yes" value="yes">
                                         <label for="yes">
                                             <svg class="check" viewbox="0 0 40 40">
                                                 <defs>
@@ -95,7 +95,7 @@ use yii\helpers\Url;
                                                 <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
                                             </svg>Yes
                                         </label>
-                                        <input type="radio" name="appliedCollege" id="no" onchange="showNxtStep()" value="no">
+                                        <input type="radio" name="appliedCollege" id="no" value="no">
                                         <label for="no">
                                             <svg class="check" viewbox="0 0 40 40">
                                                 <defs>
@@ -112,35 +112,27 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="form-group" id="appliedYes">
                                     <div class="form-flex">
-                                        <div class="fw-input">
-                                            <input type="text" class="form-control" placeholder="College Or University Name">
-                                        </div>
+                                        <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name'])->label(false); ?>
                                     </div>
                                 </div>
 
                                 <div class="form-group" id="appliedNo">
                                     <p>Please Mention Your Three Preferred Colleges</p>
                                     <div class="form-flex">
-                                        <div class="fw-input">
-                                            <input type="text" class="form-control" placeholder="College Or University Name">
-                                        </div>
+                                        <?= $form->field($model, 'preference_college1', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
                                     </div>
                                     <div class="form-flex">
-                                        <div class="fw-input">
-                                            <input type="text" class="form-control" placeholder="College Or University Name">
-                                        </div>
+                                        <?= $form->field($model, 'preference_college2', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
                                     </div>
                                     <div class="form-flex">
-                                        <div class="fw-input">
-                                            <input type="text" class="form-control" placeholder="College Or University Name">
-                                        </div>
+                                        <?= $form->field($model, 'preference_college3', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-flex-2">
-                                        <div class="font14">Do You Require Education Loan ?</div>
+                                        <div class="font14">Do You want to apply for Education Loan Now?</div>
                                         <div class="radio-container">
-                                            <input type="radio" name="loan" id="LoanYes" onchange="showLoanPage()" value="Loanyes">
+                                            <input type="radio" name="loan" id="LoanYes" value="Loanyes">
                                             <label for="LoanYes">
                                                 <svg class="check" viewbox="0 0 40 40">
                                                     <defs>
@@ -153,7 +145,7 @@ use yii\helpers\Url;
                                                     <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
                                                 </svg>Yes
                                             </label>
-                                            <input type="radio" name="loan" id="LoanNo" onchange="showLoanFields()" value="LoanNo">
+                                            <input type="radio" name="loan" id="LoanNo" value="LoanNo">
                                             <label for="LoanNo">
                                                 <svg class="check" viewbox="0 0 40 40">
                                                     <defs>
@@ -170,44 +162,20 @@ use yii\helpers\Url;
                                     </div>
                                     <div id="loanFields">
                                         <div class="form-flex">
-                                            <div class="ff-input">
-                                                <input type="text" class="form-control" placeholder="Total Fee">
-                                            </div>
-                                            <div class="ff-input">
-                                                <input type="text" class="form-control" placeholder="Loan Amount Required">
-                                            </div>
+                                            <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control','placeholder' => 'Loan Amount Required (Optional)','autocomplete' => 'off','id' => 'amount'])->label(false); ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-<!--                            <div class="form-group tab" data-id="step3">-->
-<!--                                <div class="form-flex">-->
-<!--                                    <div class="fw-input">-->
-<!--                                        <input type="text" class="form-control" placeholder="Username">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-flex">-->
-<!--                                    <div class="fw-input">-->
-<!--                                        <input type="text" class="form-control" placeholder="Password">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-flex">-->
-<!--                                    <div class="fw-input">-->
-<!--                                        <input type="text" class="form-control" placeholder="Confirm Password">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
 
                             <div class="button-form">
-                                <button type="button" id="prevBtn" class="btn-frm" onclick="nextPrev(-1)">Previous</button>
-                                <button type="button" id="nextBtn" class="btn-frm" onclick="nextPrev(1)">Next</button>
-
-<!--                                <button type="button" class="btn-frm" id="prevBtn" name="submitButton">Previous</button>-->
-<!--                                <button type="button" class="btn-frm" id="nextBtn"  name="submitButton">Next</button>-->
-<!--                                <button type="Submit" class="btn-frm" id="submitBtn" name="submitButton">Sumbit</button>-->
+                                <button type="button" id="prevBtn" class="btn-frm">Previous</button>
+                                <button type="button" id="nextBtn" class="btn-frm">Next</button>
+                                <?= Html::submitButton('Submit', ['class' => 'btn-frm','id' => 'submitBtn']) ?>
                             </div>
 
                         </form>
+                        <?php ActiveForm::end(); ?>
                     </div>
                 </div>
             </div>
@@ -216,6 +184,80 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+#submitBtn{
+display:none;
+}
+.twitter-typeahead{width:100%}
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.help-block-error{
+    font-size: 13px !important;
+    margin: 0 !important;
+    text-align: left !important;
+    color: #800000 !important;
+}
 body{
     margin: 0px;
     padding:0px; 
@@ -277,10 +319,11 @@ body{
     font-family: roboto;
     font-weight: 500;
 }
-//.right-sec form .form-group{
+.right-sec form .form-group{
 //    display: flex;
 //    flex-direction: column;
-//}
+    width:100%;
+}
 .ls-divider{
     height: 2px; 
     background: #666;
@@ -517,55 +560,197 @@ label {
     }
 }
 ');
+$script = <<<JS
+//java script start //
+
+let headingText = document.getElementById('headingText');
+
+   $(document).on('click','input[name = "appliedCollege"]',function (){
+       var t = $(this);
+       var value = t.attr('id');
+       if(value == 'yes'){
+           $('#appliedYes').show();
+           $('#appliedNo').hide();
+       } else {
+           $('#appliedYes').hide();
+           $('#appliedNo').show();
+       }
+       // showNxtStep($(this));
+   });
+        var currentTab = 0;
+        showTab(currentTab);
+
+        function showTab(n) {
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").style.display = "none";
+                // document.getElementById("submitBtn").style.display = "block";
+            } else {
+                // document.getElementById("nextBtn").innerHTML = "Next";
+                document.getElementById("nextBtn").style.display = "block";
+                // document.getElementById("submitBtn").style.display = "none";
+            }
+        }
+
+        function nextPrev(n) {
+            var x = document.getElementsByClassName("tab");
+            x[currentTab].style.display = "none";
+            currentTab = currentTab + n;
+            if (currentTab >= x.length) {
+                document.getElementById("regForm").submit();
+                return false;
+            }
+            showTab(currentTab);
+            // validate_first(currentTab);
+        }
+        function validate_first(currentTab){
+            // console.log(currentTab);
+            var isValid = true;
+            // var first_name = $('#first_name'); 
+            // var last_name = document.getElementById("last_name").innerHTML.length;
+            if($('#first_name').val().length == 0){
+                isValid = false;
+                $('#first_name').next('p').html('First Name cannot be blank');
+            }
+            if($('#last_name').val().length == 0){
+                isValid = false;
+                $('#last_name').next('p').html('Last Name cannot be blank');
+            }
+            if(isValid){
+                showTab(currentTab);
+            }
+        }
+
+        $(document).on('click','#prevBtn',function ()
+        {
+            nextPrev(-1);
+        });
+        $(document).on('click','#LoanYes',function ()
+        {
+            window.location.href= "/education-loans/apply";
+        });
+        $(document).on('click','#LoanNo',function ()
+        {
+            $('#loanFields').show();
+            $('#submitBtn').show();
+        });
+         $(document).on('click','#nextBtn',function ()
+        {
+            nextPrev(1);
+        });
+        
+//java script end //
+    getCourses(); 
+    getCollegeList(); 
+function getCourses()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _courses = [];
+         $.ajax({     
+            url : '/api/v3/education-loan/course-pool-list', 
+            method : 'GET',
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.course;
+                $.each(res,function(index,value) 
+                  {   
+                   _courses.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('courses could not fetch');
+                }
+            } 
+        });
+        $('#course_name').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_courses',
+         source: substringMatcher(_courses)
+        }); 
+    }
+    function getCollegeList()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _colleges = [];
+         $.ajax({     
+            url : '/api/v3/companies/organization-list', 
+            method : 'GET',
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.results;
+                $.each(res,function(index,value) 
+                  {   
+                   _colleges.push(value.text);
+                  }); 
+               } else
+                {
+                   console.log('Colleges could not fetch');
+                }
+            } 
+        });
+        $('.college_name').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_colleges',
+         source: substringMatcher(_colleges)
+        }); 
+    }
+JS;
+$this->registerJs($script);
 ?>
 <script>
-    let headingText = document.getElementById('headingText');
-    function showNxtStep(){
-        let clickVal = event.currentTarget.value;
-        if(clickVal == 'yes'){
-            document.getElementById('appliedYes').style.display = "block";
-            document.getElementById('appliedNo').style.display = "none";
-        }else{
-            document.getElementById('appliedNo').style.display = "block";
-            document.getElementById('appliedYes').style.display = "none";
-        }
-    }
 
-
-    var currentTab = 0;
-    showTab(currentTab);
-
-    function showTab(n) {
-        var x = document.getElementsByClassName("tab");
-        x[n].style.display = "block";
-        if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
-        } else {
-            document.getElementById("prevBtn").style.display = "inline";
-        }
-        if (n == (x.length - 1)) {
-            document.getElementById("nextBtn").innerHTML = "Submit";
-        } else {
-            document.getElementById("nextBtn").innerHTML = "Next";
-        }
-    }
-
-    function nextPrev(n) {
-        var x = document.getElementsByClassName("tab");
-        x[currentTab].style.display = "none";
-        currentTab = currentTab + n;
-        if (currentTab >= x.length) {
-            document.getElementById("regForm").submit();
-            return false;
-        }
-        showTab(currentTab);
-    }
-
-    function showLoanPage(){
-        window.location.replace("/education-loans/apply")
-    }
-
-    function showLoanFields(){
-        document.getElementById('loanFields').style.display = "block";
-    }
 </script>
+<?php
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
