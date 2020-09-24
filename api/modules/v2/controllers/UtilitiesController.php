@@ -3,9 +3,9 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AssignedCategories;
+use common\models\AssignedCollegeCourses;
 use common\models\Categories;
 use common\models\Cities;
-use common\models\CollegeCourses;
 use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
@@ -41,15 +41,17 @@ class UtilitiesController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -88,15 +90,17 @@ class UtilitiesController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -105,6 +109,36 @@ class UtilitiesController extends ApiBaseController
 
             return $organization;
         }
+    }
+
+    public function actionGetStates($search = null)
+    {
+        $states = States::find()
+            ->select(['state_enc_id', 'name'])
+            ->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $states->andWhere(['like', 'name', $search]);
+        }
+        $states = $states->limit(10)->asArray()
+            ->all();
+
+        return $states;
+    }
+
+    public function actionGetCities($search = null)
+    {
+        $cities = Cities::find()
+            ->alias('a')
+            ->select(['a.city_enc_id', 'a.name'])
+            ->joinWith(['stateEnc b'],false)
+            ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $cities->andWhere(['like', 'a.name', $search]);
+        }
+        $cities = $cities->limit(10)->asArray()
+            ->all();
+
+        return $cities;
     }
 
     public function actionGetCompanies($search = null)
@@ -140,15 +174,17 @@ class UtilitiesController extends ApiBaseController
 
         $i = 0;
         foreach ($organizations as $o) {
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $o['organization_enc_id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 

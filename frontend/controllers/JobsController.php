@@ -59,6 +59,7 @@ use yii\db\Query;
 use common\models\Utilities;
 use common\models\RandomColors;
 use yii\db\Expression;
+use yii\widgets\ActiveForm;
 
 class JobsController extends Controller
 {
@@ -586,6 +587,13 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
+            if (!$createCompany->validate()){
+                return [
+                    'status' => 'error',
+                    'message' => json_encode(ActiveForm::validate($createCompany)),
+                    'title' => 'Error',
+                ];
+            }
             if ($createCompany->save()) {
                 return [
                     'status' => 'success',
@@ -1448,6 +1456,17 @@ class JobsController extends Controller
                     }
                 }
             }
+        }
+    }
+    public function actionClearMyCache()
+    {
+        $cache = Yii::$app->cache->flush();
+
+        if ($cache) {
+            $this->redirect(Yii::$app->request->referrer);
+        } else {
+            $this->redirect('/jobs/clear-my-cache');
+            return 'something went wrong...! please try again later';
         }
     }
 }

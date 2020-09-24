@@ -84,7 +84,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .top-bg{
-   background-color:#f9f9f9;
+   background-color:#fff;
    padding:20px 0 50px;
 }
 .main-set {

@@ -1,14 +1,16 @@
 <?php
 
 use yii\helpers\Url;
-
+$time = $webinar['start_datetime'];
+$interest_status = $webResig['interest_status'];
+$status = $webinar['status'];
 ?>
 <section>
     <div class="full-width-light"
          style="">
         <div class="title-main">
             <div class="element-percent">
-                <h1>Trends in Web Designing</h1>
+                <h1><?= $webinar['title'] ?></h1>
             </div>
         </div>
     </div>
@@ -19,30 +21,46 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <div class="counter-item">
-                            <span class="days">00</span>
-                            <div class="smalltext">Days</div>
-                            <b>:</b>
+                        <?php if($status == 2){ ?>
+                            <div>
+                                <a id="joinBtn">Webinar Expired</a>
+                            </div>
+                        <?php } elseif($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
+                        <div id="join">
+                            <a id="joinBtn" href="/mentors/webinar-live?id=<?= $webinar['session_enc_id']?>" >Click here to Join</a>
                         </div>
-                        <div class="counter-item">
-                            <span class="hours">00</span>
-                            <div class="smalltext">Hours</div>
-                            <b>:</b>
+                        <div id="counter">
+                            <div class="counter-item">
+                                <span class="days" id="days"></span>
+                                <div class="smalltext">Days</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="hours" id="hours"></span>
+                                <div class="smalltext">Hours</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="minutes" id="minutes"></span>
+                                <div class="smalltext">Minutes</div>
+                                <b>:</b>
+                            </div>
+                            <div class="counter-item">
+                                <span class="seconds" id="seconds"></span>
+                                <div class="smalltext">Seconds</div>
+                            </div>
                         </div>
-                        <div class="counter-item">
-                            <span class="minutes">00</span>
-                            <div class="smalltext">Minutes</div>
-                            <b>:</b>
+                        <?php } elseif($status == 4) { ?>
+                        <div>
+                            <a id="joinBtn">Webinar Cancel</a>
                         </div>
-                        <div class="counter-item">
-                            <span class="seconds">00</span>
-                            <div class="smalltext">Seconds</div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <?php if(!empty($webinar['description'])){ ?>
     <div class="webinar-details">
         <div class="container">
             <div class="row">
@@ -56,64 +74,48 @@ use yii\helpers\Url;
                 <div class="col-lg-12">
                     <div class="webinar-description">
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                            galley of type and scrambled it to make a type specimen book. It has survived not only five
-                            centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
-                            passages, and more recently with desktop publishing software like Aldus PageMaker including
-                            versions of Lorem Ipsum.
-                        </p>
-                        <p>
-                            It is a long established fact that a reader will be distracted by the readable content of a
-                            page when looking at its layout. The point of using Lorem Ipsum is that it has a
-                            more-or-less normal distribution of letters, as opposed to using
-                        </p>
-                        <p>
-                            'Content here, content here', making it look like readable English. Many desktop publishing
-                            packages and web page editors now use Lorem Ipsum as their default model text, and a search
-                            for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
-                            evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the
-                            like).
+                            <?= $webinar['description'] ?>
                         </p>
                     </div>
+    <?php } ?>
                     <div class="sidebar text-center">
                         <div class="dis-flex">
-                            <p><i class="fas fa-calendar-day"></i> 27 June 2020 </p>
-                            <p><i class="far fa-clock"></i> 5PM IST</p>
-                            <p><i class="fas fa-users"></i> 100 Seats</p>
-                            <p><i class="fas fa-microphone-alt"></i> 4 Speakers</p>
+                            <p><i class="fas fa-calendar-day"></i> <?= date('d F Y',strtotime($webinar['start_datetime']))?> </p>
+                            <p><i class="far fa-clock"></i> <?= date('h:i A',strtotime($webinar['start_datetime']))?></p>
+                            <p><i class="fas fa-users"></i> <?= $webinar['seats'] ?> Seats</p>
+                            <p><i class="fas fa-microphone-alt"></i> <?= count($assignSpeaker) ?> Speakers</p>
                         </div>
                         <div class="flex2">
                             <div class="avatars">
                                 <ul class="ask-people">
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                                    </li>
-                                    <li>
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                                    </li>
+                                    <?php
+                                    if($register){
+                                    foreach($register as $reg){ ?>
+                                        <li>
+                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$reg['image_location'].'/'.$reg['image']) ?>">
+                                        </li>
+                                    <?php }
+                                    } else {
+                                        if(count($webinarRegistrations) !== 0) {
+                                        ?>
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                                        </li>
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                        </li>
+                                <?php } } ?>
                                 </ul>
-                                <p><span>20</span>
+                                <p><span><?= count($webinarRegistrations) ?></span>
                                     People Registered</p>
                             </div>
+                            <?php if(Yii::$app->user->identity->user_enc_id){?>
                             <div class="register-action">
-                                <button class="ra-btn" id="interested">Interested</button>
-                                <button class="ra-btn" id="notInterested">Not Interested</button>
-                                <button class="ra-btn" id="attending">Attending</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 1 ? 'actionColor':'' ?>" id="interested" data-key="<?= $webinar['webinar_enc_id']?>" value="interested">Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 2 ? 'actionColor':'' ?>" id="notInterested" data-key="<?= $webinar['webinar_enc_id']?>" value="not interested">Not Interested</button>
+                                <button class="ra-btn registered <?php echo $interest_status == 3 ? 'actionColor':'' ?>" id="attending" data-key="<?= $webinar['webinar_enc_id']?>" value="attending">Attending</button>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -127,7 +129,11 @@ use yii\helpers\Url;
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <?php echo $this->render('/widgets/sharing-widget-webinar') ?>
+            <?php
+            $sharingLink = Url::base(true) .'/mentors/webinar-details/?id='.$webinar['webinar_enc_id'];
+            echo $this->render('/widgets/sharing-widget-webinar',[
+                    'sharingLink' => $sharingLink
+            ]) ?>
         </div>
     </div>
 </div>
@@ -144,195 +150,81 @@ use yii\helpers\Url;
             </div><!-- col end-->
         </div><!-- row end-->
         <div class="row">
+            <?php if(!empty($assignSpeaker)) {
+                foreach ($assignSpeaker as $as){?>
             <div class="col-lg-3 col-md-6">
                 <div class="ts-speaker">
                     <div class="speaker-img">
-                        <img class="img-fluid" src="<?= Url::to('@eyAssets/images/pages/webinar/speaker1.jpg') ?>"
-                             alt="">
-                        <a href="#popup_1" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
+                        <?php if($as['speaker_image']){?>
+                        <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
+                        <?php } else { ?>
+                        <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
+                        <?php } ?>
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
                             <i class="fas fa-plus"></i>
                         </a>
                     </div>
                     <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#">Fredric Martinsson</a></h3>
+                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
+                        <?php if($as['designation']){ ?>
                         <p>
-                            Founder, Edilta
+                            <?= $as['designation'] ?>
                         </p>
+                        <?php } ?>
                     </div>
                 </div>
                 <!-- popup start-->
-                <div id="popup_1" class="container ts-speaker-popup mfp-hide">
+                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="ts-speaker-popup-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker1.jpg') ?>" alt="">
+                                <?php if($as['speaker_image']) {?>
+                                <img src="<?= $as['speaker_image'] ?>">
+                                <?php } else { ?>
+                                    <img src="<?= $as['speaker_image_fake'] ?>">
+                                <?php } ?>
                             </div>
                         </div><!-- col end-->
                         <div class="col-lg-6">
                             <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title">David Robert</h3>
-                                <span class="speakder-designation">Cheif Architecture</span>
+                                <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                <span class="speakder-designation"><i class="fa fa-envelope"></i> <?= $as['email'] ?></span>
+                                <span class="speakder-designation mb2 phone-icon"><i class="fa fa-phone"></i> <?= $as['phone'] ?></span>
+                                <?php if($as['designation']) {?>
+                                <span class="speakder-designation"><?= $as['designation']?></span>
+                                <?php }
+                                if($as['org_image']) {
+                                ?>
                                 <img class="company-logo"
-                                     src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor-6.png') ?>" alt="">
+                                     src="<?= $as['org_image'] ?>">
+                                <?php }
+                                if($as['org_name']){ ?>
+                                <span class="speakder-designation"><?= $as['org_name']?></span>
+                                <?php }
+                                if($as['description']) {
+                                ?>
                                 <p>
-                                    World is committed to making participation in the event a harass ment free
-                                    experience
-                                    for everyone, regardless of level experience gender, gender identity and expression
+                                    <?= $as['description'] ?>
                                 </p>
+                                <?php } ?>
                                 <div class="ts-speakers-social">
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <?php if($as['facebook']){?><a href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i class="fab fa-facebook-f"></i></a><?php } ?>
+                                    <?php if($as['twitter']){?><a href="https://twitter.com/<?= $as['twitter'] ?>" target="_blank"><i class="fab fa-twitter"></i></a><?php } ?>
+                                    <?php if($as['instagram']){?><a href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i class="fab fa-instagram"></i></a><?php } ?>
+                                    <?php if($as['linkedin']){?><a href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i class="fab fa-linkedin-in"></i></a><?php } ?>
                                 </div>
                             </div><!-- ts-speaker-popup-content end-->
                         </div><!-- col end-->
                     </div><!-- row end-->
                 </div><!-- popup end-->
-            </div> <!-- col end-->
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker">
-                    <div class="speaker-img">
-                        <img class="img-fluid" src="<?= Url::to('@eyAssets/images/pages/webinar/speaker2.jpg') ?>"
-                             alt="">
-                        <a href="#popup_2" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#">Melisa Lundryn</a></h3>
-                        <p>
-                            Lead Designer, Payol
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="popup_2" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker2.jpg') ?>" alt="">
-                            </div>
-                        </div><!-- col end-->
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title">David Robert</h3>
-                                <span class="speakder-designation">Cheif Architecture</span>
-                                <img class="company-logo" src="images/sponsors/sponsor-6.png" alt="">
-                                <p>
-                                    World is committed to making participation in the event a harass ment free
-                                    experience
-                                    for everyone, regardless of level experience gender, gender identity and expression
-                                </p>
-                                <div class="ts-speakers-social">
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                </div>
-                            </div><!-- ts-speaker-popup-content end-->
-                        </div><!-- col end-->
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div> <!-- col end-->
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker">
-                    <div class="speaker-img">
-                        <img class="img-fluid" src="<?= Url::to('@eyAssets/images/pages/webinar/speaker3.jpg') ?>"
-                             alt="">
-                        <a href="#popup_3" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#">Agaton Johnsson</a></h3>
-                        <p>
-                            Developer Expert
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="popup_3" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker3.jpg') ?>" alt="">
-                            </div>
-                        </div><!-- col end-->
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title">David Robert</h3>
-                                <span class="speakder-designation">Cheif Architecture</span>
-                                <img class="company-logo" src="images/sponsors/sponsor-6.png" alt="">
-                                <p>
-                                    World is committed to making participation in the event a harass ment free
-                                    experience
-                                    for everyone, regardless of level experience gender, gender identity and expression
-                                </p>
-                                <div class="ts-speakers-social">
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                </div>
-                            </div><!-- ts-speaker-popup-content end-->
-                        </div><!-- col end-->
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div> <!-- col end-->
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker">
-                    <div class="speaker-img">
-                        <img class="img-fluid" src="<?= Url::to('@eyAssets/images/pages/webinar/speaker4.jpg') ?>"
-                             alt="">
-                        <a href="#popup_4" class="view-speaker ts-image-popup" data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#">Rebecca Henrikon</a></h3>
-                        <p>
-                            Founder, Cards
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="popup_4" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/speaker4.jpg') ?>" alt="">
-                            </div>
-                        </div><!-- col end-->
-                        <div class="col-lg-6">
-                            <div class="ts-speaker-popup-content">
-                                <h3 class="ts-title">David Robert</h3>
-                                <span class="speakder-designation">Cheif Architecture</span>
-                                <img class="company-logo"
-                                     src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor-6.png') ?>" alt="">
-                                <span class="speakder-designation">Creative Agency</span>
-                                <p>
-                                    World is committed to making participation in the event a harass ment free
-                                    experience
-                                    for everyone, regardless of level experience gender, gender identity and expression
-                                </p>
-                                <div class="ts-speakers-social">
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                    <a href="#"><i class="fab fa-instagram"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                </div>
-                            </div><!-- ts-speaker-popup-content end-->
-                        </div><!-- col end-->
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div> <!-- col end-->
-
+            </div>
+            <?php } } ?><!-- col end-->
         </div><!-- row end-->
     </div><!-- container end-->
 </section>
 <!-- ts speaker end-->
 <!-- ts intro start -->
+<?php if(!empty($outComes)){ ?>
 <section class="ts-intro-outcome">
     <div class="container">
         <div class="row">
@@ -344,77 +236,100 @@ use yii\helpers\Url;
             </div>
         </div><!-- row end-->
         <div class="row">
+            <?php foreach ($outComes as $oc){ ?>
             <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-cogs"></i>
-                    <h3 class="ts-title">Building</h3>
+                <?php if($oc['bg_colour']) {
+                    $color_code = '#'.$oc['bg_colour'];
+                    $reduceColor = createPalette($color_code, $colorCount=1);
+                ?>
+                <div class="ts-single-outcome" style="background-image: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
+                    <?php } else {
+                    $color_code = '#f00';
+                    $reduceColor = createPalette($color_code, $colorCount=1);
+                    ?>
+                <div class="ts-single-outcome" style="background: linear-gradient(110deg,<?= $color_code ?> 0%,<?= $reduceColor[0] ?> 100%)">
+                    <?php } ?>
+                    <?php if($oc['icon']){ ?>
+                    <img src = "<?= Url::to(Yii::$app->params->upload_directories->categories->outcomes->image. $oc['icon_location']. DIRECTORY_SEPARATOR . $oc['icon'])?>">
+                    <?php } else {?>
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/default-outcome.png') ?>">
+                   <?php } ?>
+                    <h3 class="ts-title"><?= $oc['name'] ?></h3>
                 </div><!-- single outcome end-->
             </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-bullhorn"></i>
-                    <h3 class="ts-title">Marketing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-brain"></i>
-                    <h3 class="ts-title">Planning</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-rupee-sign"></i>
-                    <h3 class="ts-title">Monetizing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
+            <?php } ?>
         </div>
     </div><!-- container end-->
 </section>
+<?php } ?>
 <!-- ts intro end-->
 <!-- ts sponsors start-->
-<section class="ts-intro-sponsors"
-         style="background-image: url(<?= Url::to('@eyAssets/images/pages/webinar/sponsor_img.jpg') ?>)">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="section-title white">
-                    <span>Who helps us</span>
-                    Our Sponsors
-                </h2><!-- section title end-->
-            </div><!-- col end-->
-        </div><!-- row end-->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="sponsors-logo text-center">
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor1.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor2.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor3.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor4.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor5.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor6.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor7.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor8.png') ?>" alt=""></a>
-                    <a href="#"><img src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor9.png') ?>" alt=""></a>
-                    <div class="sponsor-btn text-center">
-                        <a href="#" class="btn-sponsor">Become a Sponsor</a>
-                    </div>
-                </div><!-- sponsors logo end-->
-            </div><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
-</section>
-<!-- ts sponsors end-->
 
-<div id="elements" class="bottom-social">
-    <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="fab fa-twitter"></a>
-    <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="fab fa-linkedin-in"></a>
-    <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="fab fa-telegram-plane"></a>
-    <a href="#!" onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')"  class="fab fa-whatsapp"></a>
-    <a href="#!" onclick="window.open('http://www.reddit.com/submit?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="fab fa-reddit"></a>
-</div>
 <?php
+function color_mod($hex, $diff) {
+     $rgb = str_split(trim($hex, '# '), 2);
+     foreach ($rgb as &$hex) {
+         $dec = hexdec($hex);
+         if ($diff >= 0) {
+             $dec += $diff;
+         }
+         else {
+             $dec -= abs($diff);
+         }
+         $dec = max(0, min(255, $dec));
+         $hex = str_pad(dechex($dec), 2, '0', STR_PAD_LEFT);
+     }
+     return '#'.implode($rgb);
+ }
+ function createPalette($color,$colorCount=4){
+     $colorPalette = array();
+     for($i=1; $i<=$colorCount; $i++){
+         if($i == 1){
+             $color = $color;
+             $colorVariation = -(($i*4) * 15);
+         }
+         if($i == 2){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         if($i == 3){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         if($i == 4){
+             $color = $newColor;
+             $colorVariation = -($i * 15);
+         }
+         $newColor = color_mod($color, $colorVariation);
+         array_push($colorPalette, $newColor);
+     }
+     return $colorPalette;
+ }
 $this->registerCss('
+#join{
+display:none;
+}
+#counter{
+display:none;
+}
+#joinBtn{
+    font-size: 25px;
+    padding: 35px;
+    display: block;
+    text-align: center;
+    color: #fff;
+}
+.ra-btn.active{
+  background-color: green;
+  transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
+}
+.mb2{
+    margin-bottom: 20px
+}
+.phone-icon i{
+transform: rotate(100deg);
+}
 .dis-flex{
     display: flex;
     flex-wrap: wrap;
@@ -763,9 +678,9 @@ $this->registerCss('
   -ms-border-radius: 50%;
   width: 250px;
   height: 250px;
-  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+//  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
   -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
   padding: 55px 0;
@@ -785,7 +700,7 @@ $this->registerCss('
 .ts-single-outcome .ts-title {
     color: #fff; 
 }
-.ts-single-outcome:hover i {
+.ts-single-outcome:hover img {
     -webkit-animation-name: shake;
     animation-name: shake;
     -webkit-animation-duration: 1s;
@@ -793,28 +708,6 @@ $this->registerCss('
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
 }
-
-.outcome-item:nth-of-type(1) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
-  background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%); }
-
-.outcome-item:nth-of-type(2) .ts-single-outcome {
-  background-image: -webkit-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-  background-image: -o-radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
-  background-image: radial-gradient(50% 50%, circle closest-side, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%); }
-
-.outcome-item:nth-of-type(3) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-  background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
-  background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%); }
-
-.outcome-item:nth-of-type(4) .ts-single-outcome {
-  background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-  background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
-  background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%); 
-}
-/**/
 
 .ts-count-down {
     padding: 0;
@@ -1172,16 +1065,55 @@ div.icon span {
 }
 #attending.actionColor{
     background: #ff7803;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 #notInterested.actionColor{
     background: #FF0000;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 #interested.actionColor{
-    background: #32CD32
+    background: #32CD32;
+    transform: scale(1.05);
+  box-shadow: 0px 2px 10px 3px #ddd;
 }
 ');
 $script = <<<JS
-
+function countdown(e){
+    var countDownDate = new Date(e).getTime();
+    var x = setInterval(function() {
+        // Get today's date and time
+        var now = new Date().getTime();
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        // Time calculations for days, hours, minutes and seconds
+        $('#days').text(Math.floor(distance / (1000 * 60 * 60 * 24)));
+        $('#hours').text(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        $('#minutes').text(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+        $('#seconds').text(Math.floor((distance % (1000 * 60)) / 1000));
+        if (distance <= 0) {
+            clearInterval(x);
+            $('#join').css('display','block');
+            $('#counter').css('display','none');
+        } else { 
+            $('#counter').css('display','block');
+            $('#join').css('display','none');
+        }
+    }, 1000);
+};
+countdown('$time');
+$(document).on('click','.registered',function(event){
+    event.preventDefault();
+     var btn = $(this);
+     var web_id = btn.attr('data-key');
+     var value = btn.attr('value');
+    $.ajax({
+        url: '/mentors/webinar-registation',
+        type: 'POST',
+        data: {wid: web_id,value: value},
+    });
+});
    $('.ts-image-popup').magnificPopup({
       type: 'inline',
       closeOnContentClick: false,
@@ -1197,15 +1129,7 @@ $script = <<<JS
       },
       mainClass: 'mfp-fade',
    });
-
-    if ($('.countdown').length > 0) {
-      $(".countdown").jCounter({
-         date: '21 October 2020 12:00:00',
-         fallback: function () {
-            console.log("count finished!")
-         }
-      });
-   }
+    
 
 
 JS;
@@ -1218,7 +1142,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
     let actionBtns = document.getElementsByClassName('ra-btn');
     for(let i = 0; i<actionBtns.length; i++){
         actionBtns[i].addEventListener('click', function () {
-           let actionColors = document.getElementsByClassName('actionColor');
+            let actionColors = document.getElementsByClassName('actionColor');
             if(actionColors.length > 0){
                 actionColors[0].classList.remove('actionColor')
             }

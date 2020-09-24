@@ -20,11 +20,11 @@ use yii\helpers\Url;
                 </div>
                 <div class="ts-speaker-info">
                     <h3 class="ts-title"><a href="#">{{fullname}}</a></h3>
-                    {{#designation}}
                     <p>
-                        {{designation}}
+                        {{#designation}}
+                            {{designation}}
+                        {{/designation}}
                     </p>
-                    {{/designation}}
                 </div>
             </div>
             <!-- popup start-->
@@ -43,8 +43,6 @@ use yii\helpers\Url;
                     <div class="col-lg-6">
                         <div class="ts-speaker-popup-content">
                             <h3 class="ts-title">{{fullname}}</h3>
-                            <span class="speakder-designation"><i class="fa fa-envelope"></i> {{email}}</span>
-                            <span class="speakder-designation mb2 phone-icon"><i class="fa fa-phone"></i> {{phone}}</span>
                             {{#designation}}
                             <span class="speakder-designation mb2">{{designation}}</span>
                             {{/designation}}
@@ -175,9 +173,22 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 
+.ts-title {
+    font-family: lora;
+}
+
 .ts-speaker .ts-title a {
-    color: #000;
-    text-transform:capitalize;
+    color: #222222;
+    text-transform: capitalize;
+    height: 34px;
+    font-size: 22px;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.ts-speaker-info p{
+    height:23px;
 }
 
 .ts-speaker:hover .speaker-img img {
@@ -288,8 +299,12 @@ $this->registerCss('
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
-    padding: 60px 40px;
+    padding: 20px 40px;
     font-family: roboto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content .ts-title {
@@ -310,6 +325,7 @@ transform: rotate(100deg);
 }
 .ts-speaker-popup .ts-speaker-popup-content .company-logo {
     margin-bottom: 0px;
+    max-height: 80px;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content p {

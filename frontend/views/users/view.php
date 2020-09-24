@@ -3,6 +3,27 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+    if (!empty($userApplied['applied_application_enc_id'])) {
+        $j = 0;
+        if ($userApplied['status'] == 'Hired') {
+            $fieldName = "Hired";
+        } elseif ($userApplied['status'] == 'Rejected') {
+            $fieldName = "Rejected";
+        } else {
+            $fieldName = "Applied";
+        }
+        if (!empty($userApplied['appliedApplicationProcesses'])) {
+            foreach ($userApplied['appliedApplicationProcesses'] as $p) {
+                if ($j == $userApplied['active'] && $userApplied['status'] != 'Rejected') {
+                    $fieldName = $p['field_name'];
+                    break;
+                }
+                $j++;
+            }
+        }
+    }
+}
 $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
@@ -76,10 +97,18 @@ $this->params['header_dark'] = false;
                         <li>
                             <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
+                        <li>
+                    <?php if(!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id){
+                        if (!empty($userApplied['applied_application_enc_id'])) {
+                        ?>
+                            <span class="detail-info">
+                                Application Status</span><?= $fieldName ?>
+                    <?php } } ?>
+                        </li>
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
-                            <li>
+                            <li class="fbook">
                                 <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
                                    target="_blank">
                                     <i class="fab fa-facebook-f"></i>
@@ -87,27 +116,56 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
-                            <li>
+                            <li class="tter">
                                 <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fab fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
-                            <li>
+                            <li class="lin">
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
                                     <i class="fab fa-linkedin-in"></i>
                                 </a>
                             </li>
                         <?php }
+                        if (!empty($user['email'])) { ?>
+                            <li class="mael">
+                                <a href="mailto:<?= Html::encode($user['email']) ?>"
+                                   target="_blank">
+                                    <i class="far fa-envelope-open"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['skype'])) { ?>
-                            <li>
+                            <li class="skpe">
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fab fa-skype"></i>
                                 </a>
                             </li>
-                        <?php } ?>
+                        <?php }
+                        if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                            if (!empty($userApplied['applied_application_enc_id'])) {
+                            ?>
+                            <li class="talking">
+                                <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id'];?>" data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                    <i class="far fa-comment-dots"></i>
+                                </a>
+                            </li>
+                        <?php } } ?>
+                        <li class="dwn">
+                            <?php if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                                ?>
+                                <div class="down-r">
+                                    <?php
+                                     $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                    ?>
+                                    <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i class="fas fa-download"></i></a>
+                                </div>
+                            <?php } } ?>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -115,7 +173,7 @@ $this->params['header_dark'] = false;
     </section>
     <section class="detail-section">
         <div class="container">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-8 col-sm-12">
                 <div class="container-detail-box">
                     <div class="apply-job-header">
                         <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
@@ -206,7 +264,9 @@ $this->params['header_dark'] = false;
                                     </div>
                                     <div class="quelification s-text-2"><?= $exp['title'] ?>
                                     </div>
-                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                    <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to '?>
+                                        <?php if($exp['is_current']){ echo 'Present'; } else { ?>
+                                            <?php echo date("d/m/Y", strtotime($exp['to_date'])); } ?>
                                     </div>
                                     <div class="s-time s-text-2"><?= $exp['description'] ?>
                                     </div>
@@ -257,7 +317,7 @@ $this->params['header_dark'] = false;
             <?php
             if (array_filter($job_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -291,7 +351,7 @@ $this->params['header_dark'] = false;
             }
             if (array_filter($internship_preference)) {
                 ?>
-                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                <div class="sidebar-container" style="border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
                     <div class="prefer-detail">
                         <ul>
@@ -327,7 +387,35 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 <?php
+if(Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+    if (!empty($userApplied['applied_application_enc_id'])) {
+    echo $this->render('@common/widgets/chat-main');
+} }
 $this->registerCss('
+.fbook a {
+    background-color: #3b5998;
+}
+.tter a {
+	background-color: #00aced;
+}
+.lin a {
+	background-color: #007bb6;
+}
+.mael a {
+	background-color: #bb0000;
+}
+.skpe a {
+	background-color: #00a0e3;
+}
+.talking a {
+	background-color: #00bf8f;
+}
+.down-r {
+	text-align:center;
+}
+.down-r a {
+	background-color: #00a0e3;
+}
 .prof-p {
 	width: 80px;
 	height: 80px;
@@ -345,7 +433,7 @@ $this->registerCss('
 }
 .s-text-2 {
     font-size: 14px;
-    color: #aaa9a9;
+    color: #605c5c;
 }
 .user-icon.img-circle.img-responsive {
     width: 236px;
@@ -361,6 +449,7 @@ body{background-color:#f9f9f9;}
     font-family: roboto;
     padding-bottom: 3px;
     letter-spacing: 1px;
+    color:#000;
 }
 .education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
     padding-bottom: 20px;
@@ -370,10 +459,12 @@ body{background-color:#f9f9f9;}
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
     display:flex;
+    flex-wrap: wrap;
 }
 .s-text {
     font-size: 18px;
     font-family: roboto;
+    color:#000;
 }
 .s-text > i{
     margin-right:7px;
@@ -386,7 +477,7 @@ body{background-color:#f9f9f9;}
     border-radius: 6px;
     margin: 0 5px 0 0;
     font-weight: 500;
-    color: #657180;
+    color: #605c5c;
 }
 .skillss > ul > li {
     display: inline-block;
@@ -426,7 +517,7 @@ body{background-color:#f9f9f9;}
     margin-bottom:5px;
 }
 .prefer-detail{
-    padding-top:50px;
+    padding:20px;
 }
 .prefer-detail > ul > li{
     font-size: 14px;
@@ -436,26 +527,26 @@ body{background-color:#f9f9f9;}
 .set-width {
     width: 40%;
     display: inline-block;
+    font-family:roboto;
+    font-weight:500;
 }
 .position {
     width: 60%;
     display: inline-flex;
+    font-family:roboto;
 }
 .prefer {
-    font-size: 20px;
-    font-family: sans-serif;
-    text-align: center;
-    background: #eee;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
+	font-size: 20px;
+	font-family: roboto;
+	text-align: center;
+	padding: 3px;
 }
 .set-color{
     background: #ff7803;
     padding: 5px 15px;
     margin-left: -15px;
     color: #fff;
+    font-family:roboto;
 }
 .edit-profile-btn{
     text-align: center;
@@ -490,6 +581,7 @@ body{background-color:#f9f9f9;}
 	border-radius: 8px;
 	margin-bottom: 25px;
 	min-height: 270px;
+	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
     border-left: 1px solid #00a0e3 !important;
@@ -607,9 +699,10 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail {
 	background-color: #fff;
-	padding: 37px 20px;
+	padding: 30px 20px 5px;
 	border-radius: 8px;
     min-height:270px;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .right-side-detail ul {
     padding: 0;
@@ -623,19 +716,20 @@ body{background-color:#f9f9f9;}
     width: 135px;
 	font-weight:500;
     display: inline-block;
+    font-family:roboto;
 }
 .right-side-detail ul.social-info li{
 	display:inline-block;
 	margin:5px;
 }
 .right-side-detail ul.social-info li a {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     display: inline-block;
-    background: #e3e8ec;
     text-align: center;
-    line-height: 40px;
+    line-height: 30px;
     border-radius: 2px;
+    color:#fff;
 }
 span.available-status {
     margin-left: 10px;
@@ -652,16 +746,24 @@ span.available-status {
 	padding:30px 30px;
     margin-bottom: 30px;
     position: relative;
-    border: 1px solid #eaeff5;
+    box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .apply-job-detail{
 	margin-bottom:30px;
+	font-family:roboto;
+	color:#605c5c;
 }
 .apply-job-detail h5{
 	font-size:18px;
+	font-family:roboto;
+	color:#000;
 }
 .apply-job-header a {
     margin-right: 15px;
+    font-family:roboto;
+}
+.apply-job-header span {
+	font-family: roboto;
 }
 .apply-job-header a i, .apply-job-header span i {
     margin-right: 5px;
@@ -671,6 +773,7 @@ span.available-status {
 }
 .apply-job-header h4{
 	font-size:22px;
+	font-family:roboto;
 }
 ul.skills,  ul.job-requirements{
     margin: 15px 0;
@@ -683,8 +786,9 @@ ul.skills li {
     border: 1px solid #b9c5ce;
     border-radius: 6px;
     margin: 5px;
-    font-weight: 500;
-    color: #657180;
+    font-weight: 400;
+    font-family:roboto;
+    color: #605c5c;
 }
 
 ul.job-requirements li{
@@ -754,15 +858,16 @@ img.img-responsive.payment-img {
 }
 
 /*--------------- Sidebar: Detail For Freelancer ----------------*/
-.sidebar-container{
-    background: #ffffff;
-    overflow: hidden;
-    margin-bottom:30px;
-	position:relative;
+.sidebar-container {
+	background: #ffffff;
+	overflow: hidden;
+	margin-bottom: 30px;
+	position: relative;
 	transition: .4s;
-    padding: 0px 15px 10px 15px;
-    border: 1px solid #eee;
-    border-radius:5px;
+	/* padding: 0px 15px 10px 15px; */
+	/* border: 1px solid #eee; */
+	border-radius: 8px;
+	box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
@@ -929,6 +1034,14 @@ ul.status-detail li>strong {
     }
     .edit-profile-btn {
         padding: 5px 20px;
+    }
+}
+@media screen and (max-width: 450px){
+    .set{
+        display:block;
+    }
+    .prof-inner {
+        margin: 5px 0 0 0;
     }
 }
 ');

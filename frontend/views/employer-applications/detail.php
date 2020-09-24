@@ -373,16 +373,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                     }
                     ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="blogbox"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
@@ -472,6 +462,16 @@ if ($settings["showNewPositionsWidget"]):
     </section>
 <?php endif; ?>
 <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="blogbox"></div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-8 col-sm-8 col-xs-12">
             <div class="heading-style">Courses</div>
@@ -611,7 +611,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
-echo $this->render('/widgets/mustache/application-card-2');
+echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss("
 .course-box{
@@ -1917,11 +1917,12 @@ var slugg = '$slug';
 var type = "$type";
 var keyword = "$searchItems";
 var cat = '';
+
 function getCourseList(keyword=null,cat=null){
     $.ajax({
         method: "POST",
         url : '/courses/courses-list',
-        data:{keyword:keyword,cat:cat,page:1,limit:6},
+        data:{keyword:keyword,cat:cat,page:1,limit:1},
         beforeSend: function(){
            $('.load-more-text').css('visibility', 'hidden');
            $('.load-more-spinner').css('visibility', 'visible');
@@ -1929,7 +1930,7 @@ function getCourseList(keyword=null,cat=null){
         success: function(response) {
             response = JSON.parse(response);
             $('.loader-main').hide();
-            $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
+            // $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
@@ -1942,6 +1943,9 @@ function getCourseList(keyword=null,cat=null){
                 }
             } else{
                 page++;
+                if(response.results.length > 6){
+                     response.results = response.results.slice(0,6);
+                }
                 var template = $('#course-card').html();
                 var rendered = Mustache.render(template,response.results);
                 $('#list-main').append(rendered);

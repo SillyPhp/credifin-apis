@@ -1,0 +1,174 @@
+<?php
+
+
+namespace api\modules\v1\controllers;
+
+
+use api\modules\v1\models\Candidates;
+use api\modules\v2\models\LoanApplicationsForm;
+use api\modules\v3\models\OrganizationList;
+use common\models\AssignedCollegeCourses;
+use common\models\CollegeCoursesPool;
+use common\models\Countries;
+use common\models\LoanTypes;
+use common\models\OrganizationFeeComponents;
+use common\models\Organizations;
+use common\models\UserAccessTokens;
+use yii\helpers\Url;
+use Yii;
+use yii\filters\auth\HttpBearerAuth;
+
+class LoansController extends ApiBaseController
+{
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'college-list',
+                'college-courses',
+                'loan-purpose',
+            ],
+            'class' => HttpBearerAuth::className()
+        ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'college-list' => ['POST'],
+                'college-courses' => ['POST'],
+                'loan-purpose' => ['POST'],
+                'save-application' => ['POST'],
+            ]
+        ];
+        return $behaviors;
+    }
+
+    private function userId()
+    {
+
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        return $user->user_enc_id;
+    }
+
+    public function actionCollegeList()
+    {
+        $organizations = Organizations::find()
+            ->select([
+                'organization_enc_id',
+                'b.business_activity',
+                'REPLACE(name, "&amp;", "&") as name',
+                '(CASE
+                WHEN logo IS NULL OR logo = "" THEN
+                CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                ) organization_logo'
+            ])
+            ->joinWith(['businessActivityEnc b'], false)
+            ->where([
+                'is_erexx_registered' => 1,
+                'status' => 'Active',
+                'is_deleted' => 0,
+                'b.business_activity' => ['College', 'School'],
+                'has_loan_featured' => 1
+            ])
+            ->asArray()
+            ->all();
+
+        if ($organizations) {
+            return $this->response(200, $organizations);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionCollegeCourses()
+    {
+        $courses = CollegeCoursesPool::find()
+            ->select(['course_name'])
+            ->where(['status' => 'Approved', 'is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($courses) {
+            return $this->response(200, $courses);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionLoanPurpose()
+    {
+
+        $params = Yii::$app->request->post();
+
+        if (isset($params['college_id']) && !empty($params['college_id'])) {
+            $college_id = $params['college_id'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $fee_components = OrganizationFeeComponents::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.fee_component_enc_id', 'a.name'])
+            ->joinWith(['assignedOrganizationFeeComponents b'], false)
+            ->where(['b.organization_enc_id' => $college_id, 'b.status' => 1, 'b.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        $loan_types = LoanTypes::find()
+            ->select(['loan_type_enc_id', 'loan_name'])
+            ->asArray()
+            ->all();
+
+        if ($fee_components) {
+            return $this->response(200, ['fee_components' => $fee_components, 'loan_types' => $loan_types]);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
+    public function actionSaveApplication()
+    {
+        $params = Yii::$app->request->post();
+        if ($params) {
+            $organizationObject = new OrganizationList();
+            $parser = $organizationObject->conditionParser($params);
+            if (!$parser['college_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+            }
+            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
+            if (!$parser2['assigned_course_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+            }
+            $orgDate = $params['applicant_dob'];
+            $userId = $this->userId();
+            $model = new LoanApplicationsForm();
+            if (!$params['is_india']) {
+                $model->country_enc_id = $params['country_enc_id'];
+            }
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->college_course_enc_id = $parser2['assigned_course_id'];
+                if ($model->validate()) {
+                    if ($data = $model->add($userId, $parser['college_id'], 'Android', $parser['is_claim'])) {
+                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        }
+    }
+
+}
