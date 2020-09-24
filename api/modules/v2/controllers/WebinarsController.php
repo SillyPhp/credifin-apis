@@ -191,7 +191,7 @@ class WebinarsController extends ApiBaseController
             $data = Yii::$app->request->post();
             $webinar = WebinarEvents::findOne(['session_enc_id' => $data['session_enc_id']]);
             $conversation_id = WebinarConversations::find()
-                ->where(['webinar_enc_id' => $webinar->webinar_enc_id])
+                ->where(['webinar_event_enc_id' => $webinar->event_enc_id])
                 ->one();
 
             if ($conversation_id) {
@@ -220,7 +220,7 @@ class WebinarsController extends ApiBaseController
                     $conversation->conversation_enc_id = $utilitiesModel->encrypt();
                     $conversation->conversation_type = 2;
                     $conversation->webinar_event_enc_id = $webinar->event_enc_id;
-                    $conversation->created_by = Yii::$app->user->identity->user_enc_id;
+                    $conversation->created_by = $user->user_enc_id;
                     $conversation->created_on = date('Y-m-d H:i:s');
                     if (!$conversation->save()) {
                         $transaction->rollBack();
@@ -236,7 +236,7 @@ class WebinarsController extends ApiBaseController
                         $comment->parent_enc_id = $data['reply_to'];
                     }
                     $comment->created_on = date('Y-m-d H:i:s');
-                    $comment->created_by = Yii::$app->user->identity->user_enc_id;
+                    $comment->created_by = $user->user_enc_id;
                     if (!$comment->save()) {
                         $transaction->rollBack();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -265,7 +265,7 @@ class WebinarsController extends ApiBaseController
 
             $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select(['a.event_enc_id', 'a.webinar_enc_id'])
+                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description'])
                 ->joinWith(['webinarSpeakers b' => function ($b) {
                     $b->select(['b.webinar_event_enc_id',
                         'b.speaker_enc_id',
@@ -292,6 +292,9 @@ class WebinarsController extends ApiBaseController
                 ->one();
 
             if ($webinar) {
+                $next_event = new \common\models\extended\Webinar();
+                $date = date('Y-m-d', strtotime($webinar['start_datetime']));
+                $webinar['next_event'] = $next_event->nextEvent($webinar['webinar_enc_id'], $date);
                 $register_user = WebinarRegistrations::find()
                     ->where(['webinar_enc_id' => $webinar['webinar_enc_id'],
                         'created_by' => $user->user_enc_id,
@@ -313,7 +316,7 @@ class WebinarsController extends ApiBaseController
                     }
                 } else {
                     if ($price['price']) {
-                        return $this->response(409, ['status' => 409, 'message' => 'Register']);
+                        return $this->response(409, ['status' => 409, 'data' => $webinar]);
                     } else {
                         $model = new WebinarRegistrations();
                         $utilitiesModel = new Utilities();
@@ -372,8 +375,22 @@ class WebinarsController extends ApiBaseController
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
+                $date = new \DateTime($webinar['event']['start_datetime']);
+                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                $webinar['seconds'] = $seconds;
+                $webinar['is_started'] = ($seconds < 0 ? true : false);
+                foreach ($webinar['events'] as $k => $a) {
+                    $j = 0;
+                    foreach ($a as $t) {
+                        $date = new \DateTime($t['start_datetime']);
+                        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                        $is_started = ($seconds < 0 ? true : false);
+                        $webinar['events'][$k][$j]['seconds'] = $seconds;
+                        $webinar['events'][$k][$j]['is_started'] = $is_started;
+                        $j++;
+                    }
+                }
             }
-
 
             if ($webinar) {
                 return $this->response(200, ['status' => 200, 'data' => $webinar]);

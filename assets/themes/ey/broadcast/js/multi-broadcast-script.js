@@ -3,7 +3,8 @@
  */
 var agoraAppId = app_id; // set app id
 var channelName = channel_name; // set channel name
-
+$('#session_expired').html('<h3>Connecting..!!</h3>');
+$('#session_expired').css('display','block');
 // create client instance
 var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // h264 better detail at a higher motion
 var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'});
@@ -76,6 +77,7 @@ AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 //set source host
 // client callbacks
 client.on("stream-published", function(evt) {
+    $('#session_expired').css('display','none');
     console.log("Publish local stream successfully");
     initializeUi();
 });
@@ -102,7 +104,7 @@ client.on("stream-subscribed", function (evt) {
     var id = remoteStream.getId();
     // Play the remote stream.
     if($("#stream-player-"+ id).length == 0){
-        $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
+        $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div><span class="full-vid" value="'+id+'"><i class="fas fa-expand"></i></span></div>');
     }
     remoteStream.play("stream-player-"+id+"");
     console.log('stream-subscribed remote-uid: ', id);
@@ -193,7 +195,8 @@ function joinChannel() {
             console.log("User " + uid + " joined channel successfully");
         },
         function(err) {
-            alert("[ERROR] : Broadcast Session Expired !!", err);
+            //alert("[ERROR] : Broadcast Session Expired !!", err);
+            $('#session_expired').html('<h3>Broadcast Session Expired</h3>');
             console.log("[ERROR] : join channel failed", err);
         }
     );
@@ -232,7 +235,7 @@ function createCameraStream(uid, deviceIds) {
     localStream.init(
         function() {
             console.log("getUserMedia successfully");
-            $('#full-screen-video').append('<div class="stream-player grid-player main-stream-player " id="stream-player-'+uid+'"> <div class="stream-uid">UID: '+uid+'</div></div>');
+            $('#full-screen-video').append('<div class="stream-player grid-player main-stream-player " id="stream-player-'+uid+'"> <div class="stream-uid">UID: '+uid+'</div><span class="full-vid" value="'+uid+'"><i class="fas fa-expand"></i></span></div>');
             localStream.play("stream-player-"+uid+""); // play the local stream on the main div
              // play the local stream on the main div
             // publish local stream
@@ -308,7 +311,6 @@ function joinSharing()
 }
 
 function leaveChannel() {
-    $('#stream-player-'+localStreams.uid+'').remove();
     client.leave(
         function() {
             console.log("client leaves channel");
@@ -316,11 +318,23 @@ function leaveChannel() {
             localStreams.camera.stream.close(); // clean up and close the camera stream
             client.unpublish(localStreams.camera.stream); // unpublish the camera stream
             //disable the UI elements
+            leaving_disable_controls();
         },
         function(err) {
             console.log("client leave failed ", err); //error handling
         }
     );
+}
+
+function leaving_disable_controls()
+{
+    $('#stream-player-'+localStreams.uid+'').remove();
+    $("#mic-btn").attr("id", "m");
+    $("#video-btn").attr("id", "v");
+    $("#exit-btn").attr("id", "e");
+    $("#share-sreen-btn").attr("id", "s");
+    $('#session_expired').html('<h3>You Ended This Session</h3>');
+    $('#session_expired').css('display','block');
 }
 
 function leaveSharing()
@@ -554,10 +568,28 @@ function enableUiControls() {
     });
 
     $("#exit-btn").click(function(){
-        if (confirm('Do you want to leave this page')) {
-            leaveChannel();
-            alert('You ended this session');
-        }
+        swal({
+                title: "",
+                text: "Do you want to leave this Session",
+                type:'error',
+                showCancelButton: true,
+                confirmButtonClass: "btn-primary",
+                confirmButtonText: "Yes",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function (isConfirm) {
+                if(isConfirm) {
+                    leaveChannel();
+                } else {
+                    return false;
+                }
+            }
+        );
+        // if (confirm('Do you want to leave this page')) {
+        //     leaveChannel();
+        //     alert('You ended this session');
+        // }
     });
 
     $("#share-sreen-btn").click(function(){
@@ -695,3 +727,22 @@ function initializeUi() {
         }
     }
 }
+
+$(document).on('click', '.full-vid' ,function ()
+{
+    var fid = $(this).attr('value');
+    if(!$(this).parentsUntil('#full-screen-video').parent().children('div').hasClass('hidden')) {
+        $('#full-screen-video > div').addClass('hidden');
+        $(this).parent('div').removeClass('hidden');
+        $(this).children('i').removeClass('fa-expand');
+        $(this).children('i').addClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().addClass('expanded');
+    } else {
+        $('#full-screen-video > div').removeClass('hidden');
+        $(this).children('i').addClass('fa-expand');
+        $(this).children('i').removeClass('fa-compress');
+        $(this).parentsUntil('#full-screen-video').parent().removeClass('expanded');
+    }
+    f_elem = "stream-player-"+fid;
+    console.log(f_elem);
+})

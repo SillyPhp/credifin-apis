@@ -37,7 +37,7 @@ foreach ($webinars as $webinar) {
                 } ?>
                 <?php
                 if (!empty($webinarRegistrations)) { ?>
-                    <p><?= (320 + count($webinarRegistrations)) ?> People Registered</p>
+                    <p><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?> People Registered</p>
                 <?php }
                 ?>
             </div>
