@@ -11,12 +11,13 @@ use yii\helpers\Url;
             <div class="flex-main">
                 <div class="left-sec">
 
-                    <h2>Get Noticed By Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
+                    <h2>Get Admission In Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
                     <div class="ls-divider"></div>
-                    <h4>Enjoy The Benefits Of Interest Free <span class="colorOrange">Education Loans</span></h4>
+                    <h4>Don’t Let Money Stop You From Getting into Your Dream College!</h4>
+                    <h4>Get Interest Free <span class="colorOrange font18">Education Loans</span> both in <span class="colorOrange font18">India</span> and <span class="colorOrange font18">Abroad.</span></h4>
                     <div class="el-icons-flex">
                         <div class="el-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application1.png')?>">
                             <p>Online <br>Application</p>
                         </div>
                         <div class="el-icons">
@@ -24,7 +25,7 @@ use yii\helpers\Url;
                             <p>Quick <br>Sanction</p>
                         </div>
                         <div class="el-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/upto-2-lakhs.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/collateral1.png')?>">
                             <p>Collateral Free <br>Loans</p>
                         </div>
                     </div>
@@ -39,15 +40,12 @@ use yii\helpers\Url;
                         <p>Fill Me For Your Bright Future</p>
                         <form>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="First Name">
+                                <input type="text" class="form-control" placeholder="College Name">
 
-                                <input type="text" class="form-control" placeholder="Last Name">
+                                <input type="text" class="form-control" placeholder="Degree">
 
-                                <input type="email" class="form-control" placeholder="Email">
+                                <input type="email" class="form-control" placeholder="Course Name">
 
-                                <input type="tel" class="form-control" placeholder="Contact Number">
-
-                                <input type="text" class="form-control" placeholder="Course Name">
 
                                 <div class="button-form">
                                     <button type="submit" class="btn-frm" name="submit button">Submit</button>
@@ -68,6 +66,9 @@ body{
     padding:0px; 
     font-family: roboto;
 }
+.font18{
+    font-size: 20px;
+ }
 .oa-container{
     max-width: 85vw;
     margin: 0 auto;

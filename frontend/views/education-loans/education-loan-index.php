@@ -40,70 +40,182 @@ use yii\helpers\Url;
                    </div>
                </div>
           </section>
-
-    <section class="edu-with-sec">
+    <section class="edu-with-us">
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12">
                     <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
                 </div>
             </div>
-            <div class="row">
-                <div class="loan-ey-flex">
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Up to 100% Financing'); ?></h4>
+            <div class="row-mt10">
+                <div class= "col-sm-3">
+                    <div class="finance">
+                        <div class="finance-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
+                        </div>
+                        <div class="finance-text">100% Financing</div>
+                        <div class="overlay">
+                            <div class="overlay-txt">Loans covering all the student expenses like tution fees, hostel fees, transportation expenses etc.
+                            </div>
+                        </div>
                     </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Customized Loans'); ?></h4>
+                </div>
+            </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
                     </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Quick Sanctions'); ?></h4>
+                    <div class="finance-text">Customized Loans</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Personalized loans as per the students needs and requirements.
+                        </div>
                     </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Minimal Documentation'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Flexible Repayment Options'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Get loan to study abroad'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Pre Admission Loan'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Pre Visa Loan'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/bridge-loan.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Bridge Loan'); ?></h4>
-                    </div>
-                    <div class="categories">
-                        <img class="grids-image"
-                             src="<?= Url::to('@eyAssets/images/pages/education-loans/fast-track-loan.png'); ?>">
-                        <h4 class="font-georgia"><?= Yii::t('frontend', 'Fast Track Loan'); ?></h4>
+                </div>
+            </div>
+        <div class= "col-sm-3">
+            <div class="finance">
+                <div class="finance-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
+                </div>
+                <div class="finance-text">Quick Sanctions</div>
+                <div class="overlay">
+                    <div class="overlay-txt">Easy and fast loan approvals for your dream education.
                     </div>
                 </div>
             </div>
         </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Minimal Documentation</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Hazzle free loan application process with less or minimal paperwork.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Flexible Repayment Options</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Student can select a repayment option that best suits his/her needs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Get Loan To Study Abroad</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Providing easy and interest free education loan for abroad studies.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Pre-Admission Loan</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Get your loan approved before your admission in college or university.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class= "col-sm-3">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Pre-Visa Loan</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Now you can get your loan sanctioned before your visa gets approved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
     </section>
+
+<!--    <section class="edu-with-sec">-->
+<!--        <div class="container">-->
+<!--            <div class="row mt-20">-->
+<!--                <div class="col-md-12">-->
+<!--                    <h2 class="mb-20 pb-10 heading-style">--><?//= Yii::t('frontend', 'Why Empower Youth'); ?><!--</h2>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="loan-ey-flex">-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?><!--"/>-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Up to 100% Financing'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?><!--"/>-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Customized Loans'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Quick Sanctions'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Minimal Documentation'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Flexible Repayment Options'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Get loan to study abroad'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Pre Admission Loan'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Pre Visa Loan'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/bridge-loan.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Bridge Loan'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                    <div class="categories">-->
+<!--                        <img class="grids-image"-->
+<!--                             src="--><?//= Url::to('@eyAssets/images/pages/education-loans/fast-track-loan.png'); ?><!--">-->
+<!--                        <h4 class="font-georgia">--><?//= Yii::t('frontend', 'Fast Track Loan'); ?><!--</h4>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -157,7 +269,7 @@ use yii\helpers\Url;
                         <p class="edu-hw-description">
                             We all know the importance of education and educational institutes in our lives as they provide
                             a variety of learning environments and spaces. Empoweryouth with its education institute loans
-                            provides financial help to the education insitutes for their growth.
+                            provides financial help to the education institutes for their growth.
                         </p>
                     </div>
                 </div>
@@ -167,7 +279,7 @@ use yii\helpers\Url;
 
     <section class="edu-with-sec">
         <div class="container">
-            <div class="row mt-20">
+            <div class="row">
                 <div class="col-md-12">
                     <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
                 </div>
@@ -375,6 +487,62 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.row-mt10{
+margin-top: 15px;
+}
+.finance:hover .overlay{
+	height: 100%;
+}
+.overlay{
+   	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #00A0E3;
+	overflow: hidden;
+	width: 100%;
+	height: 0;
+	transition: .5s ease;
+}
+.overlay-txt{
+    color: #fff;
+    width:90%;
+	font-size: 15px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-family: roboto;
+    font-weight: 500;
+    line-height: 20px;
+}
+.finance-text{
+	font-size: 15px;
+	font-family: roboto;
+	font-weight: 700;
+	text-align: center;
+	color:#333;
+}
+
+.finance-icon{
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 20px;
+    margin-top: 40px;
+}
+.finance{
+    width: 250px;
+    height: 200px;
+    box-shadow: 0 0 11px -4px #999;
+	margin-bottom: 20px;
+	background-color: #fff;
+	transition: all .2s;
+	position:relative;
+}
 .rupee-main {
     display: flex;
     justify-content: center;
@@ -874,6 +1042,9 @@ $this->registerCss('
    border-style: solid;
    border-width: 0 0 5px 52px;
    border-color: #f07706;
+}
+.edu-with-us{
+ padding:0px 0px 20px 0;
 }
 .edu-with-sec{
     padding:0px 0px 20px 0;
