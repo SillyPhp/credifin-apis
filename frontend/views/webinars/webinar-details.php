@@ -810,9 +810,6 @@ $this->registerCss('
     background-position: center;
     background-size: cover;
 }
-.loc-set{
-    text-align:left !important;
-}
 .flex-use {
     display: flex;
     justify-content: flex-end;
