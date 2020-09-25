@@ -166,7 +166,12 @@ class LoansController extends ApiBaseController
                     'a.email',
                     'a.gender',
                     'a.amount',
+                    'a.amount_received',
+                    'a.amount_due',
+                    'a.scholarship',
                     'a.status',
+                    'a.created_on submitted_date',
+                    'a.updated_on verified_date',
                     'f.payment_status',
                     'c1.course_name',
                     'a.created_on',
@@ -221,7 +226,12 @@ class LoansController extends ApiBaseController
                         'a.email',
                         'a.gender',
                         'a.amount',
+                        'a.amount_received',
+                        'a.amount_due',
+                        'a.scholarship',
                         'a.status',
+                        'a.created_on submitted_date',
+                        'a.updated_on verified_date',
                         'c1.course_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
@@ -260,12 +270,24 @@ class LoansController extends ApiBaseController
                         $image = "https://ui-avatars.com/api/?name=" . $l['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
                         $loan_requests[$i]['image'] = $image;
                     }
+                    if ($l['submitted_date']) {
+                        $loan_requests[$i]['submitted_date'] = date('Y-m-d', strtotime($l['submitted_date']));
+                    }
+                    if ($l['verified_date']) {
+                        $loan_requests[$i]['verified_date'] = date('Y-m-d', strtotime($l['verified_date']));
+                    }
                     $i++;
                 }
                 if ($loan) {
                     if (!$loan['image'] && $loan['image'] == null) {
                         $image = "https://ui-avatars.com/api/?name=" . $l['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
                         $loan['image'] = $image;
+                    }
+                    if ($loan['submitted_date']) {
+                        $loan['submitted_date'] = date('Y-m-d', strtotime($loan['submitted_date']));
+                    }
+                    if ($loan['verified_date']) {
+                        $loan['verified_date'] = date('Y-m-d', strtotime($loan['verified_date']));
                     }
                     return $this->response(200, ['status' => 200, 'data' => $loan_requests, 'loan_detail' => $loan]);
                 } else {
