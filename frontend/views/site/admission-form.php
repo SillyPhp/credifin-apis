@@ -530,6 +530,15 @@ label {
     margin-bottom: 0px;
     padding-left: 6px;
 }
+.ff-input .iti, .phoneInput {
+    width:100% !important;
+}
+.ff-input .iti{
+    padding-top:10px !important;
+}
+.iti__flag-container{
+    top:10px !important;
+}
 @media screen and (max-width: 1030px){
     .flex-main {
         height: calc(100vh - 150px);
