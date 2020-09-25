@@ -62,8 +62,8 @@ $this->params['seo_tags'] = [
                             <p>Collateral Free <br>Loans</p>
                         </div>
                     </div>
-                    <h4>Interest Free Loans available for select Colleges/Universities</h4>
                     <h4>Loan Starting from as low as 9% p.a.</h4>
+                    <h3><span class="colorOrange">Interest Free Loans</span> available for <span class="colorOrange">select Colleges/Universities</span></h3>
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
