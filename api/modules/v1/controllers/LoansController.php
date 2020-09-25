@@ -10,6 +10,7 @@ use api\modules\v3\models\OrganizationList;
 use common\models\AssignedCollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
+use common\models\LoanApplications;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
@@ -140,6 +141,11 @@ class LoansController extends ApiBaseController
     public function actionSaveApplication()
     {
         $params = Yii::$app->request->post();
+        $c = $params['college_course_info'];
+        unset($params['college_course_info']);
+        $params['college_course_info'][0] = $c;
+        $params['userID'] = $this->userId();
+
         if ($params) {
             $organizationObject = new OrganizationList();
             $parser = $organizationObject->conditionParser($params);
@@ -156,9 +162,13 @@ class LoansController extends ApiBaseController
             if (!$params['is_india']) {
                 $model->country_enc_id = $params['country_enc_id'];
             }
+
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 $model->college_course_enc_id = $parser2['assigned_course_id'];
+                if ($params['loan_purpose']) {
+                    $model->purpose = explode(',', $params['loan_purpose']);
+                }
                 if ($model->validate()) {
                     if ($data = $model->add($userId, $parser['college_id'], 'Android', $parser['is_claim'])) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
@@ -168,6 +178,51 @@ class LoansController extends ApiBaseController
                 return $this->response(409, ['status' => 409, $model->getErrors()]);
             }
             return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        }
+    }
+
+    public function actionApplicationStatus()
+    {
+
+        $userId = $this->userId();
+        $status = LoanApplications::find()
+            ->where(['created_by' => $userId, 'status' => 0])
+            ->one();
+
+        if ($status) {
+            return $this->response(409, ['status' => 409, 'data' => $status->status]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+    }
+
+    public function actionStudentLoans()
+    {
+        $loans = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id',
+                'a.applicant_name', 'a.amount loan_amount',
+                'a.status', 'd.payment_token',
+                'd.payment_id', 'd.payment_status',
+                'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
+                'd.education_loan_payment_enc_id'
+            ])
+            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
+            ->joinWith(['loanPurposes b' => function ($b) {
+                $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
+                $b->joinWith(['feeComponentEnc c'], false);
+            }])
+            ->joinWith(['educationLoanPayments d'], false)
+            ->where(['cc.created_by' => $this->userId()])
+            ->asArray()
+            ->all();
+
+        if ($loans) {
+            return $this->response(200, ['status' => 200, 'data' => $loans]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
 
