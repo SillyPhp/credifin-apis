@@ -20,6 +20,7 @@ use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
+use frontend\models\AdmissionForm;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -1107,6 +1108,31 @@ class SiteController extends Controller
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
-        return $this->render('admission-form');
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $model->save();
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('admission-form',[
+            'model' => $model
+        ]);
     }
+//    public function actionAdmission()
+//    {
+//        $model = new AdmissionForm();
+//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+//            if ($model->load(Yii::$app->request->post())) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                return $model->save();
+//                } else {
+//            }
+//        }
+//    }
 }
