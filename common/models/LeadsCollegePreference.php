@@ -37,7 +37,7 @@ class LeadsCollegePreference extends \yii\db\ActiveRecord
             [['preference_enc_id', 'application_enc_id', 'college_name'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['preference_enc_id', 'application_enc_id', 'college_name', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['application_enc_id'], 'unique'],
+            [['preference_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LeadsApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],

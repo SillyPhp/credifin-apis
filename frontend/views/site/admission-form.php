@@ -5,12 +5,36 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$image = Yii::$app->urlManager->createAbsoluteUrl(Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png'));
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
 
     <section class="admission-form">
         <div class="oa-container">
             <div class="ey-logo">
-                <a href="/"> <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>"></a>
+                <a href="/"> <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>"></a>
             </div>
             <div class="flex-main">
                 <div class="left-sec">
@@ -21,25 +45,20 @@ use borales\extensions\phoneInput\PhoneInput;
                         <span class="colorOrange">India</span> and <span class="colorOrange">Abroad</span>.</h4>
                     <div class="el-icons-flex">
                         <div class="el-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/loan-application.png') ?>">
                             <p>Online <br>Application</p>
                         </div>
                         <div class="el-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-sanction.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-sanction.png') ?>">
                             <p>Quick <br>Sanction</p>
                         </div>
                         <div class="el-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/collateral.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/collateral.png') ?>">
                             <p>Collateral Free <br>Loans</p>
                         </div>
                     </div>
                     <h4>Interest Free Loans available for select Colleges/Universities</h4>
                     <h4>Loan Starting from as low as 9% p.a.</h4>
-<!--                    <h3>Only on-->
-<!--                        <a href="/education-loans">-->
-<!--                            <span class="colorBlue">Empower</span><span class="colorOrange">Youth</span>.com-->
-<!--                        </a>-->
-<!--                    </h3>-->
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
@@ -50,131 +69,136 @@ use borales\extensions\phoneInput\PhoneInput;
                                 'class' => 'clearfix',
                             ],
                             'fieldConfig' => [
-//                                'options' => ['class' => ''],
                                 'template' => '',
                                 'labelOptions' => ['class' => ''],
                             ],
                         ]); ?>
-                        <form id="regForm">
-                            <div class="form-group tab" data-id="step1">
-                                <div class="form-flex">
-                                    <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'First Name'])->label(false); ?>
-                                    <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Last Name'])->label(false); ?>
-                                </div>
+                        <div class="form-group tab" data-id="step1">
+                            <div class="form-flex">
+                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'First Name'])->label(false); ?>
+                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'Last Name'])->label(false); ?>
+                            </div>
 
-                                <div class="form-flex">
-                                    <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Email'])->label(false); ?>
-                                    <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Contact Number (WhatsApp)'])->widget(PhoneInput::className(), [
-                                        'jsOptions' => [
-                                            'allowExtensions' => false,
-                                            'preferredCountries' => ['in'],
-                                            'nationalMode' => false,
-                                        ]
-                                    ])->label(false); ?>
-                                </div>
+                            <div class="form-flex">
+                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'Email'])->label(false); ?>
+                                <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput()->widget(PhoneInput::className(), [
+                                    'jsOptions' => [
+                                        'allowExtensions' => false,
+                                        'preferredCountries' => ['in'],
+                                        'nationalMode' => false,
+                                    ],
+                                    'options' => [
+                                        'class' => 'form-control req_field phoneInput'
+                                    ]
+                                ])->label(false); ?>
+                            </div>
 
+                            <div class="form-flex">
+                                <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize req_field', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name'])->label(false); ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group tab" data-id="step2">
+                            <div class="form-flex-2">
+                                <div class="font14">Have You Already Taken Admission In College?</div>
+                                <div class="radio-container">
+                                    <input type="radio" name="appliedCollege" id="yes" value="yes">
+                                    <label for="yes">
+                                        <svg class="check" viewbox="0 0 40 40">
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                    <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                    <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                </linearGradient>
+                                            </defs>
+                                            <circle id="border" r="18px" cx="20px" cy="20px"></circle>
+                                            <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
+                                        </svg>
+                                        Yes
+                                    </label>
+                                    <input type="radio" name="appliedCollege" id="no" value="no">
+                                    <label for="no">
+                                        <svg class="check" viewbox="0 0 40 40">
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                    <stop offset="0%" stop-color="#0db6fc"></stop>
+                                                    <stop offset="100%" stop-color="#00a0e3"></stop>
+                                                </linearGradient>
+                                            </defs>
+                                            <circle id="border" r="18px" cx="20px" cy="20px"></circle>
+                                            <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
+                                        </svg>
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="appliedYes">
                                 <div class="form-flex">
-                                    <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name'])->label(false); ?>
+                                    <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name'])->label(false); ?>
                                 </div>
                             </div>
 
-                            <div class="form-group tab" data-id="step2">
+                            <div class="form-group" id="appliedNo">
+                                <p>Please Mention Your Three Preferred Colleges</p>
+                                <div class="form-flex">
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
+                                </div>
+                                <div class="form-flex">
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
+                                </div>
+                                <div class="form-flex">
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <div class="form-flex-2">
-                                    <div class="font14">Have You Already Taken Admission In College?</div>
+                                    <div class="font14">Do You want to apply for Education Loan Now?</div>
                                     <div class="radio-container">
-                                        <input type="radio" name="appliedCollege" id="yes" value="yes">
-                                        <label for="yes">
+                                        <input type="radio" name="loan" id="LoanYes" value="Loanyes">
+                                        <label for="LoanYes">
                                             <svg class="check" viewbox="0 0 40 40">
                                                 <defs>
-                                                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                    <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
                                                         <stop offset="0%" stop-color="#0db6fc"></stop>
                                                         <stop offset="100%" stop-color="#00a0e3"></stop>
                                                     </linearGradient>
                                                 </defs>
-                                                <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                            </svg>Yes
+                                                <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
+                                                <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
+                                            </svg>
+                                            Yes
                                         </label>
-                                        <input type="radio" name="appliedCollege" id="no" value="no">
-                                        <label for="no">
+                                        <input type="radio" name="loan" id="LoanNo" value="LoanNo">
+                                        <label for="LoanNo">
                                             <svg class="check" viewbox="0 0 40 40">
                                                 <defs>
-                                                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
+                                                    <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
                                                         <stop offset="0%" stop-color="#0db6fc"></stop>
                                                         <stop offset="100%" stop-color="#00a0e3"></stop>
                                                     </linearGradient>
                                                 </defs>
-                                                <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                            </svg>No
+                                                <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
+                                                <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
+                                            </svg>
+                                            No, I am Just Inquiring.
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-group" id="appliedYes">
+                                <div id="loanFields">
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name'])->label(false); ?>
-                                    </div>
-                                </div>
-
-                                <div class="form-group" id="appliedNo">
-                                    <p>Please Mention Your Three Preferred Colleges</p>
-                                    <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
-                                    </div>
-                                    <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
-                                    </div>
-                                    <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="form-flex-2">
-                                        <div class="font14">Do You want to apply for Education Loan Now?</div>
-                                        <div class="radio-container">
-                                            <input type="radio" name="loan" id="LoanYes" value="Loanyes">
-                                            <label for="LoanYes">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>Yes
-                                            </label>
-                                            <input type="radio" name="loan" id="LoanNo" value="LoanNo">
-                                            <label for="LoanNo">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>No, I am Just Inquiring.
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div id="loanFields">
-                                        <div class="form-flex">
-                                            <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control','placeholder' => 'Loan Amount Required (Optional)','autocomplete' => 'off','id' => 'amount'])->label(false); ?>
-                                        </div>
+                                        <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Loan Amount', 'type' => 'text','autocomplete' => 'off', 'id' => 'amount'])->label(false); ?>
+                                        <input type="text" name="amountValidation" style="display:none;">
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="button-form">
-                                <button type="button" id="prevBtn" class="btn-frm">Previous</button>
-                                <button type="button" id="nextBtn" class="btn-frm">Next</button>
-                                <?= Html::submitButton('Submit', ['class' => 'btn-frm','id' => 'submitBtn']) ?>
-                            </div>
+                        <div class="button-form">
+                            <button type="button" id="prevBtn" class="btn-frm">Previous</button>
+                            <button type="button" id="nextBtn" class="btn-frm">Next</button>
+                            <?= Html::button('Submit', ['class' => 'btn-frm', 'id' => 'submitBtn']) ?>
+                        </div>
 
-                        </form>
                         <?php ActiveForm::end(); ?>
                     </div>
                 </div>
@@ -184,6 +208,15 @@ use borales\extensions\phoneInput\PhoneInput;
 
 <?php
 $this->registerCss('
+.intl-tel-input, .phoneInput {
+    width:100% !important;
+}
+.intl-tel-input{
+    padding-top:10px !important;
+}
+.flag-container{
+    top:10px !important;
+}
 #submitBtn{
 display:none;
 }
@@ -220,8 +253,9 @@ display:none;
   color: #999
 }
 .tt-menu {
-  width: 98%;
-  margin: 12px 0;
+  width: 100%;
+  margin: 0;
+  top:90% !important;
   padding: 8px 0;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -268,7 +302,7 @@ body{
     margin: 0 auto;
 }
 .admission-form{
-    background: url('. Url::to('@eyAssets/images/pages/custom/form-bg1.png') .');
+    background: url(' . Url::to('@eyAssets/images/pages/custom/form-bg1.png') . ');
     background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
@@ -377,6 +411,7 @@ body{
     color: #fff;
     border-radius: 6px;
     margin: 10px 5px 0;
+    cursor:pointer;
 }
 .btn-frm:hover{
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -563,117 +598,85 @@ label {
 $script = <<<JS
 //java script start //
 
-let headingText = document.getElementById('headingText');
+$("input[name='amount']").on("keyup", function(){
+    $("input[name='amountValidation']").val(destroyMask(this.value));
+    this.value = createMask($("input[name='amountValidation']").val());
+})
 
-   $(document).on('click','input[name = "appliedCollege"]',function (){
-       var t = $(this);
-       var value = t.attr('id');
-       if(value == 'yes'){
-           $('#appliedYes').show();
-           $('#appliedNo').hide();
-       } else {
-           $('#appliedYes').hide();
-           $('#appliedNo').show();
+function createMask(string){
+	return string.replace(/(\d{2})(\d{3})(\d{2})/,"$1$2$3");
+}
+
+function destroyMask(string){
+	return string.replace(/\D/g,'').substring(0, 8);
+}
+
+  $(document).on('click','input[name = "appliedCollege"]',function (){
+      var t = $(this);
+      var id = t.attr('id');
+      if(id == 'yes'){
+          $('#appliedYes').show();
+          $('#appliedNo').hide();
+          $('#college_name').addClass('require_data');
+      } else {
+          $('#appliedYes').hide();
+          $('#appliedNo').show();
+          $('#college_name').removeClass('require_data');
+      }
+  });
+       var currentTab = 0;
+       showTab(currentTab);
+
+       function showTab(n) {
+           var x = document.getElementsByClassName("tab");
+           x[n].style.display = "block";
+           if (n == 0) {
+               document.getElementById("prevBtn").style.display = "none";
+           } else {
+               document.getElementById("prevBtn").style.display = "inline";
+           }
+           if (n == (x.length - 1)) {
+               document.getElementById("nextBtn").style.display = "none";
+           } else {
+               document.getElementById("nextBtn").style.display = "block";
+           }
        }
-       // showNxtStep($(this));
-   });
-        var currentTab = 0;
-        showTab(currentTab);
-
-        function showTab(n) {
-            var x = document.getElementsByClassName("tab");
-            // var node = x[n];
-            // var data_id =node.getAttribute('data-id');
-            // if(data_id == 'step1'){
-            //     validate_first(n);
-            // }
-            x[n].style.display = "block";
-            if (n == 0) {
-                document.getElementById("prevBtn").style.display = "none";
-            } else {
-                document.getElementById("prevBtn").style.display = "inline";
-            }
-            if (n == (x.length - 1)) {
-                document.getElementById("nextBtn").style.display = "none";
-            } else {
-                document.getElementById("nextBtn").style.display = "block";
-            }
-        }
-
-        function nextPrev(n) {
-            var x = document.getElementsByClassName("tab");
-            x[currentTab].style.display = "none";
-            currentTab = currentTab + n;
-            if (currentTab >= x.length) {
-                document.getElementById("regForm").submit();
-                return false;
-            }
-            showTab(currentTab);
-        }
-//        function validate_first(n){
-//            var isValid = true;
-//            if($('#first_name').val().length == 0){
-//                isValid = false;
-//                $('#first_name').next('p').html('First Name cannot be blank');
-//            }
-//            if($('#last_name').val().length == 0){
-//                isValid = false;
-//                $('#last_name').next('p').html('Last Name cannot be blank');
-//            }
-//            if($('#email').val().length == 0){
-//                isValid = false;
-//                $('#email').next('p').html('Email Name cannot be blank');
-//            }
-//            if($('#phone').val().length == 0){
-//                isValid = false;
-//                $('#phone').next('p').html('Phone Name cannot be blank');
-//            }
-//            if(isValid){
-//                showTab(n);
-//            }
-//        }
-
-        $(document).on('click','#prevBtn',function ()
-        {
-            nextPrev(-1);
-        });
-        $(document).on('click','#LoanYes',function (event)
-        { 
-        event.stopImmediatePropagation();
-        event.preventDefault();
-        var form = $('#application_form');
-        var data = form.serialize();
-        swal({
-                title:"redirect to Education Loan Form",
-                html:true,
-                showSpinner:true,
-                showCancelButton: true,
-                 confirmButtonColor: "#DD6B55",
-               confirmButtonText: "OK",
-              closeOnConfirm: false,
-                // text: "saving",
-                },function() {
-                    $.ajax({
-                    type:"post",
-                    url:'/site/admission',
-                    data:data,
-                    success: function (data) { }
-                    }).done(function (data) {
-                    swal("Thankyou for submitted");
-                  }).error(function (data) {
-                  swal("Oops", "We couldn't connect to the server!", "error");
-                 });
-                    })
-        });
-        $(document).on('click','#LoanNo',function ()
-        {
-            $('#loanFields').show();
-            $('#submitBtn').show();
-        });
-         $(document).on('click','#nextBtn',function ()
-        {
-            nextPrev(1);
-        });
+       function nextPrev(n) {
+           var x = document.getElementsByClassName("tab");
+           x[currentTab].style.display = "none";
+           currentTab = currentTab + n;
+           if (currentTab >= x.length) {
+               document.getElementById("regForm").submit();
+               return false;
+           }
+           showTab(currentTab);
+       }
+       $(document).on('click','#prevBtn',function ()
+       {
+           nextPrev(-1);
+       });
+       $(document).on('click','#LoanNo',function ()
+       {
+           $('#loanFields').show();
+           $('#submitBtn').show();
+       });
+        $(document).on('click','#nextBtn',function ()
+       {
+           var isValid = true;
+           var errorMsg = $('.help-block').text();
+           var reqFields = $('input.req_field');
+           $.each(reqFields, function(i, v) {
+                var id = v.getAttribute('id');
+                if(id){
+                    if(v.value == ""){
+                        isValid = false;
+                    }
+                }
+           });
+           if(errorMsg == "" && isValid){
+                nextPrev(1);
+           }
+       });
         
 //java script end //
     getCourses(); 
@@ -776,35 +779,123 @@ function getCourses()
          source: substringMatcher(_colleges)
         }); 
     }
-    $(document).on('click', '#submitBtn', function (event) {
-        event.stopImmediatePropagation();
-        event.preventDefault();
-        var btn = $(this);
-        var form = $('#application_form');
-        var data = form.serialize();
-        $.ajax({
-            url: '/site/admission',
-            type: 'POST',
-            data: data,
-            beforeSend: function (){
-                
-                btn.prop('disabled', 'disabled');
-            },
-            success: function (response) {
-                if (response.status == 'success') {
-                    // toastr.success(response.message, response.title);
-                } else {
-                    // toastr.error(response.message, response.title);
+    
+    $(document).on('click','#LoanYes',function (event)
+       { 
+       var btn = $("#submitBtn");
+        var firstRadio = $('input[name = "appliedCollege"]').is(":checked");
+        var inputData = true;
+        var chkRequire = $('.require_data').length;
+        
+       if(!firstRadio){
+            return false;
+       } else {
+            if(chkRequire > 0){
+                if($('.require_data').val() == ""){
+                   return false;
                 }
             }
-        });
+       }
+        var secondRadio = $('input[name = "loan"]').is(":checked");
+        if(firstRadio && secondRadio){
+            if(chkRequire > 0){
+                inputData = false;
+                if($('.require_data').val() != ""){
+                    inputData = true;
+                }
+            }
+           if (inputData){
+               var form = $('#application_form');
+               var data = form.serialize();
+               $.ajax({
+                    type: 'POST',
+                    data: data,
+                    beforeSend: function (){
+                        btn.prop('disabled', 'disabled');
+                        swal({
+                            title: 'Processing',
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonText: false,
+                            showConfirmButton: false,
+                        });
+                    },
+                    success: function (response) {
+                        btn.prop('disabled', false);
+                        if (response.status == 200) {
+                            window.location.pathname = "/education-loans/apply";
+                        } else {
+                            $("input[name = 'loan']").prop("checked", false);
+                            swal({
+                                title: response.title,
+                                text: response.message,
+                                type: "error",
+                                showCancelButton: false,
+                                confirmButtonText: "Ok!",
+                            });
+                        }
+                    }
+                });
+            }
+       }
+    });
+
+    $(document).on('click', '#submitBtn', function (event) {
+        var btn = $(this);
+        var firstRadio = $('input[name = "appliedCollege"]').is(":checked");
+        var secondRadio = $('input[name = "loan"]').is(":checked");
+        if(firstRadio && secondRadio){
+            var inputData = true;
+            var chkRequire = $('.require_data').length;
+           if(chkRequire > 0){
+                inputData = false;
+                if($('.require_data').val() != ""){
+                    inputData = true;
+                }
+           }
+           if (inputData){
+               var form = $('#application_form');
+               var data = form.serialize();
+               $.ajax({
+                    type: 'POST',
+                    data: data,
+                    beforeSend: function (){
+                        btn.prop('disabled', 'disabled');
+                    },
+                    success: function (response) {
+                        btn.prop('disabled', false);
+                        form[0].reset();
+                        if (response.status == 200) {
+                            swal({
+                                title: response.title,
+                                text: response.message,
+                                type: "success",
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                confirmButtonText: false,
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            });
+                        } else {
+                            swal({
+                                title: response.title,
+                                text: response.message,
+                                type: "error",
+                                showCancelButton: false,
+                                confirmButtonText: "Ok!",
+                            });
+                        }
+                    }
+                });
+            }
+       }
     });
 JS;
 $this->registerJs($script);
 ?>
-<script>
+    <script>
 
-</script>
+    </script>
 <?php
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');

@@ -1109,6 +1109,12 @@ class SiteController extends Controller
     {
         $this->layout = 'blank-layout';
         $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $model->save();
+            }
+        }
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
@@ -1118,15 +1124,15 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-    public function actionAdmission()
-    {
-        $model = new AdmissionForm();
-        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
-            if ($model->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return $model->save();
-                } else {
-            }
-        }
-    }
+//    public function actionAdmission()
+//    {
+//        $model = new AdmissionForm();
+//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+//            if ($model->load(Yii::$app->request->post())) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                return $model->save();
+//                } else {
+//            }
+//        }
+//    }
 }
