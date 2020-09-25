@@ -5,6 +5,16 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+$image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
+$this->params['seo_tags'] = [
+    'name' => [
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:image' => $image,
+    ],
+];
+
 ?>
 
     <section class="admission-form">
@@ -841,6 +851,7 @@ function getCourses()
                     success: function (response) {
                         btn.prop('disabled', false);
                         form[0].reset();
+                        $('#submitBtn').hide();
                         if (response.status == 200) {
                             swal({
                                 title: response.title,
@@ -848,10 +859,13 @@ function getCourses()
                                 type: "success",
                                 showCancelButton: false,
                                 showConfirmButton: false,
-                                confirmButtonText: false,
+                                conFfirmButtonText: false,
                                 closeOnConfirm: false,
                                 closeOnCancel: false
                             });
+                           setTimeout(function(){
+                              window.location.reload();
+                            },2000);
                         } else {
                             swal({
                                 title: response.title,
