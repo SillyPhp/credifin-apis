@@ -5,27 +5,13 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-
-$image = Yii::$app->urlManager->createAbsoluteUrl(Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png'));
+$image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
 $this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
     'name' => [
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:image' => $image,
-        'fb:app_id' => '973766889447403'
     ],
 ];
 
@@ -865,6 +851,7 @@ function getCourses()
                     success: function (response) {
                         btn.prop('disabled', false);
                         form[0].reset();
+                        $('#submitBtn').hide();
                         if (response.status == 200) {
                             swal({
                                 title: response.title,
@@ -872,10 +859,13 @@ function getCourses()
                                 type: "success",
                                 showCancelButton: false,
                                 showConfirmButton: false,
-                                confirmButtonText: false,
+                                conFfirmButtonText: false,
                                 closeOnConfirm: false,
                                 closeOnCancel: false
                             });
+                           setTimeout(function(){
+                              window.location.reload();
+                            },2000);
                         } else {
                             swal({
                                 title: response.title,
