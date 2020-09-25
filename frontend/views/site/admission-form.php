@@ -6,12 +6,31 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 $image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
+$this->title = "Get Admission In Your Dream College";
+$keywords = "empower youth, college, university, admission, education loan";
+$description = "Do Not let monetary constraints stop your from getting admission in your dream College/University";
 $this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
     'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
         'og:image' => $image,
+        'fb:app_id' => '973766889447403'
     ],
 ];
 
