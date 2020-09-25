@@ -119,13 +119,13 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="form-group" id="appliedNo">
                                     <p>Please Mention Your Three Preferred Colleges</p>
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college1', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
+                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
                                     </div>
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college2', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
+                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
                                     </div>
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'preference_college3', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
+                                        <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -582,6 +582,11 @@ let headingText = document.getElementById('headingText');
 
         function showTab(n) {
             var x = document.getElementsByClassName("tab");
+            // var node = x[n];
+            // var data_id =node.getAttribute('data-id');
+            // if(data_id == 'step1'){
+            //     validate_first(n);
+            // }
             x[n].style.display = "block";
             if (n == 0) {
                 document.getElementById("prevBtn").style.display = "none";
@@ -590,11 +595,8 @@ let headingText = document.getElementById('headingText');
             }
             if (n == (x.length - 1)) {
                 document.getElementById("nextBtn").style.display = "none";
-                // document.getElementById("submitBtn").style.display = "block";
             } else {
-                // document.getElementById("nextBtn").innerHTML = "Next";
                 document.getElementById("nextBtn").style.display = "block";
-                // document.getElementById("submitBtn").style.display = "none";
             }
         }
 
@@ -607,33 +609,61 @@ let headingText = document.getElementById('headingText');
                 return false;
             }
             showTab(currentTab);
-            // validate_first(currentTab);
         }
-        function validate_first(currentTab){
-            // console.log(currentTab);
-            var isValid = true;
-            // var first_name = $('#first_name'); 
-            // var last_name = document.getElementById("last_name").innerHTML.length;
-            if($('#first_name').val().length == 0){
-                isValid = false;
-                $('#first_name').next('p').html('First Name cannot be blank');
-            }
-            if($('#last_name').val().length == 0){
-                isValid = false;
-                $('#last_name').next('p').html('Last Name cannot be blank');
-            }
-            if(isValid){
-                showTab(currentTab);
-            }
-        }
+//        function validate_first(n){
+//            var isValid = true;
+//            if($('#first_name').val().length == 0){
+//                isValid = false;
+//                $('#first_name').next('p').html('First Name cannot be blank');
+//            }
+//            if($('#last_name').val().length == 0){
+//                isValid = false;
+//                $('#last_name').next('p').html('Last Name cannot be blank');
+//            }
+//            if($('#email').val().length == 0){
+//                isValid = false;
+//                $('#email').next('p').html('Email Name cannot be blank');
+//            }
+//            if($('#phone').val().length == 0){
+//                isValid = false;
+//                $('#phone').next('p').html('Phone Name cannot be blank');
+//            }
+//            if(isValid){
+//                showTab(n);
+//            }
+//        }
 
         $(document).on('click','#prevBtn',function ()
         {
             nextPrev(-1);
         });
-        $(document).on('click','#LoanYes',function ()
-        {
-            window.location.href= "/education-loans/apply";
+        $(document).on('click','#LoanYes',function (event)
+        { 
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        var form = $('#application_form');
+        var data = form.serialize();
+        swal({
+                title:"redirect to Education Loan Form",
+                html:true,
+                showSpinner:true,
+                showCancelButton: true,
+                 confirmButtonColor: "#DD6B55",
+               confirmButtonText: "OK",
+              closeOnConfirm: false,
+                // text: "saving",
+                },function() {
+                    $.ajax({
+                    type:"post",
+                    url:'/site/admission',
+                    data:data,
+                    success: function (data) { }
+                    }).done(function (data) {
+                    swal("Thankyou for submitted");
+                  }).error(function (data) {
+                  swal("Oops", "We couldn't connect to the server!", "error");
+                 });
+                    })
         });
         $(document).on('click','#LoanNo',function ()
         {
@@ -746,6 +776,29 @@ function getCourses()
          source: substringMatcher(_colleges)
         }); 
     }
+    $(document).on('click', '#submitBtn', function (event) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        var btn = $(this);
+        var form = $('#application_form');
+        var data = form.serialize();
+        $.ajax({
+            url: '/site/admission',
+            type: 'POST',
+            data: data,
+            beforeSend: function (){
+                
+                btn.prop('disabled', 'disabled');
+            },
+            success: function (response) {
+                if (response.status == 'success') {
+                    // toastr.success(response.message, response.title);
+                } else {
+                    // toastr.error(response.message, response.title);
+                }
+            }
+        });
+    });
 JS;
 $this->registerJs($script);
 ?>
@@ -754,3 +807,5 @@ $this->registerJs($script);
 </script>
 <?php
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

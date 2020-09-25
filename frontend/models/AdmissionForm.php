@@ -2,6 +2,8 @@
 
 namespace frontend\models;
 
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 use common\models\Usernames;
 use common\models\Users;
 use borales\extensions\phoneInput\PhoneInputValidator;
@@ -18,7 +20,6 @@ class AdmissionForm extends Model
     public $last_name;
     public $phone;
     public $countryCode;
-    public $degree;
     public $course;
     public $college;
     public $preference_college1;
@@ -46,10 +47,10 @@ class AdmissionForm extends Model
     public function rules()
     {
         return [
-            [['email','first_name','last_name','phone','degree'], 'required'],
+            [['email','first_name','last_name','phone','course'], 'required'],
             [['email'], 'email'],
-            [['fee','amount'], 'safe'],
-            [['fee','amount'], 'integer'],
+            [['amount','college','preference_college1'], 'safe'],
+            [['amount'], 'integer'],
             [['email', 'first_name', 'last_name', 'phone'], 'trim'],
             [['email', 'first_name', 'last_name','phone'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['first_name', 'last_name'], 'string', 'max' => 30],
@@ -57,7 +58,80 @@ class AdmissionForm extends Model
             [['phone'], PhoneInputValidator::className()],
         ];
     }
-    public function save($degree, $course, $college, $field, $preference_college1,$preference_college2,$preference_college3){
+    public function save(){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model = new LeadsApplications();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->application_enc_id = $utilitiesModel->encrypt();
+            $model->application_number = date('ymd').time();
+            $model->student_name = $this->first_name.' '.$this->last_name;
+            $model->student_mobile_number = $this->phone;
+            $model->student_email = $this->email;
+            if($this->college) {
+                $model->college_name = $this->college;
+            }
+            if($this->appliedCollege == 'yes'){
+                $model->has_taken_addmission = 1;
+                $model->college = $this->college;
+            }
+            else {
+                $model->has_taken_addmission = 0;
+            }
+            if($this->amount){
+                $model->loan_amount = $this->amount;
+            }
+            $model->course_name = $this->course;
+            if(!Yii::$app->user->isGuest){
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+            }
+            if(!$model->save()){
+                $this->_flag = false;
+                $transaction->rollback();
+            } else {
+                $this->_flag = true;
+            }
+            if($this->_flag && $this->preference_college1[0] ||$this->preference_college1[1] || $this->preference_college1[2]){
+                foreach ($this->preference_college1 as $pr){
+                    $prCollege = new LeadsCollegePreference();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $prCollege->preference_enc_id = $utilitiesModel->encrypt();
+                    $prCollege->application_enc_id = $model->application_enc_id;
+                    $prCollege->college_name = $pr;
+                    if(!Yii::$app->user->isGuest){
+                        $prCollege->created_by = Yii::$app->user->identity->user_enc_id;
+                    }
+                    if(!$prCollege->save()){
+                        return $prCollege->getErrors();
+                        $this->_flag = false;
+                        $transaction->rollback();
+                    } else {
+                        $this->_flag = true;
+                    }
+
+                }
+            }
+            if($this->_flag){
+                $transaction->commit();
+                return [
+                  'status' => 200,
+                  'title' => 'success',
+                  'message' => 'Form Submitted SuccessFully',
+                ];
+            } else {
+                $transaction->rollback();
+                return [
+                    'status' => 201,
+                    'title' => 'errors',
+                    'message' => 'something went wrong',
+                ];
+            }
+
+        } catch (\Exception $e){
+            return 'n okkk';
+        }
 
     }
 }

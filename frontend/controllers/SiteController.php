@@ -1123,8 +1123,8 @@ class SiteController extends Controller
         $model = new AdmissionForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
-                print_r(Yii::$app->request->post());exit();
                 Yii::$app->response->format = Response::FORMAT_JSON;
+                return $model->save();
                 } else {
             }
         }
