@@ -56,7 +56,8 @@ use common\models\Users;
 use yii\web\UploadedFile;
 use frontend\models\account\locations\OrganizationLocationForm;
 use frontend\models\questionnaire\QuestionnaireForm;
-
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 
 /**
  * Site controller
