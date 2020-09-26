@@ -311,17 +311,17 @@ $script = <<<JS
      //utilities
      function random_users(){
         $.ajax({
-                type: 'POST',
-                url: '/account/chat/get-random-values',
-                success: function(response) {
-                    
-                    response = JSON.parse(response);
-                    
-                    var template = $('#users').html();
-                    var rendered = Mustache.render(template, response);
-                    $('#users-list').html(rendered);
-                    // utilities.initials();
-                }
+            type: 'POST',
+            url: '/account/chat/get-random-values',
+            success: function(response) {
+                
+                response = JSON.parse(response);
+                
+                var template = $('#users').html();
+                var rendered = Mustache.render(template, response);
+                $('#users-list').html(rendered);
+                // utilities.initials();
+            }
         });
     }
     
@@ -439,30 +439,30 @@ $script = <<<JS
     
     //event for chat icon click
     chat_icon_button.addEventListener('click', function(){
-            if($('#chat-box').hasClass('right-set')){
-                $('#chat-box').removeClass('right-set');
+        if($('#chat-box').hasClass('right-set')){
+            $('#chat-box').removeClass('right-set');
+        }
+        if(chat_list.classList.contains('fadeout')){
+            chat_list.classList.remove('fadeout');
+            chat_list.classList.add('fadein');
+            if(chat_icon.classList.contains('chat-bounce')){
+                    chat_icon.classList.remove('chat-bounce');
             }
-            if(chat_list.classList.contains('fadeout')){
-                    chat_list.classList.remove('fadeout');
-                    chat_list.classList.add('fadein');
-                    if(chat_icon.classList.contains('chat-bounce')){
-                            chat_icon.classList.remove('chat-bounce');
-                    }
-            }else{
-                    chat_list.classList.remove('fadein');
-                    chat_list.classList.add('fadeout');
-                    while (chat_box.firstChild) {
-                        if(chat_box.firstChild.innerText){
-                            db
-                             .ref(specialKey + '/conversations/' + getUniqueId(chat_box.firstChild.getAttribute('data-id')))
-                             .off();
-                        }
-                        chat_box.removeChild(chat_box.firstChild);
-                    }
-                    if(chat_icon.classList.contains('chat-bounce')){
-                        chat_icon.classList.remove('chat-bounce');
-                    }
-             }
+        }else{
+            chat_list.classList.remove('fadein');
+            chat_list.classList.add('fadeout');
+            while (chat_box.firstChild) {
+                if(chat_box.firstChild.innerText){
+                    db
+                     .ref(specialKey + '/conversations/' + getUniqueId(chat_box.firstChild.getAttribute('data-id')))
+                     .off();
+                }
+                chat_box.removeChild(chat_box.firstChild);
+            }
+            if(chat_icon.classList.contains('chat-bounce')){
+                chat_icon.classList.remove('chat-bounce');
+            }
+         }
     });
     
     //list users on chat icon
@@ -917,7 +917,8 @@ $(document).on('click','#chat-icon', function(){
     if($('#chat-list').hasClass('hidden')){
         $('#chat-list').removeClass('hidden');
     }
-$(this).addClass('hidden');
+    $(this).addClass('hidden');
+    chatShift()
 });
 $(document).on('click','.closeBtn', function(){
     if($('#chat-list').hasClass('hidden')){
@@ -934,8 +935,19 @@ $(document).on('click','.cross', function(){
         $('#chat-list').addClass('fadeout');
         if($('#chat-icon').hasClass('hidden')){
             $('#chat-icon').removeClass('hidden');
-    }
+        }
+        chatShift()
 });
+function chatShift(){
+    let chatslide = document.getElementById('chat-box');
+    let chatList = document.getElementById('chat-list');
+    if(chatList.classList.contains('fadein')){
+        chatslide.style.right = 295+'px';
+    }else{  
+        chatslide.style.right = 100+'px';
+    }
+}
+
 var ps = new PerfectScrollbar('#users-list');
 JS;
 $this->registerJs($script);
