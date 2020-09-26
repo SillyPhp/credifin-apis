@@ -117,6 +117,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         </select>
                                         <input type="text" class="form-control" id="collegeName" name="collegeName"
                                                placeholder="College Or University Name">
+                                        <input type="hidden">
                                         <ul class="collegeNameList" id="collegeNameList">
 
                                         </ul>
@@ -423,7 +424,7 @@ $this->registerCss('
     position: relative;
 }
 #loadBtn{
-display:none;
+    display:none;
 }
 
 .padd-20{
@@ -835,6 +836,7 @@ $script = <<< JS
     getCourses(); 
     getCountries();    
     getCollegeList(datatype=0,source=3,type=['College']);
+    var collegeData;
     function getCollegeList(datatype, source, type) { 
         $.ajax({ 
             url : 'https://sneh.eygb.me/api/v3/companies/organization-list',
@@ -846,8 +848,9 @@ $script = <<< JS
                 },   
             success : function(res) { 
             var res = res.response.results;
+            collegeData = res;
             for(let i = 0; i < res.length; i++){
-                $('#collegeNameList').append('<li>'+ res[i].text +'</li>');
+                $('#collegeNameList').append('<li class="college-names" id="'+ res[i].id +'">'+ res[i].text +'</li>');
             }
             $('#college_name').prepend('<option selected=""></option>').select2({
                 data:res,
@@ -894,6 +897,34 @@ $script = <<< JS
             }
         });
     }
+    document.getElementById('collegeName').onkeyup = function() {
+      searchCollege();
+    }
+    function searchCollege() {
+        let collegeName = document.getElementById('collegeName').value; 
+        let serchName = collegeName.toLowerCase();
+        let collegeNameList = document.getElementById('collegeNameList');
+        collegeNameList.innerHTML = "";
+        var regex =  new RegExp(serchName, "g");
+        const result = collegeData.filter(text => text.text.toLowerCase().match(regex));
+        for(let i = 0; i < result.length; i++){
+            $('#collegeNameList').append('<li class="college-names" id="'+ result[i].id +'">'+ result[i].text +'</li>');
+        }
+        
+        let collegeLi = document.querySelectorAll('.college-names');
+        console.log(collegeLi);
+        for(let j = 0; j <= collegeLi.length; j++){
+            console.log('he')
+            collegeLi[j].addEventListener('click', function() {
+              selectCollege();
+            })
+        }
+    }
+    
+    function selectCollege() {
+        event.currentTarget;
+    }
+    
     function getCountries() { 
         $.ajax({     
             url : '/api/v3/countries-list/get-countries-list', 
@@ -1538,9 +1569,9 @@ $this->registerJs($script);
         collegeName.onfocus = function () {
             collegeNameList.classList.add('collegeListShow');
         }
-        collegeName.onfocusout = function () {
-            collegeNameList.classList.remove('collegeListShow');
-        }
+        // collegeName.onfocusout = function () {
+        //     collegeNameList.classList.remove('collegeListShow');
+        // }
     </script>
 <?php
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
