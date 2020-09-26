@@ -5,6 +5,7 @@ namespace common\models\extended;
 
 use common\models\Speakers;
 use common\models\WebinarEvents;
+use common\models\WebinarModerators;
 use common\models\WebinarSpeakers;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -182,6 +183,40 @@ class Webinar extends \common\models\Webinar
                 ->asArray()
                 ->all();
 
+            $moderator = WebinarModerators::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.speaker_enc_id',
+                    'a.webinar_event_enc_id',
+                    'f.user_enc_id',
+                    'CONCAT(f.first_name, " ", f.last_name) as fullname',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
+                    'e.designation',
+                    'f.facebook',
+                    'f.twitter',
+                    'f.linkedin',
+                    'f.instagram',
+                    'REPLACE(g.name, "&amp;", "&") as org_name',
+                    'f.description',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", g.name, "&size=200&rounded=false&background=", REPLACE(g.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
+                ->joinWith(['webinarEventEnc b'], false)
+                ->joinWith(['speakerEnc c' => function ($c) {
+                    $c->select(['c.speaker_enc_id']);
+                    $c->joinWith(['speakerExpertises d' => function ($d) {
+                        $d->select(['d.speaker_enc_id', 'd.skill_enc_id', 'ee.skill']);
+                        $d->joinWith(['skillEnc ee'], false);
+                    }]);
+                    $c->joinWith(['designationEnc e'], false)
+                        ->joinWith(['userEnc f'], false)
+                        ->joinWith(['unclaimedOrg g'], false);
+                }])
+                ->where(['b.webinar_enc_id' => $webinar_detail['webinar_enc_id'], 'a.is_deleted' => 0])
+                ->groupBy(['a.speaker_enc_id'])
+                ->asArray()
+                ->all();
+
+            $webinar_detail['moderator'] = $moderator;
             $webinar_detail['event'] = $events;
             $webinar_detail['events'] = $dateEvents;
             $webinar_detail['speaker_count'] = $speaker_count;

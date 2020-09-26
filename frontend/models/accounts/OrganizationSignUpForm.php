@@ -59,6 +59,7 @@ class OrganizationSignUpForm extends Model
             [['email', 'organization_email'], 'string', 'max' => 50],
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
+            [['first_name', 'last_name'], 'match','pattern' => '/^([A-Z a-z])+$/', 'message' => 'Name can only contain alphabets'],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
