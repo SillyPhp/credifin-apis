@@ -398,6 +398,10 @@ class JobsController extends Controller
             }
             return $response;
         }
+        $options = [
+            'limit'=>10,
+            'page'=>1
+        ];
         return $this->render('list');
     }
 
@@ -463,10 +467,10 @@ class JobsController extends Controller
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
         }
         if (!Yii::$app->user->isGuest) {
