@@ -69,17 +69,17 @@ class AdmissionForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->application_enc_id = $utilitiesModel->encrypt();
             $model->application_number = date('ymd') . time();
-            $model->student_name = $this->first_name . ' ' . $this->last_name;
+            $model->first_name = $this->first_name;
+            $model->last_name = $this->last_name;
             $model->student_mobile_number = $this->phone;
             $model->student_email = $this->email;
             if ($this->college) {
                 $model->college_name = $this->college;
             }
+            $model->has_taken_addmission = 0;
             if ($this->appliedCollege == 'yes') {
                 $model->has_taken_addmission = 1;
-                $model->college = $this->college;
-            } else {
-                $model->has_taken_addmission = 0;
+                $model->college_name = $this->college;
             }
             if ($this->amount) {
                 $model->loan_amount = $this->amount;
@@ -98,7 +98,7 @@ class AdmissionForm extends Model
             }
             $p_college = array_filter($this->preference_college1);
             if ($p_college) {
-                foreach ($p_college as $pr) {
+                foreach ($p_college as $k => $pr) {
                     $prCollege = new LeadsCollegePreference();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $prCollege->preference_enc_id = $utilitiesModel->encrypt();
@@ -125,7 +125,8 @@ class AdmissionForm extends Model
             ];
         } catch (\Exception $e) {
             $transaction->rollback();
-            print_r($e->getMessage());exit();
+            print_r($e->getMessage());
+            exit();
         }
 
     }
