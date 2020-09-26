@@ -144,10 +144,10 @@ input:checked + .slider:before {
     background:#fff;
 }
 .module-active{
-    background:#e7eaed;
+    background:linear-gradient(120deg,#08c -10%, #fff 135%);
     padding: 15px 10px 15px 20px;
     color: #00A0E3;
-//    color: #337ab7;
+    color: #fff;
     font-size:20px;
 }
 .modules{

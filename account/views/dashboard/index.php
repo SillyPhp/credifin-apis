@@ -237,7 +237,7 @@ endif;
                     <?php
                 }
                 ?>
-                <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
+
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
@@ -359,6 +359,7 @@ endif;
                         ?>
                     </div>
                 </div>
+                <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
             <!--                <div class="portlet-title" style="border-bottom:none;">-->

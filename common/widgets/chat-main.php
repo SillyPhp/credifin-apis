@@ -20,7 +20,10 @@ use yii\helpers\Url;
 </div>
 
 <div class="fadeout" id="chat-list">
-    <div id="chat-list-heading">Conversations</div>
+    <div class="conv">
+        <div id="chat-list-heading">Conversations</div>
+        <div class="cross"><i class="fa fa-times"></i></div>
+    </div>
     <div class="srch-form">
         <input type="text" id="search-user" placeholder="Search">
     </div>
@@ -36,6 +39,35 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss("
+.btn.blue.icn-only i {
+    font-size: 16px;
+}
+.close-btn {
+    margin: 0 8px;
+    font-size:16px;
+    cursor:pointer;
+}
+.caption span {
+    font-size: 16px;
+    font-family: roboto;
+    font-weight: 500 !important;
+}
+.conv {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.cross {
+	margin-right: 10px;
+	cursor:pointer;
+}
+.cross i {
+    font-size: 20px;
+    transition: all .2s;
+}
+.cross:hover i{
+    color:red;
+}
 *:focus{
     outline:none;
 }
@@ -61,21 +93,25 @@ $this->registerCss("
     opacity: 1;
 }
 .c-icon img{
-    width:30px;
-    height:30px;
+    width:40px;
+    height:40px;
     border-radius:50%;
 }
-.c-name{
-    color:#000;
-    padding:5px 5px 0 5px;
+.c-name {
+	color: #000;
+	padding-left: 10px;
+	font-family: roboto;
+	font-size: 16px;
+	text-transform: capitalize;
 }
 .chat-person{
     display:flex;
+    align-items:center;
 }
 #chat-list ul li{
-    padding:5px 0px ;
+    padding:5px;
     list-style-type:none;
-    border-bottom:1px solid #eee;
+    margin-bottom: 4px;
 }
 #chat-list ul li button{
     background:none;
@@ -89,43 +125,62 @@ $this->registerCss("
 #chat-list ul li:last-child{
     border-bottom:none;
 }
-#chat-list{
-    background:#fff;
-    padding:0px 0px;
-    border:1px solid #eee;
-    border-radius:10px;
-    position:fixed;
-    z-index:9999;
-    bottom:70px;
-    right:20px;
+#chat-list {
+	background: #fff;
+	padding: 0px 0px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	position: fixed;
+	z-index: 9999;
+	bottom: 5px;
+	right: 10px;
+	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
+	width:280px;
 }
-#chat-list-heading{
-    background:#eee;
-    padding:10px 5px;
-    font-size:16px;
-    border-radius:10px 10px 0 0 ;
+#chat-list-heading {
+	padding: 10px 5px 10px 15px;
+	font-size: 20px;
+	font-family: roboto;
+	font-weight: 500;
 }
 .srch-form{
-    padding:0px 0px 5px 0px;
+    padding:5px 10px 10px;
 }
-.srch-form input{
-    width:100%;
-    padding:8px 5px;
-    border:1px solid #eee;
-    font-size:13px;
+.srch-form input {
+	width: 100%;
+	padding: 8px 5px 8px 15px;
+	border: 1px solid #eee;
+	font-size: 13px;
+	border-radius: 35px;
+	background-color: #eee;
+	font-family: roboto;
 }
 #chat-box{
     max-width:1000px;
     max-height:300px !important; 
      position:fixed;
-    bottom:70px;
-    right:342px;
+    bottom:5px;
+    right:295px;
     z-index:99999;
 }
 #chat-box .portlet.light.dynamic-chat{
     float:left;
 }
-.dynamic-chat{position:relative;min-height:300px;}
+.dynamic-chat {
+	position: relative;
+	min-height: 300px;
+	background-color: #fff;
+	padding: 10px 0 10px 10px;
+	border-radius: 6px;
+	box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+	width:260px;
+}
+.secnd-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding:0 0 10px;
+}
 .chat-form{
     position: absolute;
     bottom: 0;
@@ -144,42 +199,11 @@ $this->registerCss("
     width: auto;
     max-height: 250px !important;
 }
-.scroller{
-    max-width:350px;
-    min-width:250px;
-    max-height: 250px !important;
-    overflow: hidden;
-    width: auto;
-    bottom:100px;
-    right:50px;
-//    padding-bottom:50px;
-}
-.closeBtn{
-    position:absolute;
-    top:0;
-    right:0
-}
-.closeBtn button{
-    background:none;
-    color:#ddd;
-    border-width:1px  ;
-    border-style:solid;
-    border-color:#fff #fff #eee #eee;
-    border-radius:0 0 0 8px;
-    padding:5px 10px;
-    font-weight:bold;
-}
-.closeBtn button:hover{
-    background:#00a0e3;
-    color:#fff;
-     border-color:#00a0e3;
-     transition:.3s all;
-}
-.portlet.light{
-    padding:12px 10px 15px !important;
-}
-
-element.style {
+.scroller {
+	max-width: 350px;
+	min-width: 250px;
+	max-height: 250px !important;
+	position: relative;
 }
 .scroller {
     overflow-y: scroll;
@@ -188,6 +212,7 @@ element.style {
     max-height: 300px;
     overflow-y: scroll;
     width: 320px;
+    position:relative;
 }
 .chat-bounce {
   -webkit-animation-duration: 1.5s;
@@ -614,6 +639,7 @@ $script = <<<JS
                 var xH = chatWindow.scrollHeight;
                 chatWindow.scrollTo(0, xH);
              });
+            var pj = new PerfectScrollbar('.scroller');
     });
     
     $(document).on('click', '.open_chat', function(e){
@@ -885,9 +911,13 @@ $(document).on('click','#chat-list.low-device #users-list li button', function()
     $('#chat-list').addClass('hidden');
 });
 $(document).on('click','#chat-icon', function(){
+    $('#chat-icon').addClass('hidden');
+});
+$(document).on('click','#chat-icon', function(){
     if($('#chat-list').hasClass('hidden')){
         $('#chat-list').removeClass('hidden');
     }
+$(this).addClass('hidden');
 });
 $(document).on('click','.closeBtn', function(){
     if($('#chat-list').hasClass('hidden')){
@@ -899,11 +929,21 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-box').removeClass('right-set');
     }
 });
+$(document).on('click','.cross', function(){
+        $('#chat-list').removeClass('fadein');
+        $('#chat-list').addClass('fadeout');
+        if($('#chat-icon').hasClass('hidden')){
+            $('#chat-icon').removeClass('hidden');
+    }
+});
+var ps = new PerfectScrollbar('#users-list');
 JS;
 $this->registerJs($script);
 
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
 
@@ -918,10 +958,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
         messagingSenderId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->messagingSenderId; ?>',
     };
     firebase.initializeApp(config);
+
 </script>
 
 <script id="no-user" type="text/template">
-    <li>
+    <li style="text-align: center; font-family: roboto; font-weight: 500;">
         No User Found
     </li>
 </script>
@@ -954,15 +995,13 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
     </li>
 </script>
 <script id="message-box" type="text/template">
-    <div class="portlet light dynamic-chat" data-id="{{user_enc_id}}" data-value="{{name}}">
-        <div class="portlet-title">
+    <div class="dynamic-chat" data-id="{{user_enc_id}}" data-value="{{name}}">
+        <div class="secnd-head">
             <div class="caption">
                 <i class="icon-bubble font-hide hide"></i>
                 <span class="caption-subject font-hide bold uppercase">{{name}}</span>
             </div>
-            <div class="closeBtn">
-                <button type="button" class="close-btn">X</button>
-            </div>
+            <div class="close-btn"><i class="fa fa-times"></i></div>
         </div>
         <div class="portlet-body chats-main">
             <div class="scroller" data-always-visible="1" data-rail-visible1="1">
@@ -977,7 +1016,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
                 <div class="btn-cont sendmsg">
                     <span class="arrow"> </span>
                     <a href="#" class="btn blue icn-only">
-                        <i class="fa fa-check icon-white"></i>
+                        <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>
             </div>
