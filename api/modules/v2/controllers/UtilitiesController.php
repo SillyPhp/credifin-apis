@@ -111,6 +111,36 @@ class UtilitiesController extends ApiBaseController
         }
     }
 
+    public function actionGetStates($search = null)
+    {
+        $states = States::find()
+            ->select(['state_enc_id', 'name'])
+            ->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $states->andWhere(['like', 'name', $search]);
+        }
+        $states = $states->limit(10)->asArray()
+            ->all();
+
+        return $states;
+    }
+
+    public function actionGetCities($search = null)
+    {
+        $cities = Cities::find()
+            ->alias('a')
+            ->select(['a.city_enc_id', 'a.name'])
+            ->joinWith(['stateEnc b'],false)
+            ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $cities->andWhere(['like', 'a.name', $search]);
+        }
+        $cities = $cities->limit(10)->asArray()
+            ->all();
+
+        return $cities;
+    }
+
     public function actionGetCompanies($search = null)
     {
         $organizations = Organizations::find()
