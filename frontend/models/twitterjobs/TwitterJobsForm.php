@@ -13,6 +13,7 @@ use common\models\Usernames;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
+use common\models\RandomColors;
 
 class TwitterJobsForm extends Model
 {
@@ -31,6 +32,7 @@ class TwitterJobsForm extends Model
     public $max_salary;
     public $wage_type = 1;
     public $country = 'India';
+    public $verifyCode;
 
     public function formName()
     {
@@ -40,9 +42,9 @@ class TwitterJobsForm extends Model
     public function rules()
     {
         return [
-            [['profile','title','job_type','country','wage_type','salary','city','twitter_url','contact_email','company_name','skills'],'required'],
+            [['profile','title','job_type','country','wage_type','city','twitter_url','contact_email','company_name','skills'],'required'],
             [['html','author_name','fixed_wage', 'min_salary', 'max_salary'],'safe'],
-            [['title', 'twitter_url','salary','company_name','contact_email'], 'trim'],
+            [['title', 'twitter_url','company_name','contact_email'], 'trim'],
             [['twitter_url'], 'url', 'defaultScheme' => 'http'],
             ['contact_email', 'email'],
         ];
@@ -145,7 +147,7 @@ class TwitterJobsForm extends Model
             $model->website = null;
             $model->name = $this->company_name;
             $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            $model->initials_color = '#3174dc';
+            $model->initials_color = RandomColors::one();
             $model->status = 1;
             if ($model->save()) {
                 $username = new Usernames();
