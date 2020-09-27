@@ -110,7 +110,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label class="control-label">Job Skills (Optional, Choose Multiple Tags)</label>
+                                        <label class="control-label">Job Skills (Choose Multiple Tags)</label>
                                         <div class="pf-field no-margin">
                                             <ul class="tags_input skill_tag_list">
                                                 <li class="tagAdd taglist">
@@ -185,7 +185,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div id="sbmt_btn">
-                                            <?= Html::submitButton('<i class="fab fa-twitter" aria-hidden="true"></i> Post Tweet', ['class' => 'btn btn-success sbt_btn']) ?>
+                                            <?= Html::submitButton('<i class="fa fa-twitter" aria-hidden="true"></i> Post Tweet', ['class' => 'btn btn-success sbt_btn']) ?>
                                         </div>
                                         <button type="button" class="button-slide btn btn-success" id="loadBtn">
                                             Loading.. <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
@@ -902,7 +902,7 @@ float:right;
     }
 }
 ");
-$this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerCssFile('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
