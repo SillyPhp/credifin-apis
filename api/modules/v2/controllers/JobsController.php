@@ -184,9 +184,9 @@ class JobsController extends ApiBaseController
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
                 if (!empty($d["icon"])) {
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
+                    $data["applicationEmployeeBenefits"][$i]["icon"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
                 } else {
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
+                    $data["applicationEmployeeBenefits"][$i]["icon"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
                 $i++;
             }
@@ -243,6 +243,36 @@ class JobsController extends ApiBaseController
                 ->asArray()
                 ->all();
             $data['process'] = $application_process;
+
+            $applied = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'a.created_by student_id'])
+                ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
+                        $c->innerJoinWith(['collegeEnc d']);
+                    }]);
+                    $b->innerJoinWith(['organizationEnc e']);
+                    $b->joinWith(['title ee' => function ($ee) {
+                        $ee->joinWith(['categoryEnc e1']);
+                        $ee->joinWith(['parentEnc e2']);
+                    }], false);
+                    $b->joinWith(['designationEnc e3'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }], false)
+                ->innerJoinWith(['createdBy f' => function ($f) {
+                    $f->innerJoinWith(['userOtherInfo g' => function ($g) {
+                        $g->joinWith(['departmentEnc g1']);
+                    }]);
+                    $f->onCondition(['f.is_deleted' => 0]);
+                }], false)
+                ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $data['application_enc_id'], 'a.is_deleted' => 0, 'e.is_deleted' => 0])
+                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
+                ->count();
+
+            $data['applied_count'] = $applied;
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);

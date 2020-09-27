@@ -615,7 +615,10 @@ class CollegeProfileController extends ApiBaseController
             if ($limit) {
                 $jobs->limit($limit);
             }
-            $result = $jobs->orderBy(['b.is_college_approved' => SORT_DESC])->asArray()
+            $result = $jobs
+//                ->orderBy(['b.is_college_approved' => SORT_DESC])
+                ->orderBy([new \yii\db\Expression('a.status = "Active" desc'), 'b.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
 
             if ($type == 'Internships') {
@@ -879,8 +882,9 @@ class CollegeProfileController extends ApiBaseController
             if ($limit) {
                 $jobs->limit($limit);
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs
+                ->orderBy([new \yii\db\Expression('b.status = "Active" desc')])
+                ->asArray()
                 ->all();
 
 
