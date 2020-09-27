@@ -38,9 +38,12 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     'id' => 'leads_form',
                 ]); ?>
                 <div class="row">
-                   <div class="col-md-12">
-                       <?= $form->field($model, 'student_name')->textInput(['placeholder'=>'Student Name','class'=>'form-control text-capitalize'])->label(false); ?>
+                   <div class="col-md-6">
+                       <?= $form->field($model, 'first_name')->textInput(['placeholder'=>'First Name','class'=>'form-control text-capitalize'])->label(false); ?>
                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'last_name')->textInput(['placeholder'=>'Last Name','class'=>'form-control text-capitalize'])->label(false); ?>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -62,8 +65,10 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'course_name')->textInput(['placeholder'=>'Course Name','class'=>'form-control text-capitalize'])->label(false); ?>
-                    </div>
+                        <div id="the-basics">
+                        <?= $form->field($model, 'course_name')->textInput(['placeholder'=>'Course Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                        </div>
+                  </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -122,6 +127,56 @@ function addAnotherField()
             textnode.innerHTML = field; 
             $('#clone_fields_parent').prepend(textnode);
 }
+getCourses();
+function getCourses()
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+        var _courses = [];
+         $.ajax({     
+            url : '/api/v3/education-loan/course-pool-list', 
+            method : 'GET',
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.course;
+                $.each(res,function(index,value) 
+                  {   
+                   _courses.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('courses could not fetch');
+                }
+            } 
+        });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_courses',
+         source: substringMatcher(_courses)
+        }); 
+    } 
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -152,5 +207,68 @@ font-size: 13px;
 .form-wrapper{
     padding: 25px 20px 0px;
 }
+.twitter-typeahead{width:100%}
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 ");
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
