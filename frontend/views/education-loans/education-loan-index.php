@@ -40,6 +40,7 @@ use yii\helpers\Url;
                    </div>
                </div>
           </section>
+
     <section class="edu-with-us">
         <div class="container">
             <div class="row mt-20">
@@ -48,7 +49,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row-mt10">
-                <div class= "col-sm-3">
+                <div class= "col-md-3 col-sm-4 col-xs-12">
                     <div class="finance">
                         <div class="finance-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
@@ -61,7 +62,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
@@ -73,19 +74,19 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-        <div class= "col-sm-3">
-            <div class="finance">
-                <div class="finance-icon">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
-                </div>
-                <div class="finance-text">Quick Sanctions</div>
-                <div class="overlay">
-                    <div class="overlay-txt">Easy and fast loan approvals for your dream education.
+            <div class= "col-md-3 col-sm-4 col-xs-12">
+                <div class="finance">
+                    <div class="finance-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
+                    </div>
+                    <div class="finance-text">Quick Sanctions</div>
+                    <div class="overlay">
+                        <div class="overlay-txt">Easy and fast loan approvals for your dream education.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>"/>
@@ -97,7 +98,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>"/>
@@ -109,7 +110,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>"/>
@@ -121,7 +122,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>"/>
@@ -133,7 +134,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class= "col-sm-3">
+            <div class= "col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>"/>
@@ -145,13 +146,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
     </section>
+
 
 <!--    <section class="edu-with-sec">-->
 <!--        <div class="container">-->
@@ -269,7 +265,7 @@ use yii\helpers\Url;
                         <p class="edu-hw-description">
                             We all know the importance of education and educational institutes in our lives as they provide
                             a variety of learning environments and spaces. Empoweryouth with its education institute loans
-                            provides financial help to the education institutes for their growth.
+                            provides financial help to the education insitutes for their growth.
                         </p>
                     </div>
                 </div>
@@ -279,7 +275,7 @@ use yii\helpers\Url;
 
     <section class="edu-with-sec">
         <div class="container">
-            <div class="row">
+            <div class="row mt-20">
                 <div class="col-md-12">
                     <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
                 </div>
@@ -487,8 +483,11 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.edu-with-us{
+    margin-bottom: 15px;
+}
 .row-mt10{
-margin-top: 15px;
+    margin-top: 15px;
 }
 .finance:hover .overlay{
 	height: 100%;
@@ -526,7 +525,6 @@ margin-top: 15px;
 	text-align: center;
 	color:#333;
 }
-
 .finance-icon{
     text-align: center;
     width: 100%;
@@ -535,7 +533,7 @@ margin-top: 15px;
     margin-top: 40px;
 }
 .finance{
-    width: 250px;
+    width: 100%;
     height: 200px;
     box-shadow: 0 0 11px -4px #999;
 	margin-bottom: 20px;
@@ -1042,9 +1040,6 @@ margin-top: 15px;
    border-style: solid;
    border-width: 0 0 5px 52px;
    border-color: #f07706;
-}
-.edu-with-us{
- padding:0px 0px 20px 0;
 }
 .edu-with-sec{
     padding:0px 0px 20px 0;

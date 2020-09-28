@@ -138,7 +138,8 @@ if ($application_name['wage_type'] == 'Fixed') {
         <?php
         Pjax::begin(['id' => 'pjax_process']);
         ?>
-        <ul class="nav nav-tabs pr-process-tab">
+        <div class="set-height">
+            <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter="*" href="#">All</a>
@@ -166,7 +167,8 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </a>
             </li>
         </ul>
-        <ul class="hiring_process_list gallery_zoom">
+        </div>
+        <ul class="hiring_process_list gallery_zoom content-stick">
             <?php
             if (!empty($fields)) {
                 foreach ($fields as $arr) {
@@ -277,6 +279,8 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             ?>
                                         </ul>
                                         <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
+                                    </div>
+                                    <div class="pref-indus">
                                         <?php
                                         $industry = [];
                                         if ($arr['createdBy']['userPreferredIndustries']) {
@@ -425,26 +429,48 @@ if ($application_name['wage_type'] == 'Fixed') {
     </div>
 <?php
 $this->registerCss('
+.pref-indus h4 {
+    font-size: 16px;
+    font-family: roboto;
+    padding:0 10px;
+}
+.pref-indus h4 span {
+    font-weight: 400;
+}
+.set-height{height:55px;}
+.sticky {
+    position: fixed;
+    top: 104px;
+    width: 83.45vw;
+    z-index: 1;
+    background: rgb(255, 255, 255);
+    border-radius: 0 0 20px 20px;
+    padding: 15px 0px 0;
+    box-shadow: 0 9px 13px rgba(147, 145, 145, 0.1);
+}
+.sticky li{
+    margin:0 !important;
+}
+.sticky + .content-stick {
+    padding-top: 55px;
+}
 .wts a{
-	color: #4AC959;
+	color: #00bf8f;
 }
 .twt a{
-	color: #00acee;
+	color: #00aced;
 }
 .mail a {
-	color: #db1102;
+	color: #b00;
 }
 .link a {
-	color: #000080;
+	color: #007bb6;
 }
 .job-det.col-md-12 {
-    background-image: url(' . Url::to('@eyAssets/images/pages/Process-Application/jaspreet.png') . '); 
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	background-position: top;
-    padding: 20px;
-    background-size: cover;
-    background-repeat: no-repeat;
+	padding: 20px;
+	background: #fdfdfd;
 }
 .j-main {
 	display: flex;
@@ -514,7 +540,7 @@ $this->registerCss('
 	color: #000;
 }
 .scd-btn a{
-	background-color: #00a0e3;
+	background-color: #ff7803;
 	color: #fff;
 	font-size: 14px;
 	font-family: roboto;
@@ -622,7 +648,13 @@ li{list-style: none;}
   display:inline-block;
   font-family:roboto;
 }
-.pr-user-skills{padding-top:20px;}
+.pr-user-skills{
+    padding-top:20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
   display:inline-block;
@@ -840,27 +872,21 @@ li{list-style: none;}
     }
 }
 @media screen and (max-width: 600px){
-    .pr-user-inner-main{
-        width:100%;
-    }
-    .pr-top-actions a{border-radius:4px;}
-    .pr-top-actions, .pr-user-actions ul{text-align:center;}
-    .pr-user-action-main{
-        width:100%;
-        border-top: 1px solid #ddd;
-        border-left: 0px;
-        height: 75px;
-    }
-    .pr-half-height{
-        padding-top: 15px;
-        width: 49%;
-        display: inline-block;
-        height: 100%;
-    }
-    .pr-half-height:first-child{
-        border-right: 1px solid #ddd;
-        border-bottom: none;
-    }
+.sticky {
+    position: relative;
+    width: auto;
+    top:0 !important;
+    z-index:1;
+    background: #fff;
+    padding:0px;
+    
+}
+.sticky li{
+    margin:0 0 15px 0 !important;
+}
+.sticky + .content-stick {
+    padding-top: 0px;
+}
     .nav.nav-tabs li {
         width: 100%;
         margin-bottom: 0px;
@@ -889,9 +915,45 @@ li{list-style: none;}
         margin-bottom:20px;
         border:none;    
     }
+    .pr-user-inner-main{
+        width:100%;
+    }
+    .pr-top-actions a{border-radius:4px;}
+    .pr-top-actions, .pr-user-actions ul{text-align:center;}
+    .pr-user-action-main{
+        width:100%;
+        border-top: 1px solid #ddd;
+        border-left: 0px;
+        height: 75px;
+    }
+    .pr-half-height{
+        padding-top: 15px;
+        width: 49%;
+        display: inline-block;
+        height: 100%;
+    }
+    .pr-half-height:first-child{
+        border-right: 1px solid #ddd;
+        border-bottom: none;
+    }
+    .pr-full-height a img{width:50px;}
+    .sticky{top:0px;}
+    .slide-btn{right:0%;left: auto;}
 }
 ');
 $script = <<<JS
+window.onscroll = function() {myFunction()};
+
+var header = document.getElementById("myHeader");
+var sticky = header.offsetTop - 55;
+
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+  } else {
+    header.classList.remove("sticky");
+  }
+}
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
      if (window.confirm("Do you really want to Delete the current Application?")) { 
@@ -960,6 +1022,7 @@ function hiring_process(){
 
 			// Change active element class
 			filter.find('a').on('click', function() {
+			    $("html, body").animate({ scrollTop: 200 }, "slow");
 				filter.find('a').parent().removeClass('active');
 				$(this).parent().addClass('active');
 				return false;
