@@ -158,10 +158,10 @@ if (!empty($total_applications)) {
                                     }
                                     ?>
                                 </a>
-                                <div class="new">
-                                    <div class="pulse"></div>
-                                    <div class="dot"></div>
-                                </div>
+<!--                                <div class="new">-->
+<!--                                    <div class="pulse"></div>-->
+<!--                                    <div class="dot"></div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>
