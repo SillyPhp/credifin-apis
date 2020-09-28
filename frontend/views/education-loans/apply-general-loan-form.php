@@ -144,7 +144,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         </select>
                                         <input type="text" class="form-control" id="collegeName" name="collegeName"
                                                placeholder="College Or University Name">
-                                        <input type="hidden">
+                                        <input type="hidden" id="selectedCollegeID">
                                         <ul class="collegeNameList" id="collegeNameList">
 
                                         </ul>
@@ -446,6 +446,10 @@ $this->registerCss('
 }
 .collegeListShow{
     display: block;
+}
+.college-names:hover{
+    background: #00a0e3;
+    color: #fff;
 }
 .position-relative{
     position: relative;
@@ -924,9 +928,16 @@ $script = <<< JS
             }
         });
     }
-    document.getElementById('collegeName').onkeyup = function() {
-      searchCollege();
-    }
+    
+    let collegeName = document.getElementById('collegeName');
+    let collegeNameList = document.getElementById('collegeNameList');
+    collegeName.onfocus = function () {
+        collegeNameList.classList.add('collegeListShow');
+        selectCollege()
+    };
+    collegeName.onkeyup = function() {
+        searchCollege();
+    };
     function searchCollege() {
         let collegeName = document.getElementById('collegeName').value; 
         let serchName = collegeName.toLowerCase();
@@ -937,21 +948,27 @@ $script = <<< JS
         for(let i = 0; i < result.length; i++){
             $('#collegeNameList').append('<li class="college-names" id="'+ result[i].id +'">'+ result[i].text +'</li>');
         }
-        
-        let collegeLi = document.querySelectorAll('.college-names');
+       selectCollege()
+    }
+    function selectCollege() {
+       let collegeLi = document.querySelectorAll('.college-names');
         console.log(collegeLi);
         for(let j = 0; j <= collegeLi.length; j++){
-            console.log('he')
             collegeLi[j].addEventListener('click', function() {
-              selectCollege();
+                let clickedElem = event.currentTarget;
+                let elemId = clickedElem.getAttribute('id');
+                let elemText = clickedElem.innerText;
+                console.log(elemId, elemText);
+                
+                let hiddenInput = document.getElementById('selectedCollegeID');
+                hiddenInput.value = elemId;
+                collegeName.value = elemText;
+                
+                collegeNameList.classList.remove('collegeListShow');
             })
         }
     }
-    
-    function selectCollege() {
-        event.currentTarget;
-    }
-    
+
     function getCountries() { 
         $.ajax({     
             url : '/api/v3/countries-list/get-countries-list', 
@@ -1596,7 +1613,7 @@ $this->registerJs($script);
         collegeName.onfocus = function () {
             collegeNameList.classList.add('collegeListShow');
         }
-        // collegeName.onfocusout = function () {
+        // collegeName.onblur = function () {
         //     collegeNameList.classList.remove('collegeListShow');
         // }
     </script>
