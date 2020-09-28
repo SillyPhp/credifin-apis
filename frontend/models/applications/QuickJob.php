@@ -17,7 +17,7 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-//use common\models\RandomColors;
+use common\models\RandomColors;
 use common\models\Utilities;
 
 class QuickJob extends Model
@@ -162,7 +162,7 @@ class QuickJob extends Model
             $model->website = null;
             $model->name = $this->company_name;
             $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            $model->initials_color = '#686f7a';
+            $model->initials_color = RandomColors::one();
             $model->status = 1;
             if ($model->save()) {
                 $username = new Usernames();

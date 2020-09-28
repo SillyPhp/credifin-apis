@@ -16,6 +16,7 @@ use common\models\TwitterJobs;
 use common\models\TwitterPlacementCities;
 use common\models\UnclaimedOrganizations;
 use frontend\models\twitterjobs\TwitterJobsForm;
+use yii\widgets\ActiveForm;
 
 class TweetsController extends Controller
 {
@@ -69,13 +70,24 @@ class TweetsController extends Controller
         $primary_cat = $data->getPrimaryFields();
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            if (!$model->validate()){
+                return [
+                    'status' => 400,
+                    'message' => json_encode(ActiveForm::validate($model)),
+                    'title' => 'Error',
+                ];
+            }
             if ($model->save($type)) {
                 return [
-                    'status' => true,
+                    'status' => 200,
+                    'message' => 'Success',
+                    'title' => 'Success',
                 ];
             } else {
                 return [
-                    'status' => false,
+                    'status' => 400,
+                    'message' => 'Internal Server Error',
+                    'title' => 'Error',
                 ];
             }
         }
@@ -91,6 +103,13 @@ class TweetsController extends Controller
         $primary_cat = $data->getPrimaryFields();
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            if (!$model->validate()){
+                return [
+                    'status' => 'error',
+                    'message' => json_encode(ActiveForm::validate($model)),
+                    'title' => 'Error',
+                ];
+            }
             if ($model->save($type)) {
                 return [
                     'status' => true,

@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
 $image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
 $this->title = "Get Admission In Your Dream College";
 $keywords = "empower youth, college, university, admission, education loan";
@@ -63,7 +64,8 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <h4>Loan Starting from as low as 9% p.a.</h4>
-                    <h3><span class="colorOrange">Interest Free Loans</span> available for <span class="colorOrange">select Colleges/Universities</span></h3>
+                    <h3><span class="colorOrange">Interest Free Loans</span> available for <span class="colorOrange">select Colleges/Universities</span>
+                    </h3>
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
@@ -80,12 +82,12 @@ $this->params['seo_tags'] = [
                         ]); ?>
                         <div class="form-group tab" data-id="step1">
                             <div class="form-flex">
-                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'First Name'])->label(false); ?>
-                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'Last Name'])->label(false); ?>
+                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'First Name', 'data-field' => 'first_name', 'data-type' => 'leadApplication'])->label(false); ?>
+                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Last Name', 'data-field' => 'last_name', 'data-type' => 'leadApplication'])->label(false); ?>
                             </div>
 
                             <div class="form-flex">
-                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field', 'placeholder' => 'Email'])->label(false); ?>
+                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Email', 'data-field' => 'student_email', 'data-type' => 'leadApplication'])->label(false); ?>
                                 <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput()->widget(PhoneInput::className(), [
                                     'jsOptions' => [
                                         'allowExtensions' => false,
@@ -93,13 +95,15 @@ $this->params['seo_tags'] = [
                                         'nationalMode' => false,
                                     ],
                                     'options' => [
-                                        'class' => 'form-control req_field phoneInput'
+                                        'class' => 'form-control req_field blurInput phoneInput',
+                                        'data-field' => 'student_mobile_number',
+                                        'data-type' => 'leadApplication'
                                     ]
                                 ])->label(false); ?>
                             </div>
 
                             <div class="form-flex">
-                                <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize req_field', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name'])->label(false); ?>
+                                <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize req_field blurInput', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name', 'data-field' => 'course_name', 'data-type' => 'leadApplication'])->label(false); ?>
                             </div>
                         </div>
 
@@ -139,20 +143,20 @@ $this->params['seo_tags'] = [
                             </div>
                             <div class="form-group" id="appliedYes">
                                 <div class="form-flex">
-                                    <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name'])->label(false); ?>
+                                    <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name', 'data-field' => 'college_name', 'data-type' => 'leadApplication'])->label(false); ?>
                                 </div>
                             </div>
 
                             <div class="form-group" id="appliedNo">
                                 <p>Please Mention Your Three Preferred Colleges</p>
                                 <div class="form-flex">
-                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1'])->label(false); ?>
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'first'])->label(false); ?>
                                 </div>
                                 <div class="form-flex">
-                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2'])->label(false); ?>
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'second'])->label(false); ?>
                                 </div>
                                 <div class="form-flex">
-                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3'])->label(false); ?>
+                                    <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'third'])->label(false); ?>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -191,7 +195,7 @@ $this->params['seo_tags'] = [
                                 </div>
                                 <div id="loanFields">
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control', 'placeholder' => 'Loan Amount', 'type' => 'text','autocomplete' => 'off', 'id' => 'amount'])->label(false); ?>
+                                        <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control blurInput', 'placeholder' => 'Loan Amount', 'type' => 'text', 'autocomplete' => 'off', 'id' => 'amount', 'data-field' => 'loan_amount', 'data-type' => 'leadApplication'])->label(false); ?>
                                         <input type="text" name="amountValidation" style="display:none;">
                                     </div>
                                 </div>
@@ -625,6 +629,34 @@ function destroyMask(string){
 	return string.replace(/\D/g,'').substring(0, 8);
 }
 
+
+  $(document).on('blur','.blurInput',function (){
+      var t = $(this);
+      var data = {};
+      var value = t.val();
+      if(value != ""){
+            var sequence = t.attr('data-sequence');
+            data['fieldName'] = t.attr('data-field');
+            data['type'] = t.attr('data-type');
+            data['value'] = t.val();
+            data['lead_app_id'] = localStorage.getItem('lead_app_id');
+            if(data['type'] == 'leadCollegePreference'){
+              data['sequence'] = sequence;
+            }
+          // console.log(id+" "+fieldName+" "+type+" "+sequence+" "+value);
+          $.ajax({
+                url: '/site/about-us',
+                method: 'POST',
+                data: data,
+                'success': function(res) {
+                    if (res.status == 200){
+                        localStorage.setItem('lead_app_id', res.enc_id);
+                    }
+                }
+          });
+      }
+  });
+
   $(document).on('click','input[name = "appliedCollege"]',function (){
       var t = $(this);
       var id = t.attr('id');
@@ -833,6 +865,7 @@ function getCourses()
                             confirmButtonText: false,
                             showConfirmButton: false,
                         });
+                        localStorage.removeItem('lead_app_id');
                     },
                     success: function (response) {
                         btn.prop('disabled', false);
@@ -878,9 +911,9 @@ function getCourses()
                     },
                     success: function (response) {
                         btn.prop('disabled', false);
-                        form[0].reset();
-                        $('#submitBtn').hide();
                         if (response.status == 200) {
+                            form[0].reset();
+                            $('#submitBtn').hide();
                             swal({
                                 title: response.title,
                                 text: response.message,
@@ -891,6 +924,7 @@ function getCourses()
                                 closeOnConfirm: false,
                                 closeOnCancel: false
                             });
+                            localStorage.removeItem('lead_app_id');
                            setTimeout(function(){
                               window.location.reload();
                             },2000);
