@@ -125,17 +125,21 @@ class OrganizationList
                 $transaction->rollBack();
                 return false;
             }
-        }
-        catch (\Exception $exception) {
-            $transaction->rollBack();
-            return false;
-        }
-        if ($this->flag) {
+
+       if ($this->flag) {
             $transaction->commit();
             return [
                 'is_claim' => false,
                 'id' => $model->organization_enc_id
             ];
+        }else {
+           $transaction->rollBack();
+           return false;
+       }
+     }
+        catch (\Exception $exception) {
+            $transaction->rollBack();
+            return false;
         }
     }
 

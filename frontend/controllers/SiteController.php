@@ -10,16 +10,12 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
-use common\models\ExternalNewsUpdate;
-use common\models\LeadsApplications;
-use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
 use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
-use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
@@ -60,6 +56,8 @@ use common\models\Users;
 use yii\web\UploadedFile;
 use frontend\models\account\locations\OrganizationLocationForm;
 use frontend\models\questionnaire\QuestionnaireForm;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 
 /**
  * Site controller
@@ -337,7 +335,8 @@ class SiteController extends Controller
                     'enc_id' => $enc_id,
                 ];
             } else {
-                print_r($model->getErrors());exit();
+                print_r($model->getErrors());
+                exit();
             }
         }
         return $this->render('about-us');
