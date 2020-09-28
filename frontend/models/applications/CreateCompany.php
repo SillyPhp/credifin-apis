@@ -5,6 +5,7 @@ use common\models\Usernames;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use common\models\RandomColors;
 use common\models\Utilities;
 
 class CreateCompany extends Model
@@ -56,7 +57,7 @@ class CreateCompany extends Model
       $model->slug = $slug_replace_str;
       $model->name = $this->name;
       $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id : null);
-      $model->initials_color = '#d25d8e';
+      $model->initials_color = RandomColors::one();
       $model->status = 1;
       if (!empty($this->logo)):
       $model->logo = $utilitiesModel->encrypt() . '.' . $this->logo->extension;

@@ -46,7 +46,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <?php if (Yii::$app->user->identity->organization): ?>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company','disabled'=>true,'value'=>Yii::$app->user->identity->organization->name])->label(false); ?>
+                                        <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company','disabled'=>true,'value'=>Yii::$app->user->identity->organization->name])->label(false); ?>
                                     </div>
                                 </div>
                             <?php else: ?>
@@ -57,7 +57,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                             <span></span>
                                             <span></span>
                                         </div>
-                                        <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company'])->label(false); ?>
+                                        <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company'])->label(false); ?>
                                     </div>
                                     <div class="col-md-3">
                                         <?= Html::a('Add New Company','#',[
@@ -74,7 +74,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                         <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")? "Job" : "Internship").' Profile'])->label(false); ?>
                                     </div>
                                     <div class="col-lg-6">
-                                        <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control','placeholder'=>''.(($type=="Jobs")? "Job" : "Internship").' Title'])->label(false); ?>
+                                        <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control text-capitalize','placeholder'=>''.(($type=="Jobs")? "Job" : "Internship").' Title'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -82,7 +82,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                         <?= $form->field($model, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work From Home' => 'Work From Home'])->label(false); ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'contact_email')->textInput(['placeholder'=>'Contact Email','id'=>'email'])->label(false); ?>
+                                        <?= $form->field($model, 'contact_email')->textInput(['placeholder'=>'Contact Email','class'=>'form-control text-lowercase','id'=>'email'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -110,6 +110,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
+                                        <label class="control-label">Job Skills (Choose Multiple Tags)</label>
                                         <div class="pf-field no-margin">
                                             <ul class="tags_input skill_tag_list">
                                                 <li class="tagAdd taglist">
@@ -178,14 +179,17 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'twitter_url')->textInput(['placeholder'=>'Twitter URL','id'=>'url'])->label(false); ?>
+                                        <?= $form->field($model, 'twitter_url')->textInput(['placeholder'=>'Twitter Post URL','id'=>'url','class'=>'form-control text-lowercase'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div id="sbmt_btn">
-                                            <?= Html::submitButton('<i class="fab fa-twitter" aria-hidden="true"></i> Post Tweet', ['class' => 'btn btn-success sbt_btn']) ?>
+                                            <?= Html::submitButton('<i class="fa fa-twitter" aria-hidden="true"></i> Post Tweet', ['class' => 'btn btn-success sbt_btn']) ?>
                                         </div>
+                                        <button type="button" class="button-slide btn btn-success" id="loadBtn">
+                                            Loading.. <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <?php ActiveForm::end(); ?>
@@ -282,8 +286,8 @@ $(document).on('submit','#twitter_form',function(e) {
             },
         dataType:"jsonp",
         beforeSend: function () {
-             $('.sbt_btn').html('Post Tweet <i class="fas fa-circle-notch fa-spin fa-fw"></i>');
-             $('.sbt_btn').attr('disabled','disabled');
+              $('.sbt_btn').hide();
+              $('#loadBtn').show();
         },
         success: function (response,textStatus,xhr) {
             if (xhr.status===200) {
@@ -345,8 +349,8 @@ $('#title').typeahead(null, {
 return true;
 }
 function btn_setting() {
-  $('.sbt_btn').removeAttr('disabled');
-  $('.sbt_btn').html('<i class="fa fa-twitter" aria-hidden="true"></i> Post Tweet');
+  $('.sbt_btn').show();
+  $('#loadBtn').hide();
 }
  var status;
 function data_submit(name,html) {
@@ -374,22 +378,24 @@ function data_submit(name,html) {
           max_salary:$('#max_salary').val(),
           },
       success:function(response) {
-       if (response.status)
+       if (response.status==200)
            {
-                     $('form').trigger('reset');
-                        btn_setting();
-                        btn_setting();
-                        btn_setting();
+               
+                $('form').trigger('reset');
                 $('.m-modal, .m-cover').removeClass("hidden");
                 $('.m-modal').addClass("zoom");
            }
        else
            {
-               toastr.error('Internal Server Error', 'Error');
-               btn_setting();
+               toastr.error(response.message, response.title);
            }
+       btn_setting();
       }
-  })
+  }).fail(function(data, textStatus, xhr) {
+                 //This shows status code eg. 403
+                 toastr.error('Internal Server Failed', 'Error');
+                 btn_setting(); 
+            });
 
 }
 $(document).on('submit','#create_company',function(e)
@@ -466,6 +472,10 @@ $(".close-m-mo").on("click", function() {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+#loadBtn{display:none}
+.control-label{
+font-family: 'Roboto', sans-serif !important;
+}
 body{
     background-size:cover;
 }
@@ -892,7 +902,9 @@ float:right;
     }
 }
 ");
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerCssFile('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
