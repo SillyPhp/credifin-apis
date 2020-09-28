@@ -9,6 +9,7 @@ namespace common\models;
  * @property string $preference_enc_id preference enc id of college
  * @property string $application_enc_id Encrypted Key
  * @property string $college_name
+ * @property string $sequence
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_by
@@ -37,6 +38,7 @@ class LeadsCollegePreference extends \yii\db\ActiveRecord
             [['preference_enc_id', 'application_enc_id', 'college_name'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['preference_enc_id', 'application_enc_id', 'college_name', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['sequence'], 'string', 'max' => 50],
             [['preference_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

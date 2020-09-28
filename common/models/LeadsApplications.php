@@ -8,7 +8,8 @@ namespace common\models;
  * @property int $id Primary Key
  * @property string $application_enc_id Encrypted Key
  * @property string $application_number application_number
- * @property string $student_name
+ * @property string $first_name
+ * @property string $last_name
  * @property string $student_mobile_number
  * @property string $student_email
  * @property int $has_taken_addmission o as no 1 as yes
@@ -25,7 +26,7 @@ namespace common\models;
  *
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
- * @property LeadsCollegePreference $leadsCollegePreference
+ * @property LeadsCollegePreference[] $leadsCollegePreferences
  * @property LeadsParentInformation[] $leadsParentInformations
  */
 class LeadsApplications extends \yii\db\ActiveRecord
@@ -44,13 +45,13 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'student_name'], 'required'],
+            [['application_enc_id', 'application_number'], 'required'],
             [['has_taken_addmission', 'application_fee_recieved', 'filled_by'], 'integer'],
             [['loan_amount', 'course_fee_annual'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['application_enc_id', 'application_number', 'student_email', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['student_name', 'college_name', 'course_name'], 'string', 'max' => 200],
+            [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['student_mobile_number'], 'string', 'max' => 15],
+            [['college_name', 'course_name'], 'string', 'max' => 200],
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -77,9 +78,9 @@ class LeadsApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLeadsCollegePreference()
+    public function getLeadsCollegePreferences()
     {
-        return $this->hasOne(LeadsCollegePreference::className(), ['application_enc_id' => 'application_enc_id']);
+        return $this->hasMany(LeadsCollegePreference::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**

@@ -253,7 +253,7 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -310,7 +310,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+           // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
 
@@ -538,7 +538,6 @@ class ApplicationCards
                 $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
             }
         }
-
         $result = null;
         if (isset($options['similar_jobs'])) {
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
@@ -997,50 +996,6 @@ class ApplicationCards
             ->orderBy(['id' => SORT_DESC])
             ->all();
         return $result;
-    }
-    private static function _gitjobs($page,$keyword,$loc)
-    {
-        if (!empty($keyword) || !empty($loc)) {
-            $url = "https://jobs.github.com/positions.json?description=" . $keyword . "&location=" . $loc."&page=".$page;
-        }
-        else
-        {
-            $url = "https://jobs.github.com/positions.json?page=".$page;
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $header = [
-            'Accept: application/json, text/plain, */*',
-            'Content-Type: application/json;charset=utf-8',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        $result = json_decode($result,true);
-        if ($result) {
-            array_walk($result, function (&$item) {
-                $item['created_on'] = $item['created_at'];
-                $item['organization_name'] = $item['company'];
-                $item['logo'] = $item['company_logo'];
-                $item['organization_link'] = $item['company_url'];
-                $item['link'] = '/jobs/api/'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))).'/'.$item['id'];
-                $item['city'] = $item['location'];
-                $item['sal'] = 1;
-                unset($item['created_at']);
-                unset($item['company']);
-                unset($item['company_logo']);
-                unset($item['company_url']);
-                unset($item['url']);
-                unset($item['description']);
-                unset($item['location']);
-            });
-            return $result;
-        }
-        else
-        {
-            return $result = [];
-        }
     }
     public static function makeSQL_search_pattern($search)
     {
