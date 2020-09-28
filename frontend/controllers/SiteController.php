@@ -337,7 +337,8 @@ class SiteController extends Controller
                     'enc_id' => $enc_id,
                 ];
             } else {
-                print_r($model->getErrors());exit();
+                print_r($model->getErrors());
+                exit();
             }
         }
         return $this->render('about-us');
@@ -1160,7 +1161,8 @@ class SiteController extends Controller
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                return $model->save();
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
             }
         }
         if (Yii::$app->request->isAjax) {

@@ -612,7 +612,6 @@ label {
 }
 ');
 $script = <<<JS
-//java script start //
 
 $("input[name='amount']").on("keyup", function(){
     $("input[name='amountValidation']").val(destroyMask(this.value));
@@ -850,7 +849,9 @@ function getCourses()
             }
            if (inputData){
                var form = $('#application_form');
-               var data = form.serialize();
+               var data = form.serializeArray();
+               var lead_id = localStorage.getItem('lead_app_id');
+               data.push({name: 'lead_id', value: lead_id});
                $.ajax({
                     type: 'POST',
                     data: data,
@@ -900,7 +901,9 @@ function getCourses()
            }
            if (inputData){
                var form = $('#application_form');
-               var data = form.serialize();
+               var data = form.serializeArray();
+               var lead_id = localStorage.getItem('lead_app_id');
+               data.push({name: 'lead_id', value: lead_id});
                $.ajax({
                     type: 'POST',
                     data: data,
