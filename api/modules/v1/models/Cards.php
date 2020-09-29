@@ -436,6 +436,8 @@ class Cards
                     } else {
                         $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
                     }
+                } else {
+                    $result[$i]['salary'] = "Negotiable";
                 }
             }
             else
