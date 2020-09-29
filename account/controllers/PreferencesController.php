@@ -4,17 +4,30 @@ namespace account\controllers;
 
 use account\models\preferences\CandidatePreferenceForm;
 use account\models\preferences\CandidateInternshipPreferenceForm;
+use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
 use common\models\Categories;
+use common\models\EmailLogs;
+use common\models\EmployerApplications;
 use common\models\Industries;
+use common\models\Users;
+use common\models\Utilities;
 use yii\web\HttpException;
 use common\models\UserPreferences;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\db\Query;
 
 class PreferencesController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (!Yii::$app->user->identity->organization) {
@@ -26,15 +39,16 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
 
             $internprimaryfields = Categories::find()
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
@@ -295,4 +309,5 @@ class PreferencesController extends Controller
 
         }
     }
+
 }

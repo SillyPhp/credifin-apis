@@ -21,6 +21,7 @@ AppAssets::register($this);
     <?= Html::csrfMetaTags(); ?>
     <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
     <?php
     if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
@@ -87,7 +88,7 @@ AppAssets::register($this);
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
-                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/employers">Employer Zone</a>
                         <a href="/signup/organization" class="org-signup">Signup as Company</a>
                         <a href="/signup/individual">Signup as Candidate</a>
                     </div>
@@ -111,12 +112,13 @@ AppAssets::register($this);
                                         <?php
                                     }
                                     ?>
-                                    <span class="logo-beta">Beta</span>
+<!--                                    <span class="logo-beta">Beta</span>-->
                                 </a>
                             </div>
                             <div class="ey-menu-main">
                                 <?= $this->render('@common/widgets/top-header-beta', [
-                                    'for' => 'Frontend'
+                                    'for' => 'Frontend',
+                                    'data' => $this->params['sub_header']
                                 ]); ?>
                             </div>
                             <div class="ey-nav-actions">
@@ -231,7 +233,9 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile'); ?>
+                            <?= $this->render('@common/widgets/top-header-mobile',[
+                                'data' => $this->params['sub_header']
+                            ]); ?>
                         </div>
                     </div>
                 </div>
@@ -240,9 +244,12 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-        <div id="page-loading" class="page-loading">
-            <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+<!--        <div id="page-loading" class="page-loading">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+<!--        </div>-->
+        <div id="auth_loading_img">
         </div>
+        <div class="auth_fader"></div>
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -309,6 +316,7 @@ AppAssets::register($this);
                                 <li><a href="<?= "/careers"; ?>">Careers</a></li>
                                 <li><a href="javascript:;" class="partnerWith">Partner With Us</a></li>
                                 <li><a href="javascript:;" class="giveFeedback">Feedback</a></li>
+                                <li><a href="<?= "/our-partners"; ?>">Our Partners</a></li>
                             </ul>
                         </div>
                     </div>
@@ -339,14 +347,6 @@ AppAssets::register($this);
                                     </ul>
                                 </div>
                             </div>
-                            <!--                            <div class="col-md-12 col-sm-12">-->
-                            <!--                                <div class="quick-btns">-->
-                            <!--                                    <ul class="qb">-->
-                            <!--                                        <li><a href="-->
-                            <? //= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
-                            <!--                                    </ul>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -368,7 +368,7 @@ AppAssets::register($this);
                 </div>
                 <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
-                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
+                        <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
                            title='Download Empower Youth App on Google Play'>
                             <img alt='Get it on Google Play'
                                  src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
@@ -404,8 +404,96 @@ AppAssets::register($this);
     }
     ?>
 </div>
+<script type="text/javascript">
+    function handleCredentialResponse(response) {
+        if (response.credential){
+            var token = parseJwt(response.credential);
+            authLogin(token);
+        }
+        else{
+            alert('Server Error');
+        }
+
+    }
+
+    function parseJwt (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    };
+    function authLogin(token) {
+        $.ajax({
+            url:'/site/one-tap-auth',
+            method:'POST',
+            data:token,
+            beforeSend:function(e)
+            {
+                $('#auth_loading_img').addClass('show');
+                $('.auth_fader').css('display','block');
+            },
+            success:function (e) {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
+                if (response.status == 201) {
+                    toastr.error(response.message, response.title);
+                }
+            },
+            complete: function() {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
+            }
+        })
+    }
+</script>
 <?php
 $this->registerCss('
+#auth_loading_img
+{
+  display:none;
+}
+ 
+#auth_loading_img.show
+{
+   z-index:100;
+   position: fixed;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    right: 0;
+    border: 6px solid #fff;
+    border-radius: 50%;
+    border-top: 6px solid #00a0e3;
+    width: 60px;
+    height: 60px;
+   -webkit-animation: spin 2s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.auth_fader{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  display:none;
+  z-index:99;
+  background-color:#fff;
+  opacity:0.7;
+}
 .footer-bottom-links a{
     color:#fff;
     margin-right: 20px;
@@ -508,15 +596,15 @@ $this->registerCss('
 }
 
 .secondary-top-header{
-    height:30px;
-    margin-top:-32px;
+    height:32px;
+    margin-top:-34px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top: 0px;
+    margin-top: -2px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -535,8 +623,8 @@ $this->registerCss('
 }
 .secondary-top-header-right a{
     float: right;
-    height: 30px;
-    line-height: 30px;
+    height: 32px;
+    line-height: 32px;
     padding: 0px 10px;
     margin-left: 5px;
 }
@@ -556,6 +644,13 @@ $this->registerCss('
 @media screen and (max-width: 1015px) and (min-width: 0px) {
     .secondary-top-header-left{display:none;}
 }
+.secondary-top-header-right a:first-child{
+    background-color: #f07704;
+}
+.secondary-top-header-right a:first-child:hover{
+    color:#fff !important;
+    background-color: #dc6b00;
+}
 .send_mail{
     word-wrap: break-word;
     display:block;
@@ -572,30 +667,6 @@ $this->registerCss('
     color:#00a0e3 !important;
     transition:.3s all;
 }
-.feed-btn a{
-    border:2px solid #00a0e3;
-    color:#00a0e3;
-    padding:5px 10px;
-    border-radius:20px;
-    margin-top:20px !important;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
- .feed-btn a:hover{
-    color:#fff;
-    background:#00a0e3;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
-.menuzord-brand{
-    position:relative;
- }
 .logo-beta{
     font-size: 11px;
     position: absolute;
@@ -609,12 +680,6 @@ $this->registerCss('
      bottom: -2px; 
      right: -15px;
      color: #444;
- }
-.add-padding nav .menuzord-brand .logo_beta{
-    color:#fff;
- }
-.add-padding nav .menuzord-brand .logo-beta{
-    color:#fff;
  }
 .page-loading {
     background-color: #ffffff;
@@ -661,12 +726,6 @@ $this->registerCss('
     .my-profiles-sec span{
         margin-top:1px !important;
     }
-    .menuzord .showhide em{
-        background-color: #777;
-    }
-    .add-padding .menuzord .showhide em{
-        background-color:#fff;
-    }
 }
 /*footer css*/
 .useful-links ul li{
@@ -694,9 +753,6 @@ $this->registerCss('
 } 
 .footer-widget{
     margin: 0 auto;
-}
-.icons-ss{
-    padding-top:15px;
 }
 .widget .styled-icons li a {
     margin-bottom: 0;
@@ -731,9 +787,6 @@ $this->registerCss('
     margin-top:7px;
   }
 /*footer-css-ends*/
-.fullheight {
-    background-size: contain !important;
-}
 .main-content{
     min-height: 70%;
     min-height: -webkit-calc(100vh - 355px);
@@ -767,10 +820,6 @@ $this->registerCss('
         text-align: left !important;
     }
 }
-.menuzord-brand img{
-    max-height:42px;
-    margin-left:20px;
-}
 .my-profiles-sec span{
     line-height:normal;
     margin-top:5px;
@@ -791,18 +840,6 @@ $this->registerCss('
     -ms-border-radius: 50% !important;
     -o-border-radius: 50% !important;
     border-radius: 50% !important;
-}
-.footer-list li{
-    float: left;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0px;
-    position: relative;
-    padding-left: 10px;
-    line-height: 21px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #888888;
 }
 @media only screen and (max-width: 768px){
     .footer-widget {
@@ -874,13 +911,20 @@ if (!$this->params['header_dark']) {
             }); ");
 }
 $this->registerJs('
-$(".page-loading").fadeOut();
+//$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
+      }
+}); 
+$(".ey-sub-nav-items > li > a").each(function(){
+    var attr = $(this).attr("href");
+      if (attr === thispageurl) {
+        $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
+        return false;
       }
 });
 
@@ -897,17 +941,6 @@ $(document).on("click", ".giveFeedback", function(e){
     $(".feedback-main").load("/site/send-feedback");
 });
 ');
-$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-$this->registerJs('
-            WebFont.load({
-                    google: {
-                            "families": ["Lobster", "Open+Sans", "Roboto"]
-                    },
-                    active: function() {
-                            sessionStorage.fonts = true;
-                    }
-            });
-       ', View::POS_HEAD);
 ?>
 <?php $this->endBody(); ?>
 </body>

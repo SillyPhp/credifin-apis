@@ -5,6 +5,7 @@ use common\models\Usernames;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use common\models\RandomColors;
 use common\models\Utilities;
 
 class CreateCompany extends Model
@@ -16,6 +17,7 @@ class CreateCompany extends Model
   public $type;
   public $contact;
   public $description;
+  public $verifyCode;
 
   public function formName()
   {
@@ -32,6 +34,7 @@ class CreateCompany extends Model
           [['contact'],'string','max'=>15],
           [['name','email','website','description'],'trim'],
           ['email','email'],
+          ['verifyCode', 'captcha'],
           [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpeg, jpg, gif'],
       ];
   }
@@ -54,7 +57,7 @@ class CreateCompany extends Model
       $model->slug = $slug_replace_str;
       $model->name = $this->name;
       $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id : null);
-      $model->initials_color = '#73ef9c';
+      $model->initials_color = RandomColors::one();
       $model->status = 1;
       if (!empty($this->logo)):
       $model->logo = $utilitiesModel->encrypt() . '.' . $this->logo->extension;

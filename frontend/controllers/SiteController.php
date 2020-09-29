@@ -2,15 +2,26 @@
 
 namespace frontend\controllers;
 
+use account\models\applications\ApplicationForm;
+use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
-use common\models\CareerAdvisePosts;
 use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
+use common\models\SocialGroups;
+use common\models\SocialPlatforms;
 use common\models\States;
+use frontend\models\accounts\CredentialsSetup;
+use frontend\models\accounts\LoginForm;
+use frontend\models\accounts\WidgetSignUpForm;
+use frontend\models\AdmissionForm;
+use frontend\models\MentorshipEnquiryForm;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
+use frontend\models\SignUpCandidateForm;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\base\InvalidParamException;
@@ -21,7 +32,6 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use common\models\PasswordResetRequestForm;
 use common\models\ResetPasswordForm;
-use frontend\models\applications\ApplicationCards;
 use common\models\AppliedApplications;
 use frontend\models\ContactForm;
 use frontend\models\CareerForm;
@@ -46,6 +56,8 @@ use common\models\Users;
 use yii\web\UploadedFile;
 use frontend\models\account\locations\OrganizationLocationForm;
 use frontend\models\questionnaire\QuestionnaireForm;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 
 /**
  * Site controller
@@ -56,10 +68,85 @@ class SiteController extends Controller
     public function actions()
     {
         return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+                'successUrl' => 'oauth-verify',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
         ];
+    }
+
+    public function onAuthSuccess($client)
+    {
+        (new AuthHandler($client))->handle();
+    }
+
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost) {
+            if ((new OneTapAuth())->handle(Yii::$app->request->post())) {
+                return $this->redirect('/site/oauth-verify');
+            } else {
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
+
+    public function actionOauthVerify()
+    {
+        $this->layout = 'main-secondary';
+        $credentialsSetup = new CredentialsSetup();
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
+            return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
+        } else {
+            $session = Yii::$app->session;
+            $o = $session->get('current_url');
+            if ($o):
+                return $this->redirect($o);
+            else :
+                return $this->redirect('/');
+            endif;
+        }
+    }
+
+    public function actionPostCredentials()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if ($credentialsSetup->load(Yii::$app->request->post())) {
+            if ($credentialsSetup->save()) {
+                $session = Yii::$app->session;
+                $o = $session->get('current_url');
+                if ($o):
+                    return $this->redirect($o);
+                else :
+                    return $this->redirect('/');
+                endif;
+            }
+        }
+    }
+
+    public function actionValidateUser()
+    {
+        $credentialsSetup = new CredentialsSetup();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $credentialsSetup->load(Yii::$app->request->post());
+            if ($credentialsSetup->username === Yii::$app->user->identity->username) {
+                return [];
+            }
+            return ActiveForm::validate($credentialsSetup);
+        }
     }
 
     public function beforeAction($action)
@@ -68,162 +155,22 @@ class SiteController extends Controller
         if ($route === "") {
             $route = "/";
         }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute($route, $this);
         return parent::beforeAction($action);
     }
 
     public function actionIndex()
     {
-        $job_profiles = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function ($z) {
-                $z->groupBy(['d.category_enc_id']);
-            }], false)
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active'
-                ]);
-                $x->joinWith(['applicationTypeEnc c' => function ($y) {
-                    $y->andWhere(['c.name' => 'Jobs']);
-                }], false);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])->asArray()
-            ->all();
-        $internship_profiles = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function ($z) {
-                $z->groupBy(['d.category_enc_id']);
-            }])
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active'
-                ]);
-                $x->joinWith(['applicationTypeEnc c' => function ($y) {
-                    $y->andWhere(['c.name' => 'Internships']);
-                }], false);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])->asArray()
-            ->all();
-        $search_words = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['categoryEnc d' => function ($y) {
-                $y->groupBy(['d.category_enc_id']);
-            }], false)
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active',
-                ]);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])
-            ->asArray()
-            ->all();
-
-        $cities = EmployerApplications::find()
-            ->alias('a')
-            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
-            ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
-                $x->joinWith(['locationEnc c' => function ($x) {
-                    $x->joinWith(['cityEnc d']);
-                }], false);
-            }], false)
-            ->joinWith(['applicationTypeEnc e'], false)
-            ->where([
-                'a.is_deleted' => 0
-            ])
-            ->orderBy(['total' => SORT_DESC])
-            ->groupBy(['c.city_enc_id'])
-            ->asArray()
-            ->all();
-
-        $featured_jobs = ApplicationCards::jobs([
-            "page" => 1,
-            "limit" => 6
-        ]);
-
-        $other_jobs = (new \yii\db\Query())
-            ->distinct()
-            ->from(States::tableName() . 'as a')
-            ->select([
-                'a.state_enc_id',
-                'b.country_enc_id',
-                'c.city_enc_id',
-                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
-                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
-            ])
-            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
-            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
-            ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
-            ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
-            ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
-            ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
-            ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
-//        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
-        $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
-
-
-//        $quick_jobs_city_wise = $other_jobs_city_wise->andWhere(['e.unclaimed_organization_enc_id' => null, 'e.interview_process_enc_id' => null]);
-//        $mis_jobs_city_wise = $other_jobs_city_wise->andWhere(['g.user_of' => 'MIS'])->andWhere(['not', ['e.unclaimed_organization_enc_id' => null]]);
-//        $free_jobs_city_wise = $other_jobs_city_wise->andWhere(['not', ['g.user_of' => 'MIS']])->andWhere(['not', ['e.unclaimed_organization_enc_id' => null]]);
-
-        $ai_jobs = (new \yii\db\Query())
-            ->distinct()
-            ->from(States::tableName() . 'as a')
-            ->select([
-                'a.state_enc_id',
-                'b.country_enc_id',
-                'c.city_enc_id',
-                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
-                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
-            ])
-            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
-            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
-            ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
-            ->andWhere(['j.is_deleted' => 0, 'l.is_deleted' => 0]);
-//        $ai_jobs_state_wise = $ai_jobs->addSelect('a.name state_name')->groupBy('a.id');
-        $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
-        $cities_jobs = (new \yii\db\Query())
-            ->from([
-                $other_jobs_city_wise->union($ai_jobs_city_wise),
-            ])
-            ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
-            ->groupBy('city_enc_id')
-            ->orderBy(['jobs' => SORT_DESC])
-            ->limit(4)
-            ->all();
-
-        $a = $this->_getTweets(null, null, "Jobs", 4, "");
-        $b = $this->_getTweets(null, null, "Internships", 4, "");
-        $tweets = array_merge($a, $b);
-
-        return $this->render('index', [
-            'job_profiles' => $job_profiles,
-            'internship_profiles' => $internship_profiles,
-            'search_words' => $search_words,
-            'tweets' => $tweets,
-            'cities' => $cities,
-            'cities_jobs' => $cities_jobs,
-            'featured_jobs' => $featured_jobs
-        ]);
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
+            return Yii::$app->runAction('employers/index');
+        }
+        return $this->render('index', ['model' => $model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -307,13 +254,14 @@ class SiteController extends Controller
                         'message' => 'An error has occurred. Please try again.',
                     ];
                 }
-            }else{
-                return $this->renderAjax("/widgets/feedback-form",[
+            } else {
+                return $this->renderAjax("/widgets/feedback-form", [
                     "feedbackFormModel" => $feedbackFormModel,
                 ]);
             }
         }
     }
+
     public function actionPartnerWithUs()
     {
         if (Yii::$app->request->isAjax) {
@@ -344,11 +292,102 @@ class SiteController extends Controller
 
     public function actionAboutUs()
     {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $field_name = $params['fieldName'];
+            $type = $params['type'];
+            $value = $params['value'];
+            $key = $params['lead_app_id'];
+            $seq = $params['sequence'];
+            $lead_app_id = $params['lead_app_id'];
+            $utilitiesModel = new Utilities();
+            if ($lead_app_id) {
+                if ($type == 'leadCollegePreference') {
+                    $model = LeadsCollegePreference::findOne(['application_enc_id' => $key, 'sequence' => $seq]);
+                    if (!$model) {
+                        $model = new LeadsCollegePreference();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $model->preference_enc_id = $utilitiesModel->encrypt();
+                        $model->application_enc_id = $enc_id = $key;
+                        $model->sequence = $seq;
+                        if (!Yii::$app->user->isGuest) {
+                            $model->created_by = Yii::$app->user->identity->user_enc_id;
+                        }
+                    }
+                } else {
+                    $model = LeadsApplications::findOne(['application_enc_id' => $key]);
+                    $enc_id = $key;
+                }
+            } else {
+                $model = new LeadsApplications();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+                $model->application_number = date('ymd') . time();
+                if (!Yii::$app->user->isGuest) {
+                    $model->created_by = Yii::$app->user->identity->user_enc_id;
+                }
+            }
+            $model->$field_name = $value;
+            if ($model->save()) {
+                return [
+                    'status' => 200,
+                    'enc_id' => $enc_id,
+                ];
+            } else {
+                print_r($model->getErrors());
+                exit();
+            }
+        }
         return $this->render('about-us');
     }
-    public function actionWhatsappCommunity(){
-        return $this->render('whatsapp-community');
+
+    public function actionMentorCareer()
+    {
+        return $this->render('mentor-career');
     }
+
+    public function actionOurPartners()
+    {
+        return $this->render('our-partners');
+    }
+
+    public function actionCovid19()
+    {
+        return $this->redirect('/covid-19/warning-posters');
+    }
+
+    public function actionSocialCommunity()
+    {
+        $data = SocialGroups::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function ($b) {
+                $b->select(['b.*', 'b1.name platform_name', 'b1.icon', 'b1.icon_location']);
+                $b->joinWith(['platformEnc b1' => function ($b1) {
+                    $b1->andWhere(['b1.is_deleted' => 0]);
+                }], false);
+                $b->andWhere(['b.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('a.group_enc_id')
+            ->asArray()
+            ->all();
+
+        $socials = SocialPlatforms::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function ($b) {
+//                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
+//                $b->joinWith(['groupEnc c']);
+            }])
+            ->asArray()
+            ->all();
+
+        return $this->render('whatsapp-community', [
+            'data' => $data,
+            'socials' => $socials
+        ]);
+    }
+
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -368,6 +407,11 @@ class SiteController extends Controller
     public function actionTweetDetail()
     {
         return $this->render('tweet-detail');
+    }
+
+    public function actionSchoolIndex()
+    {
+        return $this->render('school-index');
     }
 
     public function actionAllQuiz()
@@ -398,7 +442,13 @@ class SiteController extends Controller
             $subscribersForm = new SubscribeNewsletterForm();
             if ($subscribersForm->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                if ($subscribersForm->save()) {
+                $result = $subscribersForm->save();
+                if ($result === 'exists') {
+                    $response = [
+                        'status' => 203,
+                        'message' => Yii::t('frontend', 'You are Already subscribed.'),
+                    ];
+                } elseif ($result) {
                     $response = [
                         'status' => 200,
                         'message' => Yii::t('frontend', 'You are successfully subscribed.'),
@@ -560,6 +610,102 @@ class SiteController extends Controller
     public function actionPrivacyPolicy()
     {
         return $this->render('privacy-policy');
+    }
+
+    public function actionSignUpCandidate()
+    {
+
+        $model = new SignUpCandidateForm();
+        $job_profile = new ApplicationForm();
+        $primary_cat = $job_profile->getPrimaryFields();
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+
+        return $this->renderAjax('sign-up-candidate', [
+            'model' => $model,
+            'primary_cat' => $primary_cat,
+        ]);
+    }
+
+    public function actionSignUp()
+    {
+        $model = new SignUpCandidateForm();
+        $modelSignUp = new WidgetSignUpForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $modelSignUp->username = $model->username;
+                $modelSignUp->first_name = $model->first_name;
+                $modelSignUp->last_name = $model->last_name;
+                $modelSignUp->email = $model->email;
+                if ($model->phone) {
+                    $modelSignUp->phone = $model->phone;
+                }
+                $modelSignUp->new_password = $model->new_password;
+                $modelSignUp->confirm_password = $model->confirm_password;
+                if (empty($errors)) {
+                    $session = Yii::$app->session;
+                    $session->set('profile_job', $model->job_profile);
+                    $session->set('city', $model->city);
+                    $session->set('cityId', $model->city_id);
+                    $session->set('salary', $model->salary);
+                    $session->set('experience', $model->experience);
+
+                    $modelSignUp->user_type = 'Individual';
+
+                    if ($modelSignUp->add()) {
+                        $data['username'] = $modelSignUp->username;
+                        $data['password'] = $modelSignUp->new_password;
+                        if ($this->login($data)) {
+
+                            $profileJob = $session->get('profile_job');
+                            $cityJob = $session->get('city');
+                            $cityJobId = $session->get('cityId');
+                            $salaryJob = $session->get('salary');
+                            $experienceJob = $session->get('experience');
+                            if ($model->save($profileJob, $cityJob, $salaryJob, $experienceJob, $cityJobId)) {
+                                return $this->redirect('/account/dashboard');
+                            } else {
+                                return [
+                                    'status' => 'error',
+                                    'title' => 'error',
+                                    'message' => 'An error has occurred. Please try again later',
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    return $errors;
+                }
+            }
+        }
+    }
+
+    private function login($data = [])
+    {
+        $loginFormModel = new LoginForm();
+        $loginFormModel->username = $data['username'];
+        $loginFormModel->password = $data['password'];
+        $loginFormModel->rememberMe = true;
+        if ($loginFormModel->login()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function RandomString()
+    {
+        $characters = '123456789';
+        $randstring = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randstring = $characters[rand(1, strlen($characters))];
+        }
+        return $randstring;
     }
 
     public function actionUpdateProfile()
@@ -753,4 +899,287 @@ class SiteController extends Controller
         }
     }
 
+    public function actionLoadData()
+    {
+        $type = Yii::$app->request->post('type');
+        switch ($type) {
+            case 'getGovernmentJobs':
+                return $this->renderAjax('/widgets/usa_and_govt_jobs');
+                break;
+            case 'getTopCities':
+                $other_jobs = (new \yii\db\Query())
+                    ->distinct()
+                    ->from(States::tableName() . 'as a')
+                    ->select([
+                        'a.state_enc_id',
+                        'b.country_enc_id',
+                        'c.city_enc_id',
+                        'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
+                        'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
+                    ])
+                    ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+                    ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+                    ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
+                    ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
+                    ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
+//                    ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
+                    ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
+                    ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
+                $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
+
+                $ai_jobs = (new \yii\db\Query())
+                    ->distinct()
+                    ->from(States::tableName() . 'as a')
+                    ->select([
+                        'a.state_enc_id',
+                        'b.country_enc_id',
+                        'c.city_enc_id',
+                        'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
+                        'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
+                    ])
+                    ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+                    ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+                    ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
+                    ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
+                    ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
+                    ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
+                    ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
+                    ->andWhere(['j.is_deleted' => 0, 'l.is_deleted' => 0]);
+                $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+                $cities_jobs = (new \yii\db\Query())
+                    ->from([
+                        $other_jobs_city_wise->union($ai_jobs_city_wise),
+                    ])
+                    ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
+                    ->groupBy('city_enc_id')
+                    ->orderBy(['jobs' => SORT_DESC])
+                    ->limit(3)
+                    ->all();
+                return $this->renderAjax('/widgets/top-cities', [
+                    'cities_jobs' => $cities_jobs
+                ]);
+                break;
+            case 'getOpportunities':
+                return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
+                break;
+            case 'getLearningTopics':
+                return $this->renderAjax('/widgets/homepage_components/learning_topics');
+                break;
+            case 'getWhatsappCommunity':
+                return $this->renderAjax('/widgets/whatsapp-widget');
+                break;
+            case 'getInternationalJobs':
+                return $this->renderAjax('/widgets/international-jobs');
+                break;
+            case 'getSafetySigns':
+                return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getOnlineClasses':
+                $model = new ClassEnquiryForm();
+                return $this->renderAjax('/widgets/online-classes', [
+                    'model' => $model,
+                ]);
+                break;
+            case 'getStats':
+                return $this->renderAjax('/widgets/info-stats');
+                break;
+            case 'getFeaturedApplications':
+                return $this->renderAjax('/widgets/employer_applications/preferred-applications');
+                break;
+//            case 'getFeaturedJobs':
+//                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
+//                break;
+            case 'getHowItWorks':
+                if (Yii::$app->user->isGuest) {
+                    return $this->renderAjax('/widgets/homepage_components/how-it-works');
+                }
+                break;
+            case 'getNewsletter':
+                if (Yii::$app->user->isGuest) {
+                    return $this->renderAjax('/widgets/subscribe-section');
+                }
+                break;
+            case 'getCompaniesWithUs':
+                return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
+                break;
+            case 'getNewsUpdate':
+                return $this->renderAjax('/widgets/news-update');
+                break;
+            case 'getTweets':
+                return $this->renderAjax('/widgets/homepage_components/tweets');
+                break;
+            case 'getShortcuts':
+                $job_profiles = AssignedCategories::find()
+                    ->alias('a')
+                    ->select(['a.*', 'd.category_enc_id', 'd.name'])
+                    ->joinWith(['parentEnc d' => function ($z) {
+                        $z->groupBy(['d.category_enc_id']);
+                    }], false)
+                    ->innerJoinWith(['employerApplications b' => function ($x) {
+                        $x->onCondition([
+                            'b.is_deleted' => 0,
+                            'b.status' => 'Active'
+                        ]);
+                        $x->joinWith(['applicationTypeEnc c' => function ($y) {
+                            $y->andWhere(['c.name' => 'Jobs']);
+                        }], false);
+                    }], false)
+                    ->where([
+                        'a.status' => 'Approved',
+                        'a.is_deleted' => 0,
+                    ])->asArray()
+                    ->all();
+                $internship_profiles = AssignedCategories::find()
+                    ->alias('a')
+                    ->select(['a.*', 'd.category_enc_id', 'd.name'])
+                    ->joinWith(['parentEnc d' => function ($z) {
+                        $z->groupBy(['d.category_enc_id']);
+                    }])
+                    ->innerJoinWith(['employerApplications b' => function ($x) {
+                        $x->onCondition([
+                            'b.is_deleted' => 0,
+                            'b.status' => 'Active'
+                        ]);
+                        $x->joinWith(['applicationTypeEnc c' => function ($y) {
+                            $y->andWhere(['c.name' => 'Internships']);
+                        }], false);
+                    }], false)
+                    ->where([
+                        'a.status' => 'Approved',
+                        'a.is_deleted' => 0,
+                    ])->asArray()
+                    ->all();
+                $search_words = AssignedCategories::find()
+                    ->alias('a')
+                    ->select(['a.*', 'd.category_enc_id', 'd.name'])
+                    ->joinWith(['categoryEnc d' => function ($y) {
+                        $y->groupBy(['d.category_enc_id']);
+                    }], false)
+                    ->innerJoinWith(['employerApplications b' => function ($x) {
+                        $x->onCondition([
+                            'b.is_deleted' => 0,
+                            'b.status' => 'Active',
+                        ]);
+                    }], false)
+                    ->where([
+                        'a.status' => 'Approved',
+                        'a.is_deleted' => 0,
+                    ])
+                    ->asArray()
+                    ->all();
+                $cities = EmployerApplications::find()
+                    ->alias('a')
+                    ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
+                    ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
+                        $x->joinWith(['locationEnc c' => function ($x) {
+                            $x->joinWith(['cityEnc d']);
+                        }], false);
+                    }], false)
+                    ->joinWith(['applicationTypeEnc e'], false)
+                    ->where([
+                        'a.is_deleted' => 0
+                    ])
+                    ->orderBy(['total' => SORT_DESC])
+                    ->groupBy(['c.city_enc_id'])
+                    ->asArray()
+                    ->all();
+                return $this->renderAjax('/widgets/homepage_components/shortcuts', [
+                    'job_profiles' => $job_profiles,
+                    'internship_profiles' => $internship_profiles,
+                    'search_words' => $search_words,
+                    'cities' => $cities,
+                ]);
+                break;
+            default :
+        }
+    }
+
+    public function actionGetTweetsData()
+    {
+        $a = $this->_getTweets(null, null, "Jobs", 4, "");
+        $b = $this->_getTweets(null, null, "Internships", 4, "");
+        $tweets = array_merge($a, $b);
+        return $this->renderAjax('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+    }
+
+    public function actionUserFeedbackPage()
+    {
+        $feedbackFormModel = new FeedbackForm();
+        return $this->render('user-feedback-page', [
+            'feedbackFormModel' => $feedbackFormModel,
+        ]);
+    }
+
+    public function actionCollegeIndex()
+    {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('college-index', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionCreatorProfile()
+    {
+        return $this->render('creator-profile');
+    }
+
+    public function actionTransactionTable()
+    {
+        return $this->render('transaction-table');
+    }
+
+    public function actionSkillVideo()
+    {
+        return $this->render('skill-video');
+    }
+
+    public function actionCreatorHandbook()
+    {
+        return $this->render('creator-handbook');
+    }
+
+    public function actionTeachersHandbook()
+    {
+        return $this->render('teachers-handbook');
+    }
+
+    public function actionAdmissionForm()
+    {
+        $this->layout = 'blank-layout';
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $model->save();
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('admission-form', [
+            'model' => $model
+        ]);
+    }
+//    public function actionAdmission()
+//    {
+//        $model = new AdmissionForm();
+//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+//            if ($model->load(Yii::$app->request->post())) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                return $model->save();
+//                } else {
+//            }
+//        }
+//    }
 }

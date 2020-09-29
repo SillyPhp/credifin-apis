@@ -54,6 +54,7 @@ use Yii;
  * @property HiringProcessTemplates[] $hiringProcessEncs
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnnaireEncs
+ * @property OrganizationLabels[] $organizationLabels
  * @property ConversationParticipants[] $conversationParticipants
  * @property Designations[] $designations
  * @property EducationalRequirements[] $educationalRequirements
@@ -90,8 +91,9 @@ use Yii;
  * @property UserTasks[] $userTasks
  * @property UserVerificationTokens[] $userVerificationTokens
  * @property Users[] $users
+ * @property ErexxCollaborators[] $erexxCollaborators
+ * @property ErexxCollaborators[] $erexxCollaborators0
  */
-
 class Organizations extends \yii\db\ActiveRecord
 {
     /**
@@ -323,6 +325,14 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationLabels()
+    {
+        return $this->hasMany(OrganizationLabels::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrganizationVideos()
     {
         return $this->hasMany(OrganizationVideos::className(), ['organization_enc_id' => 'organization_enc_id']);
@@ -462,5 +472,21 @@ class Organizations extends \yii\db\ActiveRecord
     public function getUsers()
     {
         return $this->hasMany(Users::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxCollaborators()
+    {
+        return $this->hasMany(ErexxCollaborators::className(), ['college_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxCollaborators0()
+    {
+        return $this->hasMany(ErexxCollaborators::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 }

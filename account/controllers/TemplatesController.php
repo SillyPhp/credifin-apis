@@ -9,12 +9,21 @@ use yii\web\HttpException;
 
 class TemplatesController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (!empty(Yii::$app->user->identity->organization)) {
             return $this->render('index', [
                 'questionnaire' => $this->__questionnaire(4),
                 'interview_processes' => $this->__interviewProcess(4),
+                'jobs' => $this->__getApplications("Jobs"),
+                'internships' => $this->__getApplications("Internships"),
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
@@ -46,5 +55,23 @@ class TemplatesController extends Controller
 
         $processess = new \account\models\templates\TemplateHiringProcess();
         return $processess->getProcesses($options);
+    }
+
+    private function __getApplications($type = 'Jobs')
+    {
+        $application = \common\models\ApplicationTemplates::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+            ->joinWith(['title0 z' => function ($z) {
+                $z->joinWith(['categoryEnc zz']);
+                $z->joinWith(['parentEnc z1']);
+            }], false)
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        return $application;
     }
 }

@@ -30,6 +30,7 @@ $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sig
         </div>
     </div>
 <?php endif; ?>
+
 <?php
 $form = ActiveForm::begin([
     'id' => 'user-form',
@@ -43,16 +44,21 @@ $form = ActiveForm::begin([
 ]);
 ?>
     <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
+        <div class="col-md-12">
+            <legend><?= Yii::t('frontend', 'I Want To Get Hired'); ?></legend>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
+            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6">
             <?=
@@ -84,16 +90,32 @@ $form = ActiveForm::begin([
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
-    <div class="row pt-20">
-        <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="/signup/organization"
-               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Organization'); ?></a>
-        </div>
-    </div>
 <?php ActiveForm::end(); ?>
+<div class="col-md-12">
+    <div class="separator pb-10">
+        <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+    </div>
+    <div class="form-group mt-10">
+        <?=
+        \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+        ?>
+    </div>
+</div>
+
 <?php
 $this->registerCss('
-.intl-tel-input {
+.separator{
+    margin:30px auto 5px !important;
+}
+.auth-clients {
+    display: flex;
+    /* text-align: center; */
+    /* list-style: none; */
+    padding: 0;
+    /* overflow: auto; */
+    justify-content: center;
+}
+.intl-tel-input, .iti {
     width: 100%;
 }
 .input-group-addon{

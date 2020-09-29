@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-    <section class="j-tweets">
+    <section class="top-bg">
         <div class="container">
             <div class="container">
                 <div class="row">
@@ -13,107 +13,129 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <?php
-                foreach ($cities_jobs as $app) {
-                    ?>
-                    <div class="col-md-3 col-sm-6">
-
-                        <div class="city-main">
-                            <div class="city-image">
-                                <img src="<?= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
-                            </div>
-                            <div class="city-name"><?= $app['city_name'] ?></div>
-                            <div class="divider"></div>
-                            <div class="city-data">
-                                <div class="openings">
-                                    <?php
-                                    if ($type == 'jobs' || $type == 'internships') {
-                                        ?>
-                                        Total Openings
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <?= $app['jobs'] + $app['internships'] ?>  Total Openings
-                                        <?php
-                                    }
-                                    ?>
-
-                                </div>
-                                <div class="count">
-
-                                    <?php
-                                    if ($type == 'jobs') {
-                                        ?>
-                                        <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
-                                            <?= $app['jobs'] ?> Jobs
-                                        </a>
-                                        <?php
-                                    } elseif ($type == 'internships') {
-                                        ?>
-                                        <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
-                                            <?= $app['internships'] ?>
-                                            Internships
-                                        </a>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
-                                            <?= $app['jobs'] ?> Jobs
-                                        </a>
-                                        <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
-                                            <?= $app['internships'] ?> Internships
-                                        </a>
-                                        <?php
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                            <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
-                        </div>
-                    </div>
+                <?= $this->render('/widgets/preloaders/top-cities-preloader'); ?>
+                <div id="cities-main">
                     <?php
-                }
-                ?>
+                    foreach ($cities_jobs as $app) {
+                        ?>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="city-main" style="background: url(<?= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>)">
+<!--                                <div class="city-image">-->
+<!--                                    <img src="--><?//= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?><!--">-->
+<!--                                </div>-->
+                                <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
+                            </div>
+                            <div class="main-set">
+                                <div class="city-name"><?= $app['city_name'] ?></div>
+                                <div class="divider"></div>
+                                <div class="city-data">
+                                    <div class="openings">
+                                        <?php
+                                        if ($type == 'jobs' || $type == 'internships') {
+                                            ?>
+                                            Total Vacancies
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <?= $app['jobs'] + $app['internships'] ?>  Total Vacancies
+                                            <?php
+                                        }
+                                        ?>
+
+                                    </div>
+                                    <div class="count">
+
+                                        <?php
+                                        if ($type == 'jobs') {
+                                            ?>
+                                            <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
+                                                <?= $app['jobs'] ?> Jobs
+                                            </a>
+                                            <?php
+                                        } elseif ($type == 'internships') {
+                                            ?>
+                                            <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
+                                                <?= $app['internships'] ?>
+                                                Internships
+                                            </a>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
+                                                <?= $app['jobs'] ?> Jobs
+                                            </a>
+                                            <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
+                                                <?= $app['internships'] ?> Internships
+                                            </a>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </section>
 <?php
 $this->registerCss('
+.top-bg{
+   background-color:#fff;
+   padding:20px 0 50px;
+}
+.main-set {
+	/* padding-bottom: 20px; */
+	background-color: #fff;
+	text-align: center;
+	border: 1px solid #eee;
+	border-radius: 4px;
+	margin-top: -39px !important;
+	width: 85%;
+	margin: auto;
+	margin-bottom: 25px !important;
+	box-shadow: 0 4px 7px rgba(0, 0, 0, 0.2);
+}
 /*cities*/
 .city-main{
-	border: 1px solid #eee;
-	border-radius: 10px;
-	text-align: center;
-	padding: 0 0 20px 0;
-	box-shadow: 0px 0px 6px 1px #eee;
-	margin-bottom:15px;
-    background: #fff;
+//	background: url();
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    min-height:160px;
+    border-radius:8px;
 }
-.city-image {
-	border-bottom: 1px solid #eee;
+//.city-image {
+//	border-bottom: 1px solid #eee;
+//}
+//.city-image img{
+//	width: 100%;
+//	height: 100px;
+//	border-top-left-radius: 10px;
+//	border-top-right-radius: 10px;
+//}
+.city-name {
+	font-size: 20px;
+	font-weight: 600;
+	font-family: lora;
+	padding: 5px 0 5px 0;
 }
-.city-image img{
-	width: 100%;
-	height: 100px;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
-}
-.city-name{
-	font-size: 18px;
-	font-weight: 500;
-	font-family: roboto;
-	padding: 10px 0 10px 0;
-}
-.city-main .city-data .count a {
-    padding: 4px 6px;
-    font-size: 13px;
+.main-set .city-data .count a {
+    padding: 2px 6px;
+    font-size: 14px;
     border-radius:4px;
-    margin: 0px 4px;
-    transition: all ease-out .3s;
 }
-.city-main:hover .city-data .count a {
-    color: #fff;
-    background-color: #00a0e3;
+.city-main:hover ~ .main-set .city-data .count a {
+	color: #fff;
+	background-color: #00a0e3;
+	transition: all .3s;
+}
+.main-set:hover .city-data .count a {
+	color: #fff;
+	background-color: #00a0e3;
+	transition: all .3s;
 }
 .divider{
 	border-bottom: 1px solid #e2dddd;
@@ -121,29 +143,29 @@ $this->registerCss('
     margin: 0 auto;
 }
 .city-data{
-	padding: 15px 0;
+	padding: 5px 0;
 }
 .openings{
 	font-size: 16px;
 	font-weight: 500;
 	font-family: roboto;
 }
-.count{
+.count {
 	color: #bdbdbd;
-	padding-top:5px;
+	padding-top: 5px;
 	font-family: roboto;
+	display: flex;
+	justify-content: space-around;
 }
-//.btn-info{
-//	background-color:#eeeeee33 !important;
-//	border-color:#e2e2e2 !important;
-//	padding: 6px 46px !important;
-//}
-//.btn-info:hover{box-shadow: 1px 4px 6px -1px #eee !important;}
-//.btn a{
-//	color: black !important;
-//	text-decoration: none;
-//	font-size: 15px;
-//	font-weight: bold;
-//}
-')
+#cities-main{
+    display:none;
+}
+');
+$script = <<<JS
+setTimeout(function() {
+    $('.loading-main').remove();
+    $('#cities-main').slideDown(500);
+}, 2000);
+JS;
+$this->registerJs($script);
 ?>

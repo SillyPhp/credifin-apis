@@ -1,164 +1,86 @@
 <nav class="ey-main-menu-nav">
     <ul class="ey-menu-inner-main">
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/jobs">
-                Jobs
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-            </a>
-            <div class="ey-sub-menu">
-                <div class="container-fluid">
-                    <div class="large-container container">
-                        <nav class="ey-sub-nav-main">
-                            <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/jobs/near-me">Jobs Near Me</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/govt-jobs">Indian Govt. Jobs</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/usa-jobs">USA Govt. Jobs</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/organizations">Explore Companies</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/jobs/compare">Compare Jobs</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/organizations/explore">Featured Companies</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/tweets/jobs">Job Tweets</a>
-                                </li>
-                            </ul>
-                        </nav>
+        <?php
+        if($data){
+        foreach ($data as $grandParents) {
+            ?>
+            <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                <a href="<?= $grandParents['value']['route']; ?>">
+                    <?= $grandParents['value']['name']; ?>
+                    <?php
+                    if ($grandParents['childs']) {
+                        ?>
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <?php
+                    }
+                    ?>
+                </a>
+                <?php
+                if ($grandParents['childs']) {
+                    ?>
+                    <div class="ey-sub-menu">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <?php
+                                        foreach ($grandParents['childs'] as $parents) {
+                                            ?>
+                                            <li class="
+                                            <?php
+                                            if ($parents['childs']) {
+                                                foreach ($parents['childs'] as $children) {
+                                                    if ($children) {
+                                                        ?>
+                                            ey-head-sub-menu-has-child
+                                            <?php
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            ?>
+">
+                                                <a href="<?= $parents['value']['route'] ?>">
+                                                    <?= $parents['value']['name'] ?>
+                                                    <div class="ey-sub-sec">
+                                                        <ul class="ey-head-sub-menu-items">
+                                                            <?php
+                                                            if ($parents['childs']) {
+                                                                foreach ($parents['childs'] as $children) {
+                                                                    ?>
+                                                                    <li class="ey-head-sub-menu-icon">
+                                                                        <a href="<?= $children['value']['route']; ?>">
+                                                                            <div>
+                                                                                <span class="ey-services-icons ai" style="background: url('<?= $children['value']['icon'];?>');"></span>
+                                                                            </div>
+                                                                            <span><?= $children['value']['name']; ?></span>
+                                                                        </a>
+                                                                    </li>
+                                                                    <?php
+                                                                }
+                                                            }
+                                                            ?>
+                                                        </ul>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                </nav>
+                                <div class="ey-header-sub-menu-container"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/internships">
-                Internships
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-            </a>
-            <div class="ey-sub-menu">
-                <div class="container-fluid">
-                    <div class="large-container container">
-                        <nav class="ey-sub-nav-main">
-                            <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/internships/near-me">Internships Near Me</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/organizations">Explore Companies</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/internships/compare">Compare Internships</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/organizations/explore">Featured Companies</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/tweets/internships">Internship Tweets</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/training-programs">
-                Training Courses
-            </a>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/reviews">
-                Reviews
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-            </a>
-            <div class="ey-sub-menu">
-                <div class="container-fluid">
-                    <div class="large-container container">
-                        <nav class="ey-sub-nav-main">
-                            <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/reviews/companies">Companies</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/reviews/colleges">Colleges</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/reviews/schools">Schools</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/reviews/institutes">Educational Institutes</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/learning">
-                Learning Hub
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-            </a>
-            <div class="ey-sub-menu">
-                <div class="container-fluid">
-                    <div class="large-container container">
-                        <nav class="ey-sub-nav-main">
-                            <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/learning/categories">
-                                        Popular Topics
-                                    </a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/questions">
-                                        ASK
-                                    </a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/learning/contribute">
-                                        Collaborate With Us
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/career-advice">
-                Career Advice
-            </a>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/blog">
-                Blog
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-            </a>
-            <div class="ey-sub-menu">
-                <div class="container-fluid">
-                    <div class="large-container container">
-                        <nav class="ey-sub-nav-main">
-                            <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/blog/category/articles">Articles</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/blog/category/infographics">Infographics</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </li>
+                    <?php
+                }
+                ?>
+            </li>
+            <?php
+        }
+        }
+        ?>
         <?php if (!Yii::$app->user->isGuest) { ?>
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="/account/dashboard">
@@ -325,20 +247,20 @@
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
                                     <ul class="ey-sub-nav-items">
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/preferences">My Preferences</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
-                                            <a href="/account/resume-builder">Build Resume</a>
+                                        <li>
+                                            <a href="/account/resume-builder">Resume Builder</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -430,6 +352,7 @@ $this->registerCss('
     margin: 0 20px 0 0;
     padding: 7px 0px;
 }
+
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
 }
@@ -1094,6 +1017,16 @@ $this->registerCss('
         padding-top:0px;
     }
 }
+@media screen and (max-width: 1400px) and (min-width: 1080px){
+    .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
+        font: 500 13px/16px Roboto, Arial, sans-serif;
+        margin: 0 15px 0 0;
+    }    
+    .ey-menu-main {
+        margin: 0 15px 0 30px;
+    }
+
+}
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
 }
@@ -1107,5 +1040,6 @@ $this->registerCss('
 .ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
     color:#00a0e3 !important;
 }
+
 ');
 ?>

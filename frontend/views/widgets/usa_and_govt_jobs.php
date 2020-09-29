@@ -48,11 +48,12 @@ $this->registerCss('
 }
 .gov-job {
   overflow: hidden;
-  margin: 10px;
+  margin-bottom: 15px !important;
   max-width: 500px;
   height: 300px;
   width: 100%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  margin:auto;
 }
 .gov-job img {
     max-width: inherit;
@@ -87,5 +88,14 @@ $this->registerCss('
     color:#fff;
     font-size:20px;
     padding:5px 10px;
+}
+@media (max-width:415px){
+.gov-heading{
+    font-size:25px;
+}
+.gov-job{
+    margin:0;
+    margin-bottom:10px;
+}
 }
 ');

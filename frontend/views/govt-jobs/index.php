@@ -10,7 +10,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
         <div class="row">
             <div class="col-md-12 z-index-9">
                 <div class="search-box text-center">
-                    <h2 class="text-white mb-5 font-weight-700">Looking for a Career In Government.</h2>
+                    <h2 class="text-white mt-40 mb-5 font-weight-700">Looking for a Career In Government.</h2>
                     <h4 class="text-white font-20 mt-0">Find Your Dream Job Today.</h4>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
@@ -29,7 +29,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
     </div>
 </section>
 
-<section>
+<section style="background: #fff;">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6">
@@ -57,18 +57,23 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/govt-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="loader_screen">
-                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
-            </div>
+            <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
             <div id="cards">
-            </div>
-            <div class="align_btn">
-                <button id="loader" class="btn btn-success">Load More</button>
             </div>
         </div>
     </div>
@@ -159,10 +164,6 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-main
-{
-height:210px;
-}
 .loader_screen img
 {
 display:none;
@@ -551,32 +552,30 @@ float:right;
     bottom: 0px;
     left: 20%;
 }
-#loader
-{
-display:none;
-}
-@media only screen and (max-width: 550px){
-    .overlay-image {
-        max-width: 115px;
-    }
+#loadMore{
+    display:none;
+    margin-left: auto;
+    margin-right: auto;
 }
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
 echo $this->render('/widgets/mustache/departments_govt');
 $script = <<< JS
-$(document).on('click','#loader',function(e) {
-  e.preventDefault();
-  fetchLocalData(template=$('#cards'),limit,offset+12,loader=false,loader_btn=true);
-})
-var limit =12;
 var offset = 0;
-fetchLocalData(template=$('#cards'),limit,offset,loader=true,loader_btn=false);
+$(document).on('click','#loadMore',function(e) {
+  e.preventDefault();
+  fetchLocalData(template=$('#cards'),limit=12,offset=offset+12,loader=false,loader_btn=true);
+})
+fetchLocalData(template=$('#cards'),limit=12,offset=0,loader=true,loader_btn=false);
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  fetchLocalData(template=$('#cards'),limit=50,offset,loader=true,loader_btn=false,keyword=keyword,replace=true);
+  if (keyword)
+      {
+          window.location.assign('/govt-jobs/search/'+keyword.replace(/\s+/g, '-'));
+      }
 })
-fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit_dept=12,offset=0);
 JS;
 $this->registerJs($script);
 ?>

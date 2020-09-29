@@ -2,21 +2,130 @@
 
 namespace frontend\controllers;
 
-use Yii;
-use yii\web\Controller;
-use yii\web\Response;
-use yii\web\HttpException;
-use yii\web\UploadedFile;
-use frontend\models\profile\UserProfileBasicEdit;
-use frontend\models\profile\UserProfileSocialEdit;
+use common\models\AppliedApplications;
 use common\models\Categories;
 use common\models\Cities;
 use common\models\States;
+use common\models\UserAchievements;
+use common\models\UserEducation;
+use common\models\UserHobbies;
+use common\models\UserInterests;
+use common\models\UserPreferences;
 use common\models\Users;
+use common\models\UserWorkExperience;
+use frontend\models\profile\UserProfileBasicEdit;
 use frontend\models\profile\UserProfilePictureEdit;
+use frontend\models\profile\UserProfileSocialEdit;
+use Yii;
+use yii\web\Controller;
+use yii\web\HttpException;
+use yii\web\Response;
+use yii\web\UploadedFile;
 
 class UsersController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        return parent::beforeAction($action);
+    }
+
+    public function getPreference($type, $id)
+    {
+
+        $p = UserPreferences::find()
+            ->alias('a')
+            ->select([
+                'a.preference_enc_id',
+                'a.type',
+                'a.assigned_to',
+                'a.timings_from',
+                'a.timings_to',
+                'a.salary',
+                'a.sat_frequency',
+                'a.sun_frequency',
+                'a.min_expected_salary',
+                'a.max_expected_salary',
+                'a.experience',
+                'a.working_days',
+                'c1.slug industry_slug',
+            ])
+            ->innerJoinWith(['userPreferredJobProfiles b' => function ($b) {
+                $b->select(['b.preference_enc_id', 'b.job_profile_enc_id', 'b1.category_enc_id', 'b1.name profile_name']);
+                $b->joinWith(['jobProfileEnc b1'], false);
+                $b->andWhere(['b.is_deleted' => 0]);
+            }])
+            ->innerJoinWith(['userPreferredIndustries c' => function ($c) {
+                $c->select(['c.preference_enc_id', 'c.industry_enc_id', 'c1.industry']);
+                $c->joinWith(['industryEnc c1'], false);
+                $c->andWhere(['c.is_deleted' => 0]);
+            }])
+            ->innerJoinWith(['userPreferredSkills d' => function ($d) {
+                $d->select(['d.preference_enc_id', 'd.preferred_skill_enc_id', 'd1.skill_enc_id', 'd1.skill']);
+                $d->joinWith(['skillEnc d1'], false);
+                $d->andWhere(['d.is_deleted' => 0]);
+            }])
+            ->innerJoinWith(['userPreferredLocations e' => function ($e) {
+                $e->select(['e.preference_enc_id', 'e.city_enc_id', 'e1.name city_name', 'e2.name state_name', 'e3.name country_name']);
+                $e->joinWith(['cityEnc e1' => function ($e1) {
+                    $e1->joinWith(['stateEnc e2' => function ($e2) {
+                        $e2->joinWith(['countryEnc e3']);
+                    }]);
+                }], false);
+                $e->andWhere(['e.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0, 'a.created_by' => $id, 'a.assigned_to' => $type])
+            ->asArray()
+            ->one();
+
+        $skills = [];
+        $cities = [];
+        $states = [];
+        $countries = [];
+        $profiles_name = [];
+        $industry = [];
+        if (!empty($p['userPreferredIndustries'])) {
+            foreach ($p['userPreferredIndustries'] as $i_slug) {
+                array_push($industry, $i_slug['industry']);
+            }
+        }
+        if (!empty($p['userPreferredJobProfiles'])) {
+            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
+                array_push($profiles_name, $p_slug['profile_name']);
+            }
+        }
+        if (!empty($p['userPreferredSkills'])) {
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
+        }
+        if (!empty($p['userPreferredLocations'])) {
+            foreach ($p['userPreferredLocations'] as $l) {
+                array_push($cities, $l['city_name']);
+                array_push($states, $l['state_name']);
+                array_push($countries, $l['country_name']);
+            }
+        }
+        return [
+            'profiles_name' => implode(', ', array_unique($profiles_name)),
+            'industry' => implode(', ', array_unique($industry)),
+            'skills' => implode(', ', array_unique($skills)),
+            'cities' => implode(', ', array_unique($cities)),
+            'states' => implode(', ', array_unique($states)),
+            'countries' => implode(', ', array_unique($countries)),
+            'days' => $p['working_days'],
+            'exp' => $p['experience'],
+            'min_salary' => $p['min_expected_salary'],
+            'max_salary' => $p['max_expected_salary'],
+            'sat_frequency' => $p['sat_frequency'],
+            'sun_frequency' => $p['sun_frequency'],
+            'from' => $p['timings_from'],
+            'to' => $p['timings_to'],
+            'salary' => $p['salary'],
+            'type' => $p['type'],
+        ];
+    }
 
     public function actionProfile($username)
     {
@@ -30,7 +139,12 @@ class UsersController extends Controller
                 WHEN a.is_available = "3" THEN "Actively Looking"
                 WHEN a.is_available = "4" THEN "Exploring Possibilities"
                 ELSE "Undefined"
-                END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])
+                END) as availability',
+                'ROUND(DATEDIFF(CURDATE(),
+                 a.dob)/ 365.25) as age',
+                'b.name as city',
+                'c.name as job_profile'
+            ])
             ->leftJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
             ->where(['username' => $username, 'status' => 'Active', 'is_deleted' => 0])
@@ -66,13 +180,90 @@ class UsersController extends Controller
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
             ->one();
+        $userApplied = "";
+        $id = $_GET['id'];
+        if (isset($id) && !empty($id)) {
+            $userApplied = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','re.resume','re.resume_location'])
+                ->joinWith(['applicationEnc ae'], false)
+                ->joinWith(['appliedApplicationProcesses c' => function ($c) {
+                    $c->joinWith(['fieldEnc d'], false);
+                    $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->joinWith(['resumeEnc re'],false)
+                ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->one();
+        }
+        $education = UserEducation::find()
+            ->where(['user_enc_id' => $user['user_enc_id']])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
 
-        return $this->render('view', [
+        $experience = UserWorkExperience::find()
+            ->alias('a')
+            ->select(['a.user_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->where(['a.user_enc_id' => $user['user_enc_id']])
+            ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $achievement = UserAchievements::find()
+            ->where(['user_enc_id' => $user['user_enc_id'], 'is_deleted' => 0])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $hobbies = UserHobbies::find()
+            ->where(['user_enc_id' => $user['user_enc_id'], 'is_deleted' => 0])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $interests = UserInterests::find()
+            ->where(['user_enc_id' => $user['user_enc_id'], 'is_deleted' => 0])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
+        $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
+
+        $dataProvider = [
             'user' => $user,
             'skills' => $skills,
             'language' => $language,
             'userCv' => $userCv,
-        ]);
+            'userApplied' => $userApplied,
+            'job_preference' => $job_preference,
+            'internship_preference' => $internship_preference,
+            'education' => $education,
+            'experience' => $experience,
+            'achievement' => $achievement,
+            'hobbies' => $hobbies,
+            'interests' => $interests,
+            'slug' => $slug,
+        ];
+
+        if (Yii::$app->user->isGuest) {
+            $page = 'guest-view';
+        } else {
+            $orgId = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])['organization_enc_id'];
+            if ($orgId != null || $orgId != "") {
+                $page = 'view';
+            } else {
+                if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
+                    $page = 'view';
+                } else {
+                    $page = 'guest-view';
+                }
+            }
+        }
+        return $this->render($page, $dataProvider);
     }
 
     public function actionEdit()

@@ -65,17 +65,25 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
 <?php
 $this->registerCss('
 .heading-style{
     text-transform: capitalize;
 }
-.bg-img{
-    min-height: 480px;
-    background-position: 0px -100px;
-    background-repeat: no-repeat;
-    background-size: 100% 580px;
-    }
+.bg-img {
+	min-height: 480px;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	background-size: cover !important;
+}
 .whats-new-box {
     border-radius: 5px;
     margin-bottom: 20px;

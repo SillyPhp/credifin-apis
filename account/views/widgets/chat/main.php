@@ -239,6 +239,7 @@ element.style {
     bottom: 108px;
     right: 45px;
 }
+.right-set{right:90px !important;}
 ");
 ?>
 
@@ -411,6 +412,9 @@ $script = <<<JS
     
     //event for chat icon click
     chat_icon_button.addEventListener('click', function(){
+            if($('#chat-box').hasClass('right-set')){
+                $('#chat-box').removeClass('right-set');
+            }
             if(chat_list.classList.contains('fadeout')){
                     chat_list.classList.remove('fadeout');
                     chat_list.classList.add('fadein');
@@ -610,6 +614,132 @@ $script = <<<JS
              });
     });
     
+    $(document).on('click', '.open_chat', function(e){
+        e.preventDefault();
+        $('#chat-box').addClass('right-set');
+        
+        var single_user_id = $(this).attr('data-id');
+        var single_user_name = $(this).attr('data-key');
+        
+        var d = {
+            user_enc_id: single_user_id,
+            name: single_user_name
+        };
+    
+        var template = $('#message-box').html();
+        var render = Mustache.render(template, d);
+        $('#chat-box').html(render);
+        
+        //listening messages for specific users
+            db
+            .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
+            .off();
+            var existingDates = {};
+            
+            db
+            .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
+            .on('child_added', function(data){
+                if(data.val().sender == current_user){
+                    var res = {
+                        message : data.val().message,
+                        time: data.val().time,
+                        date: data.val().date,
+                        sender : current_user_name
+                    };
+                    
+                    var msgdate = res['date'].split(' ')[0];
+                    if(!existingDates[msgdate]){
+                        existingDates[msgdate] = true;
+                        var addedDate = {
+                            date: res['date']                   
+                        };
+                        var temp = $('#date-badge').html();
+                        var render = Mustache.render(temp, addedDate);
+                        $('.message-list').append(render);    
+                    }
+                    
+                    var msgtime = res['time'];
+                    var msgfinal = createTextLinks_(res['message']);
+                    
+                    var messageli = '<li class="out">'+
+                                        '<div class="message">'+
+                                            '<span class="arrow"> </span>'+
+                                            '<a href="#" class="name">You <span>'+msgtime+'</span></a>'+
+                                            '<span class="body">'+msgfinal+'</span>'+
+                                        '</div>'+
+                                     '</li>';
+                    
+                    var parentDiv = document.getElementById('msg-list');
+                    parentDiv.innerHTML += messageli;
+                }else{
+                    var res = {
+                        message : data.val().message,
+                        time: data.val().time,
+                        date: data.val().date,
+                        receiver : single_user_name
+                    };
+                    
+                    var msgtime = res['time'];
+                    var msgreceiver = res['receiver'];
+                    var msgfinal = createTextLinks_(res['message']);
+                    
+                    var msgdate = res['date'].split(' ')[0];
+                    if(!existingDates[msgdate]){
+                        existingDates[msgdate] = true;
+                        var addedDate = {
+                            date: res['date']                   
+                        };
+                        var temp = $('#date-badge').html();
+                        var render = Mustache.render(temp, addedDate);
+                        $('.message-list').append(render);    
+                    }
+                    
+                    
+                    var messageli = '<li class="in">'+
+                                        '<div class="message">'+
+                                            '<span class="arrow"> </span>'+
+                                            '<a href="#" class="name">'+msgreceiver+' <span>'+msgtime+'</span></a>'+
+                                            '<span class="body">'+msgfinal+'</span>'+
+                                        '</div>'+
+                                     '</li>';
+                    
+                    var parentDiv = document.getElementById('msg-list');
+                    parentDiv.innerHTML += messageli;
+                }
+                
+                if(data.val().receiver == current_user){
+                    var udata = {
+                        sender: data.val().sender,
+                        receiver: data.val().receiver,
+                        message: data.val().message,
+                        hasSeen: true
+                    };
+                    
+                    
+                    db
+                    .ref(specialKey + '/conversations/' + getUniqueId(single_user_id) + '/' + data.key)
+                    .update(udata);
+                    
+                    udata['uniqueid'] = getUniqueId(single_user_id);
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '/account/chat/save-receiver',
+                        data: udata
+                     });
+                    
+                    db
+                    .ref(specialKey + '/notifications/' + current_user + '/' + data.val().sender)
+                    .remove();
+                }
+                
+                var chatWindow = document.querySelector('.scroller');
+                var xH = chatWindow.scrollHeight;
+                chatWindow.scrollTo(0, xH);
+             });
+    });
+    
+    
     //closing chat box
      $(document).on('click','.close-btn', function(){
          var single_user_id = $(this).parents('.dynamic-chat').attr('data-id');
@@ -762,6 +892,9 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-list').removeClass('hidden');
         $('#chat-list').removeClass('fadein');
         $('#chat-list').addClass('fadeout');
+    }
+    if($('#chat-box').hasClass('right-set')){
+        $('#chat-box').removeClass('right-set');
     }
 });
 JS;

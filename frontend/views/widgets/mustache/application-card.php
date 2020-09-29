@@ -1,13 +1,28 @@
-<script id="application-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-             class="application-card-main shadow">
-            <div class="app-box">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="application-card-img img-main">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
+<?php
+use yii\helpers\Url;
+
+$controller_id = Yii::$app->controller->id;
+$action_id = Yii::$app->controller->action->id;
+$baseUrl = Url::base(true);
+switch ([$controller_id, $action_id]) {
+    case ['site', 'load-data'] :
+    case ['jobs', 'index'] :
+    case ['jobs', ''] :
+        $btn_id = 'featured-application-card-add';
+        break;
+    default :
+        $btn_id = 'application-card-add';
+}
+?>
+    <script id="application-card" type="text/template">
+        {{#.}}
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+                 class="application-card-main shadow">
+                <div class="app-box">
+                    <div class="row">
+                        <div class="application-card-img">
+                            <a href="{{organization_link}}" target="_blank" title="{{organization_name}}">
                                 {{#logo}}
                                 <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                                 {{/logo}}
@@ -17,16 +32,15 @@
                                 {{/logo}}
                             </a>
                         </div>
-                    </div>
-                    <div class="col-md-9">
                         <div class="comps-name-1 application-card-description">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}"
+                               style="text-decoration:none;">
+                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
                         {{#city}}
@@ -39,72 +53,81 @@
                         <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
                               data-long="{{longitude}}"
                               data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
                         </span>
                         {{/city}}
                         </span>
-                        <div class="detail-loc">
-                            <div class="application-card-description job-loc">
+                        <div class="detail-loc application-card-description">
+                            <div class="job-loc">
                                 {{#salary}}
-                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                                <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
                                 {{^salary}}
+                                {{#sal}}
+                                <h5 class="salary"><a href="{{link}}" target="_blank"><i
+                                                class="far fa-money-bill-alt"></i> View In Details</a></h5>
+                                {{/sal}}
+                                {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
+                                {{/sal}}
                                 {{/salary}}
                                 {{#type}}
-                                <h5>{{type}}</h5>
+                                <h5 class="salary">{{type}}</h5>
                                 {{/type}}
                                 {{#experience}}
-                                <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
+                                {{#sector}}
+                                <h5 class="salary"><i class="fas fa-puzzle-piece"></i>: {{sector}}</h5>
+                                {{/sector}}
                             </div>
                             <div class="clear"></div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 p-0">
-                        <div class="tag-box">
-                            <div class="tags">
-                                {{#skill}}
-                                <span class="after">{{.}}</span>
-                                {{/skill}}
-                                {{^skill}}
-                                <span class="after">Multiple Skills</span>
-                                {{/skill}}
-                            </div>
-                        </div>
+                    <div class="application-card-wrapper">
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View
+                            Detail</a>
+                        <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                     </div>
-                </div>
-                <div class="application-card-wrapper">
-                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
         </div>
-    </div>
-    {{/.}}
-</script>
+        {{/.}}
+    </script>
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
-$script = <<<JS
+$script = <<< JS
+function gitHubJobs() {
+  $.ajax({
+  method: 'POST',
+  url: '/jobs/git-jobs',
+  dataType:"json",
+  beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+  success: (res) => {
+            $('.loader-main').hide();
+            $('#loadMore').addClass("loading_more");
+            $('.load-more-text').css('visibility', 'visible');
+            $('.load-more-spinner').css('visibility', 'hidden');
+            renderCards(res, '.blogbox');
+            utilities.initials();
+  } 
+})
+} 
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
+let return_message = false;
+let jobs_parent;
+let internships_parent;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
     if(cardsLength%3 !==0 && loader === true) {
-        $('#loadMore').hide();
-    }
-    for(var i=0; i<cards.length; i++){
-        if(cards[i].skill != null){
-            cards[i].skill = cards[i].skill.split(',')
-        } else {
-            cards[i].skill = [];
-        }
+        $('#loadMore').css('display','none');
     }
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
@@ -112,11 +135,9 @@ function renderCards(cards, container){
         $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
-    checkSkills();
-    // showSkills();
 }
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -128,8 +149,16 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     for(var pair of searchParams.entries()) {
         data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
     }
-    
     data['type'] = type;
+    if(location !== ""){
+        data['location'] = location; 
+    }
+    if(limit !== ""){
+        data['limit'] = limit;
+    }
+    if(dataType !== ""){
+        data['dataType'] = dataType;
+    }
     $.ajax({
         method: "POST",
         url : url,
@@ -144,9 +173,10 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
+            if(response.status === 200) { 
                 renderCards(response.cards, container);
                 utilities.initials();
+                localStorage.setItem("displayCity", response.cards[0]['city']);
             } else {
                 if(loader === true) {
                     if(page === 1) {
@@ -154,6 +184,18 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                     }
                     $('#loadMore').hide();
                     load_more_cards = false;
+                } else {
+                    if(return_message === true){
+                        if(type === 'Jobs'){
+                            $(jobs_parent).addClass('hidden');
+                        } else {
+                            $(internships_parent).addClass('hidden');
+                        }
+                        if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            $(jobs_parent).html('<h2 class="text-center">There are no Jobs or Internships in this Company</h2>');
+                            $(jobs_parent).removeClass('hidden');
+                        }
+                    }
                 }
             }
         }
@@ -175,9 +217,49 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                      },
                 });
             });
+            sticky_relocate();
+        } else {
+            var displayCity = localStorage.getItem("displayCity");
+            $('#prefer-heading').html('Jobs in ' + displayCity);
+            var viewbtn = $('#view-all-application');
+            var dis_link = "$baseUrl" + "/jobs-in-";
+            viewbtn.prop('href',dis_link + displayCity)
+            $('#featured-head').show();
         }
     });
 }
+
+$(document).on('click', '.featured-application-card-add', function(event) {
+    event.preventDefault();
+    var c_user = "$c_user";
+    if(c_user === ""){
+        $('#loginModal').modal('show');
+    } else{
+        var itemid = $(this).closest('.application-card-main').attr('data-id');
+        getFeaturedCard(itemid);
+    }
+});
+
+function getFeaturedCard(itemid) {
+    $.ajax({
+        method: "POST",
+        url: "/jobs/item-id",
+        data: {'itemid': itemid}
+    }).done(function(data) {
+        if(data.status === 200){
+            toastr.success(data.message, 'Success');
+        } else if(data.status === 201) {
+            toastr.error(data.message, 'Error');
+        } else if (data.status === 'short') {
+            toastr.success(data.message, 'Reviewed Success');
+        } else if (data.status === 'unshort') {
+            toastr.success(data.message, 'Unreviewd Success');
+        } else if (data === 'error') {
+            toastr.info('Please Login first..');
+        }
+    });
+}
+
 
 function addToReviewList(){
     if(loader === false){
@@ -242,25 +324,47 @@ function getReviewList(sidebarpage){
 function checkSkills(){
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
+       $(elems).sort(function (a, b) {
+            return $(a).width() > $(b).width() ? 1 : -1;  
+        }).appendTo(skillsMain);
+    });
+    checkSkills2();
+}
+function checkSkills2(){
+    var parent_card_main = $('.application-card-main').width() / 3;
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
        var i = 0;
        $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+            if($(this).width() > parent_card_main && $(this).text() != 'Multiple Skills' || i >= 3){
                 $(this).addClass('hidden');
             }
             i++;
        });
-       var skillsMain = $(this).find('.tags');
        var hddn = $(this).find('.after.hidden');
        var hasMore = $(this).find('span.more-skills');
        if(hddn.length != 0){
            if(elems.length === hddn.length){
                $(elems[0]).removeClass('hidden');
+               var lg_skills = $(elems[0]).width();
+               var parent_card = $(elems[0]).parentsUntil('.application-card-main').parent().width() - 60;
                var countMore = hddn.length - 1;
                if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+                   skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
+               } else if(hasMore.length != 0){
+                   skillsMain.parent().children('.more-skills').show();
+               }
+               if(lg_skills >= parent_card){
+                   $(elems[0]).parent().css('display','inherit');
+                    $(elems[0]).addClass('lg-skill');
+                    $(elems[0]).parent().parent().children('.more-skills').hide();
+               } else {
+                   $(elems[0]).parent().css('display','inline-block');
                }
            } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+                skillsMain.parent().append('<span class="more-skills">+ ' + hddn.length + '</span>');
            }
        }
     });
@@ -268,10 +372,14 @@ function checkSkills(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.application-card-description{
-    margin:0 0 0 14px !important;
-    width:100% !important;
+.text-center{font-family:roboto;}
+.city
+{
+text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
+
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;
@@ -292,6 +400,7 @@ $this->registerCss('
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
@@ -301,10 +410,8 @@ $this->registerCss('
     padding-left: 13px;
 }
 .comps-name-1{
-    display: block;
-    vertical-align: middle;
-    padding-left: 12px;
-    padding-top: 15px;
+    padding-left: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -345,32 +452,29 @@ $this->registerCss('
     border-radius: 0px 10px 0px 10px !important;
     float: right !important;
     position:absolute !important;
-    right: 2px !important;
-    top: -13px !important;
+    right: -4px !important;
+    top: -3px !important;
+    max-width:255px;
 }
-
 .clear{
     clear:both;
 }
-
 .sal{
     margin-right: 5px;
 }
-
 .salary{
     font-family:roboto;
 }
-
 .tag-box{
     border-top: 1px solid lightgray;
     padding-left:15px;
     padding-top:10px;
 }
-
 .tags{
     font-size: 17px;
     color:gray;
     font-family: Georgia !important;
+    display:inline-block;
 }
 .after{
     padding-right: 25px;
@@ -407,36 +511,29 @@ $this->registerCss('
     padding: 4px 10px 4px 10px;
     border-radius: 5px;
 }
-.img-main{
-    display: inline-block;
-}
-.comps-name-1{
-    float: none;
-    margin: 0px !important;
-}
 .more-skills{
     background-color: #00a0e3;
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
+    display:inline-block;
 }
-@media only screen and (max-width: 360px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+.salary{ 
+    padding-left: 16px;
+    text-transform: capitalize;
 }
-@media only screen and (max-width: 768px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+.lg-skill{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 @media only screen and (max-width: 974px){
-    .salary{ 
-        padding-left: 16px;
-    }
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}
     .hide-resp{display:none;}
-
 }
 /*cards-box css*/
-
 ');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

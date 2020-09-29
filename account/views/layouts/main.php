@@ -43,12 +43,13 @@ $this->beginPage();
                                             <a class="ey-logo" href="/">
                                                 <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
                                                      src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                                <span class="logo_beta">Beta</span>
+<!--                                                <span class="logo_beta">Beta</span>-->
                                             </a>
                                         </div>
                                         <div class="ey-menu-main">
                                             <?= $this->render('@common/widgets/top-header-beta',[
-                                                    'for'=>'Dashboard'
+                                                    'for'=>'Dashboard',
+                                                    'data' => $this->params['sub_header']
                                             ]); ?>
                                         </div>
                                         <div class="ey-nav-actions">
@@ -139,7 +140,9 @@ $this->beginPage();
                             <div class="ey-mobile-content">
                                 <div class="ey-mobile-menu-main-content">
                                     <div class="ey-mobile-menu-inner-content">
-                                        <?= $this->render('@common/widgets/top-header-mobile'); ?>
+                                        <?= $this->render('@common/widgets/top-header-mobile',[
+                                            'data' => $this->params['sub_header']
+                                        ]); ?>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +171,8 @@ $this->beginPage();
         <?= $this->render('/widgets/common/sidebar/user-profile-sidebar-right'); ?>
     </div>
     <?php
-    echo $this->render('/widgets/chat/main');
+    echo $this->render('@common/widgets/chat-main');
+//    echo $this->render('/widgets/chat/main');
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -22px;color: #fff;}
             .page-loading {

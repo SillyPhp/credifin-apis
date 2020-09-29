@@ -15,22 +15,23 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-12">
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
-                                            <div class="col-sm-3 text-right pr-0">
+                                            <div class="col-sm-3 pr-0">
                                                 <button style="display:none" type="button"
-                                                        class="btn btn-default wizard-prev">
-                                                    Previous
-                                                </button>
-                                                <button type="button" class="btn btn-primary wizard-next">
-                                                    Continue
-                                                </button>
+                                                        class="btn btn-default wizard-prev">Previous</button>
                                                 <button style="display:none" type="submit"
-                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">
-                                                    Submit
-                                                </button>
-
+                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">Submit</button>
+                                            </div>
+                                            <div class="col-sm-9 text-right pr-0">
+                                                <div class="cr-job">
+                                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                                       title="Create AI Job" class="ai">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                                        <h3>Create AI Job</h3>
+                                                    </a>
+                                                </div>
                                             </div>
                                             <?php
                                         } else{
@@ -54,8 +55,8 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-md-12">
-                                                <h4>Select Jobs for campus hiring.</h4>
+                                            <div class="col-md-12 text-center">
+                                                <h4 class="slct">Select from Previous Jobs for campus hiring.</h4>
                                             </div>
                                             <?php
                                             foreach ($applications['data'] as $app) {
@@ -81,13 +82,15 @@ use yii\helpers\Url;
                                                                         <strong><?= $app['name']; ?></strong></div>
                                                                     <div class="job-location location">
                                                                         <i class="fa fa-map-marker"></i>
-                                                                        <?php
-                                                                        $lc = [];
-                                                                        foreach ($app['locations'] as $loc) {
-                                                                            array_push($lc, $loc['name']);
-                                                                        }
-                                                                        echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
-                                                                        ?>
+                                                                        <?php if($app['locations']) {
+                                                                            $lc = [];
+                                                                            foreach ($app['locations'] as $loc) {
+                                                                                array_push($lc, $loc['name']);
+                                                                            }
+                                                                            echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                        }else{
+                                                                            echo '<span title="Work From Home">Work From Home</span>';
+                                                                        }?>
                                                                     </div>
                                                                 </div>
                                                                 <div class="job-listing-meta meta">
@@ -127,7 +130,7 @@ use yii\helpers\Url;
                                         if (!empty($applications['data'])) {
                                             ?>
                                             <div class="col-md-12">
-                                                <h4>Select Colleges for campus hiring.</h4>
+                                                <h4 class="slct">Select Colleges for campus hiring.</h4>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input form-md-floating-label">
@@ -240,8 +243,41 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.job-listing-company-logo img{
+    object-fit:contain;
+}
+.ai{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.ai h3 {
+	margin: 0;
+	font-size: 20px;
+	color: #ff7803;
+	font-family: roboto;
+	margin-left: 5px;
+} 
+.page-content {
+    background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
+    background-size: auto 100% !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.cr-job {
+	text-align: right;
+}
+.container-fluid{
+    padding:0 !important;
+}
 .pr-0{
     padding-right:0px;
+    margin-bottom:5px;
+}
+.slct{
+    font-family:roboto;
+    font-size:18px;
+    font-weight:500;
 }
 .card-like {
 //  margin-top: 50px;
@@ -253,14 +289,17 @@ $this->registerCss('
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 .wizard {
-  overflow: hidden;
+	overflow: hidden;
+	background-color: #fffffff7;
 }
 .wizard .wizard-header {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+  font-family:roboto;
+  font-weight:500;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;
@@ -269,6 +308,7 @@ $this->registerCss('
   border-color: #038dab;
   border-top-width: 2px;
   clear:both;
+  margin:0;
 }
 .wizard .wizard-header .steps {
   height: 15px;

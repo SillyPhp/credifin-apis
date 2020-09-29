@@ -220,7 +220,7 @@ body{
  color: #6c757d;
  font-size:14px;
 }
-.posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
+.posted-tweet iframe{width:280px !important;margin-bottom:0px !important;}
 .head-bg{
     background-color:#C1E8F1;
     padding: 85px 0px;
@@ -486,12 +486,26 @@ float:right;
     bottom: 0px;
     left: 20%;
 }
+.twitter-tweet {
+    max-width: 272px !important;
+    justify-content:center;
+}
 //.container blockquote  {
 //    display: none;
 //}
 @media only screen and (max-width: 550px){
     .overlay-image {
         max-width: 115px;
+    }
+    .masonry { 
+        -webkit-column-count: 1;
+      -moz-column-count:1;
+      column-count: 1;
+      column-gap: 0em;
+       margin: 0em;
+        -moz-column-gap: 0em;
+        -webkit-column-gap: 0em;
+        column-gap: 0em;
     }
 }
 ");

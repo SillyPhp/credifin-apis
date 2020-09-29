@@ -27,6 +27,8 @@ class UserProfileContactEdit extends Model {
     public function rules() {
         return [
             [['contact','email','website','state','city'],'required'],
+            [['contact','email','website','state','city'],'trim'],
+            [['contact','email','website','state','city'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             ['contact', 'integer','min'=>10],
         ];
     }

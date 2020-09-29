@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -43,22 +43,23 @@ $form = ActiveForm::begin([
     ],
 ]);
 ?>
+
     <div class="row">
         <div class="col-md-12">
-            <legend><?= Yii::t('frontend', 'Organization Information'); ?></legend>
+            <legend><?= Yii::t('frontend', 'I Want To Hire'); ?></legend>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
+            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
+            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_website')->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
+            <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
@@ -92,15 +93,15 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
+            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
+            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
@@ -119,18 +120,12 @@ $form = ActiveForm::begin([
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
-    <div class="row  pt-20">
-        <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
-               href="<?= Url::to('/signup/individual'); ?>"
-               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
-        </div>
-    </div>
 <?php ActiveForm::end(); ?>
 
 <?php
 $this->registerCss('
-.intl-tel-input {
+
+.intl-tel-input, .iti {
     width: 100%;
 }
 .input-group-addon{

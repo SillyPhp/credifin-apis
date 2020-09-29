@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use yii\widgets\Pjax;
+use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -122,16 +122,18 @@ $industries = Json::encode($industries);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= Html::encode($organization['name']) ?></div>
+                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
                                     <div class="com-establish"><span class="detail-title">Tagline:</span> <span
                                                 class="model" id="tag_line" data-type="text" data-pk="tag_line"
                                                 data-name="tag_line"
-                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
-                                        <span data-for="tag_line" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                                data-value="<?= htmlspecialchars_decode($organization['tag_line']); ?>"></span>
+                                        <span data-for="tag_line" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                     </div>
                                     <div class="com-establish"><span class="detail-title">Industry:</span> <span
                                                 class="model" data-type="select" id="industry_enc_id"></span> <span
-                                                data-for="industry_enc_id" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                                data-for="industry_enc_id" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -145,12 +147,12 @@ $industries = Json::encode($industries);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+                    <!--                    <ul class="nav nav-tabs nav-padd-20">-->
+                    <!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+                    <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -158,16 +160,19 @@ $industries = Json::encode($industries);
                     </div>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
-                           data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['facebook']) ?>"
+                           class="facebook model-link"><i
                                     class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
-                           data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['twitter']) ?>"
+                           class="twitter model-link"><i
                                     class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
-                           data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['linkedin']) ?>"
+                           class="linkedin model-link"><i
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
-                           data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['website']) ?>" class="web model-link"><i
                                     class="fas fa-link"></i> </a>
                     </div>
                 </div>
@@ -177,10 +182,10 @@ $industries = Json::encode($industries);
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
-                            About <?= Html::encode($organization['name']) ?>
+                            About <?= htmlspecialchars_decode($organization['name']) ?>
                             <span data-for="description" class="edit-box"><i
                                         class="fas fa-pencil-alt"></i></span>
                         </div>
@@ -190,20 +195,21 @@ $industries = Json::encode($industries);
                             <div class="com-description">
                                 <span href="#" class="model" id="description" data-pk="description"
                                       data-name="description" data-type="textarea"
-                                      data-value="<?= Html::encode($organization['description']) ?>"></span>
+                                      data-value="<?= htmlspecialchars_decode($organization['description']) ?>"></span>
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
                                 <div class="row margin-0">
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <span data-for="employees" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                        <span data-for="employees" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
                                                     <span class="model" id="employees" data-pk="number_of_employees"
                                                           data-name="number_of_employees" data-type="number"
-                                                          data-value="<?= Html::encode($organization['number_of_employees']) ?>"></span>
+                                                          data-value="<?= htmlspecialchars_decode($organization['number_of_employees']) ?>"></span>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
@@ -249,7 +255,7 @@ $industries = Json::encode($industries);
                                 <div class="mv-text">
                                     <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
                                           data-type="textarea"
-                                          data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                          data-value="<?= htmlspecialchars_decode($organization['mission']) ?>"></span>
                                 </div>
                                 <div class="vission-box">
                                     <div class="mv-heading">
@@ -259,7 +265,40 @@ $industries = Json::encode($industries);
                                     <div class="mv-text">
                                         <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
                                               data-type="textarea"
-                                              data-value="<?= Html::encode($organization['vision']) ?>"></span>
+                                              data-value="<?= htmlspecialchars_decode($organization['vision']) ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="av-jobs-intern">
+                        <div class="row">
+                            <div class="heading-style">
+                                Available Jobs
+                                <div class="pull-right">
+                                    <a href="/account/jobs/create" class="write-review">Create New Job</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="internships-block">
+                                <div class="heading-style">
+                                    Available Internships
+                                    <div class="pull-right">
+                                        <a href="/account/internships/create" class="write-review">Create New
+                                            Internship</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
                                     </div>
                                 </div>
                             </div>
@@ -319,7 +358,7 @@ $industries = Json::encode($industries);
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">
-                                Inside <?= Html::encode($organization['name']) ?>
+                                Inside <?= htmlspecialchars_decode($organization['name']) ?>
                                 <div class="button_location pull-right">
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-gallery-images">
@@ -386,7 +425,7 @@ $industries = Json::encode($industries);
                             <div class="divider"></div>
                             <?php
                             Pjax::begin(['id' => 'product_images']);
-                            if(!empty($org_products['organizationProductImages'])) {
+                            if (!empty($org_products['organizationProductImages'])) {
                                 ?>
                                 <div class="office-pics">
                                     <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
@@ -408,7 +447,8 @@ $industries = Json::encode($industries);
                                                 </a>
                                                 <div id="product-confirm" class="hidden-p">
                                                     <h5>Are you sure want to remove Image?</h5>
-                                                    <button id="confirm_remove_product" type="button" value="<?= $p_image['image_enc_id'] ?>"
+                                                    <button id="confirm_remove_product" type="button"
+                                                            value="<?= $p_image['image_enc_id'] ?>"
                                                             class="btn-primary btn-sm editable-submit">
                                                         <i class="glyphicon glyphicon-ok"></i>
                                                     </button>
@@ -431,9 +471,12 @@ $industries = Json::encode($industries);
                             Pjax::end()
                             ?>
                             <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fas fa-pencil-alt"></i></span></h4>
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i
+                                                class="fas fa-pencil-alt"></i></span></h4>
                                 <p>
-                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description"
+                                          data-name="description" data-type="textarea"
+                                          data-value="<?= htmlspecialchars_decode($org_products['description']) ?>"></span>
                                 </p>
                             </div>
                         </div>
@@ -516,75 +559,38 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div class="row">
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style"><?= htmlspecialchars_decode($organization['name']) ?> Reviews</div>
+                        <div class="divider"></div>
+                        <div id="org-reviews"></div>
+                        <div class="viewbtn">
+                            <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="address-division">
                         <div class="heading-style">
-                            Available Jobs
-                            <div class="pull-right">
-                                <a href="/account/jobs/create" class="write-review">Create New Job</a>
+                            Address
+                            <div class="button_location pull-right">
+                                <button type="button" class="i-review-nx modal-load-class"
+                                        value="/account/locations/create">
+                                            <span class="i-review-button-tx">
+                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
+                                            </span>
+                                </button>
                             </div>
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
+                            <div class="col-md-5 col-xs-12 pull-right">
+                                <div id="map"></div>
                             </div>
-                        </div>
-                    </div>
+                            <div class="col-md-7 col-xs-12">
+                                <div class="head-office">
 
-                    <div class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/account/internships/create" class="write-review">Create New Internship</a>
                                 </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                Address
-                                <div class="button_location pull-right">
-                                    <button type="button" class="i-review-nx modal-load-class"
-                                            value="/account/locations/create">
-                                            <span class="i-review-button-tx">
-                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
-                                            </span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-5 col-xs-12 pull-right">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-md-7 col-xs-12">
-                                    <div class="head-office">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="menu4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style"><?= Html::encode($organization['name']) ?> Reviews</div>
-                            <div class="divider"></div>
-                            <div id="org-reviews"></div>
-                            <div class="viewbtn">
-                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
                             </div>
                         </div>
                     </div>
@@ -653,8 +659,8 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 Pjax::end();
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/mustache/organization-reviews',[
-        'org_slug' => $organization['slug']
+echo $this->render('/widgets/mustache/organization-reviews', [
+    'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
 .write-review{
@@ -1244,7 +1250,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position:relative;
 }
 .button_location{
-    padding: 14px 0px;
+//    padding: 14px 0px;
     float:right;
     font-family: "Open Sans", sans-serif;
 }
