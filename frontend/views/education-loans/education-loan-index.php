@@ -1408,11 +1408,15 @@ $this->registerCss('
 .moving1,.moving {
     display: none;
 }
-@media screen and (max-width:990px) (min width: 760px){
+.loan-text h1 {
+    font-size: 30px;
+ }
+}
+@media screen and (max-width:990px) and (min width:760px){
 .loan-image img {
     margin-top: 100px;
 }
-
+}
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
 $this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
