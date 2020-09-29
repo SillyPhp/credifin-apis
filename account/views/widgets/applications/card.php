@@ -159,6 +159,10 @@ if (!empty($total_applications)) {
                                     ?>
                                     <span>1</span>
                                 </a>
+<!--                                <div class="new">-->
+<!--                                    <div class="pulse"></div>-->
+<!--                                    <div class="dot"></div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>
