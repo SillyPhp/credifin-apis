@@ -233,6 +233,7 @@ font-size:15px !important;
 #user_box img{
     max-width: 50px;
     display: inline-block;
+    border-radius: 50%;
 }
 #user_box canvas{
 border-radius: 50%;
