@@ -902,28 +902,28 @@ $script = <<< JS
             },
             insertTag: function (data, tag) {
                 data.push(tag);
-             }, 
-             maximumInputLength: 100 // only allow terms up to 20 characters long
-             }).on('select2:select', function (e) {
-                    var data = e.params.data;
-                    if (data.id!='self'&&data.pulled_from==='claim')
-                        {
-                            $('#pulled_from').val('claim');
-                            $('#colg_text').val(data.text);
-                            $('#colg_id').val(data.id);
-                        }
-                    else if (data.id==='self'&&data.pulled_from==='unclaim')
-                        {
-                            $('#pulled_from').val('unclaim');
-                            $('#colg_text').val(data.text);
-                            $('#colg_id').val(data.id);
-                        }
-                    else if (data.id!='self'&&data.pulled_from==='unclaim')
-                        {
-                            $('#pulled_from').val('unclaim');
-                            $('#colg_text').val(data.text);
-                            $('#colg_id').val(data.id);
-                        }
+            }, 
+            maximumInputLength: 100 // only allow terms up to 20 characters long
+            }).on('select2:select', function (e) {
+                var data = e.params.data;
+                if (data.id!='self'&&data.pulled_from==='claim')
+                    {
+                        $('#pulled_from').val('claim');
+                        $('#colg_text').val(data.text);
+                        $('#colg_id').val(data.id);
+                    }
+                else if (data.id==='self'&&data.pulled_from==='unclaim')
+                    {
+                        $('#pulled_from').val('unclaim');
+                        $('#colg_text').val(data.text);
+                        $('#colg_id').val(data.id);
+                    }
+                else if (data.id!='self'&&data.pulled_from==='unclaim')
+                    {
+                        $('#pulled_from').val('unclaim');
+                        $('#colg_text').val(data.text);
+                        $('#colg_id').val(data.id);
+                    }
                 }); 
             }
         });
@@ -933,11 +933,20 @@ $script = <<< JS
     let collegeNameList = document.getElementById('collegeNameList');
     collegeName.onfocus = function () {
         collegeNameList.classList.add('collegeListShow');
-        selectCollege()
+        selectCollege();
+    };  
+    window.onclick = function(event) {
+        if(collegeNameList.classList.contains('collegeListShow')){
+            if(event.target.id !== 'collegeNameList' && event.target.id !== 'collegeName'){
+                collegeNameList.classList.remove('collegeListShow');
+            }   
+        }
     };
+     
     collegeName.onkeyup = function() {
         searchCollege();
     };
+    
     function searchCollege() {
         let collegeName = document.getElementById('collegeName').value; 
         let serchName = collegeName.toLowerCase();
@@ -948,27 +957,27 @@ $script = <<< JS
         for(let i = 0; i < result.length; i++){
             $('#collegeNameList').append('<li class="college-names" id="'+ result[i].id +'">'+ result[i].text +'</li>');
         }
-       selectCollege()
+        
+        selectCollege();
     }
     function selectCollege() {
        let collegeLi = document.querySelectorAll('.college-names');
-        console.log(collegeLi);
-        for(let j = 0; j <= collegeLi.length; j++){
-            collegeLi[j].addEventListener('click', function() {
-                let clickedElem = event.currentTarget;
-                let elemId = clickedElem.getAttribute('id');
+       collegeLi.forEach(function(college) {
+           college.addEventListener("click", function() {
+               let clickedElem = this;
+               let elemId = clickedElem.getAttribute('id');
                 let elemText = clickedElem.innerText;
-                console.log(elemId, elemText);
-                
+          
                 let hiddenInput = document.getElementById('selectedCollegeID');
                 hiddenInput.value = elemId;
                 collegeName.value = elemText;
-                
+               
                 collegeNameList.classList.remove('collegeListShow');
-            })
-        }
+           });
+       });
     }
 
+    
     function getCountries() { 
         $.ajax({     
             url : '/api/v3/countries-list/get-countries-list', 
