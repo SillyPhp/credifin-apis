@@ -10,6 +10,7 @@ use common\models\ApplicationUnclaimOptions;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\Countries;
 use common\models\Currencies;
 use common\models\Designations;
 use common\models\Industries;
@@ -37,13 +38,13 @@ class Cards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select([new Expression('NULL as sector'), 'a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
+            ->select(['a.source',
+                new Expression('NULL as sector'),
+                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'd.initials_color color',
                 'c.name as title',
-                'a.source',
-                'a.unique_source_id',
                 'a.last_date',
-                '(CASE
+                'i.icon', '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN a.experience = "2" THEN "1 Year Experience"
@@ -66,11 +67,9 @@ class Cards
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -86,25 +85,27 @@ class Cards
             ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['(CASE
+            ->select(['a.source',
+                '(CASE
                 WHEN a.source = 3 THEN v.job_level
                 WHEN a.source = 2 THEN v.job_level
                 ELSE NULL
-               END) as sector', 'a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type',
+               END) as sector',
+                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'd.initials_color color',
                 'c.name as title',
-                'a.source',
-                'a.unique_source_id',
                 'a.last_date',
-                '(CASE
+                'i.icon', '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN a.experience = "2" THEN "1 Year Experience"
@@ -113,25 +114,23 @@ class Cards
                 WHEN a.experience = "5-10" THEN "5-10 Years Experience"
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
+                ELSE NULL
                END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
-                'v.wage_type salary_type',
+                'v.wage_type as salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
-               END) as city'
+               END) as city',
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = v.currency_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
@@ -139,63 +138,102 @@ class Cards
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
+
+        if (!empty($profiles)) {
+            $cards1->andWhere([
+                'or',
+                ['in', 'c.name', $profiles],
+                ['in', 'i.name', $profiles],
+            ]);
+            $cards2->andWhere([
+                'or',
+                ['in', 'c.name', $profiles],
+                ['in', 'i.name', $profiles],
+            ]);
+        }
+
+
+        if (isset($industries) && !empty($industries)) {
+            $cards1->orWhere(['in', 'h.industry', $industries]);
+        }
+
+        if (isset($skills) && !empty($skills)) {
+            $cards1->orWhere(['in', 'y.skill', $skills]);
+            $cards2->orWhere(['in', 'y.skill', $skills]);
+        }
+
+        if (isset($jobTitles) && !empty($jobTitles)) {
+            $cards1->orWhere([
+                'or',
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
+            ]);
+            $cards2->orWhere([
+                'or',
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
+            ]);
+        }
+
+        if (isset($working_days)) {
+            $cards1->orWhere(['m.working_days' => $working_days]);
+        }
+
+        if (isset($experience)) {
+            $cards1->orWhere(['a.experience' => $experience]);
+            $cards2->orWhere(['a.experience' => $experience]);
+        }
+
+        if (isset($min_expected_salary)) {
+            $cards1->orWhere(['m.min_wage' => $min_expected_salary]);
+            $cards2->orWhere(['v.min_wage' => $min_expected_salary]);
+        }
+
+        if (isset($max_expected_salary)) {
+            $cards1->orWhere(['m.max_wage' => $max_expected_salary]);
+            $cards2->orWhere(['v.max_wage' => $max_expected_salary]);
+        }
+
+        if (isset($timings_from)) {
+            $cards1->orWhere(['a.timings_from' => $timings_from]);
+            $cards2->orWhere(['a.timings_from' => $timings_from]);
+        }
+
+        if (isset($timings_to)) {
+            $cards1->orWhere(['a.timings_to' => $timings_to]);
+            $cards2->orWhere(['a.timings_to' => $timings_to]);
+        }
+
+        if (isset($salary)) {
+            $cards1->orWhere(['m.fixed_wage' => $salary]);
+            $cards2->orWhere(['v.fixed_wage' => $salary]);
+        }
+
+        if (isset($work_type)) {
+            $cards1->orWhere(['a.type' => $work_type]);
+            $cards2->orWhere(['a.type' => $work_type]);
+        }
+
         if (isset($options['company'])) {
-            $cards1->andWhere([
-                'or',
-                ['like', 'd.name', $options['company']]
-            ]);
-            $cards2->andWhere([
-                'or',
-                ['like', 'd.name', $options['company']]
-            ]);
+            $cards1->andWhere(['like', 'd.name', $options['company']]);
+            $cards2->andWhere(['like', 'd.name', $options['company']]);
         }
 
-        if (isset($options['organization_id'])) {
-            $cards1->andWhere(['a.organization_enc_id' => $options['organization_id']]);
-            $cards2->andWhere(['a.organization_enc_id' => $options['organization_id']]);
-        }
-
-        if (isset($options['slug'])) {
-            $cards1->andWhere([
-                'or',
-                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
-            ]);
-            $cards2->andWhere([
-                'or',
-                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
-            ]);
-        }
-        if (isset($options['location'])) {
-            $cards1->andWhere([
-                'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']],
-                ['v.name' => $options['location']],
-                ['x.name' => $options['location']]
-            ]);
-            $cards2->andWhere([
-                'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']]
-            ]);
+        if (isset($options['slug']) && !empty($options['slug'])) {
+            $cards1->andWhere(['like', 'd.slug', $options['slug']]);
+            $cards2->andWhere(['like', 'd.slug', $options['slug']]);
         }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
             $options['for_careers'] = 0;
         }
-
-        $cards1->andWhere([
-            'or',
-            ['a.for_careers' => $options['for_careers']]
-        ]);
-        $cards2->andWhere([
-            'or',
-            ['a.for_careers' => $options['for_careers']]
-        ]);
+        $cards1->andWhere(['a.for_careers' => $options['for_careers']]);
+        $cards2->andWhere(['a.for_careers' => $options['for_careers']]);
 
         if (isset($options['category'])) {
             $cards1->andWhere([
@@ -215,33 +253,120 @@ class Cards
                 ['like', 'i.name', $options['category']],
             ]);
         }
+        if (isset($options['slug'])) {
+            $cards1->andWhere(['d.slug'=>$options['slug']]);
+            $cards2->andWhere(['d.slug'=>$options['slug']]);
+        }
         if (isset($options['keyword'])) {
             $search = trim($options['keyword'], " ");
-            $search_pattern = self::makeSQL_search_pattern($search);
+            if ($search == "remote" || $search == "work from home")
+            {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['like', 'a.type', $search],
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['like', 'x.location_name', $search],
+                    ['like', 'a.type', $search],
+                    ['like', 'c.name', $search],
+                ]);
+            }
+            else{
+                $search_pattern = self::makeSQL_search_pattern($search);
+                $cards1->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 'v.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'x.name', $search_pattern],
+                    ['REGEXP', 'l.designation', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'h.industry', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'cy.name', $search_pattern]
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'x.location_name', $search_pattern]
+                ]);
+            }
+        }
+        if (isset($optLocation)) {
+            $search_location = trim($optLocation, " ");
+            $search_pattern_location = self::makeSQL_search_pattern($search_location);
             $cards1->andFilterWhere([
                 'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 'v.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
-                ['REGEXP', 'l.designation', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'h.industry', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'v.name', $search_pattern_location],
+                ['REGEXP', 'x.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'cy.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'cy.abbreviation', $search_pattern_location],
             ]);
             $cards2->andFilterWhere([
                 'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'x.location_name', $search_pattern_location],
             ]);
+        }
+        if (!empty($locations)) {
+            $cityIds = [];
+            $stateIds = [];
+            $countryIds = [];
+            foreach ($locations as $loc) {
+                $chkCountries = Countries::findOne(['name' => $loc]);
+                if ($chkCountries) {
+                    array_push($countryIds, $chkCountries['country_enc_id']);
+                }
+                $chkStates = States::findOne(['name' => $loc]);
+                if ($chkStates) {
+                    array_push($stateIds, $chkStates['state_enc_id']);
+                }
+                $chkCities = Cities::findOne(['name' => $loc]);
+                if ($chkCities) {
+                    array_push($cityIds, $chkCities['city_enc_id']);
+                }
+            }
+            if (!empty($cityIds)) {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['in', 'g.city_enc_id', $cityIds],
+                    ['in', 'x.city_enc_id', $cityIds],
+                ]);
+                $cards2->andFilterWhere(['in', 'g.city_enc_id', $cityIds]);
+            } elseif (!empty($stateIds)) {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 's.state_enc_id', $stateIds],
+                    ['in', 'v.state_enc_id', $stateIds],
+                ]);
+                $cards2->andWhere(['in', 's.state_enc_id', $stateIds]);
+            } else {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 'ct.country_enc_id', $countryIds],
+                    ['in', 'cy.country_enc_id', $countryIds],
+                ]);
+                $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
+            }
         }
         $result = null;
         if (isset($options['similar_jobs'])) {
@@ -311,12 +436,12 @@ class Cards
                     } else {
                         $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
                     }
-                } else {
-                    $result[$i]['salary'] = "Negotiable";
                 }
             }
-            if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
-                $result[$i]['skill'] = 'Multiple Skills';
+            else
+            {
+                $result[$i]['salary'] = null;
+                $result[$i]['sal'] = 1; //for api jobs where every thing for salary is blank
             }
             if ($result[$i]['salary'] == null || $result[$i]['salary'] == '') {
                 $result[$i]['salary'] = $currency . ' View In Detail';
