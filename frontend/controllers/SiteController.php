@@ -10,12 +10,16 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
+use common\models\ExternalNewsUpdate;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
 use common\models\States;
 use frontend\models\accounts\CredentialsSetup;
+use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
@@ -56,8 +60,6 @@ use common\models\Users;
 use yii\web\UploadedFile;
 use frontend\models\account\locations\OrganizationLocationForm;
 use frontend\models\questionnaire\QuestionnaireForm;
-use common\models\LeadsApplications;
-use common\models\LeadsCollegePreference;
 
 /**
  * Site controller
@@ -1159,7 +1161,8 @@ class SiteController extends Controller
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                return $model->save();
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
             }
         }
         if (Yii::$app->request->isAjax) {

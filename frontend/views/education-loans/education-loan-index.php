@@ -430,8 +430,8 @@ use yii\helpers\Url;
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
                                     alt=""/> Contact Us
                         </div>
-                        <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +8727985888</div>
-                        <div class="l-help-txt-btn"><a href="tel:+8727985888">Call Us</a>
+                        <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +91 8727985888</div>
+                        <div class="l-help-txt-btn"><a href="tel:+918727985888">Call Us</a>
                         </div>
                     </div>
                 </div>

@@ -91,10 +91,10 @@ class EducationLoansController extends Controller
             if ($model->save())
             {
                 Yii::$app->session->setFlash('success', 'Success');
+                return $this->refresh();
             }else{
                 Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
             }
-            return $this->refresh();
         }else{
             return $this->render('leads-form',['model'=>$model,'data'=>$data]);
         }
