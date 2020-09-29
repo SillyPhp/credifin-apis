@@ -17,7 +17,7 @@ class TestCacheController extends Controller
     {
         //return Url::to('@root');
         $client = Client::getInstance();
-        //$client->getEngine()->setPath('bin\\phantomjs.exe');
+        $client->getEngine()->setPath('@rootDirectory/');
 
         /**
          * @see JonnyW\PhantomJs\Http\Request
