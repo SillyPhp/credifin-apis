@@ -1,5 +1,6 @@
 <?php
 namespace frontend\models\applications;
+use common\models\LeadsApplications;
 use common\models\LeadsParentInformation;
 use common\models\LoanApplicationLeads;
 use Yii;
@@ -8,7 +9,8 @@ use common\models\Utilities;
 class LeadsForm extends Model
 {
    public $_flag;
-   public $student_name;
+   public $first_name;
+   public $last_name;
    public $student_mobile_number;
    public $university_name;
    public $course_name;
@@ -26,11 +28,13 @@ class LeadsForm extends Model
    public function rules()
    {
        return [
-           [['student_name','student_mobile_number'],'required'],
+           [['first_name','last_name','student_mobile_number'],'required'],
+           [['first_name', 'last_name', 'student_mobile_number','university_name','course_name'], 'trim'],
            [['university_name','course_name','course_fee_annual','parent_name','parent_relation','parent_mobile_number','parent_annual_income'],'safe'],
-           [['student_name', 'university_name','course_name'], 'string', 'max' => 255],
+           [['first_name','last_name', 'university_name','course_name'], 'string', 'max' => 255],
+           [['first_name', 'last_name'], 'match','pattern' => '/^([A-Z a-z])+$/', 'message' => 'Name can only contain alphabets'],
            [['student_mobile_number'], 'string','length'=>[10,15]],
-           [['course_fee_annual'], 'integer'],
+           [['course_fee_annual'], 'integer','min'=>500],
        ];
    }
 
@@ -38,16 +42,18 @@ class LeadsForm extends Model
    {
        $transaction = Yii::$app->db->beginTransaction();
        try {
-           $model = new LoanApplicationLeads();
+           $model = new LeadsApplications();
            $utilitiesModel = new Utilities();
            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-           $model->lead_enc_id = $utilitiesModel->encrypt();
+           $model->application_enc_id = $utilitiesModel->encrypt();
            $model->application_number = rand(1000, 10000) . time();
-           $model->student_name = $this->student_name;
+           $model->first_name = $this->first_name;
+           $model->last_name = $this->last_name;
            $model->student_mobile_number = $this->student_mobile_number;
-           $model->university_name = $this->university_name;
+           $model->college_name = $this->university_name;
            $model->course_name = $this->course_name;
            $model->course_fee_annual = $this->course_fee_annual;
+           $model->filled_by = 1;
            $model->created_on = date('Y-m-d H:i:s');
            $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
            if(!$model->save()){
@@ -63,7 +69,7 @@ class LeadsForm extends Model
                    $utilitiesModel = new Utilities();
                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                    $parent->lead_parent_enc_id = $utilitiesModel->encrypt();
-                   $parent->lead_enc_id = $model->lead_enc_id;
+                   $parent->application_enc_id = $model->application_enc_id;
                    $parent->name = $this->parent_name[$i];
                    $parent->relation_with_student = (($this->parent_relation[$i])?$this->parent_relation[$i]:null);
                    $parent->mobile_number = (($this->parent_mobile_number[$i])?$this->parent_mobile_number[$i]:null);

@@ -117,10 +117,17 @@ if (!empty($total_applications)) {
                             </div>
                             <div class="hr-com-field">
                                 <?php
+                                $concat = "";
                                 if (!empty($applications[$next]['placementLocations'][0]['total'])):
-                                    echo $applications[$next]['placementLocations'][0]['total'] . ' ' . 'Openings';
+                                    if($applications[$next]['placementLocations'][0]['total'] > 1){
+                                        $concat = "s";
+                                    }
+                                    echo $applications[$next]['placementLocations'][0]['total'] . ' ' . 'Opening' . $concat;
                                 elseif (!empty($applications[$next]['positions'])):
-                                    echo $applications[$next]['positions'] . ' ' . 'Openings';
+                                    if($applications[$next]['positions'] > 1){
+                                        $concat = "s";
+                                    }
+                                    echo $applications[$next]['positions'] . ' ' . 'Opening' . $concat;
                                 else:
                                     echo 'Work From Home';
                                 endif;
@@ -151,6 +158,10 @@ if (!empty($total_applications)) {
                                     }
                                     ?>
                                 </a>
+<!--                                <div class="new">-->
+<!--                                    <div class="pulse"></div>-->
+<!--                                    <div class="dot"></div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -189,18 +200,24 @@ $this->registerCss("
     font-size: 25px;
     margin-top: 4px;
     transition: all .3s;
+    color:#00a0e3;
 }
 .hr-com-jobs > a > i:hover{
     color:#ff7803;
 }
+.hr-com-field {
+    font-weight: 400;
+    color: #807575;
+}
 .appl {
     flex-basis: 100%;
+    position:relative;
 }
 .appl a {
     font-family: roboto;
     font-size: 12px;
     color: #00a0e3;
-    border: 1px solid #00a0e3;
+    border: 2px solid #00a0e3;
     -webkit-border-radius: 20px !important;
     -moz-border-radius: 20px !important;
     -ms-border-radius: 20px !important;
@@ -306,6 +323,45 @@ $this->registerCss("
 .topic-con{
     position:relative;
 } 
+
+.new {
+    height: 16px;
+    width: 16px;
+    margin: 0 auto;
+    position: absolute;
+    top: -6px;
+    right: -4px;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: #FF7803;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+}
+.pulse {
+    z-index: 0;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background-color: #FF78033D;
+    position: absolute;
+    animation-name: pulsing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+@-webkit-keyframes pulsing {
+  from {transform: scale(1)}
+  to {transform: scale(0.5)}
+}
+@keyframes pulsing {
+  from {transform: scale(1)}
+  to {transform: scale(0.5)}
+}
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
