@@ -34,7 +34,7 @@ class LeadsForm extends Model
            [['first_name','last_name', 'university_name','course_name'], 'string', 'max' => 255],
            [['first_name', 'last_name'], 'match','pattern' => '/^([A-Z a-z])+$/', 'message' => 'Name can only contain alphabets'],
            [['student_mobile_number'], 'string','length'=>[10,15]],
-           [['course_fee_annual'], 'integer'],
+           [['course_fee_annual'], 'integer','min'=>500],
        ];
    }
 

@@ -30,6 +30,26 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
         </div>
     </div>
 <?php endif; ?>
+<?php if (!Yii::$app->user->isGuest) {
+    $first = Yii::$app->user->identity->first_name;
+    $last = Yii::$app->user->identity->last_name;
+    $name = ucwords($first) . ' ' . ucwords($last);
+    $color = Yii::$app->user->identity->initials_color;
+    ?>
+ <div id="user_box">
+    <?php
+    if (!empty(Yii::$app->user->identity->image)){
+    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+    ?>
+    <img src="<?= $image ?>"/>
+    <?php }else { ?>
+        <canvas class="user-icon" name="<?= $name; ?>"
+                color="<?= $color; ?>" width="50"
+                height="50" font="20px"></canvas></span>
+    <?php } ?>
+    <h3 class="p_label l_tag"><?= $name ?></h3>
+</div>
+<?php } ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
         <div class="f-contain">
@@ -76,11 +96,20 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-12">
+                        <div><label class="p_label">Parent Information</label></div>
+                        <div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>
+                        <div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>
+                        <div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>
+                        <div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>
+                    </div>
+                </div>
+                <div class="row">
                     <div id="clone_fields_parent"></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button id="add_parent_info" class="addAnotherCo"><i class="fas fa-plus"></i> Add Parent Information</button>
+                        <button id="add_parent_info" class="addAnotherCo"><i class="fas fa-plus"></i> Add More</button>
                     </div>
                 </div>
                 <div class="row">
@@ -102,8 +131,8 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
 <?php
 $script = <<< JS
 $('#student_mobile_number').mask("#", {reverse: true});
-$('#parent_mobile_number').mask("#", {reverse: true});
-$('#parent_annual_income').mask("#", {reverse: true});
+$('.parent_mobile_number').mask("#", {reverse: true}); 
+$('.parent_annual_income').mask("#", {reverse: true});
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
 });
@@ -114,9 +143,9 @@ function addAnotherField()
 {
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
-     '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]" required></div>' +
-     '<div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]" required></div>' +
-     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]"></div>' +
+     '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
+     '<div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>' +
+     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
      '<button type="button" class="addAnotherCo input-group-text float-right" onclick="removeAnotherField(this)"><i class="fas fa-times"></i> Remove</button>'+
@@ -126,6 +155,8 @@ function addAnotherField()
             textnode.setAttribute('class', 'parent_inforamtion');
             textnode.innerHTML = field; 
             $('#clone_fields_parent').prepend(textnode);
+            $('.parent_mobile_number').mask("#", {reverse: true}); 
+            $('.parent_annual_income').mask("#", {reverse: true});
 }
 getCourses();
 function getCourses()
@@ -182,6 +213,33 @@ $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
 $this->registerCss("
+.l_tag{
+margin: 0 0 0 10px;
+font-family: 'Roboto', sans-serif;
+font-size:15px !important;
+}
+#user_box{   
+    position: fixed;
+    width: 100%;
+    max-width: 250px;
+    display: flex;
+    right: 0;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 10px 5px #eee;
+    align-items: center;
+}
+#user_box img{
+    max-width: 50px;
+    display: inline-block;
+}
+#user_box canvas{
+border-radius: 50%;
+}
+#user_box h3{
+    display: inline-block;
+} 
 .addAnotherCo{
     background: none;
     border:none;
