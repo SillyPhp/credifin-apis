@@ -226,9 +226,9 @@ class Cards
             $cards2->andWhere(['like', 'd.name', $options['company']]);
         }
 
-        if (isset($options['slug']) && !empty($options['slug'])) {
-            $cards1->andWhere(['like', 'd.slug', $options['slug']]);
-            $cards2->andWhere(['like', 'd.slug', $options['slug']]);
+        if (isset($options['organization_id']) && !empty($options['organization_id'])) {
+            $cards1->andWhere(['like', 'd.organization_enc_id', $options['organization_id']]);
+            $cards2->andWhere(['like', 'd.organization_enc_id', $options['organization_id']]);
         }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
