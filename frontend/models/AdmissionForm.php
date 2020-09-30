@@ -130,4 +130,82 @@ class AdmissionForm extends Model
         }
 
     }
+
+    public function updateData($id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if ($id) {
+                $model = LeadsApplications::findOne(['application_enc_id' => $id]);
+            } else {
+                $model = new LeadsApplications();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->application_enc_id = $utilitiesModel->encrypt();
+                $model->application_number = date('ymd') . time();
+            }
+            $model->first_name = $this->first_name;
+            $model->last_name = $this->last_name;
+            $model->student_mobile_number = $this->phone;
+            $model->student_email = $this->email;
+            if ($this->college) {
+                $model->college_name = $this->college;
+            }
+            $model->has_taken_addmission = 0;
+            if ($this->appliedCollege == 'yes') {
+                $model->has_taken_addmission = 1;
+                $model->college_name = $this->college;
+            }
+            if ($this->amount) {
+                $model->loan_amount = $this->amount;
+            }
+            $model->course_name = $this->course;
+            if (!Yii::$app->user->isGuest) {
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+            }
+            if (!$model->save()) {
+                $transaction->rollback();
+                return [
+                    'status' => 201,
+                    'title' => 'errors',
+                    'message' => 'something went wrong',
+                ];
+            }
+            $p_college = array_filter($this->preference_college1);
+            if ($p_college) {
+                foreach ($p_college as $k => $pr) {
+                    $prCollege = LeadsCollegePreference::findOne(['application_enc_id' => $id, 'college_name' => $pr]);
+                    if (!$prCollege) {
+                        $prCollege = new LeadsCollegePreference();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $prCollege->preference_enc_id = $utilitiesModel->encrypt();
+                        $prCollege->application_enc_id = $model->application_enc_id;
+                        $prCollege->college_name = $pr;
+                        if (!Yii::$app->user->isGuest) {
+                            $prCollege->created_by = Yii::$app->user->identity->user_enc_id;
+                        }
+                        if (!$prCollege->save()) {
+                            $transaction->rollback();
+                            return [
+                                'status' => 201,
+                                'title' => 'errors',
+                                'message' => 'something went wrong',
+                            ];
+                        }
+                    }
+                }
+            }
+            $transaction->commit();
+            return [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Form Submitted Successfully',
+            ];
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            print_r($e->getMessage());
+            exit();
+        }
+
+    }
 }

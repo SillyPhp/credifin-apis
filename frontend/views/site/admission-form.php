@@ -5,7 +5,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-
 $image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
 $this->title = "Get Admission In Your Dream College";
 $keywords = "empower youth, college, university, admission, education loan";
@@ -64,8 +63,7 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <h4>Loan Starting from as low as 9% p.a.</h4>
-                    <h3><span class="colorOrange">Interest Free Loans</span> available for <span class="colorOrange">select Colleges/Universities</span>
-                    </h3>
+                    <h3><span class="colorOrange">Interest Free Loans</span> available for <span class="colorOrange">select Colleges/Universities</span></h3>
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
@@ -82,12 +80,12 @@ $this->params['seo_tags'] = [
                         ]); ?>
                         <div class="form-group tab" data-id="step1">
                             <div class="form-flex">
-                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'First Name', 'data-field' => 'first_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Last Name', 'data-field' => 'last_name', 'data-type' => 'leadApplication'])->label(false); ?>
+                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'First Name', 'data-field' => 'first_name',  'data-type' => 'leadApplication'])->label(false); ?>
+                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Last Name', 'data-field' => 'last_name',  'data-type' => 'leadApplication'])->label(false); ?>
                             </div>
 
                             <div class="form-flex">
-                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Email', 'data-field' => 'student_email', 'data-type' => 'leadApplication'])->label(false); ?>
+                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Email', 'data-field' => 'student_email',  'data-type' => 'leadApplication'])->label(false); ?>
                                 <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput()->widget(PhoneInput::className(), [
                                     'jsOptions' => [
                                         'allowExtensions' => false,
@@ -195,7 +193,7 @@ $this->params['seo_tags'] = [
                                 </div>
                                 <div id="loanFields">
                                     <div class="form-flex">
-                                        <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control blurInput', 'placeholder' => 'Loan Amount', 'type' => 'text', 'autocomplete' => 'off', 'id' => 'amount', 'data-field' => 'loan_amount', 'data-type' => 'leadApplication'])->label(false); ?>
+                                        <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control blurInput', 'placeholder' => 'Loan Amount', 'type' => 'text','autocomplete' => 'off', 'id' => 'amount', 'data-field' => 'loan_amount', 'data-type' => 'leadApplication'])->label(false); ?>
                                         <input type="text" name="amountValidation" style="display:none;">
                                     </div>
                                 </div>
@@ -614,7 +612,6 @@ label {
 }
 ');
 $script = <<<JS
-//java script start //
 
 $("input[name='amount']").on("keyup", function(){
     $("input[name='amountValidation']").val(destroyMask(this.value));
@@ -852,7 +849,9 @@ function getCourses()
             }
            if (inputData){
                var form = $('#application_form');
-               var data = form.serialize();
+               var data = form.serializeArray();
+               var lead_id = localStorage.getItem('lead_app_id');
+               data.push({name: 'lead_id', value: lead_id});
                $.ajax({
                     type: 'POST',
                     data: data,
@@ -902,7 +901,9 @@ function getCourses()
            }
            if (inputData){
                var form = $('#application_form');
-               var data = form.serialize();
+               var data = form.serializeArray();
+               var lead_id = localStorage.getItem('lead_app_id');
+               data.push({name: 'lead_id', value: lead_id});
                $.ajax({
                     type: 'POST',
                     data: data,

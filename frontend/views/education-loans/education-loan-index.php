@@ -12,17 +12,29 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-6">
                     <div class="loan-text">
-                        <h1>Education Loan</h1>
-                        <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>
+                        <h1>Get <span class="blue1">Interest Free </span> Loans For All Your <span class="blue1">Educational Needs!!</span></h1>
+<!--                        <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
                         <a href="<?= Url::to('/education-loans/apply') ?>"
                            class="hvr-sweep-to-bottom-2">
                             Apply Now
                         </a>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 clouds">
                     <div class="loan-image">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-header-image.png') ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-hdr-icn.png') ?>"/>
+                    </div>
+                    <div class="cloud moving">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c1.png') ?>"/>
+                    </div>
+                    <div class="cloud1 moving1">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c2.png') ?>"/>
+                    </div>
+                    <div class="cloud2 moving">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c3.png') ?>"/>
+                    </div>
+                    <div class="cloud3 moving1">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c4.png') ?>"/>
                     </div>
                 </div>
             </div>
@@ -30,16 +42,16 @@ use yii\helpers\Url;
     </section>
 
     <div class="clearfix"></div>
-          <section class="edu-loans">
-               <div class="container">
-                   <div class="rupee-main">
-                      <div class="edu-loans-txt">Interest Free Loans For </br> All Your Educational Needs!!</div>
-                       <div class="rupe-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupee.png'); ?>"/>
-                       </div>
-                   </div>
-               </div>
-          </section>
+<!--          <section class="edu-loans">-->
+<!--               <div class="container">-->
+<!--                   <div class="rupee-main">-->
+<!--                      <div class="edu-loans-txt">Interest Free Loans For </br> All Your Educational Needs!!</div>-->
+<!--                       <div class="rupe-img">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/rupee.png'); ?><!--"/>-->
+<!--                       </div>-->
+<!--                   </div>-->
+<!--               </div>-->
+<!--          </section>-->
 
     <section class="edu-with-us">
         <div class="container">
@@ -483,6 +495,31 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.blue1{
+    color: #00a0e3;
+ }
+.moving img {
+  position: relative;
+  animation: mymove 7s infinite;
+}
+@keyframes mymove {
+   0%  {left:0px; top:0px;}
+  25%  {left:5px; top:0px;}
+  50%  {left:5px; top:0px;}
+  75%  {left:0px; top:0px;}
+  100% {left:0px; top:0px;}
+}
+.moving1 img {
+  position: relative;
+  animation: mymove 7s infinite;
+}
+@keyframes mymove {
+   0%  {left:0px; top:0px;}
+  25%  {left:10px; top:0px;}
+  50%  {left:10px; top:0px;}
+  75%  {left:0px; top:0px;}
+  100% {left:0px; top:0px;}
+}
 .edu-with-us{
     margin-bottom: 15px;
 }
@@ -646,16 +683,61 @@ $this->registerCss('
     font-family: roboto;
     font-size: 16px;
 }
+.clouds{
+    position: relative;
+    }
+.cloud img {
+    width: 100%;
+} 
+.cloud{
+    position: absolute;
+    top: 60px;
+    left: 70px;
+    width: 90px;
+    height: 100px;
+    z-index: 2;
+    }
+.cloud1{
+    position: absolute;
+    top: 10px;
+    left: 200px;
+    z-index: 0;
+}
+.cloud2 img{
+    width: 100%
+    }
+.cloud2{
+    position: absolute;
+    top: 80px;
+    right: 60px;
+    width: 100px;
+    height: 20px;
+    z-index: 2
+}
+.cloud3 img{
+    width: 100%
+    }
+.cloud3{
+    position: absolute;
+    top: 150px;
+    right: 0px;
+    width: 100px;
+    height: 80px;
+    z-index: 2;
+}
 .loan-image{
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 .loan-image img{
-    max-width: 400px;
-    margin: 40px auto 0;
+    width: 1000px;
+    max-height: 900px;
+    margin-top: 50px;
 }
 .loansWorks{
-     text-align: center;
-     }
+    text-align: center;
+ }
 .mb1{
     margin-bottom: 10px
 }
@@ -664,9 +746,9 @@ $this->registerCss('
 }
 .loan-text h1 {
     font-weight: 500;
-    font-size: 50px;
+    font-size: 40px;
     font-family: lobster;
-    margin-bottom: 0px;
+    margin-bottom: 20px;
 }
 .loan-text h3{
     margin: 10px 0 20px;
@@ -715,11 +797,12 @@ $this->registerCss('
     margin: auto;
 }
 .backgrounds{
-    background-size: 100% 250px;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/header-top-loan.png') . ');
+    background-size: 100% 625px;
+    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
     background-position: right top;
     background-repeat: no-repeat;
-    padding-top: 50px;
+    padding-top: 100px;
+    padding-bottom: 35px;
 }
 @media screen and (max-width:768px){
     .loan-text {
@@ -1321,7 +1404,19 @@ $this->registerCss('
     font-size: 35px;
      text-align: center;
 }
-
+@media screen and (max-width:500px) {
+.moving1,.moving {
+    display: none;
+}
+.loan-text h1 {
+    font-size: 30px;
+ }
+}
+@media screen and (max-width:990px) and (min width:760px){
+.loan-image img {
+    margin-top: 100px;
+}
+}
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
 $this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
