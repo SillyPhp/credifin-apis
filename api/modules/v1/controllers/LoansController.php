@@ -210,13 +210,14 @@ class LoansController extends ApiBaseController
                 'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
                 'd.education_loan_payment_enc_id'
             ])
-            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
+//            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
             ->joinWith(['loanPurposes b' => function ($b) {
                 $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
                 $b->joinWith(['feeComponentEnc c'], false);
             }])
             ->joinWith(['educationLoanPayments d'], false)
-            ->where(['cc.created_by' => $this->userId()])
+            ->where(['a.created_by' => $this->userId()])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
