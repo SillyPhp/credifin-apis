@@ -271,4 +271,40 @@ class Webinar extends \common\models\Webinar
 
         return $events;
     }
+
+    public function allWebinars($data){
+        $webinar = \common\models\Webinar::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.webinar_enc_id',
+                'a.title',
+                'a.name',
+                'a.description',
+                'a.price',
+                'a.seats',
+                'a.slug'
+            ])
+            ->joinWith(['assignedWebinarTos b'], false)
+            ->joinWith(['webinarRegistrations d' => function ($d) {
+                $d->select([
+                    'd.webinar_enc_id',
+                    'd.register_enc_id',
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image',
+                ]);
+                $d->joinWith(['createdBy d1'], false);
+                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
+            }])
+            ->joinWith(['webinarEvents c' => function ($c) {
+                $c->select(['c.event_enc_id', 'c.webinar_enc_id', "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'c.session_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
+                $c->orderBy(['c.start_datetime' => SORT_ASC]);
+            }])
+            ->where(['a.is_deleted' => 0, 'b.organization_enc_id' => $data['college_id']])
+            ->andWhere(['a.session_for' => [0, 2]])
+            ->asArray()
+            ->all();
+
+        return $webinar;
+    }
 }
