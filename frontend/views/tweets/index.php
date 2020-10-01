@@ -1,7 +1,8 @@
 <?php
 use yii\helpers\Url;
+$this->title = 'Job Tweets';
 $this->params['header_dark'] = true;
-$keywords = 'twitter jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,Job Tweets,  MBA Jobs, Career, Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india, jobs in india for freshers';
+$seo_keywords = 'twitter jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,Job Tweets,  MBA Jobs, Career, Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india, jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
@@ -9,7 +10,7 @@ $this->params['seo_tags'] = [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
-        'keywords' => $keywords,
+        'keywords' => $seo_keywords,
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
