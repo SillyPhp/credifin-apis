@@ -1,5 +1,4 @@
 <?php
-
 namespace frontend\controllers;
 use common\models\UserOtherDetails;
 use frontend\models\applications\PreferencesCards;
@@ -15,25 +14,25 @@ class TestCacheController extends Controller
 {
     public function actionTest()
     {
-        //return Url::to('@root');
         $client = Client::getInstance();
-        $client->getEngine()->setPath('@rootDirectory/');
-
+        $p = Url::to('@rootDirectory/bin/phantomjs');
+        $client->getEngine()->setPath($p);
+        $client->getEngine()->debug(true);
         /**
          * @see JonnyW\PhantomJs\Http\Request
          **/
-        $request = $client->getMessageFactory()->createRequest('http://sneh.eygb.me', 'GET');
+        $request = $client->getMessageFactory()->createRequest('https://www.empoweryouth.com/education-loans/apply-loan/7y028kbWNRWwj8VGg3zORK4v9marEp', 'GET');
 
         /**
          * @see JonnyW\PhantomJs\Http\Response
          **/
         $response = $client->getMessageFactory()->createResponse();
-
         // Send the request
-        $client->send($request, $response);
-
+       $client->send($request, $response);
+        echo  $client->getLog(); // Output log
+        //die();
+        print_r($response);
         if($response->getStatus() === 200) {
-
             // Dump the requested page content
             echo $response->getContent();
         }
