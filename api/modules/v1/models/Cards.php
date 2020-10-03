@@ -39,8 +39,9 @@ class Cards
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.source',
+                'a.unique_source_id',
                 new Expression('NULL as sector'),
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -67,7 +68,7 @@ class Cards
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -96,12 +97,13 @@ class Cards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.source',
+                'a.unique_source_id',
                 '(CASE
                 WHEN a.source = 3 THEN v.job_level
                 WHEN a.source = 2 THEN v.job_level
                 ELSE NULL
                END) as sector',
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -122,7 +124,7 @@ class Cards
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
@@ -224,9 +226,9 @@ class Cards
             $cards2->andWhere(['like', 'd.name', $options['company']]);
         }
 
-        if (isset($options['slug']) && !empty($options['slug'])) {
-            $cards1->andWhere(['like', 'd.slug', $options['slug']]);
-            $cards2->andWhere(['like', 'd.slug', $options['slug']]);
+        if (isset($options['organization_id']) && !empty($options['organization_id'])) {
+            $cards1->andWhere(['like', 'd.organization_enc_id', $options['organization_id']]);
+            $cards2->andWhere(['like', 'd.organization_enc_id', $options['organization_id']]);
         }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
@@ -254,13 +256,12 @@ class Cards
             ]);
         }
         if (isset($options['slug'])) {
-            $cards1->andWhere(['d.slug'=>$options['slug']]);
-            $cards2->andWhere(['d.slug'=>$options['slug']]);
+            $cards1->andWhere(['d.slug' => $options['slug']]);
+            $cards2->andWhere(['d.slug' => $options['slug']]);
         }
         if (isset($options['keyword'])) {
             $search = trim($options['keyword'], " ");
-            if ($search == "remote" || $search == "work from home")
-            {
+            if ($search == "remote" || $search == "work from home") {
                 $cards1->andFilterWhere([
                     'or',
                     ['like', 'a.type', $search],
@@ -271,8 +272,7 @@ class Cards
                     ['like', 'a.type', $search],
                     ['like', 'c.name', $search],
                 ]);
-            }
-            else{
+            } else {
                 $search_pattern = self::makeSQL_search_pattern($search);
                 $cards1->andFilterWhere([
                     'or',
@@ -439,9 +439,7 @@ class Cards
                 } else {
                     $result[$i]['salary'] = "Negotiable";
                 }
-            }
-            else
-            {
+            } else {
                 $result[$i]['salary'] = null;
                 $result[$i]['sal'] = 1; //for api jobs where every thing for salary is blank
             }
@@ -449,7 +447,7 @@ class Cards
                 $result[$i]['salary'] = $currency . ' View In Detail';
             }
 
-            if ($val['experience'] == 'No Experience') {
+            if ($val['experience'] == 'No Experience' || $val['experience'] == '' || $val['experience'] == null) {
                 if ($val['sector'] != null) {
                     $result[$i]['experience'] = $val['sector'];
                 }
