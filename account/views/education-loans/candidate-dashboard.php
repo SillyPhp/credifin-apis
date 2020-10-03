@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use kartik\date\DatePicker;
 
 $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
@@ -473,8 +474,29 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="co_applicant_dob">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="dob"
-                                                   placeholder="--/--/----">
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'dob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -697,8 +719,29 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="co_applicant_dob">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="MDob"
-                                                   placeholder="--/--/----">
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'MDob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -905,8 +948,29 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="co_applicant_dob">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="siblingDob"
-                                                   placeholder="--/--/----">
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'siblingDob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
@@ -963,8 +1027,29 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="co_applicant_dob">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="G1Dob"
-                                                   placeholder="--/--/----">
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'G1Dob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -1135,8 +1220,29 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="co_applicant_dob">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="G2Dob"
-                                                   placeholder="--/--/----">
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'G2Dob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
@@ -1684,11 +1790,11 @@ $(document).on('keyup','.typeInput', function() {
     var url = elem.attr('data-url');
     switch (url) {
         case 'states' :
-            url = 'https://ravinder.eygb.me/api/v3/education-loan/get-'+url+'?search='+ q; 
+            url = '/api/v3/education-loan/get-'+url+'?search='+ q; 
             break;
         case 'cities' :
             var state_id = elem.attr('data-state-id');
-            url = 'https://ravinder.eygb.me/api/v3/education-loan/get-'+url+'?search='+ q + '&state_id=' + state_id; 
+            url = '/api/v3/education-loan/get-'+url+'?search='+ q + '&state_id=' + state_id; 
             break;
         default :
             return false;
@@ -1718,7 +1824,8 @@ $(document).on('keyup','.typeInput', function() {
 $(document).on('blur','input:text', function() {
     var elem = $(this);
     var value = elem.val();
-    if(!elem.hasClass('typeInput')){
+    var labelName = elem.prev('label').attr('data-field');
+    if(!elem.hasClass('typeInput') && labelName != 'co_applicant_dob'){
         updateValue(elem, value);
     }
 });
@@ -1774,7 +1881,7 @@ function updateValue(elem, value){
     // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + address_type);
     if(value != "" || key != ""){
         $.ajax({
-            url: 'https://ravinder.eygb.me/api/v3/education-loan/loan-second-form',
+            url: '/api/v3/education-loan/loan-second-form',
             method: 'POST',
             data: data,
             beforeSend:function(){
@@ -1814,7 +1921,7 @@ $(document).ready(function() {
     var data = "";
     var guarantorCount = 0;
     $.ajax({
-        url: 'https://ravinder.eygb.me/api/v3/education-loan/get-loan',
+        url: '/api/v3/education-loan/get-loan',
         method: 'POST',
         data:{loan_app_enc_id:loan_app_id},
         success: function(res) {
@@ -2077,7 +2184,7 @@ $(document).ready(function() {
          // var formData = new FormData();
          // console.log(formm);
          $.ajax({
-             url: 'https://ravinder.eygb.me/api/v3/education-loan/upload-image',
+             url: '/api/v3/education-loan/upload-image',
              method: 'POST',
              data: formData,
              processData: false,

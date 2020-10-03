@@ -235,7 +235,7 @@ class EducationLoanController extends ApiBaseController
             ->select([
                 'a.loan_app_enc_id',
                 'a.applicant_name',
-                'a.applicant_dob',
+                'DATE_FORMAT(a.applicant_dob, \'%d-%b-%Y\') applicant_dob',
                 'a.degree',
                 'a.phone',
                 'a.image',
@@ -261,7 +261,7 @@ class EducationLoanController extends ApiBaseController
                     'd.phone',
                     'd.image',
                     'd.image_location',
-                    'd.co_applicant_dob',
+                    'DATE_FORMAT(d.co_applicant_dob, \'%d-%b-%Y\') co_applicant_dob',
                     'd.employment_type',
                     'd.annual_income',
                     'd.address',
@@ -337,7 +337,6 @@ class EducationLoanController extends ApiBaseController
         }
 
         if ($application) {
-            $application['applicant_dob'] = date('d/m/Y', strtotime($application['applicant_dob']));
             return $this->response(200, ['status' => 200, 'data' => $application]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -662,7 +661,8 @@ class EducationLoanController extends ApiBaseController
             $loan_co_applicants->employment_type = $params['employment_type'] ? $params['employment_type'] : $loan_co_applicants->employment_type;
             $loan_co_applicants->annual_income = $params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
             if ($params['co_applicant_dob']) {
-                $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['co_applicant_dob'])) ? date('Y-m-d', strtotime($params['co_applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
+                $coAppDOB = date('Y-m-d', strtotime($params['co_applicant_dob']));
+                $loan_co_applicants->co_applicant_dob = $coAppDOB;
             }
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'] ? $params['years_in_current_house'] : $loan_co_applicants->years_in_current_house;
             $loan_co_applicants->occupation = $params['occupation'] ? $params['occupation'] : $loan_co_applicants->occupation;
