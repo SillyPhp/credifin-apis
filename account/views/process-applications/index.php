@@ -55,7 +55,10 @@ if ($application_name['wage_type'] == 'Fixed') {
                         <?php } ?>
                         </div>
                         <div class="j-data">
-                            <div class="j-title"><?= $application_name['job_title'] ?></div>
+                            <div class="j-title">
+                                <a href="/<?= $app_type . "/" . $application_name['slug']?>" target="_blank">
+                                    <?= $application_name['job_title'] ?></a>
+                            </div>
                             <div class="j-app"><?php
                                 if(!empty($application_name['applicationPlacementLocations'])){
                                 foreach($application_name['applicationPlacementLocations'] as $apl){
@@ -66,10 +69,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                     }
                                 } } ?> </div>
                             <div class="j-share">
-                                <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                                <span class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
-                                <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
-                                <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
+                                <span class="fbook"><a href="" onclick="window.open('<?= '//www.facebook.com/dialog/share?'.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook"></i></a></span>
+                                <span class="wts"><a href="" onclick="window.open('<?= 'https://api.whatsapp.com/send?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
+                                <span class="twt"><a href="" onclick="window.open('<?= 'https://twitter.com/intent/tweet?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
+                                <span class="mail"><a href="" onclick="window.open('<?= 'mailto:?&body='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
+                                <span class="link"><a href="" onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
                             </div>
                         </div>
                     </div>
@@ -142,7 +146,7 @@ if ($application_name['wage_type'] == 'Fixed') {
             <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#">All</a>
+                <a data-filter="*" href="#" onclick="roundClick()">All</a>
             </li>
             <?php
             $k = 0;
@@ -151,8 +155,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title=""
-                       data-original-title="<?= $p['field_name'] ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                     </a>
                 </li>
@@ -162,7 +165,7 @@ if ($application_name['wage_type'] == 'Fixed') {
             ?>
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
-                   href="#">
+                   href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i>
                 </a>
             </li>
@@ -206,7 +209,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                                         height="80" font="35px"></canvas>
                                             <?php endif; ?>
                                         </a>
-                                        <a class="pr-user-n"
+                                        <a class="pr-user-n" target="_blank"
                                            href="<?= '/' . $arr['username'].'?id='.$arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
                                         <?php
                                         if ($arr['createdBy']['userWorkExperiences']) {
@@ -267,7 +270,18 @@ if ($application_name['wage_type'] == 'Fixed') {
                                 </div>
                                 <div class="col-md-5">
                                     <div class="pr-user-skills">
-                                        <ul>
+                                        <ul class="s-skill">
+                                            <?php
+                                            if ($arr['createdBy']['userSkills']) {
+                                                foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                                    ?>
+                                                    <li><?= $skill['skill']; ?></li>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </ul>
+                                        <ul class="h-skill">
                                             <?php
                                             if ($arr['createdBy']['userSkills']) {
                                                 foreach ($arr['createdBy']['userSkills'] as $skill) {
@@ -370,6 +384,14 @@ if ($application_name['wage_type'] == 'Fixed') {
                                            data-total="<?= $arr['total']; ?>">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
                                         </a>
+<!--                                        <div class="dropdown">-->
+<!--                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>-->
+<!--                                            <div class="dropdown-content">-->
+<!--                                                <a href="#">Link 1</a>-->
+<!--                                                <a href="#">Link 2</a>-->
+<!--                                                <a href="#">Link 3</a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                     <div class="pr-half-height">
                                         <a href="javascript:;" class="reject"
@@ -429,8 +451,56 @@ if ($application_name['wage_type'] == 'Fixed') {
     </div>
 <?php
 $this->registerCss('
+.h-skill{display:none;}
+.pr-user-skills:hover .h-skill
+{
+    display:block;
+    position: absolute; 
+    background-color: #fff;
+    top: 20px;
+}
+.dropbtn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 1px 1px 2px 2px;
+	font-size: 12px;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+	text-align: center;
+	border-radius: 0 8px 0 5px;
+}
+.dropdown {
+	position: absolute;
+	display: inline-block;
+	top: -1px;
+	right: 0;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right:0;
+  padding:5px;
+}
+.dropdown-content a {
+  color: black;
+  padding: 5px 0;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
 .pref-indus h4 {
-    font-size: 16px;
+    font-size: 14px;
     font-family: roboto;
     padding:0 10px;
 }
@@ -453,6 +523,9 @@ $this->registerCss('
 }
 .sticky + .content-stick {
     padding-top: 55px;
+}
+.fbook a{
+    color: #4267B2;
 }
 .wts a{
 	color: #00bf8f;
@@ -493,13 +566,17 @@ $this->registerCss('
 	margin: auto;
 	margin-bottom: 5px !important;
 }
-.j-title {
+.j-title{
 	font-size: 18px;
 	display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    overflow: hidden;`
+    overflow: hidden;
 }
+.j-title a{
+    color:#333;
+    font-family: roboto;
+} 
 .j-share span {
 	margin: 0 5px;
 }
@@ -573,6 +650,7 @@ $this->registerCss('
     margin-top: 0px;
     font-weight: 500;
     font-family:roboto;
+    font-size:16px;
 }
 .pl-0{padding-left:0px;}
 li{list-style: none;}
@@ -594,6 +672,7 @@ li{list-style: none;}
 }
 .hiring_process_list > li{
     width:100%;
+    transition: .3s ease;
 }
 .pr-user-n{
   font-size:19px;
@@ -619,15 +698,16 @@ li{list-style: none;}
     border-radius: 4px;
     position: absolute;
     left: 0;
+    background:#fff;
 }
 .pr-user-icon img{
     width: 100%;
     height:100%;
 }
 .pr-user-detail h5{
-  font-size:14px;
+  font-size:13px;
   font-weight: 500;
-  margin: 8px 0px;
+  margin: 0px 0px 8px;
   color: #858585;
 }
 .pr-user-detail h4 span{
@@ -640,20 +720,21 @@ li{list-style: none;}
 }
 .pr-user-past .past-title{
   background-color:#f2f2f2;
-  color:#555;
+  color:#333;
   padding:3px 15px;
   border-radius:20px;
+  font-size:13px;
 }
 .pr-user-past h5{
   display:inline-block;
   font-family:roboto;
+  font-size:13px;
 }
 .pr-user-skills{
     padding-top:20px;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
@@ -661,7 +742,7 @@ li{list-style: none;}
   background-color:#efefef;
   padding:4px 15px;
   margin:2px;
-  font-size:15px;
+  font-size:14px;
   color:#222;
   border-radius:30px;
 }
@@ -707,6 +788,7 @@ li{list-style: none;}
   height:50%;
   padding-top:28%;
   text-align:center;
+  position:relative;
 }
 .pr-full-height{
     position:relative;
@@ -865,6 +947,12 @@ li{list-style: none;}
     color:#999999;
     margin:0 20px; 
     display:none; 
+}
+@media (min-width:1400px){
+    .sticky{
+        max-width: 1140px;
+        width: 100%;
+    }
 }
 @media screen and (max-width: 768px){
     .loc{
@@ -1108,3 +1196,18 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
+<script>
+    function roundClick() {
+        let hp = document.querySelector('.hiring_process_list');
+        let hpChild = hp.children;
+        setTimeout(function () {
+            hp.style.height = "auto";
+            for(let i = 0; i<hpChild.length; i++){
+                hpChild[i].style.position = "relative";
+                hpChild[i].style.top = "unset";
+                hpChild[i].style.left = "unset";
+            }
+        }, 500);
+    }
+</script>
