@@ -29,7 +29,7 @@ class TestCacheController extends Controller
     public function actionSharing()
     {
         $client = Client::getInstance();
-        $p = Url::to('@webroot/website/bin/phantomjs');
+        $p = Url::to('@rootDirectory/bin/phantomjs');
         $client->getEngine()->setPath($p);
         $width  = 1250;
         $height = 650;
