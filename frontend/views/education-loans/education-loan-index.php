@@ -500,7 +500,7 @@ $this->registerCss('
  }
 .moving img {
   position: relative;
-  animation: mymove 7s infinite;
+  animation: mymove 5s infinite;
 }
 @keyframes mymove {
    0%  {left:0px; top:0px;}
@@ -511,7 +511,7 @@ $this->registerCss('
 }
 .moving1 img {
   position: relative;
-  animation: mymove 7s infinite;
+  animation: mymove 5s infinite;
 }
 @keyframes mymove {
    0%  {left:0px; top:0px;}
@@ -798,11 +798,12 @@ $this->registerCss('
 }
 .backgrounds{
     background-size: 100% 625px;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
+//    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
     background-position: right top;
     background-repeat: no-repeat;
     padding-top: 100px;
     padding-bottom: 35px;
+    background-color: #bae6f8;
 }
 @media screen and (max-width:768px){
     .loan-text {
@@ -1405,7 +1406,7 @@ $this->registerCss('
      text-align: center;
 }
 @media screen and (max-width:500px) {
-.moving1,.moving {
+.moving1,.moving { 
     display: none;
 }
 .loan-text h1 {
