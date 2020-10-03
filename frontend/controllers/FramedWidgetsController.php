@@ -40,7 +40,7 @@ class FramedWidgetsController extends Controller
    }
 
    public function actionApplicationSharingImage($content=null)
-   {
+   { 
        $content = [
            'job_title'=>'(USA) Staff Pharmacist (Hourly) - Wm (Temporary)',
            'company_name'=>'walmart',
