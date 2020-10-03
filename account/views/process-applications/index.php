@@ -56,7 +56,8 @@ if ($application_name['wage_type'] == 'Fixed') {
                         </div>
                         <div class="j-data">
                             <div class="j-title">
-                                <a href=""><?= $application_name['job_title'] ?></a>
+                                <a href="/<?= $app_type . "/" . $application_name['slug']?>" target="_blank">
+                                    <?= $application_name['job_title'] ?></a>
                             </div>
                             <div class="j-app"><?php
                                 if(!empty($application_name['applicationPlacementLocations'])){
@@ -68,10 +69,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                     }
                                 } } ?> </div>
                             <div class="j-share">
-                                <span class="wts"><a href="" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                                <span class="twt"><a href="" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
-                                <span class="mail"><a href="" onclick="window.open('<?= Url::to('mailto:?&body='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
-                                <span class="link"><a href="" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url='.$base_url.'/'.$app_type.'/'.$application_name['slug']); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
+                                <span class="fbook"><a href="" onclick="window.open('<?= '//www.facebook.com/dialog/share?'.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook"></i></a></span>
+                                <span class="wts"><a href="" onclick="window.open('<?= 'https://api.whatsapp.com/send?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
+                                <span class="twt"><a href="" onclick="window.open('<?= 'https://twitter.com/intent/tweet?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
+                                <span class="mail"><a href="" onclick="window.open('<?= 'mailto:?&body='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
+                                <span class="link"><a href="" onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
                             </div>
                         </div>
                     </div>
@@ -144,7 +146,7 @@ if ($application_name['wage_type'] == 'Fixed') {
             <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#">All</a>
+                <a data-filter="*" href="#" onclick="roundClick()">All</a>
             </li>
             <?php
             $k = 0;
@@ -153,8 +155,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title=""
-                       data-original-title="<?= $p['field_name'] ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                     </a>
                 </li>
@@ -523,6 +524,9 @@ $this->registerCss('
 .sticky + .content-stick {
     padding-top: 55px;
 }
+.fbook a{
+    color: #4267B2;
+}
 .wts a{
 	color: #00bf8f;
 }
@@ -668,6 +672,7 @@ li{list-style: none;}
 }
 .hiring_process_list > li{
     width:100%;
+    transition: .3s ease;
 }
 .pr-user-n{
   font-size:19px;
@@ -1191,3 +1196,18 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
+<script>
+    function roundClick() {
+        let hp = document.querySelector('.hiring_process_list');
+        let hpChild = hp.children;
+        setTimeout(function () {
+            hp.style.height = "auto";
+            for(let i = 0; i<hpChild.length; i++){
+                hpChild[i].style.position = "relative";
+                hpChild[i].style.top = "unset";
+                hpChild[i].style.left = "unset";
+            }
+        }, 500);
+    }
+</script>
