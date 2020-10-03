@@ -1191,6 +1191,11 @@ class SiteController extends Controller
             ];
         }
     }
+
+
+    public function actionEdupreneurPage(){
+        return $this->render('edupreneur');
+    }
 //    public function actionAdmission()
 //    {
 //        $model = new AdmissionForm();
