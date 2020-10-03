@@ -165,7 +165,7 @@ if ($application_name['wage_type'] == 'Fixed') {
             ?>
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
-                   href="#">
+                   href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i>
                 </a>
             </li>
