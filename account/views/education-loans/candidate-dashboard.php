@@ -1728,6 +1728,10 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
+var apiUrl = '/';
+if(document.domain != 'empoweryouth.com'){
+    apiUrl = 'https://ravinder.eygb.me/';
+}
 function showImage(input, inp_id) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -1790,11 +1794,11 @@ $(document).on('keyup','.typeInput', function() {
     var url = elem.attr('data-url');
     switch (url) {
         case 'states' :
-            url = '/api/v3/education-loan/get-'+url+'?search='+ q; 
+            url = apiUrl+'api/v3/education-loan/get-'+url+'?search='+ q; 
             break;
         case 'cities' :
             var state_id = elem.attr('data-state-id');
-            url = '/api/v3/education-loan/get-'+url+'?search='+ q + '&state_id=' + state_id; 
+            url = apiUrl+'api/v3/education-loan/get-'+url+'?search='+ q + '&state_id=' + state_id; 
             break;
         default :
             return false;
@@ -1881,7 +1885,7 @@ function updateValue(elem, value){
     // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + address_type);
     if(value != "" || key != ""){
         $.ajax({
-            url: '/api/v3/education-loan/loan-second-form',
+            url: apiUrl+'api/v3/education-loan/loan-second-form',
             method: 'POST',
             data: data,
             beforeSend:function(){
@@ -1921,7 +1925,7 @@ $(document).ready(function() {
     var data = "";
     var guarantorCount = 0;
     $.ajax({
-        url: '/api/v3/education-loan/get-loan',
+        url: apiUrl+'api/v3/education-loan/get-loan',
         method: 'POST',
         data:{loan_app_enc_id:loan_app_id},
         success: function(res) {
@@ -2184,7 +2188,7 @@ $(document).ready(function() {
          // var formData = new FormData();
          // console.log(formm);
          $.ajax({
-             url: '/api/v3/education-loan/upload-image',
+             url: apiUrl+'api/v3/education-loan/upload-image',
              method: 'POST',
              data: formData,
              processData: false,
