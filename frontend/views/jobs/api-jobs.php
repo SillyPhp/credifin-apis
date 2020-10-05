@@ -21,7 +21,7 @@ if (is_array($get['location'])) {
 $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
-            'canvas'=>(($get['company_logo'])?true:false),
+            'canvas'=>(($get['company_logo'])?false:true),
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
