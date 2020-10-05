@@ -272,8 +272,9 @@ class Webinar extends \common\models\Webinar
         return $events;
     }
 
-    public function allWebinars($data){
-        $webinar = \common\models\Webinar::find()
+    public function allWebinars($data)
+    {
+        $past_webinars = \common\models\Webinar::find()
             ->distinct()
             ->alias('a')
             ->select([
@@ -305,6 +306,7 @@ class Webinar extends \common\models\Webinar
             ->asArray()
             ->all();
 
-        return $webinar;
+        return $past_webinars;
     }
+
 }

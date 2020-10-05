@@ -521,7 +521,8 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
             $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $webinar = $webinar->allWebinars($college_id['organization_enc_id']);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
