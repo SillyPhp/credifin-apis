@@ -38,9 +38,8 @@ class ImageScript extends Widget
         $request->setQuality(100);
         $client->send($request, $response);
         $update = Yii::$app->db->createCommand()
-            ->update(EmployerApplications::tableName(), ['image' => $imageName,'image_location' => 'sharing-images', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
+            ->update(EmployerApplications::tableName(), ['image' => $imageName, 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
             ->execute();
-        return Yii::$app->urlManager->createAbsoluteUrl($userPath);
+        return Url::to($userPath,'https');
     }
 }
-
