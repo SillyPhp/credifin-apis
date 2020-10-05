@@ -34,7 +34,7 @@ if (empty($app['image'])||$app['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Yii::$app->urlManager->createAbsoluteUrl('/files/'.$app['image_location'].'/'.$app['image']);
+    $image = Url::to('/files/'.$app['image_location'].'/'.$app['image'],'https');
 }
 $this->params['seo_tags'] = [
     'rel' => [
