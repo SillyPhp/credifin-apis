@@ -171,7 +171,6 @@ $content = [
     'location'=>(($lc)?$lc:null),
     'app_id'=>$application_details['application_enc_id']
 ];
-$image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 if (empty($application_details['image'])||$application_details['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
