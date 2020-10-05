@@ -9,10 +9,33 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
+if (is_array($get['location'])) {
+    $p = '';
+    foreach ($get['location'] as $loc) {
+        $p .= $loc['name'];
+    }
+     $location = $p;
+} else {
+    $location = $get['location'];
+}
+$content = [
+            'job_title'=>$get['title'],
+            'company_name'=>$get['company'],
+            'canvas'=>(($get['company_logo'])?true:false),
+            'logo'=>(($get['company_logo'])?$get['company_logo']:null),
+            'initial_color'=>'#73ef9c',
+            'location'=>$location,
+            'app_id'=>$app['application_enc_id']
+    ];
 $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+if (empty($app['image'])||$app['image']==1){
+    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+}else
+{
+    $image = Yii::$app->urlManager->createAbsoluteUrl('/files/'.$app['image_location'].'/'.$app['image']);
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -64,16 +87,7 @@ if (!Yii::$app->user->isGuest) {
                         <?php if ($get['location'])
                         { ?>
                             <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
-                                <?php if (is_array($get['location'])){
-                                    $p = '';
-                                    foreach ($get['location'] as $loc){
-                                        $p .= $loc['name'];
-                                    }
-                                    echo $p;
-                                }
-                                else{
-                                    echo $get['location'];
-                                }  ?>
+                                <?= $location ?>
                         </div>
                         <?php } ?>
                     </div>
