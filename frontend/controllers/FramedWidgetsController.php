@@ -39,17 +39,13 @@ class FramedWidgetsController extends Controller
        }
    }
 
-   public function actionApplicationSharingImage($content=null)
-   { 
-       $content = [
-           'job_title'=>'(USA) Staff Pharmacist (Hourly) - Wm (Temporary)',
-           'company_name'=>'walmart',
-           'canvas'=>false,
-           'logo'=>'https://www.empoweryouth.com/images/unclaimed-organizations/eFVfBTYw3qeYDyU9sQfKriBUriahw1LdgxGkmLaXkjYXy8XkMo/WLXm0-ZKNKvj39wjcsLHle7u6ePZJ6ho/abvgrG4VyQNjO6zLzk27QpW30A9nXK.png',
-           'initial_color'=>'#286090',
-           'location'=>'Tepoztlán, Mexico',
-       ];
-       $this->layout = 'null-layout';
-       return $this->render('sharing-graphic',['content'=>$content]);
+   public function actionApplicationSharingImage()
+   {
+           $this->layout = 'null-layout';
+           $content = Yii::$app->request->get();
+           if (empty($content)):
+               return 'Params Not Found';
+           endif;
+           return $this->render('sharing-graphic',['content'=>$content]);
    }
 }
