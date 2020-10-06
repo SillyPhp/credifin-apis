@@ -300,7 +300,6 @@ class ShortJobs extends Model
         $employerApplication->experience = $this->exp;
         $employerApplication->published_on = date('Y-m-d H:i:s');
         $employerApplication->image = '1';
-        $employerApplication->image_location = '1';
         $employerApplication->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
