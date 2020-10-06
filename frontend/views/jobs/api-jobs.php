@@ -1,14 +1,21 @@
 <?php
+
+use common\models\Organizations;
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
+if (!isset($get['company_logo'])||empty($get['company_logo']))
+{
+    $org = \common\models\UnclaimedOrganizations::find()
+        ->select(['logo','logo_location'])
+        ->where(['organization_enc_id'=>$app['unclaimed_organization_enc_id']])
+        ->asArray()->one();
+    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}
 if (is_array($get['location'])) {
     $p = '';
     foreach ($get['location'] as $loc) {
