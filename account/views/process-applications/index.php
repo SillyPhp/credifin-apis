@@ -404,7 +404,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
                                     <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                                       title="View Questionnaire"></i>
+                                       title="View QuestioApplication Statusnnaire"></i>
                                 </button>
                             </div>
                         </div>
