@@ -169,7 +169,7 @@ $content = [
     'canvas'=>(($org['logo'])?false:true),
     'logo'=>$content_logo,
     'initial_color'=>$org['color'],
-    'location'=>(($lc)?$lc:null),
+    'location'=>(($lc)?$lc:'Work From Home'),
     'app_id'=>$application_details['application_enc_id']
 ];
 if (empty($application_details['image'])||$application_details['image']==1){
