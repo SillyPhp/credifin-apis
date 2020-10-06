@@ -398,10 +398,6 @@ class JobsController extends Controller
             }
             return $response;
         }
-        $options = [
-            'limit'=>10,
-            'page'=>1
-        ];
         return $this->render('list');
     }
 
@@ -413,7 +409,7 @@ class JobsController extends Controller
             $get = $this->musejobs($eaidk);
         }
         $app = EmployerApplications::find()
-            ->select(['application_enc_id','image','image_location'])
+            ->select(['application_enc_id','image','image_location','unclaimed_organization_enc_id'])
             ->where(['unique_source_id'=>$eaidk])->asArray()->one();
         if ($get['title']) {
             return $this->render('api-jobs',
