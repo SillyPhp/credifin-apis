@@ -666,7 +666,6 @@ class LoansController extends ApiBaseController
 
     public function actionUpdateAmount()
     {
-        Yii::$app->cache->flush();
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
             if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {

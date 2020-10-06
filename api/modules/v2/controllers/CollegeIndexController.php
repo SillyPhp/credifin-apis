@@ -9,6 +9,7 @@ use common\models\CollegeSettings;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
+use common\models\ErexxCollegeApplicationRejection;
 use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
@@ -17,6 +18,7 @@ use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\RejectionReasons;
 use common\models\Teachers;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -646,6 +648,25 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+    public function actionGetReasons()
+    {
+        if ($user = $this->isAuthorized()) {
+            $reasons = RejectionReasons::find()
+                ->select('reason')
+                ->where(['is_deleted' => 0, 'reason_by' => 0])
+                ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
+                ->all();
+
+            if ($reasons) {
+                return $this->response(200, ['status' => 200, 'data' => $reasons]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionJobApprove()
     {
         if ($user = $this->isAuthorized()) {
@@ -697,6 +718,25 @@ class CollegeIndexController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401]);
         }
+    }
+
+    private function __rejectReasons($data)
+    {
+        foreach ($data['reason_id'] as $reason_id) {
+            $rejection = new ErexxCollegeApplicationRejection();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $rejection->erexx_college_application_enc_id = $utilitiesModel->encrypt();;
+            $rejection->rejection_reason_enc_id = $reason_id;
+            $rejection->college_enc_id = $data['college_enc_id'];
+            $rejection->application_enc_id = $data['application_enc_id'];
+            $rejection->created_by = $data['user_id'];
+            $rejection->created_on = date('Y-m-d H:i:s');
+            if (!$rejection->save()) {
+                print_r($rejection->getErrors());
+            }
+        }
+
     }
 
     private function __addCompany($org_id, $college_enc_id)
@@ -1095,7 +1135,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                 }], true)
-                ->joinWith(['assignedCollegeEnc cc'=>function($cc){
+                ->joinWith(['assignedCollegeEnc cc' => function ($cc) {
                     $cc->joinWith(['courseEnc c1']);
                 }], false)
                 ->joinWith(['departmentEnc c'], false)

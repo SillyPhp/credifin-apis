@@ -135,6 +135,11 @@ class FeedsTestController extends Controller {
                             $model->initials_color = RandomColors::one();
                             $model->status = 1;
                             if ($model->save()) {
+                                $userN = Usernames::findOne(['username'=>$slug_replace_str]);
+                                if ($userN)
+                                {
+                                    $slug_replace_str = $slug_replace_str.rand(1,1000);
+                                }
                                 $username = new Usernames();
                                 $username->username = $slug_replace_str;
                                 $username->assigned_to = 3;
@@ -286,6 +291,11 @@ class FeedsTestController extends Controller {
                             $model->initials_color = RandomColors::one();
                             $model->status = 1;
                             if ($model->save()) {
+                                $userN = Usernames::findOne(['username'=>$slug_replace_str]);
+                                if ($userN)
+                                {
+                                    $slug_replace_str = $slug_replace_str.rand(100,1000);
+                                }
                                 $username = new Usernames();
                                 $username->username = $slug_replace_str;
                                 $username->assigned_to = 3;
