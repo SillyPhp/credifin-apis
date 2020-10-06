@@ -412,11 +412,14 @@ class JobsController extends Controller
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
+        $app = EmployerApplications::find()
+            ->select(['application_enc_id','image','image_location'])
+            ->where(['unique_source_id'=>$eaidk])->asArray()->one();
         if ($get['title']) {
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk
+                    'source' => $source, 'id' => $eaidk,'app'=>$app
                 ]);
         } else {
             return 'Application Has Been Moved or Deleted';

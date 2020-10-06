@@ -1,12 +1,16 @@
 <?php
 namespace frontend\controllers;
-use yii\web\Controller;
-use common\models\Utilities;
+use common\models\UserOtherDetails;
+use frontend\models\applications\PreferencesCards;
+use frontend\models\script\Box;
+use frontend\models\script\Color;
 use Yii;
+use yii\web\Controller;
+use yii\helpers\Url;
+use yii\web\Response;
+use JonnyW\PhantomJs\Client;
+
 class TestCacheController extends Controller
 {
-    public function actionTestQuery()
-    {
-      return Yii::$app->params->sendGrid->apiKey;
-    }
+
 }
