@@ -22,6 +22,7 @@ $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
             'canvas'=>(($get['company_logo'])?false:true),
+            'profile'=>false,
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
