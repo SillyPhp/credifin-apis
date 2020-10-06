@@ -39,18 +39,26 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss("
+.chats li .body {
+    word-wrap: break-word;
+    font-family:roboto;
+    font-size:14px;
+}
 .btn.blue.icn-only i {
     font-size: 16px;
 }
 .close-btn {
     margin: 0 8px;
-    font-size:16px;
+    font-size:18px;
     cursor:pointer;
 }
-.caption span {
-    font-size: 16px;
+.close-btn:hover i{color:red;}
+.caption a {
+    font-size: 18px;
     font-family: roboto;
     font-weight: 500 !important;
+    text-transform: capitalize;
+    color:#333;
 }
 .conv {
 	display: flex;
@@ -118,7 +126,7 @@ $this->registerCss("
     border: none;
     width:100%;
 }
-.chats.message-list{margin-bottom:50px;margin-top:0px;}
+.chats.message-list{margin-bottom:0px;margin-top:0px;}
 #chat-list ul{
     padding-inline-start:0px !important;
 }
@@ -132,10 +140,10 @@ $this->registerCss("
 	border-radius: 6px;
 	position: fixed;
 	z-index: 9999;
-	bottom: 5px;
+	bottom: 0px;
 	right: 10px;
 	box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
-	width:280px;
+	width:300px;
 }
 #chat-list-heading {
 	padding: 10px 5px 10px 15px;
@@ -157,10 +165,10 @@ $this->registerCss("
 }
 #chat-box{
     max-width:1000px;
-    max-height:300px !important; 
+    max-height:400px !important; 
      position:fixed;
-    bottom:5px;
-    right:295px;
+    bottom:0px;
+    right:315px;
     z-index:99999;
 }
 #chat-box .portlet.light.dynamic-chat{
@@ -168,30 +176,43 @@ $this->registerCss("
 }
 .dynamic-chat {
 	position: relative;
-	min-height: 300px;
+	min-height: 380px;
 	background-color: #fff;
-	padding: 10px 0 10px 10px;
 	border-radius: 6px;
 	box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-	width:260px;
+	width:300px;
 }
 .secnd-head {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding:0 0 10px;
+	padding:10px 0 10px 10px;
 }
-.chat-form{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+.chat-form {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background-color: #fff !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding:10px 0;
+}
+.chat-form .input-cont {
+    margin-right: 5px;
+    flex-basis: 85%;
+}
+.form-control.msginput {
+    border-radius: 30px !important;
+    background-color: #eee !important;
 }
 .chats li.in .message{
     margin-left: 10px !important;
 }
 .chats li.out .message{
-    margin-right: 10px !important;
+    margin-right: 5px !important;
+    margin-left: 10px !important;
 }
 .slimScrollDiv{
     position: relative;
@@ -200,18 +221,19 @@ $this->registerCss("
     max-height: 250px !important;
 }
 .scroller {
-	max-width: 350px;
+	max-width: 380px;
 	min-width: 250px;
-	max-height: 250px !important;
+	max-height: 282px !important;
+	min-height: 250px !important;
 	position: relative;
 }
 .scroller {
     overflow-y: scroll;
 }
 #users-list{
-    max-height: 300px;
+    max-height: 600px;
     overflow-y: scroll;
-    width: 320px;
+    width: 280px;
     position:relative;
 }
 .chat-bounce {
@@ -267,6 +289,12 @@ $this->registerCss("
 .right-set{right:90px !important;}
 .chat-form input{
     height:34px;
+}
+.sendd{
+  fill: #4b8df9;
+}
+.sendmsg {
+    margin-top: 3px;
 }
 ");
 ?>
@@ -942,12 +970,24 @@ function chatShift(){
     let chatslide = document.getElementById('chat-box');
     let chatList = document.getElementById('chat-list');
     if(chatList.classList.contains('fadein')){
-        chatslide.style.right = 295+'px';
+        chatslide.style.right = 315+'px';
     }else{  
         chatslide.style.right = 100+'px';
     }
 }
-
+$(document).on('click', '.goto-profile', function() {
+    var id = $(this).attr('data-id');
+    $.ajax({
+        type: 'POST',
+        url: '/site/get-username',
+        data:{id:id},
+        success: function(response) {
+            if(response.status == 200){
+                window.location.replace("/"+response.data.username);
+            }
+        }
+    });
+});
 var ps = new PerfectScrollbar('#users-list');
 JS;
 $this->registerJs($script);
@@ -1011,7 +1051,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         <div class="secnd-head">
             <div class="caption">
                 <i class="icon-bubble font-hide hide"></i>
-                <span class="caption-subject font-hide bold uppercase">{{name}}</span>
+                <a href="javascript:;" class="goto-profile caption-subject font-hide bold" data-id="{{user_enc_id}}">{{name}}</a>
             </div>
             <div class="close-btn"><i class="fa fa-times"></i></div>
         </div>
@@ -1025,10 +1065,25 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 <div class="input-cont">
                     <input class="form-control msginput" type="text" placeholder="Type a message here..."/>
                 </div>
-                <div class="btn-cont sendmsg">
-                    <span class="arrow"> </span>
-                    <a href="#" class="btn blue icn-only">
-                        <i class="fa fa-arrow-circle-right"></i>
+                <div class="sendmsg">
+                    <a href="#" class="icn-only">
+                        <svg class="sendd" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="25px"
+                             height="25px" version="1.1"
+                             style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                             viewBox="0 0 205 204"
+                             xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <defs>
+                                 <style type="text/css">
+                                     <! [CDATA[
+                                     .fil0 {fill: #0084FF}
+                                     ]]>
+                                 </style>
+                            </defs>
+                            <g id="Layer_x0020_1">
+                                <metadata id="CorelCorpID_0Corel-Layer"/>
+                                <path class="fil0" d="M16 96l-14 -66c-5,-32 8,-39 40,-19l139 69c29,12 33,26 7,41l-135 67c-39,25 -59,24 -51,-19l15 -54 128 -15 -129 -4z"/>
+                            </g>
+                        </svg>
                     </a>
                 </div>
             </div>

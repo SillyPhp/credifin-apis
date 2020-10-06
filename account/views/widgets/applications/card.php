@@ -157,7 +157,6 @@ if (!empty($total_applications)) {
                                             break;
                                     }
                                     ?>
-                                    <span>1</span>
                                 </a>
 <!--                                <div class="new">-->
 <!--                                    <div class="pulse"></div>-->

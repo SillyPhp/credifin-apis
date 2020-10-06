@@ -1175,6 +1175,24 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionGetUsername(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+
+            $user = Users::find()
+                ->select(['username','email','first_name','last_name'])
+                ->where(['user_enc_id' => $id])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'data' => $user
+            ];
+        }
+    }
+
+
     public function actionEdupreneurPage(){
         return $this->render('edupreneur');
     }
