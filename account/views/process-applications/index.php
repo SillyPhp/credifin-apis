@@ -59,15 +59,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                 <a href="/<?= $app_type . "/" . $application_name['slug']?>" target="_blank">
                                     <?= $application_name['job_title'] ?></a>
                             </div>
-                            <div class="j-app"><?php
-                                if(!empty($application_name['applicationPlacementLocations'])){
-                                foreach($application_name['applicationPlacementLocations'] as $apl){
-                                    if($apl['positions'] <= 1){
-                                    echo $apl['positions'].' Opening';
-                                    } else {
-                                        echo $apl['positions'].' Openings';
-                                    }
-                                } } ?> </div>
+
                             <div class="j-share">
                                 <span class="fbook"><a href="" onclick="window.open('<?= '//www.facebook.com/dialog/share?'.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook"></i></a></span>
                                 <span class="wts"><a href="" onclick="window.open('<?= 'https://api.whatsapp.com/send?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
@@ -102,11 +94,32 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </div>
                 <div class="col-md-2 col-sm-6">
                     <div class="j-detail">
-                        <div class="j-exp salry">
+                        <div class="j-exp salry" style="margin-bottom: 22px;">
                             <div class="e-logo"><i class="fa fa-money"></i></div>
                             <div class="e-detail">
                                 <h1>Offered Salary</h1>
                                 <p><?= $amount ?></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="j-detail">
+                        <div class="j-exp salry">
+                            <div class="e-logo"><i class="fa fa-user-plus"></i></div>
+                            <div class="e-detail">
+                                <h1>Openings</h1>
+                                <p>
+                                <?php
+                                    if(!empty($application_name['applicationPlacementLocations'])){
+                                        foreach($application_name['applicationPlacementLocations'] as $apl){
+                                            if($apl['positions'] <= 1){
+                                                echo $apl['positions'].' Opening';
+                                            } else {
+                                                echo $apl['positions'].' Openings';
+                                            }
+                                        }
+                                    }
+                                ?>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -165,7 +178,7 @@ if ($application_name['wage_type'] == 'Fixed') {
             ?>
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
-                   href="#">
+                   href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i>
                 </a>
             </li>
@@ -197,6 +210,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                     }
                     ?>
                     <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>">
+
                         <div class="row pr-user-main">
                             <div class="col-md-12 col-sm-12 pr-user-inner-main">
                                 <div class="col-md-4">
@@ -233,9 +247,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             $str = implode(", ", array_unique($experience));
                                             if ($str) {
                                                 ?>
-                                                <span class="past-title">
-                                    Past
-                                  </span>
+                                                <span class="past-title">Past</span>
                                                 <h5>
                                                     <?= rtrim($str, ','); ?>
                                                 </h5>
@@ -340,6 +352,9 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
                                             <!--                                                </a>-->
                                             <!--                                            </li>-->
+                                            <li class="notes" data-toggle="tooltip" title="Notes">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>" class="noteImg">
+                                            </li>
                                             <li>
                                                 <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
                                                    data-key="<?= $arr['name']; ?>" title="Chat Now"
@@ -387,9 +402,17 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         <div class="dropdown">
                                             <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
                                             <div class="dropdown-content">
-                                                <a href="#">Link 1</a>
-                                                <a href="#">Link 2</a>
-                                                <a href="#">Link 3</a>
+                                                <?php
+                                                    foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                                                        ?>
+                                                        <div id="<?= 'nav' . $p['field_enc_id'] ?>">
+                                                            <a href="#">
+                                                                <?= $p['field_name']?>
+                                                            </a>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                ?>
                                             </div>
                                         </div>
                                     </div>
@@ -451,6 +474,53 @@ if ($application_name['wage_type'] == 'Fixed') {
     </div>
 <?php
 $this->registerCss('
+.notes{
+    cursor: pointer;
+}
+.noteText{
+    min-height: 200px;
+    max-width: 300px;
+    width: 100%;
+    resize: none;
+    font-size: 15px;
+    padding: 5px 10px;
+    border: none;
+    margin-bottom: 28px
+}
+.noteForm{
+    position: absolute;
+    top: -100%;
+    right: 40px;
+    padding: 5px;
+    background: #fff;
+    box-shadow: 2px 4px 10px rgba(0,0,0,.1);
+    z-index: 99;
+}
+.noteForm button{
+    padding: 5px 20px;
+    font-size: 14px;
+    height:25px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    background: #00a0e3;
+    color: #fff;
+    border: #00a0e3;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.noteInput p{
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0;
+}
+.noteInput input{
+    border: 1px solid #eee;
+    font-size: 15px;
+    padding: 5px 10px;
+}
 .h-skill{display:none;}
 .pr-user-skills:hover .h-skill
 {
@@ -480,19 +550,26 @@ $this->registerCss('
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 120px;
+  min-width: 200px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
   right:0;
-  padding:5px;
+  padding: 0;
 }
-.dropdown-content a {
-  color: black;
-  padding: 5px 0;
+.dropdown-content div a {
+  color: #000;
+  padding: 8px 0;
   text-decoration: none;
   display: block;
+  border-bottom: 1px solid #eee;
 }
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content div:last-child a{
+    border-bottom: none;
+}
+.dropdown-content div a:hover {
+    background-color: #00a0e3;
+    color: #fff;   
+}
 .dropdown:hover .dropdown-content {
   display: block;
 }
@@ -592,6 +669,7 @@ $this->registerCss('
 	font-size: 16px;
 	font-family: roboto;
 	font-weight:400;
+	line-height: 22px;
 }
 .e-detail p {
 	margin: 0;
@@ -601,6 +679,7 @@ $this->registerCss('
 .e-logo i {
     font-size: 22px;
     color: #00a0e3;
+    margin-top: 8px; 
 }
 .e-logo {
     width: 30px;
@@ -642,33 +721,53 @@ $this->registerCss('
 }
 .tt + .tooltip > .tooltip-inner {
     min-width:140px !important;
-    background-color:#000 !important;
+    background-color:#00a0e3 !important;
 }
-.round-detail{text-align:center;}
-.round-detail h5{margin-bottom:5px;font-family:roboto;}
+.tt{
+    transition: .5s ease;
+}
+.rotate180{
+    animation: rotate180 1s 1;
+    transform: rotate(180deg);
+    transition: .5s ease;
+}
+.notes i{
+    font-size: 28px;
+}
+.round-detail{
+    text-align:center;
+}
+.round-detail h5{
+    margin-bottom:5px;
+    font-family:roboto;
+}
 .round-detail h4{
     margin-top: 0px;
     font-weight: 500;
     font-family:roboto;
     font-size:16px;
 }
-.pl-0{padding-left:0px;}
-li{list-style: none;}
+.pl-0{
+    padding-left:0px;
+}
+li{
+    list-style: none;
+}
 .pr-user-main{
-  margin:60px 0px;
-  margin-bottom: 0px;
-  border-radius:8px;
-  box-shadow:0px 3px 10px 2px #ddd;
-  background-color: #fdfdfd;
-  width:100%;
-  position:relative;
+    margin:60px 0px;
+    margin-bottom: 0px;
+    border-radius:8px;
+    box-shadow:0px 3px 10px 2px #ddd;
+    background-color: #fdfdfd;
+    width:100%;
+    position:relative;
 }
 .pr-user-inner-main{
-  padding:20px 0px 0;
-  padding-top: 0px;
-  padding-left: 15px;
-  width:calc(100% - 70px);
-  font-family:roboto;
+    padding:20px 0px 0;
+    padding-top: 0px;
+    padding-left: 15px;
+    width:calc(100% - 70px);
+    font-family:roboto;
 }
 .hiring_process_list > li{
     width:100%;
@@ -751,7 +850,7 @@ li{list-style: none;}
   font-family:roboto;
 }
 .pr-user-skills h4 span{
-  color:#777;
+    color:#777;
 }
 .pr-top-actions a{
     background-color: #00a0e3;
@@ -766,12 +865,15 @@ li{list-style: none;}
 }
 .pr-user-actions ul{
   padding-top:40px;
-  text-align:right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 .pr-user-actions ul li{
-  display:inline-block;
-  font-size:23px;
-  margin:0px 8px;
+    display:inline-block;
+    font-size:23px;
+    margin:0px 4px;
+    position: relative;
 }
 .pr-user-actions ul li a img{
     max-width:35px;
@@ -1086,6 +1188,10 @@ $(document).on('click','#j-closed',function(e){
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
+    console.log(this);
+    let fontIcon = this.children;
+    fontIcon[0].classList.toggle('rotate180');    
+    
 });
 function hiring_process(){
 	if(jQuery().isotope) {
@@ -1210,4 +1316,21 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
             }
         }, 500);
     }
+
+    let notesTemp = '<form><div class="noteInput"><p>Notes</p><textarea class="noteText"></textarea><button type="button">Save</button></div></form>';
+
+    let noteImg = document.getElementsByClassName('noteImg');
+    for(let i=0; i<noteImg.length; i++){
+        noteImg[i].addEventListener('click', function () {
+           let parentElem = this.parentElement;
+           let rootElem = parentElem.parentElement;
+           let div  = document.createElement('div');
+           div.setAttribute('class', 'noteForm');
+           div.innerHTML = notesTemp;
+            parentElem.insertAdjacentElement('afterend', div);
+        })
+    }
+
+
+
 </script>
