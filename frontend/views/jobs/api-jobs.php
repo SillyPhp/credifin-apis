@@ -212,7 +212,7 @@ if (!Yii::$app->user->isGuest) {
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, true); ?>
+                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, 'https'); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
