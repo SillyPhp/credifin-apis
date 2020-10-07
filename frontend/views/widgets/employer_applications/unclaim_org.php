@@ -116,9 +116,9 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
             <div class="buttons">
                 <?php
                 if ($type == 'Internship') {
-                    $link = Url::to('internship/' . $application_slug, true);
+                    $link = Url::to('internship/' . $application_slug, 'https');
                 } else if ($type == 'Job') {
-                    $link = Url::to('job/' . $application_slug, true);
+                    $link = Url::to('job/' . $application_slug, 'https');
                 }
                 ?>
                 <a href="#"
