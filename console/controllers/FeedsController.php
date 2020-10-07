@@ -118,7 +118,6 @@ class FeedsController extends Controller {
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s');
                         $employerApplication->image = '1';
-                        $employerApplication->image_location = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
                             ->alias('a')
@@ -276,7 +275,6 @@ class FeedsController extends Controller {
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s',strtotime($result['publication_date']));
                         $employerApplication->image = '1';
-                        $employerApplication->image_location = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
                             ->alias('a')

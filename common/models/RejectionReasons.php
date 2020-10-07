@@ -1,0 +1,63 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "{{%rejection_reasons}}".
+ *
+ * @property int $id
+ * @property string $rejection_reason_enc_id
+ * @property string $reason
+ * @property int $reason_by 0 college,1 company
+ * @property string $status Pending,Approved
+ * @property string $created_by
+ * @property string $created_on
+ * @property int $is_deleted 0 false,1 true
+ *
+ * @property ErexxCollegeApplicationRejection[] $erexxCollegeApplicationRejections
+ * @property Users $createdBy
+ */
+class RejectionReasons extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%rejection_reasons}}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['rejection_reason_enc_id', 'reason', 'reason_by', 'created_by', 'is_deleted'], 'required'],
+            [['reason_by', 'is_deleted'], 'integer'],
+            [['status'], 'string'],
+            [['created_on'], 'safe'],
+            [['rejection_reason_enc_id', 'reason', 'created_by'], 'string', 'max' => 100],
+            [['rejection_reason_enc_id'], 'unique'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxCollegeApplicationRejections()
+    {
+        return $this->hasMany(ErexxCollegeApplicationRejection::className(), ['rejection_reason_enc_id' => 'rejection_reason_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+}

@@ -60,7 +60,6 @@ class FeedsTestController extends Controller {
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s');
                         $employerApplication->image = '1';
-                        $employerApplication->image_location = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
                             ->alias('a')
@@ -135,6 +134,11 @@ class FeedsTestController extends Controller {
                             $model->initials_color = RandomColors::one();
                             $model->status = 1;
                             if ($model->save()) {
+                                $userN = Usernames::findOne(['username'=>$slug_replace_str]);
+                                if ($userN)
+                                {
+                                    $slug_replace_str = $slug_replace_str.rand(1,1000);
+                                }
                                 $username = new Usernames();
                                 $username->username = $slug_replace_str;
                                 $username->assigned_to = 3;
@@ -218,7 +222,6 @@ class FeedsTestController extends Controller {
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s',strtotime($result['publication_date']));
                         $employerApplication->image = '1';
-                        $employerApplication->image_location = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
                             ->alias('a')
@@ -286,6 +289,11 @@ class FeedsTestController extends Controller {
                             $model->initials_color = RandomColors::one();
                             $model->status = 1;
                             if ($model->save()) {
+                                $userN = Usernames::findOne(['username'=>$slug_replace_str]);
+                                if ($userN)
+                                {
+                                    $slug_replace_str = $slug_replace_str.rand(100,1000);
+                                }
                                 $username = new Usernames();
                                 $username->username = $slug_replace_str;
                                 $username->assigned_to = 3;
