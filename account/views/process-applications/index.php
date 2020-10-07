@@ -478,23 +478,26 @@ $this->registerCss('
     cursor: pointer;
 }
 .noteText{
-    min-height: 200px;
-    max-width: 300px;
-    width: 100%;
+    min-height: 200px;    
     resize: none;
     font-size: 15px;
     padding: 5px 10px;
     border: none;
+    width: 100%;
     margin-bottom: 28px
 }
 .noteForm{
     position: absolute;
-    top: -100%;
-    right: 40px;
+    top: -120%;
+    right: 0px;
     padding: 5px;
     background: #fff;
-    box-shadow: 2px 4px 10px rgba(0,0,0,.1);
-    z-index: 99;
+    border: 1px solid #eee;
+    box-shadow: 0px 0px 10px rgba(0,0,0,.2);
+    z-index: 9;
+    max-width: 300px;
+    width: 100%;
+    border-radius: 10px;
 }
 .noteForm button{
     padding: 5px 20px;
@@ -505,16 +508,23 @@ $this->registerCss('
     justify-content: center; 
     background: #00a0e3;
     color: #fff;
-    border: #00a0e3;
+    border: 1px solid #00a0e3;
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 0; 
+    border-radius: 10px 0 10px 0;
+}
+.noteForm button:hover{
+    background: #fff;
+    color: #00a0e3;
+    transition: .3s ease;
 }
 .noteInput p{
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     text-transform: uppercase;
     margin: 0;
+    border-bottom: 1px solid #eee;
 }
 .noteInput input{
     border: 1px solid #eee;
@@ -589,7 +599,7 @@ $this->registerCss('
     position: fixed;
     top: 104px;
     width: 83.45vw;
-    z-index: 1;
+    z-index: 99;
     background: rgb(255, 255, 255);
     border-radius: 0 0 20px 20px;
     padding: 15px 0px 0;
@@ -1050,6 +1060,16 @@ li{
     margin:0 20px; 
     display:none; 
 }
+#closeNotes{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    font-size: 17px;
+}
+#closeNotes:hover{
+    color: #00a0e3;
+}
 @media (min-width:1400px){
     .sticky{
         max-width: 1140px;
@@ -1126,9 +1146,17 @@ li{
         border-right: 1px solid #ddd;
         border-bottom: none;
     }
-    .pr-full-height a img{width:50px;}
-    .sticky{top:0px;}
-    .slide-btn{right:0%;left: auto;}
+    .pr-full-height a img{
+        width:50px;
+    }
+    .sticky{
+        top:0px;
+    }
+    .slide-btn{
+        right:0%;
+        left: auto;
+    }
+   
 }
 ');
 $script = <<<JS
@@ -1317,20 +1345,38 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
         }, 500);
     }
 
-    let notesTemp = '<form><div class="noteInput"><p>Notes</p><textarea class="noteText"></textarea><button type="button">Save</button></div></form>';
+    let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText" onkeyup="newLine(this)"></textarea><button type="button"><i class="fa fa-check"></i></button></div></form>';
 
     let noteImg = document.getElementsByClassName('noteImg');
     for(let i=0; i<noteImg.length; i++){
         noteImg[i].addEventListener('click', function () {
-           let parentElem = this.parentElement;
-           let rootElem = parentElem.parentElement;
-           let div  = document.createElement('div');
-           div.setAttribute('class', 'noteForm');
-           div.innerHTML = notesTemp;
+            let noteForm = document.querySelectorAll('.noteForm');
+            if(noteForm.length > 0){
+                noteForm[0].remove();
+            }
+            let parentElem = this.parentElement;
+            let rootElem = parentElem.parentElement;
+            let div  = document.createElement('div');
+            div.setAttribute('class', 'noteForm');
+            div.innerHTML = notesTemp;
             parentElem.insertAdjacentElement('afterend', div);
+
+            let closeNotes = document.getElementById('closeNotes');
+            closeNotes.addEventListener('click', function () {
+               let noteInput = closeNotes.closest('.noteForm');
+               noteInput.remove();
+            });
         })
     }
 
-
+    function newLine(e) {
+        var textVal = e.value;
+        // if(this.event.keyCode == 13){
+        //     console.log('enter');
+        //     textVal += "&#13;&#10"
+        // }
+        e.value = textVal
+        console.log(e.value);
+    }
 
 </script>
