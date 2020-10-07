@@ -29,7 +29,7 @@ class ImageScript extends Widget
         $request->setMethod('GET');
         $request->setUrl(Url::to('/framed-widgets/application-sharing-image','https'));
         $request->setRequestData($this->content); // Set post data
-        $imageName = $rand_dir = Yii::$app->getSecurity()->generateRandomString().'.png';
+        $imageName = $this->content['app_id'].'.png';
         $savePath = Url::to('@rootDirectory/files/sharing-images/'.$imageName);
         $userPath = Url::to('@root/files/sharing-images/'.$imageName);
         $request->setOutputFile($savePath);
