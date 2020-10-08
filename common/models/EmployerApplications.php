@@ -91,7 +91,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
+            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image'], 'required'],
             [['application_number','source','is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
             [['description', 'body', 'type', 'experience','minimum_exp','maximum_exp','preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],

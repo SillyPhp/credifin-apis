@@ -1196,6 +1196,9 @@ class SiteController extends Controller
     public function actionEdupreneurPage(){
         return $this->render('edupreneur');
     }
+    public function actionRedbullBasement(){
+        return $this->render('redbull');
+    }
 //    public function actionAdmission()
 //    {
 //        $model = new AdmissionForm();

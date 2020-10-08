@@ -165,10 +165,11 @@ if (!empty($data2))
 $content = [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'company_name'=>$org['org_name'],
+    'profile'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
     'canvas'=>(($org['logo'])?false:true),
     'logo'=>$content_logo,
     'initial_color'=>$org['color'],
-    'location'=>(($lc)?$lc:null),
+    'location'=>(($lc)?$lc:'Work From Home'),
     'app_id'=>$application_details['application_enc_id']
 ];
 if (empty($application_details['image'])||$application_details['image']==1){
