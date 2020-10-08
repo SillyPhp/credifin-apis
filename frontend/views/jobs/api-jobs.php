@@ -42,7 +42,7 @@ if (empty($app['image'])||$app['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Url::to('/files/'.$app['image_location'].'/'.$app['image'],'https');
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
