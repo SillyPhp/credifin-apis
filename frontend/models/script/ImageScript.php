@@ -5,7 +5,8 @@ use Yii;
 use JonnyW\PhantomJs\Client;
 use yii\base\Widget;
 use yii\helpers\Url;
-use common\models\Spaces\Spaces;
+use common\models\spaces\Spaces;
+
 class ImageScript extends Widget
 {
     public $content = [];
