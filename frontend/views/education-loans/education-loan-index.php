@@ -18,6 +18,10 @@ use yii\helpers\Url;
                            class="hvr-sweep-to-bottom-2">
                             Apply Now
                         </a>
+                        <a href="<?= Url::to('/site/admission-form') ?>"
+                           class="hvr-sweep-to-bottom-3">
+                            Enquire Now
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 clouds">
@@ -105,7 +109,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Hazzle free loan application process with less or minimal paperwork.
+                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
                         </div>
                     </div>
                 </div>
@@ -414,6 +418,15 @@ use yii\helpers\Url;
                                  alt="">
                         </div>
                         <div class="lp-name">Exclusive Leasing & Finance</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
                     </div>
                 </div>
             </div>
@@ -791,10 +804,14 @@ $this->registerCss('
     padding: 10px 10px 5px;
 }
 .loan-logo {
-    width: 65px;
+    width: 90%;
     height: 65px;
     line-height: 61px;
     margin: auto;
+}
+.loan-logo img{
+    max-width: 100%;
+    max-height: 65px;
 }
 .backgrounds{
     background-size: 100% 625px;
@@ -1173,7 +1190,7 @@ $this->registerCss('
 .edu-loan-btn a:hover{
     text-decoration: none;
 }
-.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2 {
+.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2,.hvr-sweep-to-bottom-3  {
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -1196,8 +1213,13 @@ $this->registerCss('
     background: #53bbeb;
     color:#ffffff; 
 }
+.hvr-sweep-to-bottom-3{
+    background: #ff7803;
+    color:#ffffff; 
+}
 .hvr-sweep-to-bottom:before,
-.hvr-sweep-to-bottom-2:before {
+.hvr-sweep-to-bottom-2:before,
+ .hvr-sweep-to-bottom-3:before{
     content: "";
     position: absolute;
     z-index: -1;
@@ -1222,12 +1244,14 @@ $this->registerCss('
   color: #00a0e3;
   text-decoration: none;
 }
-.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active{
+.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active,
+.hvr-sweep-to-bottom-3:hover, .hvr-sweep-to-bottom-3:focus, .hvr-sweep-to-bottom-3:active{
      color: #fff;
   text-decoration: none;
 }
 .hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
-.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before {
+.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before,
+.hvr-sweep-to-bottom-3:hover:before, .hvr-sweep-to-bottom-3:focus:before, .hvr-sweep-to-bottom-3:active:before {
   -webkit-transform: scaleY(1);
   transform: scaleY(1);
 }
