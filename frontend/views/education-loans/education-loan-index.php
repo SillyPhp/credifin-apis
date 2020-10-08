@@ -319,21 +319,21 @@ use yii\helpers\Url;
 
 
     <div class="clearfix"></div>
-    <section class="edu-loan">
-        <div class="container">
-            <div class="us-flex">
-                <div class="edu-loan-txt">
-                    Collateral Free Loans
-                </div>
-                <div class="">
-                    <a href="<?= Url::to('/education-loans/apply') ?>"
-                       class="hvr-sweep-to-bottom">
-                        Apply Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="edu-loan">-->
+<!--        <div class="container">-->
+<!--            <div class="us-flex">-->
+<!--                <div class="edu-loan-txt">-->
+<!--                    Collateral Free Loans-->
+<!--                </div>-->
+<!--                <div class="">-->
+<!--                    <a href="--><?//= Url::to('/education-loans/apply') ?><!--"-->
+<!--                       class="hvr-sweep-to-bottom">-->
+<!--                        Apply Now-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <div class="clearfix"></div>
 
 
@@ -344,7 +344,7 @@ use yii\helpers\Url;
     <!--        <div id="ecww-widget-iframeinner"></div>-->
     <!--    </section>-->
     <div class="clearfix"></div>
-    <section>
+    <section class="bgEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -382,33 +382,18 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="">
                         </div>
                         <div class="lp-name">Agile Finserv</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
-                        </div>
-                        <div class="lp-name">Amrit Malwa Private Limtied</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
-                        </div>
-                        <div class="lp-name">PHF Leasing</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="">
-                        </div>
-                        <div class="lp-name">EZ Capital</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">
@@ -423,10 +408,25 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="">
                         </div>
-                        <div class="lp-name">Avanse Financial Services</div>
+                        <div class="lp-name">EZ Capital</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
+                        </div>
+                        <div class="lp-name">PHF Leasing</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                        </div>
+                        <div class="lp-name">Amrit Malwa Private Limtied</div>
                     </div>
                 </div>
             </div>
@@ -641,6 +641,7 @@ $this->registerCss('
     text-align: center;  
     box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
+    background-color: #fff;
 }
 .loan-college:hover{
     box-shadow: 3px 5px 10px rgba(0,0,0,.2);
