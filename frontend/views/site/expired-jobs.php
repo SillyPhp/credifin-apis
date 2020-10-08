@@ -14,8 +14,8 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="exp-txt">
-                        <h1>OOPs!!</h1>
-                        <h2>The job you are looking for has just got expired..</h2>
+                        <h1>The job you are looking for has just got expired..</h1>
+                        <h2>Awww.. Don't Worry!!</h2>
                         <h4><a href="<?= Url::to('/jobs/list') ?>"
                            class="butn success">
                             Go Back
@@ -59,21 +59,20 @@ $this->registerCss('
 .exp-txt{
     padding-top: 140px;
 } 
-.exp-txt h1{
+.exp-txt h2{
     color: #00a0e3;
-    margin-top: 140px;
     font-family: lobster;
     max-width: 500px;
     line-height: 26px;
     font-size: 46px;
     margin-bottom: 48px;
 }
-.exp-txt h2{
+.exp-txt h1{
     font-weight: 500;
     font-size: 22px;
     font-family: lora;
     margin-bottom: 20px;
-    margin-top: -22px;
+    margin-top: 140px;
 }
 .exp-jobs{
     margin-top: 150px;
@@ -134,10 +133,10 @@ $this->registerCss('
     .exp-txt{
     padding-top: 80px;
     } 
-    .exp-txt h1{
+    .exp-txt h2{
     font-size: 35px;
     }
-    .exp-txt h2{
+    .exp-txt h1{
     font-size: 18px;
     }
     .butn{
@@ -158,12 +157,12 @@ $this->registerCss('
     .exp-txt{
     padding-top: 20px;
     } 
-    .exp-txt h1{
+    .exp-txt h2{
     font-size: 35px;
     margin-top: 5px;
     margin-bottom: 35px;
     }
-    .exp-txt h2{
+    .exp-txt h1{
     font-size: 20px;
     }
     .butn{
@@ -192,12 +191,12 @@ $this->registerCss('
     .exp-txt{
     padding-top: 20px;
     } 
-    .exp-txt h1{
+    .exp-txt h2{
     font-size: 35px;
     margin-top: 10px;
     margin-bottom: 35px;
     }
-    .exp-txt h2{
+    .exp-txt h1{
     font-size: 20px;
     }
     .butn{
