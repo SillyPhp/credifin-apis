@@ -105,7 +105,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Hazzle free loan application process with less or minimal paperwork.
+                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Get Loan To Study Abroad</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Providing easy and interest free education loan for abroad studies.
+                        <div class="overlay-txt">Providing easy and interest free education loan for study abroad programs.
                         </div>
                     </div>
                 </div>
@@ -276,8 +276,8 @@ use yii\helpers\Url;
                         <div class="edu-hw-title">Education Institution Loans</div>
                         <p class="edu-hw-description">
                             We all know the importance of education and educational institutes in our lives as they provide
-                            a variety of learning environments and spaces. Empoweryouth with its education institute loans
-                            provides financial help to the education insitutes for their growth.
+                            a variety of learning environments and spaces. Empoweryouth with its educational institute loans
+                            provides financial help to the educational insitutes for their growth.
                         </p>
                     </div>
                 </div>
