@@ -25,6 +25,7 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property UserResume $resumeEnc
+ * @property HiringProcessNotes[] $hiringProcessNotes
  */
 class AppliedApplications extends \yii\db\ActiveRecord
 {
@@ -110,5 +111,13 @@ class AppliedApplications extends \yii\db\ActiveRecord
     public function getResumeEnc()
     {
         return $this->hasOne(UserResume::className(), ['resume_enc_id' => 'resume_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHiringProcessNotes()
+    {
+        return $this->hasMany(HiringProcessNotes::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 }

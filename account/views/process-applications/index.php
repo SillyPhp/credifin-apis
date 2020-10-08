@@ -187,6 +187,8 @@ if ($application_name['wage_type'] == 'Fixed') {
         <ul class="hiring_process_list gallery_zoom content-stick">
             <?php
             if (!empty($fields)) {
+//                print_r($fields);
+//                exit();
                 foreach ($fields as $arr) {
                     $j = 0;
                     $fieldMain = "";
@@ -209,7 +211,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                         $j++;
                     }
                     ?>
-                    <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>">
+                    <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>" data-id="<?= $p['applied_application_enc_id']?>">
 
                         <div class="row pr-user-main">
                             <div class="col-md-12 col-sm-12 pr-user-inner-main">
@@ -352,8 +354,15 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
                                             <!--                                                </a>-->
                                             <!--                                            </li>-->
+                                            <?php
+                                                if($arr['hiringProcessNotes']){
+                                                    $notes = $arr['hiringProcessNotes'][0]['notes'];
+                                                } else{
+                                                    $notes = '';
+                                                }
+                                            ?>
                                             <li class="notes" data-toggle="tooltip" title="Notes">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>" class="noteImg">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>" class="noteImg" data-val="<?= $notes;?>">
                                             </li>
                                             <li>
                                                 <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
@@ -1319,6 +1328,20 @@ $(document).on('click','.reject',function(e){
         }
     });
 });
+
+$(document).on('click','.saveNote',function(e){
+     e.preventDefault();
+     var note = $(this).prev('textarea').val();
+     var id = $(this).closest('li').attr('data-id');
+     $.ajax({
+        url:'/account/process-applications/process-notes',
+        data:{note:note,id:id},
+        method:'post',
+        success:function(data){
+            console.log(data);
+        }
+     })
+});
 function hide_btn(res,total,thisObj,thisObj1,thisObj2){  
     if(res.active==total) {
         thisObj.hide();
@@ -1345,7 +1368,6 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
         }, 500);
     }
 
-    let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText" onkeyup="newLine(this)"></textarea><button type="button"><i class="fa fa-check"></i></button></div></form>';
 
     let noteImg = document.getElementsByClassName('noteImg');
     for(let i=0; i<noteImg.length; i++){
@@ -1354,10 +1376,12 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
             if(noteForm.length > 0){
                 noteForm[0].remove();
             }
+            var note_val = noteImg[i].getAttribute('data-val');
             let parentElem = this.parentElement;
             let rootElem = parentElem.parentElement;
             let div  = document.createElement('div');
             div.setAttribute('class', 'noteForm');
+            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">'+note_val+'</textarea><button type="button" onclick="updateData()" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
             div.innerHTML = notesTemp;
             parentElem.insertAdjacentElement('afterend', div);
 
@@ -1369,14 +1393,9 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
         })
     }
 
-    function newLine(e) {
-        var textVal = e.value;
-        // if(this.event.keyCode == 13){
-        //     console.log('enter');
-        //     textVal += "&#13;&#10"
-        // }
-        e.value = textVal
-        console.log(e.value);
+    function updateData() {
+       let saveNote = this.event.currentTarget.parentElement;
+       console.log(saveNote);
     }
 
 </script>
