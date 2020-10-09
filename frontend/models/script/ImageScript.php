@@ -5,6 +5,7 @@ use Yii;
 use JonnyW\PhantomJs\Client;
 use yii\base\Widget;
 use yii\helpers\Url;
+use common\models\spaces\Spaces;
 
 class ImageScript extends Widget
 {
@@ -31,7 +32,8 @@ class ImageScript extends Widget
         $request->setRequestData($this->content); // Set post data
         $imageName = $this->content['app_id'].'.png';
         $savePath = Url::to('@rootDirectory/files/sharing-images/'.$imageName);
-        $userPath = Url::to('@root/files/sharing-images/'.$imageName);
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey,Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         $request->setOutputFile($savePath);
         $request->setViewportSize($width, $height);
         $request->setCaptureDimensions($width, $height, $top, $left);
@@ -40,6 +42,8 @@ class ImageScript extends Widget
         $update = Yii::$app->db->createCommand()
             ->update(EmployerApplications::tableName(), ['image' => $imageName, 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
             ->execute();
-        return Url::to($userPath,'https');
+        $result = $my_space->uploadFile($request->getOutputFile(), "images/sharing/".$imageName, "public");
+        unlink($request->getOutputFile());
+        return $result['ObjectURL'];
     }
 }

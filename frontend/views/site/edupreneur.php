@@ -199,8 +199,8 @@
 
 <div class="br"></div>
 <div class="buttons-links">
-    <a href="https://www.edupreneurvillage.com/candidate-profile/">Apply Now</a>
-    <a href="https://www.edupreneurvillage.com/edupreneur-village-challenge-2-0/">Learn More</a>
+    <a href="http://bit.ly/EV-EY" target="_blank">Apply Now</a>
+<!--    <a href="https://www.edupreneurvillage.com/edupreneur-village-challenge-2-0/">Learn More</a>-->
 </div>
 <?php
 $this->registerCss('
