@@ -908,6 +908,9 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
+            case 'getEduAndRedbull':
+                return $this->renderAjax('/widgets/edupreneur_and_redbull');
+                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
