@@ -105,7 +105,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Hazzle free loan application process with less or minimal paperwork.
+                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
                         </div>
                     </div>
                 </div>
