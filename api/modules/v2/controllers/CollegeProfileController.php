@@ -543,6 +543,7 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_college_approved',
                     'y.interview_process_enc_id',
                     'bb.name',
+                    'bb.organization_enc_id',
                     'bb.slug org_slug',
                     'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
