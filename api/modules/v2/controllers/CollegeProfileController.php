@@ -557,6 +557,11 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_deleted',
                     'm.positions'
                 ])
+                ->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                    $x->onCondition(['ii.is_deleted' => 0]);
+                    $x->joinWith(['jobDescriptionEnc jj'], false);
+                    $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
                 }], false)
@@ -747,6 +752,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['application_enc_id'] = $j['application_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -758,6 +764,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
+                $data['jobDescription'] = $j['applicationJobDescriptions'];
                 $data['salary'] = $j['salary'];
                 if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;

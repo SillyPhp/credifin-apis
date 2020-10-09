@@ -272,8 +272,14 @@ class Webinar extends \common\models\Webinar
         return $events;
     }
 
-    public function allWebinars($data){
-        $webinar = \common\models\Webinar::find()
+    public function allWebinars($data)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $date_now = $dt->format('Y-m-d H:i:s');
+
+        $past_webinars = \common\models\Webinar::find()
             ->distinct()
             ->alias('a')
             ->select([
@@ -295,16 +301,37 @@ class Webinar extends \common\models\Webinar
                 $d->joinWith(['createdBy d1'], false);
                 $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
             }])
-            ->joinWith(['webinarEvents c' => function ($c) {
-                $c->select(['c.event_enc_id', 'c.webinar_enc_id', "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'c.session_enc_id']);
-                $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
+            ->joinWith(['webinarEvents c' => function ($c) use ($date_now) {
+                $c->select(['c.event_enc_id', 'c.webinar_enc_id',
+                    "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime",
+                    "DATE_FORMAT(c.start_datetime, '%Y-%m-%d %H:%i:%s') event_date",
+                    'c.session_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0]);
                 $c->orderBy(['c.start_datetime' => SORT_ASC]);
             }])
             ->where(['a.is_deleted' => 0, 'b.organization_enc_id' => $data['college_id']])
             ->andWhere(['a.session_for' => [0, 2]])
+//            ->andWhere(['<', 'c.start_datetime', $date_now])
             ->asArray()
             ->all();
 
-        return $webinar;
+        $past = [];
+        $i = 0;
+        foreach ($past_webinars as $p) {
+            $last_event = current($p['webinarEvents']);
+            if ($data['type'] == 'past') {
+                if ($last_event['event_date'] < $date_now) {
+                    array_push($past, $past_webinars[$i]);
+                }
+            } elseif ($data['type'] == 'upcoming') {
+                if ($last_event['event_date'] > $date_now) {
+                    array_push($past, $past_webinars[$i]);
+                }
+            }
+            $i++;
+        }
+
+        return $past;
     }
+
 }

@@ -510,7 +510,7 @@ class WebinarsController extends ApiBaseController
         }
     }
 
-    public function actionAllWebinars()
+    public function actionCollegeAllWebinars()
     {
         if ($user = $this->isAuthorized()) {
             $college_id = Users::find()
@@ -521,7 +521,16 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
             $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $data['college_id'] = $college_id['organization_enc_id'];
+            $data['type'] = 'past';
+            $past = $webinar->allWebinars($data);
+            $data['type'] = 'upcoming';
+            $upcoming = $webinar->allWebinars($data);
+
+            $all_data['past_webinars'] = $past;
+            $all_data['upcoming_webinars'] = $upcoming;
+            return $this->response(200, ['status' => 200, 'data' => $all_data]);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
