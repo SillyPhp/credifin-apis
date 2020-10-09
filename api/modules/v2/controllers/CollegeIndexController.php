@@ -652,7 +652,7 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $reasons = RejectionReasons::find()
-                ->select('reason')
+                ->select(['rejection_reason_enc_id', 'reason'])
                 ->where(['is_deleted' => 0, 'reason_by' => 0])
                 ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
                 ->all();
@@ -897,6 +897,8 @@ class CollegeIndexController extends ApiBaseController
             }
 
             $sort_by = $param['sort_by'];
+            $company_name = $param['company_name'];
+            $company_location = $param['company_location'];
 
             $college_id = $this->getOrgId();
 
@@ -996,6 +998,13 @@ class CollegeIndexController extends ApiBaseController
                     new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
                     new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
                 ]);
+            }
+
+            if (!empty($company_name)) {
+                $companies->andWhere(['like', 'a.name', $company_name]);
+            }
+            if (!empty($company_location)) {
+                $companies->andWhere(['like', 'ff.name', $company_location]);
             }
 
             $companies = $companies->limit($limit)

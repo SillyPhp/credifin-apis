@@ -360,7 +360,10 @@ class OrganizationsController extends ApiBaseController
                 $result['team'] = $team;
 
                 $opportunities_count = EmployerApplications::find()
-                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                    ->distinct()
+                    ->alias('a')
+                    ->innerJoinWith('erexxEmployerApplications b')
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0, 'b.is_college_approved' => 1])
                     ->count();
                 $result['opportunties_count'] = $opportunities_count;
 
@@ -507,7 +510,7 @@ class OrganizationsController extends ApiBaseController
                 }]);
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
-            ->where(['d.organization_enc_id' => $college_id,'g.organization_enc_id'=>$college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
+            ->where(['d.organization_enc_id' => $college_id, 'g.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
             ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
             ->asArray()
             ->all();
