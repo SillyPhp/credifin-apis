@@ -408,22 +408,22 @@ if ($application_name['wage_type'] == 'Fixed') {
                                            data-total="<?= $arr['total']; ?>">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
                                         </a>
-                                        <div class="dropdown">
-                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
-                                            <div class="dropdown-content">
-                                                <?php
-                                                    foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-                                                        ?>
-                                                        <div id="<?= 'nav' . $p['field_enc_id'] ?>">
-                                                            <a href="#">
-                                                                <?= $p['field_name']?>
-                                                            </a>
-                                                        </div>
-                                                        <?php
-                                                    }
-                                                ?>
-                                            </div>
-                                        </div>
+<!--                                        <div class="dropdown">-->
+<!--                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>-->
+<!--                                            <div class="dropdown-content">-->
+<!--                                                --><?php
+//                                                    foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+//                                                        ?>
+<!--                                                        <div id="--><?//= 'nav' . $p['field_enc_id'] ?><!--">-->
+<!--                                                            <a href="#">-->
+<!--                                                                --><?//= $p['field_name']?>
+<!--                                                            </a>-->
+<!--                                                        </div>-->
+<!--                                                        --><?php
+//                                                    }
+//                                                ?>
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                     <div class="pr-half-height">
                                         <a href="javascript:;" class="reject"
@@ -1339,8 +1339,10 @@ $(document).on('click','.saveNote',function(e){
         method:'post',
         success:function(data){
             console.log(data);
-        }
-     })
+        }  
+     });
+     $(this).parentsUntil('.noteForm').parent().prev().children('img').attr('data-val',note);
+     $(this).parentsUntil('.noteForm').parent().remove();
 });
 function hide_btn(res,total,thisObj,thisObj1,thisObj2){  
     if(res.active==total) {
@@ -1377,11 +1379,12 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
                 noteForm[0].remove();
             }
             var note_val = noteImg[i].getAttribute('data-val');
+            console.log(note_val);
             let parentElem = this.parentElement;
             let rootElem = parentElem.parentElement;
             let div  = document.createElement('div');
             div.setAttribute('class', 'noteForm');
-            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">'+note_val+'</textarea><button type="button" onclick="updateData()" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
+            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">'+note_val+'</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
             div.innerHTML = notesTemp;
             parentElem.insertAdjacentElement('afterend', div);
 
@@ -1393,9 +1396,5 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
         })
     }
 
-    function updateData() {
-       let saveNote = this.event.currentTarget.parentElement;
-       console.log(saveNote);
-    }
 
 </script>

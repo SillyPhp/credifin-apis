@@ -169,7 +169,7 @@ class ProcessApplicationsController extends Controller
             $id = Yii::$app->request->post('id');
             $note = Yii::$app->request->post('note');
             $alreadyExist =HiringProcessNotes::find()
-            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
+            ->where(['applied_application_enc_id'=> $id,'created_by'=>Yii::$app->user->identity->user_enc_id])
             ->one();
             if ($alreadyExist){
                  $alreadyExist->notes = $note;
