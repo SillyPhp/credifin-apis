@@ -544,7 +544,7 @@ class CollegeProfileController extends ApiBaseController
                     'y.interview_process_enc_id',
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'm.fixed_wage as fixed_salary',
@@ -557,6 +557,11 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_deleted',
                     'm.positions'
                 ])
+                ->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                    $x->onCondition(['ii.is_deleted' => 0]);
+                    $x->joinWith(['jobDescriptionEnc jj'], false);
+                    $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
                 }], false)
@@ -747,6 +752,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['application_enc_id'] = $j['application_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -758,6 +764,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
+                $data['jobDescription'] = $j['applicationJobDescriptions'];
                 $data['salary'] = $j['salary'];
                 if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;

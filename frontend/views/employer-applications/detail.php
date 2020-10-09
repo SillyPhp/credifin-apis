@@ -1,15 +1,10 @@
 <?php
-
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
-
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
-
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -24,11 +19,15 @@ if ($type == 'Job') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " jobs in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'jobs';
     if (!empty($data2)) {
@@ -113,11 +112,15 @@ if ($type == 'Internship') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " internships in " . $placements["name"]);
+            array_push($loc, $job_heading . " internships in " . $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'internships';
     if ($data2['wage_type'] == 'Fixed') {
@@ -153,7 +156,28 @@ if ($type == 'Internship') {
     $keywords = $org['org_name'] . ' internships,Internships,Paid ' . $job_heading . ' Internships, ' . rtrim($lc_data, ',') . ', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,' . $job_heading . ' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+if (!empty($data2))
+{
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}else{
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}
+$content = [
+    'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
+    'company_name'=>$org['org_name'],
+    'profile'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'canvas'=>(($org['logo'])?false:true),
+    'logo'=>$content_logo,
+    'initial_color'=>$org['color'],
+    'location'=>(($lc)?$lc:'Work From Home'),
+    'app_id'=>$application_details['application_enc_id']
+];
+if (empty($application_details['image'])||$application_details['image']==1){
+    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+}else
+{
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -418,21 +442,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-<!--                <div class="rec-main col-md-10 col-md-offset-1 mt2">-->
-<!--                    <div class="recommendation-box">-->
-<!--                        <button>13 Recommendation</button>-->
-<!--                        <a href="">Write A Recommendation</a>-->
-<!--                    </div>-->
-<!--                    <div class="">-->
-<!---->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="rec-main col-md-10 col-md-offset-1">-->
-<!--                    <div class="job-review-box">-->
-<!--                        <button>10 Job Reviews</button>-->
-<!--                        <a href="">Write A Review</a>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -488,41 +497,6 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </div>
     <div class="row" id="list-main"></div>
-<!--    <div class="row">-->
-<!--        --><?php
-//        foreach ($related_courses as $r) {
-//            ?>
-<!--            <div class="col-md-4 col-sm-6">-->
-<!--                <a href="/courses/detail/--><?//= $r['course_id'] ?><!--" class="display-block">-->
-<!--                    <div class="course-box">-->
-<!--                        <div class="course-upper">-->
-<!--                            <div class="course-logo">-->
-<!--                                <img src="--><?//= $r['image']?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="course-description">-->
-<!--                                <div class="course-name">--><?//= $r['title'];?><!--</div>-->
-<!--                                <div class="course-fees">$ --><?//= $r['price'];?><!--</div>-->
-<!--                                --><?php
-//                                    if( $r['author']) {
-//                                        ?>
-<!--                                        <div class="course-start"><i class="far fa-user"></i>-->
-<!--                                            <span class="c-author">-->
-<!--                                                --><?//= $r['author'] ?>
-<!--                                            </span>-->
-<!--                                        </div>-->
-<!--                                        --><?php
-//                                    }
-//                                ?>
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="course-skills">-->
-<!--                            <h4 class="text-right m-0">Udemy</h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        --><?php //}?>
-<!--    </div>-->
 </div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {

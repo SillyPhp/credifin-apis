@@ -268,7 +268,7 @@ class EducationLoanController extends ApiBaseController
                     'd.occupation'
                 ]);
                 $d->joinWith(['loanCertificates de' => function ($e) {
-                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.image', 'de.image_location']);
+                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image image', 'de.proof_image_location image_location']);
                     $e->joinWith(['certificateTypeEnc de1'], false);
                     $e->onCondition(['de.is_deleted' => 0]);
                 }]);
@@ -278,7 +278,7 @@ class EducationLoanController extends ApiBaseController
                 }]);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
-                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.image', 'e.image_location']);
+                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image image', 'e.proof_image_location image_location']);
                 $e->joinWith(['certificateTypeEnc e1'], false);
                 $e->onCondition(['e.is_deleted' => 0]);
                 $e->orderBy(['e.created_on' => SORT_ASC]);

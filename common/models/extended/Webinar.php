@@ -271,4 +271,67 @@ class Webinar extends \common\models\Webinar
 
         return $events;
     }
+
+    public function allWebinars($data)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $date_now = $dt->format('Y-m-d H:i:s');
+
+        $past_webinars = \common\models\Webinar::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.webinar_enc_id',
+                'a.title',
+                'a.name',
+                'a.description',
+                'a.price',
+                'a.seats',
+                'a.slug'
+            ])
+            ->joinWith(['assignedWebinarTos b'], false)
+            ->joinWith(['webinarRegistrations d' => function ($d) {
+                $d->select([
+                    'd.webinar_enc_id',
+                    'd.register_enc_id',
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image',
+                ]);
+                $d->joinWith(['createdBy d1'], false);
+                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
+            }])
+            ->joinWith(['webinarEvents c' => function ($c) use ($date_now) {
+                $c->select(['c.event_enc_id', 'c.webinar_enc_id',
+                    "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime",
+                    "DATE_FORMAT(c.start_datetime, '%Y-%m-%d %H:%i:%s') event_date",
+                    'c.session_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0]);
+                $c->orderBy(['c.start_datetime' => SORT_ASC]);
+            }])
+            ->where(['a.is_deleted' => 0, 'b.organization_enc_id' => $data['college_id']])
+            ->andWhere(['a.session_for' => [0, 2]])
+//            ->andWhere(['<', 'c.start_datetime', $date_now])
+            ->asArray()
+            ->all();
+
+        $past = [];
+        $i = 0;
+        foreach ($past_webinars as $p) {
+            $last_event = current($p['webinarEvents']);
+            if ($data['type'] == 'past') {
+                if ($last_event['event_date'] < $date_now) {
+                    array_push($past, $past_webinars[$i]);
+                }
+            } elseif ($data['type'] == 'upcoming') {
+                if ($last_event['event_date'] > $date_now) {
+                    array_push($past, $past_webinars[$i]);
+                }
+            }
+            $i++;
+        }
+
+        return $past;
+    }
+
 }

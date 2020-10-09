@@ -398,28 +398,63 @@ class JobsController extends Controller
             }
             return $response;
         }
-        $options = [
-            'limit'=>10,
-            'page'=>1
-        ];
         return $this->render('list');
     }
 
     public function actionApi($source = '', $slugparams = null, $eaidk = null)
     {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $keywords = '';
+            if ($slugparams != null) {
+                $keywords = str_replace("-", " ", $slugparams);
+            }
+            $options['limit'] = 6;
+            if ($keywords && !empty($keywords)) {
+                $options['keyword'] = $keywords;
+            }
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                unset($options['keyword']);
+                $cards = ApplicationCards::jobs($options);
+                if ($cards) {
+                    $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'cards' => $cards,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201
+                    ];
+                }
+
+            }
+            return $response;
+        }
+
         if ($source == 'git-hub') {
             $get = $this->gitjobs($eaidk);
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
+        $app = EmployerApplications::find()
+            ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
+            ->where(['unique_source_id' => $eaidk])->asArray()->one();
         if ($get['title']) {
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk
+                    'source' => $source, 'id' => $eaidk, 'app' => $app
                 ]);
         } else {
-            return 'Application Has Been Moved or Deleted';
+            return $this->render('expired-jobs');
         }
     }
 
@@ -591,7 +626,7 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
-            if (!$createCompany->validate()){
+            if (!$createCompany->validate()) {
                 return [
                     'status' => 'error',
                     'message' => json_encode(ActiveForm::validate($createCompany)),
@@ -1462,6 +1497,7 @@ class JobsController extends Controller
             }
         }
     }
+
     public function actionClearMyCache()
     {
         $cache = Yii::$app->cache->flush();

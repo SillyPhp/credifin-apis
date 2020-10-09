@@ -908,6 +908,9 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
+            case 'getEduAndRedbull':
+                return $this->renderAjax('/widgets/edupreneur_and_redbull');
+                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -1173,6 +1176,31 @@ class SiteController extends Controller
         return $this->render('admission-form', [
             'model' => $model
         ]);
+    }
+
+    public function actionGetUsername(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+
+            $user = Users::find()
+                ->select(['username','email','first_name','last_name'])
+                ->where(['user_enc_id' => $id])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'data' => $user
+            ];
+        }
+    }
+
+
+    public function actionEdupreneurPage(){
+        return $this->render('edupreneur');
+    }
+    public function actionRedbullBasement(){
+        return $this->render('redbull');
     }
 //    public function actionAdmission()
 //    {

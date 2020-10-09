@@ -509,4 +509,30 @@ class WebinarsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionCollegeAllWebinars()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = Users::find()
+                ->alias('a')
+                ->select(['b.organization_enc_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+            $webinar = new \common\models\extended\Webinar();
+            $data['college_id'] = $college_id['organization_enc_id'];
+            $data['type'] = 'past';
+            $past = $webinar->allWebinars($data);
+            $data['type'] = 'upcoming';
+            $upcoming = $webinar->allWebinars($data);
+
+            $all_data['past_webinars'] = $past;
+            $all_data['upcoming_webinars'] = $upcoming;
+            return $this->response(200, ['status' => 200, 'data' => $all_data]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 }
