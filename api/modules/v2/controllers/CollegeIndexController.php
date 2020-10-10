@@ -583,6 +583,8 @@ class CollegeIndexController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
+                ->groupBy(['bb.organization_enc_id'])
+                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
                 ->asArray()
                 ->all();
 
