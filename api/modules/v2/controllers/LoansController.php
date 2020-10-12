@@ -319,7 +319,7 @@ class LoansController extends ApiBaseController
 
 
             $application = LoanApplications::find()
-                ->where(['loan_app_enc_id' => $id, 'status' => 0])
+                ->where(['loan_app_enc_id' => $id])
                 ->one();
 
             if ($application) {
@@ -339,7 +339,7 @@ class LoansController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'en error occurred']);
                 }
             } else {
-                return $this->response(404, ['status' => 404, 'message' => 'nor found']);
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
         } else {

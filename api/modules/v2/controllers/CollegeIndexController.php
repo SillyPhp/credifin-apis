@@ -686,6 +686,8 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
+                    $d['erexx_app_id'] = '';
+                    $this->__rejectReasons($d);
                 }
                 $data->last_updated_by = $user->user_enc_id;
                 $data->last_updated_on = date('Y-m-d H:i:s');
@@ -724,21 +726,55 @@ class CollegeIndexController extends ApiBaseController
 
     private function __rejectReasons($data)
     {
-        foreach ($data['reason_id'] as $reason_id) {
-            $rejection = new ErexxCollegeApplicationRejection();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $rejection->erexx_college_application_enc_id = $utilitiesModel->encrypt();;
-            $rejection->rejection_reason_enc_id = $reason_id;
-            $rejection->college_enc_id = $data['college_enc_id'];
-            $rejection->application_enc_id = $data['application_enc_id'];
-            $rejection->created_by = $data['user_id'];
-            $rejection->created_on = date('Y-m-d H:i:s');
-            if (!$rejection->save()) {
-                print_r($rejection->getErrors());
+        if ($data['reasons']) {
+            foreach ($data['reasons'] as $reason) {
+                $rejection = new ErexxCollegeApplicationRejection();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $rejection->erexx_college_application_rejection_enc_id = $utilitiesModel->encrypt();
+                if (!empty($reason['reason_id'])) {
+                    $rejection->rejection_reason_enc_id = $reason['reason_id'];
+                } else if (!empty($reason['reason'])) {
+                    $data['reason'] = $reason['reason'];
+                    if ($id = $this->__saveReason($data)) {
+                        $rejection->rejection_reason_enc_id = $id;
+                    }
+                }
+                $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
+                $rejection->created_by = $data['user_id'];
+                $rejection->created_on = date('Y-m-d H:i:s');
+                if (!$rejection->save()) {
+                    print_r($rejection->getErrors());
+                }
+
             }
         }
 
+    }
+
+    private function __saveReason($data)
+    {
+        if ($user = $this->isAuthorized()) {
+            $reasons = RejectionReasons::find()
+                ->where(['reason' => $data['reason']])
+                ->one();
+            if ($reasons) {
+                return $reasons->rejection_reason_enc_id;
+            }
+            $reason = new RejectionReasons();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $reason->rejection_reason_enc_id = $utilitiesModel->encrypt();
+            $reason->reason = $data['reason'];
+            $reason->reason_by = 0;
+            $reason->created_by = $user->user_enc_id;
+            $reason->created_on = date('Y-m-d H:i:s');
+            if ($reason->save()) {
+                $reason->rejection_reason_enc_id;
+            } else {
+                return false;
+            }
+        }
     }
 
     private function __addCompany($org_id, $college_enc_id)
