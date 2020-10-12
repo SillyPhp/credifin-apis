@@ -175,7 +175,7 @@ class LearningController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            if($parentId){
+            if ($parentId) {
                 $response['detail'] = $parentId;
             }
 
@@ -197,7 +197,7 @@ class LearningController extends ApiBaseController
                 ->limit(6)
                 ->asArray()
                 ->all();
-            if($questions){
+            if ($questions) {
                 $response['questions'] = $questions;
             }
 
@@ -259,7 +259,7 @@ class LearningController extends ApiBaseController
                     'c.initials_color color',
                     'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
                     'g.name as title',
                     'e.designation',
@@ -357,7 +357,7 @@ class LearningController extends ApiBaseController
                 $i++;
             }
 
-            if($final_jobs){
+            if ($final_jobs) {
                 $response['related_jobs'] = $final_jobs;
             }
 
@@ -371,7 +371,7 @@ class LearningController extends ApiBaseController
                     'c.initials_color color',
                     'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
                     'g.name as title',
                     'l.fixed_wage as fixed_salary',
@@ -471,7 +471,7 @@ class LearningController extends ApiBaseController
                 }
                 $i++;
             }
-            if($final_internships){
+            if ($final_internships) {
                 $response['related_internships'] = $final_internships;
             }
             return $this->response(200, $response);
