@@ -18,6 +18,10 @@ use yii\helpers\Url;
                            class="hvr-sweep-to-bottom-2">
                             Apply Now
                         </a>
+                        <a href="<?= Url::to('/site/admission-form') ?>"
+                           class="hvr-sweep-to-bottom-3">
+                            Enquire Now
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 clouds">
@@ -315,21 +319,21 @@ use yii\helpers\Url;
 
 
     <div class="clearfix"></div>
-    <section class="edu-loan">
-        <div class="container">
-            <div class="us-flex">
-                <div class="edu-loan-txt">
-                    Collateral Free Loans
-                </div>
-                <div class="">
-                    <a href="<?= Url::to('/education-loans/apply') ?>"
-                       class="hvr-sweep-to-bottom">
-                        Apply Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="edu-loan">-->
+<!--        <div class="container">-->
+<!--            <div class="us-flex">-->
+<!--                <div class="edu-loan-txt">-->
+<!--                    Collateral Free Loans-->
+<!--                </div>-->
+<!--                <div class="">-->
+<!--                    <a href="--><?//= Url::to('/education-loans/apply') ?><!--"-->
+<!--                       class="hvr-sweep-to-bottom">-->
+<!--                        Apply Now-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <div class="clearfix"></div>
 
 
@@ -340,7 +344,7 @@ use yii\helpers\Url;
     <!--        <div id="ecww-widget-iframeinner"></div>-->
     <!--    </section>-->
     <div class="clearfix"></div>
-    <section>
+    <section class="bgEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -378,6 +382,15 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="">
                         </div>
                         <div class="lp-name">Agile Finserv</div>
@@ -386,17 +399,10 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
+                                 alt="">
                         </div>
-                        <div class="lp-name">Amrit Malwa Private Limtied</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
-                        </div>
-                        <div class="lp-name">PHF Leasing</div>
+                        <div class="lp-name">Exclusive Leasing & Finance</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">
@@ -410,10 +416,17 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                                 alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
                         </div>
-                        <div class="lp-name">Exclusive Leasing & Finance</div>
+                        <div class="lp-name">PHF Leasing</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                        </div>
+                        <div class="lp-name">Amrit Malwa Private Limtied</div>
                     </div>
                 </div>
             </div>
@@ -628,6 +641,7 @@ $this->registerCss('
     text-align: center;  
     box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
+    background-color: #fff;
 }
 .loan-college:hover{
     box-shadow: 3px 5px 10px rgba(0,0,0,.2);
@@ -791,10 +805,14 @@ $this->registerCss('
     padding: 10px 10px 5px;
 }
 .loan-logo {
-    width: 65px;
+    width: 90%;
     height: 65px;
     line-height: 61px;
     margin: auto;
+}
+.loan-logo img{
+    max-width: 100%;
+    max-height: 65px;
 }
 .backgrounds{
     background-size: 100% 625px;
@@ -1173,7 +1191,7 @@ $this->registerCss('
 .edu-loan-btn a:hover{
     text-decoration: none;
 }
-.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2 {
+.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2,.hvr-sweep-to-bottom-3  {
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -1196,8 +1214,13 @@ $this->registerCss('
     background: #53bbeb;
     color:#ffffff; 
 }
+.hvr-sweep-to-bottom-3{
+    background: #ff7803;
+    color:#ffffff; 
+}
 .hvr-sweep-to-bottom:before,
-.hvr-sweep-to-bottom-2:before {
+.hvr-sweep-to-bottom-2:before,
+ .hvr-sweep-to-bottom-3:before{
     content: "";
     position: absolute;
     z-index: -1;
@@ -1222,12 +1245,14 @@ $this->registerCss('
   color: #00a0e3;
   text-decoration: none;
 }
-.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active{
+.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active,
+.hvr-sweep-to-bottom-3:hover, .hvr-sweep-to-bottom-3:focus, .hvr-sweep-to-bottom-3:active{
      color: #fff;
   text-decoration: none;
 }
 .hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
-.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before {
+.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before,
+.hvr-sweep-to-bottom-3:hover:before, .hvr-sweep-to-bottom-3:focus:before, .hvr-sweep-to-bottom-3:active:before {
   -webkit-transform: scaleY(1);
   transform: scaleY(1);
 }
