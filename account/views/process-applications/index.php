@@ -384,14 +384,14 @@ if ($application_name['wage_type'] == 'Fixed') {
                                            data-total="<?= $arr['total']; ?>">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
                                         </a>
-<!--                                        <div class="dropdown">-->
-<!--                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>-->
-<!--                                            <div class="dropdown-content">-->
-<!--                                                <a href="#">Link 1</a>-->
-<!--                                                <a href="#">Link 2</a>-->
-<!--                                                <a href="#">Link 3</a>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <div class="dropdown">
+                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
+                                            <div class="dropdown-content">
+                                                <a href="#">Link 1</a>
+                                                <a href="#">Link 2</a>
+                                                <a href="#">Link 3</a>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="pr-half-height">
                                         <a href="javascript:;" class="reject"
@@ -699,6 +699,7 @@ li{list-style: none;}
     position: absolute;
     left: 0;
     background:#fff;
+    z-index:1;
 }
 .pr-user-icon img{
     width: 100%;
@@ -735,6 +736,7 @@ li{list-style: none;}
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
@@ -810,6 +812,7 @@ li{list-style: none;}
 /* Tabs css starts*/
 .pr-process-tab{
     border-bottom: none;
+    z-index:2;
 }
 .pr-process-tab li {
   display: block;
