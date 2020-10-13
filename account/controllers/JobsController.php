@@ -652,6 +652,13 @@ class JobsController extends Controller
         }
     }
 
+    public function actionApproveMultipleSteps(){
+        if (Yii::$app->request->isPost){
+            $f_id = Yii::$app->request->post('field_id');
+            $app_id = Yii::$app->request->post('app_id');
+        }
+    }
+
     public function actionCancelApplication()
     {
         if (Yii::$app->request->isPost) {

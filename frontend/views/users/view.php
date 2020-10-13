@@ -429,6 +429,9 @@ $this->params['header_dark'] = false;
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         echo $this->render('@common/widgets/chat-main');
+        $this->registerJs('
+            $(".open_chat").trigger("click");
+        ');
     }
 }
 $this->registerCss('

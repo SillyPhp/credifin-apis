@@ -2,8 +2,9 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $base_url = 'https://empoweryouth.com';
-switch($application_name['application_type']){
+switch ($application_name['application_type']) {
     case 'Jobs':
         $app_type = 'job';
         break;
@@ -12,151 +13,168 @@ switch($application_name['application_type']){
         break;
 }
 if ($application_name['wage_type'] == 'Fixed') {
-            if ($application_name['wage_duration'] == 'Monthly') {
-                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 12;
-            } elseif ($application_name['wage_duration'] == 'Hourly') {
-                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 40 * 52;
-            } elseif ($application_name['wage_duration'] == 'Weekly') {
-                $application_name['fixed_wage'] = $application_name['fixed_wage'] * 52;
-            }
-            setlocale(LC_MONETARY, 'en_IN');
-            $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['fixed_wage'])) . ' p.a.';
-        } else if ($application_name['wage_type'] == 'Negotiable') {
-            if ($application_name['wage_duration'] == 'Monthly') {
-                $application_name['min_wage'] = $application_name['min_wage'] * 12;
-                $application_name['max_wage'] = $application_name['max_wage'] * 12;
-            } elseif ($application_name['wage_duration'] == 'Hourly') {
-                $application_name['min_wage'] = $application_name['min_wage'] * 40 * 52;
-                $application_name['max_wage'] = $application_name['max_wage'] * 40 * 52;
-            } elseif ($application_name['wage_duration'] == 'Weekly') {
-                $application_name['min_wage'] = $application_name['min_wage'] * 52;
-                $application_name['max_wage'] = $application_name['max_wage'] * 52;
-            }
-            setlocale(LC_MONETARY, 'en_IN');
-            if (!empty($application_name['min_wage']) && !empty($application_name['max_wage'])) {
-                $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
-            } elseif (!empty($application_name['min_wage'])) {
-                $amount = 'From ₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' p.a.';
-            } elseif (!empty($application_name['max_wage'])) {
-                $amount = 'Upto ₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
-            } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
-                $amount = 'Negotiable';
-            }
-        }
+    if ($application_name['wage_duration'] == 'Monthly') {
+        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 12;
+    } elseif ($application_name['wage_duration'] == 'Hourly') {
+        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 40 * 52;
+    } elseif ($application_name['wage_duration'] == 'Weekly') {
+        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 52;
+    }
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['fixed_wage'])) . ' p.a.';
+} else if ($application_name['wage_type'] == 'Negotiable') {
+    if ($application_name['wage_duration'] == 'Monthly') {
+        $application_name['min_wage'] = $application_name['min_wage'] * 12;
+        $application_name['max_wage'] = $application_name['max_wage'] * 12;
+    } elseif ($application_name['wage_duration'] == 'Hourly') {
+        $application_name['min_wage'] = $application_name['min_wage'] * 40 * 52;
+        $application_name['max_wage'] = $application_name['max_wage'] * 40 * 52;
+    } elseif ($application_name['wage_duration'] == 'Weekly') {
+        $application_name['min_wage'] = $application_name['min_wage'] * 52;
+        $application_name['max_wage'] = $application_name['max_wage'] * 52;
+    }
+    setlocale(LC_MONETARY, 'en_IN');
+    if (!empty($application_name['min_wage']) && !empty($application_name['max_wage'])) {
+        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
+    } elseif (!empty($application_name['min_wage'])) {
+        $amount = 'From ₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' p.a.';
+    } elseif (!empty($application_name['max_wage'])) {
+        $amount = 'Upto ₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
+    } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
+        $amount = 'Negotiable';
+    }
+}
 ?>
-    <div class="container">
-        <div class="row">
-            <div class="job-det col-md-12 row">
-                <div class="col-md-4 col-sm-12">
-                    <div class="j-main">
-                        <div class="j-logo">
-                           <?php if($application_name['icon']){ ?>
-                            <img src="<?= Url::to('@commonAssets/categories/' .$application_name['icon']); ?>">
+<div class="container">
+    <div class="row">
+        <div class="job-det col-md-12 row">
+            <div class="col-md-4 col-sm-12">
+                <div class="j-main">
+                    <div class="j-logo">
+                        <?php if ($application_name['icon']) { ?>
+                            <img src="<?= Url::to('@commonAssets/categories/' . $application_name['icon']); ?>">
                         <?php } ?>
+                    </div>
+                    <div class="j-data">
+                        <div class="j-title">
+                            <a href="/<?= $app_type . "/" . $application_name['slug'] ?>" target="_blank">
+                                <?= $application_name['job_title'] ?></a>
                         </div>
-                        <div class="j-data">
-                            <div class="j-title">
-                                <a href="/<?= $app_type . "/" . $application_name['slug']?>" target="_blank">
-                                    <?= $application_name['job_title'] ?></a>
-                            </div>
 
-                            <div class="j-share">
-                                <span class="fbook"><a href="" onclick="window.open('<?= '//www.facebook.com/dialog/share?'.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook"></i></a></span>
-                                <span class="wts"><a href="" onclick="window.open('<?= 'https://api.whatsapp.com/send?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                                <span class="twt"><a href="" onclick="window.open('<?= 'https://twitter.com/intent/tweet?text='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-twitter"></i></a></span>
-                                <span class="mail"><a href="" onclick="window.open('<?= 'mailto:?&body='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-envelope"></i></a></span>
-                                <span class="link"><a href="" onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url='.Url::to($app_type.'/'.$application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i class="fa fa-linkedin"></i></a></span>
-                            </div>
+                        <div class="j-share">
+                            <span class="fbook"><a href=""
+                                                   onclick="window.open('<?= '//www.facebook.com/dialog/share?' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                            class="fa fa-facebook"></i></a></span>
+                            <span class="wts"><a href=""
+                                                 onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                            class="fa fa-whatsapp"></i></a></span>
+                            <span class="twt"><a href=""
+                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-twitter"></i></a></span>
+                            <span class="mail"><a href=""
+                                                  onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-envelope"></i></a></span>
+                            <span class="link"><a href=""
+                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-linkedin"></i></a></span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="j-detail">
-                        <div class="j-exp" style="margin-bottom: 22px;">
-                            <div class="e-logo"><i class="fa fa-clock-o"></i></div>
-                            <div class="e-detail">
-                                <h1>Experience</h1>
-                                <p><?= $application_name['experience'] ?></p>
-                            </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="j-detail">
+                    <div class="j-exp" style="margin-bottom: 22px;">
+                        <div class="e-logo"><i class="fa fa-clock-o"></i></div>
+                        <div class="e-detail">
+                            <h1>Experience</h1>
+                            <p><?= $application_name['experience'] ?></p>
                         </div>
-                        <div class="j-exp loc">
-                            <div class="e-logo"><i class="fa fa-map-marker"></i></div>
-                            <div class="e-detail">
-                                <h1>Locations</h1>
-                                <p><?php
-                                    if($application_name['applicationPlacementLocations']){
-                                    foreach($application_name['applicationPlacementLocations'] as $apl){
-                                    echo $apl['name'].',';
-                                    } } ?></p>
-                            </div>
+                    </div>
+                    <div class="j-exp loc">
+                        <div class="e-logo"><i class="fa fa-map-marker"></i></div>
+                        <div class="e-detail">
+                            <h1>Locations</h1>
+                            <p><?php
+                                if ($application_name['applicationPlacementLocations']) {
+                                    foreach ($application_name['applicationPlacementLocations'] as $apl) {
+                                        echo $apl['name'] . ',';
+                                    }
+                                } ?></p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="j-detail">
-                        <div class="j-exp salry" style="margin-bottom: 22px;">
-                            <div class="e-logo"><i class="fa fa-money"></i></div>
-                            <div class="e-detail">
-                                <h1>Offered Salary</h1>
-                                <p><?= $amount ?></p>
-                            </div>
+            </div>
+            <div class="col-md-2 col-sm-6">
+                <div class="j-detail">
+                    <div class="j-exp salry" style="margin-bottom: 22px;">
+                        <div class="e-logo"><i class="fa fa-money"></i></div>
+                        <div class="e-detail">
+                            <h1>Offered Salary</h1>
+                            <p><?= $amount ?></p>
                         </div>
                     </div>
-                    <div class="j-detail">
-                        <div class="j-exp salry">
-                            <div class="e-logo"><i class="fa fa-user-plus"></i></div>
-                            <div class="e-detail">
-                                <h1>Openings</h1>
-                                <p>
+                </div>
+                <div class="j-detail">
+                    <div class="j-exp salry">
+                        <div class="e-logo"><i class="fa fa-user-plus"></i></div>
+                        <div class="e-detail">
+                            <h1>Openings</h1>
+                            <p>
                                 <?php
-                                    if(!empty($application_name['applicationPlacementLocations'])){
-                                        foreach($application_name['applicationPlacementLocations'] as $apl){
-                                            if($apl['positions'] <= 1){
-                                                echo $apl['positions'].' Opening';
-                                            } else {
-                                                echo $apl['positions'].' Openings';
-                                            }
+                                if (!empty($application_name['applicationPlacementLocations'])) {
+                                    foreach ($application_name['applicationPlacementLocations'] as $apl) {
+                                        if ($apl['positions'] <= 1) {
+                                            echo $apl['positions'] . ' Opening';
+                                        } else {
+                                            echo $apl['positions'] . ' Openings';
                                         }
                                     }
+                                }
                                 ?>
-                                </p>
-                            </div>
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-12">
-                    <div class="ed-main">
-                        <div class="option-1">
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="ed-main">
+                    <div class="option-1">
                             <span class="j-edt">
-                                <a href="/account/<?= strtolower($application_name['application_type']).'/'.$application_id ?>/edit" target="_blank" data-toggle="tooltip" title="" data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
+                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
+                                   target="_blank" data-toggle="tooltip" title=""
+                                   data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
                             </span>
-                                <span class="j-cln">
-                                <a href="/account/<?= strtolower($application_name['application_type']).'/'.$application_id ?>/clone" target="_blank" data-toggle="tooltip" title="" data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
+                        <span class="j-cln">
+                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
+                                   target="_blank" data-toggle="tooltip" title=""
+                                   data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
                             </span>
-                                <span class="j-delt">
+                        <span class="j-delt">
                                 <a href="#" id="j-delete" data-toggle="tooltip"
-                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>" ><i class="fa fa-trash-o"></i></a>
+                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
+                                            class="fa fa-trash-o"></i></a>
                             </span>
-                                <span class="j-cls">
+                        <span class="j-cls">
                                 <a href="#" id="j-closed" data-toggle="tooltip"
-                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>" value="<?= $application_id ?>" ><i class="fa fa-times"></i></a>
+                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
+                                   value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
                             </span>
-                        </div>
-                        <div class="scd-btn">
-                            <a href="/account/schedular/interview">Schedule Interview</a>
-                        </div>
+                    </div>
+                    <div class="scd-btn">
+                        <a href="/account/schedular/interview">Schedule Interview</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <?php
-        Pjax::begin(['id' => 'pjax_process']);
-        ?>
-        <div class="set-height">
-            <ul class="nav nav-tabs pr-process-tab" id="myHeader">
+<div class="container">
+    <?php
+    Pjax::begin(['id' => 'pjax_process']);
+    ?>
+    <div class="set-height">
+        <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter="*" href="#" onclick="roundClick()">All</a>
@@ -183,304 +201,308 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </a>
             </li>
         </ul>
-        </div>
-        <ul class="hiring_process_list gallery_zoom content-stick">
-            <?php
-            if (!empty($fields)) {
+    </div>
+    <ul class="hiring_process_list gallery_zoom content-stick">
+        <?php
+        if (!empty($fields)) {
 //                print_r($fields);
 //                exit();
-                foreach ($fields as $arr) {
-                    $j = 0;
-                    $fieldMain = "";
-                    if ($arr['status'] == 'Hired') {
-                        $tempfieldMain = "result";
-                        $fieldName = "Hired";
-                    } else if ($arr['status'] == 'Rejected') {
-                        $fieldName = "Rejected";
-                    } else {
-                        $fieldName = "Applied";
-                        $tempfieldMain = "";
+            foreach ($fields as $arr) {
+                $j = 0;
+                $fieldMain = "";
+                if ($arr['status'] == 'Hired') {
+                    $tempfieldMain = "result";
+                    $fieldName = "Hired";
+                } else if ($arr['status'] == 'Rejected') {
+                    $fieldName = "Rejected";
+                } else {
+                    $fieldName = "Applied";
+                    $tempfieldMain = "";
+                }
+                foreach ($arr['appliedApplicationProcesses'] as $p) {
+                    if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
+                        $fieldMain = $p['field_enc_id'];
+                        $fieldName = $p['field_name'];
+                        $tempfieldMain = $p['field_enc_id'] . $j;
+                        break;
                     }
-                    foreach ($arr['appliedApplicationProcesses'] as $p) {
-                        if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
-                            $fieldMain = $p['field_enc_id'];
-                            $fieldName = $p['field_name'];
-                            $tempfieldMain = $p['field_enc_id'] . $j;
-                            break;
-                        }
-                        $j++;
-                    }
-                    ?>
-                    <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>" data-id="<?= $p['applied_application_enc_id']?>">
+                    $j++;
+                }
+                ?>
+                <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
+                    data-id="<?= $p['applied_application_enc_id'] ?>">
 
-                        <div class="row pr-user-main">
-                            <div class="col-md-12 col-sm-12 pr-user-inner-main">
-                                <div class="col-md-4">
-                                    <div class="pr-user-detail">
-                                        <a class="pr-user-icon" href="<?= '/' . $arr['username'].'?id='.$arr['applied_application_enc_id'] ?>">
-                                            <?php if ($arr['image']): ?>
-                                                <img src="<?= $arr['image'] ?>"/>
-                                            <?php else: ?>
-                                                <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
-                                                        height="80" font="35px"></canvas>
-                                            <?php endif; ?>
-                                        </a>
-                                        <a class="pr-user-n" target="_blank"
-                                           href="<?= '/' . $arr['username'].'?id='.$arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
-                                        <?php
-                                        if ($arr['createdBy']['userWorkExperiences']) {
-                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                                if ($exp['is_current'] == 1) {
-                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                    <div class="pr-user-past">
-                                        <?php
-                                        $experience = [];
-                                        if ($arr['createdBy']['userWorkExperiences']) {
-                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                                if ($exp['is_current'] == 0) {
-                                                    array_push($experience, $exp["company"]);
-                                                }
-                                            }
-                                            $str = implode(", ", array_unique($experience));
-                                            if ($str) {
-                                                ?>
-                                                <span class="past-title">Past</span>
-                                                <h5>
-                                                    <?= rtrim($str, ','); ?>
-                                                </h5>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-                                        <!--                                    <span>+2 more</span>-->
-                                    </div>
+                    <div class="row pr-user-main">
+                        <div class="col-md-12 col-sm-12 pr-user-inner-main">
+                            <div class="col-md-4">
+                                <div class="pr-user-detail">
+                                    <a class="pr-user-icon"
+                                       href="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
+                                        <?php if ($arr['image']): ?>
+                                            <img src="<?= $arr['image'] ?>"/>
+                                        <?php else: ?>
+                                            <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
+                                                    height="80" font="35px"></canvas>
+                                        <?php endif; ?>
+                                    </a>
+                                    <a class="pr-user-n" target="_blank"
+                                       href="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
                                     <?php
-                                    if ($arr['createdBy']['userEducations']) {
-                                        ?>
-                                        <div class="pr-user-past">
+                                    if ($arr['createdBy']['userWorkExperiences']) {
+                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                            if ($exp['is_current'] == 1) {
+                                                echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                                <div class="pr-user-past">
+                                    <?php
+                                    $experience = [];
+                                    if ($arr['createdBy']['userWorkExperiences']) {
+                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                            if ($exp['is_current'] == 0) {
+                                                array_push($experience, $exp["company"]);
+                                            }
+                                        }
+                                        $str = implode(", ", array_unique($experience));
+                                        if ($str) {
+                                            ?>
+                                            <span class="past-title">Past</span>
+                                            <h5>
+                                                <?= rtrim($str, ','); ?>
+                                            </h5>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                    <!--                                    <span>+2 more</span>-->
+                                </div>
+                                <?php
+                                if ($arr['createdBy']['userEducations']) {
+                                    ?>
+                                    <div class="pr-user-past">
                                       <span class="past-title">
                                         Edu
                                       </span>
-                                            <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
-                                            <?php
-                                            if (COUNT($arr['createdBy']['userEducations']) > 1) {
-                                                ?>
-                                                <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
-                                                <?php
-                                            }
-                                            ?>
-                                        </div>
+                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
                                         <?php
-                                    }
-                                    ?>
-                                    <div class="pr-user-past">
-                                        <span class="past-title">Applied Date</span>  <h5><?= date('d M Y',strtotime($arr['created_on'])) ?></h5>
+                                        if (COUNT($arr['createdBy']['userEducations']) > 1) {
+                                            ?>
+                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
+                                    <?php
+                                }
+                                ?>
+                                <div class="pr-user-past">
+                                    <span class="past-title">Applied Date</span>
+                                    <h5><?= date('d M Y', strtotime($arr['created_on'])) ?></h5>
                                 </div>
-                                <div class="col-md-5">
-                                    <div class="pr-user-skills">
-                                        <ul class="s-skill">
-                                            <?php
-                                            if ($arr['createdBy']['userSkills']) {
-                                                foreach ($arr['createdBy']['userSkills'] as $skill) {
-                                                    ?>
-                                                    <li><?= $skill['skill']; ?></li>
-                                                    <?php
-                                                }
-                                            }
-                                            ?>
-                                        </ul>
-                                        <ul class="h-skill">
-                                            <?php
-                                            if ($arr['createdBy']['userSkills']) {
-                                                foreach ($arr['createdBy']['userSkills'] as $skill) {
-                                                    ?>
-                                                    <li><?= $skill['skill']; ?></li>
-                                                    <?php
-                                                }
-                                            }
-                                            ?>
-                                        </ul>
-                                        <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
-                                    </div>
-                                    <div class="pref-indus">
+                            </div>
+                            <div class="col-md-5">
+                                <div class="pr-user-skills">
+                                    <ul class="s-skill">
                                         <?php
-                                        $industry = [];
-                                        if ($arr['createdBy']['userPreferredIndustries']) {
-                                            foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                                array_push($industry, $ind["industry"]);
-                                            }
-                                            $str2 = implode(", ", array_unique($industry));
-                                            if ($str2) {
+                                        if ($arr['createdBy']['userSkills']) {
+                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
                                                 ?>
-                                                <h4>
-                                                    <span>Industry: </span>
-                                                    <?= rtrim($str2, ','); ?>
-                                                </h4>
+                                                <li><?= $skill['skill']; ?></li>
                                                 <?php
                                             }
                                         }
                                         ?>
-                                    </div>
+                                    </ul>
+                                    <ul class="h-skill">
+                                        <?php
+                                        if ($arr['createdBy']['userSkills']) {
+                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                                ?>
+                                                <li><?= $skill['skill']; ?></li>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </ul>
+                                    <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
                                 </div>
-                                <div class="col-md-3 pl-0">
-                                    <div class="pr-user-actions">
-                                        <div class="pr-top-actions text-right">
-                                            <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
-                                                Profile</a>
-                                            <?php
-                                            $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                <div class="pref-indus">
+                                    <?php
+                                    $industry = [];
+                                    if ($arr['createdBy']['userPreferredIndustries']) {
+                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
+                                            array_push($industry, $ind["industry"]);
+                                        }
+                                        $str2 = implode(", ", array_unique($industry));
+                                        if ($str2) {
                                             ?>
-                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
-                                            <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
-                                            <!--                                            <a href="#">Request to Complete Profile</a>-->
-                                        </div>
-                                        <ul>
-                                            <!--                                            <li>-->
-                                            <!--                                                <a href="#">-->
-                                            <!--                                                    <img src="-->
-                                            <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
-                                            <!--                                                </a>-->
-                                            <!--                                            </li>-->
-                                            <!--                                            <li>-->
-                                            <!--                                                <a href="#" class="tt" title="Schedule Interview -->
-                                            <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
-                                            <!--                                                    <img src="-->
-                                            <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
-                                            <!--                                                </a>-->
-                                            <!--                                            </li>-->
+                                            <h4>
+                                                <span>Industry: </span>
+                                                <?= rtrim($str2, ','); ?>
+                                            </h4>
                                             <?php
-                                                if($arr['hiringProcessNotes']){
-                                                    $notes = $arr['hiringProcessNotes'][0]['notes'];
-                                                } else{
-                                                    $notes = '';
-                                                }
-                                            ?>
-                                            <li class="notes" data-toggle="tooltip" title="Notes">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>" class="noteImg" data-val="<?= $notes;?>">
-                                            </li>
-                                            <li>
-                                                <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                                   data-key="<?= $arr['name']; ?>" title="Chat Now"
-                                                   data-toggle="tooltip">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
-                                                </a>
-                                            </li>
-                                            <!--                        <li>-->
-                                            <!--                            <i class="fa fa-phone-square"></i>-->
-                                            <!--                        </li>-->
-                                        </ul>
-                                        <div class="round-detail">
-                                            <h5>Current Round:</h5>
-                                            <h4><?= $fieldName; ?></h4>
-                                        </div>
-                                    </div>
+                                        }
+                                    }
+                                    ?>
                                 </div>
                             </div>
-                            <div class="pr-user-action-main">
-                                <?php if ($arr['status'] == 'Hired') { ?>
-                                    <div class="pr-full-height">
-                                        <a href="javascript:;">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
-                                        </a>
+                            <div class="col-md-3 pl-0">
+                                <div class="pr-user-actions">
+                                    <div class="pr-top-actions text-right">
+                                        <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                            Profile</a>
+                                        <?php
+                                        $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                        ?>
+                                        <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+                                        <!--                                            <a href="#">Request to Complete Profile</a>-->
                                     </div>
-                                <?php } elseif ($arr['status'] == 'Rejected') { ?>
-                                    <div class="pr-full-height">
-                                        <a href="javascript:;">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
-                                        </a>
+                                    <ul>
+                                        <!--                                            <li>-->
+                                        <!--                                                <a href="#">-->
+                                        <!--                                                    <img src="-->
+                                        <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+                                        <!--                                                </a>-->
+                                        <!--                                            </li>-->
+                                        <!--                                            <li>-->
+                                        <!--                                                <a href="#" class="tt" title="Schedule Interview -->
+                                        <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
+                                        <!--                                                    <img src="-->
+                                        <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
+                                        <!--                                                </a>-->
+                                        <!--                                            </li>-->
+                                        <?php
+                                        if ($arr['hiringProcessNotes']) {
+                                            $notes = $arr['hiringProcessNotes'][0]['notes'];
+                                        } else {
+                                            $notes = '';
+                                        }
+                                        ?>
+                                        <li class="notes" data-toggle="tooltip" title="Notes">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
+                                                 class="noteImg" data-val="<?= $notes; ?>">
+                                        </li>
+                                        <li>
+                                            <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
+                                               data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                               data-toggle="tooltip">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
+                                            </a>
+                                        </li>
+                                        <!--                        <li>-->
+                                        <!--                            <i class="fa fa-phone-square"></i>-->
+                                        <!--                        </li>-->
+                                    </ul>
+                                    <div class="round-detail">
+                                        <h5>Current Round:</h5>
+                                        <h4><?= $fieldName; ?></h4>
                                     </div>
-                                <?php } elseif ($arr['status'] == 'Cancelled') { ?>
-                                    <div class="pr-full-height">
-                                        <a href="javascript:;">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/cbc.png'); ?>"/>
-                                        </a>
-                                    </div>
-                                <?php } else { ?>
-                                    <div class="pr-half-height">
-                                        <a href="javascript:;" class="approve"
-                                           value="<?= $arr['applied_application_enc_id']; ?>"
-                                           data-total="<?= $arr['total']; ?>">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
-                                        </a>
-<!--                                        <div class="dropdown">-->
-<!--                                            <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>-->
-<!--                                            <div class="dropdown-content">-->
-<!--                                                --><?php
-//                                                    foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-//                                                        ?>
-<!--                                                        <div id="--><?//= 'nav' . $p['field_enc_id'] ?><!--">-->
-<!--                                                            <a href="#">-->
-<!--                                                                --><?//= $p['field_name']?>
-<!--                                                            </a>-->
-<!--                                                        </div>-->
-<!--                                                        --><?php
-//                                                    }
-//                                                ?>
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                    </div>
-                                    <div class="pr-half-height">
-                                        <a href="javascript:;" class="reject"
-                                           value="<?= $arr['applied_application_enc_id']; ?>">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
-                                        </a>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                            <div class="slide-btn">
-                                <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                                       title="View Questionnaire"></i>
-                                </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="cd-box-border-hide">
-                            <?php if (!empty($que)) { ?>
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Question</th>
-                                        <th>Process Name</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="qu_data">
-                                    <?php foreach ($que as $list_que) { ?>
-                                        <tr>
-                                            <td><a class="blue question_list"
-                                                   href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
-                                                   data-questionId="<?= $list_que['qid']; ?>"
-                                                   data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
-                                                   target="_blank"><?= $list_que['name']; ?></a>
-                                            </td>
-                                            <td><?= $list_que['field_label']; ?></td>
-
-                                        </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
+                        <div class="pr-user-action-main">
+                            <?php if ($arr['status'] == 'Hired') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } elseif ($arr['status'] == 'Rejected') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } elseif ($arr['status'] == 'Cancelled') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/cbc.png'); ?>"/>
+                                    </a>
+                                </div>
                             <?php } else { ?>
-                                <div class="without-q">
-                                    <h3>No Questionnaire To Display</h3>
-                                    <!--                                    <a href="#">Set Questionnaire</a>-->
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="approve"
+                                       value="<?= $arr['applied_application_enc_id']; ?>"
+                                       data-total="<?= $arr['total']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
+                                    </a>
+                                    <div class="dropdown">
+                                        <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
+                                        <div class="dropdown-content">
+                                            <?php
+                                            foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                                                ?>
+                                                <div id="<?= 'nav' . $p['field_enc_id'] ?>" >
+                                                    <a href="#">
+                                                        <?= $p['field_name'] ?>
+                                                    </a>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="reject"
+                                       value="<?= $arr['applied_application_enc_id']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
+                                    </a>
                                 </div>
                             <?php } ?>
                         </div>
-                    </li>
-                    <?php
-                }
+                        <div class="slide-btn">
+                            <button class="slide-bttn" type="button">
+                                <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                   title="View Questionnaire"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cd-box-border-hide">
+                        <?php if (!empty($que)) { ?>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Process Name</th>
+                                </tr>
+                                </thead>
+                                <tbody class="qu_data">
+                                <?php foreach ($que as $list_que) { ?>
+                                    <tr>
+                                        <td><a class="blue question_list"
+                                               href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
+                                               data-questionId="<?= $list_que['qid']; ?>"
+                                               data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
+                                               target="_blank"><?= $list_que['name']; ?></a>
+                                        </td>
+                                        <td><?= $list_que['field_label']; ?></td>
+
+                                    </tr>
+                                <?php } ?>
+                                </tbody>
+                            </table>
+                        <?php } else { ?>
+                            <div class="without-q">
+                                <h3>No Questionnaire To Display</h3>
+                                <!--                                    <a href="#">Set Questionnaire</a>-->
+                            </div>
+                        <?php } ?>
+                    </div>
+                </li>
+                <?php
             }
-            ?>
-        </ul>
-        <?php
-        Pjax::end();
+        }
         ?>
-    </div>
+    </ul>
+    <?php
+    Pjax::end();
+    ?>
+</div>
 <?php
 $this->registerCss('
 .notes{
@@ -1183,28 +1205,45 @@ function myFunction() {
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
-     if (window.confirm("Do you really want to Delete the current Application?")) { 
-        var data = $(this).attr('value');
-        var url = "/account/jobs/delete-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-                  if(data==true) {
-                      toastr.success('Deleted Successfully', 'Success');
+     swal({ 
+             title: "Are You Sure",
+             text: "This job will be deleted permanently from your dashboard",
+             type: "warning",
+             closeOnClickOutside: false,
+             showCancelButton : true,
+         },
+         function (isConfirm) {
+           if (isConfirm){ 
+            var data = $(this).attr('value');
+            var url = "/account/jobs/delete-application";
+            $.ajax({
+                url:url,
+                data:{data:data},
+                method:'post',
+                success:function(data){
+                    if(data==true) {
+                        toastr.success('Deleted Successfully', 'Success');
                     }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
+                    else {
+                        toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                    }
+                }
           });
-    }
+        }
+     })
 });
 $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
-     if (window.confirm("Do you really want to Close the current Application?")) { 
+     swal({
+         title: "Are You Sure",
+         text: "If you close the job you will stop receiving new applications",
+         type: "warning",
+         closeOnClickOutside: false,
+         showCancelButton : true, 
+     },
+     function(isConfirm) {
+     if (isConfirm) { 
         var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
         $.ajax({
@@ -1212,15 +1251,17 @@ $(document).on('click','#j-closed',function(e){
             data:{data:data},
             method:'post',
             success:function(data){
-                  if(data==true) {
-                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
-                    }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
+              if(data==true) {
+                  toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
+                }
+               else {
+                  toastr.error('Something went wrong. Please try again.', 'Opps!!');
+               }
+             }
           });
-    }
+        }  
+        }
+     )
 });
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
@@ -1355,6 +1396,8 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     function roundClick() {
@@ -1362,7 +1405,7 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
         let hpChild = hp.children;
         setTimeout(function () {
             hp.style.height = "auto";
-            for(let i = 0; i<hpChild.length; i++){
+            for (let i = 0; i < hpChild.length; i++) {
                 hpChild[i].style.position = "relative";
                 hpChild[i].style.top = "unset";
                 hpChild[i].style.left = "unset";
@@ -1372,26 +1415,26 @@ $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depe
 
 
     let noteImg = document.getElementsByClassName('noteImg');
-    for(let i=0; i<noteImg.length; i++){
+    for (let i = 0; i < noteImg.length; i++) {
         noteImg[i].addEventListener('click', function () {
             let noteForm = document.querySelectorAll('.noteForm');
-            if(noteForm.length > 0){
+            if (noteForm.length > 0) {
                 noteForm[0].remove();
             }
             var note_val = noteImg[i].getAttribute('data-val');
             console.log(note_val);
             let parentElem = this.parentElement;
             let rootElem = parentElem.parentElement;
-            let div  = document.createElement('div');
+            let div = document.createElement('div');
             div.setAttribute('class', 'noteForm');
-            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">'+note_val+'</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
+            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
             div.innerHTML = notesTemp;
             parentElem.insertAdjacentElement('afterend', div);
 
             let closeNotes = document.getElementById('closeNotes');
             closeNotes.addEventListener('click', function () {
-               let noteInput = closeNotes.closest('.noteForm');
-               noteInput.remove();
+                let noteInput = closeNotes.closest('.noteForm');
+                noteInput.remove();
             });
         })
     }
