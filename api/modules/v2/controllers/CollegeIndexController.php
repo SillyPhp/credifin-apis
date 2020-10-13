@@ -743,10 +743,7 @@ class CollegeIndexController extends ApiBaseController
                 $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
                 $rejection->created_by = $data['user_id'];
                 $rejection->created_on = date('Y-m-d H:i:s');
-                if (!$rejection->save()) {
-                    print_r($rejection->getErrors());
-                }
-
+                $rejection->save();
             }
         }
 
