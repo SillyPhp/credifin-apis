@@ -877,14 +877,32 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->select(['a.user_other_details_enc_id', 'a.user_enc_id',
+                    'a.cgpa', 'a.university_roll_number', 'b.first_name', 'b.last_name',
+                    'CONCAT(b.first_name, " " ,b.last_name) user_full_name',
+                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
-                ->joinWith(['courseEnc cc'], false)
+//                ->joinWith(['courseEnc cc'], false)
+                ->joinWith(['assignedCollegeEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0])
-                ->asArray()
+                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0]);
+            if (isset($data['name']) && !empty($data['name'])) {
+                $candidates->andWhere(['like', 'user_full_name', $data['name']]);
+            }
+            if (isset($data['course_name']) && !empty($data['course_name'])) {
+                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
+            }
+            if (isset($data['semester']) && !empty($data['semester'])) {
+                $candidates->andWhere(['like', 'a.semester', $data['semester']]);
+            }
+            if (isset($data['roll_no']) && !empty($data['roll_no'])) {
+                $candidates->andWhere(['like', 'a.university_roll_number', $data['roll_no']]);
+            }
+            $candidates = $candidates->asArray()
                 ->all();
 
             return $this->response(200, ['status' => 200, 'data' => $candidate, 'all_candidates' => $candidates]);
