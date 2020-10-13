@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\HiringProcessNotes;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -9,6 +10,7 @@ use common\models\EmployerApplications;
 use common\models\AppliedApplications;
 use common\models\ApplicationInterviewQuestionnaire;
 use yii\web\HttpException;
+use yii\web\Response;
 
 class ProcessApplicationsController extends Controller
 {
@@ -105,6 +107,9 @@ class ProcessApplicationsController extends Controller
                             $b31->onCondition(['b31.is_deleted' => 0]);
                         }]);
                     }])
+                    ->joinWith(['hiringProcessNotes sh' => function($sh){
+                        $sh->select(['sh.applied_application_enc_id','sh.notes_enc_id', 'sh.notes']);
+                    }])
                     ->groupBy(['a.applied_application_enc_id'])
                     ->orderBy(['a.status' => SORT_ASC])
                     ->asArray()
@@ -155,6 +160,55 @@ class ProcessApplicationsController extends Controller
             return $this->render('individual_candidate_process', [
                 'applied' => $applied_user,
             ]);
+        }
+    }
+
+    public function actionProcessNotes(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+            $note = Yii::$app->request->post('note');
+            $alreadyExist =HiringProcessNotes::find()
+            ->where(['applied_application_enc_id'=> $id,'created_by'=>Yii::$app->user->identity->user_enc_id])
+            ->one();
+            if ($alreadyExist){
+                 $alreadyExist->notes = $note;
+                 $alreadyExist->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                 if($alreadyExist->update()){
+                     return [
+                         'status' => 200,
+                         'title' => 'Success',
+                         'message' => 'Reminder added successfully.'
+                     ];
+                 } else {
+                     return [
+                         'status' => 201,
+                         'message' => 'Something went wrong. Please try again.',
+                         'title' => 'Opps!!',
+                     ];
+                 }
+            }else{
+                $porcessNotes = new HiringProcessNotes();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $porcessNotes->notes_enc_id = $utilitiesModel->encrypt();
+                $porcessNotes->notes = $note;
+                $porcessNotes->applied_application_enc_id = $id;
+                $porcessNotes->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($porcessNotes->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reminder added successfully.'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'message' => 'Something went wrong. Please try again.',
+                        'title' => 'Opps!!',
+                    ];
+                }
+            }
         }
     }
 }

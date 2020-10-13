@@ -18,7 +18,7 @@ namespace common\models;
  * @property string $course_name
  * @property double $course_fee_annual
  * @property int $application_fee_recieved 0 for not 1 for yes
- * @property int $filled_by 0 as self(student) 1 as executive
+ * @property int $filled_by 0 as self(student) 1 as executive 2 raw uploads by admins
  * @property string $created_on
  * @property string $created_by may be null or not , filler id who has filled the form
  * @property string $last_updated_by
