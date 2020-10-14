@@ -173,7 +173,8 @@ $content = [
     'app_id'=>$application_details['application_enc_id']
 ];
 if (empty($application_details['image'])||$application_details['image']==1){
-    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+   // $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+    $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png'); //to be dletd aftr server shifting
 }else
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];

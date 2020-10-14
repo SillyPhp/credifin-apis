@@ -607,7 +607,7 @@ class LoansController extends ApiBaseController
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->joinWith(['loanSanctionReports h' => function ($h) {
-                    $h->select(['h.loan_app_enc_id', 'h.loan_amount']);
+                    $h->select(['h.report_enc_id', 'h.loan_app_enc_id', 'h.loan_amount']);
                 }])
                 ->joinWith(['createdBy b' => function ($b) {
                     $b->joinWith(['userOtherInfo b1']);
@@ -637,7 +637,8 @@ class LoansController extends ApiBaseController
                     $g->joinWith(['providerEnc g1'], false);
                     $g->onCondition(['g.is_deleted' => 0]);
                 }])
-                ->where(['cc.organization_enc_id' => $college_id]);
+                ->where(['cc.organization_enc_id' => $college_id])
+                ->andWhere(['in', 'f.payment_status', ['captured', 'created']]);
             if (isset($params['name']) && !empty($params['name'])) {
                 $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
             }
