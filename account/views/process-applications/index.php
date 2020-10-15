@@ -45,6 +45,14 @@ if ($application_name['wage_type'] == 'Fixed') {
     }
 }
 ?>
+<!--<div class="hamburger-jobs">-->
+<!--    <button class="hamburger-btn" id="showHamJobs">-->
+<!--        <i class="fa fa-bars"></i>-->
+<!--    </button>-->
+<!--    <div class="pa-sidebar pa-sidebar-hide" id="hamJobs">-->
+<!--        hello-->
+<!--    </div>-->
+<!--</div>-->
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -236,8 +244,8 @@ if ($application_name['wage_type'] == 'Fixed') {
                         <div class="col-md-12 col-sm-12 pr-user-inner-main">
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
-                                    <a class="pr-user-icon"
-                                       href="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
+                                    <a class="pr-user-icon url-forward" href="#"
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"/>
                                         <?php else: ?>
@@ -245,8 +253,8 @@ if ($application_name['wage_type'] == 'Fixed') {
                                                     height="80" font="35px"></canvas>
                                         <?php endif; ?>
                                     </a>
-                                    <a class="pr-user-n" target="_blank"
-                                       href="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                                    <a class="pr-user-n url-forward" href="#"
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
                                     <?php
                                     if ($arr['createdBy']['userWorkExperiences']) {
                                         foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -434,16 +442,21 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
                                         <div class="dropdown-content">
                                             <?php
-                                            foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                                            foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
-                                                <div id="<?= 'nav' . $p['field_enc_id'] ?>" >
-                                                    <a href="#">
+                                                <div data-id="<?= $p['field_enc_id'] ?>" >
+                                                    <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
                                                 <?php
                                             }
                                             ?>
+                                            <div data-id="<?= $p['field_enc_id'] ?>" >
+                                                <a href="#" class="multipleRound" value="<?= $arr['applied_application_enc_id']; ?>">
+                                                    Hired
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -505,8 +518,37 @@ if ($application_name['wage_type'] == 'Fixed') {
 </div>
 <?php
 $this->registerCss('
+.hamburger-jobs{
+    background: #fff;
+    height: auto;
+    position: fixed;
+    top: 105px;
+    left: 0;
+    z-index: 999;
+}
+.pa-sidebar{
+    border: 1px solid #eee;
+    width: 300px;
+    height: calc(100vh - 105px);
+}
+.pa-sidebar-hide{
+    width: 0px;
+    
+}
+.hamburger-btn{
+    position: absolute; 
+    right: -35px;
+    top: 15px;
+    background: #fff;
+    padding: 5px 10px;
+    border: 1px solid #eee;
+}
 .notes{
     cursor: pointer;
+}
+.disable-step{
+    pointer-events: none;
+    opacity: 0.6;
 }
 .noteText{
     min-height: 200px;    
@@ -562,7 +604,9 @@ $this->registerCss('
     font-size: 15px;
     padding: 5px 10px;
 }
-.h-skill{display:none;}
+.h-skill{
+    display:none;
+}
 .pr-user-skills:hover .h-skill
 {
     display:block;
@@ -1339,6 +1383,48 @@ $(document).on('click', '.approve', function(e) {
       }
    }) 
 });
+$(document).on('click','.multipleRound',function(e) {
+  e.preventDefault();
+  var field_id = $(this).parent().parentsUntil('li').parent().attr('data-key');
+  var app_id = $(this).attr('value');
+  var roundId = $(this).parent().attr('data-id');
+  var prevRounds = $(this).parent().prevAll();
+  console.log(prevRounds);
+  var btn = $(this);
+  var dataArr = [];
+  var obj = {};
+  prevRounds.each(function() {
+        $(this).addClass('disable-step');
+        dataArr.push($(this).attr('data-id'));
+  });
+  obj['fields']= dataArr;
+  obj['app_id']= app_id;
+  var listid = $('ul.pr-process-tab').find('.active').prop('id');
+  $.ajax({
+    url:'/account/jobs/approve-multiple-steps',
+    data:obj,
+    method:'post',
+    beforeSend:function()  {
+        btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        btn.attr("disabled","true");
+    }, 
+    success:function(data) {
+      res = JSON.parse(data);
+        if(res.status==true) {
+              $.pjax.reload({container: '#pjax_process', async: false});
+              setTimeout(function() {
+                disable(btn);
+                hiring_process();
+                utilities.initials();
+                $('#'+listid).find('a').click();
+              }, 100)
+        } else {
+           alert('something went wrong..');
+        }
+    }
+  })
+});
+
 $(document).on('click','.reject',function(e){
     e.preventDefault();
     var btn = $(this);
@@ -1392,6 +1478,11 @@ function hide_btn(res,total,thisObj,thisObj1,thisObj2){
         thisObj2.show();
     }
 }
+$(document).on('click','.url-forward',function (e){ 
+    e.preventDefault();  
+    var url = $(this).attr('data-id');  
+    window.open(url, "_blank"); 
+});
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
 JS;
 $this->registerJs($script);
@@ -1438,6 +1529,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             });
         })
     }
+
 
 
 </script>
