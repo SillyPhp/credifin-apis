@@ -1222,6 +1222,10 @@ class SiteController extends Controller
     public function actionRedbullBasement(){
         return $this->render('redbull');
     }
+
+    public function actionExpiredJobs(){
+        return $this->render('expired-jobs');
+    }
 //    public function actionAdmission()
 //    {
 //        $model = new AdmissionForm();

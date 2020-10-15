@@ -158,24 +158,26 @@ $this->params['header_dark'] = false;
                             <?php }
                         } ?>
                         <li class="dwn">
-                            <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
-                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
-                                    ?>
-                                    <div class="down-r">
-                                        <?php
-                                        $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
-                                        ?>
-                                        <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i
-                                                    class="fas fa-download"></i></a>
-                                    </div>
-                                <?php }
-                            } ?>
+
                         </li>
                     </ul>
+                    <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                        if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                            ?>
+                            <div class="down-res">
+                                <?php
+                                $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                ?>
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download Resume<i
+                                            class="fas fa-download"></i></a>
+                            </div>
+                        <?php }
+                    } ?>
                 </div>
             </div>
         </div>
     </section>
+
     <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-12">
@@ -432,6 +434,28 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.down-res{
+    text-align:center;
+    margin-top: 5px;
+}
+.social-info{
+    text-align: center;
+}
+.down-res a:hover{
+    background-color: #53bbeb;
+}
+.down-res a{
+    background-color: #00a0e3;
+    padding: 8px 20px;
+    text-align: center;
+    border-radius: 6px;
+    color: #fff;
+    transition: 0.3s;
+    margin-top: 5px;
+}
+.down-res a i{
+    padding-left: 8px;
+}
 .fbook a {
     background-color: #3b5998;
 }
@@ -620,7 +644,7 @@ body{background-color:#f9f9f9;}
 	margin: auto;
 	border-radius: 8px;
 	margin-bottom: 25px;
-	min-height: 270px;
+	min-height: 300px;
 	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
@@ -741,7 +765,7 @@ body{background-color:#f9f9f9;}
 	background-color: #fff;
 	padding: 30px 20px 5px;
 	border-radius: 8px;
-    min-height:270px;
+    min-height:300px;
     box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .right-side-detail ul {
@@ -768,7 +792,7 @@ body{background-color:#f9f9f9;}
     display: inline-block;
     text-align: center;
     line-height: 30px;
-    border-radius: 2px;
+    border-radius: 6px;
     color:#fff;
 }
 span.available-status {
