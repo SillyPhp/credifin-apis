@@ -891,7 +891,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0]);
             if (isset($data['name']) && !empty($data['name'])) {
-                $candidates->andWhere(['like', 'user_full_name', $data['name']]);
+                $candidates->having(['like', 'user_full_name', $data['name']]);
             }
             if (isset($data['course_name']) && !empty($data['course_name'])) {
                 $candidates->andWhere(['c1.course_name' => $data['course_name']]);
