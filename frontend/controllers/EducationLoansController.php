@@ -14,6 +14,7 @@ use frontend\models\EducationalLoans;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\Response;
 
 
 class EducationLoansController extends Controller
@@ -83,20 +84,26 @@ class EducationLoansController extends Controller
     {
         $this->layout = 'main-secondary';
         $model = new LeadsForm();
-        $options = ['source'=>3,'datatype'=>0,'type'=>['College']];
-        $data = OrganizationList::get($options);
         if ($model->load(Yii::$app->request->post())){
-            $session = Yii::$app->session;
-            $session->set('app_number', '');
-            if ($model->save())
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $res = $model->save();
+            if ($res['status'])
             {
-                Yii::$app->session->setFlash('success', 'Success');
-                return $this->refresh();
+                return [
+                  'status'=>200,
+                  'app_num'=>$res['app_num'],
+                  'title'=>'Success',
+                  'message' => 'Submit Successfully'
+                ];
             }else{
-                Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
+                return [
+                    'status'=>201,
+                    'title'=>'Error',
+                    'message' => 'Some Input Error Please Varify Your Information'
+                ];;
             }
         }else{
-            return $this->render('leads-form',['model'=>$model,'data'=>$data]);
+            return $this->render('leads-form',['model'=>$model]);
         }
     }
 }
