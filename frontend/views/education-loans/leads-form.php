@@ -72,15 +72,14 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?php $data = \yii\helpers\ArrayHelper::map($data,'text','text'); ?>
-                        <?= $form->field($model, 'university_name')->widget(Select2::classname(), [
-                            'data' => $data,
-                            'options' => ['placeholder' => 'University/College Name','class'=>'form-control text-capitalize'],
-                            'pluginOptions' => [
-                                'allowClear' => true,
-                                'tags'=>true
-                            ],
-                        ])->label(false); ?>
+                        <?= $form->field($model, 'student_email')->textInput(['placeholder'=>'Student Email','class'=>'form-control'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="the-basics-college">
+                            <?= $form->field($model, 'university_name')->textInput(['placeholder'=>'College / University Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -99,7 +98,11 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     <div class="col-md-12">
                         <div><label class="p_label">Parent Information</label></div>
                         <div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>
-                        <div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>
+                        <div class="form-group">
+                             <input type="radio" value="Father" name="parent_relation[]"> Father
+                             <input type="radio" value="Mother" name="parent_relation[]"> Mother
+                             <input type="radio" value="Guardian" name="parent_relation[]"> Guardian
+                        </div>
                         <div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>
                         <div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>
                     </div>
@@ -133,6 +136,7 @@ $script = <<< JS
 $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
+$('#course_fee_annual').mask("#", {reverse: true});
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
 });
@@ -144,7 +148,7 @@ function addAnotherField()
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
      '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
-     '<div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>' +
+     '<div class="form-group"><input type="radio" value="Father" name="parent_relation[]"> Father<input type="radio" value="Mother" name="parent_relation[]"> Mother<input type="radio" value="Guardian" name="parent_relation[]"> Guardian</div>'+
      '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
@@ -159,6 +163,61 @@ function addAnotherField()
             $('.parent_annual_income').mask("#", {reverse: true});
 }
 getCourses();
+getCollege(datatype=0,source=3,type=['College']);
+function getCollege(datatype, source, type)
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str); 
+             }
+            });
+             cb(matches);  
+            }; 
+        };
+        var _college = []; 
+         $.ajax({         
+            url : '/api/v3/companies/organization-list', 
+            method : 'GET',   
+            data:{ 
+                datatype:datatype,
+                source:source, 
+                type:type
+                },  
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.results;
+                $.each(res,function(index,value) 
+                  {   
+                   _college.push(value.text);
+                  }); 
+               } else
+                {
+                   console.log('colleges could not fetch');
+                }
+            } 
+        });
+        $('#the-basics-college .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_college',
+         source: substringMatcher(_college)
+        }); 
+    } 
 function getCourses()
     {
         var substringMatcher = function(strs) {

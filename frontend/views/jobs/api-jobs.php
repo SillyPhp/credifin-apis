@@ -1,6 +1,4 @@
 <?php
-
-use common\models\Organizations;
 use yii\helpers\Url;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -39,7 +37,8 @@ $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 if (empty($app['image'])||$app['image']==1){
-    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+    //$image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+    $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png'); //to be dletd aftr server shifting
 }else
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
