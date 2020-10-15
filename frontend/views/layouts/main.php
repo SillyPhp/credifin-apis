@@ -429,7 +429,7 @@ AppAssets::register($this);
         $.ajax({
             url:'/site/one-tap-auth',
             method:'POST',
-            data:token,
+            data:{token:token,returnUrl:returnUrl},
             beforeSend:function(e)
             {
                 $('#auth_loading_img').addClass('show');
@@ -881,6 +881,7 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
         ');
 }
 if (Yii::$app->user->isGuest) {
+    Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
     $this->registerJs('
         window.addEventListener("scroll", header_main);
         var lastScrollTop = 50;

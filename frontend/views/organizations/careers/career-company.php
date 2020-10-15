@@ -55,6 +55,21 @@ echo $this->render('/widgets/drop_resume', [
 <section>
     <div class="container">
         <div class="row">
+                <div class="social-menu">
+                    <ul>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
             <div class="col-lg-3 col-md-3 column">
                 <div class="widget border">
                     <div class="row">
@@ -325,6 +340,51 @@ echo $this->render('/widgets/mustache/career-job-box');
 
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+.social-menu ul{
+    position: relative;
+    padding: 0;
+    justify-content: flex-end;
+    display: flex;
+    }
+.social-menu ul li{
+    list-style: none;
+    margin: 0 8px;
+}
+.social-menu ul li .fab{
+    font-size: 15px;
+    line-height: 40px;
+    transition: .6s;
+    color: #000;
+}
+.social-menu ul li .fab:hover{
+    color: #fff;
+ }
+.social-menu ul li:nth-child(1) a:hover{
+    background-color: #3b5999;
+ }
+.social-menu ul li:nth-child(2) a:hover{
+    background-color: #55acee;
+ }
+.social-menu ul li:nth-child(3) a:hover{
+    background-color: #e4405f;
+ }
+.social-menu ul li:nth-child(4) a:hover{
+    background-color: #0077B5;
+ }
+.social-menu ul li a{
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dbdfe0;
+    text-align: center;
+    transition: .6s;
+    box-shadow: 0 4px 3px rgba(0,0,0,.5);
+}
+.social-menu ul li a:hover{
+    transform: translate(0, -10px);
+}
 .loader_screen img
 {
 display:none;

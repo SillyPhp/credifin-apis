@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg19.png');
+Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->referrer . '"', \yii\web\View::POS_HEAD);
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">
@@ -102,3 +103,27 @@ $this->registerCss('
     font-weight: 600 !important;
 }
 ');
+$script = <<< JS
+$(document).on('click','.auth-link',function(e) {
+    var url = returnUrl;
+    if (url!==""||url==null){
+     storeSessionUrl(url);   
+    }
+})
+function storeSessionUrl(url)
+{
+    $.ajax({
+       url:'/auth-status',
+       method:'POST',
+       data:{url:url},
+       success:function(res) {
+           if (res.status==200){
+            console.log(res.message);   
+           }else{
+            console.log(res.message);   
+           }
+       }
+    })
+}
+JS;
+$this->registerJs($script);
