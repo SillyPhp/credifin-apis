@@ -6,6 +6,7 @@ use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
@@ -146,6 +147,49 @@ class SearchController extends ApiBaseController
 
             $i = 0;
             foreach ($result as $c) {
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Treanding":
+                                $labels['Treanding'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+                $result[$i]['labels'] = $labels;
+
                 $reviews = OrganizationReviews::find()
                     ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
                     ->where(['organization_enc_id' => $c['organization_enc_id']])
@@ -185,6 +229,49 @@ class SearchController extends ApiBaseController
 
             $i = 0;
             foreach ($result as $c) {
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Treanding":
+                                $labels['Treanding'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+                $result[$i]['labels'] = $labels;
+
                 $jobs_count = $this->getJobsCount('Jobs', $c['organization_enc_id']);
                 $internships_count = $this->getJobsCount('Internships', $c['organization_enc_id']);
                 $result[$i]['organizationEnc']['jobs_count'] = $jobs_count;
