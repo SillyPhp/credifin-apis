@@ -338,6 +338,8 @@ class JobsController extends ApiBaseController
                 'b.max_wage',
                 'b.fixed_wage',
                 'b.working_days',
+                'b.saturday_frequency',
+                'b.sunday_frequency',
                 'b.interview_start_date',
                 'b.interview_end_date',
                 'w.organization_enc_id',

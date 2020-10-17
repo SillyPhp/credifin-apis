@@ -270,6 +270,11 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                        $x->onCondition(['ii.is_deleted' => 0]);
+                        $x->joinWith(['jobDescriptionEnc jj'], false);
+                        $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                    }]);
                     $b->joinWith(['organizationEnc bb' => function ($bb) {
                         $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
                     }], false);
@@ -369,6 +374,11 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                        $x->onCondition(['ii.is_deleted' => 0]);
+                        $x->joinWith(['jobDescriptionEnc jj'], false);
+                        $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                    }]);
                     $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
@@ -504,6 +514,7 @@ class SearchController extends ApiBaseController
             $data['last_date'] = $j['last_date'];
             $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
+            $data['jobDescription'] = $j['employerApplicationEnc']['applicationJobDescriptions'];
             $data['salary'] = $j['salary'];
             if ($j['status'] != 'Active') {
                 $data['is_closed'] = true;

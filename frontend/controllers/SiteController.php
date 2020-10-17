@@ -90,10 +90,30 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionAuthStatus()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $url = Yii::$app->request->post('url');
+            $this->handleUrl($url);
+        }
+    }
+    protected function handleUrl($url)
+    {
+        $session = Yii::$app->session;
+        if (!empty($url))
+        {
+            $session->set('current_url', $url);
+        }else{
+            $session->set('current_url', Yii::$app->getHomeUrl());
+        }
+    }
     public function actionOneTapAuth()
     {
         if (Yii::$app->request->isPost) {
-            if ((new OneTapAuth())->handle(Yii::$app->request->post())) {
+            $this->handleUrl(Yii::$app->request->post('returnUrl'));
+            if ((new OneTapAuth())->handle(Yii::$app->request->post('token'))) {
                 return $this->redirect('/site/oauth-verify');
             } else {
                 $response = [
@@ -1201,6 +1221,10 @@ class SiteController extends Controller
     }
     public function actionRedbullBasement(){
         return $this->render('redbull');
+    }
+
+    public function actionExpiredJobs(){
+        return $this->render('expired-jobs');
     }
 //    public function actionAdmission()
 //    {

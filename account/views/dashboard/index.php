@@ -299,6 +299,7 @@ endif;
                         ?>
                     </div>
                 </div>
+
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
@@ -361,6 +362,11 @@ endif;
                 </div>
                 <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
             <?php endif; ?>
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'){ ?>
+
+                        <?= $this->render("/widgets/edupreneur_and_redbull_dashboard")?>
+
+            <?php } ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
             <!--                <div class="portlet-title" style="border-bottom:none;">-->
             <!--                    <div class="car-main row">-->

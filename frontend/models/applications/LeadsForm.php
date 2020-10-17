@@ -12,6 +12,7 @@ class LeadsForm extends Model
    public $first_name;
    public $last_name;
    public $student_mobile_number;
+   public $student_email;
    public $university_name;
    public $course_name;
    public $course_fee_annual;
@@ -29,12 +30,13 @@ class LeadsForm extends Model
    {
        return [
            [['first_name','last_name','student_mobile_number'],'required'],
-           [['first_name', 'last_name', 'student_mobile_number','university_name','course_name'], 'trim'],
-           [['university_name','course_name','course_fee_annual','parent_name','parent_relation','parent_mobile_number','parent_annual_income'],'safe'],
-           [['first_name','last_name', 'university_name','course_name'], 'string', 'max' => 255],
+           [['first_name', 'last_name', 'student_email','student_mobile_number','university_name','course_name'], 'trim'],
+           [['university_name','student_email','course_name','course_fee_annual','parent_name','parent_relation','parent_mobile_number','parent_annual_income'],'safe'],
+           [['first_name','last_name', 'university_name','course_name','student_email'], 'string', 'max' => 255],
            [['first_name', 'last_name'], 'match','pattern' => '/^([A-Z a-z])+$/', 'message' => 'Name can only contain alphabets'],
            [['student_mobile_number'], 'string','length'=>[10,15]],
            [['course_fee_annual'], 'integer','min'=>500],
+           ['student_email','email'],
        ];
    }
 
@@ -50,6 +52,7 @@ class LeadsForm extends Model
            $model->first_name = $this->first_name;
            $model->last_name = $this->last_name;
            $model->student_mobile_number = $this->student_mobile_number;
+           $model->student_email = $this->student_email;
            $model->college_name = $this->university_name;
            $model->course_name = $this->course_name;
            $model->course_fee_annual = $this->course_fee_annual;
@@ -87,12 +90,15 @@ class LeadsForm extends Model
            }
            if ($this->_flag)
            {
-               $session = Yii::$app->session;
-               $session->set('app_number', $model->application_number);
                $transaction->commit();
-             return true;
+             return [
+                 'app_num'=>$model->application_number,
+                 'status'=>true,
+             ];
            }else{
-               return false;
+               return [
+                   'status'=>false,
+               ];
            }
 
        } catch (\Exception $exception) {

@@ -583,6 +583,8 @@ class CollegeIndexController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
+                ->groupBy(['bb.organization_enc_id'])
+                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
                 ->asArray()
                 ->all();
 
@@ -684,6 +686,8 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
+                    $d['erexx_app_id'] = '';
+                    $this->__rejectReasons($d);
                 }
                 $data->last_updated_by = $user->user_enc_id;
                 $data->last_updated_on = date('Y-m-d H:i:s');
@@ -722,21 +726,52 @@ class CollegeIndexController extends ApiBaseController
 
     private function __rejectReasons($data)
     {
-        foreach ($data['reason_id'] as $reason_id) {
-            $rejection = new ErexxCollegeApplicationRejection();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $rejection->erexx_college_application_enc_id = $utilitiesModel->encrypt();;
-            $rejection->rejection_reason_enc_id = $reason_id;
-            $rejection->college_enc_id = $data['college_enc_id'];
-            $rejection->application_enc_id = $data['application_enc_id'];
-            $rejection->created_by = $data['user_id'];
-            $rejection->created_on = date('Y-m-d H:i:s');
-            if (!$rejection->save()) {
-                print_r($rejection->getErrors());
+        if ($data['reasons']) {
+            foreach ($data['reasons'] as $reason) {
+                $rejection = new ErexxCollegeApplicationRejection();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $rejection->erexx_college_application_rejection_enc_id = $utilitiesModel->encrypt();
+                if (!empty($reason['reason_id'])) {
+                    $rejection->rejection_reason_enc_id = $reason['reason_id'];
+                } else if (!empty($reason['reason'])) {
+                    $data['reason'] = $reason['reason'];
+                    if ($id = $this->__saveReason($data)) {
+                        $rejection->rejection_reason_enc_id = $id;
+                    }
+                }
+                $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
+                $rejection->created_by = $data['user_id'];
+                $rejection->created_on = date('Y-m-d H:i:s');
+                $rejection->save();
             }
         }
 
+    }
+
+    private function __saveReason($data)
+    {
+        if ($user = $this->isAuthorized()) {
+            $reasons = RejectionReasons::find()
+                ->where(['reason' => $data['reason']])
+                ->one();
+            if ($reasons) {
+                return $reasons->rejection_reason_enc_id;
+            }
+            $reason = new RejectionReasons();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $reason->rejection_reason_enc_id = $utilitiesModel->encrypt();
+            $reason->reason = $data['reason'];
+            $reason->reason_by = 0;
+            $reason->created_by = $user->user_enc_id;
+            $reason->created_on = date('Y-m-d H:i:s');
+            if ($reason->save()) {
+                $reason->rejection_reason_enc_id;
+            } else {
+                return false;
+            }
+        }
     }
 
     private function __addCompany($org_id, $college_enc_id)
@@ -842,14 +877,32 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->select(['a.user_other_details_enc_id', 'a.user_enc_id',
+                    'a.cgpa', 'a.university_roll_number', 'b.first_name', 'b.last_name',
+                    'CONCAT(b.first_name, " " ,b.last_name) user_full_name',
+                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
-                ->joinWith(['courseEnc cc'], false)
+//                ->joinWith(['courseEnc cc'], false)
+                ->joinWith(['assignedCollegeEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0])
-                ->asArray()
+                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0]);
+            if (isset($data['name']) && !empty($data['name'])) {
+                $candidates->having(['like', 'user_full_name', $data['name']]);
+            }
+            if (isset($data['course_name']) && !empty($data['course_name'])) {
+                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
+            }
+            if (isset($data['semester']) && !empty($data['semester'])) {
+                $candidates->andWhere(['like', 'a.semester', $data['semester']]);
+            }
+            if (isset($data['roll_no']) && !empty($data['roll_no'])) {
+                $candidates->andWhere(['like', 'a.university_roll_number', $data['roll_no']]);
+            }
+            $candidates = $candidates->asArray()
                 ->all();
 
             return $this->response(200, ['status' => 200, 'data' => $candidate, 'all_candidates' => $candidates]);
