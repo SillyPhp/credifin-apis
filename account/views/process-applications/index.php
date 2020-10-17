@@ -45,14 +45,7 @@ if ($application_name['wage_type'] == 'Fixed') {
     }
 }
 ?>
-<!--<div class="hamburger-jobs">-->
-<!--    <button class="hamburger-btn" id="showHamJobs">-->
-<!--        <i class="fa fa-bars"></i>-->
-<!--    </button>-->
-<!--    <div class="pa-sidebar pa-sidebar-hide" id="hamJobs">-->
-<!--        hello-->
-<!--    </div>-->
-<!--</div>-->
+
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -250,7 +243,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             <img src="<?= $arr['image'] ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
-                                                    height="80" font="35px"></canvas>
+                                                    color="<?= $arr['initials_color']; ?>"  height="80" font="35px"></canvas>
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
@@ -442,10 +435,16 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
                                         <div class="dropdown-content">
                                             <?php
+                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>" >
-                                                    <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                    <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?> <?php if($isHighlight){
+                                                        if($p['is_completed'] == 0){
+                                                            echo 'showBlue';
+                                                            $isHighlight = false;
+                                                        }
+                                                    }?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
@@ -528,20 +527,30 @@ $this->registerCss('
 }
 .pa-sidebar{
     border: 1px solid #eee;
-    width: 300px;
-    height: calc(100vh - 105px);
-}
-.pa-sidebar-hide{
     width: 0px;
-    
+    height: calc(100vh - 105px);
+    overflow-x: hidden;
+    transition: .3s ease;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+}
+.pa-sidebar-show{
+    width: 300px;
+    transition: .3s ease;
+    padding: 10px 15px;
 }
 .hamburger-btn{
     position: absolute; 
     right: -35px;
     top: 15px;
-    background: #fff;
+    background: #00a0e3;
     padding: 5px 10px;
-    border: 1px solid #eee;
+    border: 1px solid #00a0e3;
+    color: #fff;
+}
+.showBlue{
+    color: #fff !important;
+    background: #00a0e3 !important;
+    pointer-events: none;
 }
 .notes{
     cursor: pointer;

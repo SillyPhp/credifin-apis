@@ -274,6 +274,9 @@ class CareersController extends Controller
                 }], false)
                 ->distinct()
                 ->where(['d.slug'=>$slug])
+                ->andWhere(['not', [
+                    'a.type' => 'Work From Home'
+                ]])
                 ->asArray()
                 ->all();
             return ArrayHelper::map($cities, 'name', 'name');
