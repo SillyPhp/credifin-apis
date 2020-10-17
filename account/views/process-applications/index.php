@@ -45,7 +45,18 @@ if ($application_name['wage_type'] == 'Fixed') {
     }
 }
 ?>
-
+<div class="hamburger-jobs">
+    <button class="hamburger-btn" id="showHamJobs">
+        <i class="fa fa-bars"></i>
+    </button>
+    <div class="pa-sidebar" id="hamJobs">
+        <div class="row">
+            <div class="col-md-12">
+                hello
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -1259,8 +1270,8 @@ function myFunction() {
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
      swal({ 
-             title: "Are You Sure",
-             text: "This job will be deleted permanently from your dashboard",
+             title: "Are you sure?",
+             text: "This $app_type will be deleted permanently from your dashboard",
              type: "warning",
              closeOnClickOutside: false,
              showCancelButton : true,
@@ -1289,8 +1300,8 @@ $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
      swal({
-         title: "Are You Sure",
-         text: "If you close the job you will stop receiving new applications",
+         title: "Are you sure?",
+         text: "If you close this $app_type you will stop receiving new applications",
          type: "warning",
          closeOnClickOutside: false,
          showCancelButton : true, 
@@ -1539,6 +1550,16 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         })
     }
 
+    let showHamJobs = document.getElementById('showHamJobs');
+    showHamJobs.onclick = function () {
+        let hamJobs = document.getElementById('hamJobs');
+        hamJobs.classList.toggle('pa-sidebar-show');
 
+        if(hamJobs.classList.contains('pa-sidebar-show')){
+            showHamJobs.innerHTML = '<i class="fa fa-times"></i>';
+        }else{
+            showHamJobs.innerHTML = '<i class="fa fa-bars"></i>';
+        }
+    }
 
 </script>
