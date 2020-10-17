@@ -4,6 +4,7 @@ namespace account\controllers\templates;
 
 use account\models\questionnaire\QuestionnaireViewForm;
 use account\models\templates\QuestionnaireModel;
+use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireTemplateFieldOptions;
 use common\models\QuestionnaireTemplateFields;
 use common\models\QuestionnaireTemplates;
@@ -76,22 +77,33 @@ class QuestionnaireController extends Controller
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
+            $org_id = Yii::$app->user->identity->organization->organization_enc_id;
             $q = new QuestionnaireModel();
-            if ($q->assignToOrg($id)) {
+            $chek = OrganizationQuestionnaire::find()->select(['questionnaire_enc_id'])
+                ->where(['template_enc_id'=>$id,'organization_enc_id'=>$org_id])
+                ->andWhere(['is_deleted'=>0])
+                ->asArray()->one();
+            if (empty($chek)){
+                if ($q->assignToOrg($id,$org_id)) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Added To Your List'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'error',
+                        'message' => 'Something went wrong'
+                    ];
+                }
+            }else{
                 return [
                     'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Added To Your List'
-                ];
-            } else {
-                return [
-                    'status' => 201,
-                    'title' => 'error',
-                    'message' => 'Something went wrong'
+                    'title' => 'Already In List',
+                    'message' => 'Template Is Already Being Added In Your List'
                 ];
             }
-
-
         }
     }
 
