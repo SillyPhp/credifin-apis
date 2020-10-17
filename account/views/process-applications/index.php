@@ -45,18 +45,7 @@ if ($application_name['wage_type'] == 'Fixed') {
     }
 }
 ?>
-<div class="hamburger-jobs">
-    <button class="hamburger-btn" id="showHamJobs">
-        <i class="fa fa-bars"></i>
-    </button>
-    <div class="pa-sidebar" id="hamJobs">
-        <div class="row">
-            <div class="col-md-12">
-                hello
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -1550,16 +1539,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         })
     }
 
-    let showHamJobs = document.getElementById('showHamJobs');
-    showHamJobs.onclick = function () {
-        let hamJobs = document.getElementById('hamJobs');
-        hamJobs.classList.toggle('pa-sidebar-show');
 
-        if(hamJobs.classList.contains('pa-sidebar-show')){
-            showHamJobs.innerHTML = '<i class="fa fa-times"></i>';
-        }else{
-            showHamJobs.innerHTML = '<i class="fa fa-bars"></i>';
-        }
-    }
 
 </script>
