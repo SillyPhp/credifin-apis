@@ -4,10 +4,8 @@ use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\EmployerApplications;
 use Yii;
-use JonnyW\PhantomJs\Client;
 use yii\base\Widget;
-use yii\helpers\Url;
-use common\models\spaces\Spaces;
+use yii\db\Expression;
 
 class ImageScript extends Widget
 {
@@ -70,7 +68,7 @@ class ImageScript extends Widget
             return $bg_icon['icon_png'];
         }else
         {
-            $bg_icon = $path->orderBy(new yii\db\Expression('rand()'))->asArray()->one();
+            $bg_icon = $path->orderBy(new Expression('rand()'))->asArray()->one();
            return $bg_icon['icon_png'];
         }
     }
