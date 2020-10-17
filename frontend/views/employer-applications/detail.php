@@ -165,16 +165,16 @@ if (!empty($data2))
 $content = [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'company_name'=>$org['org_name'],
-    'profile'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'bg_icon'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
     'canvas'=>(($org['logo'])?false:true),
     'logo'=>$content_logo,
     'initial_color'=>$org['color'],
     'location'=>(($lc)?$lc:'Work From Home'),
-    'app_id'=>$application_details['application_enc_id']
+    'app_id'=>$application_details['application_enc_id'],
+    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
 ];
 if (empty($application_details['image'])||$application_details['image']==1){
-   // $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
-    $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png'); //to be dletd aftr server shifting
+    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];
