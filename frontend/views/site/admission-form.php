@@ -723,7 +723,7 @@ function destroyMask(string){
         
 //java script end //
     getCourses(); 
-    getCollegeList(); 
+    getCollegeList(datatype=0,source=3,type=['College']); 
 function getCourses()
     {
         var substringMatcher = function(strs) {
@@ -773,7 +773,7 @@ function getCourses()
          source: substringMatcher(_courses)
         }); 
     }
-    function getCollegeList()
+    function getCollegeList(datatype, source, type)
     {
         var substringMatcher = function(strs) {
             return function findMatches(q, cb) {
@@ -799,6 +799,11 @@ function getCourses()
          $.ajax({     
             url : '/api/v3/companies/organization-list', 
             method : 'GET',
+            data:{ 
+                datatype:datatype,
+                source:source, 
+                type:type
+                },
             success : function(res) {
             if (res.response.status==200){
                  res = res.response.results;
