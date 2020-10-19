@@ -167,13 +167,14 @@ $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
 $('#course_fee_annual').mask("#", {reverse: true});
+var addMoreCount = 0;
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
+    addMoreCount++;
 });
 $(document).on('click','.addAnotherCo',function (e){
     e.preventDefault();
 });
-var addMoreCount = 0;
 function addAnotherField()
 {
     var field = ['<div class="col-md-12">' +
@@ -203,7 +204,6 @@ function addAnotherField()
             $('#clone_fields_parent').prepend(textnode);
             $('.parent_mobile_number').mask("#", {reverse: true}); 
             $('.parent_annual_income').mask("#", {reverse: true});
-            addMoreCount++;
 }
 getCourses();
 getCollege(datatype=0,source=3,type=['College']);
