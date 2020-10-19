@@ -173,12 +173,24 @@ $(document).on('click','#add_parent_info',function (e){
 $(document).on('click','.addAnotherCo',function (e){
     e.preventDefault();
 });
+var addMoreCount = 0;
 function addAnotherField()
 {
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
      '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
-     '<div class="form-group"><input type="radio" value="Father" name="parent_relation[]"> Father<input type="radio" value="Mother" name="parent_relation[]"> Mother<input type="radio" value="Guardian" name="parent_relation[]"> Guardian</div>'+
+     '<div class="form-group">' +
+      '<div class="radio-heading input-group-text">' +
+       '<strong>Relation</strong>' +
+        '</div>' +
+         '<ul class="relationList"><li class="service-list"><input type="radio" value="Father" id="reFather'+addMoreCount+'" name="parent_relation[]">'+
+                '<label for="reFather'+addMoreCount+'">Father</label></li><li class="service-list">'+
+                '<input type="radio" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation[]">'+
+                '<label for="reMother'+addMoreCount+'">Mother</label></li><li class="service-list">'+
+                '<input type="radio" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation[]">'+
+                '<label for="reGuardian'+addMoreCount+'">Guardian</label></li>' +
+         '</ul>' +
+        '</div>'+
      '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
@@ -191,6 +203,7 @@ function addAnotherField()
             $('#clone_fields_parent').prepend(textnode);
             $('.parent_mobile_number').mask("#", {reverse: true}); 
             $('.parent_annual_income').mask("#", {reverse: true});
+            addMoreCount++;
 }
 getCourses();
 getCollege(datatype=0,source=3,type=['College']);
