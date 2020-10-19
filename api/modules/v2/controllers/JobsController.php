@@ -506,19 +506,12 @@ class JobsController extends ApiBaseController
                 $city_enc_ids = [];
             }
 
-//            $application_type = ApplicationTypes::find()
-//                ->select(['application_type_enc_id'])
-//                ->where(['name' => 'Jobs'])
-//                ->asArray()
-//                ->one();
-
             $id = $reqParams['app_id'];
 
             $application_details = EmployerApplications::find()
                 ->where([
                     'application_enc_id' => $id,
                     'is_deleted' => 0,
-//                    'application_type_enc_id' => $application_type["application_type_enc_id"]
                 ])
                 ->one();
 
@@ -560,7 +553,12 @@ class JobsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
-                    return $this->response(200, ['status' => 200]);
+                    if ($d = $this->profileCompletions()) {
+                        return $this->response(200, ['status' => 200, 'profile' =>$d]);
+                    } else {
+                        $d = ['is_completed' => false, 'percent' => 0];
+                        return $this->response(200, ['status' => 200, 'profile' => $d]);
+                    }
                 } else {
                     return $this->response(500);
                 }
@@ -569,6 +567,50 @@ class JobsController extends ApiBaseController
             }
         } else {
             return $this->response(422);
+        }
+    }
+
+    private function profileCompletions()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Users::find()
+                ->alias('a')
+                ->select(['a.user_enc_id', 'a.city_enc_id', 'b.cgpa'])
+                ->joinWith(['userOtherInfo b'], false)
+                ->joinWith(['userPreferences c' => function ($c) {
+                    $c->select(['c.preference_enc_id', 'c.created_by', 'c.assigned_to']);
+                }])
+                ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->asArray()
+                ->one();
+
+            if ($data) {
+                $per = 0;
+                $total = 4;
+                $t = 100 / $total;
+                if ($data['city_enc_id']) {
+                    $per += $t;
+                }
+                if ($data['cgpa']) {
+                    $per += $t;
+                }
+                if ($data['userPreferences']) {
+                    foreach ($data['userPreferences'] as $p) {
+                        if ($p['preference_enc_id']) {
+                            $per += $t;
+                        }
+                    }
+                }
+                $profile_completed = false;
+                if ($per == 100) {
+                    $profile_completed = true;
+                }
+                return ['is_completed' => $profile_completed, 'percent' => $per];
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 
