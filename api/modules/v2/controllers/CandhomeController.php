@@ -137,7 +137,11 @@ class CandhomeController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($college_id) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count',
+                        'b.slug org_slug',
+                        'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -152,6 +156,9 @@ class CandhomeController extends ApiBaseController
                         ]);
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
+                    $x->joinWith(['organizationLabels g' => function ($g) {
+                        $g->joinWith(['labelEnc gg']);
+                    }], false);
                 }])
                 ->where([
                     'aa.college_enc_id' => $college_id,
@@ -164,6 +171,7 @@ class CandhomeController extends ApiBaseController
                     'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ])
+                ->andWhere(['gg.name' => 'Featured', 'g.label_for' => 1, 'g.is_deleted' => 0])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -300,7 +308,9 @@ class CandhomeController extends ApiBaseController
                 ->select(['a.collaboration_enc_id', 'a.organization_enc_id'])
                 ->joinWith(['organizationEnc b' => function ($b) use ($id, $college_id) {
                     $b->groupBy('organization_enc_id');
-                    $b->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $b->select(['b.organization_enc_id', 'b.name organization_name',
+                        'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count',
+                        'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $b->joinWith(['businessActivityEnc e'], false);
                     $b->joinWith(['employerApplications cc' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
