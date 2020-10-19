@@ -195,7 +195,7 @@ class JobsController extends ApiBaseController
                     'f.name parent_category',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'f.icon_png',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
                     'g.initials_color',
                     '(CASE
                     WHEN b.experience = "0" THEN "No Experience"
@@ -658,7 +658,7 @@ class JobsController extends ApiBaseController
                 'b.name',
                 'b.initials_color',
                 'c.industry',
-                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
             ->innerJoinWith(['organizationEnc b' => function ($a) {
                 $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);

@@ -165,7 +165,7 @@ class Webinar extends \common\models\Webinar
                     'f.instagram',
                     'REPLACE(g.name, "&amp;", "&") as org_name',
                     'f.description',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", g.name, "&size=200&rounded=false&background=", REPLACE(g.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", g.name, "&size=200&rounded=false&background=", REPLACE(g.initials_color, "#", ""), "&color=ffffff") END logo',
                 ])
                 ->joinWith(['webinarEventEnc b'], false)
                 ->joinWith(['speakerEnc c' => function ($c) {
@@ -198,7 +198,7 @@ class Webinar extends \common\models\Webinar
                     'f.instagram',
                     'REPLACE(g.name, "&amp;", "&") as org_name',
                     'f.description',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", g.name, "&size=200&rounded=false&background=", REPLACE(g.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", g.name, "&size=200&rounded=false&background=", REPLACE(g.initials_color, "#", ""), "&color=ffffff") END logo',
                 ])
                 ->joinWith(['webinarEventEnc b'], false)
                 ->joinWith(['speakerEnc c' => function ($c) {

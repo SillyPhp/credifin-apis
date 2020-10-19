@@ -139,7 +139,7 @@ class MentorsController extends Controller
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                     if ($item['org_logo']) {
-                        $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                        $item['org_image'] = Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
                     }
                     unset($item['image']);
                     unset($item['image_location']);
@@ -585,7 +585,7 @@ class MentorsController extends Controller
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                     if ($item['org_logo']) {
-                        $item['org_image'] = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
+                        $item['org_image'] = Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo . $item['org_logo_location'] . '/' . $item['org_logo']);
                     }
                     unset($item['image']);
                     unset($item['image_location']);

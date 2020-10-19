@@ -21,7 +21,7 @@ class CareersController extends Controller
                 'name',
                 'slug',
                 'website',
-                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) END logo'
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", logo_location, "/", logo) END logo'
             ])
             ->where([
                 'slug' => $slug
@@ -77,7 +77,7 @@ class CareersController extends Controller
                 'c.name as title',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', "https") . '", dd.icon) icon',
                 'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
                 https://ui-avatars.com/api/?name=
                 ", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
                 '(CASE

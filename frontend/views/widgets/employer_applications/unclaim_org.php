@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
+$logo_image = Yii::$app->params->digitalOcean->unclaimedOrganizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
         <div class="job-thumb">

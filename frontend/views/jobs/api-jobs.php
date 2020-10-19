@@ -12,7 +12,7 @@ if (!isset($get['company_logo'])||empty($get['company_logo']))
         ->select(['logo','logo_location'])
         ->where(['organization_enc_id'=>$app['unclaimed_organization_enc_id']])
         ->asArray()->one();
-    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
 }
 if (is_array($get['location'])) {
     $p = '';
