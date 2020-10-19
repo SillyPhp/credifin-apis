@@ -87,7 +87,7 @@ class CollegeProfileController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['organizationEnc b' => function ($b) {
                         $b->joinWith(['referrals c'], false);
                     }], false)
@@ -100,7 +100,7 @@ class CollegeProfileController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['teachers cc' => function ($cc) {
                         $cc->joinWith(['collegeEnc b' => function ($b) {
                             $b->joinWith(['referrals c'], false);
@@ -121,7 +121,7 @@ class CollegeProfileController extends ApiBaseController
             $organizations = Users::find()
                 ->alias('a')
                 ->select(['b.organization_enc_id', 'b.name', 'b.phone', 'b.email', 'b.website', 'b.description',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',
                     'c.affiliated_to', 'd.name city'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['organizationOtherDetails c' => function ($c) {
@@ -228,7 +228,7 @@ class CollegeProfileController extends ApiBaseController
             if ($pictureModel->profile_image && $pictureModel->validate()) {
                 if ($org_id = $pictureModel->updateLogo()) {
                     $logo = Organizations::find()
-                        ->select(['CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                        ->select(['CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                         ->where(['organization_enc_id' => $org_id])
                         ->asArray()
                         ->one();
@@ -543,8 +543,9 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_college_approved',
                     'y.interview_process_enc_id',
                     'bb.name',
+                    'bb.organization_enc_id',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'm.fixed_wage as fixed_salary',
@@ -557,6 +558,11 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_deleted',
                     'm.positions'
                 ])
+                ->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                    $x->onCondition(['ii.is_deleted' => 0]);
+                    $x->joinWith(['jobDescriptionEnc jj'], false);
+                    $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
                 }], false)
@@ -747,6 +753,8 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['application_enc_id'] = $j['application_enc_id'];
+                $data['organization_enc_id'] = $j['organization_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -758,6 +766,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
+                $data['jobDescription'] = $j['applicationJobDescriptions'];
                 $data['salary'] = $j['salary'];
                 if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;
@@ -815,7 +824,7 @@ class CollegeProfileController extends ApiBaseController
                 ->select([
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'a.employer_application_enc_id',
@@ -1104,7 +1113,7 @@ class CollegeProfileController extends ApiBaseController
             $detail = Teachers::find()
                 ->alias('a')
                 ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                 ->joinWith(['collegeEnc b' => function ($b) {
                     $b->joinWith(['referrals c'], false);
                 }], false)

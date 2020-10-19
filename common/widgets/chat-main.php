@@ -229,6 +229,7 @@ $this->registerCss("
 }
 .scroller {
     overflow-y: scroll;
+    overflow-X: hidden;
 }
 #users-list{
     max-height: 600px;

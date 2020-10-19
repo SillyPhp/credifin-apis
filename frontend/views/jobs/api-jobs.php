@@ -1,6 +1,4 @@
 <?php
-
-use common\models\Organizations;
 use yii\helpers\Url;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -29,11 +27,12 @@ $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
             'canvas'=>(($get['company_logo'])?false:true),
-            'profile'=>false,
+            'bg_icon'=>false,
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
-            'app_id'=>$app['application_enc_id']
+            'app_id'=>$app['application_enc_id'],
+            'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
     ];
 $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
@@ -42,7 +41,7 @@ if (empty($app['image'])||$app['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Url::to('/files/'.$app['image_location'].'/'.$app['image'],'https');
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [

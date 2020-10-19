@@ -256,7 +256,7 @@ class HomeController extends ApiBaseController
     public function actionFeatured()
     {
         $organizations = \common\models\Organizations::find()
-            ->select(['initials_color color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['initials_color color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->limit(6)
             ->asArray()

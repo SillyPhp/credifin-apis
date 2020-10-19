@@ -652,6 +652,59 @@ class JobsController extends Controller
         }
     }
 
+    public function actionApproveMultipleSteps(){
+        if (Yii::$app->request->isPost){
+            $fields = Yii::$app->request->post('fields');
+            $app_id = Yii::$app->request->post('app_id');
+
+            $flag = 0;
+            foreach ($fields as $field) {
+                $f = AppliedApplicationProcess::findone(['field_enc_id' => $field, 'applied_application_enc_id' => $app_id]);
+                if ($f->is_completed == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $field, 'applied_application_enc_id' => $app_id])
+                        ->execute();
+                    $count = AppliedApplicationProcess::find()
+                        ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'status', 'COUNT(is_completed) as total'])
+                        ->where(['applied_application_enc_id' => $app_id])
+                        ->asArray()
+                        ->one();
+                    if ($update == 1) {
+                        Yii::$app->db->createCommand()
+                            ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                            ->execute();
+                        $response = [
+                            'status' => true,
+                            'active' => $count['active']
+                        ];
+                        $flag = 1;
+                        if ($count['active'] >= 1) {
+                            $obj = AppliedApplications::find()->where(['applied_application_enc_id' => $app_id])->one();
+                            $obj->status = 'Accepted';
+                            $obj->save();
+                        }
+                        if ($count['active'] == $count['total']) {
+                            $update_status = Yii::$app->db->createCommand()
+                                ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                                ->execute();
+                        }
+                    } else {
+                        return json_encode($response = [
+                            'status' => false,
+                        ]);
+                    }
+                }
+            }
+            if ($flag) {
+                return json_encode($response);
+            }else{
+                return json_encode($response = [
+                    'status' => false,
+                ]);
+            }
+       }
+    }
+
     public function actionCancelApplication()
     {
         if (Yii::$app->request->isPost) {

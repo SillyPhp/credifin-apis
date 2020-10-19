@@ -2,34 +2,10 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\widgets\Select2;
+use frontend\widgets\login;
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createAbsoluteUrl('/education-loans/apply') . '"', \yii\web\View::POS_HEAD);
 ?>
-<?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-success alert-dismissable">
-                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                <h4 style="font-size: 16px;font-family: 'roboto'; "><i class="fa fa-check-circle-o"></i> <?= Yii::t('frontend', 'Application Submitted !'); ?></h4>
-                <?php
-                $session = Yii::$app->session;
-                ?>
-                <h4 style="font-size: 16px;font-family: 'roboto'; "><i class="fa fa-check-circle-o"></i> Application Number <?= $session->get('app_number'); ?></h4>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-<?php if (Yii::$app->session->hasFlash('error')): ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-danger alert-dismissable">
-                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                <h4><i class="fa fa-check-circle-o"></i> <?= Yii::t('frontend', 'Error'); ?></h4>
-                <?= Yii::$app->session->getFlash('error'); ?>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
 <?php if (!Yii::$app->user->isGuest) {
     $first = Yii::$app->user->identity->first_name;
     $last = Yii::$app->user->identity->last_name;
@@ -47,9 +23,35 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 color="<?= $color; ?>" width="50"
                 height="50" font="20px"></canvas></span>
     <?php } ?>
-    <h3 class="p_label l_tag"><?= $name ?></h3>
+    <h3 class="p_label l_tag"><?= $name ." (". Html::a('Logout', ['/logout'], ['data' => ['method' => 'post']]) .")" ?></h3>
+</div>
+<?php }else{
+    echo login::widget();
+    ?>
+<div id="user_box">
+    <h3 class="p_label l_tag">
+        <a href="javascript:;" data-toggle="modal" class="login_btn" data-target="#loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
+    </h3>
 </div>
 <?php } ?>
+<div id="light_box_submit">
+    <div class="light-box-modal">
+        <div class="light-box-in">
+            <div class="light-box-img">
+                <img src="/assets/themes/ey/images/pages/dashboard/services.png"/>
+            </div>
+            <div class="light-box-content">
+                <p>Application Reference Number: <span id="app_num"></span></p>
+                <div class="row">
+                   <p>Click <a href="" target="_blank" class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"  title="Share on Whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a> To Send Him/Her Education Loan Form </p>
+                    <p><a class="btn btn-sm btn-primary" onclick="window.location.reload();">Fill Up New Form?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="col-md-12 set-overlay">
     <div class="row">
         <div class="f-contain">
@@ -67,20 +69,19 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder'=>'Student Mobile Number'])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder'=>'Mobile Number (WhatsApp Number)'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?php $data = \yii\helpers\ArrayHelper::map($data,'text','text'); ?>
-                        <?= $form->field($model, 'university_name')->widget(Select2::classname(), [
-                            'data' => $data,
-                            'options' => ['placeholder' => 'University/College Name','class'=>'form-control text-capitalize'],
-                            'pluginOptions' => [
-                                'allowClear' => true,
-                                'tags'=>true
-                            ],
-                        ])->label(false); ?>
+                        <?= $form->field($model, 'student_email')->textInput(['placeholder'=>'Student Email','class'=>'form-control'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="the-basics-college">
+                            <?= $form->field($model, 'university_name')->textInput(['placeholder'=>'College / University Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -99,7 +100,11 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     <div class="col-md-12">
                         <div><label class="p_label">Parent Information</label></div>
                         <div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>
-                        <div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>
+                        <div class="form-group">
+                             <input type="radio" value="Father" name="parent_relation[]"> Father
+                             <input type="radio" value="Mother" name="parent_relation[]"> Mother
+                             <input type="radio" value="Guardian" name="parent_relation[]"> Guardian
+                        </div>
                         <div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>
                         <div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>
                     </div>
@@ -113,8 +118,11 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                 </div>
                 <div class="row">
-                        <div class="col-md-12 text-right">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color']) ?>
+                        <div class="col-md-12 center">
+                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color','id'=>'subBtn']) ?>
+                            <button type="button" class="button-slide btn" id="loadBtn">
+                                Processing <i class="fas fa-circle-notch fa-spin fa-fw"></i>
+                            </button>
                           </div>
                 </div>
                 </div>
@@ -133,6 +141,7 @@ $script = <<< JS
 $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
+$('#course_fee_annual').mask("#", {reverse: true});
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
 });
@@ -144,7 +153,7 @@ function addAnotherField()
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
      '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
-     '<div class="form-group"><input type="text" name="parent_relation[]" class="form-control text-capitalize" placeholder = "Relation With Student" id="parent_relation[]"></div>' +
+     '<div class="form-group"><input type="radio" value="Father" name="parent_relation[]"> Father<input type="radio" value="Mother" name="parent_relation[]"> Mother<input type="radio" value="Guardian" name="parent_relation[]"> Guardian</div>'+
      '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
@@ -159,6 +168,61 @@ function addAnotherField()
             $('.parent_annual_income').mask("#", {reverse: true});
 }
 getCourses();
+getCollege(datatype=0,source=3,type=['College']);
+function getCollege(datatype, source, type)
+    {
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str); 
+             }
+            });
+             cb(matches);  
+            }; 
+        };
+        var _college = []; 
+         $.ajax({         
+            url : '/api/v3/companies/organization-list', 
+            method : 'GET',   
+            data:{ 
+                datatype:datatype,
+                source:source, 
+                type:type
+                },  
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.results;
+                $.each(res,function(index,value) 
+                  {   
+                   _college.push(value.text);
+                  }); 
+               } else
+                {
+                   console.log('colleges could not fetch');
+                }
+            } 
+        });
+        $('#the-basics-college .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_college',
+         source: substringMatcher(_college)
+        }); 
+    } 
 function getCourses()
     {
         var substringMatcher = function(strs) {
@@ -208,6 +272,36 @@ function getCourses()
          source: substringMatcher(_courses)
         }); 
     } 
+    
+$(document).on('submit','#leads_form',function(event) {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+      $.ajax({
+        url: "/education-loans/leads",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        beforeSend:function(){
+            $('#subBtn').hide();     
+            $('#loadBtn').show(); 
+        },
+        success: function (response) {
+            $('#subBtn').show();     
+            $('#loadBtn').hide();
+           if (response.status==200)
+               {
+                   toastr.success(response.message, response.title);
+                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone=9592868808&text='+link_form)
+                   $('#app_num').text(response.app_num);
+                   $('#light_box_submit').css('display','block');
+               }else {
+                  toastr.error(response.message, response.title);
+               }
+        },
+    });
+})    
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -328,6 +422,87 @@ font-size: 13px;
 .tt-suggestion p {
   margin: 0;
 }
+.center 
+{
+text-align:center
+}
+.display-table{z-index:unset !important}
+#loadBtn{
+display:none;
+}
+
+.light-box-modal{
+    position: fixed;
+    background-color: #000000b5;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+}
+.light-box-in{
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+    margin: auto;
+//    height: 78vh;
+    height: 380px;
+    top: calc(48vh - 190px);
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 1px 5px 1px #eeeeeea3;
+}
+.light-box-img{
+    position: relative;
+    width: 100%;
+    background: linear-gradient(90deg, #86dbff 5%, #00b4ff 85%);
+    height: calc(100% - 165px);
+    text-align:center;
+}
+.light-box-img img{
+    width: 225px;
+    margin-top: 20px;
+}
+.light-box-img h3{
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size:21px;
+    margin: 9px;
+}
+.light-box-content{
+    text-align: center;
+    height: 110px;
+//    line-height: 72px;
+}
+.light-box-content p{
+    vertical-align: middle;
+    line-height: 15px;
+    padding: 15px;
+    color: #222;
+    margin: 0;
+    font-size: 17px;
+    padding-bottom: 0px;
+}
+.light-box-content a:hover{
+    box-shadow: 0px 1px 5px 1px #ddd;
+}
+.light-box-content a.highlight{
+    color: #fff;
+    background-color: #00a0e3;
+    border: 1px solid #00a0e3;
+}
+#light_box_submit{display:none}
+#app_num{
+font-weight: 700;
+}
+.share_btn
+{
+font-size:22px
+}
 ");
+$this->registerCssFIle('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

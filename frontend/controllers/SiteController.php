@@ -90,10 +90,30 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionAuthStatus()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $url = Yii::$app->request->post('url');
+            $this->handleUrl($url);
+        }
+    }
+    protected function handleUrl($url)
+    {
+        $session = Yii::$app->session;
+        if (!empty($url))
+        {
+            $session->set('current_url', $url);
+        }else{
+            $session->set('current_url', Yii::$app->getHomeUrl());
+        }
+    }
     public function actionOneTapAuth()
     {
         if (Yii::$app->request->isPost) {
-            if ((new OneTapAuth())->handle(Yii::$app->request->post())) {
+            $this->handleUrl(Yii::$app->request->post('returnUrl'));
+            if ((new OneTapAuth())->handle(Yii::$app->request->post('token'))) {
                 return $this->redirect('/site/oauth-verify');
             } else {
                 $response = [
@@ -908,6 +928,9 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
+            case 'getEduAndRedbull':
+                return $this->renderAjax('/widgets/edupreneur_and_redbull');
+                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -1195,6 +1218,13 @@ class SiteController extends Controller
 
     public function actionEdupreneurPage(){
         return $this->render('edupreneur');
+    }
+    public function actionRedbullBasement(){
+        return $this->render('redbull');
+    }
+
+    public function actionExpiredJobs(){
+        return $this->render('expired-jobs');
     }
 //    public function actionAdmission()
 //    {

@@ -1,10 +1,11 @@
 <?php
 namespace frontend\models\script;
+use common\models\AssignedCategories;
+use common\models\Categories;
 use common\models\EmployerApplications;
 use Yii;
-use JonnyW\PhantomJs\Client;
 use yii\base\Widget;
-use yii\helpers\Url;
+use yii\db\Expression;
 
 class ImageScript extends Widget
 {
@@ -17,29 +18,58 @@ class ImageScript extends Widget
 
     public function run()
     {
-        $client = Client::getInstance();
-        $p = Url::to('@rootDirectory/bin/phantomjs');
-        $client->getEngine()->setPath($p);
-        $width  = 1250;
-        $height = 650;
-        $top    = 0;
-        $left   = 0;
-        $request  = $client->getMessageFactory()->createCaptureRequest();
-        $response = $client->getMessageFactory()->createResponse();
-        $request->setMethod('GET');
-        $request->setUrl(Url::to('/framed-widgets/application-sharing-image','https'));
-        $request->setRequestData($this->content); // Set post data
-        $imageName = $this->content['app_id'].'.png';
-        $savePath = Url::to('@rootDirectory/files/sharing-images/'.$imageName);
-        $userPath = Url::to('@root/files/sharing-images/'.$imageName);
-        $request->setOutputFile($savePath);
-        $request->setViewportSize($width, $height);
-        $request->setCaptureDimensions($width, $height, $top, $left);
-        $request->setQuality(100);
-        $client->send($request, $response);
-        $update = Yii::$app->db->createCommand()
-            ->update(EmployerApplications::tableName(), ['image' => $imageName, 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
-            ->execute();
-        return Url::to($userPath,'https');
+        $this->content['bg_icon'] = $this->getProfile($this->content['bg_icon']);
+        $params = http_build_query($this->content);
+        $url = "https://services.empoweryouth.com/script"."?".$params;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $results = curl_exec($ch);
+        $results = json_decode($results,true);
+        if ($results['status']==200)
+        {
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['image' => $this->content['app_id'].'.png', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']]);
+            return $results['url'];
+        }else{
+            return Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+        }
+    }
+
+    private function getProfile($profile)
+    {
+        $path = Categories::find()
+            ->alias('a')
+            ->select(['a.category_enc_id','a.icon_png'])
+            ->where([
+                'or',
+                ['!=','a.icon_png',null],
+                ['!=','a.icon_png',''],
+
+            ])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where([
+                'or',
+                ['!=','a.icon_png',null],
+                ['!=','a.icon_png',''],
+
+            ])
+            ->andWhere(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+            ->andWhere(['b.status' => 'Approved']);
+
+        if ($profile){
+            $bg_icon = $path->andWhere(['a.category_enc_id'=>$profile])->asArray()->one();
+            return $bg_icon['icon_png'];
+        }else
+        {
+            $bg_icon = $path->orderBy(new Expression('rand()'))->asArray()->one();
+           return $bg_icon['icon_png'];
+        }
     }
 }

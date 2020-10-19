@@ -474,4 +474,7 @@ class WebinarsController extends Controller
             ->all();
         return $webinars;
     }
+    public function actionWebinarsLanding(){
+        return $this->render('webinars-landing');
+    }
 }
