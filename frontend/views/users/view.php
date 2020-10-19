@@ -181,9 +181,9 @@ $this->params['header_dark'] = false;
     <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-12">
+                <?php if($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
                 <div class="container-detail-box">
                     <div class="apply-job-header">
-                        <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php
                         if ($user['job_profile']) {
                             ?>
@@ -202,37 +202,36 @@ $this->params['header_dark'] = false;
                     <div class="apply-job-detail">
                         <p><?= Html::encode($user['description']); ?></p>
                     </div>
-                    <div class="apply-job-detail">
-                        <h5>Skills</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($skills) {
-                                foreach ($skills as $sk) { ?>
-                                    <li><?= $sk['skills']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                    <div class="apply-job-detail">
-                        <h5>Spoken Languages</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($language) {
-                                foreach ($language as $lg) { ?>
-                                    <li><?= $lg['language']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
+                    <?php if ($skills) { ?>
+                        <div class="apply-job-detail">
+                            <h5>Skills</h5>
+                            <ul class="skills">
+                                <?php
+                                    foreach ($skills as $sk) { ?>
+                                        <li><?= $sk['skills']; ?></li>
+                                        <?php
+                                    }
+                                ?>
+                            </ul>
+                        </div>
+                    <?php }
+                    if ($language) {
+                    ?>
+                        <div class="apply-job-detail">
+                            <h5>Spoken Languages</h5>
+                            <ul class="skills">
+                                <?php
+                                    foreach ($language as $lg) { ?>
+                                        <li><?= $lg['language']; ?></li>
+                                        <?php
+                                    }
+                                ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
                 </div>
+                <?php } ?>
+                <?php if($education || $experience || $achievement || $hobbies || $interests) { ?>
                 <div class="container-detail-box">
                     <?php
                     if ($education) {
@@ -298,11 +297,9 @@ $this->params['header_dark'] = false;
                         </div>
                         <?php
                     }
+                    if ($achievement) {
                     ?>
                     <div class="achievements-detail set-li">
-                    <?php
-                    if ($achievement) {
-                        ?>
                         <div class="education-head">Achievements</div>
                         <ul>
                             <?php
@@ -314,13 +311,11 @@ $this->params['header_dark'] = false;
                             ?>
                         </ul>
                     </div>
-    <?php
-    }
-    ?>
+                    <?php
+                    }
+                    if ($hobbies) {
+                    ?>
                     <div class="hobbies-detail set-li">
-                        <?php
-                        if ($hobbies) {
-                        ?>
                         <div class="education-head">Hobbies</div>
                         <ul>
                             <?php
@@ -334,11 +329,9 @@ $this->params['header_dark'] = false;
                     </div>
                             <?php
                             }
-                            ?>
-                    <div class="Interests-detail set-li">
-                        <?php
-                        if ($interests) {
+                    if ($interests) {
                         ?>
+                    <div class="Interests-detail set-li">
                         <div class="education-head">Interests</div>
                         <ul>
                             <?php
@@ -352,8 +345,9 @@ $this->params['header_dark'] = false;
                     </div>
                             <?php
                             }
-                            ?>
+                    ?>
                 </div>
+                <?php } ?>
             </div>
             <?php
             if (array_filter($job_preference)) {
