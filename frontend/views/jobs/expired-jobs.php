@@ -1,4 +1,5 @@
 <?php
+$this->params['header_dark'] = true;
 
 use yii\helpers\Url;
 
