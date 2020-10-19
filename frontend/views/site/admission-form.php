@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-$image = Url::to('@eyAssets/images/pages/education-loans/sharelink-loan.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
 $this->title = "Get Admission In Your Dream College";
 $keywords = "empower youth, college, university, admission, education loan";
 $description = "Do Not let monetary constraints stop your from getting admission in your dream College/University";
