@@ -149,7 +149,7 @@ class OrganizationList
         {
             return [
                 'college_id'=>$params['college_course_info'][0]['colg_id'],
-                'is_claim' => true,
+                'is_claim' => 1,
             ];
         }
         else if($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']=='self')
@@ -160,13 +160,13 @@ class OrganizationList
             $org = $this->getOrgId($options);
             return [
                 'college_id'=>$org['id'],
-                'is_claim' => false,
+                'is_claim' => 2,
             ];
         }
         else if ($params['college_course_info'][0]['pulled_from']=='unclaim'&&$params['college_course_info'][0]['colg_id']!='self'){
             return [
                 'college_id'=>$params['college_course_info'][0]['colg_id'],
-                'is_claim' => false,
+                'is_claim' => 2,
             ];
         }
     }

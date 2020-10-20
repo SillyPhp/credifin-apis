@@ -9,7 +9,7 @@ namespace common\models;
  * @property string $preference_enc_id preference enc id of college
  * @property string $loan_app_enc_id Encrypted Key
  * @property string $college_name
- * @property string $sequence
+ * @property int $sequence
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_by
@@ -36,9 +36,9 @@ class LoanApplicationsCollegePreference extends \yii\db\ActiveRecord
     {
         return [
             [['preference_enc_id', 'loan_app_enc_id', 'college_name'], 'required'],
+            [['sequence'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['preference_enc_id', 'loan_app_enc_id', 'college_name', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['sequence'], 'string', 'max' => 50],
             [['preference_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
