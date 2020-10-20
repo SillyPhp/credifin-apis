@@ -2,11 +2,16 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Applied;
+use common\models\AnsweredQuestionnaire;
+use common\models\AnsweredQuestionnaireFields;
 use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\ClassNotes;
 use common\models\ErexxCollaborators;
 use common\models\OnlineClasses;
+use common\models\OrganizationQuestionnaire;
+use common\models\QuestionnaireFields;
 use common\models\ShortlistedApplications;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -967,6 +972,193 @@ class CandhomeController extends ApiBaseController
             }
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionQuestionnaire()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->one();
+
+            $applications = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'a.current_round', 'b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                }], false)
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'c.college_enc_id' => $college_id->organization_enc_id, 'c.is_college_approved' => 1])
+                ->andWhere(['a.status' => ['Accepted', 'Incomplete']])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            $object = new Applied();
+            $question = [];
+            foreach ($applications as $v) {
+                $array = $object->getCurrentQuestions($v['applied_application_enc_id'], $v['current_round'], $user->user_enc_id);
+                if (!empty($array)) {
+                    $question[] = $array;
+                }
+            }
+
+            if ($question) {
+                return $this->response(200, ['status' => 200, 'data' => $question]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionQuestionnaireFields()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $parameters = \Yii::$app->request->post();
+
+            if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+                $q_enc_id = $parameters['questionnaire_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+                $applied_application_enc_id = $parameters['applied_application_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            $chk = AnsweredQuestionnaire::find()
+                ->where([
+                    'applied_application_enc_id' => $applied_application_enc_id,
+                    'questionnaire_enc_id' => $q_enc_id,
+                    'created_by' => $user->user_enc_id,
+                ])
+                ->asArray()
+                ->one();
+
+            if ($chk) {
+                return $this->response(409, ['status' => 409, 'message' => 'already filled']);
+            }
+
+            $fields = QuestionnaireFields::find()
+                ->alias('a')
+                ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+                ->joinWith(['questionnaireFieldOptions b' => function ($a) {
+                    $a->select(['b.field_option_enc_id', 'b.field_enc_id', 'b.field_option']);
+                }], true)
+                ->where(['a.questionnaire_enc_id' => $q_enc_id])
+                ->groupBy(['a.field_enc_id'])
+                ->orderBy('a.sequence')
+                ->asArray()
+                ->all();
+
+            if (!empty($fields)) {
+                return $this->response(200, ['status' => 200, 'data' => $fields]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFillQuestionnaire()
+    {
+        if ($user = $this->isAuthorized()) {
+            $parameters = \Yii::$app->request->post();
+
+            if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+                $questionnaire_id = $parameters['questionnaire_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+                $applied_application_id = $parameters['applied_application_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            $data = json_decode($parameters['data'], true);
+            $data = $data['response'];
+
+            $answered_model = new AnsweredQuestionnaire();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $answered_model->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
+            $answered_model->applied_application_enc_id = $applied_application_id;
+            $answered_model->questionnaire_enc_id = $questionnaire_id;
+            $answered_model->created_by = $user->user_enc_id;
+            $answered_model->created_on = date('Y-m-d H:i:s');
+            if ($answered_model->save()) {
+                foreach ($data as $d) {
+
+                    if ($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time') {
+                        $field_model = new AnsweredQuestionnaireFields();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->answer = $d['answer'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $user->user_enc_id;
+                        if (!$field_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    if ($d['field_type'] == 'select' || $d['field_type'] == 'radio') {
+                        $field_model = new AnsweredQuestionnaireFields();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->field_option_enc_id = $d['option_enc_id'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $user->user_enc_id;
+                        if (!$field_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    if ($d['field_type'] == 'checkbox') {
+                        foreach ($d['options'] as $option) {
+                            $utilitiesModel = new Utilities();
+                            $fieldsModel = new AnsweredQuestionnaireFields;
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                            $fieldsModel->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                            $fieldsModel->field_enc_id = $d['field_enc_id'];
+                            $fieldsModel->field_option_enc_id = $option['option_enc_id'];
+                            $fieldsModel->created_on = date('Y-m-d H:i:s');
+                            $fieldsModel->created_by = $user->user_enc_id;
+                            if (!$fieldsModel->save()) {
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                            }
+                        }
+                    }
+                }
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'problem in saving questionnaire']);
+            }
+
+            $update = Yii::$app->db->createCommand()
+                ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
+                ->execute();
+            if ($update) {
+                return $this->response(200, ['status' => 200, 'message' => 'Saved']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
         }
     }
 
