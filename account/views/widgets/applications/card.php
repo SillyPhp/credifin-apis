@@ -51,12 +51,12 @@ if (!empty($total_applications)) {
                             <?php endif; ?>
                             <button type="button" class="j-delete tt" data-toggle="tooltip"
                                     title="Delete <?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>" data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="j-closed tt" data-toggle="tooltip"
                                     title="Close <?= $tipvalue ?>" data-name="<?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>" data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -85,6 +85,12 @@ if (!empty($total_applications)) {
                                class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href=""
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share on Facebook">
+                                <i class="fa fa-facebook-f"></i>
                             </a>
                         </div>
                         <?php
@@ -119,12 +125,12 @@ if (!empty($total_applications)) {
                                 <?php
                                 $concat = "";
                                 if (!empty($applications[$next]['placementLocations'][0]['total'])):
-                                    if($applications[$next]['placementLocations'][0]['total'] > 1){
+                                    if ($applications[$next]['placementLocations'][0]['total'] > 1) {
                                         $concat = "s";
                                     }
                                     echo $applications[$next]['placementLocations'][0]['total'] . ' ' . 'Opening' . $concat;
                                 elseif (!empty($applications[$next]['positions'])):
-                                    if($applications[$next]['positions'] > 1){
+                                    if ($applications[$next]['positions'] > 1) {
                                         $concat = "s";
                                     }
                                     echo $applications[$next]['positions'] . ' ' . 'Opening' . $concat;
@@ -158,10 +164,10 @@ if (!empty($total_applications)) {
                                     }
                                     ?>
                                 </a>
-<!--                                <div class="new">-->
-<!--                                    <div class="pulse"></div>-->
-<!--                                    <div class="dot"></div>-->
-<!--                                </div>-->
+                                <!--                                <div class="new">-->
+                                <!--                                    <div class="pulse"></div>-->
+                                <!--                                    <div class="dot"></div>-->
+                                <!--                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -309,6 +315,11 @@ $this->registerCss("
 .j-linkedin{
     left: 93px !important;
 }
+.j-facebook {
+    left: 115px !important;
+    color:#3b5998;
+}
+.j-facebook:hover{color:#fff;}
 .expring-btn{
     position:absolute;
     top:35px;
@@ -371,56 +382,80 @@ $this->registerCss("
   from {transform: scale(1)}
   to {transform: scale(0.5)}
 }
+.lead{
+    margin-bottom:20px !important;
+}
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
      e.preventDefault();
-     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Delete the current Application?")) { 
-        main_card.remove();
-        var data = $(this).attr('value');
-        var url = "/account/jobs/delete-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-                $.pjax.reload({container: "#pjax_active_jobs", async: false});
-                  if(data==true) {
-                      toastr.success('Deleted Successfully', 'Success');
-                    }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
-          });
-    }
-});
+        var dataTab = $(this).attr('data-type');
+       swal({ 
+             title: "Are you sure?",
+             text: "This "+dataTab+" will be deleted permanently from your dashboard",
+             type: "warning",
+             closeOnClickOutside: false,
+             showCancelButton : true,
+         },
+         function(isConfirm){
+             var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+             if (isConfirm) { 
+                main_card.remove();
+                var data = $(this).attr('value');
+                var url = "/account/jobs/delete-application";
+                $.ajax({
+                    url:url,
+                    data:{data:data},
+                    method:'post',
+                    success:function(data){
+                        $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                          if(data==true) {
+                              toastr.success('Deleted Successfully', 'Success');
+                            }
+                           else {
+                              toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                           }
+                         }
+                  });
+            }       
+         });
+    });
 
 $(document).on('click','.j-closed',function(e){
      e.preventDefault();
-     var data_name = $(this).attr('data-name');
-     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Close the current Application?")) { 
-        main_card.remove();
-        var data = $(this).attr('value');
-        var url = "/account/jobs/close-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-                $.pjax.reload({container: "#pjax_active_jobs", async: false});
-                  if(data==true) {
-                      $.pjax.reload({container: "#pjax_closed_jobs", async: false});
-                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
-                    }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
-          });
+      var dataTab = $(this).attr('data-type');
+      swal({ 
+             title: "Are you sure?",
+             text: "If you close this "+dataTab+" you will stop receiving new applications",
+             type: "warning",
+             closeOnClickOutside: false,
+             showCancelButton : true,
+         },
+     function(isConfirm){
+         var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+         if (isConfirm) { 
+            main_card.remove();
+            var data = $(this).attr('value');
+            var url = "/account/jobs/close-application";
+            $.ajax({
+                url:url,
+                data:{data:data},
+                method:'post',
+                success:function(data){
+                    $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                      if(data==true) {
+                          $.pjax.reload({container: "#pjax_closed_jobs", async: false});
+                          toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
+                        }
+                       else {
+                          toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                       }
+                     }
+              });
     }
+         });
 }); 
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
