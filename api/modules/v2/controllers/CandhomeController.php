@@ -1086,8 +1086,7 @@ class CandhomeController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
             }
 
-            $data = json_decode($parameters['data'], true);
-            $data = $data['response'];
+            $data = $parameters['data'];
 
             $answered_model = new AnsweredQuestionnaire();
             $utilitiesModel = new Utilities();
