@@ -191,25 +191,33 @@ class EducationLoanController extends ApiBaseController
         $params = Yii::$app->request->post();
         if ($params) {
             $organizationObject = new OrganizationList();
-            $parser = $organizationObject->conditionParser($params);
-            if (!$parser['college_id']) {
-                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
-            }
-            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
-            if (!$parser2['assigned_course_id']) {
-                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+            $model = new LoanApplicationsForm();
+            if ($params['is_addmission_taken']==1){
+                $parser = $organizationObject->conditionParser($params);
+                if (!$parser['college_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+                }
+                $parser2 = $organizationObject->conditionCourseParser($parser, $params);
+                if (!$parser2['assigned_course_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+                }
+                $model->college_course_enc_id = $parser2['assigned_course_id'];
+            }else{
+                $course_name = $course_name = trim($params['college_course_info'][0]['course_text']);
+                $model->college_course_enc_id = null;
+                $parser['college_id'] = null;
+                $parser['is_claim'] = 3;
+                $pref = $params['clg_pref'];
             }
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
-            $model = new LoanApplicationsForm();
             if (!$params['is_india']) {
                 $model->country_enc_id = $params['country_enc_id'];
             }
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
-                $model->college_course_enc_id = $parser2['assigned_course_id'];
                 if ($model->validate()) {
-                    if ($data = $model->add($userId, $parser['college_id'], 'Ey', $parser['is_claim'])) {
+                    if ($data = $model->add($params['is_addmission_taken'],$userId, $parser['college_id'], 'Ey', $parser['is_claim'],$course_name,$pref)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
