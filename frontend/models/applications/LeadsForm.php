@@ -90,12 +90,15 @@ class LeadsForm extends Model
            }
            if ($this->_flag)
            {
-               $session = Yii::$app->session;
-               $session->set('app_number', $model->application_number);
                $transaction->commit();
-             return true;
+             return [
+                 'app_num'=>$model->application_number,
+                 'status'=>true,
+             ];
            }else{
-               return false;
+               return [
+                   'status'=>false,
+               ];
            }
 
        } catch (\Exception $exception) {

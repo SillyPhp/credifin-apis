@@ -1,55 +1,61 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\widgets\Select2;
+use frontend\widgets\login;
+
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createAbsoluteUrl('/education-loans/apply') . '"', \yii\web\View::POS_HEAD);
 ?>
-<?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-success alert-dismissable">
-                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                <h4 style="font-size: 16px;font-family: 'roboto'; "><i class="fa fa-check-circle-o"></i> <?= Yii::t('frontend', 'Application Submitted !'); ?></h4>
-                <?php
-                $session = Yii::$app->session;
-                ?>
-                <h4 style="font-size: 16px;font-family: 'roboto'; "><i class="fa fa-check-circle-o"></i> Application Number <?= $session->get('app_number'); ?></h4>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-<?php if (Yii::$app->session->hasFlash('error')): ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert alert-danger alert-dismissable">
-                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                <h4><i class="fa fa-check-circle-o"></i> <?= Yii::t('frontend', 'Error'); ?></h4>
-                <?= Yii::$app->session->getFlash('error'); ?>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
 <?php if (!Yii::$app->user->isGuest) {
     $first = Yii::$app->user->identity->first_name;
     $last = Yii::$app->user->identity->last_name;
     $name = ucwords($first) . ' ' . ucwords($last);
     $color = Yii::$app->user->identity->initials_color;
     ?>
- <div id="user_box">
-    <?php
-    if (!empty(Yii::$app->user->identity->image)){
-    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+    <div id="user_box">
+        <?php
+        if (!empty(Yii::$app->user->identity->image)) {
+            $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+            ?>
+            <img src="<?= $image ?>"/>
+        <?php } else { ?>
+            <canvas class="user-icon" name="<?= $name; ?>"
+                    color="<?= $color; ?>" width="50"
+                    height="50" font="20px"></canvas></span>
+        <?php } ?>
+        <h3 class="p_label l_tag"><?= $name . " (" . Html::a('Logout', ['/logout'], ['data' => ['method' => 'post']]) . ")" ?></h3>
+    </div>
+<?php } else {
+    echo login::widget();
     ?>
-    <img src="<?= $image ?>"/>
-    <?php }else { ?>
-        <canvas class="user-icon" name="<?= $name; ?>"
-                color="<?= $color; ?>" width="50"
-                height="50" font="20px"></canvas></span>
-    <?php } ?>
-    <h3 class="p_label l_tag"><?= $name ?></h3>
-</div>
+    <div id="user_box">
+        <h3 class="p_label l_tag">
+            <a href="javascript:;" data-toggle="modal" class="login_btn" data-target="#loginModal"><i
+                        class="fas fa-sign-in-alt"></i> Login</a>
+        </h3>
+    </div>
 <?php } ?>
+<div id="light_box_submit">
+    <div class="light-box-modal">
+        <div class="light-box-in">
+            <div class="light-box-img">
+                <img src="/assets/themes/ey/images/pages/dashboard/services.png"/>
+            </div>
+            <div class="light-box-content">
+                <p>Application Reference Number: <span id="app_num"></span></p>
+                <div class="row">
+                    <p>Click <a href="" target="_blank" class="j-whatsapp share_btn tt" type="button"
+                                data-toggle="tooltip" title="Share on Whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a> To Send Him/Her Education Loan Form </p>
+                    <p><a class="btn btn-sm btn-primary" onclick="window.location.reload();">Fill Up New Form?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="col-md-12 set-overlay">
     <div class="row">
         <div class="f-contain">
@@ -58,53 +64,74 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     'id' => 'leads_form',
                 ]); ?>
                 <div class="row">
-                   <div class="col-md-6">
-                       <?= $form->field($model, 'first_name')->textInput(['placeholder'=>'First Name','class'=>'form-control text-capitalize'])->label(false); ?>
-                   </div>
                     <div class="col-md-6">
-                        <?= $form->field($model, 'last_name')->textInput(['placeholder'=>'Last Name','class'=>'form-control text-capitalize'])->label(false); ?>
+                        <?= $form->field($model, 'first_name')->textInput(['placeholder' => 'First Name', 'class' => 'form-control text-capitalize'])->label(false); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'last_name')->textInput(['placeholder' => 'Last Name', 'class' => 'form-control text-capitalize'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder'=>'Student Mobile Number'])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_email')->textInput(['placeholder'=>'Student Email','class'=>'form-control'])->label(false); ?>
+                        <?= $form->field($model, 'student_email')->textInput(['placeholder' => 'Student Email', 'class' => 'form-control'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="the-basics-college">
-                            <?= $form->field($model, 'university_name')->textInput(['placeholder'=>'College / University Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                            <?= $form->field($model, 'university_name')->textInput(['placeholder' => 'College / University Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="the-basics">
-                        <?= $form->field($model, 'course_name')->textInput(['placeholder'=>'Course Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                            <?= $form->field($model, 'course_name')->textInput(['placeholder' => 'Course Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
                         </div>
-                  </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder'=>'Annual Course Fee','maxLength'=>20])->label(false); ?>
+                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder' => 'Annual Course Fee', 'maxLength' => 20])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div><label class="p_label">Parent Information</label></div>
-                        <div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>
+                        <div class="form-group"><input type="text" name="parent_name[]"
+                                                       class="form-control text-capitalize" placeholder="Name"
+                                                       id="parent_name[]"></div>
                         <div class="form-group">
-                             <input type="radio" value="Father" name="parent_relation[]"> Father
-                             <input type="radio" value="Mother" name="parent_relation[]"> Mother
-                             <input type="radio" value="Guardian" name="parent_relation[]"> Guardian
+                            <div class="radio-heading input-group-text">
+                                <strong>Relation</strong>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" value="Father" id="reFather" name="parent_relation[]">
+                                    <label for="reFather">Father</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" id="reMother" value="Mother" name="parent_relation[]">
+                                    <label for="reMother">Mother</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" id="reGuardian" value="Guardian" name="parent_relation[]">
+                                    <label for="reGuardian">Guardian</label>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>
-                        <div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>
+                        <div class="form-group"><input type="text" name="parent_mobile_number[]"
+                                                       class="form-control parent_mobile_number"
+                                                       placeholder="Mobile Number" id="parent_mobile_number[]"
+                                                       maxlength="15"></div>
+                        <div class="form-group"><input type="text" name="parent_annual_income[]"
+                                                       class="form-control parent_annual_income"
+                                                       placeholder="Annual Income" id="parent_annual_income[]"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -116,15 +143,18 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                 </div>
                 <div class="row">
-                        <div class="col-md-12 text-right">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color']) ?>
-                          </div>
+                    <div class="col-md-12 center">
+                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color', 'id' => 'subBtn']) ?>
+                        <button type="button" class="button-slide btn" id="loadBtn">
+                            Processing <i class="fas fa-circle-notch fa-spin fa-fw"></i>
+                        </button>
+                    </div>
                 </div>
-                </div>
-                <?php ActiveForm::end(); ?>
             </div>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
+</div>
 </div>
 <script>
     function removeAnotherField(ths) {
@@ -137,8 +167,10 @@ $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
 $('#course_fee_annual').mask("#", {reverse: true});
+var addMoreCount = 0;
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
+    addMoreCount++;
 });
 $(document).on('click','.addAnotherCo',function (e){
     e.preventDefault();
@@ -148,7 +180,18 @@ function addAnotherField()
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
      '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
-     '<div class="form-group"><input type="radio" value="Father" name="parent_relation[]"> Father<input type="radio" value="Mother" name="parent_relation[]"> Mother<input type="radio" value="Guardian" name="parent_relation[]"> Guardian</div>'+
+     '<div class="form-group">' +
+      '<div class="radio-heading input-group-text">' +
+       '<strong>Relation</strong>' +
+        '</div>' +
+         '<ul class="relationList"><li class="service-list"><input type="radio" value="Father" id="reFather'+addMoreCount+'" name="parent_relation[]">'+
+                '<label for="reFather'+addMoreCount+'">Father</label></li><li class="service-list">'+
+                '<input type="radio" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation[]">'+
+                '<label for="reMother'+addMoreCount+'">Mother</label></li><li class="service-list">'+
+                '<input type="radio" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation[]">'+
+                '<label for="reGuardian'+addMoreCount+'">Guardian</label></li>' +
+         '</ul>' +
+        '</div>'+
      '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
@@ -267,6 +310,36 @@ function getCourses()
          source: substringMatcher(_courses)
         }); 
     } 
+    
+$(document).on('submit','#leads_form',function(event) {
+  event.preventDefault();
+  event.stopImmediatePropagation();
+      $.ajax({
+        url: "/education-loans/leads",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        beforeSend:function(){
+            $('#subBtn').hide();     
+            $('#loadBtn').show(); 
+        },
+        success: function (response) {
+            $('#subBtn').show();     
+            $('#loadBtn').hide();
+           if (response.status==200)
+               {
+                   toastr.success(response.message, response.title);
+                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone=9592868808&text='+link_form)
+                   $('#app_num').text(response.app_num);
+                   $('#light_box_submit').css('display','block');
+               }else {
+                  toastr.error(response.message, response.title);
+               }
+        },
+    });
+})    
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -387,6 +460,136 @@ font-size: 13px;
 .tt-suggestion p {
   margin: 0;
 }
+.center 
+{
+text-align:center
+}
+.display-table{z-index:unset !important}
+#loadBtn{
+display:none;
+}
+
+.light-box-modal{
+    position: fixed;
+    background-color: #000000b5;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+}
+.light-box-in{
+    position: relative;
+    width: 90%;
+    max-width: 450px;
+    margin: auto;
+//    height: 78vh;
+    height: 380px;
+    top: calc(48vh - 190px);
+    background-color: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0px 1px 5px 1px #eeeeeea3;
+}
+.light-box-img{
+    position: relative;
+    width: 100%;
+    background: linear-gradient(90deg, #86dbff 5%, #00b4ff 85%);
+    height: calc(100% - 165px);
+    text-align:center;
+}
+.light-box-img img{
+    width: 225px;
+    margin-top: 20px;
+}
+.light-box-img h3{
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size:21px;
+    margin: 9px;
+}
+.light-box-content{
+    text-align: center;
+    height: 110px;
+//    line-height: 72px;
+}
+.light-box-content p{
+    vertical-align: middle;
+    line-height: 15px;
+    padding: 15px;
+    color: #222;
+    margin: 0;
+    font-size: 17px;
+    padding-bottom: 0px;
+}
+.light-box-content a:hover{
+    box-shadow: 0px 1px 5px 1px #ddd;
+}
+.light-box-content a.highlight{
+    color: #fff;
+    background-color: #00a0e3;
+    border: 1px solid #00a0e3;
+}
+#light_box_submit{display:none}
+#app_num{
+font-weight: 700;
+}
+.share_btn
+{
+font-size:22px
+}
+.service-list {
+        display: inline-block;
+        min-width: 90px;
+        text-align: center;
+        margin: 0px 5px;
+    }
+
+    .service-list > label {
+        width: 100%;
+        display: inline-block;
+        background-color: rgba(255, 255, 255, .9);
+        border: 2px solid rgba(139, 139, 139, .3);
+        color: #333;
+        font-weight:normal;
+        border-radius: 4px;
+        white-space: nowrap;
+        margin: 3px 0px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: all .2s;
+    }
+
+    .service-list > label {
+        padding: 8px 5px;
+        cursor: pointer;
+    }
+    .relationList{
+        padding:0px;
+    }
+
+    .service-list > input[type='radio']:checked + label, .service-list > label:hover {
+        border: 2px solid #00a0e3;
+        background-color: #00a0e3;
+        color: #fff;
+        transition: all .2s;
+    }
+
+    .service-list > input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .service-list > input[type='radio']:focus + label {
+        border: 2px solid #00a0e3;
+    }
 ");
+$this->registerCssFIle('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

@@ -2,11 +2,16 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Applied;
+use common\models\AnsweredQuestionnaire;
+use common\models\AnsweredQuestionnaireFields;
 use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\ClassNotes;
 use common\models\ErexxCollaborators;
 use common\models\OnlineClasses;
+use common\models\OrganizationQuestionnaire;
+use common\models\QuestionnaireFields;
 use common\models\ShortlistedApplications;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -137,7 +142,11 @@ class CandhomeController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($college_id) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count',
+                        'b.slug org_slug',
+                        'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -152,6 +161,9 @@ class CandhomeController extends ApiBaseController
                         ]);
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
+                    $x->joinWith(['organizationLabels g' => function ($g) {
+                        $g->joinWith(['labelEnc gg']);
+                    }], false);
                 }])
                 ->where([
                     'aa.college_enc_id' => $college_id,
@@ -164,6 +176,7 @@ class CandhomeController extends ApiBaseController
                     'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ])
+                ->andWhere(['gg.name' => 'Featured', 'g.label_for' => 1, 'g.is_deleted' => 0])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -300,7 +313,9 @@ class CandhomeController extends ApiBaseController
                 ->select(['a.collaboration_enc_id', 'a.organization_enc_id'])
                 ->joinWith(['organizationEnc b' => function ($b) use ($id, $college_id) {
                     $b->groupBy('organization_enc_id');
-                    $b->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $b->select(['b.organization_enc_id', 'b.name organization_name',
+                        'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count',
+                        'count(CASE WHEN cc.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $b->joinWith(['businessActivityEnc e'], false);
                     $b->joinWith(['employerApplications cc' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -959,117 +974,192 @@ class CandhomeController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
-//    public function actionGetCompanies()
-//    {
-//        $q = Organizations::find()
-//            ->alias('a')
-//            ->select(['a.organization_enc_id', 'a.name', 'CONCAT("' . Url::to('/', true) . '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
-//            ->distinct()
-//            ->joinWith(['employerApplications b' => function ($x) {
-//                $x
-//                    ->select(['b.organization_enc_id', 'COUNT(b.application_enc_id) application_type', 'c.name'])
-//                    ->joinWith(['applicationTypeEnc c'], false)
-//                    ->onCondition([
-//                        'b.status' => 'Active',
-//                        'b.is_deleted' => 0,
-//                        'b.application_for' => 0
-//                    ])
-//                    ->orOnCondition([
-//                        'b.status' => 'Active',
-//                        'b.is_deleted' => 0,
-//                        'b.application_for' => 2
-//                    ])
-//                    ->groupBy(['b.application_type_enc_id']);
-//            }])
-//            ->joinWith(['businessActivityEnc d'], false)
-//            ->groupBy(['a.organization_enc_id'])
-//            ->where([
-//                'a.is_deleted' => 0,
-//                'a.is_erexx_registered' => 1
-//            ])
-//            ->asArray()
-//            ->all();
-//
-//        return $this->response(200, $q);
-//    }
-//
-//    public function actionAppliedApplications()
-//    {
-//
-//        $id = Yii::$app->request->post('id');
-//
-//        $q = AppliedApplications::find()
-//            ->alias('a')
-//            ->select(['a.application_enc_id', 'a.current_round'])
-//            ->joinWith(['applicationEnc b' => function ($x) {
-//                $x->joinWith(['organizationEnc d'], false);
-//                $x->joinWith(['title h' => function ($y) {
-//                    $y->joinWith(['parentEnc i']);
-//                    $y->joinWith(['categoryEnc j']);
-//                }], false);
-//                $x->joinWith(['applicationPlacementLocations e' => function ($y) use ($x) {
-//                    $x->select(['b.application_enc_id', 'b.title', 'i.category_enc_id', 'g.name city', 'j.name profile', 'i.name parent_name', 'b.organization_enc_id', 'd.name organization_name', 'CONCAT("' . Url::to('/', true) . '", d.slug) profile_link', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo', 'e.placement_location_enc_id', 'COUNT(e.placement_location_enc_id) cnt']);
-//                    $y->joinWith(['locationEnc f' => function ($z) {
-//                        $z->joinWith(['cityEnc g']);
-//                    }], false);
-//                    $x->groupBy(['e.placement_location_enc_id']);
-//                }], false);
-//            }])
-//            ->joinWith(['resumeEnc c'], false)
-//            ->where([
-//                'c.user_enc_id' => $id,
-//                'a.is_deleted' => 0,
-//                'd.is_erexx_registered' => 1,
-//                'd.is_deleted' => 0,
-//                'b.application_for' => 2,
-//            ])
-//            ->andWhere(['or',
-//                ['a.status' => 'Pending'],
-//                ['a.status' => 'Accepted']
-//            ])
-//            ->limit(6)
-//            ->asArray()
-//            ->all();
-////        return $q;
-//        return $this->response(200, $q);
-//    }
-//
-//    public function actionFollowedCompanies()
-//    {
-//        $id = Yii::$app->request->post('id');
-//
-//        $f = FollowedOrganizations::find()
-//            ->alias('a')
-//            ->distinct()
-//            ->select(['a.followed_enc_id', 'a.organization_enc_id'])
-//            ->innerJoinWith(['organizationEnc b' => function ($x) {
-//                $x->joinWith(['businessActivityEnc e'], false);
-//                $x->joinWith(['employerApplications c' => function ($y) use ($x) {
-//                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'CONCAT("' . Url::to('/', true) . '", b.slug) profile_link', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo', 'c.application_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name']);
-//                    $y
-//                        ->joinWith(['applicationTypeEnc d'], false)
-//                        ->onCondition([
-//                            'c.status' => 'Active',
-//                            'c.is_deleted' => 0,
-//                            'c.application_for' => 0
-//                        ])
-//                        ->orOnCondition([
-//                            'c.status' => 'Active',
-//                            'c.is_deleted' => 0,
-//                            'c.application_for' => 2
-//                        ])
-//                        ->groupBy(['c.application_type_enc_id']);
-//                }], false);
-//            }])
-//            ->where([
-//                'a.user_enc_id' => $id,
-//                'a.followed' => 1,
-//                'b.is_erexx_registered' => 1,
-//                'b.is_deleted' => 0,
-//            ])
-//            ->asArray()
-//            ->all();
-//
-//        return $this->response(200, $f);
-//    }
+
+    public function actionQuestionnaire()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->one();
+
+            $applications = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'a.current_round', 'b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                }], false)
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'c.college_enc_id' => $college_id->organization_enc_id, 'c.is_college_approved' => 1])
+                ->andWhere(['a.status' => ['Accepted', 'Incomplete']])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            $object = new Applied();
+            $question = [];
+            foreach ($applications as $v) {
+                $array = $object->getCurrentQuestions($v['applied_application_enc_id'], $v['current_round'], $user->user_enc_id);
+                if (!empty($array)) {
+                    $question[] = $array;
+                }
+            }
+
+            if ($question) {
+                return $this->response(200, ['status' => 200, 'data' => $question]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionQuestionnaireFields()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $parameters = \Yii::$app->request->post();
+
+            if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+                $q_enc_id = $parameters['questionnaire_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+                $applied_application_enc_id = $parameters['applied_application_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            $chk = AnsweredQuestionnaire::find()
+                ->where([
+                    'applied_application_enc_id' => $applied_application_enc_id,
+                    'questionnaire_enc_id' => $q_enc_id,
+                    'created_by' => $user->user_enc_id,
+                ])
+                ->asArray()
+                ->one();
+
+            if ($chk) {
+                return $this->response(409, ['status' => 409, 'message' => 'already filled']);
+            }
+
+            $fields = QuestionnaireFields::find()
+                ->alias('a')
+                ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+                ->joinWith(['questionnaireFieldOptions b' => function ($a) {
+                    $a->select(['b.field_option_enc_id', 'b.field_enc_id', 'b.field_option']);
+                }], true)
+                ->where(['a.questionnaire_enc_id' => $q_enc_id])
+                ->groupBy(['a.field_enc_id'])
+                ->orderBy('a.sequence')
+                ->asArray()
+                ->all();
+
+            if (!empty($fields)) {
+                return $this->response(200, ['status' => 200, 'data' => $fields]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFillQuestionnaire()
+    {
+        if ($user = $this->isAuthorized()) {
+            $parameters = \Yii::$app->request->post();
+
+            if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+                $questionnaire_id = $parameters['questionnaire_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+                $applied_application_id = $parameters['applied_application_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information']);
+            }
+
+            $data = json_decode($parameters['data'], true);
+            $data = $data['response'];
+
+            $answered_model = new AnsweredQuestionnaire();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $answered_model->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
+            $answered_model->applied_application_enc_id = $applied_application_id;
+            $answered_model->questionnaire_enc_id = $questionnaire_id;
+            $answered_model->created_by = $user->user_enc_id;
+            $answered_model->created_on = date('Y-m-d H:i:s');
+            if ($answered_model->save()) {
+                foreach ($data as $d) {
+
+                    if ($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time') {
+                        $field_model = new AnsweredQuestionnaireFields();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->answer = $d['answer'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $user->user_enc_id;
+                        if (!$field_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    if ($d['field_type'] == 'select' || $d['field_type'] == 'radio') {
+                        $field_model = new AnsweredQuestionnaireFields();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->field_option_enc_id = $d['option_enc_id'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $user->user_enc_id;
+                        if (!$field_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    if ($d['field_type'] == 'checkbox') {
+                        foreach ($d['options'] as $option) {
+                            $utilitiesModel = new Utilities();
+                            $fieldsModel = new AnsweredQuestionnaireFields;
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                            $fieldsModel->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                            $fieldsModel->field_enc_id = $d['field_enc_id'];
+                            $fieldsModel->field_option_enc_id = $option['option_enc_id'];
+                            $fieldsModel->created_on = date('Y-m-d H:i:s');
+                            $fieldsModel->created_by = $user->user_enc_id;
+                            if (!$fieldsModel->save()) {
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                            }
+                        }
+                    }
+                }
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'problem in saving questionnaire']);
+            }
+
+            $update = Yii::$app->db->createCommand()
+                ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
+                ->execute();
+            if ($update) {
+                return $this->response(200, ['status' => 200, 'message' => 'Saved']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+        }
+    }
+
 }
