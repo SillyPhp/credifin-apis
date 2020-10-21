@@ -1,390 +1,443 @@
 <?php
+
 use yii\helpers\Url;
+
 $this->params['header_dark'] = false;
 ?>
-    <section class="header-web">
-       <div class="container">
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="header-txt">
-                       <h1>WEBINARS</h1>
-                       <h2>Webinars To Broaden Your Career Horizon. Introducing EmpowerYouth Masterclass, A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
-                   </div>
-               </div>
-               <div class="col-md-6">
-                   <div class="header-img">
-                       <img src="<?= Url::to('@eyAssets/images/pages/webinar/header1 (2).png') ?>"/>
-                   </div>
-                   </div>
-               </div>
-           </div>
-       </div>
-    </section>
-
-    <section class="upcoming-web">
-        <div class="container">
-            <div class="row">
-                <div class="heading-style">Upcoming Webinars</div>
+<section class="header-web">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="header-txt">
+                    <h1>WEBINARS</h1>
+                    <h2>Webinars To Broaden Your Career Horizon. Introducing EmpowerYouth Masterclass, A Webinar Series
+                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
-                            </div>
-                            <div class="web-paid">free</div>
+            <div class="col-md-6 col-sm-6">
+                <div class="header-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/web.png') ?>"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="upcoming-web">
+    <div class="container">
+        <div class="row">
+            <div class="heading-style">Upcoming Webinars</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
+                    </div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
                             </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                            <span class="cont">25 Registered</span>
+                        </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
-                            </div>
-                            <div class="web-paid">free</div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
+                    </div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
                             </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                            <span class="cont">25 Registered</span>
+                        </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
-                            </div>
-                            <div class="web-paid">free</div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
+                    </div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
                             </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                            <span class="cont">25 Registered</span>
+                        </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="opted-web">
-        <div class="container">
-            <div class="row">
-                <div class="heading-opted">Opted Webinars</div>
+<section class="opted-web">
+    <div class="container">
+        <div class="row">
+            <div class="heading-opted">Opted Webinars</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
+                        </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
+                        </div>
+                    </div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                            </div>
+                            <span class="cont">25 Registered</span>
+                        </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
-                            </div>
-                            <div class="web-paid">free</div>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
+                    </div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
                             </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                            <span class="cont">25 Registered</span>
+                        </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
-                            </div>
-                            <div class="web-paid">free</div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
-                        </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
-                            </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                        <div class="web-paid">free</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12 oct</div>
+                    <div class="reg-btn-count">
+                        <div class="register-count">
+                            <div class="reg-img">
+                                <span class="reg1 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg2 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+                                <span class="reg3 reg"><img
+                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
                             </div>
-                            <div class="web-paid">free</div>
+                            <span class="cont">25 Registered</span>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
-                        </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <span class="reg1 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg2 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                    <span class="reg3 reg"><img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                </div>
-                                <span class="cont">25 People Registerd</span>
-                            </div>
-                            <div class="register-btns">
-                                <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                            </div>
+                        <div class="register-btns">
+                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="past-web">
-        <div class="container">
-            <div class="row">
-                <div class="heading-style">Past Webinars</div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12</div>
-                                <div class="month">oct</div>
-                            </div>
-                            <div class="web-paid">paid</div>
+<section class="past-web">
+    <div class="container">
+        <div class="row">
+            <div class="heading-style">Past Webinars</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
                         </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
-                        </div>
+                        <div class="web-paid">paid</div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12</div>
-                                <div class="month">oct</div>
-                            </div>
-                            <div class="web-paid">paid</div>
-                        </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                            <div class="web-date">
-                                <div class="date">12</div>
-                                <div class="month">oct</div>
-                            </div>
-                            <div class="web-paid">paid</div>
-                        </div>
-                        <div class="web-inr">
-                            <div class="web-title">Lorem ipsum</div>
-                            <div class="web-speaker">ivaan,sahil</span></div>
-                            <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="speakers">
-        <div class="container">
-            <div class="row">
-                <div class="heading-style">Speakers</div>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
+                        </div>
+                        <div class="web-paid">paid</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class=""
-            </div>
-        </div>
-    </section>
-
-    <section class="req-web">
-        <div class="req">
-            Now You Can Request For A Webinar In Just A Few Minutes By Submitting This Simple Form!!
-        </div>
-    </section>
-
-    <section class="req-form">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-offset-3 col-md-7">
-                    <form>
-                    <div class="col-md-6">
-                        <div class="web-form">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" name="title"><br>
+            <div class="col-md-4 col-sm-6">
+                <div class="web-card">
+                    <div class="web-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
+                        <div class="web-date">
+                            <div class="date">12 oct</div>
+                        </div>
+                        <div class="web-paid">paid</div>
+                    </div>
+                    <div class="web-inr">
+                        <div class="web-title">Lorem ipsum</div>
+                        <div class="web-speaker">ivaan,sahil</span></div>
+                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
+                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
+                            in the 15th century who is thought to have
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="web-form">
-                    <label for="date">Date</label>
-                    <input type="date" class="form-control" name="date"><br>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="web-form">
-                    <label for="time">Time</label>
-                    <input type="time" class="form-control" name="time"><br>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="web-form">
-                    <label for="speakers">Speakers</label>
-                    <input type="text" class="form-control" name="speakers"><br>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="web-form">
-                    <label for="duration">Duration</label>
-                    <input type="text" class="form-control" name="duration"><br>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="web-form">
-                    <label for="seats">Seats</label>
-                    <input type="number" class="form-control" name="seats"><br>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                            <div class="web-form">
-                                <label for="decription">Description</label><br>
-                                <textarea name="comment"></textarea>
-                            </div>
-                        </div>
-                    <div class="col-md-12">
-                        <div class="web-form">
-                    <label for="objectives">Objectives</label><br>
-                            <textarea name="comment"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="web-button">
-                    <button type="button" class="button-slide" id="nextBtn">
-                        submit
-                    </button>
-                </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<section class="speakers">
+    <div class="container">
+        <div class="row">
+            <div class="heading-style">Speakers</div>
+        </div>
+        <div class="row">
+            <div class=""
+        </div>
+    </div>
+</section>
+
+<section class="req-form">
+    <div style="display: flex;flex-wrap: wrap;">
+        <div class="col-md-5 col-sm-12" style="background-color: #00a0e3;">
+            <div class="req">
+                Now You Can Request For A Webinar In Just A Few Minutes By Submitting This Simple Form!!
+            </div>
+            <div class="req-icon">
+                <img src="<?= Url::to('@eyAssets/images/pages/webinar/r-webi.png') ?>"/>
+            </div>
+        </div>
+        <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #f4f4f4;padding: 30px 20px;">
+            <form>
+                <div class="col-md-12">
+                    <div class="web-form">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" name="title"><br>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="web-form">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" name="date"><br>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="web-form">
+                        <label for="time">Time</label>
+                        <input type="time" class="form-control" name="time"><br>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="web-form">
+                        <label for="duration">Duration</label>
+                        <input type="text" class="form-control" name="duration"><br>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="web-form">
+                        <label for="seats">Seats</label>
+                        <input type="number" class="form-control" name="seats"><br>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="web-form">
+                        <label for="speakers">Speakers</label>
+                        <input type="text" class="form-control" name="speakers"><br>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="web-form">
+                        <label for="decription">Description</label><br>
+                        <textarea name="comment"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="web-form">
+                        <label for="objectives">Objectives</label><br>
+                        <textarea name="comment"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="web-button">
+                        <button type="button" class="button-slide" id="nextBtn">
+                            SUBMIT
+                        </button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</section>
 
 <?php
 $this->registerCss('
-.req-form{
-    background-color: #f2f2f2;
-    padding: 20px;
+.web-card:hover {
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+	transform: translateY(-3px);
+	transition: all .2s;
 }
 .header-web{
-    background-color: #E0F4FD;
-    padding-top: 100px;
+    background-color: #79CAEF;
+    padding-top: 60px;
 }
-.header-txt h1{
-    font-size: 45px;
-    font-family: lobster;
-    font-weight: 400;
-    margin-top: 100px;
-    color: #00a0e3;
+.header-txt h1 {
+	font-size: 45px;
+	font-family: lobster;
+	font-weight: 400;
+	margin-top: 80px;
+	color: #edf9ff;
+	margin-bottom: 0;
 }
-.header-txt h2{
-    font-size: 20px;
-    font-family: lora;
-    font-weight: 600;
+.header-txt h2 {
+	font-size: 22px;
+	font-family: roboto;
+	margin: 0 0 0 8px;
+	color:#31495d;
+}
+.header-img {
+	width: 450px;
+	margin: auto;
+	margin-bottom:20px;
 }
 .web-form{
     margin: -9px 0px 0px 2px;
 }
 .web-form label{
     font-size: 18px;
-    font-family: lobster;
+    font-family: lora;
     font-weight: 200;
 }
 .web-form input,
@@ -393,42 +446,43 @@ $this->registerCss('
      padding: 7px;
      border-radius: 3px;
      width: 100%;
+     height:40px;
+     line-height:22px !important;
 }
 .web-form textarea{
     margin-bottom: 10px;
-    height: 100px;
+    height: 75px;
 }
 .web-button{
-    margin: 0px 0px 15px 0px;  
+    text-align:center;  
 }
 .web-button button{
-    font-family: "Open Sans", sans-serif;
-    font-size: 14px;
-    padding: 13px 32px;
+    font-family: roboto;
+    font-size: 16px;
+    font-weight:500;
+    padding: 10px 32px;
     border-radius: 4px;
-    -o-transition: .4s all;
-    -ms-transition: .4s all;
-    -moz-transition: .4s all;
-    -webkit-transition: .4s all;
-    transition: .4s all;
-    color: #222;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
-    margin-left: 5px;
-    background: #fff;
     border:none;
-}
-.web-button button:hover{
     background-color: #00a0e3;
     color: #fff;
+    transition:all .3s;
+}
+.web-button button:hover{
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    background-color: #fff;
+    color: #00a0e3;
 }
 .req{
     font-size: 45px;
     font-weight:200;
     text-align: center;
     font-family: lobster;
-    background-color: #00a0e3;
+//    background-color: #00a0e3;
     padding: 30px 10px 30px 10px;
     color: #fff;
+}
+.req-icon {
+    text-align: center;
 }
 .web-card {
 	border-radius: 6px;
@@ -497,18 +551,38 @@ overflow: hidden;
 	overflow: hidden;
 }
 .opted-web {
-	background-image: linear-gradient(to bottom right, #00a0e3, #fff);
+	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/wb2.png') . '); 
 	margin: 30px 0 0;
 	padding: 0 0 50px;
+	background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.heading-opted::after{
+	position: absolute;
+	left: 0;
+	top: 0;
+	content: \'\';
+	right: 0;
+	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/title.png') . ');
+	background-repeat: no-repeat;
+	background-size: center center;
+	background-position: contain;
+	width: 70px;
+	height: 10px;
+	margin: auto auto 0;
+	top: auto;
+	bottom: 0;
 }
 .heading-opted {
 	text-align: center;
-	font-family: lora;
-	font-weight: bold;
-	font-size: 35px;
-	color: #fff;
-	text-transform: uppercase;
-	margin-bottom: 20px;
+	font-family: lobster;
+	/* font-weight: bold; */
+	font-size: 40px;
+	color: #3b1d82;
+	/* text-transform: uppercase; */
+	margin-bottom: 35px;
+	position: relative;
 }
 .reg-btn-count {
 	display: flex;
@@ -530,7 +604,7 @@ overflow: hidden;
     object-fit: cover;
 }
 .reg2.reg, .reg3.reg {
-    margin-left: -20px;
+    margin-left: -25px;
 }
 .cont {
     margin-left: 5px;
@@ -573,6 +647,11 @@ overflow: hidden;
   90% {
     transform: translate3d(0, -2px, 0);
   }
+}
+@media only screen and (max-width: 991px) {
+.header-txt h1{margin-top:40px;}
+.header-txt h2{font-size:18px;}
+.header-img{width:300px;}
 }
 ');
 $script = <<<JS
