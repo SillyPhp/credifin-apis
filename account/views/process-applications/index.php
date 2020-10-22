@@ -928,6 +928,7 @@ li{
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
