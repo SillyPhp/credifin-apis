@@ -13,7 +13,7 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6">
                     <div class="loan-text">
                         <h1>Education Loan With Lower Interest Rates.</h1>
-                        <h2>Apply for an Education Loan at <span class="blue1">a low rate of interest.</span> <br>
+                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>
                             <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!</h2>
 <!--                        <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
                         <a href="<?= Url::to('/education-loans/apply') ?>"
