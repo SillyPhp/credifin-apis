@@ -73,7 +73,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)'])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)','maxLength'=>15])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -102,7 +102,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div><label class="p_label">Parent Information</label></div>
+                        <div><label class="p_label">Parent Information (Optional, You Can Add Multiple)</label></div>
                         <div class="form-group"><input type="text" name="parent_name[]"
                                                        class="form-control text-capitalize" placeholder="Name"
                                                        id="parent_name[]"></div>
@@ -112,15 +112,15 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                             </div>
                             <ul class="relationList">
                                 <li class="service-list">
-                                    <input type="radio" value="Father" id="reFather" name="parent_relation[]">
+                                    <input type="radio" class="input_radio_relation" value="Father" id="reFather" name="parent_relation[0]">
                                     <label for="reFather">Father</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" id="reMother" value="Mother" name="parent_relation[]">
+                                    <input type="radio" class="input_radio_relation" id="reMother" value="Mother" name="parent_relation[0]">
                                     <label for="reMother">Mother</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" id="reGuardian" value="Guardian" name="parent_relation[]">
+                                    <input type="radio" class="input_radio_relation" id="reGuardian" value="Guardian" name="parent_relation[0]">
                                     <label for="reGuardian">Guardian</label>
                                 </li>
                             </ul>
@@ -128,7 +128,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                         <div class="form-group"><input type="text" name="parent_mobile_number[]"
                                                        class="form-control parent_mobile_number"
                                                        placeholder="Mobile Number" id="parent_mobile_number[]"
-                                                       maxlength="15"></div>
+                                                       maxlength="15" minlength="10"></div>
                         <div class="form-group"><input type="text" name="parent_annual_income[]"
                                                        class="form-control parent_annual_income"
                                                        placeholder="Annual Income" id="parent_annual_income[]"></div>
@@ -156,9 +156,16 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
     </div>
 </div>
 </div>
+<input type="hidden" name="parentElem" id="parentElem" value="1">
 <script>
     function removeAnotherField(ths) {
         ths.closest('.parent_inforamtion').remove();
+        counElement();
+    }
+    function counElement()
+    {
+        var count = $('input[name="parent_name[]"]').length;
+        $('#parentElem').val(count);
     }
 </script>
 <?php
@@ -167,7 +174,7 @@ $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
 $('#course_fee_annual').mask("#", {reverse: true});
-var addMoreCount = 0;
+var addMoreCount = 1;
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
     addMoreCount++;
@@ -183,27 +190,28 @@ function addAnotherField()
      '<div class="form-group">' +
       '<div class="radio-heading input-group-text">' +
        '<strong>Relation</strong>' +
-        '</div>' +
-         '<ul class="relationList"><li class="service-list"><input type="radio" value="Father" id="reFather'+addMoreCount+'" name="parent_relation[]">'+
+        '</div>' +  
+         '<ul class="relationList"><li class="service-list"><input type="radio" class="input_radio_relation" value="Father" id="reFather'+addMoreCount+'" name="parent_relation['+addMoreCount+']">'+
                 '<label for="reFather'+addMoreCount+'">Father</label></li><li class="service-list">'+
-                '<input type="radio" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation[]">'+
+                '<input type="radio" class="input_radio_relation" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation['+addMoreCount+']">'+
                 '<label for="reMother'+addMoreCount+'">Mother</label></li><li class="service-list">'+
-                '<input type="radio" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation[]">'+
+                '<input type="radio" class="input_radio_relation" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation['+addMoreCount+']">'+
                 '<label for="reGuardian'+addMoreCount+'">Guardian</label></li>' +
          '</ul>' +
         '</div>'+
-     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
+     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15" minlength="10"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
      '<button type="button" class="addAnotherCo input-group-text float-right" onclick="removeAnotherField(this)"><i class="fas fa-times"></i> Remove</button>'+
      '</div>'+
-     '</div>'];
+     '</div>'];  
             var textnode = document.createElement("div"); 
             textnode.setAttribute('class', 'parent_inforamtion');
             textnode.innerHTML = field; 
             $('#clone_fields_parent').prepend(textnode);
             $('.parent_mobile_number').mask("#", {reverse: true}); 
             $('.parent_annual_income').mask("#", {reverse: true});
+            counElement();
 }
 getCourses();
 getCollege(datatype=0,source=3,type=['College']);
@@ -289,7 +297,7 @@ function getCourses()
             method : 'GET',
             success : function(res) {
             if (res.response.status==200){
-                 res = res.response.course;
+                res = res.response.course;
                 $.each(res,function(index,value) 
                   {   
                    _courses.push(value.value);
@@ -314,10 +322,31 @@ function getCourses()
 $(document).on('submit','#leads_form',function(event) {
   event.preventDefault();
   event.stopImmediatePropagation();
+  var i = 1;
+  var j = 0;
+ $.each($('.input_radio_relation'),function(index,value)
+  {
+      if (i<=3){
+       $(this).attr('name','parent_relation['+j+']');   
+       i++;
+      }
+      
+      if (i==4)
+          {
+              i=0;
+              j++;
+          }
+  });
+    $("#leads_form *").filter(":input").each(function(){
+      if ($(this).val() == '')
+        $(this).prop("disabled", true);
+    });
+  var formData = new FormData(this);
+  formData.append('parentElem',$('#parentElem').val());
       $.ajax({
         url: "/education-loans/leads",
         method: "POST",
-        data: new FormData(this),
+        data: formData,
         contentType: false,
         cache:false,
         processData: false,
@@ -331,7 +360,7 @@ $(document).on('submit','#leads_form',function(event) {
            if (response.status==200)
                {
                    toastr.success(response.message, response.title);
-                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone=9592868808&text='+link_form)
+                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone='+$('#student_mobile_number').val()+'&text='+link_form)
                    $('#app_num').text(response.app_num);
                    $('#light_box_submit').css('display','block');
                }else {
