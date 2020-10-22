@@ -393,6 +393,8 @@ $script = <<<JS
 $(document).on('click','.j-delete',function(e){
      e.preventDefault();
         var dataTab = $(this).attr('data-type');
+        var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+        var data = $(this).attr('value');
        swal({ 
              title: "Are you sure?",
              text: "This "+dataTab+" will be deleted permanently from your dashboard",
@@ -401,24 +403,22 @@ $(document).on('click','.j-delete',function(e){
              showCancelButton : true,
          },
          function(isConfirm){
-             var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
              if (isConfirm) { 
                 main_card.remove();
-                var data = $(this).attr('value');
                 var url = "/account/jobs/delete-application";
                 $.ajax({
                     url:url,
                     data:{data:data},
-                    method:'post',
+                    method:'POST',
                     success:function(data){
-                        $.pjax.reload({container: "#pjax_active_jobs", async: false});
                           if(data==true) {
                               toastr.success('Deleted Successfully', 'Success');
                             }
                            else {
                               toastr.error('Something went wrong. Please try again.', 'Opps!!');
                            }
-                         }
+                           $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                       }
                   });
             }       
          });
@@ -427,6 +427,8 @@ $(document).on('click','.j-delete',function(e){
 $(document).on('click','.j-closed',function(e){
      e.preventDefault();
       var dataTab = $(this).attr('data-type');
+      var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+      var data = $(this).attr('value');
       swal({ 
              title: "Are you sure?",
              text: "If you close this "+dataTab+" you will stop receiving new applications",
@@ -435,24 +437,21 @@ $(document).on('click','.j-closed',function(e){
              showCancelButton : true,
          },
      function(isConfirm){
-         var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
          if (isConfirm) { 
             main_card.remove();
-            var data = $(this).attr('value');
             var url = "/account/jobs/close-application";
             $.ajax({
                 url:url,
                 data:{data:data},
                 method:'post',
                 success:function(data){
-                    $.pjax.reload({container: "#pjax_active_jobs", async: false});
                       if(data==true) {
-                          $.pjax.reload({container: "#pjax_closed_jobs", async: false});
                           toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
                         }
                        else {
-                          toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                           toastr.error('Something went wrong. Please try again.', 'Opps!!');
                        }
+                       $.pjax.reload({container: "#pjax_active_jobs", async: false});
                      }
               });
     }
