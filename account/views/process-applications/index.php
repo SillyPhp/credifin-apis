@@ -615,13 +615,15 @@ $this->registerCss('
 }
 .h-skill{
     display:none;
+    z-index:1;
 }
-.pr-user-skills:hover .h-skill
-{
-    display:block;
-    position: absolute; 
-    background-color: #fff;
-    top: 20px;
+.pr-user-skills:hover .h-skill {
+	display: block;
+	position: absolute;
+	background-color: #fff;
+	top: 20px;
+	border-radius: 6px;
+	text-align: center;
 }
 .dropbtn {
 	background-color: #4CAF50;
