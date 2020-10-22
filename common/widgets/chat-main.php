@@ -232,7 +232,7 @@ $this->registerCss("
     overflow-X: hidden;
 }
 #users-list{
-    max-height: 600px;
+    max-height: 430px;
     overflow-y: scroll;
     width: 280px;
     position:relative;
