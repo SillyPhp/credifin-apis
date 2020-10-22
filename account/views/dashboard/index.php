@@ -120,9 +120,9 @@ endif;
                     'viewed' => $viewed
                 ]); ?>
                 <?= $this->render('/widgets/applications/reminder-applications', [
-                        'app_reminder' => $app_reminder,
-                        'app_reminder_form' => $app_reminder_form,
-                ]);?>
+                    'app_reminder' => $app_reminder,
+                    'app_reminder_form' => $app_reminder_form,
+                ]); ?>
 
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
@@ -266,11 +266,9 @@ endif;
                                 <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
                                    title="Create Quick Job" class="quick">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
-                                <?php if ($applications['jobs']['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
-                                       class="view">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
+                                   class="view">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                     </div>
@@ -317,7 +315,8 @@ endif;
                                 <?php
                                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
                                     ?>
-                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>" data-toggle="tooltip"
+                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
+                                       data-toggle="tooltip"
                                        title="Campus Hiring" class="ai">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                     <?php
@@ -327,11 +326,9 @@ endif;
                                    title="Post Internship Tweet">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
                                 </a>
-                                <?php if ($applications['internships']['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                     </div>
@@ -360,11 +357,11 @@ endif;
                         ?>
                     </div>
                 </div>
-                <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
+                <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
             <?php endif; ?>
-            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'){ ?>
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual') { ?>
 
-                        <?= $this->render("/widgets/edupreneur_and_redbull_dashboard")?>
+                <?= $this->render("/widgets/edupreneur_and_redbull_dashboard") ?>
 
             <?php } ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->

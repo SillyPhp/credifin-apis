@@ -642,7 +642,7 @@ class LoansController extends ApiBaseController
             if (isset($params['name']) && !empty($params['name'])) {
                 $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
             }
-            if (isset($params['college_loan_status']) && !empty($params['college_loan_status'])) {
+            if (isset($params['college_loan_status']) && $params['college_loan_status'] != '') {
                 $loan_requests->andWhere(['a.status' => $params['college_loan_status']]);
             }
             if (isset($params['payment_status']) && !empty($params['payment_status'])) {
