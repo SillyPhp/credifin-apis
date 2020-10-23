@@ -554,7 +554,7 @@ class JobsController extends ApiBaseController
 
                 if ($res = $model->saveValues()) {
                     if ($d = $this->profileCompletions()) {
-                        return $this->response(200, ['status' => 200, 'profile' =>$d]);
+                        return $this->response(200, ['status' => 200, 'profile' => $d]);
                     } else {
                         $d = ['is_completed' => false, 'percent' => 0];
                         return $this->response(200, ['status' => 200, 'profile' => $d]);
@@ -611,6 +611,30 @@ class JobsController extends ApiBaseController
             }
         } else {
             return false;
+        }
+    }
+
+    public function actionIsHired()
+    {
+        if ($user = $this->isAuthorized()) {
+            $applied = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+//                ->select(['b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c'=>function($c){
+                        $c->onCondition(['c.college_enc_id' => $this->getOrgId()]);
+                    }]);
+                }])
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0,])
+                ->asArray()
+                ->all();
+
+            if ($applied) {
+                return $this->response(200, $applied);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         }
     }
 
