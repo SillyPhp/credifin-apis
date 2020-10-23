@@ -443,7 +443,7 @@ $this->registerCss('
 	border-radius: 6px;
 	padding: 5px 25px;
 	font-family: roboto;
-	font-size: 23px;
+	font-size: 20px;
 }
 .padd-top-20{
     padding-top:30px; 

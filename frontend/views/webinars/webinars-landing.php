@@ -10,8 +10,8 @@ $this->params['header_dark'] = false;
             <div class="col-md-6 col-sm-6">
                 <div class="header-txt">
                     <h1>WEBINARS</h1>
-                    <h2>Webinars To Broaden Your Career Horizon. Introducing EmpowerYouth Masterclass, A Webinar Series
-                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+                    <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
+                       Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -332,27 +332,34 @@ $this->params['header_dark'] = false;
 </section>
 
 <section class="req-form">
-    <div style="display: flex;flex-wrap: wrap;">
-        <div class="col-md-5 col-sm-12" style="background-color: #00a0e3;">
+    <div style="display: flex;flex-wrap: wrap; ">
+        <div class="col-md-5 col-sm-12 req-web">
             <div class="req">
-                Now You Can Request For A Webinar In Just A Few Minutes By Submitting This Simple Form!!
+                <h1>Request For A Webinar</h1>
+                <h2>- <span>For Enriching</span> Your Organization's Online Content.<br>
+                    - Establishing <span>Authority</span>.<br>
+                    - Enhanced <span> Branding Value</span>.<br>
+                    - Building <span>Trust</span>. <br>
+                    - Building <span>Stronger, Lasting Business Relationships</span>.<br>
+                    - Accessing The <span>Global Audience</span>.<br>
+                    - <span>Sharing Information</span> with the Audience.</h2>
             </div>
             <div class="req-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/r-webi.png') ?>"/>
             </div>
         </div>
-        <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #f4f4f4;padding: 30px 20px;">
+        <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #fff;padding: 30px 20px;">
             <form>
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="title">Title</label>
-                        <input type="text" class="form-control" name="title"><br>
+                        <input type="text" class="form-control" name="title" placeholder="Enter The Title" style="font-style:italic"><br>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="date">Date</label>
-                        <input type="date" class="form-control" name="date"><br>
+                        <input type="date" class="form-control" name="date" style="font-style:italic"><br>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -364,68 +371,76 @@ $this->params['header_dark'] = false;
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="duration">Duration</label>
-                        <input type="text" class="form-control" name="duration"><br>
+                        <input type="text" class="form-control" name="duration" placeholder="Duration Of The Webinar" style="font-style:italic"><br>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="seats">Seats</label>
-                        <input type="number" class="form-control" name="seats"><br>
+                        <input type="number" class="form-control" name="seats" placeholder="Number Of Seats" style="font-style:italic"><br>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="speakers">Speakers</label>
-                        <input type="text" class="form-control" name="speakers"><br>
+                        <input type="text" class="form-control" name="speakers" placeholder="Name Of The Speaker" style="font-style:italic"><br>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="decription">Description</label><br>
-                        <textarea name="comment"></textarea>
+                        <textarea name="comment" placeholder="Enter Description" style="font-style:italic"></textarea>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="objectives">Objectives</label><br>
-                        <textarea name="comment"></textarea>
+                        <textarea name="comment" placeholder="Objectives Of Conducting A Webinar" style="font-style:italic"></textarea>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="web-button">
                         <button type="button" class="button-slide" id="nextBtn">
-                            SUBMIT
+                            Submit
                         </button>
                     </div>
+                </div>
+
             </form>
-        </div>
     </div>
 </section>
 
 <?php
 $this->registerCss('
+.footer{
+    margin-top: 0px !important;
+}
+.ornge{
+    color: #edf9ff;
+}
 .web-card:hover {
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 	transform: translateY(-3px);
 	transition: all .2s;
 }
 .header-web{
-    background-color: #79CAEF;
+    background-color: #3e8cf9;
     padding-top: 60px;
 }
 .header-txt h1 {
-	font-size: 45px;
+	font-size: 60px;
 	font-family: lobster;
-	font-weight: 400;
+	font-weight: 600;
 	margin-top: 80px;
 	color: #edf9ff;
 	margin-bottom: 0;
 }
 .header-txt h2 {
-	font-size: 22px;
-	font-family: roboto;
+	font-size: 20px;
+	font-family: lora;
 	margin: 0 0 0 8px;
-	color:#31495d;
+	color: #000308;
+	font-weight: 600;
 }
 .header-img {
 	width: 450px;
@@ -438,16 +453,18 @@ $this->registerCss('
 .web-form label{
     font-size: 18px;
     font-family: lora;
-    font-weight: 200;
+    font-style: oblique;
+    color: #040404;
 }
 .web-form input,
 .web-form textarea{
-     border: none;
+     border: 1px solid #d4caca;
      padding: 7px;
      border-radius: 3px;
      width: 100%;
      height:40px;
      line-height:22px !important;
+     margin-bottom: 10px;
 }
 .web-form textarea{
     margin-bottom: 10px;
@@ -459,30 +476,47 @@ $this->registerCss('
 .web-button button{
     font-family: roboto;
     font-size: 16px;
-    font-weight:500;
-    padding: 10px 32px;
+    padding: 12px 21px;
     border-radius: 4px;
     border:none;
-    background-color: #00a0e3;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
     transition:all .3s;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-top: 20px;
+    border: 1px solid #d4caca;
 }
 .web-button button:hover{
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
-    background-color: #fff;
-    color: #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
 }
-.req{
+.req-web{
+    display: flex;
+    background-color: #3e8cf9;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.req h1{
     font-size: 45px;
-    font-weight:200;
     text-align: center;
     font-family: lobster;
 //    background-color: #00a0e3;
-    padding: 30px 10px 30px 10px;
+    padding: 20px 10px 20px 10px;
+    color: #fff;
+}
+.req h2{
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    font-family: lora;
+}
+.req h2 span{
+    font-weight: bold;
     color: #fff;
 }
 .req-icon {
-    text-align: center;
+    text-align: bottom;
 }
 .web-card {
 	border-radius: 6px;
@@ -602,6 +636,7 @@ overflow: hidden;
     border-radius: 81px;
     height: 30px;
     object-fit: cover;
+    border: 2px solid #fff;
 }
 .reg2.reg, .reg3.reg {
     margin-left: -25px;
@@ -652,6 +687,19 @@ overflow: hidden;
 .header-txt h1{margin-top:40px;}
 .header-txt h2{font-size:18px;}
 .header-img{width:300px;}
+}
+@media only screen and (max-width: 768px) and (min-width: 320px){
+.header-txt h1{
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+.header-txt h2{
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+.header-img{
+    width: 200px;
+}
 }
 ');
 $script = <<<JS

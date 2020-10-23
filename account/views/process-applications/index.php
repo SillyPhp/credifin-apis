@@ -64,7 +64,7 @@ if ($application_name['wage_type'] == 'Fixed') {
 
                         <div class="j-share">
                             <span class="fbook"><a href=""
-                                                   onclick="window.open('<?= '//www.facebook.com/dialog/share?' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts"><a href=""
                                                  onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
@@ -615,13 +615,15 @@ $this->registerCss('
 }
 .h-skill{
     display:none;
+    z-index:1;
 }
-.pr-user-skills:hover .h-skill
-{
-    display:block;
-    position: absolute; 
-    background-color: #fff;
-    top: 20px;
+.pr-user-skills:hover .h-skill {
+	display: block;
+	position: absolute;
+	background-color: #fff;
+	top: 20px;
+	border-radius: 6px;
+	text-align: center;
 }
 .dropbtn {
 	background-color: #4CAF50;
@@ -928,6 +930,7 @@ li{
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
