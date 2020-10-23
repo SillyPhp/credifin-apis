@@ -15,6 +15,7 @@ if (Yii::$app->params->paymentGateways->mec->icici) {
         $url = $configuration->credentials->sandbox->url;
     }
 }
+Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var college_id = "' . $wid . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
@@ -1135,6 +1136,7 @@ function ajaxSubmit(id)
                 college_course_enc_id:$('#course-list-college').val(),
                 purpose:purpose,
                 co_applicants:co_applicants,
+                userID:userID, 
                 },  
             beforeSend:function(e)
             { 
