@@ -38,7 +38,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken=1,$userId, $college_id, $source = 'Mec',$is_claimed=1,$course_name,$pref=[])
+    public function add($addmission_taken=1,$userId, $college_id, $source = 'Mec',$is_claimed=1,$course_name=null,$pref=[])
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)){
