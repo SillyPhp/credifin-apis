@@ -13,6 +13,7 @@ use common\models\OnlineClasses;
 use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireFields;
 use common\models\ShortlistedApplications;
+use common\models\UserCoachingTutorials;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use common\models\UserWebinarInterest;
@@ -21,6 +22,7 @@ use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\Utilities;
 use common\models\WebinarSessions;
+use common\models\WidgetTutorials;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\auth\HttpBearerAuth;
@@ -1158,6 +1160,33 @@ class CandhomeController extends ApiBaseController
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
+        }
+    }
+
+    public function actionNotInterested()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $id = WidgetTutorials::findone(['name' => 'not_interested_for_loans']);
+            if ($id) {
+                $tutorial = new UserCoachingTutorials();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $tutorial->user_coaching_tutorial_enc_id = $utilitiesModel->encrypt();
+                $tutorial->tutorial_enc_id = $id->tutorial_enc_id;
+                $tutorial->created_by = $user->user_enc_id;
+                $tutorial->created_on = date('Y-m-d H:i:s');
+                $tutorial->is_viewed = 1;
+                if ($tutorial->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'saved']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
