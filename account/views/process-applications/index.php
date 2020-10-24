@@ -721,9 +721,16 @@ $this->registerCss('
 .j-main {
 	display: flex;
 	border-right: 2px solid #333;
+	align-items:center;
+}
+.j-logo {
+    width: 85px;
+    height: 85px;
 }
 .j-logo img {
-	width: 70px;
+	width: 85px;
+	height: 85px;
+	object-fit: contain;
 }
 .j-data {
 	margin-left: 15px;
@@ -745,10 +752,12 @@ $this->registerCss('
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom:10px;
 }
 .j-title a{
     color:#333;
     font-family: roboto;
+    text-transform:capitalize;
 } 
 .j-share span {
 	margin: 0 5px;
@@ -770,7 +779,8 @@ $this->registerCss('
 .e-detail p {
 	margin: 0;
 //	margin-bottom: 11px !important;
-	font-size:12px;
+	font-size:11px;
+	height:15px;
 }
 .e-logo i {
     font-size: 22px;
@@ -784,7 +794,7 @@ $this->registerCss('
 	text-align: center;
 }
 .option-1 {
-	margin: 20px 0;
+	margin: 15px 0 20px;
 }
 .option-1 span i {
 	font-size: 18px;
