@@ -723,8 +723,14 @@ $this->registerCss('
 	border-right: 2px solid #333;
 	align-items:center;
 }
+.j-logo {
+    width: 85px;
+    height: 85px;
+}
 .j-logo img {
-	width: 86px;
+	width: 85px;
+	height: 85px;
+	object-fit: contain;
 }
 .j-data {
 	margin-left: 15px;
