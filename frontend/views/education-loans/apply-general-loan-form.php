@@ -1318,17 +1318,20 @@ function ajaxSubmit()
                             text: "Some Internal Server Error, Please Try After Some Time",
                             });
                     }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
             }
         });
     }
     
-function _razoPay(ptoken,loan_id,education_loan_id,rzp1){
+function _razoPay(ptoken,loan_id,education_loan_id){
     var options = {
-    "key": access_key, // Enter the Key ID generated from the Dashboard
+    "key": access_key, 
     "name": "Empower Youth",
     "description": "Application Processing Fee",
     "image": "/assets/common/logos/logo.svg",
-    "order_id": ptoken, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "order_id": ptoken, 
     "handler": function (response){
         updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
                 swal({
