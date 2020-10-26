@@ -3,18 +3,18 @@ use yii\helpers\Url;
 use kartik\widgets\Select2;
 $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
-if (Yii::$app->params->paymentGateways->mec->icici) {
-    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-    if ($configuration->mode === "production") {
-        $access_key = $configuration->credentials->production->access_key;
-        $secret_key = $configuration->credentials->production->secret_key;
-        $url = $configuration->credentials->production->url;
-    } else {
-        $access_key = $configuration->credentials->sandbox->access_key;
-        $secret_key = $configuration->credentials->sandbox->secret_key;
-        $url = $configuration->credentials->sandbox->url;
-    }
-}
+//if (Yii::$app->params->paymentGateways->mec->icici) {
+//    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+//    if ($configuration->mode === "production") {
+//        $access_key = $configuration->credentials->production->access_key;
+//        $secret_key = $configuration->credentials->production->secret_key;
+//        $url = $configuration->credentials->production->url;
+//    } else {
+//        $access_key = $configuration->credentials->sandbox->access_key;
+//        $secret_key = $configuration->credentials->sandbox->secret_key;
+//        $url = $configuration->credentials->sandbox->url;
+//    }
+//}
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
 $image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
@@ -42,11 +42,12 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 ?>
-    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+    <!--    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>-->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -1294,7 +1295,8 @@ function ajaxSubmit()
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-                        processPayment(ptoken,loan_id,education_loan_id);
+                           //processPayment(ptoken,loan_id,education_loan_id);
+                        _razoPay(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
                             title:"Error",
@@ -1319,6 +1321,50 @@ function ajaxSubmit()
             }
         });
     }
+    
+function _razoPay(ptoken,loan_id,education_loan_id,rzp1){
+    var options = {
+    "key": access_key, // Enter the Key ID generated from the Dashboard
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+                swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+    },
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
+    }
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(education_loan_id,loan_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}        
 function processPayment(ptoken,loan_id,education_loan_id)
 {
     Layer.checkout({ 
@@ -1363,7 +1409,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
 );
 } 
 
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
             url : '/api/v3/education-loan/update-widget-loan-application',
@@ -1373,6 +1419,7 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
               loan_app_id:loan_app_enc_id,
               payment_id:payment_id, 
               status:status, 
+              signature:signature,
             },
             success:function(e)
             {
