@@ -120,6 +120,14 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                                     <label for="reMother">Mother</label>
                                 </li>
                                 <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reBrother" value="Brother" name="parent_relation[0]">
+                                    <label for="reBrother">Brother</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reSister" value="Sister" name="parent_relation[0]">
+                                    <label for="reSister">Sister</label>
+                                </li>
+                                <li class="service-list">
                                     <input type="radio" class="input_radio_relation" id="reGuardian" value="Guardian" name="parent_relation[0]">
                                     <label for="reGuardian">Guardian</label>
                                 </li>
@@ -195,6 +203,10 @@ function addAnotherField()
                 '<label for="reFather'+addMoreCount+'">Father</label></li><li class="service-list">'+
                 '<input type="radio" class="input_radio_relation" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation['+addMoreCount+']">'+
                 '<label for="reMother'+addMoreCount+'">Mother</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reBrother'+addMoreCount+'" value="Brother" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reBrother'+addMoreCount+'">Brother</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reSister'+addMoreCount+'" value="Sister" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reSister'+addMoreCount+'">Sister</label></li><li class="service-list">'+
                 '<input type="radio" class="input_radio_relation" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation['+addMoreCount+']">'+
                 '<label for="reGuardian'+addMoreCount+'">Guardian</label></li>' +
          '</ul>' +
@@ -326,12 +338,12 @@ $(document).on('submit','#leads_form',function(event) {
   var j = 0;
  $.each($('.input_radio_relation'),function(index,value)
   {
-      if (i<=3){
+      if (i<=5){
        $(this).attr('name','parent_relation['+j+']');   
        i++;
       }
       
-      if (i==4)
+      if (i==6)
           {
               i=0;
               j++;
