@@ -15,6 +15,7 @@ use common\models\OrganizationInterviewProcess;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
+use common\models\UserOtherDetails;
 use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use Yii;
@@ -79,13 +80,23 @@ class JobsController extends ApiBaseController
         }
     }
 
+    private function getClgId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $clg_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id, 'is_deleted' => 0])
+                ->one();
+
+            return $clg_id->organization_enc_id;
+        }
+    }
+
     public function actionApplicationDetail()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
-
 
         $req = Yii::$app->request->post();
         if (!empty($req['slug'])) {
@@ -273,6 +284,8 @@ class JobsController extends ApiBaseController
                 ->count();
 
             $data['applied_count'] = $applied;
+            $data['is_blocked'] = $this->isHired();
+
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
@@ -614,27 +627,74 @@ class JobsController extends ApiBaseController
         }
     }
 
-    public function actionIsHired()
+    private function isHired()
     {
         if ($user = $this->isAuthorized()) {
-            $applied = AppliedApplications::find()
+
+            $hired = AppliedApplications::find()
                 ->distinct()
                 ->alias('a')
-//                ->select(['b.slug'])
-                ->joinWith(['applicationEnc b' => function ($b) {
-                    $b->innerJoinWith(['erexxEmployerApplications c'=>function($c){
-                        $c->onCondition(['c.college_enc_id' => $this->getOrgId()]);
+                ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
+                        $c->onCondition(['c.is_deleted' => 0, 'c.status' => 'Active', 'c.college_enc_id' => $this->getClgId()]);
                     }]);
-                }])
-                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0,])
+                }], false)
+                ->where([
+                    'a.created_by' => $user->user_enc_id,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Hired',
+                ])
                 ->asArray()
                 ->all();
 
-            if ($applied) {
-                return $this->response(200, $applied);
+            if ($hired) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionUserProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (isset($params['application_id']) && !empty($params['application_id'])) {
+                $application_id = $params['application_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $applied_user = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->where(['a.application_enc_id' => $application_id, 'a.created_by' => $user->user_enc_id])
+                ->select(['a.applied_application_enc_id', 'a.status', 'i.icon', 'h.name org_name', 'h.slug org_slug', 'g.name title', 'b.slug', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc h'], false);
+                    $b->joinWith(['title f' => function ($b) {
+                        $b->joinWith(['parentEnc i'], false);
+                        $b->joinWith(['categoryEnc g'], false);
+                    }], false);
+
+                }], false)
+                ->joinWith(['appliedApplicationProcesses c' => function ($b) {
+                    $b->joinWith(['fieldEnc d'], false);
+                    $b->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                }])
+                ->groupBy(['a.applied_application_enc_id'])
+                ->asArray()
+                ->one();
+
+            if ($applied_user) {
+                return $this->response(200, ['status' => 200, 'data' => $applied_user]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

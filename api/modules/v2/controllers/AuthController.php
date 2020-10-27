@@ -588,7 +588,7 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
-            'is_viewed' => $is_viewed_loan_on_dashboard['is_viewed'],
+            'is_viewed' => $is_viewed_loan_on_dashboard['is_viewed'] == 1 ? True : False,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['assigned_college_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
