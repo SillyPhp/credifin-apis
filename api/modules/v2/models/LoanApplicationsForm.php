@@ -197,15 +197,15 @@ class LoanApplicationsForm extends LoanApplications
 
 
             $args = [];
-            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
-            //$args['amount'] = $total_amount; //for inr float to paisa format for razor pay payments
+            //$args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['amount'] = $total_amount; //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
-            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-            //$args['email'] = $this->email;
-            //$args['contact'] = $this->phone;
+            //$args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+            $args['email'] = $this->email;
+            $args['contact'] = $this->phone;
 
-            //$response = $this->GetToken($args);
-            $response = PaymentsModule::_authPayToken($args);
+            $response = $this->GetToken($args);
+            //$response = PaymentsModule::_authPayToken($args);
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();

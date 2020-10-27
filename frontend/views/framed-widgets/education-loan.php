@@ -2,25 +2,25 @@
 $this->title = $title . ' | Empower Youth';
 use yii\helpers\Url;
 
-//if (Yii::$app->params->paymentGateways->mec->icici) {
-//    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-//    if ($configuration->mode === "production") {
-//        $access_key = $configuration->credentials->production->access_key;
-//        $secret_key = $configuration->credentials->production->secret_key;
-//        $url = $configuration->credentials->production->url;
-//    } else {
-//        $access_key = $configuration->credentials->sandbox->access_key;
-//        $secret_key = $configuration->credentials->sandbox->secret_key;
-//        $url = $configuration->credentials->sandbox->url;
-//    }
-//}
+if (Yii::$app->params->paymentGateways->mec->icici) {
+    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+    if ($configuration->mode === "production") {
+        $access_key = $configuration->credentials->production->access_key;
+        $secret_key = $configuration->credentials->production->secret_key;
+        $url = $configuration->credentials->production->url;
+    } else {
+        $access_key = $configuration->credentials->sandbox->access_key;
+        $secret_key = $configuration->credentials->sandbox->secret_key;
+        $url = $configuration->credentials->sandbox->url;
+    }
+}
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var college_id = "' . $wid . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
-//Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+//Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
-<!--    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>-->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+<!--    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>-->
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -1152,8 +1152,8 @@ function ajaxSubmit(id)
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-                        //processPayment(ptoken,loan_id,education_loan_id);
-                        _razoPay(ptoken,loan_id,education_loan_id);
+                        processPayment(ptoken,loan_id,education_loan_id);
+                        //_razoPay(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
                             title:"Error",
