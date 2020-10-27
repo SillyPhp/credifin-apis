@@ -74,13 +74,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                 ?>
                                 <a href="#"
                                    class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                            class="far fa-heart hvr-icon"></i>Shortlisted</a>
+                                            class="far fa-heart hvr-icon"></i>Saved</a>
                                 <?php
                             } else {
                                 ?>
                                 <a href="#"
                                    class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                            class="far fa-heart hvr-icon"></i>Shortlist</a>
+                                            class="far fa-heart hvr-icon"></i>Save</a>
                                 <?php
                             }
                         }
