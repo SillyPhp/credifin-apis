@@ -124,7 +124,6 @@ class EducationLoanController extends ApiBaseController
                     return $this->response(401, ['status' => 422, 'message' => 'Course Inforation Not Found']);
                 }
                 if ($model->validate()) {
-                    return $data = $model->add( 1,$userId,$college_id, 'CollegeWebsite');
                     if ($data = $model->add( 1,$userId,$college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
