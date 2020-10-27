@@ -803,15 +803,19 @@ class ApplicationForm extends Model
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','a.icon_png'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
             ->andWhere(['b.status' => 'Approved'])
+            ->andWhere([
+                'or',
+                ['!=', 'a.icon', NULL],
+                ['!=', 'a.icon', ''],
+            ])
             ->asArray()
             ->all();
-        $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
-        return $primary_cat;
+        return $primaryfields;
     }
     public function getApplicationTypes()
     {
