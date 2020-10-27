@@ -5,6 +5,7 @@ namespace api\modules\v2\models;
 
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\extended\PaymentsModule;
 use common\models\LoanApplications;
 use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCoApplicants;
@@ -38,7 +39,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken=1,$userId, $college_id, $source = 'Mec',$is_claimed=1,$course_name,$pref=[])
+    public function add($addmission_taken=1,$userId, $college_id, $source = 'Mec',$is_claimed=1,$course_name=null,$pref=[])
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)){
@@ -78,7 +79,7 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_claim->created_by = (($userId)?$userId:null);
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
-                    return false;
+                   return false;
                 } else {
                     $this->_flag = true;
                 }
@@ -196,12 +197,15 @@ class LoanApplicationsForm extends LoanApplications
 
 
             $args = [];
-            $args['amount'] = $total_amount;
+            //$args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['amount'] = $total_amount; //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
+            //$args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
             $args['email'] = $this->email;
             $args['contact'] = $this->phone;
 
             $response = $this->GetToken($args);
+            //$response = PaymentsModule::_authPayToken($args);
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();
@@ -212,7 +216,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->payment_token = $token;
                 $loan_payment->payment_amount = $amount;
                 $loan_payment->payment_gst = $gst;
-                $loan_payment->created_by = $userId;
+                $loan_payment->created_by = (($userId) ? $userId : null);
                 $loan_payment->created_on = date('Y-m-d H:i:s');
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
@@ -283,5 +287,11 @@ class LoanApplicationsForm extends LoanApplications
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
         return json_decode($result, true);
+    }
+
+    private function floatPaisa($amount)
+    {
+        $c = $amount*100;
+        return (int) $c;
     }
 }

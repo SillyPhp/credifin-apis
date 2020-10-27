@@ -42,11 +42,13 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
+//Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 ?>
-    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+        <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+<!--    <script src="https://checkout.razorpay.com/v1/checkout.js"></script-->
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -1294,7 +1296,8 @@ function ajaxSubmit()
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-                        processPayment(ptoken,loan_id,education_loan_id);
+                           processPayment(ptoken,loan_id,education_loan_id);
+                       // _razoPay(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
                             title:"Error",
@@ -1316,9 +1319,56 @@ function ajaxSubmit()
                             text: "Some Internal Server Error, Please Try After Some Time",
                             });
                     }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
             }
         });
     }
+    
+function _razoPay(ptoken,loan_id,education_loan_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+                swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+    },
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
+    }
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(education_loan_id,loan_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}        
 function processPayment(ptoken,loan_id,education_loan_id)
 {
     Layer.checkout({ 
@@ -1363,7 +1413,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
 );
 } 
 
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
             url : '/api/v3/education-loan/update-widget-loan-application',
@@ -1373,6 +1423,7 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
               loan_app_id:loan_app_enc_id,
               payment_id:payment_id, 
               status:status, 
+              signature:signature,
             },
             success:function(e)
             {

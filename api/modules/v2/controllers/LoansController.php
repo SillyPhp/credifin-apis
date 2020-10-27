@@ -96,9 +96,16 @@ class LoansController extends ApiBaseController
     public function actionSaveApplicants()
     {
         if ($user = $this->isAuthorized()) {
+            $param = Yii::$app->request->post();
             $college_id = $this->getStudentCollegeId();
             $model = new LoanApplicationsForm();
             if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->college_course_enc_id == '' && $model->college_course_enc_id == null) {
+                    if (isset($param['course_name']) && !empty($param['course_name'])) {
+                        $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                        $model->college_course_enc_id = $id;
+                    }
+                }
                 if ($model->validate()) {
                     if ($data = $model->add($user->user_enc_id, $college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
@@ -110,6 +117,65 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    private function addCourse($course_name, $user_id)
+    {
+        $college_id = $this->getStudentCollegeId();
+        $pool = CollegeCoursesPool::find()
+            ->select(['course_enc_id'])
+            ->where(['course_name' => $course_name])
+            ->asArray()->one();
+
+        if (!empty($pool)) {
+            $assignClaim = AssignedCollegeCourses::find()
+                ->select(['assigned_college_enc_id'])
+                ->where(['organization_enc_id' => $college_id, 'course_enc_id' => $pool['course_enc_id']])
+                ->asArray()
+                ->one();
+            if (!empty($assignClaim)) {
+                return $assignClaim['assigned_college_enc_id'];
+            } else {
+                return $this->saveClaimCourse($college_id, $pool['course_enc_id'], $user_id);
+            }
+        } else {
+            $cousrse_enc_id = $this->saveCourseInPool($course_name, $user_id);
+            return $this->saveClaimCourse($college_id, $cousrse_enc_id, $user_id);
+        }
+    }
+
+    private function saveClaimCourse($colleg_id, $course_id, $user_id)
+    {
+        $model = new AssignedCollegeCourses();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->assigned_college_enc_id = $utilitiesModel->encrypt();
+        $model->course_enc_id = $course_id;
+        $model->organization_enc_id = $colleg_id;
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user_id;
+        if ($model->save()) {
+            return $model->assigned_college_enc_id;
+        } else {
+            return false;
+        }
+    }
+
+    private function saveCourseInPool($course_name, $user_id)
+    {
+        $model = new CollegeCoursesPool();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->course_enc_id = $utilitiesModel->encrypt();
+        $model->course_name = $course_name;
+        $model->status = 'Pending';
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user_id;
+        if ($model->save()) {
+            return $model->course_enc_id;
+        } else {
+            return false;
         }
     }
 

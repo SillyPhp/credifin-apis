@@ -116,6 +116,7 @@ class EducationLoanController extends ApiBaseController
             $orgDate = $params['applicant_dob'];
             $model = new LoanApplicationsForm();
             $modelOrg = new OrganizationList();
+            $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 $model->college_course_enc_id = $modelOrg->getAssigneWidgetCourse($model->college_course_enc_id, $college_id);
@@ -123,7 +124,7 @@ class EducationLoanController extends ApiBaseController
                     return $this->response(401, ['status' => 422, 'message' => 'Course Inforation Not Found']);
                 }
                 if ($model->validate()) {
-                    if ($data = $model->add(null, $college_id, 'CollegeWebsite')) {
+                    if ($data = $model->add( 1,$userId,$college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -169,6 +170,7 @@ class EducationLoanController extends ApiBaseController
         if ($loan_payments) {
             $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
             $loan_payments->payment_status = $params['status'];
+            $loan_payments->payment_signature = $params['signature'];
             $loan_payments->updated_by = null;
             $loan_payments->updated_on = date('Y-m-d H:i:s');
             $loan_payments->update();
