@@ -698,4 +698,36 @@ class JobsController extends ApiBaseController
         }
     }
 
+    public function actionCancelJob()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (isset($params['applied_application_id']) && !empty($params['applied_application_id'])) {
+                $applied_app_id = $params['applied_application_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $application = AppliedApplications::find()
+                ->where(['applied_application_enc_id' => $applied_app_id])
+                ->one();
+
+            if ($application) {
+                $application->status = 'Cancelled';
+                $application->last_updated_on = date('Y-m-d H:i:s');
+                $application->last_updated_by = $user->user_enc_id;
+                if ($application->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Cancelled']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }
