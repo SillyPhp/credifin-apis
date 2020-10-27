@@ -197,7 +197,8 @@ class LoanApplicationsForm extends LoanApplications
 
 
             $args = [];
-            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            //$args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['amount'] = $total_amount; //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
             //$args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
             $args['email'] = $this->email;
