@@ -324,7 +324,7 @@ class SiteController extends Controller
             $seq = $params['sequence'];
             $lead_app_id = $params['lead_app_id'];
             $utilitiesModel = new Utilities();
-            if ($lead_app_id) {
+            if ($lead_app_id != "null") {
                 if ($type == 'leadCollegePreference') {
                     $model = LeadsCollegePreference::findOne(['application_enc_id' => $key, 'sequence' => $seq]);
                     if (!$model) {
