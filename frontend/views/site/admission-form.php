@@ -640,7 +640,6 @@ function destroyMask(string){
             if(data['type'] == 'leadCollegePreference'){
               data['sequence'] = sequence;
             }
-          // console.log(id+" "+fieldName+" "+type+" "+sequence+" "+value);
           $.ajax({
                 url: '/site/about-us',
                 method: 'POST',
