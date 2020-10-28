@@ -219,6 +219,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
+                    return $data = $model->add($params['is_addmission_taken'],$userId, $parser['college_id'], 'Ey', $parser['is_claim'],$course_name,$pref);
                     if ($data = $model->add($params['is_addmission_taken'],$userId, $parser['college_id'], 'Ey', $parser['is_claim'],$course_name,$pref)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
