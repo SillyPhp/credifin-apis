@@ -1,14 +1,19 @@
 <?php
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
+if (!isset($get['company_logo'])||empty($get['company_logo']))
+{
+    $org = \common\models\UnclaimedOrganizations::find()
+        ->select(['logo','logo_location'])
+        ->where(['organization_enc_id'=>$app['unclaimed_organization_enc_id']])
+        ->asArray()->one();
+    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}
 if (is_array($get['location'])) {
     $p = '';
     foreach ($get['location'] as $loc) {
@@ -22,10 +27,12 @@ $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
             'canvas'=>(($get['company_logo'])?false:true),
+            'bg_icon'=>false,
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
-            'app_id'=>$app['application_enc_id']
+            'app_id'=>$app['application_enc_id'],
+            'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
     ];
 $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
@@ -34,7 +41,7 @@ if (empty($app['image'])||$app['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Url::to('/files/'.$app['image_location'].'/'.$app['image'],'https');
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
@@ -204,7 +211,7 @@ if (!Yii::$app->user->isGuest) {
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, true); ?>
+                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, 'https'); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">

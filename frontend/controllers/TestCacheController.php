@@ -1,15 +1,12 @@
 <?php
 namespace frontend\controllers;
-use common\models\UserOtherDetails;
-use frontend\models\applications\PreferencesCards;
-use frontend\models\script\Box;
-use frontend\models\script\Color;
+use common\models\extended\PaymentsModule;
+use common\models\Organizations;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\web\Controller;
-use yii\helpers\Url;
-use yii\web\Response;
-use JonnyW\PhantomJs\Client;
-
+use common\models\spaces\Spaces;
+use Razorpay\Api\Api;
 class TestCacheController extends Controller
 {
 

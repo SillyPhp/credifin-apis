@@ -26,7 +26,7 @@ if (!empty($total_questionnaire)) {
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <a href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
+                            <a href="<?= Url::to('/account/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view','https'); ?>" target="_blank">
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>

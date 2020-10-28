@@ -96,9 +96,16 @@ class LoansController extends ApiBaseController
     public function actionSaveApplicants()
     {
         if ($user = $this->isAuthorized()) {
+            $param = Yii::$app->request->post();
             $college_id = $this->getStudentCollegeId();
             $model = new LoanApplicationsForm();
             if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->college_course_enc_id == '' && $model->college_course_enc_id == null) {
+                    if (isset($param['course_name']) && !empty($param['course_name'])) {
+                        $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                        $model->college_course_enc_id = $id;
+                    }
+                }
                 if ($model->validate()) {
                     if ($data = $model->add($user->user_enc_id, $college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
@@ -110,6 +117,65 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    private function addCourse($course_name, $user_id)
+    {
+        $college_id = $this->getStudentCollegeId();
+        $pool = CollegeCoursesPool::find()
+            ->select(['course_enc_id'])
+            ->where(['course_name' => $course_name])
+            ->asArray()->one();
+
+        if (!empty($pool)) {
+            $assignClaim = AssignedCollegeCourses::find()
+                ->select(['assigned_college_enc_id'])
+                ->where(['organization_enc_id' => $college_id, 'course_enc_id' => $pool['course_enc_id']])
+                ->asArray()
+                ->one();
+            if (!empty($assignClaim)) {
+                return $assignClaim['assigned_college_enc_id'];
+            } else {
+                return $this->saveClaimCourse($college_id, $pool['course_enc_id'], $user_id);
+            }
+        } else {
+            $cousrse_enc_id = $this->saveCourseInPool($course_name, $user_id);
+            return $this->saveClaimCourse($college_id, $cousrse_enc_id, $user_id);
+        }
+    }
+
+    private function saveClaimCourse($colleg_id, $course_id, $user_id)
+    {
+        $model = new AssignedCollegeCourses();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->assigned_college_enc_id = $utilitiesModel->encrypt();
+        $model->course_enc_id = $course_id;
+        $model->organization_enc_id = $colleg_id;
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user_id;
+        if ($model->save()) {
+            return $model->assigned_college_enc_id;
+        } else {
+            return false;
+        }
+    }
+
+    private function saveCourseInPool($course_name, $user_id)
+    {
+        $model = new CollegeCoursesPool();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->course_enc_id = $utilitiesModel->encrypt();
+        $model->course_name = $course_name;
+        $model->status = 'Pending';
+        $model->created_on = date('Y-m-d H:i:s');
+        $model->created_by = $user_id;
+        if ($model->save()) {
+            return $model->course_enc_id;
+        } else {
+            return false;
         }
     }
 
@@ -319,7 +385,7 @@ class LoansController extends ApiBaseController
 
 
             $application = LoanApplications::find()
-                ->where(['loan_app_enc_id' => $id, 'status' => 0])
+                ->where(['loan_app_enc_id' => $id])
                 ->one();
 
             if ($application) {
@@ -339,7 +405,7 @@ class LoansController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'en error occurred']);
                 }
             } else {
-                return $this->response(404, ['status' => 404, 'message' => 'nor found']);
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
         } else {
@@ -593,6 +659,8 @@ class LoansController extends ApiBaseController
                     'a.applicant_current_city',
                     'a.degree',
                     'a.amount_received',
+                    'a.amount_due',
+                    'a.scholarship',
                     'a.years',
                     'a.semesters',
                     'a.phone',
@@ -605,7 +673,7 @@ class LoansController extends ApiBaseController
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->joinWith(['loanSanctionReports h' => function ($h) {
-                    $h->select(['h.loan_app_enc_id', 'h.loan_amount']);
+                    $h->select(['h.report_enc_id', 'h.loan_app_enc_id', 'h.loan_amount']);
                 }])
                 ->joinWith(['createdBy b' => function ($b) {
                     $b->joinWith(['userOtherInfo b1']);
@@ -635,11 +703,12 @@ class LoansController extends ApiBaseController
                     $g->joinWith(['providerEnc g1'], false);
                     $g->onCondition(['g.is_deleted' => 0]);
                 }])
-                ->where(['cc.organization_enc_id' => $college_id]);
+                ->where(['cc.organization_enc_id' => $college_id])
+                ->andWhere(['in', 'f.payment_status', ['captured', 'created']]);
             if (isset($params['name']) && !empty($params['name'])) {
                 $loan_requests->andWhere(['like', 'a.applicant_name', $params['name']]);
             }
-            if (isset($params['college_loan_status']) && !empty($params['college_loan_status'])) {
+            if (isset($params['college_loan_status']) && $params['college_loan_status'] != '') {
                 $loan_requests->andWhere(['a.status' => $params['college_loan_status']]);
             }
             if (isset($params['payment_status']) && !empty($params['payment_status'])) {

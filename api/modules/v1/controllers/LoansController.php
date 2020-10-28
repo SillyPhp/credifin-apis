@@ -70,7 +70,7 @@ class LoansController extends ApiBaseController
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) END
                 ) organization_logo'
             ])
             ->joinWith(['businessActivityEnc b'], false)
@@ -149,17 +149,33 @@ class LoansController extends ApiBaseController
 
         if ($params) {
             $organizationObject = new OrganizationList();
-            $parser = $organizationObject->conditionParser($params);
-            if (!$parser['college_id']) {
-                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+            $model = new LoanApplicationsForm();
+            if ($params['is_addmission_taken'] == 1) {
+                $parser = $organizationObject->conditionParser($params);
+                if (!$parser['college_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+                }
+                $parser2 = $organizationObject->conditionCourseParser($parser, $params);
+                if (!$parser2['assigned_course_id']) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+                }
+                $model->college_course_enc_id = $parser2['assigned_course_id'];
+            } else {
+                $course_name = $course_name = trim($params['college_course_info'][0]['course_text']);
+                $model->college_course_enc_id = null;
+                $parser['college_id'] = null;
+                $parser['is_claim'] = 3;
+                $pref = $params['clg_pref'];
             }
-            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
-            if (!$parser2['assigned_course_id']) {
-                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
-            }
+//            if (!$parser['college_id']) {
+//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+//            }
+//            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
+//            if (!$parser2['assigned_course_id']) {
+//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+//            }
             $orgDate = $params['applicant_dob'];
             $userId = $this->userId();
-            $model = new LoanApplicationsForm();
             if (!$params['is_india']) {
                 $model->country_enc_id = $params['country_enc_id'];
             }
@@ -171,7 +187,7 @@ class LoansController extends ApiBaseController
                     $model->purpose = explode(',', $params['loan_purpose']);
                 }
                 if ($model->validate()) {
-                    if ($data = $model->add($userId, $parser['college_id'], 'Android', $parser['is_claim'])) {
+                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Android', $parser['is_claim'], $course_name, $pref)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -210,13 +226,14 @@ class LoansController extends ApiBaseController
                 'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
                 'd.education_loan_payment_enc_id'
             ])
-            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
+//            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
             ->joinWith(['loanPurposes b' => function ($b) {
                 $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
                 $b->joinWith(['feeComponentEnc c'], false);
             }])
             ->joinWith(['educationLoanPayments d'], false)
-            ->where(['cc.created_by' => $this->userId()])
+            ->where(['a.created_by' => $this->userId()])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 

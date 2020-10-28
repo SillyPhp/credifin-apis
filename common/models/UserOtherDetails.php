@@ -25,7 +25,7 @@ use Yii;
  * @property int $internship_duration 0 as 6 weeks, 1 as 3 months, 2 as 6 months, 3 as 1 year
  * @property string $job_start_month
  * @property string $job_year
- * @property int $college_actions 0 as approved, 1 as blocked, 2 as rejected
+ * @property int $college_actions NULL as pending, 0 as approved, 1 as blocked, 2 as rejected
  * @property int $is_deleted
  * @property string $updated_on
  *

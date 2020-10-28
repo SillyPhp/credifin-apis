@@ -1,5 +1,35 @@
 <?php
+
+use common\models\AssignedCategories;
 use yii\helpers\Url;
+use \common\models\Categories;
+$path = Categories::find()
+    ->alias('a')
+    ->select(['a.category_enc_id','a.icon_png'])
+    ->where([
+        'or',
+        ['!=','a.icon_png',null],
+        ['!=','a.icon_png',''],
+
+    ])
+    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+    ->where([
+            'or',
+            ['!=','a.icon_png',null],
+            ['!=','a.icon_png',''],
+
+        ])
+        ->andWhere(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+        ->andWhere(['b.status' => 'Approved']);
+
+if ($content['profile']){
+   $bg_icon = $path->andWhere(['a.category_enc_id'=>$content['profile']])->asArray()->one();
+   $bg_icon = $bg_icon['icon_png'];
+}else
+{
+    $bg_icon = $path->orderBy(new yii\db\Expression('rand()'))->asArray()->one();
+    $bg_icon = $bg_icon['icon_png'];
+}
 ?>
 <section class="bg-image">
  <div class="c_image">
@@ -70,7 +100,7 @@ use yii\helpers\Url;
        utilities.initials();
 </script>
 <?php
-$bg = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/purchasing.png');
+$bg = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/profiles/'.$bg_icon);
 $this->registerCss("
 .bg-image{
     background-image: url(" . $bg . ");

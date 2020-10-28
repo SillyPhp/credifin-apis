@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Countries;
 use common\models\Organizations;
 use Yii;
 use yii\filters\VerbFilter;
@@ -39,13 +40,12 @@ class FramedWidgetsController extends Controller
        }
    }
 
-   public function actionApplicationSharingImage()
+   public function actionApplyLoan()
    {
-           $this->layout = 'null-layout';
-           $content = Yii::$app->request->get();
-           if (empty($content)):
-               return 'Params Not Found';
-           endif;
-           return $this->render('sharing-graphic',['content'=>$content]);
+       $india = Countries::findOne(['name' => 'India'])->country_enc_id;
+       return $this->render('/education-loans/apply-general-loan-form', [
+           'india' => $india,
+       ]);
    }
+
 }

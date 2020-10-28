@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+
 /**
  * This is the model class for table "{{%leads_applications}}".
  *
@@ -18,11 +19,14 @@ namespace common\models;
  * @property string $course_name
  * @property double $course_fee_annual
  * @property int $application_fee_recieved 0 for not 1 for yes
- * @property int $filled_by 0 as self(student) 1 as executive
+ * @property int $filled_by 0 as self(student) 1 as executive 2 raw uploads by admins
+ * @property string $status
+ * @property string $comments
  * @property string $created_on
  * @property string $created_by may be null or not , filler id who has filled the form
  * @property string $last_updated_by
  * @property string $last_updated_on
+ * @property int $is_deleted 0 as false, 1 as true
  *
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
@@ -46,8 +50,9 @@ class LeadsApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number'], 'required'],
-            [['has_taken_addmission', 'application_fee_recieved', 'filled_by'], 'integer'],
+            [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_deleted'], 'integer'],
             [['loan_amount', 'course_fee_annual'], 'number'],
+            [['status', 'comments'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['student_mobile_number'], 'string', 'max' => 15],
@@ -58,6 +63,10 @@ class LeadsApplications extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery

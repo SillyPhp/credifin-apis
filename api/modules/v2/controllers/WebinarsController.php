@@ -69,7 +69,7 @@ class WebinarsController extends ApiBaseController
                 'CONCAT(f.first_name, " ", f.last_name) fullname',
                 'f.email', 'f.phone',
                 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) END image',
-                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
                 'f.description',
                 'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
                 'REPLACE(c.name, "&amp;", "&") as org_name',
@@ -161,7 +161,7 @@ class WebinarsController extends ApiBaseController
                 'b.designation',
                 'CONCAT(f.first_name, " ", f.last_name) fullname',
                 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) END image',
-                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
                 'f.description',
                 'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
                 'REPLACE(c.name, "&amp;", "&") as org_name',
@@ -279,7 +279,7 @@ class WebinarsController extends ApiBaseController
                         'd.instagram',
                         'REPLACE(f.name, "&amp;", "&") as org_name',
                         'd.description',
-                        'CASE WHEN f.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", f.logo_location, "/", f.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f.name, "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END logo',
+                        'CASE WHEN f.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", f.logo_location, "/", f.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f.name, "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END logo',
                     ]);
                     $b->joinWith(['speakerEnc c' => function ($c) {
                         $c->joinWith(['userEnc d']);
@@ -510,7 +510,7 @@ class WebinarsController extends ApiBaseController
         }
     }
 
-    public function actionAllWebinars()
+    public function actionCollegeAllWebinars()
     {
         if ($user = $this->isAuthorized()) {
             $college_id = Users::find()
@@ -521,7 +521,16 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
             $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $data['college_id'] = $college_id['organization_enc_id'];
+            $data['type'] = 'past';
+            $past = $webinar->allWebinars($data);
+            $data['type'] = 'upcoming';
+            $upcoming = $webinar->allWebinars($data);
+
+            $all_data['past_webinars'] = $past;
+            $all_data['upcoming_webinars'] = $upcoming;
+            return $this->response(200, ['status' => 200, 'data' => $all_data]);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }

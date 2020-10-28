@@ -6,6 +6,7 @@ use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
@@ -96,7 +97,7 @@ class SearchController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($college_id) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -146,6 +147,49 @@ class SearchController extends ApiBaseController
 
             $i = 0;
             foreach ($result as $c) {
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Trending":
+                                $labels['Trending'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+                $result[$i]['labels'] = $labels;
+
                 $reviews = OrganizationReviews::find()
                     ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
                     ->where(['organization_enc_id' => $c['organization_enc_id']])
@@ -163,7 +207,7 @@ class SearchController extends ApiBaseController
                 ->distinct()
                 ->innerJoinWith(['organizationEnc b' => function ($x) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                 }])
                 ->where(['b.has_placement_rights' => 1, 'b.is_erexx_approved' => 1, 'aa.is_deleted' => 0, 'b.is_deleted' => 0, 'b.status' => 'Active']);
@@ -185,6 +229,49 @@ class SearchController extends ApiBaseController
 
             $i = 0;
             foreach ($result as $c) {
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $c['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Treanding":
+                                $labels['Treanding'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+                $result[$i]['labels'] = $labels;
+
                 $jobs_count = $this->getJobsCount('Jobs', $c['organization_enc_id']);
                 $internships_count = $this->getJobsCount('Internships', $c['organization_enc_id']);
                 $result[$i]['organizationEnc']['jobs_count'] = $jobs_count;
@@ -253,7 +340,7 @@ class SearchController extends ApiBaseController
                 ->select([
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'a.employer_application_enc_id',
@@ -270,6 +357,11 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                        $x->onCondition(['ii.is_deleted' => 0]);
+                        $x->joinWith(['jobDescriptionEnc jj'], false);
+                        $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                    }]);
                     $b->joinWith(['organizationEnc bb' => function ($bb) {
                         $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
                     }], false);
@@ -352,7 +444,7 @@ class SearchController extends ApiBaseController
                 ->select([
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'a.employer_application_enc_id',
@@ -369,6 +461,11 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                        $x->onCondition(['ii.is_deleted' => 0]);
+                        $x->joinWith(['jobDescriptionEnc jj'], false);
+                        $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                    }]);
                     $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
@@ -504,6 +601,7 @@ class SearchController extends ApiBaseController
             $data['last_date'] = $j['last_date'];
             $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
+            $data['jobDescription'] = $j['employerApplicationEnc']['applicationJobDescriptions'];
             $data['salary'] = $j['salary'];
             if ($j['status'] != 'Active') {
                 $data['is_closed'] = true;
