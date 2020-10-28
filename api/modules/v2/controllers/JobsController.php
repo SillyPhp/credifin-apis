@@ -730,4 +730,54 @@ class JobsController extends ApiBaseController
         }
     }
 
+    public function actionProcessBar()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            } else {
+                $limit = 5;
+            }
+
+            $process = EmployerApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.applied_application_enc_id', 'b.status',
+                    'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total',
+                    'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per',
+                    'i.name type', 'g.name as org_name',
+                    'd.name as title', 'cc.assigned_category_enc_id',
+                    'CASE WHEN e.icon IS NULL OR e.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to('@commonAssets/categories/', 'https') . '", e.icon) END icon'
+                ])
+                ->joinWith(['appliedApplications b' => function ($b) {
+                    $b->joinWith(['appliedApplicationProcesses h']);
+                }], false)
+                ->joinWith(['applicationTypeEnc i'], false)
+                ->joinWith(['organizationEnc g'], false)
+                ->joinWith(['title cc' => function ($c) {
+                    $c->joinWith(['categoryEnc d']);
+                    $c->joinWith(['parentEnc e']);
+                }], false)
+                ->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
+                    $c->onCondition(['c.is_deleted' => 0, 'c.status' => 'Active', 'c.college_enc_id' => $this->getClgId()]);
+                }], false)
+                ->where(['b.created_by' => $user->user_enc_id])
+                ->limit($limit)
+                ->groupBy(['h.applied_application_enc_id'])
+                ->orderBy(['b.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($process) {
+                return $this->response(200, ['status' => 200, 'data' => $process]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }
