@@ -18,7 +18,9 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
-       <div class='m-cover hidden'></div>
+        <h1 class="tweet-job-heading">Create a Tweet <?= (($type=="Jobs")?"Job":"Internship") ?> !!</h1>
+        <h3 class="tweet-job-sub-heading">Tweet a <?= (($type=="Jobs")?"Job":"Internship") ?> vacancy & Find the best candidates</h3>
+        <div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
                         <p>Your <?= (($type=="Jobs")?"Job":"Internship") ?> Tweet Has Been has successfully Posted.</p>
@@ -893,6 +895,17 @@ float:right;
 }
 .reverse {
   animation-direction: reverse;
+}
+.tweet-job-heading{
+    text-align:center;
+    font-size: 25px;
+    margin-top: 0;
+}
+.tweet-job-sub-heading{
+    text-align:center;
+    font-size:15px;
+    color:#666;
+    margin:0px;
 }
 @media screen and (max-width: 600px) {
     .m-content img{max-width: 290px;}
