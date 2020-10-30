@@ -35,7 +35,8 @@ class AuthController extends ApiBaseController
                 'forgot-password' => ['POST'],
                 'social-authentication' => ['POST'],
                 'social-login' => ['POST'],
-                'check-source-id' => ['POST']
+                'check-source-id' => ['POST'],
+                'user-data' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -421,6 +422,34 @@ class AuthController extends ApiBaseController
                     return $this->response(500, ['message' => 'An error has occurred. Please try again.']);
                 }
             }
+        }
+    }
+
+    public function actionUserData()
+    {
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        if (!$token_holder_id) {
+            return $this->response(401, 'unauthorized');
+        }
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        $user = Users::find()
+            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email'])
+            ->where(['user_enc_id' => $user->user_enc_id])
+            ->asArray()
+            ->one();
+
+        if ($user) {
+            return $this->response(200, $user);
+        } else {
+            return $this->response(404, 'not found');
         }
     }
 

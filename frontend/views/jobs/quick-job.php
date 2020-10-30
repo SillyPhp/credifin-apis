@@ -20,6 +20,8 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
+        <h1 class="quick-job-heading">Post a Quick Job !!</h1>
+        <h3 class="quick-job-sub-heading">Quick Jobs, Free Jobs Posting With your Valid Company and Job Details</h3>
         <?php
         if (Yii::$app->session->hasFlash('success')):
             echo "<div class='m-cover hidden'></div>
@@ -867,6 +869,17 @@ float:right;
 }
 .reverse {
   animation-direction: reverse;
+}
+.quick-job-heading{
+    text-align:center;
+    font-size: 25px;
+    margin-top: 0;
+}
+.quick-job-sub-heading{
+    text-align:center;
+    font-size:15px;
+    color:#666;
+    margin:0px;
 }
 @media screen and (max-width: 600px) {
     .m-content img{max-width: 290px;}
