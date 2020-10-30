@@ -421,11 +421,7 @@ $(document).on('click', '.share-b', function(){
     $(this).next().slideToggle(); 
     let parentElem = $(this).parentsUntil('.app-box').parent();
     $(parentElem).find('.overlay').toggleClass('hidden');
-    // $(this).find('.overlay').toggleClass('hidden');
 });
-// $(document).on('mouseleave', '.share-b', function(){
-//     $(this).next().css('display', 'none');
-// });
 $(document).on('mouseleave', '.app-box', function(){
     $(this).find('.sharing-links').css('display', 'none');
     $(this).find('.overlay').addClass('hidden');

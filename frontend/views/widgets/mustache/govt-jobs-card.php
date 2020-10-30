@@ -1,9 +1,14 @@
+<?php
+
+use yii\helpers\Url;
+?>
 <script id="govt-jobs-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="application-card-main shadow">
             <div class="app-box">
-                <div>
+                <div class="hidden overlay" onclick="off()"></div>
+                <div class="row">
                     <div class="application-card-img">
                         <a href="/govt-jobs/{{company_slug}}" target="_blank" title="{{Organizations}}">
                             {{#logo}}
@@ -51,6 +56,49 @@
                 </div>
                 <div class="application-card-wrapper">
                     <a href="/govt-jobs/detail/{{slug}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
+                    <div class="sharing-links">
+                        <div class="inner">
+                            <div class="fb">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Facebook">
+                                    <span><i class="fab fa-facebook-f"></i></span></a>
+                            </div>
+                            <div class="wts-app">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Whatsapp">
+                                    <span><i class="fab fa-whatsapp"></i></span>
+                                </a>
+                            </div>
+                            <div class="tw">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+
+                                   class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Twitter">
+                                    <span><i class="fab fa-twitter"></i></span></a>
+                            </div>
+                            <div class="linkd">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on LinkedIn">
+                                    <span><i class="fab fa-linkedin"></i></span></a>
+                            </div>
+                            <div class="male">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share via E-Mail">
+                                    <span><i class="far fa-envelope"></i></span></a>
+                            </div>
+                            <div class="tele">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Telegram">
+                                    <span><i class="fab fa-telegram-plane"></i></span></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,8 +189,79 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
   }   
   })
 }
+$(document).on('click', '.share-b', function(){
+    $(this).next().slideToggle(); 
+    let parentElem = $(this).parentsUntil('.app-box').parent();
+    $(parentElem).find('.overlay').toggleClass('hidden');
+});
+$(document).on('mouseleave', '.app-box', function(){
+    $(this).find('.sharing-links').css('display', 'none');
+    $(this).find('.overlay').addClass('hidden');
+});
 JS;
 $this->registerCss("
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+.share-b {
+    background-color: #00a0e3;
+}
+.sharing-links {
+	position: absolute;
+	background-color: #eee;
+	left: 30%;
+	bottom: 65px;
+	border-radius: 6px;
+	text-align: center;
+	padding: 10px;
+	display: none;
+}
+.inner {
+    display: flex;
+}
+.fb {
+    background: #236dce;
+}
+.tw {
+    background-color: #1c99e9;
+}
+.linkd {
+    background-color: #0e76a8;
+}
+.male {
+    background-color: #BB001B;
+}
+.tele {
+    background-color: #0088cc;
+}
+.wts-app{
+    background-color:#4FCE5D;
+}
+.wts-app, .fb, .tw, .linkd, .male, .tele {
+	width: 30px;
+	text-align: center;
+	border-radius: 50px;
+	height: 30px;
+	font-size: 16px;
+	padding-top: 2px;
+	margin: 0 5px;
+}
+.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
+	color: #fff;
+}
+.share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
+.application-card-img{
+    margin-left:18px;
+}
 /*cards-box css*/
 .salary a
 {
