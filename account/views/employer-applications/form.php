@@ -1763,6 +1763,7 @@ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'
         work_from_home('$model->type');
         week_selecter();
     }
+load_job_titles('$model->primaryfield');
 function load_job_titles(prime_id)
 {
 var categories = new Bloodhound({
