@@ -22,12 +22,12 @@ use yii\helpers\Url;
                                     if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                         ?>
                                         <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Shortlisted</a></span>
+                                                        class="far fa-heart"></i> Saved</a></span>
                                         <?php
                                     } else {
                                         ?>
                                         <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Shortlist</a></span>
+                                                        class="far fa-heart"></i> Save</a></span>
                                         <?php
                                     }
                                 }
@@ -55,10 +55,10 @@ $(document).on('click','.shortlist_job',function(e){
         },
         success:function(data){
             if(data.message =='Shortlisted'){
-                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlisted');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Saved');
                 $('.hover-change').addClass('col_pink');
             } else if(data.message =='unshort'){
-                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlist');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Save');
                 $('.hover-change').removeClass('col_pink');
             }
         }

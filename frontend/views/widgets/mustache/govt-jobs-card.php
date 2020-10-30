@@ -3,7 +3,7 @@
     <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="application-card-main shadow">
             <div class="app-box">
-                <div class="row">
+                <div>
                     <div class="application-card-img">
                         <a href="/govt-jobs/{{company_slug}}" target="_blank" title="{{Organizations}}">
                             {{#logo}}
@@ -156,6 +156,7 @@ padding-left:15px;
 .stdy{
     padding-left:15px;
 }
+.application-card-description{margin:0 !important;}
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;

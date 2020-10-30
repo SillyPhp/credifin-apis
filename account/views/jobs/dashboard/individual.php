@@ -32,7 +32,7 @@ use frontend\models\applications\UserOpinion;
                     <div class="number">
                         <span data-counter="counterup" data-value="12,5"><?= $total_shortlist; ?></span>
                     </div>
-                    <div class="desc">Applications Shortlisted </div>
+                    <div class="desc">Applications Saved </div>
                 </div>
             </a>
         </div>
@@ -122,7 +122,7 @@ use frontend\models\applications\UserOpinion;
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
+                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">applications Saved</li>
                         |
                         <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |

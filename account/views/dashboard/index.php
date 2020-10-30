@@ -56,7 +56,7 @@ endif;
                                     <div class="number">
                                         <span><?= $total_shortlist ?></span>
                                     </div>
-                                    <div class="desc">Applications Shortlisted</div>
+                                    <div class="desc">Applications Saved</div>
                                 </div>
                             </a>
                         </div>
@@ -431,6 +431,9 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.portlet.light.portlet-fit{
+    padding:12px 20px 15px;
+}
 .actv-app{
     background-image:linear-gradient(to top left, #70c6ea, #06729f);
 }
