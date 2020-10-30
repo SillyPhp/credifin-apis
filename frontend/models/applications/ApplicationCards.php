@@ -202,8 +202,11 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.source',
                 new Expression('NULL as sector'),
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
+                'CONCAT("job/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -265,12 +268,19 @@ class ApplicationCards
                 WHEN a.source = 2 THEN v.job_level
                 ELSE NULL
                END) as sector',
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 '(CASE
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                 END) as link',
+                '(CASE
+                WHEN a.source = 3 THEN CONCAT("job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("job/", a.slug)
+                END) as share_link',
                 'CONCAT("/", d.slug,"/reviews") organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -631,8 +641,12 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -672,8 +686,12 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',

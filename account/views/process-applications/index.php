@@ -715,7 +715,7 @@ $this->registerCss('
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 20px;
+	padding: 25px 15px;
 	background: #fdfdfd;
 }
 .j-main {

@@ -62,31 +62,31 @@ if (!empty($total_applications)) {
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on Facebook">
                                 <i class="fa fa-facebook-f"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-email share_btn tt" type="button" data-toggle="tooltip"
                                title="Share via E-mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on Whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on LinkedIn">
