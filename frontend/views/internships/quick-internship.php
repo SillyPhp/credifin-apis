@@ -28,7 +28,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             echo "<div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
-                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "' alt='Request Submitted'/>
                         <p>Your Application has successfully submitted.</p>
                         <div class='m-actions'>
                             <a href='javascript:;' class='close-m-mo'>Post Another Internship</a>
