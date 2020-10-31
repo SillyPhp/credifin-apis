@@ -30,6 +30,7 @@ class LoansController extends ApiBaseController
                 'college-list',
                 'college-courses',
                 'loan-purpose',
+                'save-application',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -165,7 +166,7 @@ class LoansController extends ApiBaseController
                 $model->college_course_enc_id = null;
                 $parser['college_id'] = null;
                 $parser['is_claim'] = 3;
-                $pref = $params['clg_pref'];
+                $pref = explode(',', $params['clg_pref']);
             }
 //            if (!$parser['college_id']) {
 //                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
