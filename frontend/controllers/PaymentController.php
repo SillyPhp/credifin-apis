@@ -8,6 +8,7 @@ use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToUnclaimOrgLoanApplication;
+use Razorpay\Api\Api;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -18,7 +19,7 @@ use yii\web\Response;
 
 class PaymentController extends Controller
 {
- public function actionGateway($id){
+ public function actionPayment($id){
      $chk = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
      if (!$chk)
      {
@@ -75,5 +76,26 @@ class PaymentController extends Controller
          'gst' => $gst,
          'loan_id' => $id,
      ]);
+ }
+
+ public function actionTest()
+ {
+     $date = date_create();
+     $timestamp = date_timestamp_get($date);
+     $api_key = Yii::$app->params->razorPay->prod->apiKey;
+     $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+     $api = new Api($api_key,$api_secret);
+
+     $link = $api->invoice->create(array(
+             'type' => 'link',
+             'amount' => 500,
+             'description' => 'For XYZ purpose',
+             'customer' => array(
+                 'email' => 'gaurav.kumar@example.com'
+             )
+         )
+     );
+
+    return json_encode($link);
  }
 }
