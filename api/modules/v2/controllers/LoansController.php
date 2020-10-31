@@ -107,7 +107,7 @@ class LoansController extends ApiBaseController
                     }
                 }
                 if ($model->validate()) {
-                    if ($data = $model->add($userId = $user->user_enc_id, $college_id = $college_id)) {
+                    if ($data = $model->add(1,$user->user_enc_id,$college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);

@@ -31,7 +31,8 @@ class JobsController extends ApiBaseController
             'except' => [
                 'application-detail',
                 'shortlist-application',
-                'apply'
+                'apply',
+                'process-bar'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -41,6 +42,7 @@ class JobsController extends ApiBaseController
                 'application-detail' => ['POST', 'OPTIONS'],
                 'shortlist-application' => ['POST', 'OPTIONS'],
                 'apply' => ['POST', 'OPTIONS'],
+                'process-bar' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
