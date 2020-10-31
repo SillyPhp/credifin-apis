@@ -10,7 +10,7 @@ use yii\helpers\Url;
                     <div class="main-heading">
                         <div class="pos-center">
                             <h1 class="main-text mt-50 pt-90">Explore All Companies</h1>
-                            <h3 class="main-sub-text mb-20">Top employers are looking for candidates just like you. Explore their company culture and the careers they offer.</h3>
+                            <h3 class="main-sub-text mb-20">Top companies are searching for candidates just like you. Explore the profile of the companies, follow the best ones and give your reviews. </h3>
                             <div class="search-container">
                                 <form action="" id="form_search_cmp">
                                     <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
