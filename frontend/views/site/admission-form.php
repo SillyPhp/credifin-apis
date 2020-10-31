@@ -698,6 +698,21 @@ $(document).on('change', 'input[name = "appliedCollege"]', function() {
 
 $(document).on('change', 'input[name = "interestLoanFor"]', function() {
     var t = $(this);
+    var val = t.val();
+    var placeholderCol = "";
+    switch (val) {
+        case '1' :
+            placeholderCol = 'College Or University Name';
+            break;
+        case '2' :
+            placeholderCol = 'School Name';
+            break;
+        case '3' :
+            placeholderCol = 'Other Institute Name';
+            break;
+            default :
+    }
+    $('#college_name').attr('placeholder', placeholderCol);
     $('[data-type=collegeApplied]').show();
     updateValue(t);
 });
