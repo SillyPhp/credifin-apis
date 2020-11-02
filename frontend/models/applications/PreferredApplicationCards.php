@@ -26,7 +26,8 @@ class PreferredApplicationCards
         $dataProvider = $modelSearch->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['z.is_deleted' => 0, 'a.name' => $type, 'e.assigned_to' => $type]);
         $dataProvider->query->select([
-            'z.created_on', 'z.application_enc_id application_id', 'z.type',
+            'DATE_FORMAT(z.created_on, "%d-%m-%Y") created_on',
+            'z.application_enc_id application_id', 'z.type',
             'n1.html_code',
             'GROUP_CONCAT(DISTINCT(aa1.skill) SEPARATOR ",") skill', 'g.name category',
             'CONCAT("/'.$typo.'/", z.slug) link',
