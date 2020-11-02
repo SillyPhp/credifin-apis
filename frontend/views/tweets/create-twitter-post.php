@@ -24,7 +24,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                 <div class='m-modal hidden'>
                     <div class='m-content'>
                         <p>Your <?= (($type=="Jobs")?"Job":"Internship") ?> Tweet Has Been has successfully Posted.</p>
-                        <img src='/assets/themes/ey/images/pages/jobs/submitted.png'>
+                        <img src='/assets/themes/ey/images/pages/jobs/submitted.png' alt="Twitter Post Submitted">
                         <div class='m-actions'>
                             <?php if ($type=="Jobs"): ?>
                             <a href='javascript:;' class='close-m-mo'>Tweet Another Job</a>
@@ -209,8 +209,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                     <h4 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h4>
                 </div>
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
                 </div>
             </div>
