@@ -92,6 +92,10 @@ if (!empty($total_applications)) {
                                title="Share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
                             </a>
+                            <a href="javascript:;" class="j-clipboard share_btn tt" type="button" data-toggle="tooltip"
+                               title="Copy Job Link" data-link="<?=$link?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
                         </div>
                         <?php
                         $dayDiff = findDifference($applications[$next]['last_date']);
@@ -190,7 +194,16 @@ if (!empty($total_applications)) {
     </div>
 <?php }
 Pjax::end();
-
+?>
+<!--    <script>-->
+<!--        function copyToClipboard() {-->
+<!--            var copyText = document.getElementById("share_manually");-->
+<!--            copyText.select();-->
+<!--            document.execCommand("copy");-->
+<!--            toastr.success("", "Copied");-->
+<!--        }-->
+<!--    </script>-->
+<?php
 $this->registerCss("
 .appl a span {
     background-color: #ff7803;
@@ -317,6 +330,10 @@ $this->registerCss("
 }
 .j-linkedin{
     left: 103px !important;
+}
+.j-clipboard{
+    left: 125px !important;
+    color:#797777;
 }
 .j-facebook {
     left: 10px !important;
@@ -456,7 +473,22 @@ $(document).on('click','.j-closed',function(e){
               });
     }
          });
-}); 
+});
+
+        $(document).on('click', '.j-clipboard',function (event) {
+            event.preventDefault();
+            var link = $(this).attr('data-link');
+            CopyToClipboard(link, true, "Link copied");
+        });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
