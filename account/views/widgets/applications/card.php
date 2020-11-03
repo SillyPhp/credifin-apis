@@ -93,7 +93,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-linkedin"></i>
                             </a>
                             <a href="javascript:;" class="j-clipboard share_btn tt" type="button" data-toggle="tooltip"
-                               title="Copy Job Link" data-link="<?=$link?>">
+                               title="Copy Link" data-link="<?=$link?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
                         </div>

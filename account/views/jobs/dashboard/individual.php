@@ -24,7 +24,7 @@ use frontend\models\applications\UserOpinion;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/shortlisted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/saved') ?>">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -267,7 +267,7 @@ use frontend\models\applications\UserOpinion;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">You haven't Saved any jobs.</div>
                                                 </div>
                                             </div>
                                         <?php
@@ -416,7 +416,7 @@ use frontend\models\applications\UserOpinion;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">You haven't Saved any jobs.</div>
                                                 </div>
                                             </div>
                                         <?php
