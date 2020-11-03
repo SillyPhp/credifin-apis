@@ -31,7 +31,7 @@ class PreferredApplicationCards
             'n1.html_code',
             'GROUP_CONCAT(DISTINCT(aa1.skill) SEPARATOR ",") skill', 'g.name category',
             'CONCAT("/'.$typo.'/", z.slug) link',
-            'CONCAT("/'.$typo.'/", z.slug) share_link',
+            'CONCAT("'.$typo.'/", z.slug) share_link',
             'f.name as title',
             'z.last_date',
             'k.industry',
