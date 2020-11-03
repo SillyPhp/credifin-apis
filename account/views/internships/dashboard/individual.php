@@ -121,7 +121,7 @@ use yii\widgets\Pjax;
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/internships/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/internships/shortlisted" class="tab-link caption-subject font-dark  uppercase">Applications saved</li>
+                        <li data-tab="tab-2" data-url="/account/internships/saved" class="tab-link caption-subject font-dark  uppercase">Applications saved</li>
                         |
                         <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
