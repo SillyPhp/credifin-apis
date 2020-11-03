@@ -189,6 +189,10 @@ class LoansController extends ApiBaseController
                 }
                 if ($model->validate()) {
                     if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Android', $parser['is_claim'], $course_name, $pref)) {
+                        $data["name"] = "Empower Youth";
+                        $data["description"] = "Application Processing Fee";
+                        $data["image"] = Url::to("/assets/common/logos/logo.svg", 'https');
+                        $data['theme_color'] = "#ff7803";
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -228,10 +232,6 @@ class LoansController extends ApiBaseController
                 'd.education_loan_payment_enc_id'
             ])
 //            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
-            ->joinWith(['loanPurposes b' => function ($b) {
-                $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
-                $b->joinWith(['feeComponentEnc c'], false);
-            }])
             ->joinWith(['educationLoanPayments d'], false)
             ->where(['a.created_by' => $this->userId()])
             ->orderBy(['a.created_on' => SORT_DESC])
@@ -239,7 +239,11 @@ class LoansController extends ApiBaseController
             ->all();
 
         if ($loans) {
-            return $this->response(200, ['status' => 200, 'data' => $loans]);
+            $d["name"] = "Empower Youth";
+            $d["description"] = "Application Processing Fee";
+            $d["image"] = Url::to("/assets/common/logos/logo.svg", 'https');
+            $d['theme_color'] = "#ff7803";
+            return $this->response(200, ['status' => 200, 'data' => $loans, 'payment_detail' => $d]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
