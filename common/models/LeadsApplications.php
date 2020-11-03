@@ -22,12 +22,17 @@ namespace common\models;
  * @property int $filled_by 0 as self(student) 1 as executive 2 raw uploads by admins
  * @property string $status
  * @property string $comments
+ * @property string $managed_by
+ * @property string $lead_by
+ * @property int $loan_for 1 for College/University, 2 for School, 3 for other institute
+ * @property int $admission_taken 1 as true, 0 as false
  * @property string $created_on
  * @property string $created_by may be null or not , filler id who has filled the form
  * @property string $last_updated_by
  * @property string $last_updated_on
  * @property int $is_deleted 0 as false, 1 as true
  *
+ * @property LeadApplicationCalling[] $leadApplicationCallings
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property LeadsCollegePreference[] $leadsCollegePreferences
@@ -50,11 +55,11 @@ class LeadsApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number'], 'required'],
-            [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_deleted'], 'integer'],
+            [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'loan_for', 'admission_taken', 'is_deleted'], 'integer'],
             [['loan_amount', 'course_fee_annual'], 'number'],
             [['status', 'comments'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'managed_by', 'lead_by', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['student_mobile_number'], 'string', 'max' => 15],
             [['college_name', 'course_name'], 'string', 'max' => 200],
             [['application_enc_id'], 'unique'],
@@ -65,8 +70,12 @@ class LeadsApplications extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return \yii\db\ActiveQuery
      */
+    public function getLeadApplicationCallings()
+    {
+        return $this->hasMany(LeadApplicationCalling::className(), ['application_enc_id' => 'application_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery

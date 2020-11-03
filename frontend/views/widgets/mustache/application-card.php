@@ -20,7 +20,7 @@ switch ([$controller_id, $action_id]) {
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
                  class="application-card-main shadow">
-                <div class="app-box">
+                <div class="app-box" style="<?= ($type == 'Internships')?'height:170px':''; ?>">
                     <div class="hidden overlay" onclick="off()"></div>
                     <div class="row">
                         <div class="application-card-img">
