@@ -263,7 +263,7 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any internships.</div>
+                                                    <div class="">You haven't Saved any internships.</div>
                                                 </div>
                                             </div>
                                         <?php
@@ -409,7 +409,7 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any internships</div>
+                                                    <div class="">You haven't Saved any internships</div>
                                                 </div>
                                             </div>
                                         <?php
