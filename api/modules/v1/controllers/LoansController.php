@@ -191,7 +191,7 @@ class LoansController extends ApiBaseController
                     if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Android', $parser['is_claim'], $course_name, $pref)) {
                         $data["name"] = "Empower Youth";
                         $data["description"] = "Application Processing Fee";
-                        $data["image"] = Url::to("/assets/common/logos/logo.svg", 'https');
+                        $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
                         $data['theme_color'] = "#ff7803";
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
@@ -225,10 +225,23 @@ class LoansController extends ApiBaseController
             ->distinct()
             ->alias('a')
             ->select(['a.loan_app_enc_id',
-                'a.applicant_name', 'a.amount loan_amount',
-                'a.status', 'd.payment_token',
-                'd.payment_id', 'd.payment_status',
-                'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
+                'a.applicant_name',
+                'a.amount loan_amount',
+                'a.status',
+                'd.payment_token',
+//                'd.payment_id',
+//                'd.payment_status',
+                '(CASE
+                WHEN d.payment_status IS NULL THEN "failed"
+                WHEN d.payment_status = "captured" THEN "received"
+                ELSE d.payment_status
+                END) as payment_status',
+                '(CASE
+                WHEN d.payment_id IS NULL THEN ""
+                ELSE d.payment_id
+                END) as payment_id',
+                'd.payment_amount application_fees',
+                'd.payment_gst application_fees_gst',
                 'd.education_loan_payment_enc_id'
             ])
 //            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
@@ -241,8 +254,9 @@ class LoansController extends ApiBaseController
         if ($loans) {
             $d["name"] = "Empower Youth";
             $d["description"] = "Application Processing Fee";
-            $d["image"] = Url::to("/assets/common/logos/logo.svg", 'https');
+            $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
             $d['theme_color'] = "#ff7803";
+            $d['username'] = Yii::$app->getSecurity()->generateRandomString(3);
             return $this->response(200, ['status' => 200, 'data' => $loans, 'payment_detail' => $d]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
