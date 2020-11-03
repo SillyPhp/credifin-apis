@@ -278,6 +278,7 @@ class LoansController extends ApiBaseController
         if ($loan_payments) {
             $loan_payments->payment_id = $params['payment_id'];
             $loan_payments->payment_status = $params['status'];
+            $loan_payments->payment_signature = $params['signature'];
             $loan_payments->updated_by = $this->userId();
             $loan_payments->updated_on = date('Y-m-d H:i:s');
             $loan_payments->update();

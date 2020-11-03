@@ -29,8 +29,8 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['applicant_name', 'applicant_dob', 'applicant_current_city', 'years', 'semesters', 'phone', 'email', 'amount'], 'required'],
-            [['co_applicants','country_enc_id','aadhaar_number','purpose','gender','loan_type_enc_id','course_enc_id','college_course_enc_id','degree'], 'safe'],
+            [['applicant_name', 'applicant_dob', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
+            [['co_applicants', 'country_enc_id', 'aadhaar_number', 'purpose', 'gender', 'years', 'semesters', 'loan_type_enc_id', 'course_enc_id', 'college_course_enc_id', 'degree'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -39,11 +39,11 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken=1,$userId, $college_id, $source = 'Mec',$is_claimed=1,$course_name=null,$pref=[])
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [])
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
-        if (empty($this->country_enc_id)){
-            $this->country_enc_id = Countries::findOne(['name'=>'India'])->country_enc_id;
+        if (empty($this->country_enc_id)) {
+            $this->country_enc_id = Countries::findOne(['name' => 'India'])->country_enc_id;
         }
         $application_fee = OrganizationFeeAmount::find()
             ->select(['application_fee_amount_enc_id', 'amount', 'gst'])
@@ -68,7 +68,7 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $this->_flag = true;
             }
-            if ($is_claimed==1){
+            if ($is_claimed == 1) {
                 $path_to_claim = new PathToClaimOrgLoanApplication();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -76,14 +76,14 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
                 $path_to_claim->country_enc_id = $this->country_enc_id;
-                $path_to_claim->created_by = (($userId)?$userId:null);
+                $path_to_claim->created_by = (($userId) ? $userId : null);
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
-                   return false;
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
-            }else if ($is_claimed==2){
+            } else if ($is_claimed == 2) {
                 $path_to_Unclaim = new PathToUnclaimOrgLoanApplication();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -94,12 +94,12 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_Unclaim->created_by = (($userId) ? $userId : null);
                 if (!$path_to_Unclaim->save()) {
                     $transaction->rollback();
-                     return false;
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
-            }else if ($is_claimed == 3){
-                if (!empty($course_name)){
+            } else if ($is_claimed == 3) {
+                if (!empty($course_name)) {
                     $path_to_leads = new PathToOpenLeads();
                     $utilitiesModel = new \common\models\Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -114,33 +114,31 @@ class LoanApplicationsForm extends LoanApplications
                     } else {
                         $this->_flag = true;
                     }
-                }else{
+                } else {
                     $transaction->rollback();
                     return false;
                 }
 
                 if (!empty($pref))
                     $c = 1;
-                    foreach ($pref as $p)
-                    {
-                        if (!empty($p)){
-                            $preferenceModel = new LoanApplicationsCollegePreference();
-                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $preferenceModel->preference_enc_id = $utilitiesModel->encrypt();
-                            $preferenceModel->loan_app_enc_id = $this->loan_app_enc_id;
-                            $preferenceModel->created_by = (($userId) ? $userId : null);
-                            $preferenceModel->college_name = trim($p);
-                            $preferenceModel->sequence = $c;
-                            if (!$preferenceModel->save()) {
-                                $transaction->rollback();
-                                return false;
-                            } else
-                            {
-                                $c++;
-                                $this->_flag = true;
-                            }
+                foreach ($pref as $p) {
+                    if (!empty($p)) {
+                        $preferenceModel = new LoanApplicationsCollegePreference();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $preferenceModel->preference_enc_id = $utilitiesModel->encrypt();
+                        $preferenceModel->loan_app_enc_id = $this->loan_app_enc_id;
+                        $preferenceModel->created_by = (($userId) ? $userId : null);
+                        $preferenceModel->college_name = trim($p);
+                        $preferenceModel->sequence = $c;
+                        if (!$preferenceModel->save()) {
+                            $transaction->rollback();
+                            return false;
+                        } else {
+                            $c++;
+                            $this->_flag = true;
                         }
                     }
+                }
             }
 
             if (!empty($this->purpose)) {
@@ -155,7 +153,7 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
                         $transaction->rollback();
-                         return false;
+                        return false;
                     } else {
                         $this->_flag = true;
                     }
@@ -171,8 +169,8 @@ class LoanApplicationsForm extends LoanApplications
                     $model->relation = $applicant['relation'];
                     $model->employment_type = $applicant['employment_type'];
                     $model->annual_income = $applicant['annual_income'];
-                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number']:null);
-                    $model->aadhaar_number = (($applicant['aadhaar_number'])?$applicant['aadhaar_number']:null);
+                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number'] : null);
+                    $model->aadhaar_number = (($applicant['aadhaar_number']) ? $applicant['aadhaar_number'] : null);
                     $model->created_by = (($userId) ? $userId : null);
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
@@ -291,7 +289,7 @@ class LoanApplicationsForm extends LoanApplications
 
     private function floatPaisa($amount)
     {
-        $c = $amount*100;
-        return (int) $c;
+        $c = $amount * 100;
+        return (int)$c;
     }
 }
