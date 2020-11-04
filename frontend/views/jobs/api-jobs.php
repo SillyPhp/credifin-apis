@@ -34,7 +34,8 @@ $content = [
             'app_id'=>$app['application_enc_id'],
             'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
     ];
-$this->title = $get['company'] . ' is hiring for ' . $get['title'];
+$title = $get['company'] . ' is hiring for ' . $get['title'];
+$this->title = $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 if (empty($app['image'])||$app['image']==1){
@@ -51,7 +52,7 @@ $this->params['seo_tags'] = [
         'keywords' => $keywords,
         'description' => $description,
         'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:title' => Yii::t('frontend', $title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'twitter:site' => '@EmpowerYouthin',
         'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
@@ -61,7 +62,7 @@ $this->params['seo_tags'] = [
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
         'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:title' => Yii::t('frontend', $title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
         'fb:app_id' => '973766889447403'

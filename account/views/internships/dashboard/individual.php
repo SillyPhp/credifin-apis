@@ -23,7 +23,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/internships/shortlisted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/internships/saved') ?>">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -121,7 +121,7 @@ use yii\widgets\Pjax;
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/internships/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/internships/shortlisted" class="tab-link caption-subject font-dark  uppercase">Applications saved</li>
+                        <li data-tab="tab-2" data-url="/account/internships/saved" class="tab-link caption-subject font-dark  uppercase">Applications saved</li>
                         |
                         <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
@@ -263,7 +263,7 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any internships.</div>
+                                                    <div class="">You haven't Saved any internships.</div>
                                                 </div>
                                             </div>
                                         <?php
@@ -409,7 +409,7 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted any internships</div>
+                                                    <div class="">You haven't Saved any internships</div>
                                                 </div>
                                             </div>
                                         <?php

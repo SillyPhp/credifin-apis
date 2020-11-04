@@ -984,7 +984,7 @@ class JobsController extends Controller
         ]);
     }
 
-    public function actionShortlisted()
+    public function actionSaved()
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')

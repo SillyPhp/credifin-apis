@@ -642,8 +642,7 @@ class ApplicationCards
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select([
-                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
-//                'a.created_on',
+                'a.created_on as created_date',
                 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -687,8 +686,7 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select([
-                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
-//                'a.created_on',
+                'a.created_on as created_date',
                 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -846,7 +844,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_on' => SORT_DESC])
+                ->orderBy(['created_date' => SORT_DESC])
                 ->all();
         }
         $i = 0;
