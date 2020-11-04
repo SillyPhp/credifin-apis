@@ -228,6 +228,8 @@ class LoansController extends ApiBaseController
                 'a.applicant_name',
                 'a.amount loan_amount',
                 'a.status',
+                'a.email',
+                'a.phone',
                 'd.payment_token',
 //                'd.payment_id',
 //                'd.payment_status',
