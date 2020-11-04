@@ -671,14 +671,6 @@ label {
 }
 ');
 $script = <<<JS
-$(document).ready(function() {
-    $('#first_name').val('Nitesh');
-    $('#last_name').val('Sharma');
-    $('#email').val('ricky@gmail.com');
-    $('#phone').val('9988773122');
-    $('#nextBtn').click();
-});
-
 $("input[name='amount']").on("keyup", function() {
     $("input[name='amountValidation']").val(destroyMask(this.value));
     this.value = createMask($("input[name='amountValidation']").val());
