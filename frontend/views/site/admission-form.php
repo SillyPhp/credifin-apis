@@ -657,6 +657,9 @@ label {
         
     }
 }
+.errorBox{
+    border: 1px solid indianred;
+}
 @media screen and (max-width: 500px){
     .left-sec h2{
         font-size: 22px;
@@ -683,6 +686,7 @@ function destroyMask(string) {
 
 $(document).on('change', 'input[name = "appliedCollege"]', function() {
     var t = $(this);
+    var parent = t.parent();
     var value = t.val();
     if (value == "1") {
         $('#appliedYes').show();
@@ -693,11 +697,14 @@ $(document).on('change', 'input[name = "appliedCollege"]', function() {
         $('#appliedNo').show();
         $('#college_name').removeClass('require_data');
     }
+    parent.find('label').removeAttr('style');
+    parent.find('circle').removeAttr('style');
     updateValue(t);
 });
 
 $(document).on('change', 'input[name = "interestLoanFor"]', function() {
     var t = $(this);
+    var parent = t.parent();
     var val = t.val();
     var placeholderCol = "";
     switch (val) {
@@ -713,7 +720,12 @@ $(document).on('change', 'input[name = "interestLoanFor"]', function() {
             default :
     }
     $('#college_name').attr('placeholder', placeholderCol);
+    $.each($('#appliedNo').find('input[id]'), function(k,v) {
+        $(this).attr('placeholder', placeholderCol + ' Preference ' + (k+1));
+    });
     $('[data-type=collegeApplied]').show();
+    parent.find('label').removeAttr('style');
+    parent.find('circle').removeAttr('style');
     updateValue(t);
 });
 
@@ -744,6 +756,7 @@ function updateValue(t){
 
 $(document).on('blur', '.blurInput', function() {
     var t = $(this);
+    t.removeClass('errorBox');
     updateValue(t);
 });
 
@@ -777,10 +790,10 @@ function nextPrev(n) {
 $(document).on('click', '#prevBtn', function() {
     nextPrev(-1);
 });
-$(document).on('click', '#LoanNo', function() {
-    $('#loanFields').show();
-    $('#submitBtn').show();
-});
+// $(document).on('click', '#LoanNo', function() {
+//     $('#loanFields').show();
+//     $('#submitBtn').show();
+// });
 $(document).on('click', '#nextBtn', function() {
     var isValid = true;
     var errorMsg = $('.help-block').text();
@@ -899,24 +912,71 @@ function getCollegeList(datatype, source, type) {
     });
 }
 
-$(document).on('click', '#LoanYes', function(event) {
-    var btn = $("#submitBtn");
-    var firstRadio = $('input[name = "appliedCollege"]').is(":checked");
-    var inputData = true;
-    var chkRequire = $('.require_data').length;
-
-    if (!firstRadio) {
-        return false;
+function errorHandle(input, type, fieldType){
+    var loop = false;
+    if(type){
+        input.find('label').css('color','indianred');
+        input.find('circle#border').css('stroke','indianred');
     } else {
-        if (chkRequire > 0) {
-            if ($('.require_data').val() == "") {
-                return false;
-            }
+        if(fieldType){
+            loop = true;
+        } else {
+            input.find('label').removeAttr('style');
+            input.find('circle#border').removeAttr('style');
         }
     }
-    var secondRadio = $('input[name = "loan"]').is(":checked");
-    
-    if (firstRadio && secondRadio) {
+    if(loop){
+        $.each(input, function() {
+            $(this).addClass('errorBox');
+        })
+    }
+}
+
+function highlightRequired(chkRequire){
+    var loanForRadio = $('input[name = "interestLoanFor"]');
+    var loanForParent = loanForRadio.parent();
+    var firstRadio = $('input[name = "appliedCollege"]');
+    var firstParent = firstRadio.parent();
+    if(!loanForRadio.is(":checked") && !loanForRadio.closest('section').hasClass('hideRow')){
+        errorHandle(loanForParent, true);
+        return false;
+    } else {
+        errorHandle(loanForParent, false);
+    }
+    if (!firstRadio.is(":checked") && firstRadio.closest('section').is(':visible')) {
+        errorHandle(firstParent, true);
+        return false;
+    } else {
+        errorHandle(firstParent, false);
+    }
+    if (chkRequire > 0) {
+        var reqValue = $('.require_data');
+        if (reqValue.val() == "") {
+            errorHandle(reqValue, false, true);
+            return false;
+        }
+    }
+    return true;
+}
+$(document).on('click', '#LoanNo', function(event) {
+    var chkRequire = $('.require_data').length;
+    var res = highlightRequired(chkRequire);
+    if(!res){
+        return false;
+    }
+    $('#loanFields').show();
+    $('#submitBtn').show();
+});
+$(document).on('click', '#LoanYes', function(event) {
+    var btn = $("#submitBtn");
+    var inputData = type = true;
+    var chkRequire = $('.require_data').length;
+    var res = highlightRequired(chkRequire);
+    if(!res){
+        return false;
+    }
+    var secondRadio = $('input[name = "loan"]');
+    if (secondRadio.is(":checked")) {
         if (chkRequire > 0) {
             inputData = false;
             if ($('.require_data').val() != "") {
