@@ -619,12 +619,17 @@ $this->registerCss('
     z-index:1;
 }
 .pr-user-skills:hover .h-skill {
-	display: block;
-	position: absolute;
-	background-color: #fff;
-	top: 20px;
-	border-radius: 6px;
-	text-align: center;
+    display: block;
+    position: absolute;
+    background-color: #fdfdfd;
+    top: 15px;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    left:10px;
+    min-height:105px;
+    max-height:135px;
+    overflow-y:scroll;
 }
 .dropbtn {
 	background-color: #4CAF50;
@@ -921,6 +926,10 @@ li{
   font-size:14px;
   color:#777777;
 }
+.pr-user-past {
+    display: flex;
+    align-items: center;
+}
 .pr-user-past span{
   display:inline-block;
   color:#aaa;
@@ -933,9 +942,13 @@ li{
   font-size:13px;
 }
 .pr-user-past h5{
-  display:inline-block;
   font-family:roboto;
   font-size:13px;
+  margin-left:5px;
+  display: -webkit-box;
+-webkit-line-clamp: 1;
+-webkit-box-orient: vertical;
+overflow: hidden;
 }
 .pr-user-skills{
     padding-top:20px;
