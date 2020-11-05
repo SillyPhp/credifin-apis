@@ -438,13 +438,14 @@ if ($application_name['wage_type'] == 'Fixed') {
                                              $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
-                                                <div data-id="<?= $p['field_enc_id'] ?>" >
+                                                <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?> <?php if($isHighlight){
                                                         if($p['is_completed'] == 0){
                                                             echo 'showBlue';
                                                             $isHighlight = false;
                                                         }
                                                     }?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                                                         <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
@@ -453,7 +454,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             ?>
                                             <div data-id="<?= $p['field_enc_id'] ?>" >
                                                 <a href="#" class="multipleRound" value="<?= $arr['applied_application_enc_id']; ?>">
-                                                    Hired
+                                                    <i class="fa fa-check-square-o"></i> Hired
                                                 </a>
                                             </div>
                                         </div>
@@ -654,10 +655,11 @@ $this->registerCss('
 }
 .dropdown-content div a {
   color: #000;
-  padding: 8px 0;
+  padding: 8px 0 8px 12px;
   text-decoration: none;
   display: block;
   border-bottom: 1px solid #eee;
+  text-align:left;
 }
 .dropdown-content div:last-child a{
     border-bottom: none;
