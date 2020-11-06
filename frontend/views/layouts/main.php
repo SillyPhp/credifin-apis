@@ -21,6 +21,7 @@ AppAssets::register($this);
     <?= Html::csrfMetaTags(); ?>
     <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
     <?php
     if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
@@ -111,7 +112,7 @@ AppAssets::register($this);
                                         <?php
                                     }
                                     ?>
-                                    <span class="logo-beta">Beta</span>
+<!--                                    <span class="logo-beta">Beta</span>-->
                                 </a>
                             </div>
                             <div class="ey-menu-main">
@@ -246,6 +247,9 @@ AppAssets::register($this);
 <!--        <div id="page-loading" class="page-loading">-->
 <!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
 <!--        </div>-->
+        <div id="auth_loading_img">
+        </div>
+        <div class="auth_fader"></div>
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -400,8 +404,96 @@ AppAssets::register($this);
     }
     ?>
 </div>
+<script type="text/javascript">
+    function handleCredentialResponse(response) {
+        if (response.credential){
+            var token = parseJwt(response.credential);
+            authLogin(token);
+        }
+        else{
+            alert('Server Error');
+        }
+
+    }
+
+    function parseJwt (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    };
+    function authLogin(token) {
+        $.ajax({
+            url:'/site/one-tap-auth',
+            method:'POST',
+            data:{token:token,returnUrl:returnUrl},
+            beforeSend:function(e)
+            {
+                $('#auth_loading_img').addClass('show');
+                $('.auth_fader').css('display','block');
+            },
+            success:function (e) {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
+                if (response.status == 201) {
+                    toastr.error(response.message, response.title);
+                }
+            },
+            complete: function() {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display','none');
+            }
+        })
+    }
+</script>
 <?php
 $this->registerCss('
+#auth_loading_img
+{
+  display:none;
+}
+ 
+#auth_loading_img.show
+{
+   z-index:100;
+   position: fixed;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    right: 0;
+    border: 6px solid #fff;
+    border-radius: 50%;
+    border-top: 6px solid #00a0e3;
+    width: 60px;
+    height: 60px;
+   -webkit-animation: spin 2s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.auth_fader{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  display:none;
+  z-index:99;
+  background-color:#fff;
+  opacity:0.7;
+}
 .footer-bottom-links a{
     color:#fff;
     margin-right: 20px;
@@ -789,6 +881,7 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
         ');
 }
 if (Yii::$app->user->isGuest) {
+    Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
     $this->registerJs('
         window.addEventListener("scroll", header_main);
         var lastScrollTop = 50;
@@ -827,7 +920,7 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
-});
+}); 
 $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {

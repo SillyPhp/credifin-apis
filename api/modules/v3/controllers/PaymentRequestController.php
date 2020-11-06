@@ -2,6 +2,7 @@
 
 namespace api\modules\v3\controllers;
 
+use common\models\extended\PaymentsModule;
 use Yii;
 use api\modules\v3\models\TokensModel;
 use yii\filters\VerbFilter;
@@ -15,54 +16,20 @@ class PaymentRequestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'get-token' => ['POST'],
+                'request-pay' => ['POST'],
             ]
         ];
         return $behaviors;
     }
-
-    public function actionGetToken()
+    public function actionRequestPay()
     {
-        //Generation of REQUEST_SIGNATURE for a POST Request
-        $date = date_create();
-        $timestamp = date_timestamp_get($date);
-        $params = Yii::$app->request->post();
-        //params list start
-        $currency = $params['currency'];
-        $amount = $params['amount'];
-        $contact = $params['contact'];
-        $email = $params['email'];
-        //unique number string
-        $mtx = Yii::$app->getSecurity()->generateRandomString();
-        //params list end
-
-        if (Yii::$app->params->paymentGateways->mec->icici) {
-            $configuration = Yii::$app->params->paymentGateways->mec->icici;
-            if ($configuration->mode === "production") {
-                $access_key = $configuration->credentials->production->access_key;
-                $secret_key = $configuration->credentials->production->secret_key;
-                $url = $configuration->credentials->production->url;
-            } else {
-                $access_key = $configuration->credentials->sandbox->access_key;
-                $secret_key = $configuration->credentials->sandbox->secret_key;
-                $url = $configuration->credentials->sandbox->url;
-            }
+        if(Yii::$app->request->post()){
+            $get = PaymentsModule::_authPayToken(Yii::$app->request->post());
+            if ($get['status']==='created'):
+                return $this->response(200, ['status' => 200, 'data'=>$get]);
+            else:
+                return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+            endif;
         }
-
-        $params = 'currency=' . $currency . '&amount=' . $amount . '&contact=' . $contact . '&mtx=' . $mtx . '&email=' . $email . '';
-        $url = $url . "?$params";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        $header = [
-            'Accept:*/*',
-            'X-O-Timestamp: ' . $timestamp . '',
-            'Content-Type: application/json',
-            'Authorization: ' . $access_key . ':' . $secret_key . ''
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        return json_decode($result);
     }
 }

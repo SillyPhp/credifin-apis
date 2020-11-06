@@ -8,9 +8,7 @@ use yii\helpers\Html;
         <div class="row">
             <div class="header-flex">
             <div class="col-lg-6 mx-auto order2">
-                <h2 class="section-title">
-                    Event Speakers
-                </h2>
+                <h2 class="section-title">Speakers</h2>
             </div><!-- col end-->
             <div class="col-lg-6 order1">
                 <div class="speaker-header-icon">

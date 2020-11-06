@@ -8,8 +8,9 @@ use api\modules\v1\models\Candidates;
 use api\modules\v2\models\ProfilePicture;
 use common\models\ApplicationEducationalRequirements;
 use common\models\AppliedApplications;
+use common\models\AssignedCollegeCourses;
 use common\models\Cities;
-use common\models\CollegeCourses;
+use common\models\CollegeCoursesPool;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
 use common\models\EmployerApplications;
@@ -86,7 +87,7 @@ class CollegeProfileController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['organizationEnc b' => function ($b) {
                         $b->joinWith(['referrals c'], false);
                     }], false)
@@ -99,7 +100,7 @@ class CollegeProfileController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['teachers cc' => function ($cc) {
                         $cc->joinWith(['collegeEnc b' => function ($b) {
                             $b->joinWith(['referrals c'], false);
@@ -120,7 +121,7 @@ class CollegeProfileController extends ApiBaseController
             $organizations = Users::find()
                 ->alias('a')
                 ->select(['b.organization_enc_id', 'b.name', 'b.phone', 'b.email', 'b.website', 'b.description',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',
                     'c.affiliated_to', 'd.name city'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['organizationOtherDetails c' => function ($c) {
@@ -131,15 +132,17 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+                ->orderBy(['c.course_name' => SORT_ASC])
                 ->asArray()
                 ->all();
 
@@ -225,7 +228,7 @@ class CollegeProfileController extends ApiBaseController
             if ($pictureModel->profile_image && $pictureModel->validate()) {
                 if ($org_id = $pictureModel->updateLogo()) {
                     $logo = Organizations::find()
-                        ->select(['CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                        ->select(['CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                         ->where(['organization_enc_id' => $org_id])
                         ->asArray()
                         ->one();
@@ -255,18 +258,37 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $already_have = CollegeCourses::find()
-                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name'], 'is_deleted' => 0])
+            $already_have = AssignedCollegeCourses::find()
+                ->alias('a')
+                ->joinWith(['courseEnc b'])
+                ->where(['a.organization_enc_id' => $college_id, 'b.course_name' => $req['course_name'], 'a.is_deleted' => 0])
                 ->one();
 
             if (empty($already_have)) {
 
-                $course = new CollegeCourses();
+                $college_course_id = CollegeCoursesPool::find()
+                    ->where(['course_name' => $req['course_name']])
+                    ->one();
+
+                if (!$college_course_id->course_enc_id) {
+                    $college_course_id = new CollegeCoursesPool();
+                    $utilities = new Utilities();
+                    $utilities->variables['string'] = time() . rand(100, 100000);
+                    $college_course_id->course_enc_id = $utilities->encrypt();
+                    $college_course_id->course_name = $req['course_name'];
+                    $college_course_id->created_by = $user->user_enc_id;
+                    $college_course_id->created_on = date('Y-m-d H:i:s');
+                    if (!$college_course_id->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                }
+
+                $course = new AssignedCollegeCourses();
                 $utilities = new Utilities();
                 $utilities->variables['string'] = time() . rand(100, 100000);
-                $course->college_course_enc_id = $utilities->encrypt();
+                $course->assigned_college_enc_id = $utilities->encrypt();
                 $course->organization_enc_id = $college_id;
-                $course->course_name = $req['course_name'];
+                $course->course_enc_id = $college_course_id->course_enc_id;
                 $course->course_duration = (int)$req['course_duration'];
                 $course->type = $req['type'];
                 $course->created_by = $user->user_enc_id;
@@ -279,7 +301,7 @@ class CollegeProfileController extends ApiBaseController
                             $utilities = new Utilities();
                             $utilities->variables['string'] = time() . rand(100, 100000);
                             $sections->section_enc_id = $utilities->encrypt();
-                            $sections->college_course_enc_id = $course->college_course_enc_id;
+                            $sections->assigned_college_enc_id = $course->assigned_college_enc_id;
                             $sections->section_name = $s['value'];
                             $sections->created_by = $user->user_enc_id;
                             $sections->created_on = date('Y-m-d H:i:s');
@@ -287,21 +309,23 @@ class CollegeProfileController extends ApiBaseController
                         }
                     }
 
-                    $courses = CollegeCourses::find()
+                    $courses = AssignedCollegeCourses::find()
+                        ->distinct()
                         ->alias('a')
-                        ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                        ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                        ->joinWith(['courseEnc c'], false)
                         ->joinWith(['collegeSections b' => function ($b) {
-                            $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                            $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                             $b->onCondition(['b.is_deleted' => 0]);
                         }])
                         ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                        ->groupBy(['a.course_name'])
+//                        ->groupBy(['b.course_name'])
                         ->asArray()
                         ->all();
 
                     return $this->response(200, ['status' => 200, 'courses' => $courses]);
                 } else {
-                    return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                    return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
                 }
             } else {
                 return $this->response(409, ['status' => 409, 'message' => 'already added']);
@@ -318,33 +342,55 @@ class CollegeProfileController extends ApiBaseController
             $req = Yii::$app->request->post();
             $college_id = $this->getOrgId();
 
-            $course = CollegeCourses::find()
-                ->where(['college_course_enc_id' => $req['course_id']])
+            $course = AssignedCollegeCourses::find()
+                ->where(['assigned_college_enc_id' => $req['course_id']])
                 ->one();
 
-            $already_have = CollegeCourses::find()
-                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name'], 'is_deleted' => 0])
-                ->andWhere(['not', ['college_course_enc_id' => $req['course_id']]])
+            $already_have = AssignedCollegeCourses::find()
+                ->alias('a')
+                ->joinWith(['courseEnc b'])
+                ->where(['a.organization_enc_id' => $college_id, 'b.course_name' => $req['course_name'], 'a.is_deleted' => 0])
+                ->andWhere(['not', ['a.assigned_college_enc_id' => $req['course_id']]])
                 ->one();
 
             if (empty($already_have)) {
                 if (!empty($course)) {
-                    $course->course_name = $req['course_name'];
+
+                    $college_course_id = CollegeCoursesPool::find()
+                        ->where(['course_name' => $req['course_name']])
+                        ->one();
+
+                    if (!$college_course_id->course_enc_id) {
+                        $college_course_id = new CollegeCoursesPool();
+                        $utilities = new Utilities();
+                        $utilities->variables['string'] = time() . rand(100, 100000);
+                        $college_course_id->course_enc_id = $utilities->encrypt();
+                        $college_course_id->course_name = $req['course_name'];
+                        $college_course_id->created_by = $user->user_enc_id;
+                        $college_course_id->created_on = date('Y-m-d H:i:s');
+                        if (!$college_course_id->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    $course->course_enc_id = $college_course_id->course_enc_id;
                     $course->course_duration = $req['course_duration'];
                     $course->type = $req['type'];
                     $course->updated_by = $user->user_enc_id;
                     $course->updated_on = date('Y-m-d H:i:s');
                     if ($course->update()) {
                         $this->updateSections($req['sections'], $req['course_id'], $user->user_enc_id);
-                        $courses = CollegeCourses::find()
+                        $courses = AssignedCollegeCourses::find()
+                            ->distinct()
                             ->alias('a')
-                            ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                            ->joinWith(['courseEnc c'], false)
                             ->joinWith(['collegeSections b' => function ($b) {
-                                $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                                $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                                 $b->onCondition(['b.is_deleted' => 0]);
                             }])
                             ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                            ->groupBy(['a.course_name'])
+//                            ->groupBy(['a.course_name'])
                             ->asArray()
                             ->all();
                         return $this->response(200, ['status' => 200, 'courses' => $courses]);
@@ -365,6 +411,7 @@ class CollegeProfileController extends ApiBaseController
     public function actionRemoveCourse()
     {
         if ($user = $this->isAuthorized()) {
+            $college_id = $this->getOrgId();
             $params = Yii::$app->request->post();
             if (isset($params['course_enc_id']) && !empty($params['course_enc_id'])) {
                 $course_id = $params['course_enc_id'];
@@ -372,8 +419,8 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing informtion']);
             }
 
-            $course = CollegeCourses::find()
-                ->where(['college_course_enc_id' => $course_id])
+            $course = AssignedCollegeCourses::find()
+                ->where(['assigned_college_enc_id' => $course_id])
                 ->one();
 
             if ($course) {
@@ -381,7 +428,21 @@ class CollegeProfileController extends ApiBaseController
                 $course->updated_by = $user->user_enc_id;
                 $course->updated_on = date('Y-m-d H:i:s');
                 if ($course->update()) {
-                    return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+                    $courses = AssignedCollegeCourses::find()
+                        ->distinct()
+                        ->alias('a')
+                        ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                        ->joinWith(['courseEnc c'], false)
+                        ->joinWith(['collegeSections b' => function ($b) {
+                            $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
+                            $b->onCondition(['b.is_deleted' => 0]);
+                        }])
+                        ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
+//                            ->groupBy(['a.course_name'])
+                        ->asArray()
+                        ->all();
+                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+//                    return $this->response(200, ['status' => 200, 'message' => 'deleted']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
@@ -397,7 +458,7 @@ class CollegeProfileController extends ApiBaseController
     private function updateSections($sections, $course_id, $user_id)
     {
         $clg_sections = CollegeSections::find()
-            ->where(['college_course_enc_id' => $course_id, 'is_deleted' => 0])
+            ->where(['assigned_college_enc_id' => $course_id, 'is_deleted' => 0])
             ->asArray()
             ->all();
 
@@ -427,7 +488,7 @@ class CollegeProfileController extends ApiBaseController
             $utilities = new Utilities();
             $utilities->variables['string'] = time() . rand(100, 100000);
             $sections->section_enc_id = $utilities->encrypt();
-            $sections->college_course_enc_id = $course_id;
+            $sections->assigned_college_enc_id = $course_id;
             $sections->section_name = $s;
             $sections->created_by = $user_id;
             $sections->created_on = date('Y-m-d H:i:s');
@@ -482,8 +543,9 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_college_approved',
                     'y.interview_process_enc_id',
                     'bb.name',
+                    'bb.organization_enc_id',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'm.fixed_wage as fixed_salary',
@@ -496,6 +558,11 @@ class CollegeProfileController extends ApiBaseController
                     'b.is_deleted',
                     'm.positions'
                 ])
+                ->joinWith(['applicationJobDescriptions ii' => function ($x) {
+                    $x->onCondition(['ii.is_deleted' => 0]);
+                    $x->joinWith(['jobDescriptionEnc jj'], false);
+                    $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
+                }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
                 }], false)
@@ -554,7 +621,10 @@ class CollegeProfileController extends ApiBaseController
             if ($limit) {
                 $jobs->limit($limit);
             }
-            $result = $jobs->orderBy(['b.is_college_approved' => SORT_DESC])->asArray()
+            $result = $jobs
+//                ->orderBy(['b.is_college_approved' => SORT_DESC])
+                ->orderBy([new \yii\db\Expression('a.status = "Active" desc'), 'b.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
 
             if ($type == 'Internships') {
@@ -683,6 +753,8 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['application_enc_id'] = $j['application_enc_id'];
+                $data['organization_enc_id'] = $j['organization_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -694,6 +766,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['joining_date'] = $j['joining_date'];
                 $data['designation'] = $j['designation'];
                 $data['benefits'] = $j['applicationEmployeeBenefits'];
+                $data['jobDescription'] = $j['applicationJobDescriptions'];
                 $data['salary'] = $j['salary'];
                 if ($j['status'] != 'Active') {
                     $data['is_closed'] = true;
@@ -751,7 +824,7 @@ class CollegeProfileController extends ApiBaseController
                 ->select([
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'a.employer_application_enc_id',
@@ -818,8 +891,9 @@ class CollegeProfileController extends ApiBaseController
             if ($limit) {
                 $jobs->limit($limit);
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs
+                ->orderBy([new \yii\db\Expression('b.status = "Active" desc')])
+                ->asArray()
                 ->all();
 
 
@@ -1039,7 +1113,7 @@ class CollegeProfileController extends ApiBaseController
             $detail = Teachers::find()
                 ->alias('a')
                 ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                 ->joinWith(['collegeEnc b' => function ($b) {
                     $b->joinWith(['referrals c'], false);
                 }], false)

@@ -108,7 +108,7 @@ $this->params['header_dark'] = false;
                     </a>
                 </div>
                 <div class="box-border fade-in four">
-                    <div class="box-overlay">
+                    <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>">
                         </div>
@@ -116,17 +116,14 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>">
                         </div>
                         <div class="h-heading">Education Loan</div>
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<?= $this->render('/widgets/our-services') ?>
+<?= $this->render('/widgets/education-loan-landing') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
@@ -1150,18 +1147,20 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+        'getEduAndRedbull',
+//        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
-        'getWhatsappCommunity',
         'getSafetySigns',
         'getOnlineClasses',
-        'getNewsUpdate',
+        'getWhatsappCommunity',
+//        'getNewsUpdate',
 //        'getTweets',
         'getShortcuts'
     ];
@@ -1169,20 +1168,22 @@ if (!Yii::$app->user->isGuest) {
 } else {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+        'getEduAndRedbull',
+//        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
-        'getWhatsappCommunity',
         'getSafetySigns',
         'getOnlineClasses',
+        'getWhatsappCommunity',
         'getHowItWorks',
-        'getNewsUpdate',
+//        'getNewsUpdate',
 //        'getTweets',
         'getNewsletter',
         'getShortcuts'

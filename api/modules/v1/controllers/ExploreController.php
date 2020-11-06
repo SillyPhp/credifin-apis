@@ -74,7 +74,7 @@ class ExploreController extends ApiBaseController
             $top_companies = EmployerApplications::find()
                 ->alias('a')
                 ->select(['c.name org_name','a.organization_enc_id','b.name type','COUNT(a.organization_enc_id) as total',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'c.initials_color color'
                 ])
                 ->innerJoinWith(['applicationTypeEnc b'=>function($b) use($req){
@@ -109,7 +109,7 @@ class ExploreController extends ApiBaseController
     public function actionFeaturedEmployers()
     {
         $organizations = Organizations::find()
-            ->select(['initials_color color', 'name', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['initials_color color', 'name', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->asArray()
             ->all();

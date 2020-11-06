@@ -1,15 +1,10 @@
 <?php
-
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
-
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
-
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -24,11 +19,15 @@ if ($type == 'Job') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " jobs in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'jobs';
     if (!empty($data2)) {
@@ -98,7 +97,7 @@ if ($type == 'Job') {
             }
         }
     }
-    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' with a ' . $amount . ' package.';
+    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']);
     $keywords = $org['org_name'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $job_heading . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $job_heading . ', ' . rtrim($lc_data, ',') . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $job_heading . ' jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
@@ -113,11 +112,15 @@ if ($type == 'Internship') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " internships in " . $placements["name"]);
+            array_push($loc, $job_heading . " internships in " . $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'internships';
     if ($data2['wage_type'] == 'Fixed') {
@@ -149,11 +152,33 @@ if ($type == 'Internship') {
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
     }
-    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns with a stipend ' . $amount;
+    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns';
     $keywords = $org['org_name'] . ' internships,Internships,Paid ' . $job_heading . ' Internships, ' . rtrim($lc_data, ',') . ', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,' . $job_heading . ' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+if (!empty($data2))
+{
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}else{
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+}
+$content = [
+    'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
+    'company_name'=>$org['org_name'],
+    'bg_icon'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'canvas'=>(($org['logo'])?false:true),
+    'logo'=>$content_logo,
+    'initial_color'=>$org['color'],
+    'location'=>(($lc)?$lc:'Work From Home'),
+    'app_id'=>$application_details['application_enc_id'],
+    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
+];
+if (empty($application_details['image'])||$application_details['image']==1){
+    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+}else
+{
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -373,16 +398,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                     }
                     ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="blogbox"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
@@ -428,21 +443,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-<!--                <div class="rec-main col-md-10 col-md-offset-1 mt2">-->
-<!--                    <div class="recommendation-box">-->
-<!--                        <button>13 Recommendation</button>-->
-<!--                        <a href="">Write A Recommendation</a>-->
-<!--                    </div>-->
-<!--                    <div class="">-->
-<!---->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="rec-main col-md-10 col-md-offset-1">-->
-<!--                    <div class="job-review-box">-->
-<!--                        <button>10 Job Reviews</button>-->
-<!--                        <a href="">Write A Review</a>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -473,6 +473,16 @@ if ($settings["showNewPositionsWidget"]):
 <?php endif; ?>
 <div class="container">
     <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="blogbox"></div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-8 col-sm-8 col-xs-12">
             <div class="heading-style">Courses</div>
         </div>
@@ -488,41 +498,6 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </div>
     <div class="row" id="list-main"></div>
-<!--    <div class="row">-->
-<!--        --><?php
-//        foreach ($related_courses as $r) {
-//            ?>
-<!--            <div class="col-md-4 col-sm-6">-->
-<!--                <a href="/courses/detail/--><?//= $r['course_id'] ?><!--" class="display-block">-->
-<!--                    <div class="course-box">-->
-<!--                        <div class="course-upper">-->
-<!--                            <div class="course-logo">-->
-<!--                                <img src="--><?//= $r['image']?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="course-description">-->
-<!--                                <div class="course-name">--><?//= $r['title'];?><!--</div>-->
-<!--                                <div class="course-fees">$ --><?//= $r['price'];?><!--</div>-->
-<!--                                --><?php
-//                                    if( $r['author']) {
-//                                        ?>
-<!--                                        <div class="course-start"><i class="far fa-user"></i>-->
-<!--                                            <span class="c-author">-->
-<!--                                                --><?//= $r['author'] ?>
-<!--                                            </span>-->
-<!--                                        </div>-->
-<!--                                        --><?php
-//                                    }
-//                                ?>
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="course-skills">-->
-<!--                            <h4 class="text-right m-0">Udemy</h4>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        --><?php //}?>
-<!--    </div>-->
 </div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
@@ -611,7 +586,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
-echo $this->render('/widgets/mustache/application-card-2');
+echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss("
 .course-box{
@@ -1922,7 +1897,7 @@ function getCourseList(keyword=null,cat=null){
     $.ajax({
         method: "POST",
         url : '/courses/courses-list',
-        data:{keyword:keyword,cat:cat,page:1,limit:6},
+        data:{keyword:keyword,cat:cat,page:1,limit:1},
         beforeSend: function(){
            $('.load-more-text').css('visibility', 'hidden');
            $('.load-more-spinner').css('visibility', 'visible');
@@ -1943,6 +1918,9 @@ function getCourseList(keyword=null,cat=null){
                 }
             } else{
                 page++;
+                if(response.results.length > 6){
+                     response.results = response.results.slice(0,6);
+                }
                 var template = $('#course-card').html();
                 var rendered = Mustache.render(template,response.results);
                 $('#list-main').append(rendered);

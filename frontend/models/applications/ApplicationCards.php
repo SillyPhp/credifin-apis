@@ -202,8 +202,11 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.source',
                 new Expression('NULL as sector'),
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
+                'CONCAT("job/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -253,7 +256,7 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -265,12 +268,19 @@ class ApplicationCards
                 WHEN a.source = 2 THEN v.job_level
                 ELSE NULL
                END) as sector',
-                'a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+//                'a.created_on',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 '(CASE
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                 END) as link',
+                '(CASE
+                WHEN a.source = 3 THEN CONCAT("job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("job/", a.slug)
+                END) as share_link',
                 'CONCAT("/", d.slug,"/reviews") organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -310,7 +320,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+           // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
 
@@ -538,7 +548,6 @@ class ApplicationCards
                 $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
             }
         }
-
         $result = null;
         if (isset($options['similar_jobs'])) {
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
@@ -632,8 +641,11 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'a.created_on as created_date',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -673,8 +685,11 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'a.created_on as created_date',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -829,7 +844,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_on' => SORT_DESC])
+                ->orderBy(['created_date' => SORT_DESC])
                 ->all();
         }
         $i = 0;
@@ -997,50 +1012,6 @@ class ApplicationCards
             ->orderBy(['id' => SORT_DESC])
             ->all();
         return $result;
-    }
-    private static function _gitjobs($page,$keyword,$loc)
-    {
-        if (!empty($keyword) || !empty($loc)) {
-            $url = "https://jobs.github.com/positions.json?description=" . $keyword . "&location=" . $loc."&page=".$page;
-        }
-        else
-        {
-            $url = "https://jobs.github.com/positions.json?page=".$page;
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $header = [
-            'Accept: application/json, text/plain, */*',
-            'Content-Type: application/json;charset=utf-8',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        $result = json_decode($result,true);
-        if ($result) {
-            array_walk($result, function (&$item) {
-                $item['created_on'] = $item['created_at'];
-                $item['organization_name'] = $item['company'];
-                $item['logo'] = $item['company_logo'];
-                $item['organization_link'] = $item['company_url'];
-                $item['link'] = '/jobs/api/'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))).'/'.$item['id'];
-                $item['city'] = $item['location'];
-                $item['sal'] = 1;
-                unset($item['created_at']);
-                unset($item['company']);
-                unset($item['company_logo']);
-                unset($item['company_url']);
-                unset($item['url']);
-                unset($item['description']);
-                unset($item['location']);
-            });
-            return $result;
-        }
-        else
-        {
-            return $result = [];
-        }
     }
     public static function makeSQL_search_pattern($search)
     {

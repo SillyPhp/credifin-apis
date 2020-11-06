@@ -26,10 +26,11 @@ class PreferredApplicationCards
         $dataProvider = $modelSearch->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['z.is_deleted' => 0, 'a.name' => $type, 'e.assigned_to' => $type]);
         $dataProvider->query->select([
-            'z.created_on', 'z.application_enc_id application_id', 'z.type',
+            'z.application_enc_id application_id', 'z.type',
             'n1.html_code',
             'GROUP_CONCAT(DISTINCT(aa1.skill) SEPARATOR ",") skill', 'g.name category',
             'CONCAT("/'.$typo.'/", z.slug) link',
+            'CONCAT("'.$typo.'/", z.slug) share_link',
             'f.name as title',
             'z.last_date',
             'k.industry',
@@ -48,6 +49,9 @@ class PreferredApplicationCards
             END) as experience', 'z.organization_enc_id', 'z.unclaimed_organization_enc_id',
             '(CASE WHEN d.name IS NOT NULL THEN d.name ELSE q.name END) as city',
         ]);
+        if ($type == 'Jobs') {
+            $dataProvider->query->addSelect(['DATE_FORMAT(z.created_on, "%d-%m-%Y") created_on']);
+        }
         if (isset($filters['job_titles'])) {
             $dataProvider->query->andWhere(['in', 'f.name', $filters['job_titles']]);
         }

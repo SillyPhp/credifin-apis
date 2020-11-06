@@ -143,7 +143,7 @@ class OrganizationsController extends ApiBaseController
             ->select([
                 'bb.name',
                 'bb.slug org_slug',
-                'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                 'e.name parent_category',
                 'ee.name title',
                 'a.employer_application_enc_id',
@@ -278,7 +278,7 @@ class OrganizationsController extends ApiBaseController
             $result = [];
 
             $organization = Organizations::find()
-                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
+                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
                 ->where(['slug' => $req['slug']])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
@@ -320,7 +320,10 @@ class OrganizationsController extends ApiBaseController
             $result = [];
 
             $organization = Organizations::find()
-                ->select(['organization_enc_id', 'name', 'slug username', 'email', 'tag_line', 'initials_color', 'establishment_year', 'industry_enc_id', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
+                ->select(['organization_enc_id', 'name', 'slug username', 'email', 'tag_line', 'initials_color', 'establishment_year', 'industry_enc_id', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees',
+//                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo',
+                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
                 ->where(['slug' => $req['slug']])
                 ->andWhere(['status' => 'Active', 'has_placement_rights' => 1])
                 ->andWhere(['is_deleted' => 0])
@@ -357,7 +360,10 @@ class OrganizationsController extends ApiBaseController
                 $result['team'] = $team;
 
                 $opportunities_count = EmployerApplications::find()
-                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                    ->distinct()
+                    ->alias('a')
+                    ->innerJoinWith('erexxEmployerApplications b')
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0, 'b.is_college_approved' => 1])
                     ->count();
                 $result['opportunties_count'] = $opportunities_count;
 
@@ -504,7 +510,7 @@ class OrganizationsController extends ApiBaseController
                 }]);
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
-            ->where(['d.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
+            ->where(['d.organization_enc_id' => $college_id, 'g.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
             ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
             ->asArray()
             ->all();

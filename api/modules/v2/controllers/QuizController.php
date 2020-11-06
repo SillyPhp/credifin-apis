@@ -3,7 +3,7 @@
 
 namespace api\modules\v2\controllers;
 
-use common\models\CollegeCourses;
+use common\models\AssignedCollegeCourses;
 use common\models\CollegeSections;
 use common\models\MockAssignedQuizPool;
 use common\models\MockLabelPool;
@@ -73,7 +73,7 @@ class QuizController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['organizationEnc b' => function ($b) {
                         $b->joinWith(['referrals c'], false);
                     }], false)
@@ -86,7 +86,7 @@ class QuizController extends ApiBaseController
                 $organizations = Users::find()
                     ->alias('a')
                     ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
-                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                        'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                     ->joinWith(['teachers cc' => function ($cc) {
                         $cc->joinWith(['collegeEnc b' => function ($b) {
                             $b->joinWith(['referrals c'], false);
@@ -505,7 +505,7 @@ class QuizController extends ApiBaseController
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $quizModel->slug = $utilitiesModel->create_slug();
                     $quizModel->for_sections = implode(",", $data['sections']);
-                    $quizModel->course_enc_id = $data['class'];
+                    $quizModel->assigned_college_enc_id = $data['class'];
 //                    $quizModel->label_enc_id = $data->label_id;
                     $quizModel->created_by = $user->user_enc_id;
                     if (!$quizModel->validate() || !$quizModel->save()) {
@@ -544,15 +544,17 @@ class QuizController extends ApiBaseController
         if ($this->isAuthorized()) {
             $college_id = $this->getOrgId();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-                ->groupBy(['a.course_name'])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -586,7 +588,7 @@ class QuizController extends ApiBaseController
                     'total_questions',
                     'for_sections'
                 ])
-                ->where(['is_deleted' => 0, 'course_enc_id' => $class_id])
+                ->where(['is_deleted' => 0, 'assigned_college_enc_id' => $class_id])
                 ->asArray()
                 ->all();
 
@@ -870,9 +872,11 @@ class QuizController extends ApiBaseController
                 ->select([
                     'a.quiz_enc_id', 'a.name', 'a.per_ques_marks', 'a.total_marks',
                     'a.per_ques_time', 'a.total_time', 'a.negative_marks', 'a.total_questions',
-                    'a.for_sections', 'b.course_name class_name'
+                    'a.for_sections', 'bb.course_name class_name'
                 ])
-                ->joinWith(['courseEnc b'], false)
+                ->joinWith(['assignedCollegeEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc bb']);
+                }], false)
                 ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -999,8 +1003,8 @@ class QuizController extends ApiBaseController
                         'z.slug',
                         'z.total_questions',
                         'z.for_sections',
-                        'z.course_enc_id',
-                        'c.course_name class'
+                        'z.assigned_college_enc_id',
+                        'cc.course_name class'
                     ])
                     ->joinWith(['labelEnc a' => function ($a) {
                         $a->joinWith(['poolEnc a1']);
@@ -1015,12 +1019,14 @@ class QuizController extends ApiBaseController
                         ]);
                         $b->joinWith(['quizPoolEnc bb'], false);
                     }])
-                    ->joinWith(['courseEnc c'], false)
+                    ->joinWith(['assignedCollegeEnc c' => function ($b) {
+                        $b->joinWith(['courseEnc cc']);
+                    }], false)
                     ->where(['z.quiz_enc_id' => $id, 'z.is_deleted' => 0])
                     ->asArray()
                     ->one();
 
-                if(!empty($detail['mockAssignedQuizPools'])){
+                if (!empty($detail['mockAssignedQuizPools'])) {
                     $detail['min'] = (int)$detail['mockAssignedQuizPools'][0]['min'];
                     $detail['max'] = (int)$detail['mockAssignedQuizPools'][0]['max'];
                 }

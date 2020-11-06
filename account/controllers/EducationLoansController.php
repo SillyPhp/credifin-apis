@@ -2,9 +2,14 @@
 
 namespace account\controllers;
 
+use account\models\loanApplications\LoanSanctionedForm;
+use common\models\AssignedLoanProvider;
 use common\models\LoanApplicationLogs;
 use common\models\LoanApplications;
+use common\models\LoanDocuments;
 use common\models\Organizations;
+use common\models\SelectedServices;
+use common\models\Services;
 use common\models\UserOtherDetails;
 use yii\web\Response;
 use Yii;
@@ -32,26 +37,14 @@ class EducationLoansController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionDashboard()
+    public function actionTest()
     {
-        $college_id = Yii::$app->user->identity->organization_enc_id;
-        $students = UserOtherDetails::find()
-            ->alias('a')
-            ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-            ->joinWith(['userEnc b' => function ($b) {
-                $b->joinWith(['cityEnc b1']);
-            }], false)
-            ->joinWith(['courseEnc cc'], false)
-            ->joinWith(['departmentEnc c'], false)
-            ->where(['a.organization_enc_id' => $college_id, 'a.college_actions' => 0])
-            ->asArray()
-            ->all();
-        $studentIds = ArrayHelper::getColumn($students, 'user_enc_id');
-
-        $loans = LoanApplications::find()
+        $params['id'] = 'mKXM03kGoZak4E81xxmW79z4NJv6eW';
+        $loansApplications = AssignedLoanProvider::find()
+            ->alias('z')
             ->distinct()
-            ->alias('a')
-            ->select(['a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+            ->where(['provider_enc_id' => $params['id']])
+            ->select(['a.loan_app_enc_id',
                 'a.created_on as apply_date',
                 '(CASE
                     WHEN a.loan_status = "0" THEN "New Lead"
@@ -80,6 +73,74 @@ class EducationLoansController extends Controller
                 END) as gender',
                 'a.applicant_dob as dob',
             ])
+            ->joinWith(['loanApplicationEnc a' => function ($b) {
+                $b->joinWith(['loanCoApplicants h']);
+                $b->joinWith(['pathToClaimOrgLoanApplications c' => function ($b) {
+                    $b->joinWith(['assignedCourseEnc d' => function ($v) {
+                        $v->joinWith(['courseEnc f'], false, 'INNER JOIN');
+                        $v->joinWith(['organizationEnc g'], false, 'INNER JOIN');
+                    }]);
+                }], false, 'INNER JOIN');
+            }], true, 'LEFT JOIN')
+            ->asArray()
+            ->all();
+        print_r($loansApplications);
+    }
+
+    public function actionDashboard($filter = null)
+    {
+        $model = new LoanSanctionedForm();
+        $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
+        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
+        if (!$chkPermission) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            $model->documents = Yii::$app->request->post('documents');
+            if ($model->updateReport()) {
+                return $this->refresh();
+            } else {
+                return false;
+            }
+        }
+
+        $loans = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+                'a.created_on as apply_date',
+                '(CASE
+                    WHEN i.status = "0" THEN "New Lead"
+                    WHEN i.status = "1" THEN "Accepted"
+                    WHEN i.status = "2" THEN "Pre Verification"
+                    WHEN i.status = "3" THEN "Under Process"
+                    WHEN i.status = "4" THEN "Sanctioned"
+                    WHEN i.status = "5" THEN "Disbursed"
+                    WHEN i.status = "10" THEN "Reject"
+                    ELSE "N/A"
+                END) as loan_status',
+                'a.applicant_name',
+                'a.amount',
+                'a.amount_received',
+                'a.amount_due',
+                'a.scholarship',
+                'a.degree',
+                'f.course_name',
+                'REPLACE(g.name, "&amp;", "&") as org_name',
+                'a.semesters',
+                'a.years',
+                'a.phone',
+                'a.email',
+                'a.applicant_current_city as city',
+                '(CASE
+                    WHEN a.gender = "1" THEN "Male"
+                    WHEN a.gender = "2" THEN "Female"
+                    ELSE "N/A"
+                END) as gender',
+                'a.applicant_dob as dob',
+                'a.created_by',
+            ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
@@ -95,31 +156,43 @@ class EducationLoansController extends Controller
                     END) as employment_type',
                 ]);
             }])
-            ->where(['in', 'a.created_by', $studentIds])
-            ->andWhere(['a.status' => 1])
-            ->asArray()
-            ->all();
-
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
+            }])
+            ->andWhere(['a.status' => 1]);
+        if ($filter != null) {
+            if ($filter != 'all') {
+                $filter = explode(',', $filter);
+                $loans->andWhere(['in', 'i.status', $filter]);
+            }
+        }
+        $loans = $loans->asArray()->all();
         $stats = LoanApplications::find()
             ->distinct()
             ->alias('a')
             ->select(['a.loan_app_enc_id',
                 'COUNT(a.loan_app_enc_id) as all_applications',
-                'COUNT(CASE WHEN a.loan_status = "0" THEN 1 END) as new_leads',
-                'COUNT(CASE WHEN a.loan_status = "1" THEN 1 END) as accepted',
-                'COUNT(CASE WHEN a.loan_status = "2" THEN 1 END) as pre_verification',
-                'COUNT(CASE WHEN a.loan_status = "3" THEN 1 END) as under_process',
-                'COUNT(CASE WHEN a.loan_status = "4" THEN 1 END) as sanctioned',
-                'COUNT(CASE WHEN a.loan_status = "5" THEN 1 END) as disbursed',
-                'COUNT(CASE WHEN a.loan_status = "10" THEN 1 END) as rejected',
+                'COUNT(CASE WHEN i.status = "0" THEN 1 END) as new_leads',
+                'COUNT(CASE WHEN i.status = "1" THEN 1 END) as accepted',
+                'COUNT(CASE WHEN i.status = "2" THEN 1 END) as pre_verification',
+                'COUNT(CASE WHEN i.status = "3" THEN 1 END) as under_process',
+                'COUNT(CASE WHEN i.status = "4" THEN 1 END) as sanctioned',
+                'COUNT(CASE WHEN i.status = "5" THEN 1 END) as disbursed',
+                'COUNT(CASE WHEN i.status = "10" THEN 1 END) as rejected',
             ])
-            ->where(['in', 'a.created_by', $studentIds])
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->andWhere(['i.provider_enc_id' => Yii::$app->user->identity->organization_enc_id]);
+            }], false)
             ->andWhere(['a.status' => 1])
             ->asArray()
             ->one();
 
+        $documents = LoanDocuments::findAll(['is_deleted' => 0, 'visible_for' => 'Loan']);
+
         return $this->render('dashboard', [
             'loans' => $loans,
+            'model' => $model,
+            'documents' => $documents,
             'stats' => $stats
         ]);
     }
@@ -128,79 +201,50 @@ class EducationLoansController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->post()) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $model = new LoanSanctionedForm();
             $id = Yii::$app->request->post('id');
             $status = Yii::$app->request->post('status');
             $reconsider = Yii::$app->request->post('reconsider');
-            switch ($status) {
-                case 'New Lead' :
-                    $status = 0;
-                    break;
-                case 'Accepted' :
-                    $status = 1;
-                    break;
-                case 'Pre Verification' :
-                    $status = 2;
-                    break;
-                case 'Under Process' :
-                    $status = 3;
-                    break;
-                case 'Sanctioned' :
-                    $status = 4;
-                    break;
-                case 'Disbursed' :
-                    $status = 5;
-                    break;
-                case 'Reject' :
-                    $status = 10;
-                    break;
-                default :
+            if ($status == 4) {
+                return [
+                    'status' => 203,
+                    'title' => 'Important',
+                    'message' => 'Form Submission Required',
+                ];
             }
+            return $model->updateStatus($id, $status, $reconsider, NULL);
+        }
+    }
 
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $model = LoanApplications::findOne(['loan_app_enc_id' => $id]);
-                $model->loan_status = $status;
-                $model->updated_by = Yii::$app->user->identity->user_enc_id;
-                $model->updated_on = date('Y-m-d H:i:s');
-                if (!$model->save()) {
-                    $transaction->rollBack();
-                    return [
-                        'status' => 201,
-                        'title' => 'Error',
-                        'message' => 'Something went wrong..',
-                    ];
-                }
-                $logModel = new LoanApplicationLogs();
+    public function actionAddDocuments()
+    {
+        $documents = ['Birth Certificate', 'Residence Proof', 'Proof of Identity'];
+        foreach ($documents as $doc) {
+            $chk = LoanDocuments::findOne(['name' => $doc]);
+            if (!$chk) {
+                $model = new LoanDocuments();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $logModel->app_log_enc_id = $utilitiesModel->encrypt();
-                $logModel->loan_app_enc_id = $id;
-                $logModel->created_by = Yii::$app->user->identity->user_enc_id;
-                $logModel->created_on = date('Y-m-d H:i:s');
-                $logModel->loan_status = $status;
-                $logModel->is_reconsidered = $reconsider;
-                if (!$logModel->save()) {
-                    $transaction->rollBack();
-                    return [
-                        'status' => 201,
-                        'title' => 'Error',
-                        'message' => 'Something went wrong..',
-                    ];
+                $model->document_enc_id = $utilitiesModel->encrypt();
+                $model->name = $doc;
+                $model->visible_for = 'Loan';
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                $model->created_on = date('Y-m-d H:i:s');
+                if (!$model->save()) {
+                    return 'not updated';
                 }
-                $transaction->commit();
-                return [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Updated Successfully..',
-                ];
-            } catch (yii\db\Exception $exception) {
-                $transaction->rollBack();
-                return [
-                    'status' => 201,
-                    'title' => 'DB Exception',
-                    'message' => 'Something went wrong..',
-                ];
             }
         }
+        return 'updated';
+    }
+
+    public function actionCandidateDashboard($id)
+    {
+        return $this->render('candidate-dashboard',['loan_app_id' => $id]);
+    }
+
+    public function actionLoanProfileView()
+    {
+        return $this->render('loan-profile-view');
     }
 }

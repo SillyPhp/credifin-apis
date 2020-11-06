@@ -1,14 +1,18 @@
 <?php
 
 namespace frontend\controllers;
+
 use account\models\applications\ApplicationForm;
 use common\components\AuthHandler;
+use common\components\OneTapAuth;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\ExternalNewsUpdate;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
@@ -18,6 +22,7 @@ use frontend\models\accounts\CredentialsSetup;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
+use frontend\models\AdmissionForm;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -70,6 +75,10 @@ class SiteController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
                 'successUrl' => 'oauth-verify',
             ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -81,42 +90,87 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionAuthStatus()
+    {
+        if (Yii::$app->request->isPost)
+        {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $url = Yii::$app->request->post('url');
+            $this->handleUrl($url);
+        }
+    }
+    protected function handleUrl($url)
+    {
+        $session = Yii::$app->session;
+        if (!empty($url))
+        {
+            $session->set('current_url', $url);
+        }else{
+            $session->set('current_url', Yii::$app->getHomeUrl());
+        }
+    }
+    public function actionOneTapAuth()
+    {
+        if (Yii::$app->request->isPost) {
+            $this->handleUrl(Yii::$app->request->post('returnUrl'));
+            if ((new OneTapAuth())->handle(Yii::$app->request->post('token'))) {
+                return $this->redirect('/site/oauth-verify');
+            } else {
+                $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Auth Verification Failed !',
+                ];
+            }
+        }
+    }
+
     public function actionOauthVerify()
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();
-        if (!Yii::$app->user->isGuest&&Yii::$app->user->identity->is_credential_change===1)
-        {
-            return $this->render('auth-varify',['credentialsSetup'=>$credentialsSetup]);
-        }
-        else{
-            return $this->redirect('/');
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
+            return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
+        } else {
+            $session = Yii::$app->session;
+            $o = $session->get('current_url');
+            if ($o):
+                return $this->redirect($o);
+            else :
+                return $this->redirect('/');
+            endif;
         }
     }
+
     public function actionPostCredentials()
     {
         $credentialsSetup = new CredentialsSetup();
-        if ($credentialsSetup->load(Yii::$app->request->post()))
-        {
-         if ($credentialsSetup->save())
-         {
-             return $this->redirect('/');
-         }
+        if ($credentialsSetup->load(Yii::$app->request->post())) {
+            if ($credentialsSetup->save()) {
+                $session = Yii::$app->session;
+                $o = $session->get('current_url');
+                if ($o):
+                    return $this->redirect($o);
+                else :
+                    return $this->redirect('/');
+                endif;
+            }
         }
     }
+
     public function actionValidateUser()
     {
         $credentialsSetup = new CredentialsSetup();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $credentialsSetup->load(Yii::$app->request->post());
-            if ($credentialsSetup->username===Yii::$app->user->identity->username)
-            {
+            if ($credentialsSetup->username === Yii::$app->user->identity->username) {
                 return [];
             }
             return ActiveForm::validate($credentialsSetup);
         }
     }
+
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
@@ -138,7 +192,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index',['model'=>$model]);
+        return $this->render('index', ['model' => $model]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -296,7 +350,7 @@ class SiteController extends Controller
 
         $socials = SocialPlatforms::find()
             ->alias('a')
-            ->joinWith(['socialLinks b' => function($b){
+            ->joinWith(['socialLinks b' => function ($b) {
 //                $b->select(['b.*', 'a.name platform_name', 'a.icon', 'a.icon_location']);
 //                $b->joinWith(['groupEnc c']);
             }])
@@ -551,18 +605,20 @@ class SiteController extends Controller
             'primary_cat' => $primary_cat,
         ]);
     }
-    public function actionSignUp(){
+
+    public function actionSignUp()
+    {
         $model = new SignUpCandidateForm();
         $modelSignUp = new WidgetSignUpForm();
-        if(Yii::$app->request->post() && Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $modelSignUp->username = $model->username;
                 $modelSignUp->first_name = $model->first_name;
                 $modelSignUp->last_name = $model->last_name;
                 $modelSignUp->email = $model->email;
-                if($model->phone){
-                $modelSignUp->phone = $model->phone;
+                if ($model->phone) {
+                    $modelSignUp->phone = $model->phone;
                 }
                 $modelSignUp->new_password = $model->new_password;
                 $modelSignUp->confirm_password = $model->confirm_password;
@@ -603,6 +659,7 @@ class SiteController extends Controller
             }
         }
     }
+
     private function login($data = [])
     {
         $loginFormModel = new LoginForm();
@@ -824,6 +881,9 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
+            case 'getEduAndRedbull':
+                return $this->renderAjax('/widgets/edupreneur_and_redbull');
+                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -894,7 +954,7 @@ class SiteController extends Controller
                 break;
             case 'getOnlineClasses':
                 $model = new ClassEnquiryForm();
-                return $this->renderAjax('/widgets/online-classes',[
+                return $this->renderAjax('/widgets/online-classes', [
                     'model' => $model,
                 ]);
                 break;
@@ -919,6 +979,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getOurServices':
+                return $this->renderAjax('/widgets/our-services');
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');
@@ -1052,8 +1115,79 @@ class SiteController extends Controller
         return $this->render('transaction-table');
     }
 
+    public function actionSkillVideo()
+    {
+        return $this->render('skill-video');
+    }
+
+    public function actionCreatorHandbook()
+    {
+        return $this->render('creator-handbook');
+    }
+
     public function actionTeachersHandbook()
     {
         return $this->render('teachers-handbook');
     }
+
+    public function actionAdmissionForm()
+    {
+        $this->layout = 'blank-layout';
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('admission-form', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionGetUsername(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+
+            $user = Users::find()
+                ->select(['username','email','first_name','last_name'])
+                ->where(['user_enc_id' => $id])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'data' => $user
+            ];
+        }
+    }
+
+
+    public function actionEdupreneurPage(){
+        return $this->render('edupreneur');
+    }
+    public function actionRedbullBasement(){
+        return $this->render('redbull');
+    }
+
+    public function actionExpiredJobs(){
+        return $this->render('expired-jobs');
+    }
+//    public function actionAdmission()
+//    {
+//        $model = new AdmissionForm();
+//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+//            if ($model->load(Yii::$app->request->post())) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                return $model->save();
+//                } else {
+//            }
+//        }
+//    }
 }
