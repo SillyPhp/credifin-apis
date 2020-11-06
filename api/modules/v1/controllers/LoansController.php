@@ -30,6 +30,7 @@ class LoansController extends ApiBaseController
                 'college-list',
                 'college-courses',
                 'loan-purpose',
+                'save-application',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -165,7 +166,7 @@ class LoansController extends ApiBaseController
                 $model->college_course_enc_id = null;
                 $parser['college_id'] = null;
                 $parser['is_claim'] = 3;
-                $pref = $params['clg_pref'];
+                $pref = explode(',', $params['clg_pref']);
             }
 //            if (!$parser['college_id']) {
 //                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
@@ -188,6 +189,10 @@ class LoansController extends ApiBaseController
                 }
                 if ($model->validate()) {
                     if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Android', $parser['is_claim'], $course_name, $pref)) {
+                        $data["name"] = "Empower Youth";
+                        $data["description"] = "Application Processing Fee";
+                        $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+                        $data['theme_color'] = "#ff7803";
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -220,17 +225,28 @@ class LoansController extends ApiBaseController
             ->distinct()
             ->alias('a')
             ->select(['a.loan_app_enc_id',
-                'a.applicant_name', 'a.amount loan_amount',
-                'a.status', 'd.payment_token',
-                'd.payment_id', 'd.payment_status',
-                'd.payment_amount application_fees', 'd.payment_gst application_fees_gst',
+                'a.applicant_name',
+                'a.amount loan_amount',
+                'a.status',
+                'a.email',
+                'a.phone',
+                'd.payment_token',
+//                'd.payment_id',
+//                'd.payment_status',
+                '(CASE
+                WHEN d.payment_status IS NULL THEN "failed"
+                WHEN d.payment_status = "captured" THEN "received"
+                ELSE d.payment_status
+                END) as payment_status',
+                '(CASE
+                WHEN d.payment_id IS NULL THEN ""
+                ELSE d.payment_id
+                END) as payment_id',
+                'd.payment_amount application_fees',
+                'd.payment_gst application_fees_gst',
                 'd.education_loan_payment_enc_id'
             ])
 //            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
-            ->joinWith(['loanPurposes b' => function ($b) {
-                $b->select(['b.loan_purpose_enc_id', 'b.fee_component_enc_id', 'b.loan_app_enc_id', 'c.name']);
-                $b->joinWith(['feeComponentEnc c'], false);
-            }])
             ->joinWith(['educationLoanPayments d'], false)
             ->where(['a.created_by' => $this->userId()])
             ->orderBy(['a.created_on' => SORT_DESC])
@@ -238,7 +254,12 @@ class LoansController extends ApiBaseController
             ->all();
 
         if ($loans) {
-            return $this->response(200, ['status' => 200, 'data' => $loans]);
+            $d["name"] = "Empower Youth";
+            $d["description"] = "Application Processing Fee";
+            $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+            $d['theme_color'] = "#ff7803";
+            $d['username'] = Yii::$app->getSecurity()->generateRandomString(3);
+            return $this->response(200, ['status' => 200, 'data' => $loans, 'payment_detail' => $d]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
@@ -277,6 +298,7 @@ class LoansController extends ApiBaseController
         if ($loan_payments) {
             $loan_payments->payment_id = $params['payment_id'];
             $loan_payments->payment_status = $params['status'];
+            $loan_payments->payment_signature = $params['signature'];
             $loan_payments->updated_by = $this->userId();
             $loan_payments->updated_on = date('Y-m-d H:i:s');
             $loan_payments->update();

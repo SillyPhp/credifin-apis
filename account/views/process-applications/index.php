@@ -438,13 +438,14 @@ if ($application_name['wage_type'] == 'Fixed') {
                                              $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
-                                                <div data-id="<?= $p['field_enc_id'] ?>" >
+                                                <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?> <?php if($isHighlight){
                                                         if($p['is_completed'] == 0){
                                                             echo 'showBlue';
                                                             $isHighlight = false;
                                                         }
                                                     }?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                                                         <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
@@ -453,7 +454,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             ?>
                                             <div data-id="<?= $p['field_enc_id'] ?>" >
                                                 <a href="#" class="multipleRound" value="<?= $arr['applied_application_enc_id']; ?>">
-                                                    Hired
+                                                    <i class="fa fa-check-square-o"></i> Hired
                                                 </a>
                                             </div>
                                         </div>
@@ -621,12 +622,17 @@ body, .page-content{
     z-index:1;
 }
 .pr-user-skills:hover .h-skill {
-	display: block;
-	position: absolute;
-	background-color: #fff;
-	top: 20px;
-	border-radius: 6px;
-	text-align: center;
+    display: block;
+    position: absolute;
+    background-color: #fdfdfd;
+    top: 15px;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    left:10px;
+    min-height:105px;
+    max-height:135px;
+    overflow-y:scroll;
 }
 .dropbtn {
 	background-color: #4CAF50;
@@ -657,10 +663,11 @@ body, .page-content{
 }
 .dropdown-content div a {
   color: #000;
-  padding: 8px 0;
+  padding: 8px 0 8px 12px;
   text-decoration: none;
   display: block;
   border-bottom: 1px solid #eee;
+  text-align:left;
 }
 .dropdown-content div:last-child a{
     border-bottom: none;
@@ -922,6 +929,10 @@ li{
   font-size:14px;
   color:#777777;
 }
+.pr-user-past {
+    display: flex;
+    align-items: center;
+}
 .pr-user-past span{
   display:inline-block;
   color:#aaa;
@@ -934,9 +945,13 @@ li{
   font-size:13px;
 }
 .pr-user-past h5{
-  display:inline-block;
   font-family:roboto;
   font-size:13px;
+  margin-left:5px;
+  display: -webkit-box;
+-webkit-line-clamp: 1;
+-webkit-box-orient: vertical;
+overflow: hidden;
 }
 .pr-user-skills{
     padding-top:20px;
