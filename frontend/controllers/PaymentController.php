@@ -19,7 +19,7 @@ use yii\web\Response;
 
 class PaymentController extends Controller
 {
- public function actionPayment($id){
+ public function actionGateway($id){
      $chk = LoanApplications::findOne(['loan_app_enc_id'=>$id]);
      if (!$chk)
      {
@@ -78,24 +78,24 @@ class PaymentController extends Controller
      ]);
  }
 
- public function actionTest()
- {
-     $date = date_create();
-     $timestamp = date_timestamp_get($date);
-     $api_key = Yii::$app->params->razorPay->prod->apiKey;
-     $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
-     $api = new Api($api_key,$api_secret);
-
-     $link = $api->invoice->create(array(
-             'type' => 'link',
-             'amount' => 500,
-             'description' => 'For XYZ purpose',
-             'customer' => array(
-                 'email' => 'gaurav.kumar@example.com'
-             )
-         )
-     );
-
-    return json_encode($link);
+ public function actionTransections(){
+     if (Yii::$app->request->get()){
+         $api_key = Yii::$app->params->razorPay->prod->apiKey;
+         $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+         $api = new Api($api_key,$api_secret);
+         if (Yii::$app->request->get('razorpay_payment_id')){
+             $payment = $api->payment->fetch(Yii::$app->request->get('razorpay_payment_id'));
+             if ($payment){
+                 if ($payment->captured==1){
+                     return $this->renderAjax('handleRequest',['get'=>Yii::$app->request->get()]);
+                 }else{
+                     throw new HttpException(404, Yii::t('frontend', 'Payment Status Not Found, Please Contact The Support Team..'));
+                 }
+             }
+             else{
+                 throw new HttpException(404, Yii::t('frontend', 'Page Not Found'));
+             }
+         }
+     }
  }
 }
