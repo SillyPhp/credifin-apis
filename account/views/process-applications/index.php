@@ -517,6 +517,9 @@ if ($application_name['wage_type'] == 'Fixed') {
 </div>
 <?php
 $this->registerCss('
+body, .page-content{
+    background-color: #eee;
+}
 .hamburger-jobs{
     background: #fff;
     height: auto;
