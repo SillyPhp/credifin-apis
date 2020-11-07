@@ -35,7 +35,8 @@ class ImageScript extends Widget
         if ($results['status']==200)
         {
             $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), ['image' => $this->content['app_id'].'.png', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']]);
+                ->update(EmployerApplications::tableName(), ['image' => $this->content['app_id'].'.png', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
+                 ->execute();
             return $results['url'];
         }else{
             return Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');

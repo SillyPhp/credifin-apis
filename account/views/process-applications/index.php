@@ -64,7 +64,7 @@ if ($application_name['wage_type'] == 'Fixed') {
 
                         <div class="j-share">
                             <span class="fbook"><a href=""
-                                                   onclick="window.open('<?= '//www.facebook.com/dialog/share?' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts"><a href=""
                                                  onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
@@ -615,13 +615,15 @@ $this->registerCss('
 }
 .h-skill{
     display:none;
+    z-index:1;
 }
-.pr-user-skills:hover .h-skill
-{
-    display:block;
-    position: absolute; 
-    background-color: #fff;
-    top: 20px;
+.pr-user-skills:hover .h-skill {
+	display: block;
+	position: absolute;
+	background-color: #fff;
+	top: 20px;
+	border-radius: 6px;
+	text-align: center;
 }
 .dropbtn {
 	background-color: #4CAF50;
@@ -713,15 +715,22 @@ $this->registerCss('
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 20px;
+	padding: 25px 15px;
 	background: #fdfdfd;
 }
 .j-main {
 	display: flex;
 	border-right: 2px solid #333;
+	align-items:center;
+}
+.j-logo {
+    width: 85px;
+    height: 85px;
 }
 .j-logo img {
-	width: 70px;
+	width: 85px;
+	height: 85px;
+	object-fit: contain;
 }
 .j-data {
 	margin-left: 15px;
@@ -743,10 +752,12 @@ $this->registerCss('
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom:10px;
 }
 .j-title a{
     color:#333;
     font-family: roboto;
+    text-transform:capitalize;
 } 
 .j-share span {
 	margin: 0 5px;
@@ -768,7 +779,8 @@ $this->registerCss('
 .e-detail p {
 	margin: 0;
 //	margin-bottom: 11px !important;
-	font-size:12px;
+	font-size:11px;
+	height:15px;
 }
 .e-logo i {
     font-size: 22px;
@@ -782,7 +794,7 @@ $this->registerCss('
 	text-align: center;
 }
 .option-1 {
-	margin: 20px 0;
+	margin: 15px 0 20px;
 }
 .option-1 span i {
 	font-size: 18px;
@@ -928,6 +940,7 @@ li{
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{

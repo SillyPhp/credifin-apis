@@ -164,8 +164,8 @@ class SearchController extends ApiBaseController
                 if ($org_labels) {
                     foreach ($org_labels as $l) {
                         switch ($l['name']) {
-                            case "Treanding":
-                                $labels['Treanding'] = true;
+                            case "Trending":
+                                $labels['Trending'] = true;
                                 break;
                             case "Promoted":
                                 $labels['Promoted'] = true;

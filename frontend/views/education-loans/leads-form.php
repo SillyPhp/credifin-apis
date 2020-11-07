@@ -1,8 +1,10 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\widgets\login;
+
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createAbsoluteUrl('/education-loans/apply') . '"', \yii\web\View::POS_HEAD);
 ?>
@@ -12,27 +14,28 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
     $name = ucwords($first) . ' ' . ucwords($last);
     $color = Yii::$app->user->identity->initials_color;
     ?>
- <div id="user_box">
-    <?php
-    if (!empty(Yii::$app->user->identity->image)){
-    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-    ?>
-    <img src="<?= $image ?>"/>
-    <?php }else { ?>
-        <canvas class="user-icon" name="<?= $name; ?>"
-                color="<?= $color; ?>" width="50"
-                height="50" font="20px"></canvas></span>
-    <?php } ?>
-    <h3 class="p_label l_tag"><?= $name ." (". Html::a('Logout', ['/logout'], ['data' => ['method' => 'post']]) .")" ?></h3>
-</div>
-<?php }else{
+    <div id="user_box">
+        <?php
+        if (!empty(Yii::$app->user->identity->image)) {
+            $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+            ?>
+            <img src="<?= $image ?>"/>
+        <?php } else { ?>
+            <canvas class="user-icon" name="<?= $name; ?>"
+                    color="<?= $color; ?>" width="50"
+                    height="50" font="20px"></canvas></span>
+        <?php } ?>
+        <h3 class="p_label l_tag"><?= $name . " (" . Html::a('Logout', ['/logout'], ['data' => ['method' => 'post']]) . ")" ?></h3>
+    </div>
+<?php } else {
     echo login::widget();
     ?>
-<div id="user_box">
-    <h3 class="p_label l_tag">
-        <a href="javascript:;" data-toggle="modal" class="login_btn" data-target="#loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
-    </h3>
-</div>
+    <div id="user_box">
+        <h3 class="p_label l_tag">
+            <a href="javascript:;" data-toggle="modal" class="login_btn" data-target="#loginModal"><i
+                        class="fas fa-sign-in-alt"></i> Login</a>
+        </h3>
+    </div>
 <?php } ?>
 <div id="light_box_submit">
     <div class="light-box-modal">
@@ -43,9 +46,10 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
             <div class="light-box-content">
                 <p>Application Reference Number: <span id="app_num"></span></p>
                 <div class="row">
-                   <p>Click <a href="" target="_blank" class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"  title="Share on Whatsapp">
-                        <i class="fab fa-whatsapp"></i>
-                    </a> To Send Him/Her Education Loan Form </p>
+                    <p>Click <a href="" target="_blank" class="j-whatsapp share_btn tt" type="button"
+                                data-toggle="tooltip" title="Share on Whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a> To Send Him/Her Education Loan Form </p>
                     <p><a class="btn btn-sm btn-primary" onclick="window.location.reload();">Fill Up New Form?</a></p>
                 </div>
             </div>
@@ -60,53 +64,82 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                     'id' => 'leads_form',
                 ]); ?>
                 <div class="row">
-                   <div class="col-md-6">
-                       <?= $form->field($model, 'first_name')->textInput(['placeholder'=>'First Name','class'=>'form-control text-capitalize'])->label(false); ?>
-                   </div>
                     <div class="col-md-6">
-                        <?= $form->field($model, 'last_name')->textInput(['placeholder'=>'Last Name','class'=>'form-control text-capitalize'])->label(false); ?>
+                        <?= $form->field($model, 'first_name')->textInput(['placeholder' => 'First Name', 'class' => 'form-control text-capitalize'])->label(false); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'last_name')->textInput(['placeholder' => 'Last Name', 'class' => 'form-control text-capitalize'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder'=>'Mobile Number (WhatsApp Number)'])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)','maxLength'=>15])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_email')->textInput(['placeholder'=>'Student Email','class'=>'form-control'])->label(false); ?>
+                        <?= $form->field($model, 'student_email')->textInput(['placeholder' => 'Student Email', 'class' => 'form-control'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="the-basics-college">
-                            <?= $form->field($model, 'university_name')->textInput(['placeholder'=>'College / University Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                            <?= $form->field($model, 'university_name')->textInput(['placeholder' => 'College / University Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="the-basics">
-                        <?= $form->field($model, 'course_name')->textInput(['placeholder'=>'Course Name','class'=>'form-control text-capitalize typeahead'])->label(false); ?>
+                            <?= $form->field($model, 'course_name')->textInput(['placeholder' => 'Course Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
                         </div>
-                  </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder'=>'Annual Course Fee','maxLength'=>20])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div><label class="p_label">Parent Information</label></div>
-                        <div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>
+                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder' => 'Annual Course Fee', 'maxLength' => 20])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div><label class="p_label">Parent Information (Optional, You Can Add Multiple)</label></div>
+                        <div class="form-group"><input type="text" name="parent_name[]"
+                                                       class="form-control text-capitalize" placeholder="Name"
+                                                       id="parent_name[]"></div>
                         <div class="form-group">
-                             <input type="radio" value="Father" name="parent_relation[]"> Father
-                             <input type="radio" value="Mother" name="parent_relation[]"> Mother
-                             <input type="radio" value="Guardian" name="parent_relation[]"> Guardian
+                            <div class="radio-heading input-group-text">
+                                <strong>Relation</strong>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" value="Father" id="reFather" name="parent_relation[0]">
+                                    <label for="reFather">Father</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reMother" value="Mother" name="parent_relation[0]">
+                                    <label for="reMother">Mother</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reBrother" value="Brother" name="parent_relation[0]">
+                                    <label for="reBrother">Brother</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reSister" value="Sister" name="parent_relation[0]">
+                                    <label for="reSister">Sister</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_relation" id="reGuardian" value="Guardian" name="parent_relation[0]">
+                                    <label for="reGuardian">Guardian</label>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>
-                        <div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>
+                        <div class="form-group"><input type="text" name="parent_mobile_number[]"
+                                                       class="form-control parent_mobile_number"
+                                                       placeholder="Mobile Number" id="parent_mobile_number[]"
+                                                       maxlength="15" minlength="10"></div>
+                        <div class="form-group"><input type="text" name="parent_annual_income[]"
+                                                       class="form-control parent_annual_income"
+                                                       placeholder="Annual Income" id="parent_annual_income[]"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -118,22 +151,29 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                     </div>
                 </div>
                 <div class="row">
-                        <div class="col-md-12 center">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color','id'=>'subBtn']) ?>
-                            <button type="button" class="button-slide btn" id="loadBtn">
-                                Processing <i class="fas fa-circle-notch fa-spin fa-fw"></i>
-                            </button>
-                          </div>
+                    <div class="col-md-12 center">
+                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary logo-dark-color', 'id' => 'subBtn']) ?>
+                        <button type="button" class="button-slide btn" id="loadBtn">
+                            Processing <i class="fas fa-circle-notch fa-spin fa-fw"></i>
+                        </button>
+                    </div>
                 </div>
-                </div>
-                <?php ActiveForm::end(); ?>
             </div>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
+</div>
+<input type="hidden" name="parentElem" id="parentElem" value="1">
 <script>
     function removeAnotherField(ths) {
         ths.closest('.parent_inforamtion').remove();
+        counElement();
+    }
+    function counElement()
+    {
+        var count = $('input[name="parent_name[]"]').length;
+        $('#parentElem').val(count);
     }
 </script>
 <?php
@@ -142,8 +182,10 @@ $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
 $('#course_fee_annual').mask("#", {reverse: true});
+var addMoreCount = 1;
 $(document).on('click','#add_parent_info',function (e){
     addAnotherField();
+    addMoreCount++;
 });
 $(document).on('click','.addAnotherCo',function (e){
     e.preventDefault();
@@ -153,19 +195,35 @@ function addAnotherField()
     var field = ['<div class="col-md-12">' +
      '<div><label class="p_label">Parent Information</label></div>'+
      '<div class="form-group"><input type="text" name="parent_name[]" class="form-control text-capitalize" placeholder = "Name" id="parent_name[]"></div>' +
-     '<div class="form-group"><input type="radio" value="Father" name="parent_relation[]"> Father<input type="radio" value="Mother" name="parent_relation[]"> Mother<input type="radio" value="Guardian" name="parent_relation[]"> Guardian</div>'+
-     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15"></div>' +
+     '<div class="form-group">' +
+      '<div class="radio-heading input-group-text">' +
+       '<strong>Relation</strong>' +
+        '</div>' +  
+         '<ul class="relationList"><li class="service-list"><input type="radio" class="input_radio_relation" value="Father" id="reFather'+addMoreCount+'" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reFather'+addMoreCount+'">Father</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reMother'+addMoreCount+'" value="Mother" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reMother'+addMoreCount+'">Mother</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reBrother'+addMoreCount+'" value="Brother" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reBrother'+addMoreCount+'">Brother</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reSister'+addMoreCount+'" value="Sister" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reSister'+addMoreCount+'">Sister</label></li><li class="service-list">'+
+                '<input type="radio" class="input_radio_relation" id="reGuardian'+addMoreCount+'" value="Guardian" name="parent_relation['+addMoreCount+']">'+
+                '<label for="reGuardian'+addMoreCount+'">Guardian</label></li>' +
+         '</ul>' +
+        '</div>'+
+     '<div class="form-group"><input type="text" name="parent_mobile_number[]" class="form-control parent_mobile_number" placeholder = "Mobile Number" id="parent_mobile_number[]" maxlength="15" minlength="10"></div>' +
      '<div class="form-group"><input type="text" name="parent_annual_income[]" class="form-control parent_annual_income" placeholder = "Annual Income" id="parent_annual_income[]"></div>' +
      '<div class"pull-right">'+
      '<button type="button" class="addAnotherCo input-group-text float-right" onclick="removeAnotherField(this)"><i class="fas fa-times"></i> Remove</button>'+
      '</div>'+
-     '</div>'];
+     '</div>'];  
             var textnode = document.createElement("div"); 
             textnode.setAttribute('class', 'parent_inforamtion');
             textnode.innerHTML = field; 
             $('#clone_fields_parent').prepend(textnode);
             $('.parent_mobile_number').mask("#", {reverse: true}); 
             $('.parent_annual_income').mask("#", {reverse: true});
+            counElement();
 }
 getCourses();
 getCollege(datatype=0,source=3,type=['College']);
@@ -251,7 +309,7 @@ function getCourses()
             method : 'GET',
             success : function(res) {
             if (res.response.status==200){
-                 res = res.response.course;
+                res = res.response.course;
                 $.each(res,function(index,value) 
                   {   
                    _courses.push(value.value);
@@ -276,10 +334,31 @@ function getCourses()
 $(document).on('submit','#leads_form',function(event) {
   event.preventDefault();
   event.stopImmediatePropagation();
+  var i = 1;
+  var j = 0;
+ $.each($('.input_radio_relation'),function(index,value)
+  {
+      if (i<=5){
+       $(this).attr('name','parent_relation['+j+']');   
+       i++;
+      }
+      
+      if (i==6)
+          {
+              i=0;
+              j++;
+          }
+  });
+    $("#leads_form *").filter(":input").each(function(){
+      if ($(this).val() == '')
+        $(this).prop("disabled", true);
+    });
+  var formData = new FormData(this);
+  formData.append('parentElem',$('#parentElem').val());
       $.ajax({
         url: "/education-loans/leads",
         method: "POST",
-        data: new FormData(this),
+        data: formData,
         contentType: false,
         cache:false,
         processData: false,
@@ -293,7 +372,7 @@ $(document).on('submit','#leads_form',function(event) {
            if (response.status==200)
                {
                    toastr.success(response.message, response.title);
-                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone=9592868808&text='+link_form)
+                   $('.share_btn').attr('href','https://api.whatsapp.com/send?phone='+$('#student_mobile_number').val()+'&text='+link_form)
                    $('#app_num').text(response.app_num);
                    $('#light_box_submit').css('display','block');
                }else {
@@ -501,6 +580,55 @@ font-weight: 700;
 {
 font-size:22px
 }
+.service-list {
+        display: inline-block;
+        min-width: 90px;
+        text-align: center;
+        margin: 0px 5px;
+    }
+
+    .service-list > label {
+        width: 100%;
+        display: inline-block;
+        background-color: rgba(255, 255, 255, .9);
+        border: 2px solid rgba(139, 139, 139, .3);
+        color: #333;
+        font-weight:normal;
+        border-radius: 4px;
+        white-space: nowrap;
+        margin: 3px 0px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: all .2s;
+    }
+
+    .service-list > label {
+        padding: 8px 5px;
+        cursor: pointer;
+    }
+    .relationList{
+        padding:0px;
+    }
+
+    .service-list > input[type='radio']:checked + label, .service-list > label:hover {
+        border: 2px solid #00a0e3;
+        background-color: #00a0e3;
+        color: #fff;
+        transition: all .2s;
+    }
+
+    .service-list > input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .service-list > input[type='radio']:focus + label {
+        border: 2px solid #00a0e3;
+    }
 ");
 $this->registerCssFIle('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
