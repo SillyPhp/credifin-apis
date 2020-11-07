@@ -45,4 +45,17 @@ class RetryPayments extends Model
             return false;
         }
     }
+
+    public function Update($options)
+    {
+        $loan_payment = EducationLoanPayments::findOne(['payment_token'=>$options['invoice_id']]);
+        $loan_payment->payment_status = (($options['status']=='paid')?'captured':$options['status']);
+        $loan_payment->payment_id = $options['payment_id'];
+        $loan_payment->payment_signature = $options['signature'];
+        if ($loan_payment->save()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
