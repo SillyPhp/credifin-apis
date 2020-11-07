@@ -198,6 +198,7 @@ class CollegeIndexController extends ApiBaseController
             if ($candidates) {
                 foreach ($candidates as $key => $val) {
                     $candidates[$key]['loan_applied'] = $this->loanApplied($val['user_enc_id']);
+                    $candidates[$key]['applied_companies'] = $this->appliedCompanies($val['user_enc_id']);
                 }
             }
 
@@ -693,7 +694,8 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
-                    $d['erexx_app_id'] = '';
+                    $d['erexx_app_id'] = $data->application_enc_id;
+                    $d['reasons'] = $req['reasons'];
                     $this->__rejectReasons($d);
                 }
                 $data->last_updated_by = $user->user_enc_id;
@@ -716,6 +718,9 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($req['action'] == 'Reject') {
                     $model->is_college_approved = 0;
                     $model->is_deleted = 1;
+                    $d['erexx_app_id'] = $model->application_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $this->__rejectReasons($d);
                 }
                 $model->created_on = date('Y-m-d H:i:s');
                 $model->created_by = $user->user_enc_id;
@@ -948,9 +953,13 @@ class CollegeIndexController extends ApiBaseController
                 'CASE WHEN b2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b2.logo_location, "/", b2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b2.name, "&size=200&rounded=false&background=", REPLACE(b2.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
             ->joinWith(['applicationEnc b' => function ($b) {
-                $b->innerJoinWith(['erexxEmployerApplications b1']);
+                $b->innerJoinWith(['erexxEmployerApplications b1' => function ($b1) {
+                    $b1->onCondition(['b1.is_deleted' => 0, 'b1.status' => 'Active']);
+                }]);
                 $b->joinWith(['organizationEnc b2']);
-            }],false)
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                $b->groupBy(['b.organization_enc_id']);
+            }], false)
             ->where(['a.is_deleted' => 0, 'a.created_by' => $user_id])
             ->asArray()
             ->all();
