@@ -107,7 +107,7 @@ class LoansController extends ApiBaseController
                     }
                 }
                 if ($model->validate()) {
-                    if ($data = $model->add($user->user_enc_id, $college_id)) {
+                    if ($data = $model->add(1,$user->user_enc_id,$college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -262,10 +262,6 @@ class LoansController extends ApiBaseController
                     ]);
                 }])
                 ->joinWith(['educationLoanPayments f'], false)
-                ->joinWith(['loanPurposes e' => function ($e) {
-                    $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
-                    $e->joinWith(['feeComponentEnc e1'], false);
-                }])
                 ->where(['cc.organization_enc_id' => $college_id, 'f.payment_status' => ['captured', 'created']])
                 ->andWhere(['not', ['a.status' => 2]]);
             if ($limit) {
@@ -318,10 +314,6 @@ class LoansController extends ApiBaseController
                             'd.employment_type',
                             'd.annual_income'
                         ]);
-                    }])
-                    ->joinWith(['loanPurposes e' => function ($e) {
-                        $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
-                        $e->joinWith(['feeComponentEnc e1'], false);
                     }])
                     ->where(['cc.organization_enc_id' => $college_id, 'a.loan_app_enc_id' => $id])
                     ->andWhere(['not', ['a.status' => 2]])
