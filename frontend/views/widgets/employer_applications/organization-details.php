@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
+use borales\extensions\phoneInput\PhoneInput;
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -146,8 +148,28 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         </div>
         <div class="wts-ap">
             <h3>Share on Whatsapp via Number</h3>
-            <input type="text" class="form-control wts-txt" placeholder="Enter Number">
-            <div class="fa-send"><i class="fa fa-arrow-right"></i></div>
+            <div class="col-md-12">
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'whatsapp-form',
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group">{input}{error}</div>',
+                        'labelOptions' => ['class' => ''],
+                    ],
+                ]);
+                ?>
+                <?=
+                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                    'options' => ['class'=>'wts-txt'],
+                    'jsOptions' => [
+                        'allowExtensions' => false,
+                        'preferredCountries' => ['in'],
+                        'nationalMode' => false,
+                    ]
+                ]);
+                ?>
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
         <div class="row m-0">
             <div class="col-lg-12">
@@ -160,6 +182,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             </div>
         </div>
     </div>
+<!--        <div class="down-img">-->
+<!--            <h3>Download Sharing Image</h3>-->
+<!--            <a href="--><?//=$image;?><!--" download target="_blank"><i class="fa fa-download"></i> Download</a>-->
+<!--        </div>-->
     </div>
 <?php
 $script = <<<JS
@@ -167,7 +193,7 @@ $(document).on('keypress','.wts-txt',function(e) {
     if(e.which == 13) {
         var val = $(this).val();
         var location = window.location.href;
-        if(val.length < 10){
+        if(val.length < 8){
             alert('Enter Valid Number')
         }
         else {
@@ -182,20 +208,30 @@ $(document).on('keypress','.wts-txt',function(e) {
         // return true;
     }
 });
-$('.fa-send').click(function () {        
-    var val = $('.wts-txt').val();
-    var location = window.location.href;
-       if(val.length < 10){
-            alert('Enter Valid Number')
-        }
-        else {
-             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
-        }
-        $(this).val('');
+$(document).on('submit','#whatsapp-form',function(e) {
+  e.preventDefault();
+  return false;
 });
 JS;
 
 $this->registerCss('
+.down-img h3 {
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 10px 0 20px;
+}
+.down-img a {
+	color: #fff;
+	border: 2px solid #fff;
+	padding: 6px 20px;
+	font-size: 14px;
+	font-family: roboto;
+	font-weight: 500;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
+    margin-bottom:0;
+}
 .wts-ap{position:relative;}
 .wts-ap h3 {
     margin: 0;
@@ -206,7 +242,7 @@ $this->registerCss('
 }
 .wts-ap input {
     font-family: roboto;
-    width: 90%;
+    width: 100%;
     margin: auto;
     height: 40px;
     border-radius: 6px;
@@ -375,6 +411,17 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     background:#00a0e3;
     border-color:#00a0e3;
 }
+.intl-tel-input, .iti {
+    width: 100%;
+}
+.intl-tel-input .country-list, .iti .country-list {
+    max-width: 260px;
+}
+.input-group-addon{
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
+.country-list{z-index:99 !important;}
 /* thurio effect */
 //.effect.thurio a {
 //  transition: border-radius 0.2s linear 0s;

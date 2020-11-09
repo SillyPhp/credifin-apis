@@ -30,6 +30,7 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\whatsAppShareForm;
 use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
@@ -578,6 +579,7 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
+        $whatsAppForm = new whatsAppShareForm();
 
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
@@ -591,6 +593,7 @@ class JobsController extends Controller
             'popular_videos' => $popular_videos,
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 
