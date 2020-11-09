@@ -58,7 +58,6 @@ echo $this->render('/widgets/drop_resume', [
 <section>
     <div class="container">
         <div class="row">
-
             <div class="social-menu">
                 <p>Share On</p>
                 <?php
@@ -72,25 +71,24 @@ echo $this->render('/widgets/drop_resume', [
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=http:<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
-                           class="share-elem-main">
+                        <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                             <i class="fab fa-twitter"></i>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http:<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                        <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
                            class="share-elem-main">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=http:<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                        <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
                            class="share-elem-main">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=http:<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                        <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
                            class="share-elem-main">
                             <i class="fab fa-telegram-plane"></i>
                         </a>

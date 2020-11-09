@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
+use borales\extensions\phoneInput\PhoneInput;
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -123,26 +125,51 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 $link = Url::to('training/' . $application_slug, 'https');
             }
             ?>
-            <a href="#" class="facebook-f"
+            <a href="javascript:;" class="facebook-f"
                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="#" class="twitter-t"
+            <a href="javascript:;" class="twitter-t"
                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-twitter"></i>
             </a>
-            <a href="#" class="linked-l"
+            <a href="javascript:;" class="linked-l"
                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-linkedin-in"></i>
             </a>
-            <a href="#" class="whatsapp-w"
+            <a href="javascript:;" class="whatsapp-w"
                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-whatsapp"></i>
             </a>
-            <a href="#" class="enve-e"
+            <a href="javascript:;" class="enve-e"
                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fas fa-envelope"></i>
             </a>
+        </div>
+        <div class="wts-ap">
+            <h3>Share on Whatsapp via Number</h3>
+            <div class="col-md-12">
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'whatsapp-form',
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group">{input}{error}</div>',
+                        'labelOptions' => ['class' => ''],
+                    ],
+                ]);
+                ?>
+                <?=
+                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                    'options' => ['class'=>'wts-txt'],
+                    'jsOptions' => [
+                        'allowExtensions' => false,
+                        'preferredCountries' => ['in'],
+                        'nationalMode' => false,
+                    ]
+                ]);
+                ?>
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
         <div class="row m-0">
             <div class="col-lg-12">
@@ -155,9 +182,80 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             </div>
         </div>
     </div>
+<!--        <div class="down-img">-->
+<!--            <h3>Download Sharing Image</h3>-->
+<!--            <a href="--><?//=$image;?><!--" download target="_blank"><i class="fa fa-download"></i> Download</a>-->
+<!--        </div>-->
     </div>
 <?php
+$script = <<<JS
+$(document).on('keypress','.wts-txt',function(e) {
+    if(e.which == 13) {
+        var val = $(this).val();
+        var location = window.location.href;
+        if(val.length < 8){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $(this).val('');
+    } else {
+        var iKeyCode = (e.which) ? e.which : e.keyCode;
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 43){
+            return false;
+        }
+        // return true;
+    }
+});
+$(document).on('submit','#whatsapp-form',function(e) {
+  e.preventDefault();
+  return false;
+});
+JS;
+
 $this->registerCss('
+.down-img h3 {
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 10px 0 20px;
+}
+.down-img a {
+	color: #fff;
+	border: 2px solid #fff;
+	padding: 6px 20px;
+	font-size: 14px;
+	font-family: roboto;
+	font-weight: 500;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
+    margin-bottom:0;
+}
+.wts-ap{position:relative;}
+.wts-ap h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px !important;
+    font-family: roboto;
+}
+.wts-ap input {
+    font-family: roboto;
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+.fa-send {
+    position: absolute;
+    bottom: 0px;
+    right: 13px;
+    font-size: 24px;
+    width: 40px;
+    cursor:pointer;
+}
 .follow-btn{
     background:#ff7803;
     box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -265,6 +363,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 .effect {
   width: 100%;
 }
+.effect h3{margin-bottom:0;}
 .effect .buttons {
   display: block;
   padding: 10px 0px;
@@ -275,7 +374,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   height: 40px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: 10px;
+  margin: 0 5px;
   font-size: 17px;
   overflow: hidden;
   position: relative;
@@ -290,7 +389,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   display: inline-block;
   vertical-align: middle;
   margin-left: 0px;
-  margin-top: 5px;
+  margin-top: 2px;
 }
 .effect a.facebook-f:hover{
     background:#3b5998;
@@ -312,6 +411,17 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     background:#00a0e3;
     border-color:#00a0e3;
 }
+.intl-tel-input, .iti {
+    width: 100%;
+}
+.intl-tel-input .country-list, .iti .country-list {
+    max-width: 260px;
+}
+.input-group-addon{
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
+.country-list{z-index:99 !important;}
 /* thurio effect */
 //.effect.thurio a {
 //  transition: border-radius 0.2s linear 0s;
@@ -402,5 +512,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 ');
+$this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
