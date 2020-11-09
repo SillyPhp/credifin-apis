@@ -142,6 +142,7 @@ class OrganizationsController extends ApiBaseController
             ->distinct()
             ->select([
                 'bb.name',
+                'a.is_college_approved',
                 'bb.slug org_slug',
                 'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                 'e.name parent_category',
@@ -200,7 +201,7 @@ class OrganizationsController extends ApiBaseController
                 }], true);
                 $b->joinWith(['applicationTypeEnc z']);
             }], true)
-            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active']);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
