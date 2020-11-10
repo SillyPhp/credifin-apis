@@ -1,7 +1,9 @@
 <?php
-use yii\helpers\Url;
-use yii\bootstrap\ActiveForm;
+
 use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
+
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -47,7 +49,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
-                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fas fa-check"></i>Applied</a>
+                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
+                                class="fas fa-check"></i>Applied</a>
                     <div class="sub-actions">
                         <?php
                         if ($type == 'Internship'): ?>
@@ -62,44 +65,45 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                         <?php endif; ?>
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <div class="btn-parent">
-                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                    <div class="btn-parent">
+                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
+                                    class="fas fa-paper-plane hvr-icon"></i>Apply
                             for
                             <?= $type ?></a>
-<!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
-                </div>
-                <?php if ($shortlist_btn_display): ?>
-                    <div class="sub-actions">
-                        <?php
-                        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
-                            if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                                ?>
-                                <a href="#"
-                                   class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                            class="far fa-heart hvr-icon"></i>Saved</a>
-                                <?php
-                            } else {
-                                ?>
-                                <a href="#"
-                                   class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                            class="far fa-heart hvr-icon"></i>Save</a>
-                                <?php
-                            }
-                        }
-                        ?>
-                        <?php
-                        if ($type == 'Internship'): ?>
-                            <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
-                               class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                                Compare Internship</a>
-
-                        <?php elseif ($type == 'Job'): ?>
-                            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                               class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
-                                Compare Job</a>
-                        <?php endif; ?>
+                        <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
                     </div>
-                  <?php endif; ?>
+                    <?php if ($shortlist_btn_display): ?>
+                        <div class="sub-actions">
+                            <?php
+                            if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
+                                if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
+                                    ?>
+                                    <a href="#"
+                                       class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                                class="far fa-heart hvr-icon"></i>Saved</a>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <a href="#"
+                                       class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                                class="far fa-heart hvr-icon"></i>Save</a>
+                                    <?php
+                                }
+                            }
+                            ?>
+                            <?php
+                            if ($type == 'Internship'): ?>
+                                <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                                   class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                                    Compare Internship</a>
+
+                            <?php elseif ($type == 'Job'): ?>
+                                <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                                   class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
+                                    Compare Job</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             <?php endif; ?>
             <?php
@@ -112,80 +116,78 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <?php endif; ?>
         </div>
         <div class="effect thurio">
-        <h3 class="text-white">Share</h3>
-        <div class="buttons">
-            <?php
-            if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug, 'https');
-            } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug, 'https');
-            }
-            else if ($type=='Training')
-            {
-                $link = Url::to('training/' . $application_slug, 'https');
-            }
-            ?>
-            <a href="javascript:;" class="facebook-f"
-               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="javascript:;" class="twitter-t"
-               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="javascript:;" class="linked-l"
-               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a href="javascript:;" class="whatsapp-w"
-               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="javascript:;" class="enve-e"
-               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fas fa-envelope"></i>
-            </a>
-        </div>
-        <div class="wts-ap">
-            <h3>Share on Whatsapp via Number</h3>
-            <div class="col-md-12">
+            <h3 class="text-white">Share</h3>
+            <div class="buttons">
                 <?php
-                $form = ActiveForm::begin([
-                    'id' => 'whatsapp-form',
-                    'fieldConfig' => [
-                        'template' => '<div class="form-group">{input}{error}</div>',
-                        'labelOptions' => ['class' => ''],
-                    ],
-                ]);
+                if ($type == 'Internship') {
+                    $link = Url::to('internship/' . $application_slug, 'https');
+                } else if ($type == 'Job') {
+                    $link = Url::to('job/' . $application_slug, 'https');
+                } else if ($type == 'Training') {
+                    $link = Url::to('training/' . $application_slug, 'https');
+                }
                 ?>
-                <?=
-                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                    'options' => ['class'=>'wts-txt'],
-                    'jsOptions' => [
-                        'allowExtensions' => false,
-                        'preferredCountries' => ['in'],
-                        'nationalMode' => false,
-                    ]
-                ]);
-                ?>
-                <?php ActiveForm::end(); ?>
+                <a href="javascript:;" class="facebook-f"
+                   onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="javascript:;" class="twitter-t"
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="javascript:;" class="linked-l"
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="javascript:;" class="whatsapp-w"
+                   onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="javascript:;" class="enve-e"
+                   onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fas fa-envelope"></i>
+                </a>
             </div>
-        </div>
-        <div class="row m-0">
-            <div class="col-lg-12">
-                <h4 class="text-white">or</h4>
-                <div class="pf-field">
-                    <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
-                           class="form-control" value="<?= $link ?>" readonly>
-                    <i class="far fa-copy"></i>
+            <div class="wts-ap">
+                <h3>Share on Whatsapp via Number</h3>
+                <div class="col-md-12">
+                    <?php
+                    $form = ActiveForm::begin([
+                        'id' => 'whatsapp-form',
+                        'fieldConfig' => [
+                            'template' => '<div class="form-group">{input}{error}</div>',
+                            'labelOptions' => ['class' => ''],
+                        ],
+                    ]);
+                    ?>
+                    <?=
+                    $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'jsOptions' => [
+                            'allowExtensions' => false,
+                            'preferredCountries' => ['in'],
+                            'nationalMode' => false,
+                        ]
+                    ]);
+                    ?>
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
+            <div class="row m-0">
+                <div class="col-lg-12">
+                    <h4 class="text-white">or</h4>
+                    <div class="pf-field">
+                        <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
+                               class="form-control" value="<?= $link ?>" readonly>
+                        <i class="far fa-copy"></i>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<!--        <div class="down-img">-->
-<!--            <h3>Download Sharing Image</h3>-->
-<!--            <a href="--><?//=$image;?><!--" download target="_blank"><i class="fa fa-download"></i> Download</a>-->
-<!--        </div>-->
+        <div class="down-img">
+            <h3>Download Sharing Image</h3>
+            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+        </div>
     </div>
 <?php
 $script = <<<JS
@@ -215,19 +217,20 @@ $(document).on('submit','#whatsapp-form',function(e) {
 JS;
 
 $this->registerCss('
-.down-img h3 {
+.down-img h3 {  
 	color: #fff;
-	font-size: 16px;
+	font-size: 15px;
 	font-family: roboto;
-	margin: 10px 0 20px;
+	margin: 10px 0 15px;
 }
 .down-img a {
 	color: #fff;
 	border: 2px solid #fff;
-	padding: 6px 20px;
+	padding: 8px 25px;
 	font-size: 14px;
 	font-family: roboto;
 	font-weight: 500;
+	border-radius:6px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
