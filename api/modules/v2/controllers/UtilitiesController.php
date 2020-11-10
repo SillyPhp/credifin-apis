@@ -130,7 +130,7 @@ class UtilitiesController extends ApiBaseController
         $cities = Cities::find()
             ->alias('a')
             ->select(['a.city_enc_id', 'a.name'])
-            ->joinWith(['stateEnc b'],false)
+            ->joinWith(['stateEnc b'], false)
             ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
         if ($search != null && $search != '') {
             $cities->andWhere(['like', 'a.name', $search]);
@@ -230,6 +230,38 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, $cities);
+    }
+
+    public function actionTestMail()
+    {
+        $mails = [];
+        $m['name'] = 'Ravinder Singh';
+        $m['email'] = 'ravindersaini15697@gmail.com';
+        array_push($mails, $m);
+
+        $m['name'] = 'Tarandeep Sigh';
+        $m['email'] = 'tarandeep@empoweryouth.com';
+        array_push($mails, $m);
+
+        $m['name'] = 'Ajay Juneja';
+        $m['email'] = 'ajayjuneja52@empoweryouth.com';
+        array_push($mails, $m);
+
+        foreach ($mails as $i) {
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                'name' => $i['name'],
+                'email' => $i['email']
+            ];
+
+            $mail->subject = 'You are selected to take interview';
+            $mail->template = 'education-loan';
+            if (!$mail->send()) {
+                print($mail->getErrors());
+                die();
+            }
+        }
     }
 
 }
