@@ -244,7 +244,7 @@ class UtilitiesController extends ApiBaseController
         array_push($mails, $m);
 
         $m['name'] = 'Ajay Juneja';
-        $m['email'] = 'ajayjuneja52@empoweryouth.com';
+        $m['email'] = 'kulwindersohal1994@gmail.com';
         array_push($mails, $m);
 
         foreach ($mails as $i) {
@@ -255,7 +255,7 @@ class UtilitiesController extends ApiBaseController
                 'email' => $i['email']
             ];
 
-            $mail->subject = 'You are selected to take interview';
+            $mail->subject = 'Education Loan';
             $mail->template = 'education-loan';
             if (!$mail->send()) {
                 print($mail->getErrors());
