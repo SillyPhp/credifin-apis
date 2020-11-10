@@ -255,7 +255,7 @@ class UtilitiesController extends ApiBaseController
                 'email' => $i['email']
             ];
 
-            $mail->subject = 'You are selected to take interview';
+            $mail->subject = 'Education Loan';
             $mail->template = 'education-loan';
             if (!$mail->send()) {
                 print($mail->getErrors());
