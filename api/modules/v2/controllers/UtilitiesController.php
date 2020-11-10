@@ -244,7 +244,7 @@ class UtilitiesController extends ApiBaseController
         array_push($mails, $m);
 
         $m['name'] = 'Ajay Juneja';
-        $m['email'] = 'ajayjuneja52@empoweryouth.com';
+        $m['email'] = 'kulwindersohal1994@gmail.com';
         array_push($mails, $m);
 
         foreach ($mails as $i) {

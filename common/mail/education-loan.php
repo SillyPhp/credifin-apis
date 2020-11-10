@@ -142,23 +142,29 @@ $this->registerCss("
         }
 ", ['media' => 'screen']);
 $this->registerCss('
-@media only screen and(max-width: 650px) {
-            .ed-main-container {
-                display: block;
-            }
-
-            .campus, .ed-p, .partners {
-                margin-bottom: 15px;
-            }
-
-            .ed-steps, .ed-points, .ed-partners {
-                display: block;
-            }
-
-            .ed-p h3 {
-                margin-top: 5px;
-            }
-        }
+@media only screen and (max-width: 650px) {
+    .campus {
+        margin-bottom: 15px;
+    } 
+    .ed-p {
+        margin-bottom: 15px;
+    } 
+    .partners {
+        margin-bottom: 15px;
+    }
+    .ed-steps {
+        display: block;
+    }
+     .ed-points {
+        display: block;
+    }
+     .ed-partners {
+        display: block;
+    }
+    .ed-p h3 {
+        margin-top: 5px;
+    }
+}
 ', ['media' => 'only screen and (max-device-width: 650)']);
 ?>
 
