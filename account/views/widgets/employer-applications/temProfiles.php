@@ -40,10 +40,13 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                             <div class="pull-right btn-next" id="btnNext">
                                 <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
                             </div>
-                            <div class="pull-right" id="btnContinue">
+                            <div class="pull-right margin_right" id="btnContinue">
                                 <button class="btn btn-primary tab_key_continue" id="tab_key_continue">Continue</button>
                             </div>
-                            <div class="pull-right" id="btnBack">
+                            <div class="pull-right margin_right" id="btnSkip">
+                                <button class="btn btn-primary" id="tab_key_skip"> Skip</button>
+                            </div>
+                            <div class="pull-right margin_right" id="btnBack">
                                 <button class="btn btn-primary" id="tab_key_back"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
                             </div>
                         </div>
@@ -73,6 +76,9 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
 <!--light box-->
 <?php
 $this->registerCss("
+.margin_right{
+margin: 0 6px;
+}
 #no_temp{
     position: absolute;
     top: 50%;
@@ -323,6 +329,7 @@ $script = <<< JS
   var tabs = $('.tab_pane');
   var Btback = $('#btnBack');
   var BTnext = $('#btnNext');
+  var BTskip = $('#btnSkip');
   var BtContinue = $('#btnContinue');
   var tabs1 = $('#tab_index_1');
   var tabs2 = $('#tab_index_2');
@@ -331,6 +338,7 @@ $script = <<< JS
   tabs.hide();
   Btback.hide();
   BtContinue.hide();
+  BTskip.hide();
   tabs1.show();
   $(document).on('click','#tab_key_next',function(e) {
     e.preventDefault();
@@ -356,6 +364,7 @@ $script = <<< JS
          tabs2.show();
          Btback.show();
          BtContinue.show();
+         BTskip.show();
          BTnext.hide();
  }
  $(document).on('click','#tab_key_back',function(e) {
@@ -367,16 +376,29 @@ $script = <<< JS
   });
     tabs2.hide();
     tabs1.show();
-    Btback.hide();
+    Btback.hide(); 
     BtContinue.hide();
     BTnext.show();
+    BTskip.hide();
  }); 
  
-  $(document).on('click','.tab_key_continue',function(e) {
+  $(document).on('click','#tab_key_continue',function(e) {
    e.preventDefault();
      if ($('input[name="tRadio"]').length!=0){
          if ($('input[name="tRadio"]:checked').length==0){
-             swal({
+             skipable();
+         }else{
+             window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();   
+         }
+     }else {window.location.href = '/account/'+type+'/create/'+$('#hidden_profile').val();   }
+ }); 
+  $(document).on('click','#tab_key_skip',function(e) {
+   e.preventDefault();
+   skipable();
+   })
+   
+ function skipable() {
+   swal({
                         title: "",
                         text: "Continue Without Template ?",
                         type:'warning',
@@ -392,11 +414,7 @@ $script = <<< JS
                              }
                          }
                         );
-         }else{
-             window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();   
-         }
-     }else {window.location.href = '/account/'+type+'/create/'+$('#hidden_profile').val();   }
- }); 
+ }  
  function ajaxFunction(id) {
    $.ajax({
      url:'/api/v3/job/get-templates',
