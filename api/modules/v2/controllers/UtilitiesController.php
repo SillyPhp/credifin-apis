@@ -232,36 +232,4 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, $cities);
     }
 
-    public function actionTestMail()
-    {
-        $mails = [];
-        $m['name'] = 'Ravinder Singh';
-        $m['email'] = 'ravindersaini15697@gmail.com';
-        array_push($mails, $m);
-
-        $m['name'] = 'Tarandeep Sigh';
-        $m['email'] = 'tarandeep@empoweryouth.com';
-        array_push($mails, $m);
-
-        $m['name'] = 'Ajay Juneja';
-        $m['email'] = 'kulwindersohal1994@gmail.com';
-        array_push($mails, $m);
-
-        foreach ($mails as $i) {
-            $mail = Yii::$app->mail;
-            $mail->receivers = [];
-            $mail->receivers[] = [
-                'name' => $i['name'],
-                'email' => $i['email']
-            ];
-
-            $mail->subject = 'Education Loan';
-            $mail->template = 'education-loan';
-            if (!$mail->send()) {
-                print($mail->getErrors());
-                die();
-            }
-        }
-    }
-
 }
