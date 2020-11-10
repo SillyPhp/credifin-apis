@@ -162,7 +162,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt'],
+                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
