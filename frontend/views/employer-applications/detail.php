@@ -405,6 +405,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 if (!empty($data2)):
                     echo $this->render('/widgets/employer_applications/organization-details', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -414,7 +415,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
@@ -1704,7 +1706,8 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1722,7 +1725,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 0;
+        top: 10px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
