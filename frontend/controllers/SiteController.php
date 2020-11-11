@@ -14,6 +14,7 @@ use common\models\ExternalNewsUpdate;
 use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
+use common\models\OrganizationTypes;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
@@ -23,6 +24,7 @@ use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
+use frontend\models\leads\InstituteLeads;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -1181,7 +1183,24 @@ class SiteController extends Controller
     }
     public function actionInstituteLead(){
         $this->layout = 'blank-layout';
-        return $this->render('institute-lead');
+        $model = new InstituteLeads();
+        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id','organization_type'])->asArray()->all();
+        if ($model->load(Yii::$app->request->post())){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $resposne = $model->save();
+            if ($resposne['status']){
+                return [
+                    'status'=>200,
+                    'data'=>$resposne['data']
+                ];
+            }else{
+                return [
+                    'status'=>201,
+                    'message'=>'Some Internal Server Error'
+                ];
+            }
+        }
+        return $this->render('institute-lead',['model'=>$model,'ownerShipTypes'=>$ownerShipTypes]);
     }
 //    public function actionAdmission()
 //    {
