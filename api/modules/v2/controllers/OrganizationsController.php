@@ -142,7 +142,9 @@ class OrganizationsController extends ApiBaseController
             ->distinct()
             ->select([
                 'bb.name',
+                'a.is_college_approved',
                 'bb.slug org_slug',
+                'bb.organization_enc_id',
                 'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                 'e.name parent_category',
                 'ee.name title',
@@ -166,7 +168,8 @@ class OrganizationsController extends ApiBaseController
                 WHEN b.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
                END) as experience',
-                'b.type'
+                'b.type',
+                'b.status'
             ])
             ->joinWith(['employerApplicationEnc b' => function ($b) {
                 $b->joinWith(['organizationEnc bb'], false);
@@ -200,7 +203,7 @@ class OrganizationsController extends ApiBaseController
                 }], true);
                 $b->joinWith(['applicationTypeEnc z']);
             }], true)
-            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active']);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
@@ -257,6 +260,11 @@ class OrganizationsController extends ApiBaseController
                         $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
                     }
                 }
+            }
+            if ($val['status'] != 'Active') {
+                $result[$i]['is_closed'] = true;
+            } else {
+                $result[$i]['is_closed'] = false;
             }
             $i++;
         }
@@ -511,10 +519,11 @@ class OrganizationsController extends ApiBaseController
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
             ->where(['d.organization_enc_id' => $college_id, 'g.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-            ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
-            ->asArray()
+            ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0]);
+        $count = $applied->count();
+        $applied = $applied->asArray()
             ->all();
 
-        return $this->response(200, $applied);
+        return $this->response(200, ['status' => 200, 'data' => $applied, 'count' => $count]);
     }
 }
