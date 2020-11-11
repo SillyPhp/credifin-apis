@@ -100,14 +100,19 @@ class LoansController extends ApiBaseController
             $college_id = $this->getStudentCollegeId();
             $model = new LoanApplicationsForm();
             if ($model->load(Yii::$app->request->post(), '')) {
-                if ($model->college_course_enc_id == '' && $model->college_course_enc_id == null) {
-                    if (isset($param['course_name']) && !empty($param['course_name'])) {
-                        $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                if (isset($param['course_name']) && !empty($param['course_name'])) {
+                    $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                    if ($id) {
                         $model->college_course_enc_id = $id;
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
                 }
+
                 if ($model->validate()) {
-                    if ($data = $model->add(1,$user->user_enc_id,$college_id)) {
+                    if ($data = $model->add(1, $user->user_enc_id, $college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -1281,6 +1286,19 @@ class LoansController extends ApiBaseController
         } else {
             return false;
         }
+    }
+
+    public function actionCollegeCourses($keyword = null)
+    {
+        $courses = CollegeCoursesPool::find()
+            ->select(['course_name'])
+            ->where(['status' => 'Approved', 'is_deleted' => 0])
+            ->andWhere(['like', 'course_name', $keyword])
+            ->asArray()
+            ->all();
+
+        return $courses;
+
     }
 
 }
