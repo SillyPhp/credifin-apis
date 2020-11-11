@@ -1179,6 +1179,10 @@ class SiteController extends Controller
     public function actionExpiredJobs(){
         return $this->render('expired-jobs');
     }
+    public function actionInstituteLead(){
+        $this->layout = 'blank-layout';
+        return $this->render('institute-lead');
+    }
 //    public function actionAdmission()
 //    {
 //        $model = new AdmissionForm();
