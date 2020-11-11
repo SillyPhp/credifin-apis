@@ -580,7 +580,6 @@ class JobsController extends Controller
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
         $whatsAppForm = new whatsAppShareForm();
-
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,

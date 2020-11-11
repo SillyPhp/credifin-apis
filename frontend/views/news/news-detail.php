@@ -42,7 +42,13 @@ $this->params['seo_tags'] = [
                         <div class="col-md-12">
                             <div class="cb-blog-box">
                                 <div class="cb-blog-icon header-banner">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
+                                    <?php
+                                    if ($newsDetail->image) {
+                                        ?>
+                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                                 <div class="cb-blog-title">
                                     <?= $newsDetail->title ?>
@@ -50,10 +56,10 @@ $this->params['seo_tags'] = [
                                 <div class="vots">
                                     <span class="upv"><i class="fas fa-thumbs-up vote-btn" data-id="upvoteBtn"
                                                          data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
-                                                class="vote_value"><?= rand(40,100) + $newsDetail->upvote ?></font> upvotes</span>
+                                                class="vote_value"><?= rand(40, 100) + $newsDetail->upvote ?></font> upvotes</span>
                                     <span class="downv"><i class="fas fa-thumbs-down vote-btn" data-id="downvoteBtn"
                                                            data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
-                                                class="vote_value"><?= rand(0,40) + $newsDetail->downvote ?></font> downvotes</span>
+                                                class="vote_value"><?= rand(0, 40) + $newsDetail->downvote ?></font> downvotes</span>
                                 </div>
                                 <div class="cb-quick-summery">
                                     <?= $newsDetail->description ?>

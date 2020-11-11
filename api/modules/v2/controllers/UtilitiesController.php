@@ -130,7 +130,7 @@ class UtilitiesController extends ApiBaseController
         $cities = Cities::find()
             ->alias('a')
             ->select(['a.city_enc_id', 'a.name'])
-            ->joinWith(['stateEnc b'],false)
+            ->joinWith(['stateEnc b'], false)
             ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
         if ($search != null && $search != '') {
             $cities->andWhere(['like', 'a.name', $search]);

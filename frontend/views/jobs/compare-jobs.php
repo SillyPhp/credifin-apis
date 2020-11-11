@@ -1161,9 +1161,3 @@ $this->registerCssFile('@backendAssets/global/css/components-rounded.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<script>
-    window.onload = function () {
-        let subMenu = document.querySelector('.ey-sub-menu');
-        subMenu.classList.remove('ey-active-menu');
-    }
-</script>
