@@ -12,6 +12,7 @@ use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
+use common\models\InstituteLeadsPayments;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
@@ -53,6 +54,7 @@ class EducationLoanController extends ApiBaseController
                 'get-loan' => ['POST', 'OPTIONS'],
                 'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
+                'update-institute-payment' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -888,4 +890,23 @@ class EducationLoanController extends ApiBaseController
         return $cities;
     }
 
+    public function actionUpdateInstitutePayment(){
+        $params = Yii::$app->request->post();
+        if ($params){
+            $loan_payments = InstituteLeadsPayments::find()
+                ->where(['payment_enc_id' => $params['payment_enc_id']])
+                ->one();
+            if ($loan_payments) {
+                $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
+                $loan_payments->payment_status = $params['status'];
+                $loan_payments->payment_signature = (($params['signature'])?$params['signature']:null);
+                $loan_payments->updated_by = null;
+                $loan_payments->updated_on = date('Y-m-d H:i:s');
+                $loan_payments->update();
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'success']);
+        }else{
+            return $this->response(500, ['status' => 500, 'message' => 'No Params Found']);
+        }
+     }
 }
