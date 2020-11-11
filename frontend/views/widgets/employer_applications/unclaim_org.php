@@ -145,7 +145,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
             </div>
             <div class="wts-ap">
                 <h3>Share on Whatsapp via Number</h3>
-                <div class="col-md-12">
+                <div class="col-md-12 form-whats">
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'whatsapp-form',
@@ -166,6 +166,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     ]);
                     ?>
                     <?php ActiveForm::end(); ?>
+                    <div class="send"><i class="fa fa-arrow-right"></i></div>
                 </div>
             </div>
             <div class="row m-0">
@@ -186,6 +187,16 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
     </div>
 <?php
 $this->registerCss('
+.form-whats {
+	position: relative;
+}
+.send {
+	position: absolute;
+	top: 2px;
+	right: 22px;
+	font-size: 22px;
+	cursor:pointer;
+}
 .down-img h3 {  
 	color: #fff;
 	font-size: 15px;
@@ -455,6 +466,17 @@ $(document).on('keypress','.wts-txt',function(e) {
 $(document).on('submit','#whatsapp-form',function(e) {
   e.preventDefault();
   return false;
+});
+$('.send').click(function () {        
+    var val = $('.wts-txt').val();
+    var location = window.location.href;
+       if(val.length < 10){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $('.wts-txt').val('');
 });
 JS;
 $this->registerJs($script);

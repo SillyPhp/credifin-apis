@@ -240,7 +240,7 @@ if (!Yii::$app->user->isGuest) {
                         </div>
                         <div class="wts-ap">
                             <h3>Share on Whatsapp via Number</h3>
-                            <div class="col-md-12">
+                            <div class="col-md-12 form-whats">
                                 <?php
                                 $form = ActiveForm::begin([
                                     'id' => 'whatsapp-form',
@@ -261,6 +261,7 @@ if (!Yii::$app->user->isGuest) {
                                 ]);
                                 ?>
                                 <?php ActiveForm::end(); ?>
+                                <div class="send"><i class="fa fa-arrow-right"></i></div>
                             </div>
                         </div>
                         <div class="row m-0">
@@ -330,6 +331,16 @@ if ($settings["showNewPositionsWidget"]):
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.form-whats {
+	position: relative;
+}
+.send {
+	position: absolute;
+	top: 2px;
+	right: 28px;
+	font-size: 22px;
+	cursor:pointer;
+}
 .down-img h3 {  
 	color: #fff;
 	font-size: 15px;
@@ -1632,7 +1643,18 @@ $(document).on('keypress','.wts-txt',function(e) {
     $(document).on('submit','#whatsapp-form',function(e) {
         e.preventDefault();
         return false;
-    });           
+    });     
+    $('.send').click(function () {        
+    var val = $('.wts-txt').val();
+    var location = window.location.href;
+       if(val.length < 10){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $('.wts-txt').val('');
+});      
 getCards('" . $type . 's' ."','.blogbox','/organizations/organization-related-titles?title=" .$get['title']. "');    
 ");
 ?>
