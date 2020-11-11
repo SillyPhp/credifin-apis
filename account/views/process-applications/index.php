@@ -43,6 +43,8 @@ if ($application_name['wage_type'] == 'Fixed') {
     } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
         $amount = 'Negotiable';
     }
+}else if ($application_name['wage_type'] == 'Unpaid'){
+    $amount = 'Unpaid';
 }
 ?>
 
@@ -110,8 +112,19 @@ if ($application_name['wage_type'] == 'Fixed') {
                     <div class="j-exp salry" style="margin-bottom: 22px;">
                         <div class="e-logo"><i class="fa fa-money"></i></div>
                         <div class="e-detail">
-                            <h1>Offered Salary</h1>
-                            <p><?= $amount ?></p>
+                            <?php
+                                if($app_type == "internship"){
+                            ?>
+                                    <h1>Offered Stipend</h1>
+                                    <p><?= $amount ?></p>
+                            <?php
+                                }else{
+                            ?>
+                                <h1>Offered Salary</h1>
+                                <p><?= $amount ?></p>
+                            <?php
+                                }
+                            ?>
                         </div>
                     </div>
                 </div>

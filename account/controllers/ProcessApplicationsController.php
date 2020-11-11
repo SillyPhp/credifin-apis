@@ -155,7 +155,6 @@ class ProcessApplicationsController extends Controller
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->one();
-
             return $this->render('individual_candidate_process', [
                 'applied' => $applied_user,
             ]);
