@@ -421,6 +421,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -433,7 +434,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => false,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 endif;
                 ?>
