@@ -94,23 +94,23 @@ class SiteController extends Controller
 
     public function actionAuthStatus()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $url = Yii::$app->request->post('url');
             $this->handleUrl($url);
         }
     }
+
     protected function handleUrl($url)
     {
         $session = Yii::$app->session;
-        if (!empty($url))
-        {
+        if (!empty($url)) {
             $session->set('current_url', $url);
-        }else{
+        } else {
             $session->set('current_url', Yii::$app->getHomeUrl());
         }
     }
+
     public function actionOneTapAuth()
     {
         if (Yii::$app->request->isPost) {
@@ -1153,13 +1153,14 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionGetUsername(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+    public function actionGetUsername()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
 
             $user = Users::find()
-                ->select(['username','email','first_name','last_name'])
+                ->select(['username', 'email', 'first_name', 'last_name'])
                 ->where(['user_enc_id' => $id])
                 ->asArray()
                 ->one();
@@ -1171,46 +1172,41 @@ class SiteController extends Controller
     }
 
 
-    public function actionEdupreneurPage(){
+    public function actionEdupreneurPage()
+    {
         return $this->render('edupreneur');
     }
-    public function actionRedbullBasement(){
+
+    public function actionRedbullBasement()
+    {
         return $this->render('redbull');
     }
 
-    public function actionExpiredJobs(){
+    public function actionExpiredJobs()
+    {
         return $this->render('expired-jobs');
     }
-    public function actionInstituteLead(){
+
+    public function actionEducationalInstitutionLoan()
+    {
         $this->layout = 'blank-layout';
         $model = new InstituteLeads();
-        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id','organization_type'])->asArray()->all();
-        if ($model->load(Yii::$app->request->post())){
+        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id', 'organization_type'])->asArray()->all();
+        if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $resposne = $model->save();
-            if ($resposne['status']){
+            if ($resposne['status']) {
                 return [
-                    'status'=>200,
-                    'data'=>$resposne['data']
+                    'status' => 200,
+                    'data' => $resposne['data']
                 ];
-            }else{
+            } else {
                 return [
-                    'status'=>201,
-                    'message'=>'Some Internal Server Error'
+                    'status' => 201,
+                    'message' => 'Some Internal Server Error'
                 ];
             }
         }
-        return $this->render('institute-lead',['model'=>$model,'ownerShipTypes'=>$ownerShipTypes]);
+        return $this->render('educational-institution-loan', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
-//    public function actionAdmission()
-//    {
-//        $model = new AdmissionForm();
-//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
-//            if ($model->load(Yii::$app->request->post())) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                return $model->save();
-//                } else {
-//            }
-//        }
-//    }
 }

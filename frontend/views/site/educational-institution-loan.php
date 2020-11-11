@@ -7,10 +7,10 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 $ownerShipTypes = ArrayHelper::map($ownerShipTypes, 'organization_type_enc_id', 'organization_type');
-$image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
-$this->title = "Education Institution Funding";
-$keywords = "empower youth, college, university, admission, education loan";
-$description = "Funding for educational institutions";
+$image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-institutes.png', 'https');
+$this->title = "Education Institution Loan";
+$keywords = "empower youth, college, university, admission, education loan, overseas consultants";
+$description = "Take your students to Success with our Educational Institution Loan";
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -45,11 +45,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="flex-main">
                 <div class="left-sec">
-                    <p class="il-heading">Are Your Students Facing Problem <br> Of <span class="colorOrange">Raising Funds</span> For Their <span class="colorOrange">Education</span>?</p>
-                    <div class="ls-divider"></div>
-                    <p class="font-20">If Yes, Then We With Our <br>
-                        <span class="colorBlue">Education Institution Funding</span> <br>
-                        Are Here To Help You To <span class="colorOrange">Raise Funds</span> <br> For Your <span class="colorOrange">Students</span>.</p>
+                    <p class="il-heading">Take your students to Success <br> with our <span class="colorOrange">Educational Institution Loan</span></p>
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
