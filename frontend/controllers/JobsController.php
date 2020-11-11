@@ -449,10 +449,12 @@ class JobsController extends Controller
             ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
             ->where(['unique_source_id' => $eaidk])->asArray()->one();
         if ($get['title']) {
+            $whatsAppForm = new whatsAppShareForm();
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk, 'app' => $app
+                    'source' => $source, 'id' => $eaidk, 'app' => $app,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return $this->render('expired-jobs');
