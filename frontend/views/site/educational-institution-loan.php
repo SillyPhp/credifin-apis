@@ -45,7 +45,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="flex-main">
                 <div class="left-sec">
-                    <p class="il-heading">Take your students to Success <br> with our <span class="colorOrange">Educational Institution Loan</span></p>
+                    <p class="il-heading">Take your students<br> to Success with our<br> <span class="colorOrange">Educational Institution Loan</span></p>
                 </div>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
@@ -125,7 +125,7 @@ display:none;
     margin-top: 10px
 }
 .il-heading{
-    font-size: 20px;
+    font-size: 35px;
 }
 .font-20{
     font-size: 18px;
