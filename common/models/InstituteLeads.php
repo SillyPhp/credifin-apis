@@ -12,8 +12,8 @@ use Yii;
  * @property string $organization_name
  * @property string $org_type_name
  * @property string $ownership_type
- * @property double $loan_amount
- * @property double $annual_turnover
+ * @property int $loan_amount
+ * @property int $annual_turnover
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -42,9 +42,8 @@ class InstituteLeads extends \yii\db\ActiveRecord
     {
         return [
             [['lead_enc_id', 'organization_name', 'org_type_name', 'ownership_type', 'loan_amount', 'annual_turnover', 'created_on'], 'required'],
-            [['loan_amount', 'annual_turnover'], 'number'],
+            [['loan_amount', 'annual_turnover', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['lead_enc_id', 'org_type_name', 'ownership_type', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['organization_name'], 'string', 'max' => 200],
             [['lead_enc_id'], 'unique'],
