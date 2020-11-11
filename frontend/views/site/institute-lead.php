@@ -5,7 +5,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-
+Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
+$ownerShipTypes = ArrayHelper::map($ownerShipTypes, 'organization_type_enc_id', 'organization_type');
 $image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
 $this->title = "Education Institution Funding";
 $keywords = "empower youth, college, university, admission, education loan";
@@ -36,7 +37,7 @@ $this->params['seo_tags'] = [
 ];
 
 ?>
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="admission-form">
         <div class="oa-container">
             <div class="ey-logo">
@@ -53,46 +54,52 @@ $this->params['seo_tags'] = [
                 <div class="right-sec">
                     <div class="ls-box-shadow">
                         <p id="headingText">Please Fill The Following Details</p>
-                        <form>
-                            <div class="form-group">
-                                <input type="text" id="companyName" name="companyName" class="form-control" placeholder="Organization Name">
-                            </div>
-                            <div class="form-group">
-                                <p>Organization Type</p>
-                                <div class="radio-toolbar">
-                                    <input type="radio" id="radioSchool" name="radioType" value="school" checked>
-                                    <label for="radioSchool">School</label>
-
-                                    <input type="radio" id="radioCollege" name="radioType" value="college">
-                                    <label for="radioCollege">College</label>
-
-                                    <input type="radio" id="radioEI" name="radioType" value="educational institute">
-                                    <label for="radioEI">Educational Institute</label>
-
-                                    <input type="radio" id="radioOC" name="radioType" value="overseas consultant">
-                                    <label for="radioOC">Overseas Consultant</label>
-
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control">
-                                    <option>Ownership Type</option>
-                                    <option>Partnership</option>
-                                </select>
-                            </div>
-
+                        <?php $form = ActiveForm::begin([
+                            'id' => 'leadForm',
+                            'options' => [
+                                'class' => 'clearfix',
+                            ],
+                            'fieldConfig' => [
+                                'template' => '',
+                                'labelOptions' => ['class' => ''],
+                            ],
+                        ]); ?>
+                        <?= $form->field($model, 'organizationName', ['template' => '{input}{error}'])->textInput(['placeholder'=>'Organization Name'])->label(false); ?>
+                      <div class="form-group">
+                      <p>Organization Type</p>
+                      <div class="radio-toolbar">
+                        <?= $form->field($model, 'orgType')->inline()->radioList([
+                            'School' => 'School',
+                            'College' => 'College',
+                            'Educational Institute' => 'Educational Institute',
+                            'Overseas Consultant' => 'Overseas Consultant',
+                        ], [
+                            'item' => function ($index, $label, $name, $checked, $value) {
+                                $return = '<div>';
+                                $return .= '<input type="radio" id="radio'.$label.'" value="'.$value.'" name="'.$name.'">';
+                                $return .= '<label for="radio' .$label . '">'.$label.'</label>';
+                                $return .= '</div>';
+                                return $return;
+                            }
+                        ])->label(false); ?>
+                      </div>
+                      </div>
+                        <?= $form->field($model, 'ownerShipType',['template' => '{input}{error}'])->dropDownList($ownerShipTypes, ['prompt' => 'Ownership Type'])->label(false); ?>
                             <div class="form-flex">
                                 <div class="form-group mr5">
-                                    <input type="text" id="loanAmount" name="loanAmount" class="form-control" placeholder="Loan Amount Required">
+                                    <?= $form->field($model, 'loanAmount', ['template' => '{input}{error}'])->textInput(['placeholder'=>'Loan Amount Required','id'=>'loanAmount'])->label(false); ?>
                                 </div>
                                 <div class="form-group ml5">
-                                    <input type="text" id="annualTurnover" name="annualTurnover" class="form-control" placeholder="Annual Turnover">
+                                    <?= $form->field($model, 'annualTurnOver', ['template' => '{input}{error}'])->textInput(['placeholder'=>'Annual Turnover','id'=>'annualTurnOver'])->label(false); ?>
                                 </div>
                             </div>
                             <div class="form-group text-center">
-                                <button type="button" id="prevBtn" class="btn-frm">Submit</button>
+                                <button type="button" class="button-slide btn btn-block" id="loadBtn">
+                                    Processing <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                </button>
+                                <?= Html::submitButton('Submit', ['class' => 'btn-frm', 'id' => 'prevBtn']) ?>
                             </div>
-                        </form>
+                        <?php ActiveForm::end(); ?>
                     </div>
                 </div>
             </div>
@@ -101,6 +108,18 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+#loadBtn{
+display:none;
+    padding: 13px;
+    border-radius: 6px;
+    background: none;
+    border: solid #00;
+    background-color: #red;
+    background: transparent;
+}
+#orgtype div {
+    display: inline-block;
+}
 .text-center{
     text-align: center;
 }
@@ -533,427 +552,108 @@ select{
 }
 ');
 $script = <<<JS
-$("input[name='amount']").on("keyup", function() {
-    $("input[name='amountValidation']").val(destroyMask(this.value));
-    this.value = createMask($("input[name='amountValidation']").val());
-})
+$('#loanAmount, #annualTurnOver').mask("#,#0,#00", {reverse: true});
 
-function createMask(string) {
-    return string.replace(/(\d{2})(\d{3})(\d{2})/, "$1$2$3");
-}
-
-function destroyMask(string) {
-    return string.replace(/\D/g, '').substring(0, 8);
-}
-
-$(document).on('change', 'input[name = "appliedCollege"]', function() {
-    var t = $(this);
-    var parent = t.parent();
-    var value = t.val();
-    if (value == "1") {
-        $('#appliedYes').show();
-        $('#appliedNo').hide();
-        $('#college_name').addClass('require_data');
-    } else {
-        $('#appliedYes').hide();
-        $('#appliedNo').show();
-        $('#college_name').removeClass('require_data');
-    }
-    parent.find('label').removeAttr('style');
-    parent.find('circle').removeAttr('style');
-    updateValue(t);
-});
-
-$(document).on('change', 'input[name = "interestLoanFor"]', function() {
-    var t = $(this);
-    var parent = t.parent();
-    var val = t.val();
-    var placeholderCol = "";
-    switch (val) {
-        case '1' :
-            placeholderCol = 'College Or University Name';
-            break;
-        case '2' :
-            placeholderCol = 'School Name';
-            break;
-        case '3' :
-            placeholderCol = 'Other Institute Name';
-            break;
-            default :
-    }
-    $('#college_name').attr('placeholder', placeholderCol);
-    $.each($('#appliedNo').find('input[id]'), function(k,v) {
-        $(this).attr('placeholder', placeholderCol + ' Preference ' + (k+1));
-    });
-    $('[data-type=collegeApplied]').show();
-    parent.find('label').removeAttr('style');
-    parent.find('circle').removeAttr('style');
-    updateValue(t);
-});
-
-function updateValue(t){
-    var data = {};
-    var value = t.val();
-    if (value != "") {
-        var sequence = t.attr('data-sequence');
-        data['fieldName'] = t.attr('data-field');
-        data['type'] = t.attr('data-type');
-        data['value'] = t.val();
-        data['lead_app_id'] = localStorage.getItem('lead_app_id');
-        if (data['type'] == 'leadCollegePreference') {
-            data['sequence'] = sequence;
-        }
+  $(document).on('submit', '#leadForm', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         $.ajax({
-            url: '/leads/update-application',
-            method: 'POST',
-            data: data,
-            'success': function(res) {
-                if (res.status == 200) {
-                    localStorage.setItem('lead_app_id', res.enc_id);
+          url:$(this).attr('action'),
+          method:'POST',
+          data:$(this).serialize(),
+           beforeSend:function(e){
+            $('#prevBtn').hide();     
+            $('#loadBtn').show();  
+          },
+          success:function(res) {
+              $('#loadBtn').hide();  
+              $('#prevBtn').show();
+            if (res.status=='200')
+                {
+                    let ptoken = res.data.payment_id; 
+                    let payment_enc_id = res.data.payment_enc_id;
+                    let lead_enc_id = res.data.lead_enc_id;
+                    if (ptoken!=null || ptoken !=""){
+                        _razoPay(ptoken,payment_enc_id,lead_enc_id);
+                    } else{
+                        swal({
+                            title:"Error",
+                            text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                            });
+                    }
+                }else{
+                      swal({
+                            title:"Error",
+                            text: res.response.message,
+                            });
                 }
-            }
-        });
-    }
-}
-
-$(document).on('blur', '.blurInput', function() {
-    var t = $(this);
-    t.removeClass('errorBox');
-    updateValue(t);
-});
-
-var currentTab = 0;
-showTab(currentTab);
-function showTab(n) {
-    var x = document.getElementsByClassName("tab");
-    x[n].style.display = "block";
-    if (n == 0) {
-        document.getElementById("prevBtn").style.display = "none";
-    } else {
-        document.getElementById("prevBtn").style.display = "inline";
-    }
-    if (n == (x.length - 1)) {
-        document.getElementById("nextBtn").style.display = "none";
-    } else {
-        document.getElementById("nextBtn").style.display = "block";
-    }
-}
-
-function nextPrev(n) {
-    var x = document.getElementsByClassName("tab");
-    x[currentTab].style.display = "none";
-    currentTab = currentTab + n;
-    if (currentTab >= x.length) {
-        document.getElementById("regForm").submit();
-        return false;
-    }
-    showTab(currentTab);
-}
-$(document).on('click', '#prevBtn', function() {
-    nextPrev(-1);
-});
-// $(document).on('click', '#LoanNo', function() {
-//     $('#loanFields').show();
-//     $('#submitBtn').show();
-// });
-$(document).on('click', '#nextBtn', function() {
-    var isValid = true;
-    var errorMsg = $('.help-block').text();
-    var reqFields = $('input.req_field');
-    $.each(reqFields, function(i, v) {
-        var id = v.getAttribute('id');
-        if (id) {
-            if (v.value == "") {
-                isValid = false;
-            }
-        }
-    });
-    if (errorMsg == "" && isValid) {
-        nextPrev(1);
-    }
-});
-
-//java script end //
-getCourses();
-getCollegeList(datatype = 0, source = 3, type = ['College']);
-
-function getCourses() {
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    matches.push(str);
-                }
-            });
-            cb(matches);
-        };
-    };
-    var _courses = [];
-    $.ajax({
-        url: '/api/v3/education-loan/course-pool-list',
-        method: 'GET',
-        success: function(res) {
-            if (res.response.status == 200) {
-                res = res.response.course;
-                $.each(res, function(index, value) {
-                    _courses.push(value.value);
-                });
-            } else {
-                console.log('courses could not fetch');
-            }
-        }
-    });
-    $('#course_name').typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-    }, {
-        name: '_courses',
-        source: substringMatcher(_courses)
-    });
-}
-
-function getCollegeList(datatype, source, type) {
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    matches.push(str);
-                }
-            });
-            cb(matches);
-        };
-    };
-    var _colleges = [];
-    $.ajax({
-        url: '/api/v3/companies/organization-list',
-        method: 'GET',
-        data: {
-            datatype: datatype,
-            source: source,
-            type: type
-        },
-        success: function(res) {
-            if (res.response.status == 200) {
-                res = res.response.results;
-                $.each(res, function(index, value) {
-                    _colleges.push(value.text);
-                });
-            } else {
-                console.log('Colleges could not fetch');
-            }
-        }
-    });
-    $('.college_name').typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-    }, {
-        name: '_colleges',
-        source: substringMatcher(_colleges)
-    });
-}
-
-function errorHandle(input, type, fieldType){
-    var loop = false;
-    if(type){
-        input.find('label').css('color','indianred');
-        input.find('circle#border').css('stroke','indianred');
-    } else {
-        if(fieldType){
-            loop = true;
-        } else {
-            input.find('label').removeAttr('style');
-            input.find('circle#border').removeAttr('style');
-        }
-    }
-    if(loop){
-        $.each(input, function() {
-            $(this).addClass('errorBox');
+          }
         })
+  });
+  
+  function _razoPay(ptoken,payment_enc_id,lead_enc_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(payment_enc_id,lead_enc_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+                swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+    },
+    
+    "theme": {
+        "color": "#ff7803"
     }
-}
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+        updateStatus(payment_enc_id,lead_enc_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}     
 
-function highlightRequired(chkRequire){
-    var loanForRadio = $('input[name = "interestLoanFor"]');
-    var loanForParent = loanForRadio.parent();
-    var firstRadio = $('input[name = "appliedCollege"]');
-    var firstParent = firstRadio.parent();
-    if(!loanForRadio.is(":checked") && !loanForRadio.closest('section').hasClass('hideRow')){
-        errorHandle(loanForParent, true);
-        return false;
-    } else {
-        errorHandle(loanForParent, false);
-    }
-    if (!firstRadio.is(":checked") && firstRadio.closest('section').is(':visible')) {
-        errorHandle(firstParent, true);
-        return false;
-    } else {
-        errorHandle(firstParent, false);
-    }
-    if (chkRequire > 0) {
-        var reqValue = $('.require_data');
-        if (reqValue.val() == "") {
-            errorHandle(reqValue, false, true);
-            return false;
-        }
-    }
-    return true;
+function updateStatus(payment_enc_id,lead_enc_id,payment_id=null,status,signature=null)
+{
+    $.ajax({
+            url : '/api/v3/education-loan/update-institute-payment',
+            method : 'POST', 
+            data : {
+              payment_enc_id:payment_enc_id,
+              lead_enc_id:lead_enc_id,
+              payment_id:payment_id, 
+              status:status, 
+              signature:signature,
+            },
+            success:function(e)
+            {
+                //console.log(e);
+            }
+    })
 }
-$(document).on('click', '#LoanNo', function(event) {
-    var chkRequire = $('.require_data').length;
-    var res = highlightRequired(chkRequire);
-    if(!res){
-        return false;
-    }
-    $('#loanFields').show();
-    $('#submitBtn').show();
-});
-$(document).on('click', '#LoanYes', function(event) {
-    var btn = $("#submitBtn");
-    var inputData = type = true;
-    var chkRequire = $('.require_data').length;
-    var res = highlightRequired(chkRequire);
-    if(!res){
-        return false;
-    }
-    var secondRadio = $('input[name = "loan"]');
-    if (secondRadio.is(":checked")) {
-        if (chkRequire > 0) {
-            inputData = false;
-            if ($('.require_data').val() != "") {
-                inputData = true;
-            }
-        }
-        if (inputData) {
-            var form = $('#application_form');
-            var data = form.serializeArray();
-            var lead_id = localStorage.getItem('lead_app_id');
-            data.push({
-                name: 'lead_id',
-                value: lead_id
-            });
-            $.ajax({
-                type: 'POST',
-                data: data,
-                beforeSend: function() {
-                    btn.prop('disabled', 'disabled');
-                    swal({
-                        title: 'Processing',
-                        type: "success",
-                        showCancelButton: false,
-                        confirmButtonText: false,
-                        showConfirmButton: false,
-                    });
-                    localStorage.removeItem('lead_app_id');
-                },
-                success: function(response) {
-                    btn.prop('disabled', false);
-                    if (response.status == 200) {
-                        window.location.href = "/education-loans/apply?lid=" + lead_id;
-                    } else {
-                        $("input[name = 'loan']").prop("checked", false);
-                        swal({
-                            title: response.title,
-                            text: response.message,
-                            type: "error",
-                            showCancelButton: false,
-                            confirmButtonText: "Ok!",
-                        });
-                    }
-                }
-            });
-        }
-    }
-});
-
-$(document).on('click', '#submitBtn', function(event) {
-    var btn = $(this);
-    var firstRadio = $('input[name = "appliedCollege"]').is(":checked");
-    var secondRadio = $('input[name = "loan"]').is(":checked");
-    if (firstRadio && secondRadio) {
-        var inputData = true;
-        var chkRequire = $('.require_data').length;
-        if (chkRequire > 0) {
-            inputData = false;
-            if ($('.require_data').val() != "") {
-                inputData = true;
-            }
-        }
-        if (inputData) {
-            var form = $('#application_form');
-            var data = form.serializeArray();
-            var lead_id = localStorage.getItem('lead_app_id');
-            data.push({
-                name: 'lead_id',
-                value: lead_id
-            });
-            $.ajax({
-                type: 'POST',
-                data: data,
-                beforeSend: function() {
-                    btn.prop('disabled', 'disabled');
-                },
-                success: function(response) {
-                    btn.prop('disabled', false);
-                    if (response.status == 200) {
-                        form[0].reset();
-                        $('#submitBtn').hide();
-                        swal({
-                            title: response.title,
-                            text: response.message,
-                            type: "success",
-                            showCancelButton: false,
-                            showConfirmButton: false,
-                            conFfirmButtonText: false,
-                            closeOnConfirm: false,
-                            closeOnCancel: false
-                        });
-                        localStorage.removeItem('lead_app_id');
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 2000);
-                    } else {
-                        swal({
-                            title: response.title,
-                            text: response.message,
-                            type: "error",
-                            showCancelButton: false,
-                            confirmButtonText: "Ok!",
-                        });
-                    }
-                }
-            });
-        }
-    }
-});
 JS;
 $this->registerJs($script);
 ?>
-    <script>
-
-    </script>
 <?php
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
