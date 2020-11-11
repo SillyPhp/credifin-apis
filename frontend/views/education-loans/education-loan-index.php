@@ -12,11 +12,17 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-6">
                     <div class="loan-text">
-                        <h1>Get <span class="blue1">Interest Free </span> Loans For All Your <span class="blue1">Educational Needs!!</span></h1>
+                        <h1>Education Loan With Lower Interest Rates.</h1>
+                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>
+                            <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!</h2>
 <!--                        <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
                         <a href="<?= Url::to('/education-loans/apply') ?>"
                            class="hvr-sweep-to-bottom-2">
                             Apply Now
+                        </a>
+                        <a href="<?= Url::to('/site/admission-form') ?>"
+                           class="hvr-sweep-to-bottom-3">
+                            Enquire Now
                         </a>
                     </div>
                 </div>
@@ -105,7 +111,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Hazzle free loan application process with less or minimal paperwork.
+                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
                         </div>
                     </div>
                 </div>
@@ -129,7 +135,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="finance-text">Get Loan To Study Abroad</div>
                     <div class="overlay">
-                        <div class="overlay-txt">Providing easy and interest free education loan for abroad studies.
+                        <div class="overlay-txt">Providing easy and interest free education loan for study abroad programs.
                         </div>
                     </div>
                 </div>
@@ -276,8 +282,8 @@ use yii\helpers\Url;
                         <div class="edu-hw-title">Education Institution Loans</div>
                         <p class="edu-hw-description">
                             We all know the importance of education and educational institutes in our lives as they provide
-                            a variety of learning environments and spaces. Empoweryouth with its education institute loans
-                            provides financial help to the education insitutes for their growth.
+                            a variety of learning environments and spaces. Empoweryouth with its educational institute loans
+                            provides financial help to the educational insitutes for their growth.
                         </p>
                     </div>
                 </div>
@@ -315,21 +321,21 @@ use yii\helpers\Url;
 
 
     <div class="clearfix"></div>
-    <section class="edu-loan">
-        <div class="container">
-            <div class="us-flex">
-                <div class="edu-loan-txt">
-                    Collateral Free Loans
-                </div>
-                <div class="">
-                    <a href="<?= Url::to('/education-loans/apply') ?>"
-                       class="hvr-sweep-to-bottom">
-                        Apply Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="edu-loan">-->
+<!--        <div class="container">-->
+<!--            <div class="us-flex">-->
+<!--                <div class="edu-loan-txt">-->
+<!--                    Collateral Free Loans-->
+<!--                </div>-->
+<!--                <div class="">-->
+<!--                    <a href="--><?//= Url::to('/education-loans/apply') ?><!--"-->
+<!--                       class="hvr-sweep-to-bottom">-->
+<!--                        Apply Now-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <div class="clearfix"></div>
 
 
@@ -340,7 +346,7 @@ use yii\helpers\Url;
     <!--        <div id="ecww-widget-iframeinner"></div>-->
     <!--    </section>-->
     <div class="clearfix"></div>
-    <section>
+    <section class="bgEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -378,6 +384,15 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="">
                         </div>
                         <div class="lp-name">Agile Finserv</div>
@@ -386,17 +401,10 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
+                                 alt="">
                         </div>
-                        <div class="lp-name">Amrit Malwa Private Limtied</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
-                        </div>
-                        <div class="lp-name">PHF Leasing</div>
+                        <div class="lp-name">Exclusive Leasing & Finance</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">
@@ -410,10 +418,17 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                                 alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
                         </div>
-                        <div class="lp-name">Exclusive Leasing & Finance</div>
+                        <div class="lp-name">PHF Leasing</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                        </div>
+                        <div class="lp-name">Amrit Malwa Private Limtied</div>
                     </div>
                 </div>
             </div>
@@ -496,11 +511,11 @@ $this->registerJs($script);
 
 $this->registerCss('
 .blue1{
-    color: #00a0e3;
+    color: #EF9819;
  }
 .moving img {
   position: relative;
-  animation: mymove 7s infinite;
+  animation: mymove 5s infinite;
 }
 @keyframes mymove {
    0%  {left:0px; top:0px;}
@@ -511,7 +526,7 @@ $this->registerCss('
 }
 .moving1 img {
   position: relative;
-  animation: mymove 7s infinite;
+  animation: mymove 5s infinite;
 }
 @keyframes mymove {
    0%  {left:0px; top:0px;}
@@ -628,7 +643,7 @@ $this->registerCss('
     text-align: center;  
     box-shadow: 3px 5px 10px rgba(0,0,0,.1);
     margin-bottom: 30px;
-    background: #fff;
+    background-color: #fff;
 }
 .loan-college:hover{
     box-shadow: 3px 5px 10px rgba(0,0,0,.2);
@@ -746,9 +761,16 @@ $this->registerCss('
     padding-top: 140px;
 }
 .loan-text h1 {
-    font-weight: 500;
-    font-size: 40px;
+    color: #EF9819;
+    font-weight: 600;
+    font-size: 34px;
     font-family: lobster;
+    margin-bottom: 20px;
+}
+.loan-text h2{
+    font-weight: 600;
+    font-size: 20px;
+    font-family: lora;
     margin-bottom: 20px;
 }
 .loan-text h3{
@@ -792,18 +814,23 @@ $this->registerCss('
     padding: 10px 10px 5px;
 }
 .loan-logo {
-    width: 65px;
+    width: 90%;
     height: 65px;
     line-height: 61px;
     margin: auto;
 }
+.loan-logo img{
+    max-width: 100%;
+    max-height: 65px;
+}
 .backgrounds{
     background-size: 100% 625px;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
+//    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
     background-position: right top;
     background-repeat: no-repeat;
     padding-top: 100px;
     padding-bottom: 35px;
+    background-color: #bae6f8;
 }
 @media screen and (max-width:768px){
     .loan-text {
@@ -1174,7 +1201,7 @@ $this->registerCss('
 .edu-loan-btn a:hover{
     text-decoration: none;
 }
-.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2 {
+.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2,.hvr-sweep-to-bottom-3  {
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -1197,8 +1224,13 @@ $this->registerCss('
     background: #53bbeb;
     color:#ffffff; 
 }
+.hvr-sweep-to-bottom-3{
+    background: #ff7803;
+    color:#ffffff; 
+}
 .hvr-sweep-to-bottom:before,
-.hvr-sweep-to-bottom-2:before {
+.hvr-sweep-to-bottom-2:before,
+ .hvr-sweep-to-bottom-3:before{
     content: "";
     position: absolute;
     z-index: -1;
@@ -1223,12 +1255,14 @@ $this->registerCss('
   color: #00a0e3;
   text-decoration: none;
 }
-.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active{
+.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active,
+.hvr-sweep-to-bottom-3:hover, .hvr-sweep-to-bottom-3:focus, .hvr-sweep-to-bottom-3:active{
      color: #fff;
   text-decoration: none;
 }
 .hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
-.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before {
+.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before,
+.hvr-sweep-to-bottom-3:hover:before, .hvr-sweep-to-bottom-3:focus:before, .hvr-sweep-to-bottom-3:active:before {
   -webkit-transform: scaleY(1);
   transform: scaleY(1);
 }
@@ -1406,7 +1440,7 @@ $this->registerCss('
      text-align: center;
 }
 @media screen and (max-width:500px) {
-.moving1,.moving {
+.moving1,.moving { 
     display: none;
 }
 .loan-text h1 {

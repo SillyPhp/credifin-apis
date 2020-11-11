@@ -1,24 +1,26 @@
 <?php
 $this->title = $title . ' | Empower Youth';
-
 use yii\helpers\Url;
 
-if (Yii::$app->params->paymentGateways->mec->icici) {
-    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-    if ($configuration->mode === "production") {
-        $access_key = $configuration->credentials->production->access_key;
-        $secret_key = $configuration->credentials->production->secret_key;
-        $url = $configuration->credentials->production->url;
-    } else {
-        $access_key = $configuration->credentials->sandbox->access_key;
-        $secret_key = $configuration->credentials->sandbox->secret_key;
-        $url = $configuration->credentials->sandbox->url;
-    }
-}
+//if (Yii::$app->params->paymentGateways->mec->icici) {
+//    $configuration = Yii::$app->params->paymentGateways->mec->icici;
+//    if ($configuration->mode === "production") {
+//        $access_key = $configuration->credentials->production->access_key;
+//        $secret_key = $configuration->credentials->production->secret_key;
+//        $url = $configuration->credentials->production->url;
+//    } else {
+//        $access_key = $configuration->credentials->sandbox->access_key;
+//        $secret_key = $configuration->credentials->sandbox->secret_key;
+//        $url = $configuration->credentials->sandbox->url;
+//    }
+//}
+Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var college_id = "' . $wid . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
+//Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
 ?>
-    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+<!--    <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>-->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -1135,6 +1137,7 @@ function ajaxSubmit(id)
                 college_course_enc_id:$('#course-list-college').val(),
                 purpose:purpose,
                 co_applicants:co_applicants,
+                userID:userID, 
                 },  
             beforeSend:function(e)
             { 
@@ -1149,7 +1152,8 @@ function ajaxSubmit(id)
                     let loan_id = res.response.data.loan_app_enc_id;
                     let education_loan_id = res.response.data.education_loan_payment_enc_id;
                     if (ptoken!=null || ptoken !=""){
-                        processPayment(ptoken,loan_id,education_loan_id);
+                        //processPayment(ptoken,loan_id,education_loan_id);
+                        _razoPay(ptoken,loan_id,education_loan_id);
                     } else{
                         swal({
                             title:"Error",
@@ -1177,6 +1181,50 @@ function ajaxSubmit(id)
             }
         });
     }
+function _razoPay(ptoken,loan_id,education_loan_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken,
+    "handler": function (response){
+        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+                swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+    },
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
+    }
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(education_loan_id,loan_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}    
+    
 function processPayment(ptoken,loan_id,education_loan_id)
 {
     Layer.checkout({ 
@@ -1219,7 +1267,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
 );
 } 
 
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
             url : '/api/v3/education-loan/update-widget-loan-application',
@@ -1229,6 +1277,7 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status)
               loan_app_id:loan_app_enc_id,
               payment_id:payment_id, 
               status:status,
+              signature:signature,
             },
             success:function(e)
             {

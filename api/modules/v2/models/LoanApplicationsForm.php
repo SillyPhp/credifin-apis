@@ -5,12 +5,15 @@ namespace api\modules\v2\models;
 
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\extended\PaymentsModule;
 use common\models\LoanApplications;
+use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
 use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
+use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
 use Yii;
 use yii\base\Model;
@@ -26,8 +29,8 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['applicant_name', 'aadhaar_number', 'applicant_dob', 'applicant_current_city', 'degree', 'years', 'semesters', 'phone', 'email', 'gender', 'amount'], 'required'],
-            [['co_applicants','country_enc_id','purpose','loan_type_enc_id','course_enc_id','college_course_enc_id'], 'safe'],
+            [['applicant_name', 'applicant_dob', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
+            [['co_applicants', 'country_enc_id', 'aadhaar_number', 'purpose', 'gender', 'years', 'semesters', 'loan_type_enc_id', 'course_enc_id', 'college_course_enc_id', 'degree'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
             [['amount'], 'number'],
@@ -36,11 +39,11 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($userId, $college_id, $source = 'Mec',$is_claimed=true)
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [])
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
-        if (empty($this->country_enc_id)){
-            $this->country_enc_id = Countries::findOne(['name'=>'India'])->country_enc_id;
+        if (empty($this->country_enc_id)) {
+            $this->country_enc_id = Countries::findOne(['name' => 'India'])->country_enc_id;
         }
         $application_fee = OrganizationFeeAmount::find()
             ->select(['application_fee_amount_enc_id', 'amount', 'gst'])
@@ -55,8 +58,9 @@ class LoanApplicationsForm extends LoanApplications
             $this->course_enc_id = $this->college_course_enc_id;
             $this->college_course_enc_id = NULL;
             $this->source = $source;
+            $this->had_taken_addmission = $addmission_taken;
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
-            $this->created_by = (($userId)?$userId:null);
+            $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
                 $transaction->rollback();
@@ -64,7 +68,7 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $this->_flag = true;
             }
-            if ($is_claimed){
+            if ($is_claimed == 1) {
                 $path_to_claim = new PathToClaimOrgLoanApplication();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -72,14 +76,14 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
                 $path_to_claim->country_enc_id = $this->country_enc_id;
-                $path_to_claim->created_by = (($userId)?$userId:null);
+                $path_to_claim->created_by = (($userId) ? $userId : null);
                 if (!$path_to_claim->save()) {
                     $transaction->rollback();
                     return false;
                 } else {
                     $this->_flag = true;
                 }
-            }else{
+            } else if ($is_claimed == 2) {
                 $path_to_Unclaim = new PathToUnclaimOrgLoanApplication();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -87,11 +91,53 @@ class LoanApplicationsForm extends LoanApplications
                 $path_to_Unclaim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_Unclaim->assigned_course_enc_id = $this->course_enc_id;
                 $path_to_Unclaim->country_enc_id = $this->country_enc_id;
+                $path_to_Unclaim->created_by = (($userId) ? $userId : null);
                 if (!$path_to_Unclaim->save()) {
                     $transaction->rollback();
-                     return false;
+                    return false;
                 } else {
                     $this->_flag = true;
+                }
+            } else if ($is_claimed == 3) {
+                if (!empty($course_name)) {
+                    $path_to_leads = new PathToOpenLeads();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $path_to_leads->bridge_enc_id = $utilitiesModel->encrypt();
+                    $path_to_leads->loan_app_enc_id = $this->loan_app_enc_id;
+                    $path_to_leads->course_name = $course_name;
+                    $path_to_leads->country_enc_id = $this->country_enc_id;
+                    $path_to_leads->created_by = (($userId) ? $userId : null);
+                    if (!$path_to_leads->save()) {
+                        $transaction->rollback();
+                        return false;
+                    } else {
+                        $this->_flag = true;
+                    }
+                } else {
+                    $transaction->rollback();
+                    return false;
+                }
+
+                if (!empty($pref))
+                    $c = 1;
+                foreach ($pref as $p) {
+                    if (!empty($p)) {
+                        $preferenceModel = new LoanApplicationsCollegePreference();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $preferenceModel->preference_enc_id = $utilitiesModel->encrypt();
+                        $preferenceModel->loan_app_enc_id = $this->loan_app_enc_id;
+                        $preferenceModel->created_by = (($userId) ? $userId : null);
+                        $preferenceModel->college_name = trim($p);
+                        $preferenceModel->sequence = $c;
+                        if (!$preferenceModel->save()) {
+                            $transaction->rollback();
+                            return false;
+                        } else {
+                            $c++;
+                            $this->_flag = true;
+                        }
+                    }
                 }
             }
 
@@ -103,11 +149,11 @@ class LoanApplicationsForm extends LoanApplications
                     $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
                     $purpose->fee_component_enc_id = $p;
                     $purpose->loan_app_enc_id = $this->loan_app_enc_id;
-                    $purpose->created_by = $userId;
+                    $purpose->created_by = (($userId) ? $userId : null);;
                     $purpose->created_on = date('Y-m-d H:i:s');
                     if (!$purpose->save()) {
                         $transaction->rollback();
-                         return false;
+                        return false;
                     } else {
                         $this->_flag = true;
                     }
@@ -123,8 +169,8 @@ class LoanApplicationsForm extends LoanApplications
                     $model->relation = $applicant['relation'];
                     $model->employment_type = $applicant['employment_type'];
                     $model->annual_income = $applicant['annual_income'];
-                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number']:null);
-                    $model->aadhaar_number = $applicant['aadhaar_number'];
+//                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number']:null);
+//                    $model->aadhaar_number = (($applicant['aadhaar_number'])?$applicant['aadhaar_number']:null);
                     $model->created_by = (($userId) ? $userId : null);
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
@@ -149,12 +195,15 @@ class LoanApplicationsForm extends LoanApplications
 
 
             $args = [];
-            $args['amount'] = $total_amount;
+            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            //$args['amount'] = $total_amount; //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
-            $args['email'] = $this->email;
-            $args['contact'] = $this->phone;
+            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+            //$args['email'] = $this->email;
+            //$args['contact'] = $this->phone;
 
-            $response = $this->GetToken($args);
+            //$response = $this->GetToken($args);
+            $response = PaymentsModule::_authPayToken($args);
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();
@@ -165,7 +214,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->payment_token = $token;
                 $loan_payment->payment_amount = $amount;
                 $loan_payment->payment_gst = $gst;
-                $loan_payment->created_by = $userId;
+                $loan_payment->created_by = (($userId) ? $userId : null);
                 $loan_payment->created_on = date('Y-m-d H:i:s');
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
@@ -236,5 +285,11 @@ class LoanApplicationsForm extends LoanApplications
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
         return json_decode($result, true);
+    }
+
+    private function floatPaisa($amount)
+    {
+        $c = $amount * 100;
+        return (int)$c;
     }
 }

@@ -158,30 +158,32 @@ $this->params['header_dark'] = false;
                             <?php }
                         } ?>
                         <li class="dwn">
-                            <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
-                                if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
-                                    ?>
-                                    <div class="down-r">
-                                        <?php
-                                        $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
-                                        ?>
-                                        <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume"><i
-                                                    class="fas fa-download"></i></a>
-                                    </div>
-                                <?php }
-                            } ?>
+
                         </li>
                     </ul>
+                    <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
+                        if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                            ?>
+                            <div class="down-res">
+                                <?php
+                                $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                ?>
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download Resume<i
+                                            class="fas fa-download"></i></a>
+                            </div>
+                        <?php }
+                    } ?>
                 </div>
             </div>
         </div>
     </section>
+
     <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-12">
+                <?php if($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
                 <div class="container-detail-box">
                     <div class="apply-job-header">
-                        <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php
                         if ($user['job_profile']) {
                             ?>
@@ -200,37 +202,36 @@ $this->params['header_dark'] = false;
                     <div class="apply-job-detail">
                         <p><?= Html::encode($user['description']); ?></p>
                     </div>
-                    <div class="apply-job-detail">
-                        <h5>Skills</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($skills) {
-                                foreach ($skills as $sk) { ?>
-                                    <li><?= $sk['skills']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                    <div class="apply-job-detail">
-                        <h5>Spoken Languages</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($language) {
-                                foreach ($language as $lg) { ?>
-                                    <li><?= $lg['language']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
+                    <?php if ($skills) { ?>
+                        <div class="apply-job-detail">
+                            <h5>Skills</h5>
+                            <ul class="skills">
+                                <?php
+                                    foreach ($skills as $sk) { ?>
+                                        <li><?= $sk['skills']; ?></li>
+                                        <?php
+                                    }
+                                ?>
+                            </ul>
+                        </div>
+                    <?php }
+                    if ($language) {
+                    ?>
+                        <div class="apply-job-detail">
+                            <h5>Spoken Languages</h5>
+                            <ul class="skills">
+                                <?php
+                                    foreach ($language as $lg) { ?>
+                                        <li><?= $lg['language']; ?></li>
+                                        <?php
+                                    }
+                                ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
                 </div>
+                <?php } ?>
+                <?php if($education || $experience || $achievement || $hobbies || $interests) { ?>
                 <div class="container-detail-box">
                     <?php
                     if ($education) {
@@ -296,11 +297,9 @@ $this->params['header_dark'] = false;
                         </div>
                         <?php
                     }
+                    if ($achievement) {
                     ?>
                     <div class="achievements-detail set-li">
-                    <?php
-                    if ($achievement) {
-                        ?>
                         <div class="education-head">Achievements</div>
                         <ul>
                             <?php
@@ -312,13 +311,11 @@ $this->params['header_dark'] = false;
                             ?>
                         </ul>
                     </div>
-    <?php
-    }
-    ?>
+                    <?php
+                    }
+                    if ($hobbies) {
+                    ?>
                     <div class="hobbies-detail set-li">
-                        <?php
-                        if ($hobbies) {
-                        ?>
                         <div class="education-head">Hobbies</div>
                         <ul>
                             <?php
@@ -332,11 +329,9 @@ $this->params['header_dark'] = false;
                     </div>
                             <?php
                             }
-                            ?>
-                    <div class="Interests-detail set-li">
-                        <?php
-                        if ($interests) {
+                    if ($interests) {
                         ?>
+                    <div class="Interests-detail set-li">
                         <div class="education-head">Interests</div>
                         <ul>
                             <?php
@@ -350,8 +345,9 @@ $this->params['header_dark'] = false;
                     </div>
                             <?php
                             }
-                            ?>
+                    ?>
                 </div>
+                <?php } ?>
             </div>
             <?php
             if (array_filter($job_preference)) {
@@ -429,9 +425,34 @@ $this->params['header_dark'] = false;
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         echo $this->render('@common/widgets/chat-main');
+        $this->registerJs('
+            $(".open_chat").trigger("click");
+        ');
     }
 }
 $this->registerCss('
+.down-res{
+    text-align:center;
+    margin-top: 5px;
+}
+.social-info{
+    text-align: center;
+}
+.down-res a:hover{
+    background-color: #53bbeb;
+}
+.down-res a{
+    background-color: #00a0e3;
+    padding: 8px 20px;
+    text-align: center;
+    border-radius: 6px;
+    color: #fff;
+    transition: 0.3s;
+    margin-top: 5px;
+}
+.down-res a i{
+    padding-left: 8px;
+}
 .fbook a {
     background-color: #3b5998;
 }
@@ -620,7 +641,7 @@ body{background-color:#f9f9f9;}
 	margin: auto;
 	border-radius: 8px;
 	margin-bottom: 25px;
-	min-height: 270px;
+	min-height: 300px;
 	box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .bl-1 {
@@ -741,7 +762,7 @@ body{background-color:#f9f9f9;}
 	background-color: #fff;
 	padding: 30px 20px 5px;
 	border-radius: 8px;
-    min-height:270px;
+    min-height:300px;
     box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
 }
 .right-side-detail ul {
@@ -768,7 +789,7 @@ body{background-color:#f9f9f9;}
     display: inline-block;
     text-align: center;
     line-height: 30px;
-    border-radius: 2px;
+    border-radius: 6px;
     color:#fff;
 }
 span.available-status {

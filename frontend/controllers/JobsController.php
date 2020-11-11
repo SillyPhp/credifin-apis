@@ -30,6 +30,7 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\whatsAppShareForm;
 use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
@@ -403,22 +404,60 @@ class JobsController extends Controller
 
     public function actionApi($source = '', $slugparams = null, $eaidk = null)
     {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $keywords = '';
+            if ($slugparams != null) {
+                $keywords = str_replace("-", " ", $slugparams);
+            }
+            $options['limit'] = 6;
+            if ($keywords && !empty($keywords)) {
+                $options['keyword'] = $keywords;
+            }
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                unset($options['keyword']);
+                $cards = ApplicationCards::jobs($options);
+                if ($cards) {
+                    $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'cards' => $cards,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201
+                    ];
+                }
+
+            }
+            return $response;
+        }
+
         if ($source == 'git-hub') {
             $get = $this->gitjobs($eaidk);
         } else if ($source == 'muse') {
             $get = $this->musejobs($eaidk);
         }
         $app = EmployerApplications::find()
-            ->select(['application_enc_id','image','image_location','unclaimed_organization_enc_id'])
-            ->where(['unique_source_id'=>$eaidk])->asArray()->one();
+            ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
+            ->where(['unique_source_id' => $eaidk])->asArray()->one();
         if ($get['title']) {
+            $whatsAppForm = new whatsAppShareForm();
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk,'app'=>$app
+                    'source' => $source, 'id' => $eaidk, 'app' => $app,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
-            return 'Application Has Been Moved or Deleted';
+            return $this->render('expired-jobs');
         }
     }
 
@@ -542,7 +581,7 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -555,6 +594,7 @@ class JobsController extends Controller
             'popular_videos' => $popular_videos,
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 
@@ -590,7 +630,7 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
-            if (!$createCompany->validate()){
+            if (!$createCompany->validate()) {
                 return [
                     'status' => 'error',
                     'message' => json_encode(ActiveForm::validate($createCompany)),
@@ -1461,6 +1501,7 @@ class JobsController extends Controller
             }
         }
     }
+
     public function actionClearMyCache()
     {
         $cache = Yii::$app->cache->flush();

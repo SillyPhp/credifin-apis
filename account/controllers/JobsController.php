@@ -15,6 +15,7 @@ use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
@@ -429,8 +430,8 @@ class JobsController extends Controller
         }
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
-            'applications' => $this->__jobs(8),
-            'erexx_applications' => $this->__erexxJobs(8),
+            'applications' => $this->__jobs(6),
+            'erexx_applications' => $this->__erexxJobs(6),
             'closed_application' => $this->__closedjobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
@@ -553,48 +554,63 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionCreate()
+    public function actionCreate($pidk=NULL)
     {
         if (Yii::$app->user->identity->organization) {
-            $type = 'Jobs';
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
-            $questionnaire = $model->getQuestionnnaireList();
-            $industry = $model->getndustry();
-            $benefits = $model->getBenefits();
-            $process = $model->getInterviewProcess();
-            $placement_locations = $model->getOrganizationLocations();
-            $interview_locations = $model->getOrganizationLocations(2);
-            if ($model->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $session_token = Yii::$app->request->post('n');
-                if ($application_id = $model->saveValues($type)) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return $response = [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'app_id' => $application_id,
-                    ];
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('/employer-applications/form', ['model' => $model,
-                    'primary_cat' => $primary_cat,
-                    'industry' => $industry,
-                    'placement_locations' => $placement_locations,
-                    'interview_locations' => $interview_locations,
-                    'benefits' => $benefits,
-                    'process' => $process,
-                    'questionnaire' => $questionnaire,
-                    'type' => $type,
-                ]);
+            $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
+            if (in_array($pidk,$array)){
+                return $this->_renderCreateJob($pidk);
+            }else{
+                return $this->_renderProfileTemplates($primary_cat);
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+    private function _renderProfileTemplates($primary_cat,$type='jobs'){
+        return $this->render('/widgets/employer-applications/temProfiles',['primary_cat'=>$primary_cat,'type'=>$type]);
+    }
+    private function _renderCreateJob($pidk)
+    {
+        $type = 'Jobs';
+        $model = new ApplicationForm();
+        $model->primaryfield = (($pidk)?$pidk:null);
+        $primary_cat = $model->getPrimaryFields();
+        $questionnaire = $model->getQuestionnnaireList();
+        $industry = $model->getndustry();
+        $benefits = $model->getBenefits();
+        $process = $model->getInterviewProcess();
+        $placement_locations = $model->getOrganizationLocations();
+        $interview_locations = $model->getOrganizationLocations(2);
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $session_token = Yii::$app->request->post('n');
+            if ($application_id = $model->saveValues($type)) {
+                $session = Yii::$app->session;
+                if (!empty($session->get($session_token))) {
+                    $session->remove($session_token);
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'app_id' => $application_id,
+                ];
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('/employer-applications/form', ['model' => $model,
+                'primary_cat' => $primary_cat,
+                'industry' => $industry,
+                'placement_locations' => $placement_locations,
+                'interview_locations' => $interview_locations,
+                'benefits' => $benefits,
+                'process' => $process,
+                'questionnaire' => $questionnaire,
+                'type' => $type,
+            ]);
         }
     }
 
@@ -650,6 +666,59 @@ class JobsController extends Controller
                 return false;
             }
         }
+    }
+
+    public function actionApproveMultipleSteps(){
+        if (Yii::$app->request->isPost){
+            $fields = Yii::$app->request->post('fields');
+            $app_id = Yii::$app->request->post('app_id');
+
+            $flag = 0;
+            foreach ($fields as $field) {
+                $f = AppliedApplicationProcess::findone(['field_enc_id' => $field, 'applied_application_enc_id' => $app_id]);
+                if ($f->is_completed == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $field, 'applied_application_enc_id' => $app_id])
+                        ->execute();
+                    $count = AppliedApplicationProcess::find()
+                        ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'status', 'COUNT(is_completed) as total'])
+                        ->where(['applied_application_enc_id' => $app_id])
+                        ->asArray()
+                        ->one();
+                    if ($update == 1) {
+                        Yii::$app->db->createCommand()
+                            ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                            ->execute();
+                        $response = [
+                            'status' => true,
+                            'active' => $count['active']
+                        ];
+                        $flag = 1;
+                        if ($count['active'] >= 1) {
+                            $obj = AppliedApplications::find()->where(['applied_application_enc_id' => $app_id])->one();
+                            $obj->status = 'Accepted';
+                            $obj->save();
+                        }
+                        if ($count['active'] == $count['total']) {
+                            $update_status = Yii::$app->db->createCommand()
+                                ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                                ->execute();
+                        }
+                    } else {
+                        return json_encode($response = [
+                            'status' => false,
+                        ]);
+                    }
+                }
+            }
+            if ($flag) {
+                return json_encode($response);
+            }else{
+                return json_encode($response = [
+                    'status' => false,
+                ]);
+            }
+       }
     }
 
     public function actionCancelApplication()
@@ -931,7 +1000,7 @@ class JobsController extends Controller
         ]);
     }
 
-    public function actionShortlisted()
+    public function actionSaved()
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')

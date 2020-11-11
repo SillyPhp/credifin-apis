@@ -1,7 +1,7 @@
 <?php
-
-use common\models\Organizations;
 use yii\helpers\Url;
+use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
@@ -29,11 +29,12 @@ $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
             'canvas'=>(($get['company_logo'])?false:true),
-            'profile'=>false,
+            'bg_icon'=>false,
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
-            'app_id'=>$app['application_enc_id']
+            'app_id'=>$app['application_enc_id'],
+            'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
     ];
 $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
@@ -42,7 +43,7 @@ if (empty($app['image'])||$app['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Url::to('/files/'.$app['image_location'].'/'.$app['image'],'https');
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
@@ -237,6 +238,31 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fas fa-envelope"></i>
                             </a>
                         </div>
+                        <div class="wts-ap">
+                            <h3>Share on Whatsapp via Number</h3>
+                            <div class="col-md-12">
+                                <?php
+                                $form = ActiveForm::begin([
+                                    'id' => 'whatsapp-form',
+                                    'fieldConfig' => [
+                                        'template' => '<div class="form-group">{input}{error}</div>',
+                                        'labelOptions' => ['class' => ''],
+                                    ],
+                                ]);
+                                ?>
+                                <?=
+                                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                                    'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                                    'jsOptions' => [
+                                        'allowExtensions' => false,
+                                        'preferredCountries' => ['in'],
+                                        'nationalMode' => false,
+                                    ]
+                                ]);
+                                ?>
+                                <?php ActiveForm::end(); ?>
+                            </div>
+                        </div>
                         <div class="row m-0">
                             <div class="col-lg-12">
                                 <h4 class="text-white">or</h4>
@@ -248,6 +274,10 @@ if (!Yii::$app->user->isGuest) {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="down-img">
+                        <h3>Download Sharing Image</h3>
+                        <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
                     </div>
                 </div>
                 <!--  org details-->
@@ -300,6 +330,40 @@ if ($settings["showNewPositionsWidget"]):
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.down-img h3 {  
+	color: #fff;
+	font-size: 15px;
+	font-family: roboto;
+	margin: 10px 0 15px;
+}
+.down-img a {
+	color: #fff;
+	border: 2px solid #fff;
+	padding: 8px 25px;
+	font-size: 14px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius:6px;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
+    margin-bottom:0;
+}
+.wts-ap{position:relative;}
+.wts-ap h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px !important;
+    font-family: roboto;
+}
+.wts-ap input {
+    font-family: roboto;
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
 .desc strong, .desc h1,.desc h2 
 {
     font-size: 15px !important;
@@ -1545,7 +1609,30 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
-$this->registerJs("                  
+$this->registerJs("
+$(document).on('keypress','.wts-txt',function(e) {
+        if(e.which == 13) {
+            var val = $(this).val();
+            var location = window.location.href;
+            if(val.length < 8){
+                alert('Enter Valid Number')
+            }
+            else {
+                window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+            }
+            $(this).val('');
+        } else {
+            var iKeyCode = (e.which) ? e.which : e.keyCode;
+            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 43){
+                return false;
+            }
+            // return true;
+        }
+    });
+    $(document).on('submit','#whatsapp-form',function(e) {
+        e.preventDefault();
+        return false;
+    });           
 getCards('" . $type . 's' ."','.blogbox','/organizations/organization-related-titles?title=" .$get['title']. "');    
 ");
 ?>

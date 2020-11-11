@@ -14,6 +14,7 @@ use common\models\ExternalNewsUpdate;
 use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
+use common\models\OrganizationTypes;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
@@ -23,6 +24,7 @@ use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
+use frontend\models\leads\InstituteLeads;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -90,10 +92,30 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    public function actionAuthStatus()
+    {
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $url = Yii::$app->request->post('url');
+            $this->handleUrl($url);
+        }
+    }
+
+    protected function handleUrl($url)
+    {
+        $session = Yii::$app->session;
+        if (!empty($url)) {
+            $session->set('current_url', $url);
+        } else {
+            $session->set('current_url', Yii::$app->getHomeUrl());
+        }
+    }
+
     public function actionOneTapAuth()
     {
         if (Yii::$app->request->isPost) {
-            if ((new OneTapAuth())->handle(Yii::$app->request->post())) {
+            $this->handleUrl(Yii::$app->request->post('returnUrl'));
+            if ((new OneTapAuth())->handle(Yii::$app->request->post('token'))) {
                 return $this->redirect('/site/oauth-verify');
             } else {
                 $response = [
@@ -294,53 +316,6 @@ class SiteController extends Controller
 
     public function actionAboutUs()
     {
-        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $params = Yii::$app->request->post();
-            $field_name = $params['fieldName'];
-            $type = $params['type'];
-            $value = $params['value'];
-            $key = $params['lead_app_id'];
-            $seq = $params['sequence'];
-            $lead_app_id = $params['lead_app_id'];
-            $utilitiesModel = new Utilities();
-            if ($lead_app_id) {
-                if ($type == 'leadCollegePreference') {
-                    $model = LeadsCollegePreference::findOne(['application_enc_id' => $key, 'sequence' => $seq]);
-                    if (!$model) {
-                        $model = new LeadsCollegePreference();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $model->preference_enc_id = $utilitiesModel->encrypt();
-                        $model->application_enc_id = $enc_id = $key;
-                        $model->sequence = $seq;
-                        if (!Yii::$app->user->isGuest) {
-                            $model->created_by = Yii::$app->user->identity->user_enc_id;
-                        }
-                    }
-                } else {
-                    $model = LeadsApplications::findOne(['application_enc_id' => $key]);
-                    $enc_id = $key;
-                }
-            } else {
-                $model = new LeadsApplications();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
-                $model->application_number = date('ymd') . time();
-                if (!Yii::$app->user->isGuest) {
-                    $model->created_by = Yii::$app->user->identity->user_enc_id;
-                }
-            }
-            $model->$field_name = $value;
-            if ($model->save()) {
-                return [
-                    'status' => 200,
-                    'enc_id' => $enc_id,
-                ];
-            } else {
-                print_r($model->getErrors());
-                exit();
-            }
-        }
         return $this->render('about-us');
     }
 
@@ -908,6 +883,9 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
+            case 'getEduAndRedbull':
+                return $this->renderAjax('/widgets/edupreneur_and_redbull');
+                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -1175,13 +1153,14 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionGetUsername(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+    public function actionGetUsername()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
 
             $user = Users::find()
-                ->select(['username','email','first_name','last_name'])
+                ->select(['username', 'email', 'first_name', 'last_name'])
                 ->where(['user_enc_id' => $id])
                 ->asArray()
                 ->one();
@@ -1193,18 +1172,41 @@ class SiteController extends Controller
     }
 
 
-    public function actionEdupreneurPage(){
+    public function actionEdupreneurPage()
+    {
         return $this->render('edupreneur');
     }
-//    public function actionAdmission()
-//    {
-//        $model = new AdmissionForm();
-//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
-//            if ($model->load(Yii::$app->request->post())) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                return $model->save();
-//                } else {
-//            }
-//        }
-//    }
+
+    public function actionRedbullBasement()
+    {
+        return $this->render('redbull');
+    }
+
+    public function actionExpiredJobs()
+    {
+        return $this->render('expired-jobs');
+    }
+
+    public function actionEducationalInstitutionLoan()
+    {
+        $this->layout = 'blank-layout';
+        $model = new InstituteLeads();
+        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id', 'organization_type'])->asArray()->all();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $resposne = $model->save();
+            if ($resposne['status']) {
+                return [
+                    'status' => 200,
+                    'data' => $resposne['data']
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'message' => 'Some Internal Server Error'
+                ];
+            }
+        }
+        return $this->render('educational-institution-loan', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
+    }
 }

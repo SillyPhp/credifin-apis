@@ -1,10 +1,12 @@
 <?php
 $this->params['header_dark'] = false;
 $this->params['url'] = $org['website'];
+$this->title = 'Opportunities in ' . $org['name'];
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-Yii::$app->view->registerJs('var slug_var = "'. $org['slug'].'"',  \yii\web\View::POS_HEAD);
+use frontend\widgets\login;
+Yii::$app->view->registerJs('var slug_var = "' . $org['slug'] . '"', \yii\web\View::POS_HEAD);
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -15,8 +17,8 @@ echo $this->render('/widgets/drop_resume', [
     <div class="block no-padding">
         <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div>
         <!-- PARALLAX BACKGROUND IMAGE -->
-        <div class="row">
-            <div class="col-lg-12">
+        <div class="row mar0">
+            <div class="col-lg-12 no-padd">
                 <div class="inner-header wform">
                     <div class="nav-com-logo">
                         <a href="<?= Url::to($org['website']) ?>">
@@ -30,13 +32,14 @@ echo $this->render('/widgets/drop_resume', [
                                 <div class="row">
                                     <div class="col-lg-7">
                                         <div class="job-field">
-                                            <input type="text" name="keywords" id="keywords" placeholder="Job title, keywords or company name"/>
+                                            <input type="text" name="keywords" id="keywords"
+                                                   placeholder="Job title, keywords or company name"/>
                                             <i class="far fa-keyboard"></i>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="job-field">
-                                            <?= Html::dropDownList('cities_drp',null,$cities, ['id'=>'cities_drp','prompt'=>'Choose City','data-placeholder'=>'City, province or region', 'class'=>'chosen-city']) ?>
+                                            <?= Html::dropDownList('cities_drp', null, $cities, ['id' => 'cities_drp', 'prompt' => 'Choose City', 'data-placeholder' => 'City, province or region']) ?>
                                             <i class="fas fa-map-marker-alt"></i>
                                         </div>
                                     </div>
@@ -55,18 +58,68 @@ echo $this->render('/widgets/drop_resume', [
 <section>
     <div class="container">
         <div class="row">
+            <div class="social-menu">
+                <p>Share On</p>
+                <?php
+                $link = Url::to( $org['slug'] . '/jobs','https');
+                ?>
+                <ul>
+                    <li>
+                        <a href="javascript:;" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                           class="share-elem-main">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
             <div class="col-lg-3 col-md-3 column">
                 <div class="widget border">
                     <div class="row">
                         <div class="col-md-12">
                             <h3 class="sb-title open">Date Posted</h3>
                             <div class="posted_widget">
-                                <input type="radio" name="choose" value="1"  id="232"><label for="232">Last Hour</label><br/>
-                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24 hours</label><br/>
-                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7 days</label><br/>
-                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14 days</label><br/>
-                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30 days</label><br/>
-                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm" for="qweqw">All</label><br/>
+                                <input type="radio" name="choose" value="1" id="232"><label for="232">Last
+                                    Hour</label><br/>
+                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24
+                                    hours</label><br/>
+                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm"
+                                                                                              for="qweqw">All</label><br/>
                             </div>
                         </div>
                     </div>
@@ -76,12 +129,15 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="col-md-12">
                             <h3 class="sb-title open">Job Type</h3>
                             <div class="type_widget">
-                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label for="dsf">Full
+                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label
+                                            for="dsf">Full
                                         Time</label></p>
-                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd" value="Part Time"><label for="sadd">Part
+                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd"
+                                                         value="Part Time"><label for="sadd">Part
                                         Time</label></p>
-                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa" value="Work From Home"><label for="assa">Work From Home
-                                        </label></p>
+                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa"
+                                                         value="Work From Home"><label for="assa">Work From Home
+                                    </label></p>
                             </div>
                         </div>
                     </div>
@@ -93,106 +149,114 @@ echo $this->render('/widgets/drop_resume', [
                             <h3 class="sb-title closed">Offerd Salary</h3>
                             <div class="specialism_widget">
                                 <div class="posted_widget">
-                                    <p><input type="radio" name="salry" id="sal1" min-value="10000" max-value="20000"><label for="sal1">10k - 20k</label>
+                                    <p><input type="radio" name="salry" id="sal1" min-value="10000"
+                                              max-value="20000"><label for="sal1">10k - 20k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal2" min-value="20000" max-value="30000"><label for="sal2">20k - 30k</label>
+                                    <p><input type="radio" name="salry" id="sal2" min-value="20000"
+                                              max-value="30000"><label for="sal2">20k - 30k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal3" min-value="30000" max-value="40000"><label for="sal3">30k - 40k</label>
+                                    <p><input type="radio" name="salry" id="sal3" min-value="30000"
+                                              max-value="40000"><label for="sal3">30k - 40k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal4" min-value="40000" max-value="50000"><label for="sal4">40k - 50k</label>
+                                    <p><input type="radio" name="salry" id="sal4" min-value="40000"
+                                              max-value="50000"><label for="sal4">40k - 50k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal5" min-value="50000" max-value=""><label for="sal5"> More Then 50k</label>
+                                    <p><input type="radio" name="salry" id="sal5" min-value="50000" max-value=""><label
+                                                for="sal5"> More Then 50k</label>
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Career Level</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Experince</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to-->
-<!--                                            2Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to-->
-<!--                                            3Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to-->
-<!--                                            4Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to-->
-<!--                                            5Year</label></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Career Level</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>-->
+                <!--                                    </p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Experince</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to-->
+                <!--                                            2Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to-->
+                <!--                                            3Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to-->
+                <!--                                            4Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to-->
+                <!--                                            5Year</label></p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <div class="widget border">
                     <div class="row">
                         <div class="col-md-12">
                             <h3 class="sb-title closed">Gender</h3>
                             <div class="specialism_widget">
                                 <div class="simple-checkbox">
-                                    <p><input type="checkbox" name="smplechk[]" id="13" value="1"><label for="13">Male</label></p>
-                                    <p><input type="checkbox" name="smplechk[]" id="14" value="2"><label for="14">Female</label></p>
-                                    <p><input type="checkbox" name="smplechk[]" id="15" value="3"><label for="15">Others</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="13" value="1"><label
+                                                for="13">Male</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="14" value="2"><label
+                                                for="14">Female</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="15" value="3"><label
+                                                for="15">Others</label></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Industry</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize-->
-<!--                                            Jobs</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business-->
-<!--                                            Jobs</label></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Qualification</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="19"><label-->
-<!--                                                for="19">Matriculation</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="20"><label-->
-<!--                                                for="20">Intermidiate</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div> -->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Industry</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize-->
+                <!--                                            Jobs</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business-->
+                <!--                                            Jobs</label></p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Qualification</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="19"><label-->
+                <!--                                                for="19">Matriculation</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="20"><label-->
+                <!--                                                for="20">Intermidiate</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>-->
+                <!--                                    </p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div> -->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
             <div class="col-lg-9 col-md-9 column">
                 <div class="modrn-joblist">
@@ -300,7 +364,7 @@ echo $this->render('/widgets/drop_resume', [
                    value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade login-msg" id="myModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
@@ -309,10 +373,20 @@ echo $this->render('/widgets/drop_resume', [
                         <h4 class="modal-title"></h4>
                     </div>
                     <div class="modal-body">
+                        <i class="fas fa-sign-in-alt"></i>
                         <p>Please Login as Candidate to drop your resume</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <?php
+                        if (Yii::$app->user->isGuest) {
+                            ?>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loginModal">
+                                Login
+                            </button>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -322,13 +396,93 @@ echo $this->render('/widgets/drop_resume', [
 
 <?php
 echo $this->render('/widgets/mustache/career-job-box');
-
-$this->registerCssFile('@eyAssets/css/chosen.css');
+if (Yii::$app->user->isGuest){
+    echo login::widget();
+}
+//$this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
-.loader_screen img
-{
-display:none;
-margin:auto
+.login-msg .modal-header,
+.login-msg .modal-footer{
+    border: none;
+}
+.login-msg .modal-body{
+    color: #00a0e3;
+    font-size: 20px;
+    text-align: center;
+}
+.login-msg .modal-body i{
+    font-size: 60px;
+    border: 2px solid #00a0e3;
+    padding: 20px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    color: #00a0e3;
+}
+.login-msg .modal-dialog{
+    top: 20%;
+}
+.social-menu{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.social-menu p{
+    font-weight: bold;
+    font-size: 16px;
+    color: #00a0e3;
+}
+.social-menu ul{
+    position: relative;
+    padding: 0 0px 0 0;
+    justify-content: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+}
+.social-menu ul li{
+    list-style: none;
+    margin: 0 8px;
+}
+.social-menu ul li .fab{
+    font-size: 15px;
+    line-height: 40px;
+    transition: .6s;
+    color: #000;
+}
+.social-menu ul li a:hover .fab{
+    color: #fff;
+ }
+.social-menu ul li:nth-child(1) a:hover{
+    background-color: #3b5999;
+ }
+.social-menu ul li:nth-child(2) a:hover{
+    background-color: #55acee;
+ }
+.social-menu ul li:nth-child(5) a:hover{
+    background-color: #0088cc;
+ }
+.social-menu ul li:nth-child(3) a:hover{
+    background-color: #0077B5;
+ }
+ .social-menu ul li:nth-child(4) a:hover{
+    background-color: #4fce5d;
+ }
+.social-menu ul li a{
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dbdfe0;
+    text-align: center;
+    transition: .3s;
+    box-shadow: 0 4px 3px rgba(0,0,0,.3);
+}
+.social-menu ul li a:hover{
+    transform: translate(0, -10px);
+}
+.loader_screen img{
+    display:none;
+    margin:auto
 }
 .nav-tabs > li > a{
     font-family: roboto !important;
@@ -344,6 +498,9 @@ margin:auto
 #myModal{
     top: 50%;
     transform: translateY(-50%);
+    width: 100%;
+    height:100%;
+    
 }
 .viewmore{
     text-align:center;
@@ -547,7 +704,8 @@ section.overlape {
     border-radius: 8px;
 }
 .job-field select{
-    width:105%;
+    -webkit-appearance: none; 
+    appearance: none    
 }
 .job-field input::-webkit-input-placeholder { /* Chrome */
   color: #888888;font-size: 13px
@@ -1210,6 +1368,14 @@ section.overlape {
 .chosen-container{
     border:none !important; 
 }
+.no-padd{
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.mar0{
+    margin-left: 0px;
+    margin-right: 0px;
+}
 /*--- filters----*/
 .widget.border {
     border: 2px solid #e6e7ef;
@@ -1694,8 +1860,7 @@ $(document).on('click','input[name="salry"]',function(e) {
 });
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@eyAssets/css/chosen.css');
-$this->registerJsFile('@eyAssets/js/select-chosen.js');
+//$this->registerJsFile('@eyAssets/js/select-chosen.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>

@@ -78,16 +78,16 @@ class SchedularController extends Controller
                 'a.is_deleted' => 0,
                 'a.status' => 'Active'
             ])
-                ->andWhere(['<>', 'a.interview_process_enc_id', 'null'])
-                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
+                ->andWhere(['<>', 'a.interview_process_enc_id', 'null']);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         } else {
             $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.application_enc_id' => $application_id,
                 'a.is_deleted' => 0,
                 'a.status' => 'Active'
-            ])
-                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
+            ]);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         }
         $result = $applications->groupBy(['a.application_enc_id'])
             ->asArray()

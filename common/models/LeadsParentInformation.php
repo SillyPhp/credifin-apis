@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 /**
@@ -36,7 +37,7 @@ class LeadsParentInformation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lead_parent_enc_id', 'application_enc_id', 'name', 'relation_with_student'], 'required'],
+            [['lead_parent_enc_id', 'application_enc_id'], 'required'],
             [['annual_income'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['lead_parent_enc_id', 'application_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -49,6 +50,9 @@ class LeadsParentInformation extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery

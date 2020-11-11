@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%questionnaire_fields}}".
@@ -29,63 +28,69 @@ use Yii;
  * @property int $is_deleted Is Questionnaire Field Deleted (0 As False, 1 As True)
  *
  * @property QuestionnaireFieldOptions[] $questionnaireFieldOptions
- * @property OrganizationQuestionnaire $questionnaireEnc
- * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Users $createdBy
+ * @property OrganizationQuestionnaire $questionnaireEnc
  */
-class QuestionnaireFields extends \yii\db\ActiveRecord {
-
+class QuestionnaireFields extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%questionnaire_fields}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['field_enc_id', 'field_name', 'field_label', 'field_type', 'questionnaire_enc_id', 'created_on', 'created_by'], 'required'],
-            [['field_type'], 'string'],
+            [['field_enc_id', 'field_name', 'field_label', 'field_type', 'questionnaire_enc_id', 'created_by'], 'required'],
+            [['field_label', 'placeholder', 'field_type'], 'string'],
             [['sequence', 'is_required', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['field_enc_id', 'field_name', 'field_label', 'field_class', 'placeholder', 'icon', 'icon_location', 'questionnaire_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['field_enc_id', 'field_name', 'field_class', 'icon', 'icon_location', 'questionnaire_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['help_text', 'option_display_array', 'html_code'], 'string', 'max' => 500],
             [['field_enc_id'], 'unique'],
-            [['questionnaire_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationQuestionnaire::className(), 'targetAttribute' => ['questionnaire_enc_id' => 'questionnaire_enc_id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['questionnaire_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationQuestionnaire::className(), 'targetAttribute' => ['questionnaire_enc_id' => 'questionnaire_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestionnaireFieldOptions() {
+    public function getQuestionnaireFieldOptions()
+    {
         return $this->hasMany(QuestionnaireFieldOptions::className(), ['field_enc_id' => 'field_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuestionnaireEnc() {
-        return $this->hasOne(OrganizationQuestionnaire::className(), ['questionnaire_enc_id' => 'questionnaire_enc_id']);
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    public function getQuestionnaireEnc()
+    {
+        return $this->hasOne(OrganizationQuestionnaire::className(), ['questionnaire_enc_id' => 'questionnaire_enc_id']);
     }
-
 }

@@ -97,7 +97,7 @@ if ($type == 'Job') {
             }
         }
     }
-    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' with a ' . $amount . ' package.';
+    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']);
     $keywords = $org['org_name'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $job_heading . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $job_heading . ', ' . rtrim($lc_data, ',') . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $job_heading . ' jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
@@ -152,7 +152,7 @@ if ($type == 'Internship') {
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
     }
-    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns with a stipend ' . $amount;
+    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns';
     $keywords = $org['org_name'] . ' internships,Internships,Paid ' . $job_heading . ' Internships, ' . rtrim($lc_data, ',') . ', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,' . $job_heading . ' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
@@ -165,18 +165,19 @@ if (!empty($data2))
 $content = [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'company_name'=>$org['org_name'],
-    'profile'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'bg_icon'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
     'canvas'=>(($org['logo'])?false:true),
     'logo'=>$content_logo,
     'initial_color'=>$org['color'],
     'location'=>(($lc)?$lc:'Work From Home'),
-    'app_id'=>$application_details['application_enc_id']
+    'app_id'=>$application_details['application_enc_id'],
+    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
 ];
 if (empty($application_details['image'])||$application_details['image']==1){
     $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Url::to('/files/'.$application_details['image_location'].'/'.$application_details['image'],'https');
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
@@ -404,6 +405,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 if (!empty($data2)):
                     echo $this->render('/widgets/employer_applications/organization-details', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -413,11 +415,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -430,7 +434,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => false,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 endif;
                 ?>
@@ -1703,7 +1708,8 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1721,7 +1727,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 0;
+        top: 10px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
