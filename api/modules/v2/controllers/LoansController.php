@@ -668,7 +668,7 @@ class LoansController extends ApiBaseController
                     'a.status',
                     'f.payment_status',
                     'c1.course_name',
-                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.applicant_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->joinWith(['loanSanctionReports h' => function ($h) {
                     $h->select(['h.report_enc_id', 'h.loan_app_enc_id', 'h.loan_amount']);
