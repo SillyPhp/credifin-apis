@@ -245,7 +245,7 @@ class ApplicationForm extends Model
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel,$type);
             } else {
-                return false;
+                print_r($categoriesModel->getErrors());
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -289,7 +289,7 @@ class ApplicationForm extends Model
                 if ($desigModel->save()) {
                     $employerApplicationsModel->designation_enc_id = $desigModel->designation_enc_id;
                 } else {
-                    return false;
+                    print_r($desigModel->getErrors());
                 }
             } else {
                 $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
@@ -324,7 +324,7 @@ class ApplicationForm extends Model
                         $processModel->created_on = date('Y-m-d H:i:s');
                         $processModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$processModel->save()) {
-                            return false;
+                            print_r($processModel->getErrors());
                         }
                     }
                 }
@@ -341,7 +341,7 @@ class ApplicationForm extends Model
                         $benefitModel->created_on = date('Y-m-d H:i:s');
                         $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$benefitModel->save()) {
-                            return false;
+                            print_r($benefitModel->getErrors());
                         }
                     }
                 }
@@ -395,7 +395,7 @@ class ApplicationForm extends Model
                 $locations = json_decode($this->placement_loc);
             }
             if (!$applicationoptionsModel->save()) {
-                return false;
+                print_r($applicationoptionsModel->getErrors());
             }
 
             if (!empty($locations)) {
@@ -410,7 +410,7 @@ class ApplicationForm extends Model
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationPlacementLocationsModel->save()) {
-                        return false;
+                        print_r($applicationPlacementLocationsModel->getErrors());
                     }
                 }
             }
@@ -426,7 +426,7 @@ class ApplicationForm extends Model
                     $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
-                        return false;
+                        print_r($applicationInterviewLocationsModel->getErrors());
                     }
                 }
             }
@@ -460,7 +460,7 @@ class ApplicationForm extends Model
                     }
                     else
                     {
-                        return false;
+                        print_r($applicationSkillsModel->getErrors());
                     }
                 } else {
                     $skillsModel = new Skills();
@@ -481,7 +481,7 @@ class ApplicationForm extends Model
                         $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
-                            return false;
+                            print_r($applicationSkillsModel->getErrors());
                         }
                         $this->assignedSkill($skillsModel->skill_enc_id, $cat_id,$type);
                     }
@@ -516,7 +516,7 @@ class ApplicationForm extends Model
                     }
                     else
                     {
-                        return false;
+                        print_r($applicationJobDescriptionModel->getErrors());
                     }
                     //new code added//
                 } else {
@@ -538,7 +538,7 @@ class ApplicationForm extends Model
                         $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                         $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationJobDescriptionModel->save()) {
-                            return false;
+                            print_r($applicationJobDescriptionModel->getErrors());
                         }
                         //new code added//
                         $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id,$type);
@@ -576,7 +576,7 @@ class ApplicationForm extends Model
                     }
                     else
                     {
-                        return false;
+                        print_r($applicationEducationalModel->getErrors());
                     }
                     //new code//
                 } else {
@@ -598,7 +598,7 @@ class ApplicationForm extends Model
                         $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
-                            return false;
+                            print_r($applicationEducationalModel->getErrors());
                         }
                         //new code//
                         $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id,$type);
@@ -609,7 +609,7 @@ class ApplicationForm extends Model
             Yii::$app->sitemap->generate();
             return $employerApplicationsModel->application_enc_id;
         } else {
-            return false;
+            print_r($employerApplicationsModel->getErrors());
         }
     }
 
