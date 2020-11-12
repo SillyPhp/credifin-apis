@@ -722,6 +722,12 @@ class LoansController extends ApiBaseController
                 ->all();
 
             if ($loan_requests) {
+                foreach ($loan_requests as $key => $val) {
+                    if ($val['image'] == null) {
+                        $image = "https://ui-avatars.com/api/?name=" . $val['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
+                        $loan_requests[$key]['image'] = $image;
+                    }
+                }
                 return $this->response(200, ['status' => 200, 'data' => $loan_requests]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
