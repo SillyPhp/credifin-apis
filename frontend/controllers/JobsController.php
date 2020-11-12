@@ -706,6 +706,7 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
+            $whatsAppForm = new whatsAppShareForm();
             $industry = Industries::find()
                 ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
@@ -734,7 +735,8 @@ class JobsController extends Controller
                     'industry' => $industry,
                     'primary_cat' => $primary_cat,
                     'benefits' => $benefits,
-                    'type' => $type
+                    'type' => $type,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return false;

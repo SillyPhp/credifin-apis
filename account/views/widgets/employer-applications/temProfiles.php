@@ -382,7 +382,7 @@ $script = <<< JS
     BTskip.hide();
  }); 
  
-  $(document).on('click','#tab_key_continue',function(e) {
+  $(document).on('click','.tab_key_continue',function(e) {
    e.preventDefault();
      if ($('input[name="tRadio"]').length!=0){
          if ($('input[name="tRadio"]:checked').length==0){
