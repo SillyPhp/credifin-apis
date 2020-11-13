@@ -203,7 +203,7 @@ class ApplicationCards
             ->select(['a.source',
                 new Expression('NULL as sector'),
                 'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
-//                'a.created_on',
+                'a.created_on created',
                 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("job/", a.slug) share_link',
@@ -269,7 +269,7 @@ class ApplicationCards
                 ELSE NULL
                END) as sector',
                 'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
-//                'a.created_on',
+                'a.created_on created',
                 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 '(CASE
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
@@ -567,7 +567,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_on' => SORT_DESC])
+                ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
         $i = 0;

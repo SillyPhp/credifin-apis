@@ -10,6 +10,7 @@ use common\models\Cities;
 use common\models\LearningVideos;
 use common\models\OrganizationLocations;
 use common\models\States;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -240,6 +241,7 @@ class InternshipsController extends Controller
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
+            $whatsAppForm = new whatsAppShareForm();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
@@ -257,7 +259,8 @@ class InternshipsController extends Controller
                 'industry' => $industry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits,
-                'type' => $type
+                'type' => $type,
+                'whatsAppmodel' => $whatsAppForm,
             ]);
         } else {
             return false;
@@ -417,6 +420,7 @@ class InternshipsController extends Controller
                     ->limit(6);
                 $popular_videos = $xyz->asArray()->all();
             }
+            $whatsAppForm = new whatsAppShareForm();
 
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
@@ -431,6 +435,7 @@ class InternshipsController extends Controller
                 'shortlist' => $shortlist,
                 'popular_videos' => $popular_videos,
                 'cat_name' => $cat_name,
+                'whatsAppmodel' => $whatsAppForm,
             ]);
         } else {
             return 'Not Found';

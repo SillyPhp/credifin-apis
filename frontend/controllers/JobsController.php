@@ -30,6 +30,7 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\whatsAppShareForm;
 use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
@@ -448,10 +449,12 @@ class JobsController extends Controller
             ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
             ->where(['unique_source_id' => $eaidk])->asArray()->one();
         if ($get['title']) {
+            $whatsAppForm = new whatsAppShareForm();
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk, 'app' => $app
+                    'source' => $source, 'id' => $eaidk, 'app' => $app,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return $this->render('expired-jobs');
@@ -578,7 +581,7 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -591,6 +594,7 @@ class JobsController extends Controller
             'popular_videos' => $popular_videos,
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 
@@ -702,6 +706,7 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
+            $whatsAppForm = new whatsAppShareForm();
             $industry = Industries::find()
                 ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
@@ -730,7 +735,8 @@ class JobsController extends Controller
                     'industry' => $industry,
                     'primary_cat' => $primary_cat,
                     'benefits' => $benefits,
-                    'type' => $type
+                    'type' => $type,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return false;

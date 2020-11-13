@@ -18,7 +18,7 @@ class ResumeUpload extends Model
     public function rules()
     {
         return [
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx, pdf'],
+            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx, pdf', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -33,7 +33,7 @@ class ResumeUpload extends Model
             $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
             $userResumeModel->user_enc_id = $data['user_id'];
             $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
-            $base_path = Yii::$app->params->upload_directories->resume->file . $userResumeModel->resume_location;
+            $base_path = Yii::$app->params->upload_directories->resume->file . $userResumeModel->resume_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
             $encrypted_string = $utilitiesModel->encrypt();
@@ -49,10 +49,11 @@ class ResumeUpload extends Model
             if ($userResumeModel->save()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->resume_file, Yii::$app->params->digitalOcean->rootDirectory . "images/sharing/" . $userResumeModel->resume, "private");
+                $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
                 if ($result) {
+//                    print_r($result['ObjectURL']);
                     $transaction->commit();
-                    return $userResumeModel;
+                    return true;
                 } else {
                     return false;
                 }
