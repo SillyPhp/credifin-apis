@@ -10,13 +10,13 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center text-white">
-                <h2 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                <h4 class="text-white2"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                <h1 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h1>
+                <h3 class="text-white2 mt-0"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h3>
                 <div class="search-by-type">
                     <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 mr-10 col-md-5">
                             <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                            <input type="text" name="keyword" class="form-control"                                  id="keywords"
+                            <input type="text" name="keyword" class="form-control" id="keywords"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
                         <div class="input-group mb-10 mr-10 col-md-3 sett-marg">
@@ -57,7 +57,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     <div class="container">
         <div class="row mt-20">
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Job Profiles'); ?></h1>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="type-1">
@@ -252,6 +252,7 @@ $this->registerCss('
 .text-white1{
     color:white;
     font-family:Roboto;
+    font-size:40px
 }
 .text-white2{
     color:white;
