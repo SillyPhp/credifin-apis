@@ -89,6 +89,8 @@ $this->params['seo_tags'] = [
                                     <?= $form->field($model, 'annualTurnOver', ['template' => '{input}{error}'])->textInput(['placeholder'=>'Annual Turnover','id'=>'annualTurnOver'])->label(false); ?>
                                 </div>
                             </div>
+                        <?= $form->field($model, 'email', ['template' => '{input}{error}'])->textInput(['placeholder'=>'Email For Communication'])->label(false); ?>
+                        <?= $form->field($model, 'contact', ['template' => '<div class="input_contact"><span>+91</span>{input}</div>{error}'])->textInput(['placeholder'=>'Mobile Number','id'=>'contact'])->label(false); ?>
                             <div class="form-group text-center">
                                 <button type="button" class="button-slide btn btn-block" id="loadBtn">
                                     Processing <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
@@ -104,6 +106,18 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.input_contact span {
+position: absolute;
+    top: 11px;
+    background: #eee;
+    padding: 9px 7px;
+    left: 1px;
+}
+.input_contact{position: relative;}
+.input_contact input{
+    padding-left: 44px;
+    width: calc(100% - 54px);
+}
 #loadBtn{
 display:none;
     padding: 13px;
@@ -549,6 +563,7 @@ select{
 ');
 $script = <<<JS
 $('#loanAmount, #annualTurnOver').mask("#,#0,#00", {reverse: true});
+$('#contact').mask("#", {reverse: true});
 
   $(document).on('submit', '#leadForm', function (event) {
         event.preventDefault();
