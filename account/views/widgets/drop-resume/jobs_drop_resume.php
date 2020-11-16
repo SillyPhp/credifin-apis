@@ -485,7 +485,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                 <div class="work-profile-box">
                                     <div class="edit-cat parent_category" data-id="{{category_enc_id}}">
                                         <i class="fa fa-pencil"></i>
-                                    </div>
+                                    </div> 
                                     <div class="count-cat" title="Resume Count">{{count}}</div>
                                     <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=Jobs">
                                         <div class="work-profile">
