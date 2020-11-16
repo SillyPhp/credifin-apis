@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-use Yii;
 
 /**
  * This is the model class for table "{{%institute_leads}}".
@@ -11,6 +8,8 @@ use Yii;
  * @property string $lead_enc_id Encrypted ID
  * @property string $organization_name
  * @property string $org_type_name
+ * @property string $email
+ * @property string $contact
  * @property string $ownership_type
  * @property int $loan_amount
  * @property int $annual_turnover
@@ -41,11 +40,12 @@ class InstituteLeads extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lead_enc_id', 'organization_name', 'org_type_name', 'ownership_type', 'loan_amount', 'annual_turnover', 'created_on'], 'required'],
+            [['lead_enc_id', 'organization_name', 'org_type_name', 'email', 'contact', 'ownership_type', 'loan_amount', 'annual_turnover', 'created_on'], 'required'],
             [['loan_amount', 'annual_turnover', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['lead_enc_id', 'org_type_name', 'ownership_type', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['lead_enc_id', 'org_type_name', 'email', 'ownership_type', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['organization_name'], 'string', 'max' => 200],
+            [['contact'], 'string', 'max' => 10],
             [['lead_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],

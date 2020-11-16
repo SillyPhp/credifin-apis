@@ -14,6 +14,8 @@ class InstituteLeads extends Model {
     public $ownerShipType;
     public $loanAmount;
     public $annualTurnOver;
+    public $email;
+    public $contact;
     public $_flag;
 
     public function formName()
@@ -24,9 +26,12 @@ class InstituteLeads extends Model {
     public function rules()
     {
         return [
-            [['organizationName','orgType','ownerShipType','loanAmount','annualTurnOver'],'required'],
-            [['organizationName'],'trim'],
+            [['organizationName','orgType','ownerShipType','email','contact','loanAmount','annualTurnOver'],'required'],
+            [['organizationName','email'],'trim'],
             [['organizationName'], 'string', 'max' => 200],
+            [['email'], 'string', 'max' => 100],
+            [['contact'], 'string', 'length' => [10, 10]],
+            [['email'], 'email'],
         ];
     }
 
@@ -41,9 +46,12 @@ class InstituteLeads extends Model {
             $model->organization_name = $this->organizationName;
             $model->org_type_name = $this->orgType;
             $model->ownership_type = $this->ownerShipType;
+            $model->email = $this->email;
+            $model->contact = $this->contact;
             $model->loan_amount = str_replace(',', '', $this->loanAmount);
             $model->annual_turnover = str_replace(',', '', $this->annualTurnOver);
             $model->created_on = date('Y-m-d H:i:s');
+            $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
             if (!$model->save()) {
                 $transaction->rollback();
                 return false;
