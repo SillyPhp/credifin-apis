@@ -205,7 +205,7 @@ $this->params['seo_tags'] = [
 ];
 
 $this->params['header_dark'] = false;
-
+$this->title = ($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'];
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
