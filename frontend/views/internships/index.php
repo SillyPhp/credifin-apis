@@ -10,8 +10,10 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
             <div class="col-md-3 col-sm-3 text-center">
             </div>
             <div class="col-md-9 col-sm-12 text-center">
-                <h2 class="intern-banner-heading mt-0 heading-text">
-                    <?= Yii::t('frontend', 'Intern With The Best'); ?></h2>
+                <h1 class="intern-banner-heading mt-0 heading-text mb-0">
+                    <?= Yii::t('frontend', 'Find the Right Internship'); ?></h1>
+                <h3 class="intern-banner-heading mt-0 heading-text">
+                    <?= Yii::t('frontend', 'Kickstart your Career & Gain Work Experience'); ?></h3>
                 <div class="search-by-type row">
                     <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
@@ -269,8 +271,13 @@ $this->registerCss('
     font-family:lora;
     }
 .heading-text{
-    font-family:lora;
+    font-family: initial;
+    font-size: 32px;
+    font-weight: 600;
     }
+h3.heading-text{
+font-size: 25px;
+font-weight: 100;}
 
 .form-control{
     font-family:Roboto;

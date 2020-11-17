@@ -554,14 +554,14 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionCreate($pidk=NULL)
+    public function actionCreate($aidk=NULL)
     {
         if (Yii::$app->user->identity->organization) {
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
             $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
-            if (in_array($pidk,$array)){
-                return $this->_renderCreateJob($pidk);
+            if (in_array($aidk,$array)){
+                return $this->_renderCreateJob($aidk);
             }else{
                 return $this->_renderProfileTemplates($primary_cat);
             }
