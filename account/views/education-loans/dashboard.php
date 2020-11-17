@@ -12,12 +12,14 @@ if (isset($_GET['filter'])) {
 ?>
 <div class="row">
     <?php
-    Pjax::begin(['id' => 'stat-container']);
+        Pjax::begin([
+            'id' => 'stat-container',
+        ]);
     ?>
     <div class="col-md-12">
         <div class="widget-row">
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=0" data-pjax = "0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
                         <span class="count"><?= $stats['new_leads'] ?></span>
@@ -26,25 +28,25 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=all" data-pjax = "0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
-                        <span class="count"><?= $stats['all_applications'] ?>+</span>
+                        <span class="count"><?= $stats['all_applications'] ?></span>
                         <span class="box-text">All Applications</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=1" data-pjax = "0">
                     <div class="box-des box6 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                        <span class="count"><?= $stats['accepted'] ?>+</span>
+                        <span class="count"><?= $stats['accepted'] ?></span>
                         <span class="box-text">Accepted</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=2" data-pjax = "0">
                     <div class="box-des box4 mt box2set">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
                         <span class="count"><?= $stats['pre_verification'] ?></span>
@@ -53,28 +55,28 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=3" data-pjax = "0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
-                        <span class="count"><?= $stats['under_process'] ?>+</span>
+                        <span class="count"><?= $stats['under_process'] ?></span>
                         <span class="box-text">Under Process</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=4" data-pjax = "0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count"><?= $stats['sanctioned'] ?>+</span>
+                        <span class="count"><?= $stats['sanctioned'] ?></span>
                         <span class="box-text">Sanctioned</span>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="#">
+                <a href="/account/education-loans/dashboard?filter=5" data-pjax = "0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count"><?= $stats['disbursed'] ?>+</span>
+                        <span class="count"><?= $stats['disbursed'] ?></span>
                         <span class="box-text">Disbursed</span>
                     </div>
                 </a>
