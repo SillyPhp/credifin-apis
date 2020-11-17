@@ -1,6 +1,7 @@
 <?php
 namespace common\models\extended;
 use Yii;
+use Razorpay\Api\Api;
 class PaymentsModule
 {
     public static function GetToken($args)
@@ -43,5 +44,31 @@ class PaymentsModule
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
         return json_decode($result, true);
+    }
+
+    private static function _razorPayToken($options=[])
+    {
+        $date = date_create();
+        $timestamp = date_timestamp_get($date);
+        $api_key = Yii::$app->params->razorPay->prod->apiKey;
+        $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+        $api = new Api($api_key,$api_secret);
+        unset($options['accessKey']);
+        if (isset($options['amount'])&&isset($options['currency'])){
+            $options['receipt'] = 'order_rcptid_'.$timestamp;
+            $order  = $api->order->create($options);
+            return $order;
+        }
+    }
+
+    public static function _authPayToken($options)
+    {
+        if ($options['accessKey']===Yii::$app->params->EmpowerYouth->permissionKey)
+        {
+            return self::_razorPayToken($options);
+        }else
+        {
+            return false;
+        }
     }
 }

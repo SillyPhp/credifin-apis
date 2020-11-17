@@ -13,6 +13,7 @@ use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
@@ -104,49 +105,65 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreate($aidk=NULL)
     {
         if (Yii::$app->user->identity->organization) {
-            $type = 'Internships';
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields('Internships');
-            $questionnaire = $model->getQuestionnnaireList(2);
-            $benefits = $model->getBenefits();
-            $process = $model->getInterviewProcess();
-            $placement_locations = $model->getOrganizationLocations();
-            $interview_locations = $model->getOrganizationLocations(2);
-            if ($model->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $session_token = Yii::$app->request->post('n');
-                if ($application_id = $model->saveValues($type)) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return $response = [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'app_id' => $application_id,
-                    ];
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('/employer-applications/form', ['model' => $model,
-                    'primary_cat' => $primary_cat,
-                    'placement_locations' => $placement_locations,
-                    'interview_locations' => $interview_locations,
-                    'benefits' => $benefits,
-                    'process' => $process,
-                    'questionnaire' => $questionnaire,
-                    'type' => $type,
-                ]);
+            $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
+            if (in_array($aidk,$array)){
+                return $this->_renderCreateInternships($aidk);
+            }else{
+                return $this->_renderProfileTemplates($primary_cat,'internships');
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
+    private function _renderProfileTemplates($primary_cat,$type='jobs'){
+        return $this->render('/widgets/employer-applications/temProfiles',['primary_cat'=>$primary_cat,'type'=>$type]);
+    }
 
+
+    private function _renderCreateInternships($pidk)
+    {
+        $type = 'Internships';
+        $model = new ApplicationForm();
+        $primary_cat = $model->getPrimaryFields('Internships');
+        $model->primaryfield = (($pidk)?$pidk:null);
+        $questionnaire = $model->getQuestionnnaireList(2);
+        $benefits = $model->getBenefits();
+        $process = $model->getInterviewProcess();
+        $placement_locations = $model->getOrganizationLocations();
+        $interview_locations = $model->getOrganizationLocations(2);
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $session_token = Yii::$app->request->post('n');
+            if ($application_id = $model->saveValues($type)) {
+                $session = Yii::$app->session;
+                if (!empty($session->get($session_token))) {
+                    $session->remove($session_token);
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'app_id' => $application_id,
+                ];
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('/employer-applications/form', ['model' => $model,
+                'primary_cat' => $primary_cat,
+                'placement_locations' => $placement_locations,
+                'interview_locations' => $interview_locations,
+                'benefits' => $benefits,
+                'process' => $process,
+                'questionnaire' => $questionnaire,
+                'type' => $type,
+            ]);
+        }
+    }
     public function actionPreview()
     {
         if (Yii::$app->user->identity->organization) {
@@ -377,7 +394,7 @@ class InternshipsController extends Controller
         ]);
     }
 
-    public function actionShortlisted()
+    public function actionSaved()
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')

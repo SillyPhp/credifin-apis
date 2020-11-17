@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\PictureUpload;
 use api\modules\v2\models\ProfilePicture;
+use api\modules\v2\models\ResumeUpload;
 use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -50,6 +51,7 @@ class CandProfileController extends ApiBaseController
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
                 'profile-picture' => ['POST', 'OPTIONS'],
                 'profiles' => ['POST', 'OPTIONS'],
+                'upload-resume' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -718,6 +720,30 @@ class CandProfileController extends ApiBaseController
             }
         } else {
             return $this->response(401);
+        }
+    }
+
+    public function actionUploadResume()
+    {
+        if ($user = $this->isAuthorized()) {
+            $resume = new ResumeUpload();
+            $file = UploadedFile::getInstanceByName('resume');
+            if ($resume) {
+                $resume->resume_file = $file;
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            $data['user_id'] = $user->user_enc_id;
+            if ($resume->resume_file && $resume->validate()) {
+                if ($resume->upload($data)) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Saved']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => $resume->getErrors()]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }

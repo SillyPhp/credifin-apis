@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="gov-heading">Find Latest Government Jobs</div>
+                <h1 class="gov-heading">Find Latest Government Jobs</h1>
             </div>
         </div>
         <div class="row">
@@ -43,7 +43,7 @@ $this->registerCss('
 .gov-heading {
     text-align: center;
     font-size: 30px;
-    font-family: lora;
+    font-family: lobster;
     margin: 0px 0px 20px 0;
 }
 .gov-job {

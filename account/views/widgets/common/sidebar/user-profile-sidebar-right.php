@@ -52,8 +52,13 @@ use yii\helpers\Url;
 
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted
+                        <a href="/account/jobs/saved" title="" class="tree-toggler"><i class="fa fa-money"></i>Saved
                             Jobs</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/internships/saved" title="" class="tree-toggler"><i class="fa fa-desktop"></i>Saved
+                            Internships</a>
 
                     </li>
                     <li class="inner-child">

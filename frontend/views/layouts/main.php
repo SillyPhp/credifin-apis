@@ -914,20 +914,28 @@ if (!$this->params['header_dark']) {
 $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
+var hasAccessForSubHeader = true;
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare"];
+for(var jj = 0;jj<preventHeaderFor.length;jj++){
+    if(thispageurl == preventHeaderFor[jj]){
+        hasAccessForSubHeader = false;
+    }
+}
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
 }); 
 $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
         return false;
       }
 });
+
 
 $(document).on("click", ".partnerWith", function(e){
     e.preventDefault();

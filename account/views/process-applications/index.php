@@ -64,7 +64,7 @@ if ($application_name['wage_type'] == 'Fixed') {
 
                         <div class="j-share">
                             <span class="fbook"><a href=""
-                                                   onclick="window.open('<?= '//www.facebook.com/dialog/share?' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts"><a href=""
                                                  onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
@@ -438,13 +438,14 @@ if ($application_name['wage_type'] == 'Fixed') {
                                              $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
-                                                <div data-id="<?= $p['field_enc_id'] ?>" >
+                                                <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?> <?php if($isHighlight){
                                                         if($p['is_completed'] == 0){
                                                             echo 'showBlue';
                                                             $isHighlight = false;
                                                         }
                                                     }?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                                                         <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
@@ -453,7 +454,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                                             ?>
                                             <div data-id="<?= $p['field_enc_id'] ?>" >
                                                 <a href="#" class="multipleRound" value="<?= $arr['applied_application_enc_id']; ?>">
-                                                    Hired
+                                                    <i class="fa fa-check-square-o"></i> Hired
                                                 </a>
                                             </div>
                                         </div>
@@ -517,6 +518,9 @@ if ($application_name['wage_type'] == 'Fixed') {
 </div>
 <?php
 $this->registerCss('
+body, .page-content{
+    background-color: #eee;
+}
 .hamburger-jobs{
     background: #fff;
     height: auto;
@@ -615,13 +619,20 @@ $this->registerCss('
 }
 .h-skill{
     display:none;
+    z-index:1;
 }
-.pr-user-skills:hover .h-skill
-{
-    display:block;
-    position: absolute; 
-    background-color: #fff;
-    top: 20px;
+.pr-user-skills:hover .h-skill {
+    display: block;
+    position: absolute;
+    background-color: #fdfdfd;
+    top: 15px;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    left:10px;
+    min-height:105px;
+    max-height:135px;
+    overflow-y:scroll;
 }
 .dropbtn {
 	background-color: #4CAF50;
@@ -652,10 +663,11 @@ $this->registerCss('
 }
 .dropdown-content div a {
   color: #000;
-  padding: 8px 0;
+  padding: 8px 0 8px 12px;
   text-decoration: none;
   display: block;
   border-bottom: 1px solid #eee;
+  text-align:left;
 }
 .dropdown-content div:last-child a{
     border-bottom: none;
@@ -713,15 +725,22 @@ $this->registerCss('
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 20px;
+	padding: 25px 15px;
 	background: #fdfdfd;
 }
 .j-main {
 	display: flex;
 	border-right: 2px solid #333;
+	align-items:center;
+}
+.j-logo {
+    width: 85px;
+    height: 85px;
 }
 .j-logo img {
-	width: 70px;
+	width: 85px;
+	height: 85px;
+	object-fit: contain;
 }
 .j-data {
 	margin-left: 15px;
@@ -743,10 +762,12 @@ $this->registerCss('
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom:10px;
 }
 .j-title a{
     color:#333;
     font-family: roboto;
+    text-transform:capitalize;
 } 
 .j-share span {
 	margin: 0 5px;
@@ -768,7 +789,8 @@ $this->registerCss('
 .e-detail p {
 	margin: 0;
 //	margin-bottom: 11px !important;
-	font-size:12px;
+	font-size:11px;
+	height:15px;
 }
 .e-logo i {
     font-size: 22px;
@@ -782,7 +804,7 @@ $this->registerCss('
 	text-align: center;
 }
 .option-1 {
-	margin: 20px 0;
+	margin: 15px 0 20px;
 }
 .option-1 span i {
 	font-size: 18px;
@@ -907,6 +929,10 @@ li{
   font-size:14px;
   color:#777777;
 }
+.pr-user-past {
+    display: flex;
+    align-items: center;
+}
 .pr-user-past span{
   display:inline-block;
   color:#aaa;
@@ -919,15 +945,20 @@ li{
   font-size:13px;
 }
 .pr-user-past h5{
-  display:inline-block;
   font-family:roboto;
   font-size:13px;
+  margin-left:5px;
+  display: -webkit-box;
+-webkit-line-clamp: 1;
+-webkit-box-orient: vertical;
+overflow: hidden;
 }
 .pr-user-skills{
     padding-top:20px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{

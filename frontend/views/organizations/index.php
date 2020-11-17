@@ -9,7 +9,8 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="main-heading">
                         <div class="pos-center">
-                            <div class="main-text mt-50">Explore All Companies</div>
+                            <h1 class="main-text mt-50 pt-90">Explore All Companies</h1>
+                            <h3 class="main-sub-text mb-20">Top companies are searching for candidates just like you. Explore the profile of the companies, follow the best ones and give your reviews. </h3>
                             <div class="search-container">
                                 <form action="" id="form_search_cmp">
                                     <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
@@ -126,7 +127,7 @@ background-color: #228b22;
     background-size:cover;
     background-repeat:no-repeat;
     position:relative;
-    min-height:300px !important;
+    min-height:350px !important;
 }
 .bg-vector{
     background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/all-com-bg-text.png') . ');
@@ -147,8 +148,14 @@ background-color: #228b22;
 .main-text{
      font-size:40px;
      color:#f2f2f5;
-     font-family:lobster;  
+     font-family:lobster; 
+     line-height:42px; 
 }
+.main-sub-text{
+         font-size: 18px;
+         color: #f2f2f5;
+}
+
 .pos-center{
     position:absolute;
     top:50%;
@@ -342,6 +349,7 @@ form {
   background-color: #3498db;
   margin: 20px 1px;
 }
+
 .load-suggestions span:nth-child(1){
   animation: bounce 1s ease-in-out infinite;
 }
@@ -370,7 +378,12 @@ form {
     .bg-vector{
         background-size: auto 124px;
     }
-}   
+} 
+@media only screen and (max-width: 500px) {
+    .headerbg{
+    min-height:390px !important;
+    }
+}  
 ');
 
 $script = <<<JS
