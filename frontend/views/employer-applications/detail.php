@@ -205,7 +205,7 @@ $this->params['seo_tags'] = [
 ];
 
 $this->params['header_dark'] = false;
-
+$this->title = ($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'];
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
@@ -421,6 +421,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -433,7 +434,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => false,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 endif;
                 ?>

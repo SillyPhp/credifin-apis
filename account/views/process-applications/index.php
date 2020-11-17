@@ -43,9 +43,52 @@ if ($application_name['wage_type'] == 'Fixed') {
     } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
         $amount = 'Negotiable';
     }
+}else if ($application_name['wage_type'] == 'Unpaid'){
+    $amount = 'Unpaid';
 }
 ?>
+<div class="hamburger-jobs">
+    <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="pa-sidebar" id="hamburgerJobs">
+        <?php
+            foreach ($similarApps as $app){
+                $cnt = 0;
+                $arry = [];
+                $more = false;
+        ?>
+        <div class="jobCard">
+            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>">
+                <div class="jc-icon">
+                    <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
+                </div>
+                <div class="jc-details">
+                    <h3><?= $app['job_title'] ?></h3>
 
+                    <?php
+                    if ($app['applicationPlacementLocations']) {
+                        foreach ($app['applicationPlacementLocations'] as $ps) {
+                            $cnt += $ps['positions'];
+                            if(count($arry) >= 3){
+                                $more = true;
+                            }else{
+                                array_push($arry, $ps['name']);
+                            }
+                        }
+                    }
+                    ?>
+                    <p><?php
+                        echo implode(', ',  array_unique($arry));
+                        echo $more ? ' and more' : ' ';
+                    ?></p>
+                    <p><?= $cnt ?> Openings</p>
+                </div>
+            </a>
+        </div>
+        <?php
+            }
+        ?>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -95,12 +138,25 @@ if ($application_name['wage_type'] == 'Fixed') {
                         <div class="e-logo"><i class="fa fa-map-marker"></i></div>
                         <div class="e-detail">
                             <h1>Locations</h1>
-                            <p><?php
+                            <p>
+                                <?php
+                                $l = [];
+                                $cntt = 0;
+                                $more = false;
                                 if ($application_name['applicationPlacementLocations']) {
                                     foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        echo $apl['name'] . ',';
+                                        if(count($l) >= 5){
+                                            $more = true;
+                                        }else{
+                                            array_push($l, $apl['name']);
+                                        }
+                                        $cntt += $apl['positions'];
                                     }
-                                } ?></p>
+                                }
+                                echo implode(', ', array_unique($l));
+                                echo $more ? ' and more' : '';
+                                ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -110,8 +166,19 @@ if ($application_name['wage_type'] == 'Fixed') {
                     <div class="j-exp salry" style="margin-bottom: 22px;">
                         <div class="e-logo"><i class="fa fa-money"></i></div>
                         <div class="e-detail">
-                            <h1>Offered Salary</h1>
-                            <p><?= $amount ?></p>
+                            <?php
+                                if($app_type == "internship"){
+                            ?>
+                                    <h1>Offered Stipend</h1>
+                                    <p><?= $amount ?></p>
+                            <?php
+                                }else{
+                            ?>
+                                <h1>Offered Salary</h1>
+                                <p><?= $amount ?></p>
+                            <?php
+                                }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -122,15 +189,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <h1>Openings</h1>
                             <p>
                                 <?php
-                                if (!empty($application_name['applicationPlacementLocations'])) {
-                                    foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        if ($apl['positions'] <= 1) {
-                                            echo $apl['positions'] . ' Opening';
-                                        } else {
-                                            echo $apl['positions'] . ' Openings';
-                                        }
+                                    if ($cntt <= 1) {
+                                        echo $cntt . ' Opening';
+                                    } else {
+                                        echo $cntt . ' Openings';
                                     }
-                                }
                                 ?>
                             </p>
                         </div>
@@ -521,26 +584,81 @@ $this->registerCss('
 body, .page-content{
     background-color: #eee;
 }
+.jc-details ul{
+    padding-inline-start: 0px;
+}
+.jc-details ul li{
+    display: inline;
+}
+.jobCard{
+    box-shadow: 0 0 4px rgba(0,0,0,.1);
+    padding: 10px 8px;
+    margin: 5px;
+}
+.jobCard a{
+    display: flex;
+    color: #000;
+}
+.jc-icon{
+    width: 50px;
+    height: 50px;
+}
+.jc-icon img{
+    width: 100%;
+    height: 100%; 
+}
+.jc-details{
+    margin-left: 10px;
+}
+.jc-details p{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.jc-details h3{
+    font-size: 16px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-family: Roboto;
+    font-weight: 500;
+}
+
+.ajBtn{
+    position: absolute;
+    top: 40px;
+    right: -46px;
+    background: #00a0e3;
+    border: 1px solid #00a0e3;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 0 5px 5px 0;
+    width: 45px;
+}
+.ajBtn i{
+    margin-right: 5px;
+}
 .hamburger-jobs{
     background: #fff;
     height: auto;
     position: fixed;
     top: 105px;
     left: 0;
-    z-index: 999;
-}
-.pa-sidebar{
     border: 1px solid #eee;
     width: 0px;
     height: calc(100vh - 105px);
-    overflow-x: hidden;
     transition: .3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
+    z-index: 999;
+}
+.pa-sidebar{
+    width: 100%;
+    height: calc(100vh - 105px);
+    overflow-x: hidden;
+    z-index: 999;
 }
 .pa-sidebar-show{
     width: 300px;
     transition: .3s ease;
-    padding: 10px 15px;
+    padding: 10px;
 }
 .hamburger-btn{
     position: absolute; 
@@ -1307,6 +1425,7 @@ $(document).on('click','#j-delete',function(e){
                 success:function(data){
                     if(data==true) {
                         toastr.success('Deleted Successfully', 'Success');
+                        location.replace('/account/dashboard');
                     }
                     else {
                         toastr.error('Something went wrong. Please try again.', 'Opps!!');
@@ -1524,13 +1643,28 @@ $(document).on('click','.url-forward',function (e){
     window.open(url, "_blank"); 
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
+
+var ps = new PerfectScrollbar('#hamburgerJobs');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 ?>
 <script>
+    function showJobsSidebar() {
+        let paSidebar = document.getElementsByClassName('hamburger-jobs');
+        paSidebar[0].classList.toggle('pa-sidebar-show');
+        let clickedBtn = this.event.currentTarget;
+        if(paSidebar[0].classList.contains('pa-sidebar-show')){
+            clickedBtn.innerHTML = "<i class='fa fa-times'></i>";
+        }else {
+            clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
+        }
+    }
     function roundClick() {
         let hp = document.querySelector('.hiring_process_list');
         let hpChild = hp.children;

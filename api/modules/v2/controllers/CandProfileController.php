@@ -727,15 +727,20 @@ class CandProfileController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $resume = new ResumeUpload();
-            $resume->resume_file = UploadedFile::getInstanceByName('resume');
+            $file = UploadedFile::getInstanceByName('resume');
+            if ($resume) {
+                $resume->resume_file = $file;
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
             $data['user_id'] = $user->user_enc_id;
             if ($resume->resume_file && $resume->validate()) {
-                if ($resume->update($data)) {
-                    return $this->response(200, ['status' => 200]);
+                if ($resume->upload($data)) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Saved']);
                 }
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             } else {
-                print_r($resume->getErrors());
+                return $this->response(422, ['status' => 422, 'message' => $resume->getErrors()]);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

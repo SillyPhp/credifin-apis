@@ -241,6 +241,7 @@ class InternshipsController extends Controller
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
+            $whatsAppForm = new whatsAppShareForm();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
@@ -258,7 +259,8 @@ class InternshipsController extends Controller
                 'industry' => $industry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits,
-                'type' => $type
+                'type' => $type,
+                'whatsAppmodel' => $whatsAppForm,
             ]);
         } else {
             return false;

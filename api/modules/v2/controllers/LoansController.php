@@ -100,14 +100,19 @@ class LoansController extends ApiBaseController
             $college_id = $this->getStudentCollegeId();
             $model = new LoanApplicationsForm();
             if ($model->load(Yii::$app->request->post(), '')) {
-                if ($model->college_course_enc_id == '' && $model->college_course_enc_id == null) {
-                    if (isset($param['course_name']) && !empty($param['course_name'])) {
-                        $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                if (isset($param['course_name']) && !empty($param['course_name'])) {
+                    $id = $this->addCourse($param['course_name'], $user->user_enc_id);
+                    if ($id) {
                         $model->college_course_enc_id = $id;
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
                 }
+
                 if ($model->validate()) {
-                    if ($data = $model->add(1,$user->user_enc_id,$college_id)) {
+                    if ($data = $model->add(1, $user->user_enc_id, $college_id)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -663,7 +668,7 @@ class LoansController extends ApiBaseController
                     'a.status',
                     'f.payment_status',
                     'c1.course_name',
-                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.applicant_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
                 ])
                 ->joinWith(['loanSanctionReports h' => function ($h) {
                     $h->select(['h.report_enc_id', 'h.loan_app_enc_id', 'h.loan_amount']);
@@ -717,6 +722,12 @@ class LoansController extends ApiBaseController
                 ->all();
 
             if ($loan_requests) {
+                foreach ($loan_requests as $key => $val) {
+                    if ($val['image'] == null) {
+                        $image = "https://ui-avatars.com/api/?name=" . $val['applicant_name'] . '&size=200&rounded=false&background' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT) . '=&color=ffffff';
+                        $loan_requests[$key]['image'] = $image;
+                    }
+                }
                 return $this->response(200, ['status' => 200, 'data' => $loan_requests]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -1281,6 +1292,19 @@ class LoansController extends ApiBaseController
         } else {
             return false;
         }
+    }
+
+    public function actionCollegeCourses($keyword = null)
+    {
+        $courses = CollegeCoursesPool::find()
+            ->select(['course_name'])
+            ->where(['status' => 'Approved', 'is_deleted' => 0])
+            ->andWhere(['like', 'course_name', $keyword])
+            ->asArray()
+            ->all();
+
+        return $courses;
+
     }
 
 }

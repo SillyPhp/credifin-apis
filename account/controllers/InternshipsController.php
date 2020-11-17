@@ -105,14 +105,14 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreate($pidk=NULL)
+    public function actionCreate($aidk=NULL)
     {
         if (Yii::$app->user->identity->organization) {
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields('Internships');
             $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
-            if (in_array($pidk,$array)){
-                return $this->_renderCreateInternships($pidk);
+            if (in_array($aidk,$array)){
+                return $this->_renderCreateInternships($aidk);
             }else{
                 return $this->_renderProfileTemplates($primary_cat,'internships');
             }

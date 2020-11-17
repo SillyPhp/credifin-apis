@@ -382,7 +382,7 @@ $script = <<< JS
     BTskip.hide();
  }); 
  
-  $(document).on('click','#tab_key_continue',function(e) {
+  $(document).on('click','.tab_key_continue',function(e) {
    e.preventDefault();
      if ($('input[name="tRadio"]').length!=0){
          if ($('input[name="tRadio"]:checked').length==0){
@@ -390,7 +390,7 @@ $script = <<< JS
          }else{
              window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();   
          }
-     }else {window.location.href = '/account/'+type+'/create/'+$('#hidden_profile').val();   }
+     }else {window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   }
  }); 
   $(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
@@ -410,7 +410,7 @@ $script = <<< JS
                          },
                             function (isConfirm) { 
                              if (isConfirm){
-                              window.location.href = '/account/'+type+'/create/'+$('#hidden_profile').val();   
+                              window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   
                              }
                          }
                         );
