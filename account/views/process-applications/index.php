@@ -47,7 +47,38 @@ if ($application_name['wage_type'] == 'Fixed') {
     $amount = 'Unpaid';
 }
 ?>
+<div class="hamburger-jobs">
+    <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="pa-sidebar">
+        <?php
+            foreach ($similarApps as $app){
+        ?>
+        <div class="jobCard">
+            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>">
+                <div class="jc-icon">
+                    <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
+                </div>
+                <div class="jc-details">
+                    <h3><?= $app['job_title'] ?></h3>
+                    <?php
+                    if ($app['applicationPlacementLocations']) {
+                        foreach ($app['applicationPlacementLocations'] as $ps) {
 
+                        ?>
+                        <p><?= $ps['name']?></p>
+                        <p><?= $ps['positions']?> Openings</p>
+                        <?php
+                        }
+                    }
+                    ?>
+                </div>
+            </a>
+        </div>
+        <?php
+            }
+        ?>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
@@ -534,26 +565,70 @@ $this->registerCss('
 body, .page-content{
     background-color: #eee;
 }
+.jobCard{
+    box-shadow: 0 0 4px rgba(0,0,0,.1);
+    padding: 10px 8px;
+    margin: 5px;
+}
+.jobCard a{
+    display: flex;
+    color: #000;
+}
+.jc-icon{
+    width: 50px;
+    height: 50px;
+}
+.jc-details{
+    margin-left: 10px;
+}
+.jc-details p{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.jc-details h3{
+    font-size: 18px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-weight: bold;
+}
+
+.ajBtn{
+    position: absolute;
+    top: 40px;
+    right: -46px;
+    background: #00a0e3;
+    border: 1px solid #00a0e3;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 0 5px 5px 0;
+    width: 45px;
+}
+.ajBtn i{
+    margin-right: 5px;
+}
 .hamburger-jobs{
     background: #fff;
     height: auto;
     position: fixed;
     top: 105px;
     left: 0;
-    z-index: 999;
-}
-.pa-sidebar{
     border: 1px solid #eee;
     width: 0px;
     height: calc(100vh - 105px);
-    overflow-x: hidden;
     transition: .3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
+    z-index: 999;
+}
+.pa-sidebar{
+    width: 100%;
+    height: calc(100vh - 105px);
+    overflow-x: hidden;
+    z-index: 999;
 }
 .pa-sidebar-show{
     width: 300px;
     transition: .3s ease;
-    padding: 10px 15px;
+    padding: 10px;
 }
 .hamburger-btn{
     position: absolute; 
@@ -1320,6 +1395,7 @@ $(document).on('click','#j-delete',function(e){
                 success:function(data){
                     if(data==true) {
                         toastr.success('Deleted Successfully', 'Success');
+                        location.replace('/account/dashboard')
                     }
                     else {
                         toastr.error('Something went wrong. Please try again.', 'Opps!!');
@@ -1544,6 +1620,16 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweet
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
+    function showJobsSidebar() {
+        let paSidebar = document.getElementsByClassName('hamburger-jobs');
+        paSidebar[0].classList.toggle('pa-sidebar-show');
+        let clickedBtn = this.event.currentTarget;
+        if(paSidebar[0].classList.contains('pa-sidebar-show')){
+            clickedBtn.innerHTML = "<i class='fa fa-times'></i>";
+        }else {
+            clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
+        }
+    }
     function roundClick() {
         let hp = document.querySelector('.hiring_process_list');
         let hpChild = hp.children;

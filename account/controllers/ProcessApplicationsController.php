@@ -20,7 +20,31 @@ class ProcessApplicationsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
-
+    private function GetJobsOfCompany($appType,$app_id){
+        $all_application = EmployerApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['c.name job_title', 'a.slug', 'a.application_enc_id', 'ate.name application_type', 'pe.icon'])
+            ->joinWith(['title b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+            }], false, 'INNER JOIN')
+            ->joinWith(['applicationTypeEnc ate'], false)
+            ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                $b->onCondition(['o.is_deleted' => 0]);
+                $b->joinWith(['locationEnc s' => function ($b) {
+                    $b->joinWith(['cityEnc t'], false);
+                }], false);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
+            }])
+            ->joinWith(['applicationOptions ao'], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0,'ate.name'=>$appType])
+            ->andWhere(['not',['a.application_enc_id'=>$app_id]])
+            ->asArray()
+            ->all();
+        return $all_application;
+    }
     public function actionIndex($aidk)
     {
         $application_id = $aidk;
@@ -73,6 +97,7 @@ class ProcessApplicationsController extends Controller
                 ->joinWith(['applicationOptions ao'], false)
                 ->asArray()
                 ->one();
+
             if (!empty($application_name))
             {
                 $applied_users = AppliedApplications::find()
@@ -129,8 +154,10 @@ class ProcessApplicationsController extends Controller
                     'que' => $question,
                     'application_name' => $application_name,
                     'application_id'=>$application_id,
+                    'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk),
                 ]);
             }
+
             else{
                 throw new HttpException(404, Yii::t('account', 'Page not found.'));
             }
