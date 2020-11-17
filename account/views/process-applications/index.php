@@ -1395,7 +1395,7 @@ $(document).on('click','#j-delete',function(e){
                 success:function(data){
                     if(data==true) {
                         toastr.success('Deleted Successfully', 'Success');
-                        location.replace('/account/dashboard')
+                        location.replace('/account/dashboard');
                     }
                     else {
                         toastr.error('Something went wrong. Please try again.', 'Opps!!');
