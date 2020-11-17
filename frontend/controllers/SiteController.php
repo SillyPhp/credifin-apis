@@ -1183,6 +1183,9 @@ class SiteController extends Controller
         $this->layout = 'blank-layout';
         return $this->render('institute-lead');
     }
+    public function actionResumeBuilderLandingPage(){
+        return $this->render('resume-builder-landing-page');
+    }
 //    public function actionAdmission()
 //    {
 //        $model = new AdmissionForm();
