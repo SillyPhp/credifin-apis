@@ -592,6 +592,7 @@ class SearchController extends ApiBaseController
             $educational_requirement = [];
             $skills = [];
             $positions = 0;
+            $data['application_enc_id'] = $j['employer_application_enc_id'];
             $data['name'] = $j['name'];
             $data['job_type'] = $j['job_type'];
             $data['logo'] = $j['logo'];
