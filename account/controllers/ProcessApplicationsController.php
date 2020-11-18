@@ -35,7 +35,7 @@ class ProcessApplicationsController extends Controller
                 $b->joinWith(['locationEnc s' => function ($b) {
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                 $b->distinct();
             }])
             ->joinWith(['applicationOptions ao'], false)
@@ -84,7 +84,7 @@ class ProcessApplicationsController extends Controller
                     $b->joinWith(['locationEnc s' => function ($b) {
                         $b->joinWith(['cityEnc t'], false);
                     }], false);
-                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                     $b->distinct();
                 }])
                 ->joinWith(['applicationInterviewLocations p' => function ($b) {

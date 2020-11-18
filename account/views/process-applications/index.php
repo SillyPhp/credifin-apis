@@ -49,9 +49,12 @@ if ($application_name['wage_type'] == 'Fixed') {
 ?>
 <div class="hamburger-jobs">
     <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
-    <div class="pa-sidebar">
+    <div class="pa-sidebar" id="hamburgerJobs">
         <?php
             foreach ($similarApps as $app){
+                $cnt = 0;
+                $arry = [];
+                $more = false;
         ?>
         <div class="jobCard">
             <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>">
@@ -60,17 +63,24 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </div>
                 <div class="jc-details">
                     <h3><?= $app['job_title'] ?></h3>
+
                     <?php
                     if ($app['applicationPlacementLocations']) {
                         foreach ($app['applicationPlacementLocations'] as $ps) {
-
-                        ?>
-                        <p><?= $ps['name']?></p>
-                        <p><?= $ps['positions']?> Openings</p>
-                        <?php
+                            $cnt += $ps['positions'];
+                            if(count($arry) >= 3){
+                                $more = true;
+                            }else{
+                                array_push($arry, $ps['name']);
+                            }
                         }
                     }
                     ?>
+                    <p><?php
+                        echo implode(', ',  array_unique($arry));
+                        echo $more ? ' and more' : ' ';
+                    ?></p>
+                    <p><?= $cnt ?> Openings</p>
                 </div>
             </a>
         </div>
@@ -128,12 +138,25 @@ if ($application_name['wage_type'] == 'Fixed') {
                         <div class="e-logo"><i class="fa fa-map-marker"></i></div>
                         <div class="e-detail">
                             <h1>Locations</h1>
-                            <p><?php
+                            <p>
+                                <?php
+                                $l = [];
+                                $cntt = 0;
+                                $more = false;
                                 if ($application_name['applicationPlacementLocations']) {
                                     foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        echo $apl['name'] . ',';
+                                        if(count($l) >= 5){
+                                            $more = true;
+                                        }else{
+                                            array_push($l, $apl['name']);
+                                        }
+                                        $cntt += $apl['positions'];
                                     }
-                                } ?></p>
+                                }
+                                echo implode(', ', array_unique($l));
+                                echo $more ? ' and more' : '';
+                                ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -166,15 +189,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <h1>Openings</h1>
                             <p>
                                 <?php
-                                if (!empty($application_name['applicationPlacementLocations'])) {
-                                    foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        if ($apl['positions'] <= 1) {
-                                            echo $apl['positions'] . ' Opening';
-                                        } else {
-                                            echo $apl['positions'] . ' Openings';
-                                        }
+                                    if ($cntt <= 1) {
+                                        echo $cntt . ' Opening';
+                                    } else {
+                                        echo $cntt . ' Openings';
                                     }
-                                }
                                 ?>
                             </p>
                         </div>
@@ -565,6 +584,12 @@ $this->registerCss('
 body, .page-content{
     background-color: #eee;
 }
+.jc-details ul{
+    padding-inline-start: 0px;
+}
+.jc-details ul li{
+    display: inline;
+}
 .jobCard{
     box-shadow: 0 0 4px rgba(0,0,0,.1);
     padding: 10px 8px;
@@ -578,6 +603,10 @@ body, .page-content{
     width: 50px;
     height: 50px;
 }
+.jc-icon img{
+    width: 100%;
+    height: 100%; 
+}
 .jc-details{
     margin-left: 10px;
 }
@@ -586,10 +615,11 @@ body, .page-content{
     margin-bottom: 5px;
 }
 .jc-details h3{
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 0px;
     margin-top: 0px;
-    font-weight: bold;
+    font-family: Roboto;
+    font-weight: 500;
 }
 
 .ajBtn{
@@ -1613,11 +1643,16 @@ $(document).on('click','.url-forward',function (e){
     window.open(url, "_blank"); 
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
+
+var ps = new PerfectScrollbar('#hamburgerJobs');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 ?>
 <script>
     function showJobsSidebar() {
