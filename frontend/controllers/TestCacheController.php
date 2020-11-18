@@ -131,7 +131,6 @@ class TestCacheController extends Controller
                 ['!=', 'resume', null],
                 ['!=', 'resume', '']
             ])
-            ->andWhere(['created_by'=>'zroPWqDpjZxLp0KL0EvqZJnYE3wX6x'])
             ->limit($limit)
             ->offset($offset)
             ->asArray()

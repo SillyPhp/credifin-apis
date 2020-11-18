@@ -21,7 +21,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                 $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
             } else {
                 if (Yii::$app->user->identity->image) {
-                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                    $image = Yii::$app->params->digitalOcean->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                 }
                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                 $color = Yii::$app->user->identity->initials_color;

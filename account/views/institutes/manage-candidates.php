@@ -31,7 +31,7 @@ use yii\widgets\Pjax;
                                                             <?php
                                                             $name = $image = NULL;
                                                             if (!empty($u['appliedEnc']['image'])) {
-                                                                $image = Yii::$app->params->upload_directories->users->image . $u['appliedEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['image'];
+                                                                $image = Yii::$app->params->digitalOcean->users->image . $u['appliedEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['image'];
                                                             }
                                                             $name = $u['appliedEnc']['name'];
                                                             if ($image):
