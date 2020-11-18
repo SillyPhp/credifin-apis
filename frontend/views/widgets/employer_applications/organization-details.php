@@ -116,7 +116,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <?php endif; ?>
         </div>
         <div class="effect thurio">
-            <h3 class="text-white">Share</h3>
+            <h3 class="text-white size-set">Sharing Links</h3>
             <div class="buttons">
                 <?php
                 if ($type == 'Internship') {
@@ -148,6 +148,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
+<!--            <div class="qr-code">-->
+<!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
+<!--            </div>-->
             <div class="wts-ap">
                 <h3>Share on Whatsapp via Number</h3>
                 <div class="col-md-12 form-whats">
@@ -229,6 +232,16 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.qr-code {
+	width: 100px;
+	margin: 5px auto 20px;
+	background-color: #fff;
+	border-radius: 15px;
+}
+.size-set {
+	font-size: 18px;
+	font-weight: bold;
+}
 .form-whats {
 	position: relative;
 }
@@ -388,7 +401,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 .effect {
   width: 100%;
 }
-.effect h3{margin-bottom:0;}
 .effect .buttons {
   display: block;
   padding: 10px 0px;
