@@ -1058,8 +1058,8 @@ class InternshipsController extends Controller
         }
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
-            'applications' => $this->__internships(8),
-            'erexx_applications' => $this->__erexxInternships(8),
+            'applications' => $this->__internships(9),
+            'erexx_applications' => $this->__erexxInternships(9),
             'closed_application' => $this->__closedinternships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships', 10),
