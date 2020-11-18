@@ -46,6 +46,21 @@ if ($application_name['wage_type'] == 'Fixed') {
 }else if ($application_name['wage_type'] == 'Unpaid'){
     $amount = 'Unpaid';
 }
+$user_pCount = [];
+foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p){
+    $user_pCount[$p['field_name']] = 0;
+    foreach ($fields as $u){
+        if($p['sequence'] == $u['current_round']){
+            $user_pCount[$p['field_name']] += 1;
+        }
+    }
+}
+$hcount = 0;
+foreach ($fields as $f){
+    if($f['status'] == 'Hired'){
+        $hcount += 1;
+    }
+}
 ?>
 <div class="hamburger-jobs">
     <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
@@ -241,7 +256,12 @@ if ($application_name['wage_type'] == 'Fixed') {
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#" onclick="roundClick()">All</a>
+                <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
+                       foreach($user_pCount as $v){
+                           $pcnt += $v;
+                       }
+                       echo $pcnt + $hcount;
+                   ?></span></a>
             </li>
             <?php
             $k = 0;
@@ -251,7 +271,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
                 </li>
                 <?php
@@ -261,7 +281,11 @@ if ($application_name['wage_type'] == 'Fixed') {
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
-                    <i class="fa fa-check-square-o"></i>
+                    <i class="fa fa-check-square-o"></i><span>
+                        <?php
+                            echo $hcount;
+                       ?>
+                    </span>
                 </a>
             </li>
         </ul>
@@ -583,6 +607,10 @@ if ($application_name['wage_type'] == 'Fixed') {
 $this->registerCss('
 body, .page-content{
     background-color: #eee;
+}
+.pr-process-tab li a span{
+    padding: 3px 8px;
+    font-weight: bold;
 }
 .jc-details ul{
     padding-inline-start: 0px;
