@@ -1407,6 +1407,7 @@ function myFunction() {
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
+     var data = $(this).attr('value');
      swal({ 
              title: "Are you sure?",
              text: "This $app_type will be deleted permanently from your dashboard",
@@ -1415,8 +1416,8 @@ $(document).on('click','#j-delete',function(e){
              showCancelButton : true,
          },
          function (isConfirm) {
-           if (isConfirm){ 
-            var data = $(this).attr('value');
+            console.log(this);
+           if (isConfirm){
             var url = "/account/jobs/delete-application";
             $.ajax({
                 url:url,
@@ -1438,6 +1439,7 @@ $(document).on('click','#j-delete',function(e){
 $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
+     var data = $(this).attr('value');
      swal({
          title: "Are you sure?",
          text: "If you close this $app_type you will stop receiving new applications",
@@ -1447,7 +1449,6 @@ $(document).on('click','#j-closed',function(e){
      },
      function(isConfirm) {
      if (isConfirm) { 
-        var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
         $.ajax({
             url:url,
