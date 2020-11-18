@@ -1439,6 +1439,7 @@ $(document).on('click','#j-delete',function(e){
 $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
+     var data = $(this).attr('value');
      swal({
          title: "Are you sure?",
          text: "If you close this $app_type you will stop receiving new applications",
@@ -1448,7 +1449,6 @@ $(document).on('click','#j-closed',function(e){
      },
      function(isConfirm) {
      if (isConfirm) { 
-        var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
         $.ajax({
             url:url,
