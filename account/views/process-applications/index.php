@@ -1407,6 +1407,7 @@ function myFunction() {
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
+     var data = $(this).attr('value');
      swal({ 
              title: "Are you sure?",
              text: "This $app_type will be deleted permanently from your dashboard",
@@ -1415,8 +1416,8 @@ $(document).on('click','#j-delete',function(e){
              showCancelButton : true,
          },
          function (isConfirm) {
-           if (isConfirm){ 
-            var data = $(this).attr('value');
+            console.log(this);
+           if (isConfirm){
             var url = "/account/jobs/delete-application";
             $.ajax({
                 url:url,
