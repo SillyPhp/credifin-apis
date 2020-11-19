@@ -22,7 +22,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<section>
+<section class="bene">
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12">
@@ -34,13 +34,58 @@ $this->params['header_dark'] = false;
                     <div class="benefit-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/resume-builder/organize.png'); ?>"/>
                     </div>
+                    <div class="benefit-txt">
+                        <span class="org-txt">Organize</span> Your Resume
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4 col-xs-12">
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/resume-builder/No-Experience.png'); ?>"/>
+                    </div>
+                    <div class="benefit-txt">
+                        <span class="org-txt">No Experience</span> Needed
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4 col-xs-12">
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/resume-builder/save-time.png'); ?>"/>
+                    </div>
+                    <div class="benefit-txt">
+                        <span class="org-txt">Save</span> Time
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4 col-xs-12">
+                <div class="benefit">
+                    <div class="benefit-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/resume-builder/organize.png'); ?>"/>
+                    </div>
+                    <div class="benefit-txt">
+                        <span class="org-txt">Organize</span> Your Resume
+                    </div>
                 </div>
             </div>
             </div>
 </section>
 
+<section>
+    <div class="easy-steps">
+
+    </div>
+</section>
+
 <?php
 $this->registerCss('
+.easy-steps{
+    background-color: #fca943;
+    min-height: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 body{
     margin: 0px;
 }
@@ -78,6 +123,15 @@ body{
 .org-txt{
     color: #fca943;
 }
+.bene{
+    padding-top: 20px!important;
+    padding-bottom: 20px!important;
+}
+.benefit{
+    text-align: center;
+    margin-bottom: 25px;
+    display: block;
+}
 .benefit-icon{
     text-align: center;
     width: 100%;
@@ -87,6 +141,16 @@ body{
     min-height: 120px;
     margin: 0 auto 20px;
     border-radius: 80px;
+    box-shadow: 0 0 25px 0 rgba(0,0,0,.18);
+}
+.benefit icon img{
+    max-width: 68px;
+    margin-top: 26px;
+}
+.benefit-txt{
+    font-size: 20px;
+	font-family: lora;
+	font-weight: 600;
 }
 ');
 

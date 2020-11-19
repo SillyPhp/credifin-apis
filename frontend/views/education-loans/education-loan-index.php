@@ -230,6 +230,7 @@ use yii\helpers\Url;
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
+
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -510,6 +511,7 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+}
 .blue1{
     color: #EF9819;
  }
