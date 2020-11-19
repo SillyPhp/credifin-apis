@@ -78,7 +78,7 @@ foreach ($fields as $f){
                 </div>
                 <div class="jc-details">
                     <h3><?= $app['job_title'] ?></h3>
-
+                    <p>
                     <?php
                     if ($app['applicationPlacementLocations']) {
                         foreach ($app['applicationPlacementLocations'] as $ps) {
@@ -89,11 +89,11 @@ foreach ($fields as $f){
                                 array_push($arry, $ps['name']);
                             }
                         }
-                    }
-                    ?>
-                    <p><?php
                         echo implode(', ',  array_unique($arry));
                         echo $more ? ' and more' : ' ';
+                        }else{
+                            echo 'Work From Home';
+                        }
                     ?></p>
                     <p><?= $cnt ?> Openings</p>
                 </div>
@@ -167,9 +167,11 @@ foreach ($fields as $f){
                                         }
                                         $cntt += $apl['positions'];
                                     }
-                                }
                                 echo implode(', ', array_unique($l));
                                 echo $more ? ' and more' : '';
+                                } else{
+                                    echo 'Work From Home';
+                                }
                                 ?>
                             </p>
                         </div>
