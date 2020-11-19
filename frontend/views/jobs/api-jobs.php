@@ -29,7 +29,7 @@ $content = [
             'job_title'=>$get['title'],
             'company_name'=>$get['company'],
             'canvas'=>(($get['company_logo'])?false:true),
-            'bg_icon'=>false,
+            'bg_icon'=>(($app['profile_name']=="Others")?false:$app['profile_id']),
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
             'initial_color'=>'#73ef9c',
             'location'=>$location,
