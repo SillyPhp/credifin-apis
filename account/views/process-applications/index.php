@@ -46,6 +46,21 @@ if ($application_name['wage_type'] == 'Fixed') {
 }else if ($application_name['wage_type'] == 'Unpaid'){
     $amount = 'Unpaid';
 }
+$user_pCount = [];
+foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p){
+    $user_pCount[$p['field_name']] = 0;
+    foreach ($fields as $u){
+        if($p['sequence'] == $u['current_round']){
+            $user_pCount[$p['field_name']] += 1;
+        }
+    }
+}
+$hcount = 0;
+foreach ($fields as $f){
+    if($f['status'] == 'Hired'){
+        $hcount += 1;
+    }
+}
 ?>
 <div class="hamburger-jobs">
     <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
@@ -63,7 +78,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                 </div>
                 <div class="jc-details">
                     <h3><?= $app['job_title'] ?></h3>
-
+                    <p>
                     <?php
                     if ($app['applicationPlacementLocations']) {
                         foreach ($app['applicationPlacementLocations'] as $ps) {
@@ -74,11 +89,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                 array_push($arry, $ps['name']);
                             }
                         }
-                    }
-                    ?>
-                    <p><?php
                         echo implode(', ',  array_unique($arry));
                         echo $more ? ' and more' : ' ';
+                        }else{
+                            echo 'Work From Home';
+                        }
                     ?></p>
                     <p><?= $cnt ?> Openings</p>
                 </div>
@@ -152,9 +167,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         }
                                         $cntt += $apl['positions'];
                                     }
-                                }
                                 echo implode(', ', array_unique($l));
                                 echo $more ? ' and more' : '';
+                                } else{
+                                    echo 'Work From Home';
+                                }
                                 ?>
                             </p>
                         </div>
@@ -241,7 +258,12 @@ if ($application_name['wage_type'] == 'Fixed') {
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#" onclick="roundClick()">All</a>
+                <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
+                       foreach($user_pCount as $v){
+                           $pcnt += $v;
+                       }
+                       echo $pcnt + $hcount;
+                   ?></span></a>
             </li>
             <?php
             $k = 0;
@@ -251,7 +273,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
                 </li>
                 <?php
@@ -261,7 +283,11 @@ if ($application_name['wage_type'] == 'Fixed') {
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
-                    <i class="fa fa-check-square-o"></i>
+                    <i class="fa fa-check-square-o"></i><span>
+                        <?php
+                            echo $hcount;
+                       ?>
+                    </span>
                 </a>
             </li>
         </ul>
@@ -416,7 +442,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                             <div class="col-md-3 pl-0">
                                 <div class="pr-user-actions">
                                     <div class="pr-top-actions text-right">
-                                        <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                        <a href="<?= Url::to($arr['username'].'?id=' . $arr['applied_application_enc_id'], true) ?>" target="_blank">View
                                             Profile</a>
                                         <?php
                                         $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
@@ -583,6 +609,10 @@ if ($application_name['wage_type'] == 'Fixed') {
 $this->registerCss('
 body, .page-content{
     background-color: #eee;
+}
+.pr-process-tab li a span{
+    padding: 3px 8px;
+    font-weight: bold;
 }
 .jc-details ul{
     padding-inline-start: 0px;
@@ -1407,6 +1437,7 @@ function myFunction() {
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
+     var data = $(this).attr('value');
      swal({ 
              title: "Are you sure?",
              text: "This $app_type will be deleted permanently from your dashboard",
@@ -1415,8 +1446,8 @@ $(document).on('click','#j-delete',function(e){
              showCancelButton : true,
          },
          function (isConfirm) {
-           if (isConfirm){ 
-            var data = $(this).attr('value');
+            console.log(this);
+           if (isConfirm){
             var url = "/account/jobs/delete-application";
             $.ajax({
                 url:url,
@@ -1438,6 +1469,7 @@ $(document).on('click','#j-delete',function(e){
 $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
+     var data = $(this).attr('value');
      swal({
          title: "Are you sure?",
          text: "If you close this $app_type you will stop receiving new applications",
@@ -1447,7 +1479,6 @@ $(document).on('click','#j-closed',function(e){
      },
      function(isConfirm) {
      if (isConfirm) { 
-        var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
         $.ajax({
             url:url,

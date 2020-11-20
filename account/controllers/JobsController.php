@@ -430,8 +430,8 @@ class JobsController extends Controller
         }
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
-            'applications' => $this->__jobs(6),
-            'erexx_applications' => $this->__erexxJobs(6),
+            'applications' => $this->__jobs(9),
+            'erexx_applications' => $this->__erexxJobs(9),
             'closed_application' => $this->__closedjobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
