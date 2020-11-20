@@ -442,7 +442,7 @@ foreach ($fields as $f){
                             <div class="col-md-3 pl-0">
                                 <div class="pr-user-actions">
                                     <div class="pr-top-actions text-right">
-                                        <a href="<?= Url::to($arr['username'], true) ?>" target="_blank">View
+                                        <a href="<?= Url::to($arr['username'].'?id=' . $arr['applied_application_enc_id'], true) ?>" target="_blank">View
                                             Profile</a>
                                         <?php
                                         $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];

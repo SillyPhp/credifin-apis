@@ -446,8 +446,14 @@ class JobsController extends Controller
             $get = $this->musejobs($eaidk);
         }
         $app = EmployerApplications::find()
-            ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
-            ->where(['unique_source_id' => $eaidk])->asArray()->one();
+            ->alias('a')
+            ->select(['a.application_enc_id','l.name profile_name','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->where(['a.unique_source_id' => $eaidk])
+            ->joinwith(['title k' => function ($b) {
+                $b->joinWith(['parentEnc l'], false);
+                $b->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->asArray()->one();
         if ($get['title']) {
             $whatsAppForm = new whatsAppShareForm();
             return $this->render('api-jobs',
