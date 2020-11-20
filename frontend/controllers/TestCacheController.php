@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\Auth;
+use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
 use common\models\UserResume;
@@ -54,9 +55,11 @@ class TestCacheController extends Controller
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $imageSourcePath = Yii::$app->params->upload_directories->unclaimed_organizations->logo_path . $get['logo_location'] . '/' . $get['logo'];
-                $result = $my_space->uploadFile($imageSourcePath, "images/ey-logos/uncliamed-organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
+                $result = $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . "/images/ey-logos/unclaimed-organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
             }
         }
+
+        echo 'saved';
     }
 
     public function actionClaimedUpload($page, $limit = 20)
@@ -85,10 +88,10 @@ class TestCacheController extends Controller
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $imageSourcePath = Yii::$app->params->upload_directories->organizations->logo_path . $get['logo_location'] . '/' . $get['logo'];
-                $result = $my_space->uploadFile($imageSourcePath, "images/ey-logos/organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
+                $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . "/images/ey-logos/organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
             }
         }
-        echo count($getData);
+        echo 'saved';
     }
 
     public function actionUserProfile($page, $limit = 20)
@@ -119,6 +122,8 @@ class TestCacheController extends Controller
                 $result = $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $get['image_location'] . '/' . $get['image'], "public");
             }
         }
+        echo 'saved';
+
     }
 
     public function actionUserResume($page, $limit = 20)
@@ -151,4 +156,5 @@ class TestCacheController extends Controller
         }
 
     }
+
 }
