@@ -140,7 +140,7 @@ class WebinarsController extends Controller
                     if ($item['image']) {
                         $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                         if (file_exists($image_path)) {
-                            $image = Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                            $image = Yii::$app->params->digitalOcean->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                         }
                     }
                     $item['speaker_image'] = $image;
@@ -400,7 +400,7 @@ class WebinarsController extends Controller
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
                 $d->limit(6);
@@ -435,7 +435,7 @@ class WebinarsController extends Controller
                 'a.slug',
                 'a.title',
                 'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
@@ -460,7 +460,7 @@ class WebinarsController extends Controller
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
                 $d->limit(3);

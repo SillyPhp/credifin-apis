@@ -201,7 +201,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                     if ($register) {
                                         foreach ($register as $reg) { ?>
                                             <li>
-                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
+                                                <img src="<?= Url::to(Yii::$app->params->digitalOcean->users->image . $reg['image_location'] . '/' . $reg['image']) ?>">
                                             </li>
                                         <?php }
                                     } ?>
@@ -439,7 +439,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                             $speaker_icon = $v['webinarSpeakers'][0]['image'];
                                             $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
                                             if ($speaker_icon) {
-                                                $image = Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
+                                                $image = Yii::$app->params->digitalOcean->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
                                             }
                                             ?>
                                             <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">

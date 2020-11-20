@@ -17,7 +17,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
     <div id="user_box">
         <?php
         if (!empty(Yii::$app->user->identity->image)) {
-            $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+            $image = Yii::$app->params->digitalOcean->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
             ?>
             <img src="<?= $image ?>"/>
         <?php } else { ?>
