@@ -238,7 +238,7 @@ use yii\helpers\Url;
             <div class="loan-txt">
                 <div class="loan-txt1">Take Your <br> Students to Success with our
                     <div class="blue-txt"> Educational Institution Loan</div>
-                    <a href="<?= Url::to('/site/educational-institution-loan') ?>" class="btn-set">
+                    <a href="<?= Url::to('/educational-institution-loan') ?>" class="btn-set">
                     Apply Now
                     </a>
                 </div>
