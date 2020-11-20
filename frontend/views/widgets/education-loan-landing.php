@@ -98,7 +98,7 @@ $this->registerCss('
 }
 .loan-btn a {
 	color: #fff;
-	background-color: #0e4582;
+	background-color: #ff7803;
 	padding: 10px 20px;
 	border-radius: 27px;
 	font-size: 18px;
