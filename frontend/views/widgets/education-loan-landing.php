@@ -78,7 +78,7 @@ $this->registerCss('
     line-height: 25px;
 }
 .loan-req{
-    background:url(' . Url::to('@eyAssets/images/pages/educational-loans/blue-strip.png') . ');  
+    background:url(' . Url::to('@eyAssets/images/pages/education-loans/skyblue-strip.png') . ');  
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -98,7 +98,7 @@ $this->registerCss('
 }
 .loan-btn a {
 	color: #fff;
-	background-color: #10b66a;
+	background-color: #0e4582;
 	padding: 10px 20px;
 	border-radius: 27px;
 	font-size: 18px;

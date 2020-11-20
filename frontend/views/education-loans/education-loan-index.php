@@ -233,19 +233,7 @@ use yii\helpers\Url;
     <!--            </div>-->
     <!--        </div>-->
     <!--    </section>-->
-    <section>
-        <div class="loan">
-            <div class="loan-txt">
-                <div class="loan-txt1">Take Your <br> Students to Success with our
-                    <div class="blue-txt"> Educational Institution Loan</div>
-                    <a href="<?= Url::to('/educational-institution-loan') ?>" class="btn-set">
-                    Apply Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <?= $this->render('/widgets/institutional-loan') ?>
     <section>
         <div class="ptb50 bgEd">
             <div class="container">

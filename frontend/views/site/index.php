@@ -124,6 +124,7 @@ $this->params['header_dark'] = false;
 </section>
 
 <?= $this->render('/widgets/education-loan-landing') ?>
+<?= $this->render('/widgets/institutional-loan') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
