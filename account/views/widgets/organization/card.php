@@ -25,10 +25,10 @@ if ($organization_data) {
                             } else {
                                 $logo_location = $shortlist['logo_location'];
                                 $logo_image = Yii::$app->params->digitalOcean->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
-//                                $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
-//                                if (!file_exists($logo_base_path)) {
-//                                    $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
-//                                }
+                                $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
+                                if (!file_exists($logo_base_path)) {
+                                    $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
+                                }
                                 ?>
                                 <img src="<?= Url::to($logo_image); ?>" class="img-responsive ">
                                 <?php

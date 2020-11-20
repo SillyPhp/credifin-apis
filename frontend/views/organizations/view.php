@@ -33,7 +33,11 @@ $this->params['seo_tags'] = [
 ];
 
 if ($organization['logo']) {
+    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->digitalOcean->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
+    if (!file_exists($image_path)) {
+        $image = $organization['name'];
+    }
 } else {
     $image = $organization['name'];
 }
