@@ -1139,7 +1139,7 @@ class CandhomeController extends ApiBaseController
                             $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
                             $fieldsModel->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
                             $fieldsModel->field_enc_id = $d['field_enc_id'];
-                            $fieldsModel->field_option_enc_id = $option['option_enc_id'];
+                            $fieldsModel->field_option_enc_id = $option;
                             $fieldsModel->created_on = date('Y-m-d H:i:s');
                             $fieldsModel->created_by = $user->user_enc_id;
                             if (!$fieldsModel->save()) {
