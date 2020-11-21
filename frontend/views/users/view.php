@@ -34,7 +34,7 @@ $this->params['header_dark'] = false;
                         <?php
                         $name = $image = NULL;
                         if (!empty($user['image'])) {
-                            $image = Yii::$app->params->digitalOcean->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
+                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
                         }
                         $name = $user['first_name'] . ' ' . $user['last_name'];
                         if ($image):
@@ -168,7 +168,8 @@ $this->params['header_dark'] = false;
                                 <?php
                                 $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
                                 ?>
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download Resume<i
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download
+                                    Resume<i
                                             class="fas fa-download"></i></a>
                             </div>
                         <?php }
@@ -181,172 +182,174 @@ $this->params['header_dark'] = false;
     <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-12">
-                <?php if($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
-                <div class="container-detail-box">
-                    <div class="apply-job-header">
-                        <?php
-                        if ($user['job_profile']) {
-                            ?>
-                            <a href="#" class="cl-success">
-                                <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
-                            </a>
+                <?php if ($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
+                    <div class="container-detail-box">
+                        <div class="apply-job-header">
                             <?php
-                        }
-                        if ($user['city']) {
-                            ?>
-                            <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                    <div class="apply-job-detail">
-                        <p><?= Html::encode($user['description']); ?></p>
-                    </div>
-                    <?php if ($skills) { ?>
-                        <div class="apply-job-detail">
-                            <h5>Skills</h5>
-                            <ul class="skills">
+                            if ($user['job_profile']) {
+                                ?>
+                                <a href="#" class="cl-success">
+                                    <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
+                                </a>
                                 <?php
+                            }
+                            if ($user['city']) {
+                                ?>
+                                <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <div class="apply-job-detail">
+                            <p><?= Html::encode($user['description']); ?></p>
+                        </div>
+                        <?php if ($skills) { ?>
+                            <div class="apply-job-detail">
+                                <h5>Skills</h5>
+                                <ul class="skills">
+                                    <?php
                                     foreach ($skills as $sk) { ?>
                                         <li><?= $sk['skills']; ?></li>
                                         <?php
                                     }
-                                ?>
-                            </ul>
-                        </div>
-                    <?php }
-                    if ($language) {
-                    ?>
-                        <div class="apply-job-detail">
-                            <h5>Spoken Languages</h5>
-                            <ul class="skills">
-                                <?php
+                                    ?>
+                                </ul>
+                            </div>
+                        <?php }
+                        if ($language) {
+                            ?>
+                            <div class="apply-job-detail">
+                                <h5>Spoken Languages</h5>
+                                <ul class="skills">
+                                    <?php
                                     foreach ($language as $lg) { ?>
                                         <li><?= $lg['language']; ?></li>
                                         <?php
                                     }
-                                ?>
-                            </ul>
-                        </div>
-                    <?php } ?>
-                </div>
+                                    ?>
+                                </ul>
+                            </div>
+                        <?php } ?>
+                    </div>
                 <?php } ?>
-                <?php if($education || $experience || $achievement || $hobbies || $interests) { ?>
-                <div class="container-detail-box">
-                    <?php
-                    if ($education) {
-                        ?>
-                        <div class="education-detail">
-                            <div class="education-head">Education</div>
-                            <?php
-                            foreach ($education as $edu) {
-                                ?>
-                                <div class="set">
-                                    <div class="prof-p">
-                                        <!--                                    <img src="-->
-                                        <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
-                                        <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80"
-                                                font="30px"></canvas>
-                                    </div>
-                                    <div class="prof-inner">
-                                        <div class="uni-name s-text"><?= $edu['institute'] ?>
-                                        </div>
-                                        <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                        </div>
-                                        <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                        </div>
+                <?php if ($education || $experience || $achievement || $hobbies || $interests) { ?>
+                    <div class="container-detail-box">
                         <?php
-                    }
-                    if ($experience) {
-                        ?>
-                        <div class="experience-detail">
-                            <div class="education-head">Work Experience</div>
-                            <?php
-                            foreach ($experience as $exp) {
-                                ?>
-                                <div class="set">
-                                    <div class="prof-p">
-                                        <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80"
-                                                font="30px"></canvas>
-                                    </div>
-                                    <div class="prof-inner">
-                                        <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                        if ($education) {
+                            ?>
+                            <div class="education-detail">
+                                <div class="education-head">Education</div>
+                                <?php
+                                foreach ($education as $edu) {
+                                    ?>
+                                    <div class="set">
+                                        <div class="prof-p">
+                                            <!--                                    <img src="-->
+                                            <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                            <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
+                                                    height="80"
+                                                    font="30px"></canvas>
                                         </div>
-                                        <div class="quelification s-text-2"><?= $exp['title'] ?>
-                                        </div>
-                                        <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
-                                            <?php if ($exp['is_current']) {
-                                                echo 'Present';
-                                            } else { ?>
-                                                <?php echo date("d/m/Y", strtotime($exp['to_date']));
-                                            } ?>
-                                        </div>
-                                        <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                        <div class="prof-inner">
+                                            <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                            </div>
+                                            <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                            </div>
+                                            <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                        <?php
-                    }
-                    if ($achievement) {
-                    ?>
-                    <div class="achievements-detail set-li">
-                        <div class="education-head">Achievements</div>
-                        <ul>
-                            <?php
-                            foreach ($achievement as $achive) {
+                                    <?php
+                                }
                                 ?>
-                                <li><?= $achive['achievement'] ?></li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                    <?php
-                    }
-                    if ($hobbies) {
-                    ?>
-                    <div class="hobbies-detail set-li">
-                        <div class="education-head">Hobbies</div>
-                        <ul>
+                            </div>
                             <?php
-                            foreach ($hobbies as $hobby) {
+                        }
+                        if ($experience) {
+                            ?>
+                            <div class="experience-detail">
+                                <div class="education-head">Work Experience</div>
+                                <?php
+                                foreach ($experience as $exp) {
+                                    ?>
+                                    <div class="set">
+                                        <div class="prof-p">
+                                            <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
+                                                    height="80"
+                                                    font="30px"></canvas>
+                                        </div>
+                                        <div class="prof-inner">
+                                            <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                            </div>
+                                            <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                            </div>
+                                            <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
+                                                <?php if ($exp['is_current']) {
+                                                    echo 'Present';
+                                                } else { ?>
+                                                    <?php echo date("d/m/Y", strtotime($exp['to_date']));
+                                                } ?>
+                                            </div>
+                                            <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
                                 ?>
-                                <li><?= $hobby['hobby'] ?></li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
-                    </div>
+                            </div>
                             <?php
-                            }
-                    if ($interests) {
+                        }
+                        if ($achievement) {
+                            ?>
+                            <div class="achievements-detail set-li">
+                                <div class="education-head">Achievements</div>
+                                <ul>
+                                    <?php
+                                    foreach ($achievement as $achive) {
+                                        ?>
+                                        <li><?= $achive['achievement'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <?php
+                        }
+                        if ($hobbies) {
+                            ?>
+                            <div class="hobbies-detail set-li">
+                                <div class="education-head">Hobbies</div>
+                                <ul>
+                                    <?php
+                                    foreach ($hobbies as $hobby) {
+                                        ?>
+                                        <li><?= $hobby['hobby'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <?php
+                        }
+                        if ($interests) {
+                            ?>
+                            <div class="Interests-detail set-li">
+                                <div class="education-head">Interests</div>
+                                <ul>
+                                    <?php
+                                    foreach ($interests as $intrst) {
+                                        ?>
+                                        <li><?= $intrst['interest'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <?php
+                        }
                         ?>
-                    <div class="Interests-detail set-li">
-                        <div class="education-head">Interests</div>
-                        <ul>
-                            <?php
-                            foreach ($interests as $intrst) {
-                                ?>
-                                <li><?= $intrst['interest'] ?></li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
                     </div>
-                            <?php
-                            }
-                    ?>
-                </div>
                 <?php } ?>
             </div>
             <?php

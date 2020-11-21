@@ -24,7 +24,7 @@ class NotificationEmails extends Component
         $user_info = Users::find()
             ->where(['user_enc_id' => $user_id])
             ->joinWith(['cityEnc b'], false)
-            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience', 'CONCAT("' . Yii::$app->params->digitalOcean->users->image . '",image_location,"/",image) logo', 'b.name city'])
+            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience', 'CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo', 'b.name city'])
             ->asArray()
             ->one();
         $user_skills = \common\models\UserSkills::find()

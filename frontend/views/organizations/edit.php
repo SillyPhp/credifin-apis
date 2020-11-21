@@ -7,7 +7,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 if ($organization['logo']) {
-    $image = Yii::$app->params->digitalOcean->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }

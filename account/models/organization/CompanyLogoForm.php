@@ -39,7 +39,7 @@ class CompanyLogoForm extends Model
             $image_parts = explode(";base64,", $image);
             $image_base64 = base64_decode($image_parts[1]);
             $organization->logo_location = Yii::$app->getSecurity()->generateRandomString();
-            $base_path = "/images/ey-logos/organizations/" . $organization->logo_location;
+            $base_path = Yii::$app->params->upload_directories->organizations->logo . $organization->logo_location;
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $organization->logo = $utilitiesModel->encrypt() . '.png';
             $organization->last_updated_on = date('Y-m-d H:i:s');

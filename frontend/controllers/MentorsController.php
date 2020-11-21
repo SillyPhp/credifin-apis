@@ -133,9 +133,9 @@ class MentorsController extends Controller
                     if ($item['image']) {
 //                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
 //                        if (file_exists($image_path)) {
-//                            $image = Yii::$app->params->digitalOcean->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+//                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
 //                        }
-                        $image = Yii::$app->params->digitalOcean->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                     }
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');
@@ -449,7 +449,7 @@ class MentorsController extends Controller
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
                 $d->limit(6);
@@ -480,7 +480,7 @@ class MentorsController extends Controller
                 'a.description',
                 'a.seats',
                 'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
@@ -525,7 +525,7 @@ class MentorsController extends Controller
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
                 $d->joinWith(['createdBy d1'], false);
                 $d->limit(6);
@@ -580,9 +580,9 @@ class MentorsController extends Controller
                     if ($item['image']) {
 //                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
 //                        if (file_exists($image_path)) {
-//                            $image = Yii::$app->params->digitalOcean->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+//                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
 //                        }
-                        $image = Yii::$app->params->digitalOcean->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                     }
                     $item['speaker_image'] = $image;
                     $item['speaker_image_fake'] = Url::to('@eyAssets/images/pages/webinar/default-user.png');

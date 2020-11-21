@@ -26,7 +26,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         <div class="upload-img-bar">
                             <span>
                             <?php if (!empty(Yii::$app->user->identity->image)) {
-                                $image = Yii::$app->params->digitalOcean->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
+                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
                                 <img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150">
                             <?php } else {
                                 $first = Yii::$app->user->identity->first_name;
