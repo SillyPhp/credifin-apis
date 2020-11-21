@@ -60,7 +60,7 @@ $round_avg = round($overall_avg);
                                 <div class="logo-box">
                                     <div class="logo">
                                         <?php
-                                        if (!empty($image_path)):
+                                        if (!empty($image)):
                                             ?>
                                             <img id="logo-img" src="<?= Url::to($image); ?>"
                                                  alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
