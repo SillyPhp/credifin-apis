@@ -39,7 +39,7 @@ class TestCacheController extends Controller
                 ['!=', 'logo', null],
                 ['!=', 'logo', '']
             ])
-            ->andWhere(['>=', 'created_on', '2020-10-08'])
+            ->andWhere(['>=', 'created_on', '2020-10-06'])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
@@ -72,7 +72,7 @@ class TestCacheController extends Controller
                 ['!=', 'logo', null],
                 ['!=', 'logo', '']
             ])
-            ->andWhere(['>=', 'created_on', '2020-10-08'])
+            ->andWhere(['>=', 'created_on', '2020-10-06'])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
