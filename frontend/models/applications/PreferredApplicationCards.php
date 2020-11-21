@@ -110,7 +110,7 @@ class PreferredApplicationCards
                 'n.min_wage as min_salary',
                 'n.wage_duration as salary_duration',
                 'h.name as organization_name',
-                'CASE WHEN h.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", h.logo_location, "/", h.logo) ELSE NULL END logo',
+                'CASE WHEN h.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", h.logo_location, "/", h.logo) ELSE NULL END logo',
             ]);
         } else if ($options['dataType'] == 'quick') {
             $dataProvider->query->andWhere(['z.unclaimed_organization_enc_id' => null, 'z.interview_process_enc_id' => null]);
@@ -141,7 +141,7 @@ class PreferredApplicationCards
                 'n.min_wage as min_salary',
                 'n.wage_duration as salary_duration',
                 'h.name as organization_name',
-                'CASE WHEN h.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", h.logo_location, "/", h.logo) ELSE NULL END logo',
+                'CASE WHEN h.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", h.logo_location, "/", h.logo) ELSE NULL END logo',
             ]);
         } else if ($options['dataType'] == 'mis') {
             $dataProvider->query->andWhere(['not', ['z.unclaimed_organization_enc_id' => null]]);
@@ -184,7 +184,7 @@ class PreferredApplicationCards
                 'nn.min_wage as min_salary',
                 'nn.wage_duration as salary_duration',
                 'o.name as organization_name',
-                'CASE WHEN o.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", o.logo_location, "/", o.logo) ELSE NULL END logo',
+                'CASE WHEN o.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", o.logo_location, "/", o.logo) ELSE NULL END logo',
             ]);
         } else if ($options['dataType'] == 'free') {
             $dataProvider->query->andWhere(['not', ['z.unclaimed_organization_enc_id' => null]]);
@@ -227,7 +227,7 @@ class PreferredApplicationCards
                 'nn.min_wage as min_salary',
                 'nn.wage_duration as salary_duration',
                 'o.name as organization_name',
-                'CASE WHEN o.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", o.logo_location, "/", o.logo) ELSE NULL END logo',
+                'CASE WHEN o.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", o.logo_location, "/", o.logo) ELSE NULL END logo',
             ]);
         }
         if (isset($options['limit'])) {

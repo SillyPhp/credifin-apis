@@ -34,7 +34,7 @@ $this->params['header_dark'] = false;
                         <?php
                         $name = $image = NULL;
                         if (!empty($user['image'])) {
-                            $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
+                            $image = Yii::$app->params->digitalOcean->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
                         }
                         $name = $user['first_name'] . ' ' . $user['last_name'];
                         if ($image):

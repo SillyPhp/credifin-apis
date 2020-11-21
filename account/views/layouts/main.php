@@ -58,13 +58,13 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
                                                 } else {
                                                     if (Yii::$app->user->identity->image) {
-                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                        $image = Yii::$app->params->digitalOcean->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                                     }
                                                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                     $color = Yii::$app->user->identity->initials_color;
@@ -110,13 +110,13 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
                                                 } else {
                                                     if (Yii::$app->user->identity->image) {
-                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                        $image = Yii::$app->params->digitalOcean->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                                     }
                                                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                     $color = Yii::$app->user->identity->initials_color;
