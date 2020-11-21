@@ -53,7 +53,7 @@ class ReviewsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $type = explode(",", $type);
         $params1 = (new \yii\db\Query())
-            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
