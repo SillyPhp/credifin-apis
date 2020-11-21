@@ -25,6 +25,7 @@ use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
 use frontend\models\leads\InstituteLeads;
+use frontend\models\leads\LoanApplication;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -1208,5 +1209,27 @@ class SiteController extends Controller
             }
         }
         return $this->render('educational-institution-loan', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
+    }
+    public function actionLoanApplication()
+    {
+        $this->layout = 'blank-layout';
+        $model = new LoanApplication();
+        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id', 'organization_type'])->asArray()->all();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $resposne = $model->save();
+            if ($resposne['status']) {
+                return [
+                    'status' => 200,
+                    'data' => $resposne['data']
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'message' => 'Some Internal Server Error'
+                ];
+            }
+        }
+        return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
 }
