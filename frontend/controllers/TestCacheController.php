@@ -55,7 +55,7 @@ class TestCacheController extends Controller
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $imageSourcePath = Yii::$app->params->upload_directories->unclaimed_organizations->logo_path . $get['logo_location'] . '/' . $get['logo'];
-                $result = $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . "/images/ey-logos/unclaimed-organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
+                $result = $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $get['logo_location'] . '/' . $get['logo'], "public");
             }
         }
 
@@ -88,7 +88,7 @@ class TestCacheController extends Controller
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $imageSourcePath = Yii::$app->params->upload_directories->organizations->logo_path . $get['logo_location'] . '/' . $get['logo'];
-                $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . "/images/ey-logos/organizations/" . $get['logo_location'] . '/' . $get['logo'], "public");
+                $my_space->uploadFile($imageSourcePath, Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $get['logo_location'] . '/' . $get['logo'], "public");
             }
         }
         echo 'saved';
