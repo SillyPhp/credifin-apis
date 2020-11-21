@@ -44,7 +44,7 @@ class ReviewCardsMod
                 '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
                 '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
                 '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
-                'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
+                'a.created_on','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',

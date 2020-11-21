@@ -71,7 +71,7 @@ class ReviewsController extends Controller
         }
 
         $params2 = (new \yii\db\Query())
-            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");

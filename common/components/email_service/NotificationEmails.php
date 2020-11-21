@@ -75,7 +75,7 @@ class NotificationEmails extends Component
             $data = $object->getCloneData($application_id, $type);
             $org_d = Organizations::find()
                 ->where(['organization_enc_id' => $company_id])
-                ->select(['email', 'initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['email', 'initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->asArray()
                 ->one();
             $email = $org_d['email'];

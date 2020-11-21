@@ -78,7 +78,7 @@ if ($type == 'Internships') {
                                     <?php
                                     if (!empty($application_details['logo'])) {
                                         ?>
-                                        <img src="<?= Yii::$app->params->digitalOcean->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
+                                        <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
                                              class="img-responsive"/>
                                         <?php
                                     } else {

@@ -809,7 +809,7 @@ class OrganizationsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $referral = Yii::$app->referral->getReferralCode();
             $organizations = \common\models\Organizations::find()
-                ->select(['initials_color color', 'CONCAT("/", slug, "' . $referral . '") link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['initials_color color', 'CONCAT("/", slug, "' . $referral . '") link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->where(['is_sponsored' => 1])
                 ->limit(6)
                 ->asArray()
@@ -898,7 +898,7 @@ class OrganizationsController extends Controller
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '",logo_location, "/", logo) END logo'])
+            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo'])
             ->where([
                 'slug' => $slug,
                 'is_deleted' => 0

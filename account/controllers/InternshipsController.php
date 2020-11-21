@@ -1298,7 +1298,7 @@ class InternshipsController extends Controller
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.organization_enc_id','a.organization_enc_id college_enc_id','a.name', 'a.initials_color color','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','e.name city'])
+                ->select(['a.organization_enc_id','a.organization_enc_id college_enc_id','a.name', 'a.initials_color color','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','e.name city'])
                 ->innerJoinWith(['businessActivityEnc b' => function ($b) {
                     $b->onCondition(["b.business_activity" => "College"]);
                 }], false)
@@ -1316,7 +1316,7 @@ class InternshipsController extends Controller
 //            $colleges = ErexxCollaborators::find()
 //                ->alias('a')
 //                ->distinct()
-//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
 //                ->joinWith(['collegeEnc b' => function ($b) {
 //                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
 //                    $b->joinWith(['userOtherDetails c'], false);

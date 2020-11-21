@@ -57,7 +57,7 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->digitalOcean->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
@@ -109,7 +109,7 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->digitalOcean->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
