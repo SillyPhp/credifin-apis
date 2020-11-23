@@ -126,7 +126,7 @@ class EducationLoanController extends ApiBaseController
                     return $this->response(401, ['status' => 422, 'message' => 'Course Inforation Not Found']);
                 }
                 if ($model->validate()) {
-                    if ($data = $model->add( 1,$userId,$college_id, 'CollegeWebsite')) {
+                    if ($data = $model->add(1, $userId, $college_id, 'CollegeWebsite')) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -196,7 +196,7 @@ class EducationLoanController extends ApiBaseController
         if ($params) {
             $organizationObject = new OrganizationList();
             $model = new LoanApplicationsForm();
-            if ($params['is_addmission_taken']==1){
+            if ($params['is_addmission_taken'] == 1) {
                 $parser = $organizationObject->conditionParser($params);
                 if (!$parser['college_id']) {
                     return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
@@ -206,7 +206,7 @@ class EducationLoanController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
                 }
                 $model->college_course_enc_id = $parser2['assigned_course_id'];
-            }else{
+            } else {
                 $course_name = $course_name = trim($params['college_course_info'][0]['course_text']);
                 $model->college_course_enc_id = null;
                 $parser['college_id'] = null;
@@ -221,7 +221,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                    if ($data = $model->add($params['is_addmission_taken'],$userId, $parser['college_id'], 'Ey', $parser['is_claim'],$course_name,$pref)) {
+                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref)) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
@@ -397,27 +397,42 @@ class EducationLoanController extends ApiBaseController
         $type = $params['type'];
         $id = $params['id'];
 
-        if ($type == 'id_proof') {
-            $id = $this->saveIdProof($user_id, $params, $id);
-            if ($id) {
-                return $this->response(200, ['status' => 200, 'id' => $id]);
-            }
-        } elseif ($type == 'address') {
-            $id = $this->saveAddress($user_id, $params, $id);
-            if ($id) {
-                return $this->response(200, ['status' => 200, 'id' => $id]);
-            }
-        } elseif ($type == 'qualification') {
-            $id = $this->saveQualification($user_id, $params, $id);
-            if ($id) {
-                return $this->response(200, ['status' => 200, 'id' => $id]);
-            }
-        } elseif ($type == 'co_applicant') {
-            $id = $this->saveCoApplicant($user_id, $params, $id);
-            if ($id) {
-                return $this->response(200, ['status' => 200, 'id' => $id]);
+        switch ($type) {
+            case 'applicant' :
+                $result = $this->saveApplicant($user_id, $params, $id);
+                break;
+            case 'id_proof' :
+                $result = $this->saveIdProof($user_id, $params, $id);
+                break;
+            case 'address' :
+                $result = $this->saveAddress($user_id, $params, $id);
+                break;
+            case 'qualification' :
+                $result = $this->saveQualification($user_id, $params, $id);
+                break;
+            case 'co_applicant' :
+                $result = $this->saveCoApplicant($user_id, $params, $id);
+                break;
+            default :
+                $result = false;
+        }
+        if ($result) {
+            return $this->response(200, ['status' => 200, 'id' => $id]);
+        }
+    }
+
+    private function saveApplicant($user_id, $params, $id = null)
+    {
+        if ($params['gender']) {
+            $model = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_id']]);
+            $model->gender = $params['gender'];
+            $model->updated_by = $user_id;
+            $model->updated_on = date('Y-m-d H:i:s');
+            if ($model->save()) {
+                return true;
             }
         }
+        return false;
     }
 
     private function saveIdProof($user_id, $params, $id = null)
@@ -890,23 +905,24 @@ class EducationLoanController extends ApiBaseController
         return $cities;
     }
 
-    public function actionUpdateInstitutePayment(){
+    public function actionUpdateInstitutePayment()
+    {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $loan_payments = InstituteLeadsPayments::find()
                 ->where(['payment_enc_id' => $params['payment_enc_id']])
                 ->one();
             if ($loan_payments) {
                 $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
                 $loan_payments->payment_status = $params['status'];
-                $loan_payments->payment_signature = (($params['signature'])?$params['signature']:null);
+                $loan_payments->payment_signature = (($params['signature']) ? $params['signature'] : null);
                 $loan_payments->updated_by = null;
                 $loan_payments->updated_on = date('Y-m-d H:i:s');
                 $loan_payments->update();
             }
             return $this->response(200, ['status' => 200, 'message' => 'success']);
-        }else{
+        } else {
             return $this->response(500, ['status' => 500, 'message' => 'No Params Found']);
         }
-     }
+    }
 }
