@@ -161,7 +161,7 @@ class WebinarsController extends ApiBaseController
                 'b.designation',
                 'CONCAT(f.first_name, " ", f.last_name) fullname',
                 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) END image',
-                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
                 'f.description',
                 'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
                 'REPLACE(c.name, "&amp;", "&") as org_name',
@@ -279,7 +279,7 @@ class WebinarsController extends ApiBaseController
                         'd.instagram',
                         'REPLACE(f.name, "&amp;", "&") as org_name',
                         'd.description',
-                        'CASE WHEN f.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", f.logo_location, "/", f.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f.name, "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END logo',
+                        'CASE WHEN f.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", f.logo_location, "/", f.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", f.name, "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END logo',
                     ]);
                     $b->joinWith(['speakerEnc c' => function ($c) {
                         $c->joinWith(['userEnc d']);

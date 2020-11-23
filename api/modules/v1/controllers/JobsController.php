@@ -858,7 +858,7 @@ class JobsController extends ApiBaseController
                     $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
                 }], false);
 
-            $image_link = Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https');
+            $image_link = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https');
         }
         $application_data->joinWith(['preferredIndustry x'], false);
         $data1 = $application_data->select([

@@ -124,7 +124,7 @@ class Cards
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
@@ -535,7 +535,7 @@ class Cards
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
