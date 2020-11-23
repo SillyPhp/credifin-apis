@@ -474,7 +474,7 @@ class ReviewsController extends ApiBaseController
                 'b.first_name',
                 'b.last_name',
                 'b.initials_color',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])->asArray()
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])->asArray()
                 ->all();
 
             for ($i = 0; $i < count($result); $i++) {
@@ -522,7 +522,7 @@ class ReviewsController extends ApiBaseController
                         'a.show_user_details',
                         'b.first_name',
                         'b.last_name',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color'
                     ]
                 ];
@@ -610,7 +610,7 @@ class ReviewsController extends ApiBaseController
                         'a.reviewer_type',
                         'b.first_name',
                         'b.last_name',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
                         'c.name profile'
                     ]
@@ -683,7 +683,7 @@ class ReviewsController extends ApiBaseController
                         'a.reviewer_type',
                         'b.first_name',
                         'b.last_name',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
                         'c.name profile'
                     ]
@@ -755,7 +755,7 @@ class ReviewsController extends ApiBaseController
                         'a.reviewer_type',
                         'b.first_name',
                         'b.last_name',
-                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
                         'c.name profile'
                     ]
