@@ -72,7 +72,7 @@ foreach ($fields as $f){
                 $more = false;
         ?>
         <div class="jobCard">
-            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>">
+            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>" reject>
                 <div class="jc-icon">
                     <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
                 </div>
@@ -324,6 +324,7 @@ foreach ($fields as $f){
 
                     <div class="row pr-user-main">
                         <div class="col-md-12 col-sm-12 pr-user-inner-main">
+
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
@@ -610,6 +611,67 @@ $this->registerCss('
 body, .page-content{
     background-color: #eee;
 }
+.addReasonBox{
+    display: flex;
+    max-width: 400px;
+    margin:0 auto 10px;
+}
+.addReasonBox input{
+    width: 100%;
+    padding: 5px 10px;
+    border: 1px solid #eee;
+}
+.addReasonBox button{
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
+#rejectType{
+    display: none;
+}
+.rejectReason p{
+    text-align: center;
+    font-family: lora;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    color: #00a0e3;
+}
+.rejectReason{
+    text-align: center;
+}
+.rejectReason ul{
+    padding-inline-start: 0px;
+}
+.rejectReason ul li{
+    display: inline-block;
+    padding:5px;
+}
+.reasonsReject{
+    position: relative;
+}
+.reasonsReject input{
+    position: absolute;
+    visibility: hidden;
+}
+.reasonsReject label{
+    border: 1px solid #333;
+    color: #333;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 15px;
+}
+.reasonsReject input:checked ~ label,
+.reasonsReject label:hover{
+    background: #00a0e3;
+    color: #fff;
+    border-color: #00a0e3;
+}
+
 .pr-process-tab li a span{
     padding: 3px 8px;
     font-weight: bold;
@@ -1032,6 +1094,18 @@ li{
     padding-left: 15px;
     width:calc(100% - 70px);
     font-family:roboto;
+    position: relative;
+}
+.reject-box{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height:102%;
+    background: rgba(255,255,255, .9);
+    z-index: 99;
+    border-radius: 8px 0 0 8px;
+    padding: 10px 15px;
 }
 .hiring_process_list > li{
     width:100%;
@@ -1446,7 +1520,6 @@ $(document).on('click','#j-delete',function(e){
              showCancelButton : true,
          },
          function (isConfirm) {
-            console.log(this);
            if (isConfirm){
             var url = "/account/jobs/delete-application";
             $.ajax({
@@ -1500,7 +1573,6 @@ $(document).on('click','#j-closed',function(e){
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
-    console.log(this);
     let fontIcon = this.children;
     fontIcon[0].classList.toggle('rotate180');    
     
@@ -1579,7 +1651,6 @@ $(document).on('click','.multipleRound',function(e) {
   var app_id = $(this).attr('value');
   var roundId = $(this).parent().attr('data-id');
   var prevRounds = $(this).parent().prevAll();
-  console.log(prevRounds);
   var btn = $(this);
   var dataArr = [];
   var obj = {};
@@ -1614,7 +1685,6 @@ $(document).on('click','.multipleRound',function(e) {
     }
   })
 });
-
 $(document).on('click','.reject',function(e){
     e.preventDefault();
     var btn = $(this);
@@ -1645,7 +1715,24 @@ $(document).on('click','.reject',function(e){
         }
     });
 });
-
+$(document).on('click','.addReasonBtn', function (e){
+   e.preventDefault();
+   var reason = $(this).prev('input').val().trim();
+   $.ajax({
+        url:'/account/process-applications/add-reason',
+        data:{reason:reason},
+        method:'post',
+        success:function(data){
+            res = JSON.parse(data);
+            if(res['status'] == 200){
+                let reasonID = res['reason_enc_id'];
+                let reasonTitle = res['reason'];
+            }else{
+                
+            }
+        }
+   })
+});
 $(document).on('click','.saveNote',function(e){
      e.preventDefault();
      var note = $(this).prev('textarea').val();
@@ -1655,7 +1742,6 @@ $(document).on('click','.saveNote',function(e){
         data:{note:note,id:id},
         method:'post',
         success:function(data){
-            console.log(data);
         }  
      });
      $(this).parentsUntil('.noteForm').parent().prev().children('img').attr('data-val',note);
@@ -1718,7 +1804,6 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 noteForm[0].remove();
             }
             var note_val = noteImg[i].getAttribute('data-val');
-            console.log(note_val);
             let parentElem = this.parentElement;
             let rootElem = parentElem.parentElement;
             let div = document.createElement('div');
@@ -1735,6 +1820,11 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         })
     }
 
-
+    function showRejectType(){
+        let rejectReason = document.getElementById('rejectReason');
+        let rejectType = document.getElementById('rejectType');
+        rejectReason.style.display = "none";
+        rejectType.style.display = "block";
+    }
 
 </script>

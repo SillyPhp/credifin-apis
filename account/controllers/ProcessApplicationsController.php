@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\HiringProcessNotes;
+use common\models\RejectionReasons;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -11,6 +12,7 @@ use common\models\AppliedApplications;
 use common\models\ApplicationInterviewQuestionnaire;
 use yii\web\HttpException;
 use yii\web\Response;
+use common\models\Utilities;
 
 class ProcessApplicationsController extends Controller
 {
@@ -148,12 +150,18 @@ class ProcessApplicationsController extends Controller
                     ->orderBy(['a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
+                $reasons = RejectionReasons::find()
+                    ->select(['rejection_reason_enc_id', 'reason'])
+                    ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
+                    ->asArray()
+                    ->all();
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,
                     'application_name' => $application_name,
                     'application_id'=>$application_id,
                     'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk),
+                    'reasons'=>$reasons,
                 ]);
             }
 
@@ -232,6 +240,26 @@ class ProcessApplicationsController extends Controller
                         'title' => 'Opps!!',
                     ];
                 }
+            }
+        }
+    }
+
+    public function actionAddReason(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $reason = Yii::$app->request->post('reason');
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model = new RejectionReasons();
+            $model->rejection_reason_enc_id = $utilitiesModel->encrypt();
+            $model->reason = $reason;
+            $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $model->reason_by = 1;
+            $model->created_by = Yii::$app->user->identity->user_enc_id;
+            $model->created_on = date('Y-m-d H:i:s');
+            if($model->save()){
+                return json_encode(['status' => 200, 'reason_enc_id' => $model->rejection_reason_enc_id , 'reason' => $model->reason]);
+            }else{
+                return json_encode(['status' => 500, 'message' => 'an error occurred']);
             }
         }
     }
