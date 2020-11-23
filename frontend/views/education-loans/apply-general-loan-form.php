@@ -144,7 +144,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <div class="radio-heading input-group-text">
-                                            Had You Taken The Addmission?
+                                            Have You Taken The Addmission?
                                         </div>
                                         <ul class="displayInline">
                                             <li>
