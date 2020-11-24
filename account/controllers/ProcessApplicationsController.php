@@ -11,6 +11,7 @@ use common\models\AppliedApplications;
 use common\models\ApplicationInterviewQuestionnaire;
 use yii\web\HttpException;
 use yii\web\Response;
+use common\models\Utilities;
 
 class ProcessApplicationsController extends Controller
 {
@@ -104,7 +105,7 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
+                    ->select(['a.current_round','e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
                     ->joinWith(['resumeEnc e'], false)
                     ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                         $c->joinWith(['fieldEnc d'], false);
@@ -236,4 +237,5 @@ class ProcessApplicationsController extends Controller
             }
         }
     }
+
 }
