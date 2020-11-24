@@ -106,7 +106,7 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
+                    ->select(['a.current_round','e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
                     ->joinWith(['resumeEnc e'], false)
                     ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                         $c->joinWith(['fieldEnc d'], false);
@@ -245,23 +245,4 @@ class ProcessApplicationsController extends Controller
         }
     }
 
-    public function actionAddReason(){
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost){
-            $reason = Yii::$app->request->post('reason');
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model = new RejectionReasons();
-            $model->rejection_reason_enc_id = $utilitiesModel->encrypt();
-            $model->reason = $reason;
-            $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-            $model->reason_by = 1;
-            $model->created_by = Yii::$app->user->identity->user_enc_id;
-            $model->created_on = date('Y-m-d H:i:s');
-            if($model->save()){
-                return json_encode(['status' => 200, 'reason_enc_id' => $model->rejection_reason_enc_id , 'reason' => $model->reason]);
-            }else{
-                return json_encode(['status' => 500, 'message' => 'an error occurred']);
-            }
-        }
-    }
 }
