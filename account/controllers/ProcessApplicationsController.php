@@ -3,7 +3,6 @@
 namespace account\controllers;
 
 use common\models\HiringProcessNotes;
-use common\models\RejectionReasons;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
