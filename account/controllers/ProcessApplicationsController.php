@@ -151,18 +151,12 @@ class ProcessApplicationsController extends Controller
                     ->orderBy(['a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
-                $reasons = RejectionReasons::find()
-                    ->select(['rejection_reason_enc_id', 'reason'])
-                    ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
-                    ->asArray()
-                    ->all();
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,
                     'application_name' => $application_name,
                     'application_id'=>$application_id,
                     'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk),
-                    'reasons'=>$reasons,
                 ]);
             }
 
