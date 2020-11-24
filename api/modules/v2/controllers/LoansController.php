@@ -12,6 +12,7 @@ use common\models\EducationLoanPayments;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\LeadsApplications;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
@@ -1305,6 +1306,25 @@ class LoansController extends ApiBaseController
 
         return $courses;
 
+    }
+
+    public function actionAdmissionForm()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
+            $model = new LeadsApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+            $model->application_number = date('ymd') . time();
+            $model->first_name = '';
+            $model->last_name = '';
+            $model->student_mobile_number = '';
+            $model->student_email = '';
+            $model->loan_for = '';
+            $model->admission_taken = '';
+
+        }
     }
 
 }
