@@ -44,7 +44,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="flex-main">
                 <div class="left-sec">
-                    <h2>Get Admission In Your <br><span>Dream Colleges</span> <br>Without Any Hassle</h2>
+                    <h2>Get Admission In Your <br><span>Dream College</span> <br>Without Any Hassle</h2>
                     <div class="ls-divider"></div>
                     <h4 class="mb0">Don’t Let Money Stop You From Getting into Your Dream College!</h4>
                     <h4 class="mt10"><span class="colorOrange">Education Loans</span> available for
@@ -369,6 +369,7 @@ body{
     background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
+    padding-bottom: 20px;
 }
 .ey-logo {
     text-align: center;
@@ -380,8 +381,11 @@ body{
 }
 .flex-main{
     display: flex;
-    height: calc(100vh - 60px);
-    align-items: center;
+    margin-top: 50px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
 }
 .left-sec{
     flex-basis: 50%;

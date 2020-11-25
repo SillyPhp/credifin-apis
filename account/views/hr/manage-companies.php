@@ -195,11 +195,11 @@ use yii\widgets\Pjax;
                                                             <?php
                                                         } else {
                                                             $logo_location = $shortlist['logo_location'];
-                                                            $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                            $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                            if (!file_exists($logo_base_path)) {
-                                                                $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
-                                                            }
+                                                            $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
+//                                                            $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
+//                                                            if (!file_exists($logo_base_path)) {
+//                                                                $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
+//                                                            }
                                                             ?>
                                                         <img src="<?= Url::to($logo_image); ?>" class="img-responsive ">
                                                             <?php

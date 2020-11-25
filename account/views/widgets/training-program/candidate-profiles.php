@@ -18,7 +18,7 @@ use yii\helpers\Url;
                                             <?php
                                             $name = $image = NULL;
                                             if (!empty($u['createdBy']['image'])) {
-                                                $image = Yii::$app->params->upload_directories->users->image . $u['createdBy']['image_location'] . DIRECTORY_SEPARATOR . $u['createdBy']['image'];
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $u['createdBy']['image_location'] . DIRECTORY_SEPARATOR . $u['createdBy']['image'];
                                             }
                                             $name = $u['createdBy']['first_name'] . ' ' . $u['createdBy']['last_name'];
                                             if ($image):

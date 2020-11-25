@@ -92,7 +92,7 @@ $status = $webinar['status'];
                                     if($register){
                                     foreach($register as $reg){ ?>
                                         <li>
-                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->users->image.$reg['image_location'].'/'.$reg['image']) ?>">
+                                            <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image.$reg['image_location'].'/'.$reg['image']) ?>">
                                         </li>
                                     <?php }
                                     } else {

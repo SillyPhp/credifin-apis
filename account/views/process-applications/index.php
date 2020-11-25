@@ -46,6 +46,21 @@ if ($application_name['wage_type'] == 'Fixed') {
 }else if ($application_name['wage_type'] == 'Unpaid'){
     $amount = 'Unpaid';
 }
+$user_pCount = [];
+foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p){
+    $user_pCount[$p['field_name']] = 0;
+    foreach ($fields as $u){
+        if($p['sequence'] == $u['current_round']){
+            $user_pCount[$p['field_name']] += 1;
+        }
+    }
+}
+$hcount = 0;
+foreach ($fields as $f){
+    if($f['status'] == 'Hired'){
+        $hcount += 1;
+    }
+}
 ?>
 <div class="hamburger-jobs">
     <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
@@ -57,13 +72,13 @@ if ($application_name['wage_type'] == 'Fixed') {
                 $more = false;
         ?>
         <div class="jobCard">
-            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>">
+            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>" reject>
                 <div class="jc-icon">
                     <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
                 </div>
                 <div class="jc-details">
                     <h3><?= $app['job_title'] ?></h3>
-
+                    <p>
                     <?php
                     if ($app['applicationPlacementLocations']) {
                         foreach ($app['applicationPlacementLocations'] as $ps) {
@@ -74,11 +89,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                 array_push($arry, $ps['name']);
                             }
                         }
-                    }
-                    ?>
-                    <p><?php
                         echo implode(', ',  array_unique($arry));
                         echo $more ? ' and more' : ' ';
+                        }else{
+                            echo 'Work From Home';
+                        }
                     ?></p>
                     <p><?= $cnt ?> Openings</p>
                 </div>
@@ -152,9 +167,11 @@ if ($application_name['wage_type'] == 'Fixed') {
                                         }
                                         $cntt += $apl['positions'];
                                     }
-                                }
                                 echo implode(', ', array_unique($l));
                                 echo $more ? ' and more' : '';
+                                } else{
+                                    echo 'Work From Home';
+                                }
                                 ?>
                             </p>
                         </div>
@@ -241,7 +258,12 @@ if ($application_name['wage_type'] == 'Fixed') {
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#" onclick="roundClick()">All</a>
+                <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
+                       foreach($user_pCount as $v){
+                           $pcnt += $v;
+                       }
+                       echo $pcnt + $hcount;
+                   ?></span></a>
             </li>
             <?php
             $k = 0;
@@ -251,7 +273,7 @@ if ($application_name['wage_type'] == 'Fixed') {
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
                 </li>
                 <?php
@@ -261,7 +283,11 @@ if ($application_name['wage_type'] == 'Fixed') {
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
-                    <i class="fa fa-check-square-o"></i>
+                    <i class="fa fa-check-square-o"></i><span>
+                        <?php
+                            echo $hcount;
+                       ?>
+                    </span>
                 </a>
             </li>
         </ul>
@@ -298,6 +324,7 @@ if ($application_name['wage_type'] == 'Fixed') {
 
                     <div class="row pr-user-main">
                         <div class="col-md-12 col-sm-12 pr-user-inner-main">
+
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
@@ -583,6 +610,71 @@ if ($application_name['wage_type'] == 'Fixed') {
 $this->registerCss('
 body, .page-content{
     background-color: #eee;
+}
+.addReasonBox{
+    display: flex;
+    max-width: 400px;
+    margin:0 auto 10px;
+}
+.addReasonBox input{
+    width: 100%;
+    padding: 5px 10px;
+    border: 1px solid #eee;
+}
+.addReasonBox button{
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+}
+#rejectType{
+    display: none;
+}
+.rejectReason p{
+    text-align: center;
+    font-family: lora;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    color: #00a0e3;
+}
+.rejectReason{
+    text-align: center;
+}
+.rejectReason ul{
+    padding-inline-start: 0px;
+}
+.rejectReason ul li{
+    display: inline-block;
+    padding:5px;
+}
+.reasonsReject{
+    position: relative;
+}
+.reasonsReject input{
+    position: absolute;
+    visibility: hidden;
+}
+.reasonsReject label{
+    border: 1px solid #333;
+    color: #333;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 15px;
+}
+.reasonsReject input:checked ~ label,
+.reasonsReject label:hover{
+    background: #00a0e3;
+    color: #fff;
+    border-color: #00a0e3;
+}
+
+.pr-process-tab li a span{
+    padding: 3px 8px;
+    font-weight: bold;
 }
 .jc-details ul{
     padding-inline-start: 0px;
@@ -1002,6 +1094,18 @@ li{
     padding-left: 15px;
     width:calc(100% - 70px);
     font-family:roboto;
+    position: relative;
+}
+.reject-box{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    height:102%;
+    background: rgba(255,255,255, .9);
+    z-index: 99;
+    border-radius: 8px 0 0 8px;
+    padding: 10px 15px;
 }
 .hiring_process_list > li{
     width:100%;
@@ -1407,6 +1511,7 @@ function myFunction() {
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
+     var data = $(this).attr('value');
      swal({ 
              title: "Are you sure?",
              text: "This $app_type will be deleted permanently from your dashboard",
@@ -1415,8 +1520,7 @@ $(document).on('click','#j-delete',function(e){
              showCancelButton : true,
          },
          function (isConfirm) {
-           if (isConfirm){ 
-            var data = $(this).attr('value');
+           if (isConfirm){
             var url = "/account/jobs/delete-application";
             $.ajax({
                 url:url,
@@ -1438,6 +1542,7 @@ $(document).on('click','#j-delete',function(e){
 $(document).on('click','#j-closed',function(e){
      e.preventDefault();
      var data_name = $(this).attr('data-name');
+     var data = $(this).attr('value');
      swal({
          title: "Are you sure?",
          text: "If you close this $app_type you will stop receiving new applications",
@@ -1447,7 +1552,6 @@ $(document).on('click','#j-closed',function(e){
      },
      function(isConfirm) {
      if (isConfirm) { 
-        var data = $(this).attr('value');
         var url = "/account/jobs/close-application";
         $.ajax({
             url:url,
@@ -1469,7 +1573,6 @@ $(document).on('click','#j-closed',function(e){
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
-    console.log(this);
     let fontIcon = this.children;
     fontIcon[0].classList.toggle('rotate180');    
     
@@ -1548,7 +1651,6 @@ $(document).on('click','.multipleRound',function(e) {
   var app_id = $(this).attr('value');
   var roundId = $(this).parent().attr('data-id');
   var prevRounds = $(this).parent().prevAll();
-  console.log(prevRounds);
   var btn = $(this);
   var dataArr = [];
   var obj = {};
@@ -1583,7 +1685,6 @@ $(document).on('click','.multipleRound',function(e) {
     }
   })
 });
-
 $(document).on('click','.reject',function(e){
     e.preventDefault();
     var btn = $(this);
@@ -1614,7 +1715,24 @@ $(document).on('click','.reject',function(e){
         }
     });
 });
-
+$(document).on('click','.addReasonBtn', function (e){
+   e.preventDefault();
+   var reason = $(this).prev('input').val().trim();
+   $.ajax({
+        url:'/account/process-applications/add-reason',
+        data:{reason:reason},
+        method:'post',
+        success:function(data){
+            res = JSON.parse(data);
+            if(res['status'] == 200){
+                let reasonID = res['reason_enc_id'];
+                let reasonTitle = res['reason'];
+            }else{
+                
+            }
+        }
+   })
+});
 $(document).on('click','.saveNote',function(e){
      e.preventDefault();
      var note = $(this).prev('textarea').val();
@@ -1624,7 +1742,6 @@ $(document).on('click','.saveNote',function(e){
         data:{note:note,id:id},
         method:'post',
         success:function(data){
-            console.log(data);
         }  
      });
      $(this).parentsUntil('.noteForm').parent().prev().children('img').attr('data-val',note);
@@ -1687,7 +1804,6 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 noteForm[0].remove();
             }
             var note_val = noteImg[i].getAttribute('data-val');
-            console.log(note_val);
             let parentElem = this.parentElement;
             let rootElem = parentElem.parentElement;
             let div = document.createElement('div');
@@ -1704,6 +1820,11 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         })
     }
 
-
+    function showRejectType(){
+        let rejectReason = document.getElementById('rejectReason');
+        let rejectType = document.getElementById('rejectType');
+        rejectReason.style.display = "none";
+        rejectType.style.display = "block";
+    }
 
 </script>

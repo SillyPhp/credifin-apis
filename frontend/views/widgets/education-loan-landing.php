@@ -7,13 +7,13 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="loan-heading">Discover the Benefits of Education Loan</div>
+                <h1 class="loan-heading">Discover the Benefits of Education Loan</h1>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
-                    <h3>Interest - Free Loans</h3>
-                    <p>The loans provided are interest free thus decreasing the financial burden off you.</p>
+                    <h3>Low Rate of Interest</h3>
+                    <p>Apply for loans at lower interest rates and avail of better borrowing terms thus decreasing the financial burden off you.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
@@ -26,8 +26,8 @@ use yii\helpers\Url;
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
-                    <h3>Quick disbursement</h3>
-                    <p>with the state of the art system, we strive to complete the disbursement of loan within 10 days.</p>
+                    <h3>Quick Disbursement</h3>
+                    <p>with the state of the art system, we strive to complete the disbursement of loan as soon as possible.</p>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@ $this->registerCss('
     line-height: 25px;
 }
 .loan-req{
-    background:url(' . Url::to('@eyAssets/images/pages/educational-loans/blue-strip.png') . ');  
+    background:url(' . Url::to('@eyAssets/images/pages/education-loans/skyblue-strip.png') . ');  
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -98,7 +98,7 @@ $this->registerCss('
 }
 .loan-btn a {
 	color: #fff;
-	background-color: #10b66a;
+	background-color: #ff7803;
 	padding: 10px 20px;
 	border-radius: 27px;
 	font-size: 18px;

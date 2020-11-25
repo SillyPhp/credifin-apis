@@ -195,7 +195,7 @@ class JobsController extends ApiBaseController
                     'f.name parent_category',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'f.icon_png',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
                     'g.initials_color',
                     '(CASE
                     WHEN b.experience = "0" THEN "No Experience"
@@ -582,7 +582,7 @@ class JobsController extends ApiBaseController
             ->alias('a')
             ->select(['j.name type',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", h.icon) icon',
-                'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+                'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -621,7 +621,7 @@ class JobsController extends ApiBaseController
             ->alias('a')
             ->select(['j.name type',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", h.icon) icon',
-                'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+                'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -658,7 +658,7 @@ class JobsController extends ApiBaseController
                 'b.name',
                 'b.initials_color',
                 'c.industry',
-                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
             ->innerJoinWith(['organizationEnc b' => function ($a) {
                 $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);

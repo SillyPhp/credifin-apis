@@ -93,7 +93,7 @@ class UserDataComponent extends Component
         $data = Users::find()
             ->alias('a')
             ->select(['a.user_enc_id', 'a.city_enc_id', 'CONCAT(first_name," ",last_name) name', 'email', 'dob', 'phone', 'GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies', 'GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'
             ])
             ->joinWith(['userSkills b' => function ($b) {
                 $b->select(['b.created_by', 'c.skill', 'b.user_skill_enc_id']);

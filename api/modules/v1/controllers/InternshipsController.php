@@ -140,7 +140,7 @@ class InternshipsController extends ApiBaseController
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -551,13 +551,13 @@ class InternshipsController extends ApiBaseController
                 ->joinWith(['organizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
                 }], false);
-            $image_link = Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https');
+            $image_link = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https');
         } else {
             $application_data->joinWith(['applicationUnclaimOptions b'], false)
                 ->joinWith(['unclaimedOrganizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
                 }], false);
-            $image_link = Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https');
+            $image_link = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https');
         }
         $data1 = $application_data->select([
             'a.id',

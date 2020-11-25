@@ -49,7 +49,7 @@ class UploadController extends ApiBaseController
                 ->where(['user_enc_id' => $user_id])
                 ->one();
 
-            $result['profile_picture'] = Url::to(Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+            $result['profile_picture'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
             return $this->response(200, $result);
         }
         return $this->response(500, 'error or not saved');
@@ -87,7 +87,7 @@ class UploadController extends ApiBaseController
                 'user_enc_id' => $token_holder_id->user_enc_id
             ]);
 
-            $result['profile_picture'] = Url::to(Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+            $result['profile_picture'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
             if (!empty($result['profile_picture'])) {
                 return $this->response(200, $result);
             }else{
