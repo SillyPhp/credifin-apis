@@ -8,7 +8,7 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="heading-style">Top Cities</h1>
+                        <h1 class="heading-style">Employment in Top Cities</h1>
                     </div>
                 </div>
             </div>
