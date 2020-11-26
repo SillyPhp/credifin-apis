@@ -15,7 +15,7 @@ use yii\bootstrap\ActiveForm;
                         <div class="header-bg">
                             <div class="search-box">
                                 <div class="head-text">
-                                    <p>earn credibility, attract talent</p>
+                                    <h1 class="reviewhead">Search, Reviews, and Rankings</h1>
                                 </div>
                                 <form id="form-search" action="<?= Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
@@ -546,11 +546,12 @@ color: initial;
     padding-bottom:10px;
     color:#000;
     font-family:lobster;
-     font-size:40px;
     text-transform:capitalize;
 }
-.head-text p{
-    line-height:35px;
+.head-text h1{
+    font-family:lobster;
+    font-size:40px
+
 }
 /*top categories css*/
 .cat-box{
