@@ -1005,13 +1005,128 @@ class CollegeProfileController extends ApiBaseController
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
+
                 array_push($resultt, $data);
             }
 
-            return $this->response(200, ['status' => 200, 'jobs' => $resultt]);
+            $count = [];
+            $count['pending_jobs_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['pending_internships_count'] = $this->pendingJobsCount($type, $college_id);
+
+            return $this->response(200, ['status' => 200, 'jobs' => $resultt, 'counts' => $count]);
         } else {
             return $this->response(401);
         }
+    }
+
+    private function approvedJobsCount($type, $college_id)
+    {
+        return ErexxEmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->joinWith(['employerApplicationEnc b' => function ($b) {
+                $b->joinWith(['organizationEnc bb'], false);
+                $b->joinWith(['applicationTypeEnc c']);
+            }], false)
+            ->where([
+                'a.college_enc_id' => $college_id,
+                'a.is_college_approved' => 1,
+                'a.status' => 'Active',
+                'a.is_deleted' => 0,
+                'b.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => [0, 2],
+                'b.for_all_colleges' => 1,
+                'bb.is_erexx_approved' => 1,
+                'bb.has_placement_rights' => 1,
+                'bb.is_deleted' => 0,
+                'bb.status' => 'Active',
+            ])
+            ->andWhere(['c.name' => $type])
+            ->count();
+    }
+
+    public function pendingJobsCount($type, $college_id)
+    {
+
+        $rejected_companies = ErexxCollaborators::find()
+            ->select(['organization_enc_id'])
+            ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+            ->asArray()
+            ->all();
+
+        $ids = [];
+        foreach ($rejected_companies as $r) {
+            array_push($ids, $r['organization_enc_id']);
+        }
+
+        $count = EmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->select([
+                'a.application_enc_id',
+                'b.is_college_approved',
+                'b.is_deleted'
+            ])
+            ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
+                $b->onCondition(['b.college_enc_id' => $college_id]);
+            }], false)
+            ->joinWith(['organizationEnc bb'], false)
+            ->joinWith(['interviewProcessEnc y' => function ($y) {
+                $y->select(['y.interview_process_enc_id']);
+                $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+                    $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
+                }]);
+            }])
+            ->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+                $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+                $bc->joinWith(['educationalRequirementEnc cb'], false);
+            }])
+            ->joinWith(['applicationSkills bbc' => function ($bbc) {
+                $bbc->select(['bbc.application_enc_id', 'skill']);
+                $bbc->joinWith(['skillEnc cbb'], false);
+            }])
+            ->joinWith(['designationEnc dd'], false)
+            ->joinWith(['title d' => function ($d) {
+                $d->joinWith(['parentEnc e']);
+                $d->joinWith(['categoryEnc ee']);
+            }], false)
+            ->joinWith(['applicationOptions m'], false)
+            ->joinWith(['applicationPlacementLocations f' => function ($f) {
+                $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                $f->joinWith(['locationEnc ff' => function ($z) {
+                    $z->joinWith(['cityEnc g']);
+                }], false);
+                $f->onCondition(['f.is_deleted' => 0]);
+            }], true)
+            ->joinWith(['applicationTypeEnc z'])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 'Active',
+                'z.name' => $type,
+                'bb.is_erexx_approved' => 1,
+                'bb.has_placement_rights' => 1,
+                'bb.is_deleted' => 0,
+                'bb.status' => 'Active',
+                'a.application_for' => [0, 2],
+                'a.for_all_colleges' => 1,
+            ])
+            ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        $counts = [];
+        foreach ($count as $c) {
+            if ($c['is_deleted'] != 1) {
+                if ($c['is_college_approved'] != 1) {
+                    array_push($counts, $count[$i]);
+                }
+            }
+            $i++;
+        }
+
+        return count($counts);
     }
 
     public function actionCandidatesProcess()
