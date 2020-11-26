@@ -11,6 +11,7 @@ use common\models\Posts;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
+use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
 use common\models\UserAccessTokens;
 use yii\helpers\Url;
@@ -366,10 +367,18 @@ class JobsController extends ApiBaseController
         ]);
 
         $resume = UserResume::find()
-            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->resume->file, 'https') . '", resume_location, "/", resume) url'])
+            ->select(['user_enc_id', 'resume_enc_id', 'title', 'resume_location', 'resume'])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->all();
+
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        if ($resume) {
+            foreach ($resume as $key => $r) {
+                $resume[$key]['url'] = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $r['resume_location'] . DIRECTORY_SEPARATOR . $r['resume'], "15 minutes");
+            }
+        }
 
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
