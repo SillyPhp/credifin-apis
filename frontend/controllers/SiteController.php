@@ -25,6 +25,7 @@ use frontend\models\accounts\LoginForm;
 use frontend\models\accounts\WidgetSignUpForm;
 use frontend\models\AdmissionForm;
 use frontend\models\leads\InstituteLeads;
+use frontend\models\leads\LoanApplication;
 use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
@@ -201,7 +202,7 @@ class SiteController extends Controller
     {
         $tweets1 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -224,7 +225,7 @@ class SiteController extends Controller
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -468,7 +469,7 @@ class SiteController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $companycards = Organizations::find()
                 ->alias('a')
-                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
+                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
                 ->where(['a.is_sponsored' => 0])
                 ->limit(8)
                 ->asArray()
@@ -476,7 +477,7 @@ class SiteController extends Controller
 
             $featured_companycards = Organizations::find()
                 ->alias('a')
-                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
+                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
                 ->where(['a.is_sponsored' => 1])
                 ->limit(4)
                 ->asArray()
@@ -1249,19 +1250,31 @@ class SiteController extends Controller
         }
         return $this->render('educational-institution-loan', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
+
+    public function actionLoanApplication()
+    {
+        $this->layout = 'blank-layout';
+        $model = new LoanApplication();
+        $ownerShipTypes = OrganizationTypes::find()->select(['organization_type_enc_id', 'organization_type'])->asArray()->all();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $resposne = $model->save();
+            if ($resposne['status']) {
+                return [
+                    'status' => 200,
+                    'data' => $resposne['data']
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'message' => 'Some Internal Server Error'
+                ];
+            }
+        }
+        return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
+    }
+
     public function actionResumeBuilderLandingPage(){
         return $this->render('resume-builder-landing-page');
     }
-
-//    public function actionAdmission()
-//    {
-//        $model = new AdmissionForm();
-//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
-//            if ($model->load(Yii::$app->request->post())) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                return $model->save();
-//                } else {
-//            }
-//        }
-//    }
 }
