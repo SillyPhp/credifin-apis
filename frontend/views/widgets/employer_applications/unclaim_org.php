@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
 
 $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>

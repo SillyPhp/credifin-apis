@@ -11,7 +11,7 @@ $type_job = strtolower($type);
             <a href="<?= Url::to('/account/' . $type_job . '/clone-template?aidk=' . $jb['application_enc_id']); ?>">
                 <div class="temp-card" title="Use Template" data-toggle="tooltip" data-placement="right">
                     <img src="/assets/common/categories/profile/<?= $jb['icon_png']; ?>">
-                    <h3><?= $jb['cat_name']; ?></h3>
+                    <h3><?= ucwords($jb['cat_name']); ?></h3>
                 </div>
             </a>
         <?php } ?>

@@ -169,7 +169,7 @@ $this->registercss('
     font-weight: 500;
 }
 .our-backg {
-	background: url(/assets/themes/ey/images/pages/our-services/service-back.png);
+    background-color: #ECF5FE;
 	padding:55px 0;
 	background-size: cover;
 	background-position: left;

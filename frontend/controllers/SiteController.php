@@ -1249,4 +1249,19 @@ class SiteController extends Controller
         }
         return $this->render('educational-institution-loan', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
+    public function actionResumeBuilderLandingPage(){
+        return $this->render('resume-builder-landing-page');
+    }
+
+//    public function actionAdmission()
+//    {
+//        $model = new AdmissionForm();
+//        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+//            if ($model->load(Yii::$app->request->post())) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                return $model->save();
+//                } else {
+//            }
+//        }
+//    }
 }

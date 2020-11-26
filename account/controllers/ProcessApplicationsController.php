@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\HiringProcessNotes;
+use common\models\RejectionReasons;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -11,6 +12,7 @@ use common\models\AppliedApplications;
 use common\models\ApplicationInterviewQuestionnaire;
 use yii\web\HttpException;
 use yii\web\Response;
+use common\models\Utilities;
 
 class ProcessApplicationsController extends Controller
 {
@@ -20,7 +22,31 @@ class ProcessApplicationsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
-
+    private function GetJobsOfCompany($appType,$app_id){
+        $all_application = EmployerApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['c.name job_title', 'a.slug', 'a.application_enc_id', 'ate.name application_type', 'pe.icon'])
+            ->joinWith(['title b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+            }], false, 'INNER JOIN')
+            ->joinWith(['applicationTypeEnc ate'], false)
+            ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                $b->onCondition(['o.is_deleted' => 0]);
+                $b->joinWith(['locationEnc s' => function ($b) {
+                    $b->joinWith(['cityEnc t'], false);
+                }], false);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
+            }])
+            ->joinWith(['applicationOptions ao'], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0,'ate.name'=>$appType])
+            ->andWhere(['not',['a.application_enc_id'=>$app_id]])
+            ->asArray()
+            ->all();
+        return $all_application;
+    }
     public function actionIndex($aidk)
     {
         $application_id = $aidk;
@@ -60,7 +86,7 @@ class ProcessApplicationsController extends Controller
                     $b->joinWith(['locationEnc s' => function ($b) {
                         $b->joinWith(['cityEnc t'], false);
                     }], false);
-                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                     $b->distinct();
                 }])
                 ->joinWith(['applicationInterviewLocations p' => function ($b) {
@@ -79,7 +105,7 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
+                    ->select(['a.current_round','e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by','a.created_on'])
                     ->joinWith(['resumeEnc e'], false)
                     ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                         $c->joinWith(['fieldEnc d'], false);
@@ -124,13 +150,21 @@ class ProcessApplicationsController extends Controller
                     ->orderBy(['a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
+                $reasons = RejectionReasons::find()
+                    ->select(['rejection_reason_enc_id', 'reason'])
+                    ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
+                    ->asArray()
+                    ->all();
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,
                     'application_name' => $application_name,
                     'application_id'=>$application_id,
+                    'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk),
+                    'reasons'=>$reasons,
                 ]);
             }
+
             else{
                 throw new HttpException(404, Yii::t('account', 'Page not found.'));
             }
@@ -155,7 +189,6 @@ class ProcessApplicationsController extends Controller
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->one();
-
             return $this->render('individual_candidate_process', [
                 'applied' => $applied_user,
             ]);
@@ -207,6 +240,26 @@ class ProcessApplicationsController extends Controller
                         'title' => 'Opps!!',
                     ];
                 }
+            }
+        }
+    }
+
+    public function actionAddReason(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $reason = Yii::$app->request->post('reason');
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model = new RejectionReasons();
+            $model->rejection_reason_enc_id = $utilitiesModel->encrypt();
+            $model->reason = $reason;
+            $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $model->reason_by = 1;
+            $model->created_by = Yii::$app->user->identity->user_enc_id;
+            $model->created_on = date('Y-m-d H:i:s');
+            if($model->save()){
+                return json_encode(['status' => 200, 'reason_enc_id' => $model->rejection_reason_enc_id , 'reason' => $model->reason]);
+            }else{
+                return json_encode(['status' => 500, 'message' => 'an error occurred']);
             }
         }
     }
