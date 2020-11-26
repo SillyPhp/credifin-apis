@@ -6,7 +6,6 @@ use common\models\Auth;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
-use common\models\User;
 use common\models\UserResume;
 use common\models\Users;
 use yii\web\Controller;
@@ -34,9 +33,6 @@ class TestCacheController extends Controller
     {
         $offset = ($page - 1) * $limit;
 
-        $user = Users::findone(['username' => 'ravinder']);
-        $user_id = $user->user_enc_id;
-
         $getData = UserResume::find()
             ->select(['resume', 'resume_location'])
             ->where([
@@ -44,14 +40,13 @@ class TestCacheController extends Controller
                 ['!=', 'resume', null],
                 ['!=', 'resume', '']
             ])
-            ->andWhere(['user_enc_id' => $user_id])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
             ->all();
 
         if (empty($getData)) {
-            print_r('all done');
+            print_r('All done');
             die();
         }
 
