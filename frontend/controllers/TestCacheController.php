@@ -54,10 +54,13 @@ class TestCacheController extends Controller
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $resumeSourcePath = Yii::$app->params->upload_directories->resume->file_path . $get['resume_location'] . '/' . $get['resume'];
-                $result = $my_space->uploadFile($resumeSourcePath, Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $get['resume_location'] . '/' . $get['resume'], "private");
+                if (file_exists($resumeSourcePath)) {
+                    $result = $my_space->uploadFile($resumeSourcePath, Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $get['resume_location'] . '/' . $get['resume'], "private");
+                }
             }
         }
 
+        echo 'done';
     }
 
 }
