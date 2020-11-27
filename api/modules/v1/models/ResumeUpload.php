@@ -23,7 +23,7 @@ class ResumeUpload extends Model
     public function rules()
     {
         return [
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf'],
+            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -57,9 +57,11 @@ class ResumeUpload extends Model
         $file = dirname(__DIR__, 4) . '/files/temp/' . $userResumeModel->resume;
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
-        if (file_exists($file)) {
-            unlink($file);
+        if (file_put_contents($file, $resume)) {
+            $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+            if (file_exists($file)) {
+                unlink($file);
+            }
         }
         if ($result) {
             if ($userResumeModel->save()) {

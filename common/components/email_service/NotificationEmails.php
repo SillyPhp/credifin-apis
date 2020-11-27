@@ -38,7 +38,7 @@ class NotificationEmails extends Component
             ->all();
 
         $userCv = \common\models\UserResume::find()
-            ->select(['CONCAT("' . Yii::$app->params->upload_directories->resume->file . '",resume_location,"/",resume) resume'])
+            ->select(['resume_enc_id'])
             ->where(['user_enc_id' => $user_id])
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
@@ -134,7 +134,7 @@ class NotificationEmails extends Component
         $data['amount'] = $amount;
         $data['user_skills'] = $user_skills;
         $data['user_details'] = $user_info;
-        $data['resume'] = $userCv['resume'];
+        $data['resume'] = $userCv['resume_enc_id'];
         $data['org_info'] = $org_d;
         $data['rounds'] = $process_rounds;
         Yii::$app->mailer->htmlLayout = 'layouts/email';

@@ -446,7 +446,7 @@ foreach ($fields as $f){
                                         <a href="<?= Url::to($arr['username'].'?id=' . $arr['applied_application_enc_id'], true) ?>" target="_blank">View
                                             Profile</a>
                                         <?php
-                                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                                         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                                         $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
                                         ?>
