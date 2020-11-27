@@ -363,6 +363,7 @@ class InternshipsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
+                    Yii::$app->notificationEmails->userAppliedNotify($user->user_enc_id, $model->id, $company_id = $application_details['organization_enc_id'], $unclaim_company_id = null, $type = 'Internships', $res['applied_application_enc_id']);
                     return $this->response(200, $res);
                 } else {
                     return $this->response(500, 'Not Saved');
