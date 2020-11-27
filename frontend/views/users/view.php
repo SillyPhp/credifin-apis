@@ -63,7 +63,9 @@ $this->params['header_dark'] = false;
                                target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
-                                $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
                                 ?>
                                 <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
                             <?php }
@@ -166,7 +168,9 @@ $this->params['header_dark'] = false;
                             ?>
                             <div class="down-res">
                                 <?php
-                                $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
                                 ?>
                                 <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download
                                     Resume<i

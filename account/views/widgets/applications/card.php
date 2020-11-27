@@ -145,10 +145,7 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <!--                            <a href="-->
-                            <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
-                            <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
-                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
+                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip" class="detail-clg"
                                title="View Details"><i
                                         class="fa fa-info-circle"></i></a>
                             <div class="appl">
@@ -168,11 +165,14 @@ if (!empty($total_applications)) {
                                     }
                                     ?>
                                 </a>
-                                <!--                                <div class="new">-->
-                                <!--                                    <div class="pulse"></div>-->
-                                <!--                                    <div class="dot"></div>-->
-                                <!--                                </div>-->
+<!--                                <div class="new">-->
+<!--                                    <div class="pulse"></div>-->
+<!--                                    <div class="dot"></div>-->
+<!--                                </div>-->
                             </div>
+<!--                            <div class="college-asign">-->
+<!--                                <a href="javascript:;" class="fancy-btn open" data-toggle="tooltip" title="View Colleges"><i class="fa fa-university"></i></a>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -195,16 +195,10 @@ if (!empty($total_applications)) {
 <?php }
 Pjax::end();
 ?>
-<!--    <script>-->
-<!--        function copyToClipboard() {-->
-<!--            var copyText = document.getElementById("share_manually");-->
-<!--            copyText.select();-->
-<!--            document.execCommand("copy");-->
-<!--            toastr.success("", "Copied");-->
-<!--        }-->
-<!--    </script>-->
+
 <?php
 $this->registerCss("
+.detail-clg{flex-basis:10%;}
 .appl a span {
     background-color: #ff7803;
     color: #fff;
@@ -237,8 +231,16 @@ $this->registerCss("
     color: #807575;
 }
 .appl {
-    flex-basis: 100%;
+    flex-basis: 90%;
     position:relative;
+}
+.college-asign {
+	flex-basis: 10%;
+}
+.college-asign a i {
+	font-size: 20px;
+	color: #00a0e3;
+    transition: all .3s;
 }
 .appl a {
     font-family: roboto;
@@ -252,7 +254,7 @@ $this->registerCss("
     border-radius: 4px !important;
     padding: 6px 0;
     display: block;
-    margin-left: 10px;
+    margin:0 5px;
     flex-basis: 50%;
     position: relative;
 }
@@ -370,7 +372,7 @@ $this->registerCss("
     margin: 0 auto;
     position: absolute;
     top: -6px;
-    right: -4px;
+    right: 0px;
 }
 
 .dot {
@@ -489,6 +491,7 @@ $(document).on('click','.j-closed',function(e){
         temp.remove();
         toastr.success("", "Link Copy to Clipboard");
     }
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
