@@ -39,7 +39,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="loan-req">
                     <div class="loan-data">
-                        <div class="loan-txtt">Get your application approved quickly with EmpowerYouth.com<br> Launch your loan request today.</div>
+                        <h2 class="loan-txtt">Get your application approved quickly with EmpowerYouth.com<br> Launch your loan request today.</h2>
                         <div class="loan-btn">
                             <a href="/education-loans">Apply Now!</a>
                         </div>
@@ -95,6 +95,7 @@ $this->registerCss('
 	font-size: 20px;
 	color: #fff;
 	font-family: lora;
+	margin:0;
 }
 .loan-btn a {
 	color: #fff;

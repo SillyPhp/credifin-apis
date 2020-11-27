@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="loan">
         <div class="loan-txt">
             <div class="loan-txt1">Take Your <br> Students to Success with our
-                <div class="blue-txt"> Educational Institution Loan</div>
+                <h1 class="blue-txt"> Educational Institution Loan</h1>
                 <a href="<?= Url::to('/educational-institution-loan') ?>" class="btn-set">
                     Apply Now
                 </a>
@@ -51,6 +51,10 @@ $this->registerCss('
 }
 .blue-txt{
     color: #00a0e3;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0;
+    font-family:roboto;
 }
 @media screen and (max-width: 1030px) and (min-width:990px) {
   .loan{
