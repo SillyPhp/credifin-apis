@@ -60,7 +60,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/></div>
-                        <div class="h-heading">Jobs</div>
+                        <h3 class="h-heading">Jobs</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in two">
@@ -71,7 +71,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="h-heading">Internships</div>
+                        <h3 class="h-heading">Internships</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in two">
@@ -82,7 +82,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Learning Hub</div>
+                        <h3 class="h-heading">Learning Hub</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in three">
@@ -93,7 +93,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="h-heading">Reviews</div>
+                        <h3 class="h-heading">Reviews</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in three">
@@ -104,7 +104,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Courses</div>
+                        <h3 class="h-heading">Courses</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in four">
@@ -115,7 +115,7 @@ $this->params['header_dark'] = false;
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Education Loan</div>
+                        <h3 class="h-heading">Education Loan</h3>
                     </a>
                 </div>
             </div>
