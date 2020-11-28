@@ -72,9 +72,11 @@ class ResumeUpload extends Model
                     return $userResumeModel->resume_enc_id;
                 } else {
                     print_r(file_put_contents($file, $resume));
+                    print_r('asdfhesfkljghdikls');
                     die();
                 }
             } else {
+                print_r('sdlhkjfdsnv');
                 print_r($userResumeModel->getErrors());
                 die();
             }
