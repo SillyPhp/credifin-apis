@@ -23,7 +23,7 @@ class ResumeUpload extends Model
     public function rules()
     {
         return [
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf', 'maxSize' => 1024 * 1024 * 2],
+            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx, pdf', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -57,23 +57,28 @@ class ResumeUpload extends Model
             $userResumeModel->created_on = date('Y-m-d h:i:s');
             $userResumeModel->created_by = $user->user_enc_id;
             $file = dirname(__DIR__, 4) . '/files/temp/' . $userResumeModel->resume;
-            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            if (file_put_contents($file, $resume)) {
-                $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
-                if (file_exists($file)) {
-                    unlink($file);
-                }
-            }
-            if ($result) {
-                if ($userResumeModel->save()) {
+            if ($userResumeModel->save()) {
+                if (file_put_contents($file, $resume)) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+                    if (file_exists($file)) {
+                        unlink($file);
+                    } else {
+                        print_r('file not found');
+                        die();
+                    }
+                    $transaction->commit();
                     return $userResumeModel->resume_enc_id;
+                } else {
+                    print_r(file_put_contents($file, $resume));
+                    die();
                 }
-//                return false;
+            } else {
                 print_r($userResumeModel->getErrors());
                 die();
             }
-            return false;
+
         } catch (\Exception $exception) {
             print_r($exception);
             die();
