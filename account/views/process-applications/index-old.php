@@ -1,8 +1,10 @@
 <?php
 
+use common\models\spaces\Spaces;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Questionnaire',
 ]);
@@ -57,7 +59,9 @@ echo $this->render('/widgets/header/secondary-header', [
                                                             </div>
                                                             <div class="vj-btn col-md-6">
                                                                 <?php
-                                                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                                                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
                                                                 ?>
                                                                 <a href="<?= $cv ?>">Download
                                                                     Resume</a>
