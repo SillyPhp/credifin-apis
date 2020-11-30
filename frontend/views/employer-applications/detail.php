@@ -1963,6 +1963,7 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
+addToReviewList();
 getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org=' + slugg);
 JS;
 $this->registerJs($script);
