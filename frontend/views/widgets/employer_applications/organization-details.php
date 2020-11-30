@@ -343,9 +343,10 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px;
+    padding: 10px 16px 0;
     width: 42%;
-    font-size: 12px;
+    font-size: 14px;
+    font-family: roboto;
     border-radius: 2px;
     color: #333;
     margin-top: 15px;

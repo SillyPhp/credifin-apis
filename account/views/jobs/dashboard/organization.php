@@ -412,9 +412,6 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
         </div>
     </div>
-<!--<div class="pos-relative">-->
-<!--    --><?//= $this->render('/widgets/college-list-modal')?>
-<!--</div>-->
 <?php
 $this->registerCss('
 .total-jobs{
