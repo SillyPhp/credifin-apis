@@ -9,6 +9,7 @@ use api\modules\v1\models\JobDetail;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
+use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -140,7 +141,7 @@ class InternshipsController extends ApiBaseController
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -280,10 +281,18 @@ class InternshipsController extends ApiBaseController
         ]);
 
         $resume = UserResume::find()
-            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->resume->file, 'https') . '", resume_location, "/", resume) url'])
+            ->select(['user_enc_id', 'resume_enc_id', 'title', 'resume_location', 'resume'])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->all();
+
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        if ($resume) {
+            foreach ($resume as $key => $r) {
+                $resume[$key]['url'] = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $r['resume_location'] . DIRECTORY_SEPARATOR . $r['resume'], "15 minutes");
+            }
+        }
 
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
@@ -363,6 +372,7 @@ class InternshipsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
+                    Yii::$app->notificationEmails->userAppliedNotify($user->user_enc_id, $model->id, $company_id = $application_details['organization_enc_id'], $unclaim_company_id = null, $type = 'Internships', $res['applied_application_enc_id']);
                     return $this->response(200, $res);
                 } else {
                     return $this->response(500, 'Not Saved');
@@ -551,13 +561,13 @@ class InternshipsController extends ApiBaseController
                 ->joinWith(['organizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
                 }], false);
-            $image_link = Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https');
+            $image_link = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https');
         } else {
             $application_data->joinWith(['applicationUnclaimOptions b'], false)
                 ->joinWith(['unclaimedOrganizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
                 }], false);
-            $image_link = Url::to(Yii::$app->params->digitalOcean->unclaimedOrganizations->logo, 'https');
+            $image_link = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https');
         }
         $data1 = $application_data->select([
             'a.id',

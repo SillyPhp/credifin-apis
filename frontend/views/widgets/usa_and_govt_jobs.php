@@ -5,27 +5,27 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="gov-heading">Find Latest Government Jobs</div>
+                <h1 class="gov-heading">Find Latest Government Jobs</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/usa-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        <h1 class="link-none">
                             USA Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/govt-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        <h1 class="link-none">
                             Indian Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
@@ -43,7 +43,7 @@ $this->registerCss('
 .gov-heading {
     text-align: center;
     font-size: 30px;
-    font-family: lora;
+    font-family: lobster;
     margin: 0px 0px 20px 0;
 }
 .gov-job {
@@ -88,6 +88,7 @@ $this->registerCss('
     color:#fff;
     font-size:20px;
     padding:5px 10px;
+    margin:0;
 }
 @media (max-width:415px){
 .gov-heading{

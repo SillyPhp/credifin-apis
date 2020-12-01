@@ -169,8 +169,8 @@ class LoanApplicationsForm extends LoanApplications
                     $model->relation = $applicant['relation'];
                     $model->employment_type = $applicant['employment_type'];
                     $model->annual_income = $applicant['annual_income'];
-                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number'] : null);
-                    $model->aadhaar_number = (($applicant['aadhaar_number']) ? $applicant['aadhaar_number'] : null);
+//                    $model->pan_number = (($applicant['pan_number']) ? $applicant['pan_number']:null);
+//                    $model->aadhaar_number = (($applicant['aadhaar_number'])?$applicant['aadhaar_number']:null);
                     $model->created_by = (($userId) ? $userId : null);
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {

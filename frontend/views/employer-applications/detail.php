@@ -158,9 +158,9 @@ if ($type == 'Internship') {
 }
 if (!empty($data2))
 {
-    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
 }else{
-    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
 }
 $content = [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
@@ -205,7 +205,7 @@ $this->params['seo_tags'] = [
 ];
 
 $this->params['header_dark'] = false;
-
+$this->title = ($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'];
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
@@ -405,6 +405,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 if (!empty($data2)):
                     echo $this->render('/widgets/employer_applications/organization-details', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -414,11 +415,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -431,7 +434,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => false,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                 endif;
                 ?>
@@ -1113,7 +1117,8 @@ button.lc-item-video-menu {
     .job-statistic span {
         float: none;
         display: inline-block;
-        font-size: 12px;
+        font-size: 16px;
+        font-family:roboto;
         border: 1px solid #ffffff;
         color: #ffffff;
         padding: 7px 20px;
@@ -1568,7 +1573,9 @@ button.lc-item-video-menu {
         margin-top: 1px;
     }
     .apply-job-btn {
-    display:inline-block !important;    
+    display:flex;
+    justify-content:center;
+    align-items:center;    
     background: #00a0e3;
     -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -1580,12 +1587,12 @@ button.lc-item-video-menu {
     -ms-border-radius: 2px;
     -o-border-radius: 2px;
     border-radius: 2px;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family: roboto;
+    font-size: 18px;
     color: #fff;
     width: 175px;
     height: auto;
-    padding: 15px 6px;
+    padding: 10px 6px;
     text-align: center;
     margin:auto;
 }
@@ -1603,7 +1610,6 @@ button.lc-item-video-menu {
         margin-right: 6px;
         line-height: 8px;
         position: relative;
-        top: 4px;
     }
     .viewall-jobs {
         background: #4aa1e3;
@@ -1704,7 +1710,8 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1722,7 +1729,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 0;
+        top: 10px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
@@ -1956,6 +1963,7 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
+addToReviewList();
 getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org=' + slugg);
 JS;
 $this->registerJs($script);

@@ -142,8 +142,10 @@ class OrganizationsController extends ApiBaseController
             ->distinct()
             ->select([
                 'bb.name',
+                'a.is_college_approved',
                 'bb.slug org_slug',
-                'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                'bb.organization_enc_id',
+                'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                 'e.name parent_category',
                 'ee.name title',
                 'a.employer_application_enc_id',
@@ -166,7 +168,9 @@ class OrganizationsController extends ApiBaseController
                 WHEN b.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
                END) as experience',
-                'b.type'
+                'b.type',
+                'b.status',
+                'm.positions'
             ])
             ->joinWith(['employerApplicationEnc b' => function ($b) {
                 $b->joinWith(['organizationEnc bb'], false);
@@ -200,7 +204,7 @@ class OrganizationsController extends ApiBaseController
                 }], true);
                 $b->joinWith(['applicationTypeEnc z']);
             }], true)
-            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active']);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
@@ -258,6 +262,32 @@ class OrganizationsController extends ApiBaseController
                     }
                 }
             }
+            if ($val['status'] != 'Active') {
+                $result[$i]['is_closed'] = true;
+            } else {
+                $result[$i]['is_closed'] = false;
+            }
+            $count = AppliedApplications::find()
+                ->alias('a')
+                ->select(['COUNT(a.applied_application_enc_id) count'])
+                ->innerJoinWith(['createdBy f' => function ($f) {
+                    $f->innerJoinWith(['userOtherInfo g']);
+                    $f->onCondition(['f.is_deleted' => 0]);
+                }], false)
+                ->where(['a.application_enc_id' => $val['employer_application_enc_id'], 'a.is_deleted' => 0,
+                    'g.organization_enc_id' => $options['college_id'], 'g.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            $locations = [];
+            $positions = 0;
+            foreach ($val['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                if (!in_array($l['name'], $locations)) {
+                    array_push($locations, $l['name']);
+                    $positions += $l['positions'];
+                }
+            }
+            $result[$i]['positions'] = $positions;
+            $result[$i]['applied_count'] = $count['count'];
             $i++;
         }
 
@@ -278,7 +308,7 @@ class OrganizationsController extends ApiBaseController
             $result = [];
 
             $organization = Organizations::find()
-                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
+                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
                 ->where(['slug' => $req['slug']])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
@@ -321,8 +351,8 @@ class OrganizationsController extends ApiBaseController
 
             $organization = Organizations::find()
                 ->select(['organization_enc_id', 'name', 'slug username', 'email', 'tag_line', 'initials_color', 'establishment_year', 'industry_enc_id', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees',
-//                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo',
-                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END logo',
+//                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo',
+                    'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END logo',
                     'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
                 ->where(['slug' => $req['slug']])
                 ->andWhere(['status' => 'Active', 'has_placement_rights' => 1])
@@ -490,7 +520,7 @@ class OrganizationsController extends ApiBaseController
             ->distinct()
             ->alias('a')
             ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
-                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name," ",f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                 'a.created_by student_id'])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
@@ -511,10 +541,11 @@ class OrganizationsController extends ApiBaseController
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
             ->where(['d.organization_enc_id' => $college_id, 'g.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-            ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
-            ->asArray()
+            ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0]);
+        $count = $applied->count();
+        $applied = $applied->asArray()
             ->all();
 
-        return $this->response(200, $applied);
+        return $this->response(200, ['status' => 200, 'data' => $applied, 'count' => $count]);
     }
 }

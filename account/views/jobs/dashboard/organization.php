@@ -412,11 +412,16 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
         </div>
     </div>
-
 <?php
 $this->registerCss('
 .total-jobs{
     background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.pos-relative{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    z-index: 9999;
 }
 .total-int-p{
     background: linear-gradient(145deg, #f41ea0, #f08143);

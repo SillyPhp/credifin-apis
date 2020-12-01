@@ -15,6 +15,7 @@ use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
@@ -306,7 +307,7 @@ class JobsController extends Controller
 
         $accepted_jobs = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -324,7 +325,7 @@ class JobsController extends Controller
             ->all();
         $total_accepted = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -429,8 +430,8 @@ class JobsController extends Controller
         }
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
-            'applications' => $this->__jobs(6),
-            'erexx_applications' => $this->__erexxJobs(6),
+            'applications' => $this->__jobs(9),
+            'erexx_applications' => $this->__erexxJobs(9),
             'closed_application' => $this->__closedjobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
@@ -553,48 +554,63 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionCreate()
+    public function actionCreate($aidk=NULL)
     {
         if (Yii::$app->user->identity->organization) {
-            $type = 'Jobs';
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
-            $questionnaire = $model->getQuestionnnaireList();
-            $industry = $model->getndustry();
-            $benefits = $model->getBenefits();
-            $process = $model->getInterviewProcess();
-            $placement_locations = $model->getOrganizationLocations();
-            $interview_locations = $model->getOrganizationLocations(2);
-            if ($model->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $session_token = Yii::$app->request->post('n');
-                if ($application_id = $model->saveValues($type)) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return $response = [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'app_id' => $application_id,
-                    ];
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('/employer-applications/form', ['model' => $model,
-                    'primary_cat' => $primary_cat,
-                    'industry' => $industry,
-                    'placement_locations' => $placement_locations,
-                    'interview_locations' => $interview_locations,
-                    'benefits' => $benefits,
-                    'process' => $process,
-                    'questionnaire' => $questionnaire,
-                    'type' => $type,
-                ]);
+            $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
+            if (in_array($aidk,$array)){
+                return $this->_renderCreateJob($aidk);
+            }else{
+                return $this->_renderProfileTemplates($primary_cat);
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+    private function _renderProfileTemplates($primary_cat,$type='jobs'){
+        return $this->render('/widgets/employer-applications/temProfiles',['primary_cat'=>$primary_cat,'type'=>$type]);
+    }
+    private function _renderCreateJob($pidk)
+    {
+        $type = 'Jobs';
+        $model = new ApplicationForm();
+        $model->primaryfield = (($pidk)?$pidk:null);
+        $primary_cat = $model->getPrimaryFields();
+        $questionnaire = $model->getQuestionnnaireList();
+        $industry = $model->getndustry();
+        $benefits = $model->getBenefits();
+        $process = $model->getInterviewProcess();
+        $placement_locations = $model->getOrganizationLocations();
+        $interview_locations = $model->getOrganizationLocations(2);
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $session_token = Yii::$app->request->post('n');
+            if ($application_id = $model->saveValues($type)) {
+                $session = Yii::$app->session;
+                if (!empty($session->get($session_token))) {
+                    $session->remove($session_token);
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'app_id' => $application_id,
+                ];
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('/employer-applications/form', ['model' => $model,
+                'primary_cat' => $primary_cat,
+                'industry' => $industry,
+                'placement_locations' => $placement_locations,
+                'interview_locations' => $interview_locations,
+                'benefits' => $benefits,
+                'process' => $process,
+                'questionnaire' => $questionnaire,
+                'type' => $type,
+            ]);
         }
     }
 
@@ -1015,7 +1031,7 @@ class JobsController extends Controller
     {
         $users = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -1054,7 +1070,7 @@ class JobsController extends Controller
     {
         $accepted_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -1584,7 +1600,7 @@ class JobsController extends Controller
 //            $colleges = ErexxCollaborators::find()
 //                ->alias('a')
 //                ->distinct()
-//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
 //                ->joinWith(['collegeEnc b' => function ($b) {
 //                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
 //                    $b->joinWith(['userOtherDetails c'], false);
@@ -1599,7 +1615,7 @@ class JobsController extends Controller
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
+                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
                 ->innerJoinWith(['businessActivityEnc b' => function ($b) {
                     $b->onCondition(["b.business_activity" => "College"]);
                 }], false)

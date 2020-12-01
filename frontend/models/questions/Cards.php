@@ -13,7 +13,7 @@ class Cards
                ->select(['a.answer',
                    'CONCAT(b.first_name," ",b.last_name) full_name',
                    'b.initials_color color',
-                   'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
+                   'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
                    'b.username',
                    'DATE_FORMAT(a.created_on,"%e %M %Y") created_on'])
                ->where(['question_pool_enc_id'=>$options['que_id']])
