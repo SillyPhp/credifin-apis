@@ -8,6 +8,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 } else {
     $this->title = 'Total job vacancies available';
 }
+
 $this->params['header_dark'] = true;
 
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
