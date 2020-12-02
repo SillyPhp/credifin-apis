@@ -5,6 +5,7 @@ use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\ApplicationTypes;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -237,6 +238,7 @@ class CareersController extends Controller
                 ->one();
         }
         $model = new \frontend\models\applications\JobApplied();
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -246,6 +248,7 @@ class CareersController extends Controller
             'type' => $type,
             'model' => $model,
             'shortlist' => $shortlist,
+            'whatsAppmodel' => $whatsAppForm,
             'settings' => [
                 "showRelatedOpportunities" => false,
                 "showNewPositionsWidget" => true,
