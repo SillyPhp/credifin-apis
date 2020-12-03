@@ -830,7 +830,7 @@ function requestAjax() {
             return false;
         }
         me.data('requestRunning', true);
-        var url = '/account/$type/submit-erexx-applications';
+        var url = '/account/jobs/submit-erexx-applications';
         var data = $('#add-applications-inErexx').serialize();
         $.ajax({
             url: url,
