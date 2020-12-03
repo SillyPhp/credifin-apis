@@ -3,60 +3,33 @@
 use yii\helpers\Url;
 
 ?>
-    <div class="frame">
-        <div class="college">
-            <div class="inset college">
-                <div class="button close"><i class="fa fa-close"></i></div>
+<div class="frame">
+    <div class="college">
+        <div class="inset college">
+            <div class="button close"><i class="fa fa-close"></i></div>
 
-                <div class="body-college">
-                    <div class="college-row">
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                        <div class="colleges">
-                            <img src="https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Rs7JK-6d9uZnVCLL8X5axnLjX_IurLD0/abvgrG4VyQNjNppXaPN7QpW30A9nXK.png">
-                            <p>GNA University</p>
-                        </div>
-                    </div>
+            <div class="body-college">
+                <div class="college-row" id="college_modal">
+
                 </div>
             </div>
         </div>
     </div>
-    <div class="overlay"></div>
+</div>
+<div class="overlay"></div>
 
 <?php
 $this->registerCss('
 .college-row {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	flex-wrap: wrap;
 }
 .colleges {
-	flex-basis: 32.5%;
+	width: 170px;
 	box-shadow: 0 0 4px 0px rgba(0,0,0,0.3);
-	margin: 0 0 12px;
+	margin: 0 5px 12px;
 	padding: 20px;
 }
 .colleges img {
@@ -184,7 +157,7 @@ $this->registerCss('
   padding: 30px 20px 20px;
   background-color: white;
   min-width: 320px;
-  max-width: 850px;
+  max-width: 950px;
   min-height: 126px;
   max-height: 75vh;
   overflow-x: hidden;
@@ -387,15 +360,27 @@ $script = <<<JS
       $('body').removeClass('modal-open');
     });
     
-    $('.open').on('click', function(){
-      overlay.addClass('state-show');
-      modal.removeClass('state-leave').addClass('state-appear');
-      $('body').addClass('modal-open');
-    });
+    // $(document).on('click', '.open', function(){
+    //   $('.overlay').addClass('state-show');
+    //   $('.frame').removeClass('state-leave').addClass('state-appear');
+    //   $('body').addClass('modal-open');
+    // });
     
     var ps = new PerfectScrollbar('.inset');
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
+?>
+<script id="college-modal" type="text/template">
+    {{#.}}
+
+    <div class="colleges">
+        <a href="/{{slug}}" target="_blank"> <img src="{{college_logo}}"></a>
+        <a href="/{{slug}}" target="_blank"><p>{{{college_name}}}</p></a>
+    </div>
+
+    {{/.}}
+</script>
