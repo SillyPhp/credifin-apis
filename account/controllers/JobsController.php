@@ -825,6 +825,8 @@ class JobsController extends Controller
         }
     }
 
+
+
     public function actionCloneTemplate($aidk){
         $application = ApplicationTemplates::find()
             ->alias('a')
@@ -1590,28 +1592,6 @@ class JobsController extends Controller
     public function actionCampusPlacement()
     {
         if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-//        $applications = EmployerApplications::find()
-//            ->alias('a')
-//            ->joinWith(['applicationTypeEnc b'])
-//            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
-//            ->andWhere(['b.name' => 'Jobs'])
-//            ->asArray()
-//            ->all();
-//            $colleges = ErexxCollaborators::find()
-//                ->alias('a')
-//                ->distinct()
-//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-//                ->joinWith(['collegeEnc b' => function ($b) {
-//                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
-//                    $b->joinWith(['userOtherDetails c'], false);
-//                    $b->joinWith(['organizationOtherDetails d' => function ($d) {
-//                        $d->joinWith(['locationEnc e'], false);
-//                    }], false);
-//                }])
-//                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
-//                ->asArray()
-//                ->all();
-
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
@@ -1629,10 +1609,11 @@ class JobsController extends Controller
                 ])
                 ->asArray()
                 ->all();
-
-            return $this->render('campus-placement', [
+            $type = 'jobs';
+            return $this->render('/employer-applications/campus-placement', [
                 'applications' => $this->__jobss(),
                 'colleges' => $colleges,
+                'type' => $type,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page Not Found.'));
@@ -1661,13 +1642,32 @@ class JobsController extends Controller
         }
     }
 
+    public function actionStoreSession(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $session = Yii::$app->session;
+            $session->set('campusPlacementData', $data);
+            return [
+                'status'=>200
+            ];
+        }
+    }
+
     public function actionSubmitErexxApplications()
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
-
-            foreach ($data['applications'] as $app) {
+            $model = new \common\models\extended\EmployerApplications();
+            $app = $model->_cloneApplication($data['applications'],2);
+            if (!$app){
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occured. Please Try again later.',
+                ];
+            }
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
                     $errexApplication = new ErexxEmployerApplications();
@@ -1692,7 +1692,6 @@ class JobsController extends Controller
                         'message' => 'An error has occured. Please Try again later.',
                     ];
                 }
-            }
 
             $this->__addCollege($data['colleges']);
 
