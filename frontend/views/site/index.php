@@ -14,7 +14,7 @@ $this->params['header_dark'] = false;
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                     alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
                         <div class="job-search-sec">
@@ -1158,9 +1158,9 @@ if (!Yii::$app->user->isGuest) {
         'getCompaniesWithUs',
         'getLearningTopics',
 //        'getOpportunities',
-        'getSafetySigns',
-        'getOnlineClasses',
-        'getWhatsappCommunity',
+//        'getSafetySigns',
+//        'getOnlineClasses',
+        'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
         'getShortcuts'
@@ -1180,8 +1180,8 @@ if (!Yii::$app->user->isGuest) {
         'getCompaniesWithUs',
         'getLearningTopics',
 //        'getOpportunities',
-        'getSafetySigns',
-        'getOnlineClasses',
+//        'getSafetySigns',
+//        'getOnlineClasses',
         'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',

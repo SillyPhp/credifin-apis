@@ -40,111 +40,130 @@ class JobApplied extends Model
 
     public function upload()
     {
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $userResumeModel = new UserResume();
-        $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
-        $userResumeModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
-        $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->resume->file . $userResumeModel->resume_location . '/';
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
-        $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
-        $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
-        $userResumeModel->created_on = date('Y-m-d H:i:s');
-        $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
-        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
-        if ($result) {
-            if ($userResumeModel->validate() && $userResumeModel->save()) {
-                $appliedModel = new AppliedApplications();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
-                $appliedModel->application_number = date('ymd') . time();
-                $appliedModel->application_enc_id = $this->id;
-                $appliedModel->status = $this->status;
-                $appliedModel->resume_enc_id = $userResumeModel->resume_enc_id;
-                $appliedModel->created_on = date('Y-m-d H:i:s');
-                $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if ($appliedModel->save()) {
-                    if (!empty($this->location_pref)) {
-                        foreach (json_decode($this->location_pref) as $location) {
-                            $locModel = new AppliedApplicationLocations;
-                            $utilitiesModel = new Utilities();
-                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $locModel->application_location_enc_id = $utilitiesModel->encrypt();
-                            $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
-                            $locModel->city_enc_id = $location;
-                            $locModel->created_on = date('Y-m-d H:i:s');
-                            $locModel->created_by = Yii::$app->user->identity->user_enc_id;
-                            $app_id = $appliedModel->applied_application_enc_id;
-                            $id = $this->id;
-                            if (!$locModel->save()) {
-                                return false;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel = new UserResume();
+            $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
+            $userResumeModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
+            $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->resume->file . $userResumeModel->resume_location . '/';
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
+            $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
+            $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
+            $userResumeModel->created_on = date('Y-m-d H:i:s');
+            $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+            if ($result) {
+                if ($userResumeModel->validate() && $userResumeModel->save()) {
+                    $appliedModel = new AppliedApplications();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
+                    $appliedModel->application_number = date('ymd') . time();
+                    $appliedModel->application_enc_id = $this->id;
+                    $appliedModel->status = $this->status;
+                    $appliedModel->resume_enc_id = $userResumeModel->resume_enc_id;
+                    $appliedModel->created_on = date('Y-m-d H:i:s');
+                    $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($appliedModel->save()) {
+                        if (!empty($this->location_pref)) {
+                            foreach (json_decode($this->location_pref) as $location) {
+                                $locModel = new AppliedApplicationLocations;
+                                $utilitiesModel = new Utilities();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $locModel->application_location_enc_id = $utilitiesModel->encrypt();
+                                $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
+                                $locModel->city_enc_id = $location;
+                                $locModel->created_on = date('Y-m-d H:i:s');
+                                $locModel->created_by = Yii::$app->user->identity->user_enc_id;
+                                $app_id = $appliedModel->applied_application_enc_id;
+                                $id = $this->id;
+                                if (!$locModel->save()) {
+                                    $transaction->rollBack();
+                                    return false;
+                                }
                             }
                         }
-                    }
-                    $status = [
-                        'status' => true,
-                        'aid' => $appliedModel->applied_application_enc_id,
-                    ];
-                    $this->save_process($id, $app_id);
-                    RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
-                    return $status;
+                        $status = [
+                            'status' => true,
+                            'aid' => $appliedModel->applied_application_enc_id,
+                        ];
+                        $this->save_process($id, $app_id);
+                        $transaction->commit();
+                        RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
+                        return $status;
 
+                    } else {
+                        $transaction->rollBack();
+                        return false;
+                    }
                 } else {
+                    $transaction->rollBack();
                     return false;
                 }
             } else {
+                $transaction->rollBack();
                 return false;
             }
-        } else {
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
             return false;
         }
-
 
     }
 
     public function saveValues()
     {
-        $appliedModel = new AppliedApplications();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
-        $appliedModel->application_number = date('ymd') . time();
-        $appliedModel->application_enc_id = $this->id;
-        $appliedModel->resume_enc_id = $this->resume_list;
-        $appliedModel->status = $this->status;
-        $appliedModel->created_on = date('Y-m-d H:i:s');
-        $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
-        if ($appliedModel->save()) {
-            if (!empty($this->location_pref)) {
-                foreach (json_decode($this->location_pref) as $location) {
-                    $locModel = new AppliedApplicationLocations;
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $locModel->application_location_enc_id = $utilitiesModel->encrypt();
-                    $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
-                    $locModel->city_enc_id = $location;
-                    $locModel->created_on = date('Y-m-d H:i:s');
-                    $locModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$locModel->save()) {
-                        return false;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $appliedModel = new AppliedApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
+            $appliedModel->application_number = date('ymd') . time();
+            $appliedModel->application_enc_id = $this->id;
+            $appliedModel->resume_enc_id = $this->resume_list;
+            $appliedModel->status = $this->status;
+            $appliedModel->created_on = date('Y-m-d H:i:s');
+            $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($appliedModel->save()) {
+                if (!empty($this->location_pref)) {
+                    foreach (json_decode($this->location_pref) as $location) {
+                        $locModel = new AppliedApplicationLocations;
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $locModel->application_location_enc_id = $utilitiesModel->encrypt();
+                        $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
+                        $locModel->city_enc_id = $location;
+                        $locModel->created_on = date('Y-m-d H:i:s');
+                        $locModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$locModel->save()) {
+                            $transaction->rollBack();
+                            return false;
+                        }
                     }
                 }
+                $status = [
+                    'status' => true,
+                    'aid' => $appliedModel->applied_application_enc_id,
+                ];
+                $app_id = $appliedModel->applied_application_enc_id;
+                $id = $this->id;
+                $this->save_process($id, $app_id);
+                $transaction->commit();
+                RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
+                return $status;
+            } else {
+                $transaction->rollBack();
+                return false;
             }
-            $status = [
-                'status' => true,
-                'aid' => $appliedModel->applied_application_enc_id,
-            ];
-            $app_id = $appliedModel->applied_application_enc_id;
-            $id = $this->id;
-            $this->save_process($id, $app_id);
-            RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
-            return $status;
-        } else {
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
             return false;
         }
     }
