@@ -1117,7 +1117,8 @@ button.lc-item-video-menu {
     .job-statistic span {
         float: none;
         display: inline-block;
-        font-size: 12px;
+        font-size: 16px;
+        font-family:roboto;
         border: 1px solid #ffffff;
         color: #ffffff;
         padding: 7px 20px;
@@ -1572,7 +1573,9 @@ button.lc-item-video-menu {
         margin-top: 1px;
     }
     .apply-job-btn {
-    display:inline-block !important;    
+    display:flex;
+    justify-content:center;
+    align-items:center;    
     background: #00a0e3;
     -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -1584,12 +1587,12 @@ button.lc-item-video-menu {
     -ms-border-radius: 2px;
     -o-border-radius: 2px;
     border-radius: 2px;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family: roboto;
+    font-size: 18px;
     color: #fff;
     width: 175px;
     height: auto;
-    padding: 15px 6px;
+    padding: 10px 6px;
     text-align: center;
     margin:auto;
 }
@@ -1607,7 +1610,6 @@ button.lc-item-video-menu {
         margin-right: 6px;
         line-height: 8px;
         position: relative;
-        top: 4px;
     }
     .viewall-jobs {
         background: #4aa1e3;
@@ -1961,6 +1963,7 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
+addToReviewList();
 getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org=' + slugg);
 JS;
 $this->registerJs($script);

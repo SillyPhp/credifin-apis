@@ -14,12 +14,12 @@ if ($type == 'internships') {
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="col-md-6 col-sm-8 col-xs-12">
+                        <div class="col-md-8 col-sm-8 col-xs-12">
                             <div class="heading-set">
-                                <h1 class="heading-style"> International Employment Opportunities in </h1>
+                                <h1 class="heading-style"> International Employment Opportunities </h1>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-4 col-xs-12">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
                             <div class="type-1">
                                 <div>
                                     <a href="<?= Url::to('/jobs/international'); ?>" class="btn btn-3">
@@ -34,7 +34,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'canada') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Canada</span>
                                         </a>
                                     </div>
@@ -42,7 +42,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'us') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>USA</span>
                                         </a>
                                     </div>
@@ -50,7 +50,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'singapore') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Singapore</span>
                                         </a>
                                     </div>
@@ -58,7 +58,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'india') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>India</span>
                                         </a>
                                     </div>
@@ -70,7 +70,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'germany') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Germany</span>
                                         </a>
                                     </div>
@@ -78,7 +78,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'uk') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>UK</span>
                                         </a>
                                     </div>
@@ -86,7 +86,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'thailand') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Thailand</span>
                                         </a>
                                     </div>
@@ -94,7 +94,7 @@ if ($type == 'internships') {
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'china') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>China</span>
                                         </a>
                                     </div>

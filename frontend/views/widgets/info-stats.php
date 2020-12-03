@@ -13,7 +13,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="jobs-content">
                 <div class="j-count">{{jobs}}+</div>
-                <div class="j-name">Jobs</div>
+                <h3 class="j-name">Jobs</h3>
             </div>
         </div>
         {{/jobs}}
@@ -22,7 +22,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="jobs-content">
                 <div class="j-count">{{internships}}+</div>
-                <div class="j-name">Internships</div>
+                <h3 class="j-name">Internships</h3>
             </div>
         </div>
         {{/internships}}
@@ -31,7 +31,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="jobs-content">
                 <div class="j-count">{{titles}}+</div>
-                <div class="j-name">Profiles</div>
+                <h3 class="j-name">Profiles</h3>
             </div>
         </div>
         {{/titles}}
@@ -39,13 +39,13 @@
         <div class="col-md-3 col-sm-6">
             <div class="jobs-content">
                 <div class="j-count">{{location}}+</div>
-                <div class="j-name">Locations</div>
+                <h3 class="j-name">Locations</h3>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="jobs-content">
                 <div class="j-count">{{companies}}+</div>
-                <div class="j-name">Companies</div>
+                <h3 class="j-name">Companies</h3>
             </div>
         </div>
     </div>
@@ -75,6 +75,7 @@ $this->registerCss('
     color:#fff;
     font-weight: 300;
     font-family: roboto;
+    margin:0;
 }
 @media (max-width:768px){
     .box-parent{padding:20px 50px !important;}

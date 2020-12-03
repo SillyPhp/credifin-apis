@@ -169,7 +169,8 @@ class OrganizationsController extends ApiBaseController
                 ELSE "No Experience"
                END) as experience',
                 'b.type',
-                'b.status'
+                'b.status',
+                'm.positions'
             ])
             ->joinWith(['employerApplicationEnc b' => function ($b) {
                 $b->joinWith(['organizationEnc bb'], false);
@@ -266,6 +267,27 @@ class OrganizationsController extends ApiBaseController
             } else {
                 $result[$i]['is_closed'] = false;
             }
+            $count = AppliedApplications::find()
+                ->alias('a')
+                ->select(['COUNT(a.applied_application_enc_id) count'])
+                ->innerJoinWith(['createdBy f' => function ($f) {
+                    $f->innerJoinWith(['userOtherInfo g']);
+                    $f->onCondition(['f.is_deleted' => 0]);
+                }], false)
+                ->where(['a.application_enc_id' => $val['employer_application_enc_id'], 'a.is_deleted' => 0,
+                    'g.organization_enc_id' => $options['college_id'], 'g.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            $locations = [];
+            $positions = 0;
+            foreach ($val['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                if (!in_array($l['name'], $locations)) {
+                    array_push($locations, $l['name']);
+                    $positions += $l['positions'];
+                }
+            }
+            $result[$i]['positions'] = $positions;
+            $result[$i]['applied_count'] = $count['count'];
             $i++;
         }
 
