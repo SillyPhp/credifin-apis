@@ -4,6 +4,8 @@ namespace account\controllers;
 
 use common\models\EmployerApplications;
 use common\models\Organizations;
+use common\models\spaces\Spaces;
+use common\models\UserResume;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -35,7 +37,7 @@ class ResumeController extends Controller
                 ->alias('a')
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id,'a.is_deleted' => 0])
+                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id, 'a.is_deleted' => 0])
                 ->andWhere([
                     'or',
                     ['=', 'a.status', 'Approved'],
@@ -150,7 +152,6 @@ class ResumeController extends Controller
         return $check_parent;
     }
 
-
     public function actionSave()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -258,7 +259,7 @@ class ResumeController extends Controller
         $type = Yii::$app->request->post('type');
         $selectedfields = OrganizationAssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'b.name','b.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon'])
+            ->select(['a.assigned_category_enc_id', 'b.name', 'b.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon'])
             ->joinWith(['categoryEnc b'], false)
             ->where(['a.assigned_to' => $type])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id, 'a.created_by' => Yii::$app->user->identity->user_enc_id])
@@ -267,7 +268,60 @@ class ResumeController extends Controller
             ->asArray()
             ->all();
 
+        if ($selectedfields) {
+            foreach ($selectedfields as $k => $v) {
+                $selectedfields[$k]['count'] = count($this->dropResumeCounts($v['assigned_category_enc_id'], $type));
+            }
+        }
+
         return json_encode($selectedfields);
+    }
+
+    private function dropResumeCounts($title_id, $type)
+    {
+
+        $parent_id = OrganizationAssignedCategories::find()
+            ->select(['category_enc_id'])
+            ->where(['assigned_category_enc_id' => $title_id])
+            ->asArray()
+            ->one();
+
+        $childs = OrganizationAssignedCategories::find()
+            ->select(['assigned_category_enc_id'])
+            ->where(['parent_enc_id' => $parent_id['category_enc_id']])
+            ->andWhere(['organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->andWhere(['assigned_to' => $type])
+            ->asArray()
+            ->all();
+
+        $titles = [];
+        foreach ($childs as $c) {
+            array_push($titles, $c["assigned_category_enc_id"]);
+        }
+
+        $data = DropResumeApplications::find()
+            ->alias('a')
+            ->joinWith(['userEnc b' => function ($x) {
+                $x->select(['g.city_enc_id', 'g.name city_name', 'f.category_enc_id', 'b.job_function', 'f.name', 'b.user_enc_id', 'b.username', 'b.first_name', 'b.last_name', 'b.image', 'b.image_location', 'c.created_by']);
+                $x->joinWith(['userSkills c' => function ($y) {
+                    $y->select(['c.created_by', 'd.skill', 'c.skill_enc_id']);
+                    $y->onCondition(['c.is_deleted' => 0]);
+                    $y->joinWith(['skillEnc d'], false);
+                }]);
+                $x->joinWith(['jobFunction f'], false);
+                $x->joinWith(['cityEnc g'], false);
+            }])
+            ->joinWith(['dropResumeApplicationTitles h'])
+            ->where(['in', 'h.title', $titles])
+            ->andWhere([
+                'or',
+                ['a.status' => 0],
+                ['a.status' => 1]
+            ])
+            ->asArray()
+            ->all();
+
+        return $data;
     }
 
     public function actionResumeType()
@@ -279,7 +333,7 @@ class ResumeController extends Controller
 
             if ($link_type === 'company') {
                 $company_name = Yii::$app->request->post('company_name');
-            } else if($link_type === 'application'){
+            } else if ($link_type === 'application') {
                 $org = EmployerApplications::find()
                     ->alias('a')
                     ->select(['b.slug'])
@@ -318,7 +372,7 @@ class ResumeController extends Controller
 
             if ($link_type === 'company') {
                 $company_name = Yii::$app->request->post('company_name');
-            } else if($link_type === 'application'){
+            } else if ($link_type === 'application') {
                 $org = EmployerApplications::find()
                     ->alias('a')
                     ->select(['b.slug'])
@@ -568,6 +622,32 @@ class ResumeController extends Controller
 
         if ($d_r_a_title->save()) {
             return true;
+        }
+    }
+
+    public function actionDownload($resume_id)
+    {
+        if (!empty(Yii::$app->user->identity->organization_enc_id)) {
+            $resume = UserResume::find()
+                ->select(['resume_location', 'resume'])
+                ->where(['resume_enc_id' => $resume_id])
+                ->asArray()
+                ->one();
+            if ($resume) {
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $resume['resume_location'] . DIRECTORY_SEPARATOR . $resume['resume'], "5 minutes");
+
+                $file_name = $resume['resume'];
+                $file_url = $cv;
+                header('Content-Type: application/octet-stream');
+                header("Content-Transfer-Encoding: Binary");
+                header("Content-disposition: attachment; filename=\"" . $file_name . "\"");
+                echo file_get_contents($file_url);
+            }
+
+            return $this->render('download');
         }
     }
 

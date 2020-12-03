@@ -11,18 +11,19 @@ use yii\helpers\Url;
 <!--                </div>-->
 <!--            </div>-->
             <div class="row">
+                <h1 class="heading-style">Who Work With Us</h1>
                 <div class="col-md-2 col-sm-4 col-xs-6 u-p">
                     <a href="<?= Url::to('/employers'); ?>">
                         <div class="service-main">
                             <div class="service-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
-                                     alt="Employers" title="Employers">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Employers">
                             </div>
                             <div class="service-icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/employerO.png') ?>"
-                                     alt="Employers" title="Employers">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Employers">
                             </div>
-                            <div class="service-txt">Employers</div>
+                            <h3 class="service-txt">Employers</h3>
                         </div>
                     </a>
                 </div>
@@ -31,13 +32,13 @@ use yii\helpers\Url;
                         <div class="service-main">
                             <div class="service-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
-                                     alt="Candidates" title="Candidates">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Candidates">
                             </div>
                             <div class="service-icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatesO.png') ?>"
-                                     alt="Candidates" title="Candidates">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Candidates">
                             </div>
-                            <div class="service-txt">Candidates</div>
+                            <h3 class="service-txt">Candidates</h3>
                         </div>
                     </a>
                 </div>
@@ -46,13 +47,13 @@ use yii\helpers\Url;
                         <div class="service-main">
                             <div class="service-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                     alt="Candidates" title="schools">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="schools">
                             </div>
                             <div class="service-icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolsO.png') ?>"
-                                     alt="Candidates" title="schools">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="schools">
                             </div>
-                            <div class="service-txt">Schools</div>
+                            <h3 class="service-txt">Schools</h3>
                         </div>
                     </a>
                 </div>
@@ -61,13 +62,13 @@ use yii\helpers\Url;
                         <div class="service-main">
                             <div class="service-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesB.png') ?>"
-                                     alt="Candidates" title="Educational Institute">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Educational Institute">
                             </div>
                             <div class="service-icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesO.png') ?>"
-                                     alt="Candidates" title="Educational Institute">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Educational Institute">
                             </div>
-                            <div class="service-txt">Educational Institute</div>
+                            <h3 class="service-txt">Educational Institute</h3>
                         </div>
                     </a>
                 </div>
@@ -76,13 +77,13 @@ use yii\helpers\Url;
                         <div class="service-main">
                             <div class="service-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                     alt="Universities & Colleges" title="Colleges">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Colleges">
                             </div>
                             <div class="service-icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesO.png') ?>"
-                                     alt="Universities & Colleges" title="Colleges">
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Colleges">
                             </div>
-                            <div class="service-txt">Universities & Colleges</div>
+                            <h3 class="service-txt">Universities & Colleges</h3>
                         </div>
                     </a>
                 </div>
@@ -90,13 +91,13 @@ use yii\helpers\Url;
                     <div class="service-main">
                         <div class="service-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
-                                 title="Recruiters" alt="Recruiters">
+                                 title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " alt="Recruiters">
                         </div>
                         <div class="service-icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/RecruitersO.png') ?>"
-                                 title="Recruiters" alt="Recruiters">
+                                 title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " alt="Recruiters">
                         </div>
-                        <div class="service-txt">Recruiters</div>
+                        <h3 class="service-txt">Recruiters</h3>
                         <div class="overl">
                             <div class="overl-text">Coming Soon</div>
                         </div>
@@ -169,7 +170,7 @@ $this->registercss('
     font-weight: 500;
 }
 .our-backg {
-	background: url(/assets/themes/ey/images/pages/our-services/service-back.png);
+    background-color: #ECF5FE;
 	padding:55px 0;
 	background-size: cover;
 	background-position: left;
@@ -218,6 +219,8 @@ $this->registercss('
 	font-family: roboto;
 	text-align: center;
 	color:#333;
+	margin:0;
+	line-height: inherit;
 }
 @media(max-width:1200px){
 .service-txt {

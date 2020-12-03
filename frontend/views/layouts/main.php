@@ -128,13 +128,13 @@ AppAssets::register($this);
                                         $name = $image = $color = NULL;
                                         if (Yii::$app->user->identity->organization->organization_enc_id) {
                                             if (Yii::$app->user->identity->organization->logo) {
-                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                             }
                                             $name = Yii::$app->user->identity->organization->name;
                                             $color = Yii::$app->user->identity->organization->initials_color;
                                         } else {
                                             if (Yii::$app->user->identity->image) {
-                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                             }
                                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                             $color = Yii::$app->user->identity->initials_color;
@@ -192,13 +192,13 @@ AppAssets::register($this);
                                         $name = $image = $color = NULL;
                                         if (Yii::$app->user->identity->organization->organization_enc_id) {
                                             if (Yii::$app->user->identity->organization->logo) {
-                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                             }
                                             $name = Yii::$app->user->identity->organization->name;
                                             $color = Yii::$app->user->identity->organization->initials_color;
                                         } else {
                                             if (Yii::$app->user->identity->image) {
-                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                             }
                                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                             $color = Yii::$app->user->identity->initials_color;
@@ -914,20 +914,28 @@ if (!$this->params['header_dark']) {
 $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
+var hasAccessForSubHeader = true;
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare"];
+for(var jj = 0;jj<preventHeaderFor.length;jj++){
+    if(thispageurl == preventHeaderFor[jj]){
+        hasAccessForSubHeader = false;
+    }
+}
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
 }); 
 $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
         return false;
       }
 });
+
 
 $(document).on("click", ".partnerWith", function(e){
     e.preventDefault();

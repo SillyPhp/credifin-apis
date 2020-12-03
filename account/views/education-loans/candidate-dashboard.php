@@ -124,6 +124,33 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    placeholder="" disabled>
                                         </div>
                                     </div>
+                                    <div class="col-md-4 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Gender
+                                            </div>
+                                            <ul class="displayInline applicantGender" id="applicant_gender">
+                                                <li>
+                                                    <label class="container-radio" data-field="gender">Male
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="1">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="container-radio" data-field="gender">Female
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="2">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="container-radio" data-field="gender">Other
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="3">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                             <div class="row mt10">
@@ -1730,7 +1757,7 @@ $this->registerCss('
 $script = <<<JS
 var apiUrl = '/';
 if(document.domain != 'empoweryouth.com'){
-    apiUrl = 'https://ravinder.eygb.me/';
+    apiUrl = 'https://ricky.eygb.me/';
 }
 function showImage(input, inp_id) {
     if (input.files && input.files[0]) {
@@ -1767,6 +1794,21 @@ $(document).on('change','.same_address', function() {
     var value = (elem.is(":checked"))?1:0;
     updateValue(elem, value);
 });
+
+$(document).on('change','#applicant_gender', function() {
+    var elem = $(this);
+    var value = "";
+    $.each(elem.find('li'), function(k,v) {
+        var inpt = $(this).find('input');
+        var chk = inpt.is(":checked");
+        if(chk){
+            value = inpt.val();
+            elem = inpt;
+        }
+    });
+    updateValue(elem, value);
+});
+
 $(document).on('change','.residenceType', function() {
     var elem = $(this);
     var checkedBtn = elem.find('input:checked');
@@ -1837,7 +1879,7 @@ $(document).on('blur','input:text', function() {
 function updateValue(elem, value){
     var data = {};
     var label_name = "";
-    if(elem.hasClass('same_address')){
+    if(elem.hasClass('same_address') || elem.hasClass('acnt_gender')){
         label_name = elem.closest('label').attr('data-field');
     } else {
         label_name = elem.prev('label').attr('data-field');

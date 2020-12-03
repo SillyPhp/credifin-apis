@@ -78,16 +78,16 @@ class SchedularController extends Controller
                 'a.is_deleted' => 0,
                 'a.status' => 'Active'
             ])
-                ->andWhere(['<>', 'a.interview_process_enc_id', 'null'])
-                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
+                ->andWhere(['<>', 'a.interview_process_enc_id', 'null']);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         } else {
             $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.application_enc_id' => $application_id,
                 'a.is_deleted' => 0,
                 'a.status' => 'Active'
-            ])
-                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
+            ]);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         }
         $result = $applications->groupBy(['a.application_enc_id'])
             ->asArray()
@@ -146,7 +146,7 @@ class SchedularController extends Controller
     {
         $applied_candidates = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
+            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
             ->joinWith(['resumeEnc b' => function ($x) {
                 $x->joinWith(['userEnc c']);
 //                    $x->groupBy(['b.user_enc_id']);

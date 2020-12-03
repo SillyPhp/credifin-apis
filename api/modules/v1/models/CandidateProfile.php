@@ -480,7 +480,7 @@ class CandidateProfile extends Model
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
         if(!empty($candidate->image_location)){
-            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
+            return Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
         }else {
             return '';
         }

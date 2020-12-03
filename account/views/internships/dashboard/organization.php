@@ -233,6 +233,7 @@ use yii\widgets\Pjax;
                             if ($erexx_applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $erexx_applications['data'],
+                                    'card_type'=>'mec_card',
                                     'per_row' => 4,
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
@@ -404,6 +405,9 @@ use yii\widgets\Pjax;
                 </div>
             </div>
         </div>
+    </div>
+    <div class="pos-relative">
+        <?= $this->render('/widgets/college-list-modal')?>
     </div>
 
 <?php

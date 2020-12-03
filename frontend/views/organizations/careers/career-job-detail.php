@@ -102,7 +102,7 @@ if (empty($org['cover_image'])) {
     $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
 }
 
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
+$logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
 
 ?>
 

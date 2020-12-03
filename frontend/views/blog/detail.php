@@ -86,7 +86,7 @@ $this->params['seo_tags'] = [
                                     $author = $post->authorEnc;
                                     $name = $author->first_name . ' ' . $author->last_name;
                                     if ($author->image) {
-                                        $image = Yii::$app->params->upload_directories->users->image . $author->image_location . DIRECTORY_SEPARATOR . $author->image;
+                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $author->image_location . DIRECTORY_SEPARATOR . $author->image;
                                         ?>
                                         <img src="<?= $image; ?>" alt="<?= $name; ?>"/>
                                         <?php

@@ -31,7 +31,9 @@ class JobsController extends ApiBaseController
             'except' => [
                 'application-detail',
                 'shortlist-application',
-                'apply'
+                'apply',
+                'process-bar',
+                'cancel-job'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -41,6 +43,8 @@ class JobsController extends ApiBaseController
                 'application-detail' => ['POST', 'OPTIONS'],
                 'shortlist-application' => ['POST', 'OPTIONS'],
                 'apply' => ['POST', 'OPTIONS'],
+                'process-bar' => ['POST', 'OPTIONS'],
+                'cancel-job' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -259,7 +263,7 @@ class JobsController extends ApiBaseController
                 ->distinct()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
-                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
                     'a.created_by student_id'])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
@@ -362,7 +366,7 @@ class JobsController extends ApiBaseController
                 'w.website',
                 'w.slug org_slug',
                 'r.name application_type',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
                 'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '",w.cover_image_location, "/", w.cover_image) END cover_image'
             ])
             ->where([
@@ -775,6 +779,72 @@ class JobsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionApplicationProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['employer_app_id']) && !empty($params['employer_app_id'])) {
+                $app_id = $params['employer_app_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $application_name = EmployerApplications::find()
+                ->alias('a')
+                ->select(['c.name job_title', 'a.slug', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
+                    '(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
+                ELSE "No Experience" 
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration'])
+                ->where(['a.application_enc_id' => $app_id])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                    $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+                }], false, 'INNER JOIN')
+                ->joinWith(['applicationTypeEnc ate'], false)
+                ->joinWith(['interviewProcessEnc d' => function ($d) {
+                    $d->select(['d.interview_process_enc_id']);
+                    $d->joinWith(['interviewProcessFields']);
+                }])
+                ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                    $b->onCondition(['o.is_deleted' => 0]);
+                    $b->joinWith(['locationEnc s' => function ($b) {
+                        $b->joinWith(['cityEnc t'], false);
+                    }], false);
+                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                    $b->distinct();
+                }])
+                ->joinWith(['applicationInterviewLocations p' => function ($b) {
+                    $b->onCondition(['p.is_deleted' => 0]);
+                    $b->joinWith(['locationEnc u' => function ($b) {
+                        $b->joinWith(['cityEnc v'], false);
+                    }], false);
+                    $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude as interview_lat', 'u.longitude as interview_long']);
+                }])
+                ->joinWith(['applicationOptions ao'], false)
+                ->asArray()
+                ->one();
+
+            return $this->response(200, ['status' => 200, 'message' => $application_name]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }

@@ -611,7 +611,9 @@ $this->registerCss("
                             ?></span></div>
                 </div>
                 <?php if ($data['resume']): ?>
-                    <div class="btn1"><a href="<?= Url::to($data['resume'], 'https') ?>">Download resume</a></div>
+                    <div class="btn1"><a
+                                href="<?= Url::to('/account/resume/download?resume=' . $data['resume'], 'https') ?>" target="_blank">Download
+                            resume</a></div>
                 <?php endif; ?>
                 <div class="btn2"><a href="<?= Url::to('/' . $data['user_details']['username'], 'https') ?>">View Full
                         Profile</a></div>
