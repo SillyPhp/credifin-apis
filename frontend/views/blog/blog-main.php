@@ -13,7 +13,7 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
             <div class="row">
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
+                        <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
                     </div>
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->

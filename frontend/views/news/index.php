@@ -37,7 +37,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <div class="get-latest">Get Latest News Updates</div>
+                    <h1 class="get-latest">Get Latest News Updates</h1>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="get-logo">

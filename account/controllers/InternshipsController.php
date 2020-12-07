@@ -1312,25 +1312,11 @@ class InternshipsController extends Controller
                 ])
                 ->asArray()
                 ->all();
-
-//            $colleges = ErexxCollaborators::find()
-//                ->alias('a')
-//                ->distinct()
-//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-//                ->joinWith(['collegeEnc b' => function ($b) {
-//                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
-//                    $b->joinWith(['userOtherDetails c'], false);
-//                    $b->joinWith(['organizationOtherDetails d' => function ($d) {
-//                        $d->joinWith(['locationEnc e'], false);
-//                    }], false);
-//                }])
-//                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
-//                ->asArray()
-//                ->all();
-
-            return $this->render('campus-placement', [
+            $type = 'internships';
+            return $this->render('/employer-applications/campus-placement', [
                 'applications' => $this->__internshipss(),
                 'colleges' => $colleges,
+                'type' => $type,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
