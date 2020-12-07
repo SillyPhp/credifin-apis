@@ -2,11 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\models\AppliedApplications;
+use common\models\AssignedCategories;
 use common\models\Auth;
 use common\models\EmployerApplications;
+use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
+use common\models\User;
+use common\models\UserOtherDetails;
 use common\models\UserResume;
 use common\models\Users;
 use yii\web\Controller;
@@ -43,8 +48,31 @@ class TestCacheController extends Controller
         if ($data){
             foreach ($data as $d){
                 $model = new \common\models\extended\EmployerApplications();
-                $app = $model->_cloneApplication($data['applications'],2);
+                $app = $model->_cloneApplication($d['application_enc_id'],2);
                 if ($app){
+                    $erexx = ErexxEmployerApplications::findAll(['application_enc_id'=>$d['application_enc_id']]);
+                    if ($erexx){
+                        foreach ($erexx as $er){
+                            $er->application_enc_id = $app;
+                            $er->save();
+                        }
+                    }
+                    $applied = AppliedApplications::find()
+                        ->alias('a')
+                        ->select(['a.applied_application_enc_id'])
+                        ->where(['application_enc_id'=>$d['application_enc_id']])
+                        ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id = a.created_by')
+                        ->innerJoin(UserOtherDetails::tableName() . 'as c', 'c.user_enc_id = b.user_enc_id')
+                        ->asArray()->all();
+                    if ($applied){
+                        foreach ($applied as $a){
+                            $apply = AppliedApplications::findOne(['applied_application_enc_id'=>$a['applied_application_enc_id']]);
+                            if ($apply){
+                                $apply->application_enc_id = $app;
+                                $apply->save();
+                            }
+                        }
+                    }
                     $i++;
                 }
             }
