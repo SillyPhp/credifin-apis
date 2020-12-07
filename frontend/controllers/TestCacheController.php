@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\Auth;
+use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
@@ -26,6 +27,30 @@ class TestCacheController extends Controller
             //some kind of err
         } catch (\Exception $exception) {
             return $exception->getMessage(); //final messege for user
+        }
+    }
+
+    public function actionMove($limit=10,$page=1){
+        $offset = ($page - 1) * $limit;
+        $data = EmployerApplications::find()
+            ->select(['application_enc_id','application_for'])
+            ->where(['application_for'=>0])
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+        $i = 0;
+        if ($data){
+            foreach ($data as $d){
+                $model = new \common\models\extended\EmployerApplications();
+                $app = $model->_cloneApplication($data['applications'],2);
+                if ($app){
+                    $i++;
+                }
+            }
+            return $i;
+        }else{
+            return 'empty';
         }
     }
 }
