@@ -461,7 +461,7 @@ class LoansController extends ApiBaseController
         }
 
         if ($application) {
-            return $this->response(200, [$application]);
+            return $this->response(200, $application);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
