@@ -856,14 +856,8 @@ class JobsController extends Controller
         }
     }
 
-<<<<<<<<< Temporary merge branch 1
-
-
-    public function actionCloneTemplate($aidk){
-=========
     public function actionCloneTemplate($aidk)
     {
->>>>>>>>> Temporary merge branch 2
         $application = ApplicationTemplates::find()
             ->alias('a')
             ->joinWith(['applicationTypeEnc f'], false)
@@ -1789,5 +1783,4 @@ class JobsController extends Controller
             }
         }
     }
-
 }
