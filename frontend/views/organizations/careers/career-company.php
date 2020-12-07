@@ -65,7 +65,7 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="col-md-12">
                             <h3 class="sb-title open">Select City</h3>
                             <div class="job-field job-filter">
-                                <?= Html::dropDownList('cities_drp', null, $cities, ['id' => 'cities_drp', 'prompt' => 'Choose City', 'data-placeholder' => 'City, province or region']) ?>
+                                <?= Html::dropDownList('cities_drp', null, $cities, ['id' => 'cities_drp2', 'prompt' => 'Choose City', 'data-placeholder' => 'City, province or region']) ?>
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                         </div>
@@ -1847,6 +1847,10 @@ $(document).on('submit','#search_form',function(e) {
             return false;
         }
     load_all(page=1,limit=20,keywords=key,city=city);
+});
+$(document).on('change','#cities_drp2',function(e) {
+    e.preventDefault();
+    load_all(page=1,limit=20,keywords="",city=$(this).val());
 });  
 $(document).on('click','input[name="choose"]',function(e) {
   load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$(this).val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
