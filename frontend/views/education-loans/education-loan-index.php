@@ -1458,7 +1458,7 @@ $this->registerCss('
 @media screen and (max-width: 986px) and (min-width:770px) {
   .loan{
         background-size: 0%, 70%;
-    }
+    }.temp-btn
     .loan-txt{
         margin-left: 3%;
         font-size: 23px;
