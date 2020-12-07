@@ -379,8 +379,30 @@ class Space
         return $this->s3->putBucketLifecycle(["Bucket" => $this->name, "LifecycleConfiguration" => ["Rules" => $rules]]);
     }
 
-}
+    public  function uploadFileMeta($filePath, $saveAs = "", $privacy = "private", $metaData = [])
+    {
+        if (empty($saveAs))
+        {
+            $saveAs = $filePath;
+        }
+        if ($privacy == "public")
+        {
+            $privacy = "public-read";
+        }
 
+        $metaData = [
+            "params" => [
+                'Metadata' => $metaData
+            ]
+        ];
+
+        $content = fopen($filePath, "r");
+        $result = $this->s3->upload($this->name, $saveAs, $content, $privacy, $metaData);
+
+        fclose($content);
+        return SpacesResult($result);
+    }
+}
 
 /*
 Handles creating a standard result.

@@ -55,50 +55,7 @@ echo $this->render('/widgets/drop_resume', [
         </div>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="social-menu">
-                <p>Share On</p>
-                <?php
-                $link = Url::to( $org['slug'] . '/jobs','https');
-                ?>
-                <ul>
-                    <li>
-                        <a href="javascript:;" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
-                           class="share-elem-main">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                           class="share-elem-main">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
-                           class="share-elem-main">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
-                           class="share-elem-main">
-                            <i class="fab fa-telegram-plane"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    </div>
-</section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -106,20 +63,10 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="widget border">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3 class="sb-title open">Date Posted</h3>
-                            <div class="posted_widget">
-                                <input type="radio" name="choose" value="1" id="232"><label for="232">Last
-                                    Hour</label><br/>
-                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24
-                                    hours</label><br/>
-                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7
-                                    days</label><br/>
-                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14
-                                    days</label><br/>
-                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30
-                                    days</label><br/>
-                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm"
-                                                                                              for="qweqw">All</label><br/>
+                            <h3 class="sb-title open">Select City</h3>
+                            <div class="job-field job-filter">
+                                <?= Html::dropDownList('cities_drp', null, $cities, ['id' => 'cities_drp2', 'prompt' => 'Choose City', 'data-placeholder' => 'City, province or region']) ?>
+                                <i class="fas fa-map-marker-alt"></i>
                             </div>
                         </div>
                     </div>
@@ -138,6 +85,45 @@ echo $this->render('/widgets/drop_resume', [
                                 <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa"
                                                          value="Work From Home"><label for="assa">Work From Home
                                     </label></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Job Type</h3>
+                            <div class="type_widget">
+                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label
+                                            for="dsf">Full
+                                        Time</label></p>
+                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd"
+                                                         value="Part Time"><label for="sadd">Part
+                                        Time</label></p>
+                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa"
+                                                         value="Work From Home"><label for="assa">Work From Home
+                                    </label></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Date Posted</h3>
+                            <div class="posted_widget">
+                                <input type="radio" name="choose" value="1" id="232"><label for="232">Last
+                                    Hour</label><br/>
+                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24
+                                    hours</label><br/>
+                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm"
+                                                                                              for="qweqw">All</label><br/>
                             </div>
                         </div>
                     </div>
@@ -271,6 +257,43 @@ echo $this->render('/widgets/drop_resume', [
                     <!--                    </div>-->
                     <!-- Tags Bar -->
                     <div class="filterbar">
+                        <div class="social-menu">
+                            <p>Share On : </p>
+                            <?php
+                            $link = Url::to( $org['slug'] . '/jobs','https');
+                            ?>
+                            <ul>
+                                <li>
+                                    <a href="javascript:;" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                       class="share-elem-main">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-elem-main">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                       class="share-elem-main">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                       class="share-elem-main">
+                                        <i class="fab fa-telegram-plane"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         <!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
                         <!--                        <div class="sortby-sec">-->
                         <!--                            <span>Sort by</span>-->
@@ -422,19 +445,19 @@ $this->registerCss('
     top: 20%;
 }
 .social-menu{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+    text-align: center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 .social-menu p{
-    font-weight: bold;
-    font-size: 16px;
+    font-size: 24px;
+    font-family:lobster;
     color: #00a0e3;
+    margin:0;
 }
 .social-menu ul{
-    position: relative;
-    padding: 0 0px 0 0;
-    justify-content: flex-end;
+    justify-content: center;
     display: flex;
     flex-wrap: wrap;
 }
@@ -725,6 +748,11 @@ section.overlape {
     top: 17px;
     font-size: 20px;
     color:#00a0e3;
+}
+.job-filter {margin-bottom:0;}
+.job-filter select {padding:0 40px 0 10px;}
+.job-field.job-filter i {
+    right: 12px;
 }
 .job-search form button {
    float: left;
@@ -1819,6 +1847,10 @@ $(document).on('submit','#search_form',function(e) {
             return false;
         }
     load_all(page=1,limit=20,keywords=key,city=city);
+});
+$(document).on('change','#cities_drp2',function(e) {
+    e.preventDefault();
+    load_all(page=1,limit=20,keywords="",city=$(this).val());
 });  
 $(document).on('click','input[name="choose"]',function(e) {
   load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$(this).val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());

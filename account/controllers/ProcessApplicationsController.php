@@ -137,7 +137,7 @@ class ProcessApplicationsController extends Controller
                         $sh->select(['sh.applied_application_enc_id','sh.notes_enc_id', 'sh.notes']);
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
-                    ->orderBy(['a.status' => SORT_ASC])
+                    ->orderBy(['a.created_on' => SORT_DESC])
                     ->asArray()
                     ->all();
                 $question = ApplicationInterviewQuestionnaire::find()

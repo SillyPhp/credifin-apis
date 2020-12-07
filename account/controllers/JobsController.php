@@ -445,11 +445,12 @@ class JobsController extends Controller
             'primary_fields' => $this->getCategories()
         ]);
     }
+
     private function __getApplications($type)
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
                 $z->joinWith(['parentEnc z1']);
@@ -463,6 +464,7 @@ class JobsController extends Controller
 
         return $application;
     }
+
     private function __questionnaire($limit = NULL)
     {
         $options = [
@@ -503,6 +505,31 @@ class JobsController extends Controller
 
         $applications = new \account\models\applications\Applications();
         return $applications->getApplications($options);
+    }
+
+    public function actionGetJobColleges()
+    {
+        if (Yii::$app->request->isAjax & Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $app_id = Yii::$app->request->post('app_id');
+
+            $colleges = ErexxEmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.college_enc_id', 'a.is_college_approved', 'b.name college_name', 'b.slug',
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END college_logo'
+                ])
+                ->joinWith(['collegeEnc b'], false)
+                ->where(['a.employer_application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->limit(10)
+                ->asArray()
+                ->all();
+
+            if ($colleges) {
+                return ['status' => 200, 'colleges' => $colleges];
+            } else {
+                return ['status' => 404];
+            }
+        }
     }
 
     private function __closedjobs($limit = NULL)
@@ -546,7 +573,7 @@ class JobsController extends Controller
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
+            ->select(['a.name', 'a.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
             ->asArray()
@@ -554,29 +581,32 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionCreate($aidk=NULL)
+    public function actionCreate($aidk = NULL)
     {
         if (Yii::$app->user->identity->organization) {
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
-            $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
-            if (in_array($aidk,$array)){
+            $array = ArrayHelper::getColumn($primary_cat, 'category_enc_id');
+            if (in_array($aidk, $array)) {
                 return $this->_renderCreateJob($aidk);
-            }else{
+            } else {
                 return $this->_renderProfileTemplates($primary_cat);
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
-    private function _renderProfileTemplates($primary_cat,$type='jobs'){
-        return $this->render('/widgets/employer-applications/temProfiles',['primary_cat'=>$primary_cat,'type'=>$type]);
+
+    private function _renderProfileTemplates($primary_cat, $type = 'jobs')
+    {
+        return $this->render('/widgets/employer-applications/temProfiles', ['primary_cat' => $primary_cat, 'type' => $type]);
     }
+
     private function _renderCreateJob($pidk)
     {
         $type = 'Jobs';
         $model = new ApplicationForm();
-        $model->primaryfield = (($pidk)?$pidk:null);
+        $model->primaryfield = (($pidk) ? $pidk : null);
         $primary_cat = $model->getPrimaryFields();
         $questionnaire = $model->getQuestionnnaireList();
         $industry = $model->getndustry();
@@ -668,8 +698,9 @@ class JobsController extends Controller
         }
     }
 
-    public function actionApproveMultipleSteps(){
-        if (Yii::$app->request->isPost){
+    public function actionApproveMultipleSteps()
+    {
+        if (Yii::$app->request->isPost) {
             $fields = Yii::$app->request->post('fields');
             $app_id = Yii::$app->request->post('app_id');
 
@@ -713,12 +744,12 @@ class JobsController extends Controller
             }
             if ($flag) {
                 return json_encode($response);
-            }else{
+            } else {
                 return json_encode($response = [
                     'status' => false,
                 ]);
             }
-       }
+        }
     }
 
     public function actionCancelApplication()
@@ -825,14 +856,15 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCloneTemplate($aidk){
+    public function actionCloneTemplate($aidk)
+    {
         $application = ApplicationTemplates::find()
             ->alias('a')
             ->joinWith(['applicationTypeEnc f'], false)
             ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Jobs'])
             ->asArray()
             ->one();
-        if(Yii::$app->user->identity->organization && $application){
+        if (Yii::$app->user->identity->organization && $application) {
             $model = new ApplicationForm();
             $type = 'Clone_Jobs';
             $primary_cat = $model->getPrimaryFields();
@@ -873,7 +905,7 @@ class JobsController extends Controller
                     'type' => $type,
                 ]);
             }
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('account', 'Page not found'));
         }
     }
@@ -1447,7 +1479,7 @@ class JobsController extends Controller
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('/employer-applications/one-click-job', ['type' => $type, 'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
@@ -1590,28 +1622,6 @@ class JobsController extends Controller
     public function actionCampusPlacement()
     {
         if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-//        $applications = EmployerApplications::find()
-//            ->alias('a')
-//            ->joinWith(['applicationTypeEnc b'])
-//            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
-//            ->andWhere(['b.name' => 'Jobs'])
-//            ->asArray()
-//            ->all();
-//            $colleges = ErexxCollaborators::find()
-//                ->alias('a')
-//                ->distinct()
-//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-//                ->joinWith(['collegeEnc b' => function ($b) {
-//                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
-//                    $b->joinWith(['userOtherDetails c'], false);
-//                    $b->joinWith(['organizationOtherDetails d' => function ($d) {
-//                        $d->joinWith(['locationEnc e'], false);
-//                    }], false);
-//                }])
-//                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
-//                ->asArray()
-//                ->all();
-
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
@@ -1629,21 +1639,23 @@ class JobsController extends Controller
                 ])
                 ->asArray()
                 ->all();
-
-            return $this->render('campus-placement', [
+            $type = 'jobs';
+            return $this->render('/employer-applications/campus-placement', [
                 'applications' => $this->__jobss(),
                 'colleges' => $colleges,
+                'type' => $type,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page Not Found.'));
         }
     }
 
-    public function actionViewTemplates(){
+    public function actionViewTemplates()
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
                     $z->joinWith(['parentEnc z1']);
@@ -1661,13 +1673,32 @@ class JobsController extends Controller
         }
     }
 
+    public function actionStoreSession(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $session = Yii::$app->session;
+            $session->set('campusPlacementData', $data);
+            return [
+                'status'=>200
+            ];
+        }
+    }
+
     public function actionSubmitErexxApplications()
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
-
-            foreach ($data['applications'] as $app) {
+            $model = new \common\models\extended\EmployerApplications();
+            $app = $model->_cloneApplication($data['applications'],2);
+            if (!$app){
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occured. Please Try again later.',
+                ];
+            }
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
                     $errexApplication = new ErexxEmployerApplications();
@@ -1692,7 +1723,6 @@ class JobsController extends Controller
                         'message' => 'An error has occured. Please Try again later.',
                     ];
                 }
-            }
 
             $this->__addCollege($data['colleges']);
 
@@ -1743,6 +1773,7 @@ class JobsController extends Controller
             }
         }
     }
+
     public function actionExtendsDate()
     {
         $model = new ExtendsJob();
@@ -1752,5 +1783,4 @@ class JobsController extends Controller
             }
         }
     }
-
 }
