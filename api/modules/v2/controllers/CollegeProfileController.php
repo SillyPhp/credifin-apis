@@ -947,6 +947,8 @@ class CollegeProfileController extends ApiBaseController
             }
 
             $resultt = [];
+            $total_applied_count = 0;
+            $total_hired_count = 0;
             foreach ($result as $j) {
 
                 $count = AppliedApplications::find()
@@ -999,12 +1001,25 @@ class CollegeProfileController extends ApiBaseController
                     array_push($skills, $s['skill']);
                 }
 
+                $hired = EmployerApplications::find()
+                    ->alias('a')
+                    ->joinWith(['appliedApplications b' => function ($b) {
+                        $b->joinWith(['createdBy c' => function ($c) {
+                            $c->innerJoinWith(['userOtherInfo d']);
+                        }]);
+                    }], false)
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(),'b.status'=>'Hired'])
+                    ->asArray()
+                    ->count();
+
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions ? $positions : $j['positions'];
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
+                $total_applied_count += $count['count'];
+                $total_hired_count += $hired;
 
                 array_push($resultt, $data);
             }
@@ -1012,6 +1027,8 @@ class CollegeProfileController extends ApiBaseController
             $count = [];
             $count['pending_jobs_count'] = $this->pendingJobsCount($type, $college_id);
             $count['pending_internships_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['total_applied_count'] = $total_applied_count;
+            $count['total_hired_count'] = $total_hired_count;
 
             return $this->response(200, ['status' => 200, 'jobs' => $resultt, 'counts' => $count]);
         } else {
