@@ -239,6 +239,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 if ($erexx_applications['total'] > 0) {
                                     echo $this->render('/widgets/applications/card', [
                                         'applications' => $erexx_applications['data'],
+                                        'card_type'=>'mec_card',
                                         'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                                     ]);
                                 } else {
@@ -412,9 +413,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
         </div>
     </div>
-<!--<div class="pos-relative">-->
-<!--    --><?//= $this->render('/widgets/college-list-modal')?>
-<!--</div>-->
+    <div class="pos-relative">
+        <?= $this->render('/widgets/college-list-modal')?>
+    </div>
 <?php
 $this->registerCss('
 .total-jobs{

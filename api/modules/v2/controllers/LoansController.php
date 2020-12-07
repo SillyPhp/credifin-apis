@@ -1291,6 +1291,8 @@ class LoansController extends ApiBaseController
             $model->loan_for = $data['loan_for'] ? $data['loan_for'] : $model->loan_for;
             $model->admission_taken = $data['admission_taken'] ? $data['admission_taken'] : $model->admission_taken;
             $model->loan_amount = $data['loan_amount'] ? $data['loan_amount'] : $model->loan_amount;
+            $model->college_name = $data['college_name'] ? $data['college_name'] : $model->college_name;
+            $model->course_name = $data['course_name'] ? $data['course_name'] : $model->course_name;
             if ($user_id != null) {
                 $model->last_updated_by = $user_id;
             }

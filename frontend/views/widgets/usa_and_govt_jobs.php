@@ -12,20 +12,20 @@ use yii\helpers\Url;
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/usa-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                        <h1 class="link-none">
                             USA Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/govt-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                        <h1 class="link-none">
                             Indian Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
@@ -88,6 +88,7 @@ $this->registerCss('
     color:#fff;
     font-size:20px;
     padding:5px 10px;
+    margin:0;
 }
 @media (max-width:415px){
 .gov-heading{
