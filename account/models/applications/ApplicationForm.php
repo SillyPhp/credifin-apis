@@ -213,7 +213,12 @@ class ApplicationForm extends Model
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
-
+        if ($type=='Jobs'){
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $session->remove('campusPlacementData');
+            }
+        }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
