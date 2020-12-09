@@ -1968,5 +1968,32 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+    public function actionUserAppliedCompanies()
+    {
+        if ($user = $this->isAuthorized()) {
+            $companies = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id','a.name'])
+                ->joinWith(['employerApplications b' => function ($b) {
+                    $b->innerJoinWith(['appliedApplications c' => function ($c) {
+                        $c->innerJoinWith(['createdBy d' => function ($d) {
+                            $d->innerJoinWith(['userOtherInfo e']);
+                        }]);
+                    }]);
+                }], false)
+                ->groupBy(['a.organization_enc_id'])
+                ->where(['e.organization_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->all();
+            if ($companies) {
+                return $this->response(200, ['status' => 200, 'data' => $companies]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 
 }
