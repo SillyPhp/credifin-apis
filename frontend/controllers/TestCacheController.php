@@ -40,6 +40,7 @@ class TestCacheController extends Controller
         $data = EmployerApplications::find()
             ->select(['application_enc_id','application_for'])
             ->where(['application_for'=>0])
+            ->andWhere(['organization_enc_id'=>'zpBn4vYx2RmK7WwnepbLdJg3Aq9Vyl'])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
