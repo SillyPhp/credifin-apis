@@ -1699,23 +1699,24 @@ class JobsController extends Controller
                     'message' => 'An error has occured. Please Try again later.',
                 ];
             }
-                foreach ($data['colleges'] as $clg) {
-                    $utilitiesModel = new Utilities();
-                    $errexApplication = new ErexxEmployerApplications();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $errexApplication->application_enc_id = $utilitiesModel->encrypt();
-                    $errexApplication->employer_application_enc_id = $app;
-                    $errexApplication->college_enc_id = $clg;
-                    $errexApplication->created_on = date('Y-m-d H:i:s');
-                    $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$errexApplication->save()) {
-                        return $response = [
-                            'status' => 201,
-                            'title' => 'Error',
-                            'message' => 'An error has occured. Please Try again later.',
-                        ];
-                    }
+            foreach ($data['colleges'] as $clg) {
+                $utilitiesModel = new Utilities();
+                $errexApplication = new ErexxEmployerApplications();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+                $errexApplication->employer_application_enc_id = $app;
+                $errexApplication->college_enc_id = $clg;
+                $errexApplication->created_on = date('Y-m-d H:i:s');
+                $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$errexApplication->save()) {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occured. Please Try again later.',
+                    ];
                 }
+            }
+            if ($data['subscribed-to-all']){
                 if (!$this->__updateApplicationFor($app, $data['subscribed-to-all'])) {
                     return $response = [
                         'status' => 201,
@@ -1723,7 +1724,7 @@ class JobsController extends Controller
                         'message' => 'An error has occured. Please Try again later.',
                     ];
                 }
-
+            }
             $this->__addCollege($data['colleges']);
 
             return $response = [
@@ -1738,11 +1739,7 @@ class JobsController extends Controller
     {
         if ($for) {
             $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
-                ->execute();
-        } else {
-            $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->update(EmployerApplications::tableName(), [ 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
                 ->execute();
         }
         if ($update) {

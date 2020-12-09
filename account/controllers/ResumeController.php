@@ -625,12 +625,12 @@ class ResumeController extends Controller
         }
     }
 
-    public function actionDownload($resume_id)
+    public function actionDownload($resume)
     {
         if (!empty(Yii::$app->user->identity->organization_enc_id)) {
             $resume = UserResume::find()
                 ->select(['resume_location', 'resume'])
-                ->where(['resume_enc_id' => $resume_id])
+                ->where(['resume_enc_id' => $resume])
                 ->asArray()
                 ->one();
             if ($resume) {

@@ -1025,8 +1025,8 @@ class CollegeProfileController extends ApiBaseController
             }
 
             $count = [];
-            $count['pending_jobs_count'] = $this->pendingJobsCount($type, $college_id);
-            $count['pending_internships_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['approved_count'] = $this->approvedJobsCount($type, $college_id);
+            $count['pending_count'] = $this->pendingJobsCount($type, $college_id);
             $count['total_applied_count'] = $total_applied_count;
             $count['total_hired_count'] = $total_hired_count;
 
