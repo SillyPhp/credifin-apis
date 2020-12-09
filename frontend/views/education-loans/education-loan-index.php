@@ -5,8 +5,6 @@
 use yii\helpers\Url;
 
 ?>
-    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">-->
-    <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>-->
     <section class="backgrounds">
         <div class="container">
             <div class="row">
@@ -526,6 +524,10 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+//body{
+//    padding-right: 0px !important;
+//}
+//#loginModal .modal-backdrop.in{display:none !important;}
 .btn-set{   
     border: 1px solid #00a0e3;
     padding: 6px 44px;
@@ -1548,5 +1550,5 @@ $this->registerCss('
 }
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
-$this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@eyAssets/js/emi-calculator/emicals.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('@eyAssets/js/emi-calculator/emicals.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
