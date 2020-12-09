@@ -238,7 +238,7 @@ class JobsController extends ApiBaseController
                 ->distinct()
                 ->select(['a.interview_process_enc_id'])
                 ->joinWith(['interviewProcessFields b' => function ($b) {
-                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', '(CASE
+                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', 'b.sequence', '(CASE
                         WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN b.icon = "fa fa-user" THEN "fas fa-user"
@@ -256,7 +256,7 @@ class JobsController extends ApiBaseController
                 }])
                 ->where(['a.interview_process_enc_id' => $data['interview_process_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
-                ->all();
+                ->one();
             $data['process'] = $application_process;
 
             $applied = AppliedApplications::find()
@@ -264,7 +264,8 @@ class JobsController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
                     'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
-                    'a.created_by student_id'])
+                    'a.created_by student_id', 'a.current_round'
+                ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                         $c->innerJoinWith(['collegeEnc d']);
@@ -284,10 +285,23 @@ class JobsController extends ApiBaseController
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
                 ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $data['application_enc_id'], 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
-                ->count();
+                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0]);
+            $count = $applied->count();
+            $applied = $applied->asArray()
+                ->all();
 
-            $data['applied_count'] = $applied;
+            if ($applied && $application_process) {
+                foreach ($applied as $key => $val) {
+                    foreach ($application_process['interviewProcessFields'] as $a) {
+                        if ($val['current_round'] == $a['sequence']) {
+                            $applied[$key]['process_name'] = $a['field_name'];
+                        }
+                    }
+                }
+            }
+
+            $data['applied_count'] = $count;
+            $data['applied_list'] = $applied;
             $data['is_blocked'] = $this->isHired();
 
 
