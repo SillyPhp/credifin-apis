@@ -877,6 +877,37 @@ class SiteController extends Controller
         }
     }
 
+    public function actionLoadCollegeData()
+    {
+        $type = Yii::$app->request->post('type');
+        switch ($type) {
+            case 'getOverview':
+                return $this->renderAjax('/widgets/college-widgets/college-overview');
+                break;
+            case 'getCourses':
+                return $this->renderAjax('/widgets/college-widgets/college-courses');
+                break;
+            case 'getPlacements':
+                return $this->renderAjax('/widgets/college-widgets/college-placements');
+                break;
+            case 'getScholarship':
+                return $this->renderAjax('/widgets/college-widgets/college-scholarship');
+                break;
+            case 'getCutoff':
+                return $this->renderAjax('/widgets/college-widgets/college-cutoff');
+                break;
+            case 'getFaculty':
+                return $this->renderAjax('/widgets/college-widgets/college-faculty');
+                break;
+            case 'getInfrastructure':
+                return $this->renderAjax('/widgets/college-widgets/college-infrastructure');
+                break;
+            case 'getGallery':
+                return $this->renderAjax('/widgets/college-widgets/college-gallery');
+                break;
+            default :
+        }
+    }
     public function actionLoadData()
     {
         $type = Yii::$app->request->post('type');
@@ -1186,6 +1217,15 @@ class SiteController extends Controller
     public function actionExpiredJobs()
     {
         return $this->render('expired-jobs');
+    }
+
+    public function actionCollegeMain()
+    {
+        return $this->render('college-main');
+    }
+    public function actionResumeBuilderLandingPage()
+    {
+        return $this->render('resume-builder-landing-page');
     }
 
     public function actionEducationalInstitutionLoan()
