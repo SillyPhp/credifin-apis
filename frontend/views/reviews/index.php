@@ -43,7 +43,7 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <H1 class="heading-style">Reviews</H1>
+                    <h1 class="heading-style">Reviews</h1>
                 </div>
             </div>
             <div class="row">
@@ -54,7 +54,7 @@ use yii\bootstrap\ActiveForm;
                                 <div class="rcb-icon" id="company-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <H3 class="rcb-name">Companies</H3>
+                                <h3 class="rcb-name">Companies</h3>
                             </div>
                         </a>
                     </div>
@@ -64,7 +64,7 @@ use yii\bootstrap\ActiveForm;
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <H3 class="rcb-name">Colleges/Universities</H3>
+                                <h3 class="rcb-name">Colleges/Universities</h3>
                             </div>
                         </a>
                     </div>
@@ -74,7 +74,7 @@ use yii\bootstrap\ActiveForm;
                                 <div class="rcb-icon" id="school-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <H3 class="rcb-name">Schools</H3>
+                                <h3 class="rcb-name">Schools</h3>
                             </div>
                         </a>
                     </div>
@@ -84,7 +84,7 @@ use yii\bootstrap\ActiveForm;
                                 <div class="rcb-icon" id="education-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <H3 class="rcb-name">Educational Institutes</H3>
+                                <h3 class="rcb-name">Educational Institutes</h3>
                             </div>
                         </a>
                     </div>
