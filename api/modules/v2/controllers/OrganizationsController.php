@@ -10,6 +10,7 @@ use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Utilities;
 use common\models\ErexxEmployerApplications;
@@ -431,6 +432,49 @@ class OrganizationsController extends ApiBaseController
                         $result['follow'] = $follow['followed'];
                     }
                 }
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Trending":
+                                $labels['Trending'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+
+                $result['labels'] = $labels;
 
                 return $this->response(200, $result);
             } else {
