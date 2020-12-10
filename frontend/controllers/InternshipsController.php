@@ -14,6 +14,7 @@ use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\db\Expression;
@@ -329,7 +330,8 @@ class InternshipsController extends Controller
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1,
             ])
             ->joinWith(['applicationTypeEnc b' => function ($b) {
                 $b->andWhere(['b.name' => 'internships']);
@@ -337,7 +339,7 @@ class InternshipsController extends Controller
             ->one();
         $type = 'Internship';
         if (empty($application_details)) {
-            return 'Application Not found';
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
