@@ -121,7 +121,7 @@ function getVal($p)
                             Course Description
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div clatss="col-md-12">
                         <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
                     </div>
                 </div>

@@ -43,7 +43,7 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Reviews</div>
+                    <H1 class="heading-style">Reviews</H1>
                 </div>
             </div>
             <div class="row">
@@ -52,9 +52,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/companies"); ?>">
                             <div class="review-cat-box com-hover">
                                 <div class="rcb-icon" id="company-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Companies</div>
+                                <H3 class="rcb-name">Companies</H3>
                             </div>
                         </a>
                     </div>
@@ -62,9 +62,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/colleges"); ?>">
                             <div class="review-cat-box college-hover">
                                 <div class="rcb-icon" id="college-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Colleges/Universities</div>
+                                <H3 class="rcb-name">Colleges/Universities</H3>
                             </div>
                         </a>
                     </div>
@@ -72,9 +72,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/schools"); ?>">
                             <div class="review-cat-box sch-hover">
                                 <div class="rcb-icon" id="school-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Schools</div>
+                                <H3 class="rcb-name">Schools</H3>
                             </div>
                         </a>
                     </div>
@@ -82,9 +82,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/institutes"); ?>">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Educational Institutes</div>
+                                <H3 class="rcb-name">Educational Institutes</H3>
                             </div>
                         </a>
                     </div>
@@ -326,7 +326,7 @@ $this->registerCss('
     margin:0 auto;
 }
 .rcb-name{
-    padding-top:40px;
+    padding-top:20px;
     font-size:23px;
     text-transform:capitalize;
     font-family: lora;
