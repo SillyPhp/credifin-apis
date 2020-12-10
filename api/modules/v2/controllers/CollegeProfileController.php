@@ -611,7 +611,7 @@ class CollegeProfileController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                     'bb.is_deleted' => 0,
                     'bb.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
@@ -881,7 +881,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
 //                    'b.status' => 'Active',
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1
                 ]);
@@ -1052,7 +1052,7 @@ class CollegeProfileController extends ApiBaseController
                 'a.is_deleted' => 0,
                 'b.status' => 'Active',
                 'b.is_deleted' => 0,
-                'b.application_for' => [0, 2],
+                'b.application_for' => 2,
                 'b.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
@@ -1125,7 +1125,7 @@ class CollegeProfileController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.is_deleted' => 0,
                 'bb.status' => 'Active',
-                'a.application_for' => [0, 2],
+                'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
             ])
             ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
