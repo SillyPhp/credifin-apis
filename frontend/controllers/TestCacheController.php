@@ -51,10 +51,10 @@ class TestCacheController extends Controller
                 $model = new \common\models\extended\EmployerApplications();
                 $app = $model->_cloneApplication($d['application_enc_id'],2);
                 if ($app){
-                    $erexx = ErexxEmployerApplications::findAll(['application_enc_id'=>$d['application_enc_id']]);
+                    $erexx = ErexxEmployerApplications::findAll(['employer_application_enc_id'=>$d['application_enc_id']]);
                     if ($erexx){
                         foreach ($erexx as $er){
-                            $er->application_enc_id = $app;
+                            $er->employer_application_enc_id = $app;
                             $er->save();
                         }
                     }
