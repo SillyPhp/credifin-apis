@@ -593,7 +593,9 @@ foreach ($fields as $f) {
                                            target="_blank">View
                                             Profile</a>
                                         <?php
-                                        $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                        $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
                                         ?>
                                         <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->

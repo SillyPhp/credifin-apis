@@ -273,7 +273,7 @@ class CandidatesController extends Controller
             $j = 0;
             foreach ($data as $u) {
                 if ($u['image']) {
-                    $icon = '<a href="/' . $u['username'] . '"><img src="' . Url::to(Yii::$app->params->upload_directories->users->image . $u['image_location'] . '/' . $u['image']) . '" alt="' . $u['fullname'] . '"></a>';
+                    $icon = '<a href="/' . $u['username'] . '"><img src="' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $u['image_location'] . '/' . $u['image']) . '" alt="' . $u['fullname'] . '"></a>';
                 } else {
                     $icon = '<canvas class="user-icon img-circle img-responsive" name="' . $u['fullname'] . '" color="' . $u['initials_color'] . '" width="140" height="140" font="70px"></canvas>';
                 }

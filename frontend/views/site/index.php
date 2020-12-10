@@ -14,12 +14,12 @@ $this->params['header_dark'] = false;
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                     alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>Discover a New Career Specially Designed For You</h3>
+                                <h3>The World's First Integrated Career Platform</h3>
                                 <span>The Easiest Way to Build Your Career</span>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
@@ -56,66 +56,66 @@ $this->params['header_dark'] = false;
                 <div class="box-border fade-in one">
                     <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs"/></div>
-                        <div class="h-heading">Jobs</div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/></div>
+                        <h3 class="h-heading">Jobs</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="h-heading">Internships</div>
+                        <h3 class="h-heading">Internships</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in two">
                     <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Learning Hub</div>
+                        <h3 class="h-heading">Learning Hub</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in three">
                     <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="h-heading">Reviews</div>
+                        <h3 class="h-heading">Reviews</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in three">
                     <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Courses</div>
+                        <h3 class="h-heading">Courses</h3>
                     </a>
                 </div>
                 <div class="box-border fade-in four">
                     <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="h-heading">Education Loan</div>
+                        <h3 class="h-heading">Education Loan</h3>
                     </a>
                 </div>
             </div>
@@ -1158,9 +1158,9 @@ if (!Yii::$app->user->isGuest) {
         'getCompaniesWithUs',
         'getLearningTopics',
 //        'getOpportunities',
-        'getSafetySigns',
-        'getOnlineClasses',
-        'getWhatsappCommunity',
+//        'getSafetySigns',
+//        'getOnlineClasses',
+        'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
         'getShortcuts'
@@ -1180,8 +1180,8 @@ if (!Yii::$app->user->isGuest) {
         'getCompaniesWithUs',
         'getLearningTopics',
 //        'getOpportunities',
-        'getSafetySigns',
-        'getOnlineClasses',
+//        'getSafetySigns',
+//        'getOnlineClasses',
         'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',

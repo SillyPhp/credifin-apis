@@ -96,7 +96,7 @@ class ResumeData
        $out = Users::find()
            ->alias('a')
            ->select(['a.user_enc_id','a.city_enc_id','xd.name address','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests',
-               'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+               'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                'a.description','ii.name title'
                ])
            ->joinWith(['cityEnc xd'],false)

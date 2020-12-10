@@ -24,7 +24,7 @@ class NotificationEmails extends Component
         $user_info = Users::find()
             ->where(['user_enc_id' => $user_id])
             ->joinWith(['cityEnc b'], false)
-            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience', 'CONCAT("' . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo', 'b.name city'])
+            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience', 'CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo', 'b.name city'])
             ->asArray()
             ->one();
         $user_skills = \common\models\UserSkills::find()
@@ -38,7 +38,7 @@ class NotificationEmails extends Component
             ->all();
 
         $userCv = \common\models\UserResume::find()
-            ->select(['CONCAT("' . Yii::$app->params->upload_directories->resume->file . '",resume_location,"/",resume) resume'])
+            ->select(['resume_enc_id'])
             ->where(['user_enc_id' => $user_id])
             ->orderBy(['created_on' => SORT_DESC])
             ->asArray()
@@ -65,7 +65,7 @@ class NotificationEmails extends Component
         if (!empty($unclaim_company_id)) {
             $data = $object->getCloneUnclaimed($application_id, $type);
             $org_d = UnclaimedOrganizations::find()
-                ->select(['initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->where(['organization_enc_id' => $unclaim_company_id])
                 ->asArray()->one();
             $email = ApplicationUnclaimOptions::findOne(['application_enc_id' => $application_id])->email;
@@ -75,7 +75,7 @@ class NotificationEmails extends Component
             $data = $object->getCloneData($application_id, $type);
             $org_d = Organizations::find()
                 ->where(['organization_enc_id' => $company_id])
-                ->select(['email', 'initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['email', 'initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->asArray()
                 ->one();
             $email = $org_d['email'];
@@ -134,7 +134,7 @@ class NotificationEmails extends Component
         $data['amount'] = $amount;
         $data['user_skills'] = $user_skills;
         $data['user_details'] = $user_info;
-        $data['resume'] = $userCv['resume'];
+        $data['resume'] = $userCv['resume_enc_id'];
         $data['org_info'] = $org_d;
         $data['rounds'] = $process_rounds;
         Yii::$app->mailer->htmlLayout = 'layouts/email';

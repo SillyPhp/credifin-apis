@@ -3,8 +3,7 @@
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
-
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
+$logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
         <div class="job-thumb">
@@ -344,9 +343,10 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px;
+    padding: 10px 16px 0;
     width: 42%;
-    font-size: 12px;
+    font-size: 14px;
+    font-family: roboto;
     border-radius: 2px;
     color: #333;
     margin-top: 15px;

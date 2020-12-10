@@ -51,12 +51,14 @@ if (!empty($total_applications)) {
                             <?php endif; ?>
                             <button type="button" class="j-delete tt" data-toggle="tooltip"
                                     title="Delete <?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>" data-type="<?= $tipvalue ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>"
+                                    data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="j-closed tt" data-toggle="tooltip"
                                     title="Close <?= $tipvalue ?>" data-name="<?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>" data-type="<?= $tipvalue ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>"
+                                    data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -93,7 +95,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-linkedin"></i>
                             </a>
                             <a href="javascript:;" class="j-clipboard share_btn tt" type="button" data-toggle="tooltip"
-                               title="Copy Link" data-link="<?=$link?>">
+                               title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
                         </div>
@@ -145,10 +147,8 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <!--                            <a href="-->
-                            <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
-                            <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
                             <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
+                               class="detail-clg"
                                title="View Details"><i
                                         class="fa fa-info-circle"></i></a>
                             <div class="appl">
@@ -173,6 +173,13 @@ if (!empty($total_applications)) {
                                 <!--                                    <div class="dot"></div>-->
                                 <!--                                </div>-->
                             </div>
+                            <?php if ($card_type == 'mec_card') { ?>
+                                <div class="college-asign">
+                                    <a href="javascript:;" class="fancy-btn open colleges-btn"
+                                       id="<?= $applications[$next]['application_enc_id']; ?>" data-toggle="tooltip"
+                                       title="View Colleges"><i class="fa fa-university"></i></a>
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -195,16 +202,10 @@ if (!empty($total_applications)) {
 <?php }
 Pjax::end();
 ?>
-<!--    <script>-->
-<!--        function copyToClipboard() {-->
-<!--            var copyText = document.getElementById("share_manually");-->
-<!--            copyText.select();-->
-<!--            document.execCommand("copy");-->
-<!--            toastr.success("", "Copied");-->
-<!--        }-->
-<!--    </script>-->
+
 <?php
 $this->registerCss("
+.detail-clg{flex-basis:10%;}
 .appl a span {
     background-color: #ff7803;
     color: #fff;
@@ -237,8 +238,16 @@ $this->registerCss("
     color: #807575;
 }
 .appl {
-    flex-basis: 100%;
+    flex-basis: 90%;
     position:relative;
+}
+.college-asign {
+	flex-basis: 10%;
+}
+.college-asign a i {
+	font-size: 20px;
+	color: #00a0e3;
+    transition: all .3s;
 }
 .appl a {
     font-family: roboto;
@@ -252,7 +261,7 @@ $this->registerCss("
     border-radius: 4px !important;
     padding: 6px 0;
     display: block;
-    margin-left: 10px;
+    margin:0 5px;
     flex-basis: 50%;
     position: relative;
 }
@@ -370,7 +379,7 @@ $this->registerCss("
     margin: 0 auto;
     position: absolute;
     top: -6px;
-    right: -4px;
+    right: 0px;
 }
 
 .dot {
@@ -470,7 +479,7 @@ $(document).on('click','.j-closed',function(e){
                        }
                        $.pjax.reload({container: "#pjax_active_jobs", async: false});
                      }
-              });
+            });
     }
          });
 });
@@ -489,6 +498,34 @@ $(document).on('click','.j-closed',function(e){
         temp.remove();
         toastr.success("", "Link Copy to Clipboard");
     }
+    
+    $(document).on('click','.colleges-btn',function(event) {
+        let app_id = $(this).attr('id');
+        var url = "/account/jobs/get-job-colleges";
+            $.ajax({
+                url:url,
+                data:{app_id:app_id},
+                method:'post',
+                beforeSend: function(){
+                    $('#college_modal').html('<div class="text-center col-md-12"><i style="font-size:40px;" class="fa fa-circle-o-notch fa-spin fa-fw"></i></div>');
+                    $('.overlay').addClass('state-show');
+                    $('.frame').removeClass('state-leave').addClass('state-appear');
+                    $('body').addClass('modal-open');
+                },
+                success:function(data){
+                      if(data['status'] == 200) {
+                          $('#college_modal').html('');
+                          $('#college_modal').append(Mustache.render($('#college-modal').html(),data['colleges']));
+                      } else {
+                          $('.overlay').removeClass('state-show');
+                          $('.frame').removeClass('state-appear').addClass('state-leave');
+                          $('body').removeClass('modal-open');
+                           toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                      }
+                }
+            });
+    })
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');

@@ -331,7 +331,7 @@ use yii\helpers\ArrayHelper;
             <div class="job-info">Job Information</div>
             <div class="info">
                 <div class="newlogo"><img
-                            src="<?= Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '/' . $data['logo_location'] . '/' . $data['logo']; ?>">
+                            src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '/' . $data['logo_location'] . '/' . $data['logo']; ?>">
                 </div>
                 <div class="job-ds"><?= $data['title'] ?></div>
                 <?php if ($data['city']) { ?>

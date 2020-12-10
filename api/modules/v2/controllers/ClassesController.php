@@ -446,10 +446,10 @@ class ClassesController extends ApiBaseController
             $comments = OnlineClassComments::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['onlineClassComments c' => function ($c) {
-                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
                     $c->joinWith(['userEnc bb'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
@@ -511,7 +511,7 @@ class ClassesController extends ApiBaseController
 
             $child_comment = OnlineClassComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
                 ->andWhere(['a.is_deleted' => 0])
@@ -596,10 +596,10 @@ class ClassesController extends ApiBaseController
             $comments = OnlineClassComments::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['onlineClassComments c' => function ($c) {
-                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
                     $c->joinWith(['userEnc bb'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])

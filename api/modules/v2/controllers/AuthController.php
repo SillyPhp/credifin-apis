@@ -440,7 +440,7 @@ class AuthController extends ApiBaseController
                     'a.last_name',
                     'a.organization_enc_id college_id',
                     'cc.college_enc_id',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                     'a.username', 'a.phone', 'a.email',
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',

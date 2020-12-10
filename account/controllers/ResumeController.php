@@ -4,6 +4,8 @@ namespace account\controllers;
 
 use common\models\EmployerApplications;
 use common\models\Organizations;
+use common\models\spaces\Spaces;
+use common\models\UserResume;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -149,7 +151,6 @@ class ResumeController extends Controller
 
         return $check_parent;
     }
-
 
     public function actionSave()
     {
@@ -621,6 +622,32 @@ class ResumeController extends Controller
 
         if ($d_r_a_title->save()) {
             return true;
+        }
+    }
+
+    public function actionDownload($resume)
+    {
+        if (!empty(Yii::$app->user->identity->organization_enc_id)) {
+            $resume = UserResume::find()
+                ->select(['resume_location', 'resume'])
+                ->where(['resume_enc_id' => $resume])
+                ->asArray()
+                ->one();
+            if ($resume) {
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $resume['resume_location'] . DIRECTORY_SEPARATOR . $resume['resume'], "5 minutes");
+
+                $file_name = $resume['resume'];
+                $file_url = $cv;
+                header('Content-Type: application/octet-stream');
+                header("Content-Transfer-Encoding: Binary");
+                header("Content-disposition: attachment; filename=\"" . $file_name . "\"");
+                echo file_get_contents($file_url);
+            }
+
+            return $this->render('download');
         }
     }
 

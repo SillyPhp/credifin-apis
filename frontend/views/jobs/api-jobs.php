@@ -14,7 +14,7 @@ if (!isset($get['company_logo'])||empty($get['company_logo']))
         ->select(['logo','logo_location'])
         ->where(['organization_enc_id'=>$app['unclaimed_organization_enc_id']])
         ->asArray()->one();
-    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+    $get['company_logo'] = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
 }
 if (is_array($get['location'])) {
     $p = '';
@@ -848,7 +848,8 @@ $this->registerCss("
     .job-statistic span {
         float: none;
         display: inline-block;
-        font-size: 12px;
+        font-size: 16px;
+        font-family:roboto;
         border: 1px solid #ffffff;
         color: #ffffff;
         padding: 7px 20px;
@@ -1303,7 +1304,9 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-    display:inline-block !important;    
+    display:flex;
+    justify-content:center;
+    align-items:center; 
     background: #00a0e3;
     -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -1315,10 +1318,10 @@ $this->registerCss("
     -ms-border-radius: 2px;
     -o-border-radius: 2px;
     border-radius: 2px;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family: roboto;
+    font-size: 18px;
     color: #fff;
-    width: 175px;
+    width: 200px;
     height: auto;
     padding: 15px 6px;
     text-align: center;
@@ -1338,7 +1341,6 @@ $this->registerCss("
         margin-right: 6px;
         line-height: 8px;
         position: relative;
-        top: 4px;
     }
     .viewall-jobs {
         background: #4aa1e3;
