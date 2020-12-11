@@ -1025,8 +1025,8 @@ class CollegeProfileController extends ApiBaseController
             }
 
             $count = [];
-            $count['pending_jobs_count'] = $this->pendingJobsCount($type, $college_id);
-            $count['pending_internships_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['approved_count'] = $this->approvedJobsCount($type, $college_id);
+            $count['pending_count'] = $this->pendingJobsCount($type, $college_id);
             $count['total_applied_count'] = $total_applied_count;
             $count['total_hired_count'] = $total_hired_count;
 
@@ -1161,7 +1161,9 @@ class CollegeProfileController extends ApiBaseController
             $process = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
-                    'f.username, CONCAT(f.first_name, " ", f.last_name) name, CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'f.username',
+                    'CONCAT(f.first_name, " ", f.last_name) name',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
                     'gg.name title'])

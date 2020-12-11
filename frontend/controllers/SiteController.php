@@ -908,6 +908,7 @@ class SiteController extends Controller
             default :
         }
     }
+
     public function actionLoadData()
     {
         $type = Yii::$app->request->post('type');
@@ -1223,6 +1224,7 @@ class SiteController extends Controller
     {
         return $this->render('college-main');
     }
+
     public function actionResumeBuilderLandingPage()
     {
         return $this->render('resume-builder-landing-page');
@@ -1274,7 +1276,4 @@ class SiteController extends Controller
         return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
 
-    public function actionResumeBuilderLandingPage(){
-        return $this->render('resume-builder-landing-page');
-    }
 }
