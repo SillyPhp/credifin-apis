@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\LeadsApplications;
+use common\models\LoanApplications;
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -67,8 +70,7 @@ class AccountsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-                if (Yii::$app->user->identity->organization)
-                {
+                if (Yii::$app->user->identity->organization) {
                     return $this->redirect('/account/dashboard');
                 }
                 return $response = [
@@ -91,8 +93,7 @@ class AccountsController extends Controller
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            if (Yii::$app->user->identity->organization)
-            {
+            if (Yii::$app->user->identity->organization) {
                 Yii::$app->session->set("backURL", '/account/dashboard');
             }
             return $this->redirect(Yii::$app->session->get("backURL"));
@@ -109,19 +110,39 @@ class AccountsController extends Controller
         return $this->redirect('/login');
     }
 
-    public function actionSignup($type)
+    public function actionSignup($type, $ref_loan_id = null, $ref_pros_id = null)
     {
-
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
         if (!isset($type) || empty($type)) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
 
+        switch (true) {
+            case ($ref_loan_id) :
+                $data = LoanApplications::findOne(['loan_app_enc_id' => $ref_loan_id]);
+                break;
+            case ($ref_pros_id) :
+                $data = LeadsApplications::findOne(['application_enc_id' => $ref_pros_id]);
+                break;
+            default :
+        }
+
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
+            if ($data->phone) {
+                $num = preg_replace("/[^0-9]/", "", $data->phone);
+                $num = substr($num, -10);
+                $phone = '+91' . $num;
+                $model->phone = $phone;
+            }
+            $model->email = $data->email;
+            if($data->applicant_name){
+                $applicantName = explode(' ', $data->applicant_name);
+                $model->first_name = $applicantName[0];
+                $model->last_name = $applicantName[1];
+            }
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->load(Yii::$app->request->post());
@@ -253,7 +274,7 @@ class AccountsController extends Controller
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
-            } elseif($model->forgotPassword() === 'User Not Exist') {
+            } elseif ($model->forgotPassword() === 'User Not Exist') {
                 return $this->render('/site/message', [
                     'message' => 'Enter Valid Email Address.'
                 ]);
