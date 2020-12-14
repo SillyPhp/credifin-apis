@@ -160,7 +160,7 @@ class CollegeIndexController extends ApiBaseController
                             'c.is_deleted' => 0,
                             'f.college_enc_id' => $req['college_id']
                         ]);
-                        $y->andWhere(['in', 'c.application_for', [0, 2]]);
+                        $y->andWhere(['in', 'c.application_for', 2]);
                     }], false);
                 }])
                 ->where(['aa.college_enc_id' => $req['college_id'],
@@ -183,7 +183,6 @@ class CollegeIndexController extends ApiBaseController
                         $f->select(['f.created_by', 'e.name', 'e.slug']);
                         $f->joinWith(['applicationEnc d' => function ($d) {
                             $d->joinWith(['organizationEnc e' => function ($e) {
-//                                $e->groupBy('e.organization_enc_id');
                             }], false);
                         }], false);
                     }], true);
@@ -240,7 +239,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.is_deleted' => 0,
                 'b.status' => 'Active',
                 'b.is_deleted' => 0,
-                'b.application_for' => [0, 2],
+                'b.application_for' => 2,
                 'b.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
@@ -313,7 +312,7 @@ class CollegeIndexController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.is_deleted' => 0,
                 'bb.status' => 'Active',
-                'a.application_for' => [0, 2],
+                'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
             ])
             ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
@@ -362,7 +361,7 @@ class CollegeIndexController extends ApiBaseController
                         'c.status' => 'Active',
                         'c.is_deleted' => 0,
                         'c.for_all_colleges' => 1,
-                        'c.application_for' => [0, 2]
+                        'c.application_for' => 2
                     ]);
                 }])
                 ->joinWith(['industryEnc h'], false)
@@ -584,7 +583,7 @@ class CollegeIndexController extends ApiBaseController
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
@@ -980,7 +979,6 @@ class CollegeIndexController extends ApiBaseController
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -1746,7 +1744,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                     'bb.is_deleted' => 0,
                     'bb.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
                 ->asArray()
@@ -1838,7 +1836,7 @@ class CollegeIndexController extends ApiBaseController
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
                             'c.for_all_colleges' => 1,
-                            'c.application_for' => [0, 2]
+                            'c.application_for' => 2
                         ]);
                     }])
                     ->joinWith(['industryEnc h'], false)
@@ -1973,7 +1971,7 @@ class CollegeIndexController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $companies = Organizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id','a.name'])
+                ->select(['a.organization_enc_id', 'a.name'])
                 ->joinWith(['employerApplications b' => function ($b) {
                     $b->innerJoinWith(['appliedApplications c' => function ($c) {
                         $c->innerJoinWith(['createdBy d' => function ($d) {

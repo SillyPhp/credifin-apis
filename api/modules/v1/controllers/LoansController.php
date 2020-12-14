@@ -16,6 +16,7 @@ use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
+use common\models\Utilities;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
 use common\models\LoanTypes;
@@ -23,6 +24,7 @@ use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToUnclaimOrgLoanApplication;
+use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use yii\helpers\Url;
 use Yii;
@@ -336,14 +338,6 @@ class LoansController extends ApiBaseController
                 'a.email',
 //                'c1.course_name',
             ])
-//            ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
-//                $c->joinWith(['createdBy b' => function ($b) {
-//                    $b->joinWith(['userOtherInfo b1']);
-//                }], false);
-//                $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
-//                    $cc->joinWith(['courseEnc c1']);
-//                }]);
-//            }], false)
             ->joinWith(['loanCoApplicants d' => function ($d) {
                 $d->select([
                     'd.loan_co_app_enc_id',
@@ -398,7 +392,7 @@ class LoansController extends ApiBaseController
 
         if ($application) {
             if ($application['image']) {
-                $image = $this->getFile($application['image_location'], $application['image']);
+                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $application['image_location'] . '/' . $application['image'];
                 $application['image'] = $image;
             }
 
@@ -436,13 +430,13 @@ class LoansController extends ApiBaseController
             if ($application['loanCoApplicants']) {
                 foreach ($application['loanCoApplicants'] as $i => $c) {
                     if ($c['image']) {
-                        $image = $this->getFile($c['image_location'], $c['image']);
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $c['image_location'] . '/' . $c['image'];
                         $application['loanCoApplicants'][$i]['image'] = $image;
                     }
                     if (!empty($c['loanCertificates'])) {
                         foreach ($c['loanCertificates'] as $jj => $cc) {
                             if ($cc['image']) {
-                                $image = $this->getFile($cc['image_location'], $cc['image']);
+                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->proof . $cc['image_location'] . '/' . $cc['image'];
                                 $application['loanCoApplicants'][$i]['loanCertificates'][$jj]['image'] = $image;
                             }
                         }
@@ -453,7 +447,7 @@ class LoansController extends ApiBaseController
             if ($application['loanCertificates']) {
                 foreach ($application['loanCertificates'] as $j => $c) {
                     if ($c['image']) {
-                        $image = $this->getFile($c['image_location'], $c['image']);
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->proof . $c['image_location'] . '/' . $c['image'];
                         $application['loanCertificates'][$j]['image'] = $image;
                     }
                 }
@@ -768,29 +762,27 @@ class LoansController extends ApiBaseController
 
     public function actionUploadImage()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            }
-            if (!isset($params['type']) && empty($params['type'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            }
 
-            $image = UploadedFile::getInstanceByName('image');
-
-            if ($id = $this->upload($params, $image)) {
-                return $this->response(200, ['status' => 200, 'id' => $id]);
-            } else {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-            }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
+        if (!isset($params['type']) && empty($params['type'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $image_ext = $params['image_ext'];
+        $image = base64_decode($params['image']);
+
+        if ($id = $this->upload($this->userId(), $params, $image, $image_ext)) {
+            return $this->response(200, ['status' => 200, 'id' => $id]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+
     }
 
-    private function upload($user_id, $params, $image)
+    private function upload($user_id, $params, $image, $image_ext)
     {
 
         if ($params['type'] == 'co_applicant') {
@@ -807,13 +799,23 @@ class LoansController extends ApiBaseController
                     if (substr($encrypted_string, -1) == '.') {
                         $encrypted_string = substr($encrypted_string, 0, -1);
                     }
-                    $co_applicant->image = $encrypted_string . '.' . $image->extension;
-                    $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                    $co_applicant->image = $encrypted_string . '.' . $image_ext;
+                    $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
                     $co_applicant->updated_by = $user_id;
                     $co_applicant->updated_on = date('Y-m-d H:i:s');
+                    $file = dirname(__DIR__, 4) . '/files/temp/' . $co_applicant->image;
                     if ($co_applicant->update()) {
-                        if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                        if (file_put_contents($file, $image)) {
+                            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
                             return $co_applicant->loan_co_app_enc_id;
+                        } else {
+                            return false;
                         }
                     } else {
                         print_r($co_applicant->getErrors());
@@ -830,13 +832,23 @@ class LoansController extends ApiBaseController
                     if (substr($encrypted_string, -1) == '.') {
                         $encrypted_string = substr($encrypted_string, 0, -1);
                     }
-                    $co_applicant->image = $encrypted_string . '.' . $image->extension;
-                    $co_applicant->image_location = 'loan-proofs-and-profile-images';
+                    $co_applicant->image = $encrypted_string . '.' . $image_ext;
+                    $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
                     $co_applicant->created_by = $user_id;
                     $co_applicant->created_on = date('Y-m-d H:i:s');
+                    $file = dirname(__DIR__, 4) . '/files/temp/' . $co_applicant->image;
                     if ($co_applicant->save()) {
-                        if ($this->uploadFile($co_applicant->image, $image->tempName)) {
+                        if (file_put_contents($file, $image)) {
+                            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
                             return $co_applicant->loan_co_app_enc_id;
+                        } else {
+                            return false;
                         }
                     } else {
                         print_r($co_applicant->getErrors());
@@ -858,13 +870,23 @@ class LoansController extends ApiBaseController
                         $encrypted_string = substr($encrypted_string, 0, -1);
                     }
 
-                    $proof->proof_image = $encrypted_string . '.' . $image->extension;
-                    $proof->proof_image_location = 'loan-proofs-and-profile-images';
+                    $proof->proof_image = $encrypted_string . '.' . $image_ext;
+                    $proof->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->loans->proof . $proof->proof_image_location . '/';
                     $proof->updated_by = $user_id;
                     $proof->updated_on = date('Y-m-d H:i:s');
+                    $file = dirname(__DIR__, 4) . '/files/temp/' . $proof->proof_image;
                     if ($proof->update()) {
-                        if ($this->uploadFile($proof->proof_image, $image->tempName)) {
-                            return $proof->certificate_enc_idl;
+                        if (file_put_contents($file, $image)) {
+                            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image, "public");
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
+                            return $proof->certificate_enc_id;
+                        } else {
+                            return false;
                         }
                     } else {
                         print_r($proof->getErrors());
@@ -884,13 +906,23 @@ class LoansController extends ApiBaseController
                 if (substr($encrypted_string, -1) == '.') {
                     $encrypted_string = substr($encrypted_string, 0, -1);
                 }
-                $loan_applicant->image = $encrypted_string . '.' . $image->extension;
-                $loan_applicant->image_location = 'loan-proofs-and-profile-images';
+                $loan_applicant->image = $encrypted_string . '.' . $image_ext;
+                $loan_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->image . $loan_applicant->image_location . '/';
                 $loan_applicant->updated_by = $user_id;
                 $loan_applicant->updated_on = date('Y-m-d H:i:s');
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_applicant->image;
                 if ($loan_applicant->update()) {
-                    if ($this->uploadFile($loan_applicant->image, $image->tempName)) {
+                    if (file_put_contents($file, $image)) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_applicant->image, "public");
+                        if (file_exists($file)) {
+                            unlink($file);
+                        }
                         return $loan_applicant->loan_app_enc_id;
+                    } else {
+                        return false;
                     }
                 } else {
                     print_r($loan_applicant->getErrors());
@@ -899,38 +931,6 @@ class LoansController extends ApiBaseController
             }
         }
 
-    }
-
-    private function uploadFile($file_name, $file)
-    {
-        $bucketName = 'loan-uploads';
-        $access_key = 'AKIATDLKTDI76APKFGXO';
-        $secret_key = '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';
-        $s3 = new S3Client([
-            'region' => 'us-east-1',
-            'version' => 'latest',
-            'credentials' => [
-                'key' => $access_key,
-                'secret' => $secret_key,
-            ]
-        ]);
-
-        $result = $s3->putObject([
-            'Bucket' => $bucketName,
-            'Key' => 'loan-proofs-and-profile-images/' . $file_name,
-            'SourceFile' => $file
-        ]);
-
-        if ($result) {
-            $s3->putObjectAcl([
-                'Bucket' => $bucketName,
-                'Key' => 'loan-proofs-and-profile-images/' . $file_name,
-                'ACL' => 'public-read'
-            ]);
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

@@ -24,7 +24,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
                 <div class="main-heading-set">
-                    <div class="min-heading">Learn anything, anytime, anywhere</div>
+                    <h3 class="min-heading">Learn anything, anytime, anywhere</h3>
                     <h1 class="jumbo-heading">the world's largest selection of Free Learning Content</h1>
 <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                     <div class="search-box1">
@@ -419,6 +419,7 @@ $this->registerCss('
     font-size: 11px;
     font-family: roboto;
     letter-spacing: 1px;
+    margin:0;
 }
 .animation-set{
     position:relative;

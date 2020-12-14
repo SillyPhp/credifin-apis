@@ -71,19 +71,15 @@ class ResumeUpload extends Model
                     $transaction->commit();
                     return $userResumeModel->resume_enc_id;
                 } else {
-                    print_r(file_put_contents($file, $resume));
-                    print_r('asdfhesfkljghdikls');
-                    die();
+                    $transaction->rollBack();
+                    return false;
                 }
             } else {
-                print_r('sdlhkjfdsnv');
-                print_r($userResumeModel->getErrors());
-                die();
+                $transaction->rollBack();
+                return false;
             }
 
         } catch (\Exception $exception) {
-            print_r($exception);
-            die();
             $transaction->rollBack();
             return false;
         }

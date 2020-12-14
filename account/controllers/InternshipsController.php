@@ -1190,6 +1190,7 @@ class InternshipsController extends Controller
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
+            'errex'=>true,
             'limit' => $limit,
         ];
 
