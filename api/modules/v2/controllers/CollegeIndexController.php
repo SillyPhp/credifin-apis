@@ -9,7 +9,8 @@ use common\models\CollegeSettings;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
-use common\models\ErexxCollegeApplicationRejection;
+use common\models\ErexxCollegeRejectionReasons;
+use common\models\ErexxCollegeRejections;
 use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
@@ -457,6 +458,11 @@ class CollegeIndexController extends ApiBaseController
                     $approve->college_approvel = 1;
                 } elseif ($action == 'Reject') {
                     $approve->is_deleted = 1;
+                    $d['collab_enc_id'] = $approve->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d,0);
+                    }
                 }
                 $approve->last_updated_by = $user->user_enc_id;
                 $approve->last_updated_on = date('Y-m-d H:i:s');
@@ -484,6 +490,11 @@ class CollegeIndexController extends ApiBaseController
                 $model->created_by = $user->user_enc_id;
                 $model->created_on = date('Y-m-d H:i:s');
                 if ($model->save()) {
+                    $d['collab_enc_id'] = $model->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d,0);
+                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occurred']);
@@ -695,7 +706,9 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_deleted = 1;
                     $d['erexx_app_id'] = $data->application_enc_id;
                     $d['reasons'] = $req['reasons'];
-                    $this->__rejectReasons($d);
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d,1);
+                    }
                 }
                 $data->last_updated_by = $user->user_enc_id;
                 $data->last_updated_on = date('Y-m-d H:i:s');
@@ -717,13 +730,15 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($req['action'] == 'Reject') {
                     $model->is_college_approved = 0;
                     $model->is_deleted = 1;
-                    $d['erexx_app_id'] = $model->application_enc_id;
-                    $d['reasons'] = $req['reasons'];
-                    $this->__rejectReasons($d);
                 }
                 $model->created_on = date('Y-m-d H:i:s');
                 $model->created_by = $user->user_enc_id;
                 if ($model->save()) {
+                    $d['erexx_app_id'] = $model->application_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d,1);
+                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
@@ -735,53 +750,65 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    private function __rejectReasons($data)
+    private function __rejectReasons($data, $reason_for)
     {
-        if ($data['reasons']) {
-            foreach ($data['reasons'] as $reason) {
-                $rejection = new ErexxCollegeApplicationRejection();
+        $rejection = new ErexxCollegeRejections();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $rejection->erexx_college_rejection_enc_id = $utilitiesModel->encrypt();
+        if ($reason_for == 0) {
+            $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
+        } elseif ($reason_for == 1) {
+            $rejection->erexx_collab_enc_id = $data['collab_enc_id'];
+        }
+        $rejection->created_by = $data['user_id'];
+        $rejection->created_on = date('Y-m-d H:i:s');
+        if ($rejection->save()) {
+            foreach ($data['reasons'] as $reason_id) {
+                $reason = new ErexxCollegeRejectionReasons();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $rejection->erexx_college_application_rejection_enc_id = $utilitiesModel->encrypt();
-                if (!empty($reason['reason_id'])) {
-                    $rejection->rejection_reason_enc_id = $reason['reason_id'];
-                } else if (!empty($reason['reason'])) {
-                    $data['reason'] = $reason['reason'];
-                    if ($id = $this->__saveReason($data)) {
-                        $rejection->rejection_reason_enc_id = $id;
-                    }
+                $reason->erexx_college_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $reason->reason_enc_id = $reason_id;
+                $reason->created_by = $data['user_id'];
+                $reason->created_on = date('Y-m-d H:i:s');
+                if (!$reason->save()) {
+                    print_r($reason->getErrors());
+                    die();
                 }
-                $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
-                $rejection->created_by = $data['user_id'];
-                $rejection->created_on = date('Y-m-d H:i:s');
-                $rejection->save();
             }
         }
-
     }
 
-    private function __saveReason($data)
+    public function actionSaveReason()
     {
         if ($user = $this->isAuthorized()) {
-            $reasons = RejectionReasons::find()
-                ->where(['reason' => $data['reason']])
-                ->one();
-            if ($reasons) {
-                return $reasons->rejection_reason_enc_id;
+            $data = Yii::$app->request->post();
+
+            if (!isset($data['reason']) && empty($data['reason'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
+
+            if (!isset($data['reason_for']) && empty($data['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reason = new RejectionReasons();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $reason->rejection_reason_enc_id = $utilitiesModel->encrypt();
             $reason->reason = $data['reason'];
             $reason->reason_by = 0;
+            $reason->reason_for = (int)$data['reason_for'];
             $reason->created_by = $user->user_enc_id;
             $reason->created_on = date('Y-m-d H:i:s');
             if ($reason->save()) {
-                $reason->rejection_reason_enc_id;
+                return $this->response(200, ['status' => 200, 'reason_enc_id' => $reason->rejection_reason_enc_id]);
             } else {
-                return false;
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
