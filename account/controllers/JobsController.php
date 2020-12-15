@@ -10,6 +10,9 @@ use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
 use account\models\campus_placement\CollegePlacementForm;
 use common\models\ApplicationTemplates;
+use common\models\CandidateConsiderJobs;
+use common\models\CandidateRejection;
+use common\models\CandidateRejectionReasons;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
@@ -771,14 +774,69 @@ class JobsController extends Controller
 
     public function actionRejectCandidate()
     {
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('app_id');
+            $reasons = Yii::$app->request->post('reasons');
+            $rejectionType = Yii::$app->request->post('rejectionType');
+            $considerJobs = Yii::$app->request->post('considerJobs');
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model = new CandidateRejection();
+            $model->candidate_rejection_enc_id = $utilitiesModel->encrypt();
+            $model->applied_application_enc_id = $id;
+            $model->rejection_type = $rejectionType;
+            $model->created_on = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->user_enc_id;
+            if(!$model->save()){
+                $transaction->rollBack();
+                return ['status'=>500];
+            }
+            foreach ($reasons as $r){
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $rejection_reasons = new CandidateRejectionReasons();
+                $rejection_reasons->candidate_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $rejection_reasons->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
+                $rejection_reasons->rejection_reasons_enc_id = $r;
+                $rejection_reasons->created_on = date('Y-m-d H:i:s');
+                $rejection_reasons->created_by = Yii::$app->user->identity->user_enc_id;
+                if(!$rejection_reasons->save()){
+                    $transaction->rollBack();
+                    return ['status'=>501];
+                }
+            }
+            if($considerJobs){
+                foreach ($considerJobs as $c){
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $considerJobs = new CandidateConsiderJobs();
+                    $considerJobs->consider_job_enc_id = $utilitiesModel->encrypt();
+                    $considerJobs->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
+                    $considerJobs->application_enc_id = $c;
+                    $considerJobs->created_on = date('Y-m-d H:i:s');
+                    $considerJobs->created_by = Yii::$app->user->identity->user_enc_id;
+                    if(!$considerJobs->save()){
+                        $transaction->rollBack();
+                        return ['status'=>502];
+                    }
+                }
+            }
+
             $update = Yii::$app->db->createCommand()
                 ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                 ->execute();
             if ($update == 1) {
+                $transaction->commit();
                 return true;
             } else {
+                $transaction->rollBack();
+                return false;
+            }
+            } catch (Exception $e) {
+                $transaction->rollBack();
                 return false;
             }
         }

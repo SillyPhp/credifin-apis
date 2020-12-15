@@ -43,21 +43,21 @@ if ($application_name['wage_type'] == 'Fixed') {
     } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
         $amount = 'Negotiable';
     }
-}else if ($application_name['wage_type'] == 'Unpaid'){
+} else if ($application_name['wage_type'] == 'Unpaid') {
     $amount = 'Unpaid';
 }
 $user_pCount = [];
-foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p){
+foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
     $user_pCount[$p['field_name']] = 0;
-    foreach ($fields as $u){
-        if($p['sequence'] == $u['current_round']){
+    foreach ($fields as $u) {
+        if ($p['sequence'] == $u['current_round']) {
             $user_pCount[$p['field_name']] += 1;
         }
     }
 }
 $hcount = 0;
-foreach ($fields as $f){
-    if($f['status'] == 'Hired'){
+foreach ($fields as $f) {
+    if ($f['status'] == 'Hired') {
         $hcount += 1;
     }
 }
@@ -66,41 +66,41 @@ foreach ($fields as $f){
     <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
     <div class="pa-sidebar" id="hamburgerJobs">
         <?php
-            foreach ($similarApps as $app){
-                $cnt = 0;
-                $arry = [];
-                $more = false;
-        ?>
-        <div class="jobCard">
-            <a href="<?= Url::to('/account/process-applications/').$app['application_enc_id']?>" reject>
-                <div class="jc-icon">
-                    <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
-                </div>
-                <div class="jc-details">
-                    <h3><?= $app['job_title'] ?></h3>
-                    <p>
-                    <?php
-                    if ($app['applicationPlacementLocations']) {
-                        foreach ($app['applicationPlacementLocations'] as $ps) {
-                            $cnt += $ps['positions'];
-                            if(count($arry) >= 3){
-                                $more = true;
-                            }else{
-                                array_push($arry, $ps['name']);
+        foreach ($similarApps as $app) {
+            $cnt = 0;
+            $arry = [];
+            $more = false;
+            ?>
+            <div class="jobCard">
+                <a href="<?= Url::to('/account/process-applications/') . $app['application_enc_id'] ?>">
+                    <div class="jc-icon">
+                        <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
+                    </div>
+                    <div class="jc-details">
+                        <h3><?= $app['job_title'] ?></h3>
+                        <p>
+                            <?php
+                            if ($app['applicationPlacementLocations']) {
+                                foreach ($app['applicationPlacementLocations'] as $ps) {
+                                    $cnt += $ps['positions'];
+                                    if (count($arry) >= 3) {
+                                        $more = true;
+                                    } else {
+                                        array_push($arry, $ps['name']);
+                                    }
+                                }
+                                echo implode(', ', array_unique($arry));
+                                echo $more ? ' and more' : ' ';
+                            } else {
+                                echo 'Work From Home';
                             }
-                        }
-                        echo implode(', ',  array_unique($arry));
-                        echo $more ? ' and more' : ' ';
-                        }else{
-                            echo 'Work From Home';
-                        }
-                    ?></p>
-                    <p><?= $cnt ?> Openings</p>
-                </div>
-            </a>
-        </div>
-        <?php
-            }
+                            ?></p>
+                        <p><?= $cnt ?> Openings</p>
+                    </div>
+                </a>
+            </div>
+            <?php
+        }
         ?>
     </div>
 </div>
@@ -160,16 +160,16 @@ foreach ($fields as $f){
                                 $more = false;
                                 if ($application_name['applicationPlacementLocations']) {
                                     foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        if(count($l) >= 5){
+                                        if (count($l) >= 5) {
                                             $more = true;
-                                        }else{
+                                        } else {
                                             array_push($l, $apl['name']);
                                         }
                                         $cntt += $apl['positions'];
                                     }
-                                echo implode(', ', array_unique($l));
-                                echo $more ? ' and more' : '';
-                                } else{
+                                    echo implode(', ', array_unique($l));
+                                    echo $more ? ' and more' : '';
+                                } else {
                                     echo 'Work From Home';
                                 }
                                 ?>
@@ -184,17 +184,17 @@ foreach ($fields as $f){
                         <div class="e-logo"><i class="fa fa-money"></i></div>
                         <div class="e-detail">
                             <?php
-                                if($app_type == "internship"){
-                            ?>
-                                    <h1>Offered Stipend</h1>
-                                    <p><?= $amount ?></p>
-                            <?php
-                                }else{
-                            ?>
+                            if ($app_type == "internship") {
+                                ?>
+                                <h1>Offered Stipend</h1>
+                                <p><?= $amount ?></p>
+                                <?php
+                            } else {
+                                ?>
                                 <h1>Offered Salary</h1>
                                 <p><?= $amount ?></p>
-                            <?php
-                                }
+                                <?php
+                            }
                             ?>
                         </div>
                     </div>
@@ -206,11 +206,11 @@ foreach ($fields as $f){
                             <h1>Openings</h1>
                             <p>
                                 <?php
-                                    if ($cntt <= 1) {
-                                        echo $cntt . ' Opening';
-                                    } else {
-                                        echo $cntt . ' Openings';
-                                    }
+                                if ($cntt <= 1) {
+                                    echo $cntt . ' Opening';
+                                } else {
+                                    echo $cntt . ' Openings';
+                                }
                                 ?>
                             </p>
                         </div>
@@ -259,11 +259,11 @@ foreach ($fields as $f){
             <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
-                       foreach($user_pCount as $v){
-                           $pcnt += $v;
-                       }
-                       echo $pcnt + $hcount;
-                   ?></span></a>
+                        foreach ($user_pCount as $v) {
+                            $pcnt += $v;
+                        }
+                        echo $pcnt + $hcount;
+                        ?></span></a>
             </li>
             <?php
             $k = 0;
@@ -273,7 +273,8 @@ foreach ($fields as $f){
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
+                        <i class="<?= $p['icon'] ?>"
+                           aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
                 </li>
                 <?php
@@ -285,8 +286,8 @@ foreach ($fields as $f){
                    href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i><span>
                         <?php
-                            echo $hcount;
-                       ?>
+                        echo $hcount;
+                        ?>
                     </span>
                 </a>
             </li>
@@ -295,8 +296,6 @@ foreach ($fields as $f){
     <ul class="hiring_process_list gallery_zoom content-stick">
         <?php
         if (!empty($fields)) {
-//                print_r($fields);
-//                exit();
             foreach ($fields as $arr) {
                 $j = 0;
                 $fieldMain = "";
@@ -318,13 +317,159 @@ foreach ($fields as $f){
                     }
                     $j++;
                 }
+                $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
                 ?>
                 <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
                     data-id="<?= $p['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
-                        <div class="col-md-12 col-sm-12 pr-user-inner-main">
+                        <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
+                            <div class="pr-top-actions text-right">
+                                <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                   target="_blank">View
+                                    Profile</a>
+                                <?php
+                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                ?>
 
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+                                <!--                                            <a href="#">Request to Complete Profile</a>-->
+                            </div>
+                            <a class="pr-user-n url-forward" href="#"
+                               data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+
+                            <div class="rejectReason rejectRea"
+                                 id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
+                                <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
+                                    <p>Reason for rejection</p>
+                                    <ul class="rejectReasonsList">
+                                        <?php
+                                        foreach ($reasons as $reason) {
+                                            ?>
+                                            <li>
+                                                <div class="reasonsReject">
+                                                    <input type="checkbox"
+                                                           value="<?= $reason['rejection_reason_enc_id'] ?>"
+                                                           name="<?= $p['applied_application_enc_id'] . 'reasons' ?>"
+                                                           id="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"
+                                                           class="">
+                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
+                                                </div>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                </form>
+                                <form>
+                                    <div class="addReasonBox">
+                                        <input type="text" name="addReason" placeholder="Add Reason">
+                                        <button type="button" class="addReasonBtn">Add</button>
+                                    </div>
+                                </form>
+                                <button type="button" class="doneBtn getReasonsId">Done</button>
+                                <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
+                                        class="doneBtn reconBtn reconsiderBtn">Reconsider
+                                </button>
+                            </div>
+                            <div class="rejectReason rejectType"
+                                 id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
+                                <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
+                                    <p>Rejection Type</p>
+                                    <ul>
+                                        <li>
+                                            <div class="reasonsReject">
+                                                <input type="radio" value="1"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'permanent' ?>"
+                                                       class="">
+                                                <label for="<?= $p['applied_application_enc_id'] . 'permanent' ?>">Permanent
+                                                    Reject</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="reasonsReject">
+                                                <input type="radio" value="2"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
+                                                       onclick="showJobsModal()" class="">
+                                                <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
+                                                    For Other Job</label>
+                                                <!--                                                <button type="button" class="showJobs" >-->
+                                                <!--                                                    Consider For Other Job-->
+                                                <!--                                                </button>-->
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="reasonsReject">
+                                                <input type="radio" value="3"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
+                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
+                                                    Latter</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+                                <button type="button" onclick="showRejectReason(this)" class="doneBtn reconBtn">Back
+                                </button>
+                                <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
+                                        class="doneBtn sendReasons">Done
+                                </button>
+                            </div>
+
+                            <div class="rejectReason showRejection" <?= $rejectionType ? 'style="display: flex"' : '' ?>>
+                                <div class="sr-box">
+                                    <?php
+                                    switch ($rejectionType) {
+                                        case 1:
+                                            $msg = 'This candidate has been rejected';
+                                            break;
+                                        case 2:
+                                            $msg = 'The candidate has been considered for following jobs';
+                                            break;
+                                        case 3:
+                                            $msg = "Candidate's CV has been saved for latter. Please check CV in 
+                                                        drop resume";
+                                            break;
+                                    }
+                                    ?>
+                                    <p><?= $msg ?></p>
+                                    <?php
+                                    if($arr['candidateRejections'][0]['candidateConsiderJobs']){
+                                    ?>
+                                        <div class="sr-jobs">
+                                        <?php
+                                            $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
+                                            $cCount -= 2;
+                                            $i=0;
+                                            foreach ($arr['candidateRejections'][0]['candidateConsiderJobs'] as $crj) {
+                                                if($i==2){
+                                                    break;
+                                                }
+                                            ?>
+                                            <a href="/<?= $app_type ."/". $crj['applicationEnc']['slug']?>" target="_blank">
+                                                <div class="customJobBox">
+                                                    <div class="jc-icon">
+                                                        <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                    </div>
+                                                    <p><?= $crj['applicationEnc']['job_title']?></p>
+                                                </div>
+                                            </a>
+                                        <?php
+                                                $i++;
+                                    }
+                                    ?>
+                                        <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>" class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?> More</p>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 pr-user-inner-main">
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
@@ -333,7 +478,8 @@ foreach ($fields as $f){
                                             <img src="<?= $arr['image'] ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
-                                                    color="<?= $arr['initials_color']; ?>"  height="80" font="35px"></canvas>
+                                                    color="<?= $arr['initials_color']; ?>" height="80"
+                                                    font="35px"></canvas>
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
@@ -443,14 +589,17 @@ foreach ($fields as $f){
                             <div class="col-md-3 pl-0">
                                 <div class="pr-user-actions">
                                     <div class="pr-top-actions text-right">
-                                        <a href="<?= Url::to($arr['username'].'?id=' . $arr['applied_application_enc_id'], true) ?>" target="_blank">View
+                                        <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                           target="_blank">View
                                             Profile</a>
                                         <?php
-                                        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                        $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                        ?>
-                                        <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        if (!empty($arr['resume_location'])||!empty($arr['resume'])){
+                                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                            $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
+                                            ?>
+                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
                                     </div>
@@ -527,16 +676,17 @@ foreach ($fields as $f){
                                         <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
                                         <div class="dropdown-content">
                                             <?php
-                                             $isHighlight = true;
+                                            $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
-                                                    <a href="#" class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : ''?> <?php if($isHighlight){
-                                                        if($p['is_completed'] == 0){
-                                                            echo 'showBlue';
-                                                            $isHighlight = false;
-                                                        }
-                                                    }?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                    <a href="#"
+                                                       class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : '' ?> <?php if ($isHighlight) {
+                                                           if ($p['is_completed'] == 0) {
+                                                               echo 'showBlue';
+                                                               $isHighlight = false;
+                                                           }
+                                                       } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                                                         <?= $p['field_name'] ?>
                                                     </a>
@@ -544,8 +694,9 @@ foreach ($fields as $f){
                                                 <?php
                                             }
                                             ?>
-                                            <div data-id="<?= $p['field_enc_id'] ?>" >
-                                                <a href="#" class="multipleRound" value="<?= $arr['applied_application_enc_id']; ?>">
+                                            <div data-id="<?= $p['field_enc_id'] ?>">
+                                                <a href="#" class="multipleRound"
+                                                   value="<?= $arr['applied_application_enc_id']; ?>">
                                                     <i class="fa fa-check-square-o"></i> Hired
                                                 </a>
                                             </div>
@@ -608,29 +759,218 @@ foreach ($fields as $f){
     Pjax::end();
     ?>
 </div>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-body modal-jobs">
+            <span class="close" onclick="closeModal()"><i class="fas fa-times"></i></span>
+            <div class="row h100">
+                <div class="col-md-12">
+                    <p class="modalHeading">Select Job</p>
+                </div>
+                <form id="considerJobsModal">
+                    <?php
+                    foreach ($similarApps as $app) {
+                        $cnt = 0;
+                        $arry = [];
+                        $more = false;
+                        ?>
+                        <div class="col-md-3 col-sm-4">
+                            <div class="suggestJob">
+                                <input type="checkbox" value="<?= $app['job_title'] ?>" name="suggested-jobs"
+                                       id="<?= $app['application_enc_id'] ?>">
+                                <label for="<?= $app['application_enc_id'] ?>">
+                                    <div class="jobCard">
+                                        <div class="jc-icon">
+                                            <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
+                                        </div>
+                                        <div class="jc-details">
+                                            <h3><?= $app['job_title'] ?></h3>
+                                            <p>
+                                                <?php
+                                                if ($app['applicationPlacementLocations']) {
+                                                    foreach ($app['applicationPlacementLocations'] as $ps) {
+                                                        $cnt += $ps['positions'];
+                                                        if (count($arry) >= 3) {
+                                                            $more = true;
+                                                        } else {
+                                                            array_push($arry, $ps['name']);
+                                                        }
+                                                    }
+                                                    echo implode(', ', array_unique($arry));
+                                                    echo $more ? ' and more' : ' ';
+                                                } else {
+                                                    echo 'Work From Home';
+                                                }
+                                                ?></p>
+                                            <p><?= $cnt ?> Openings</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <a href="<?= Url::to('/job/') . $app['slug'] ?>" target="_blank">
+                                    <div class="clickSelect">View Job</div>
+                                </a>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <button class="doneCloseModal">Done</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="conjobs" class="modal">
+    <div class="modal-content">
+        <div class="modal-body modal-jobs">
+            <span class="close" onclick="closeConJobsModal()"><i class="fas fa-times"></i></span>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="modalHeading">Considered Jobs</p>
+                </div>
+            </div>
+            <div class="row" id="considerJobs">
+
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss('
 body, .page-content{
     background-color: #eee;
 }
+.modal-open{
+    overflow: hidden !important;
+}
+.customJobBox{
+    display: flex;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    color: #000;
+    padding: 10px;
+    margin: 10px;
+    width: 300px; 
+    background: #fff;
+}
+#considerJobs .customJobBox{
+      margin: 10px 0;
+    width: 100%; 
+}
+.customJobBox .jc-icon{
+    padding-right: 10px; 
+}
+.font-16{
+    font-size: 14px !important;
+}
+
+.sr-jobs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cCount{
+    padding-left: 20px; 
+    cursor: pointer;
+    font-weight: 500 !important;
+    font-family: roboto !important;
+    font-size: 18px !important;
+}
+.cCount:hover{
+    color: #00a0e3;
+    font-family: roboto !important;
+    font-weight: 500;
+}
+.modalHeading{
+    margin-bottom: 10px;
+    text-align: center;
+    color: #00a0e3;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: roboto;
+}
+.doneCloseModal{
+    background: #00a0e3;
+    color: #fff;
+    padding: 8px 15px;
+    text-align: center;
+    border: 1px solid #00a0e3;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.reject-box{
+    display: none;
+}
+.reject-box .pr-top-actions{
+    position: absolute;
+    top: 0px;
+    right: 50px;
+}
+.reject-box .pr-user-n{
+    margin-top: 55px;
+    flex-basis: 15%;
+}
+.h100{
+    height: 100%;
+}
+.doneBtn, .backBtn{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background: #00a0e3;
+    border: 1px solid #00a0e3;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius:8px 0 8px 0;
+}
+
+.reconBtn{
+    right: 75px;
+    border-radius:8px 8px 0 0;
+    background: #ff7803;
+    border: 1px solid #ff7803;
+}
+.backBtn{
+    left: 0px;
+    right: unset;
+     border-radius:0px 8px 0px 8px;
+}
 .addReasonBox{
     display: flex;
     max-width: 400px;
-    margin:0 auto 10px;
+    margin:0 auto;
+    position: absolute;
+    left: 50%;
+    width: 100%;
+    bottom: 0px;
+    transform: translateX(-50%);
 }
 .addReasonBox input{
     width: 100%;
     padding: 5px 10px;
     border: 1px solid #eee;
+    border-radius: 8px 0 0 0;
 }
 .addReasonBox button{
     background: #00a0e3;
     color: #fff;
     border: none;
     padding: 5px 10px;
+    border-radius: 0 8px 0 0;
 }
 #rejectType{
     display: none;
+    align-items: center;
+    justify-content: center;
+}
+.showRejection{
+    display: none;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.sr-box{
+    color: #000;
 }
 .rejectReason p{
     text-align: center;
@@ -639,10 +979,19 @@ body, .page-content{
     font-weight: bold;
     margin-top: 0px;
     margin-bottom: 5px;
-    color: #00a0e3;
+    color: #333;
+}
+.customJobBox p{
+    color: #333 !important;
+    font-size: 16px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-family: Roboto !important;
+    font-weight: 500 !important;
 }
 .rejectReason{
     text-align: center;
+    width: 100%;
 }
 .rejectReason ul{
     padding-inline-start: 0px;
@@ -654,18 +1003,27 @@ body, .page-content{
 .reasonsReject{
     position: relative;
 }
-.reasonsReject input{
+.reasonsReject input,
+.suggestJob input{
     position: absolute;
     visibility: hidden;
 }
-.reasonsReject label{
+
+.reasonsReject label,
+.reasonsReject button {
     border: 1px solid #333;
     color: #333;
-    padding: 5px 20px;
+    padding: 3px 15px;
     cursor: pointer;
     font-weight: 500;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 14px;
+    background: #fff;
+}
+.reasonsReject button:hover{
+    background: #00a0e3;
+    color: #fff;
+    border-color: #00a0e3;
 }
 .reasonsReject input:checked ~ label,
 .reasonsReject label:hover{
@@ -673,7 +1031,27 @@ body, .page-content{
     color: #fff;
     border-color: #00a0e3;
 }
-
+.suggestJob{
+    padding-bottom: 40px; 
+}
+.suggestJob .jobCard{
+    margin: 0px;
+    z-index: 2;
+}
+.suggestJob input:checked ~ label{
+    border: 1px solid #00a0e3; 
+}
+.clickSelect{
+    margin: 0px;
+    padding: 5px 15px;
+    background: #00a0e3;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 4px rgba(0,0,0,.1);
+    border-radius: 0 0 5px 5px; 
+    z-index: 1;
+    cursor: pointer;
+}
 .pr-process-tab li a span{
     padding: 3px 8px;
     font-weight: bold;
@@ -688,10 +1066,22 @@ body, .page-content{
     box-shadow: 0 0 4px rgba(0,0,0,.1);
     padding: 10px 8px;
     margin: 5px;
+    min-height: 130px;
+    position: relative;
 }
-.jobCard a{
+.hamburger-jobs .jobCard a{
+    display: flex;
+    color: #333;
+}
+.suggestJob label{
+    width: 100%;
+    margin-bottom: 0px;
+}
+.suggestJob label .jobCard {
     display: flex;
     color: #000;
+    width: 100%;
+    margin: 0px;
 }
 .jc-icon{
     width: 50px;
@@ -1104,9 +1494,9 @@ li{
     left: 0;
     width: 100%;
     height:102%;
-    background: rgba(255,255,255, .9);
-    z-index: 99;
-    border-radius: 8px 0 0 8px;
+    background: rgba(255,255,255, .96);
+    z-index: 9;
+    border-radius: 8px;
     padding: 10px 15px;
 }
 .hiring_process_list > li{
@@ -1138,6 +1528,7 @@ li{
     position: absolute;
     left: 0;
     background:#fff;
+    z-index: 9;
 }
 .pr-user-icon img{
     width: 100%;
@@ -1409,6 +1800,85 @@ overflow: hidden;
 #closeNotes:hover{
     color: #00a0e3;
 }
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 9999; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  height: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 38px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9;
+  
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {
+    padding: 2px 16px;
+    height: 100%;
+}
+.modal-body label{
+    margin: 0px;
+}
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
 @media (min-width:1400px){
     .sticky{
         max-width: 1140px;
@@ -1495,7 +1965,26 @@ overflow: hidden;
         right:0%;
         left: auto;
     }
-   
+    .dropbtn{
+        border-radius: 0px;
+    }
+    .reject-box{
+        height: 100%;
+    }
+    .doneCloseModal{
+        position: relative;
+        display: block;
+        margin: auto;
+        clear: both;
+    }
+}
+@media screen and (max-width: 768px){
+    .addReasonBox{
+        position: relative;
+    }
+    .addReasonBox input, .addReasonBox button.pr-user-icon{
+        border-radius: 0px;
+    }
 }
 ');
 $script = <<<JS
@@ -1693,9 +2182,87 @@ $(document).on('click','.reject',function(e){
     var btn2 = $(this).prev();
     var btn3 = $(this).next();
     var app_id = $(this).attr('value');
+    console.log(app_id);
+    var rootElem = btn.parentsUntil('.pr-user-main').parent();
+    var rejectBox = $(rootElem).find('.reject-box');
+    console.log(rejectBox);
+    $.ajax({
+        url:'/account/process-applications/rejection-window',
+        data:{app_id:app_id},
+        method:'post',
+        success:function (data){
+            rejectBox.css('display', 'flex');            
+        }
+    });
+   
+});
+$(document).on('click', '.reconsiderBtn', function (e){
+    e.preventDefault();
+    var btn = $(this);
+    var app_id = $(this).attr('value');
+    var rejectBox = btn.parentsUntil('.reject-box').parent();
+    console.log(rejectBox);
+   $.ajax({
+       url: '/account/process-applications/hide-rejection-window',
+       data:{app_id:app_id},
+       method:'post',
+        beforeSend:function()  {
+            btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            btn.attr("disabled","true");
+        }, 
+       success:function(data){
+           rejectBox.css('display', 'none');
+       }
+   });
+});
+var selectedReasons = [];
+$(document).on('click', '.getReasonsId', function (e){
+    e.preventDefault;
+    let btn = $(this);
+    let parElem = btn.parent();
+    let reasonForm = parElem.find('.reasonsForm');
+    let formId = reasonForm.attr('id');
+    selectedReasons = [];
+    $('input[type=checkbox]:checked', '#'+formId).each(function (){
+        selectedReasons.push($(this).attr('value'));
+    });
+    console.log(selectedReasons);
+    let rootElem = parElem.parent();
+    let rejectType = rootElem.find('.rejectType');
+    rejectType.css('display', 'flex');
+    parElem.css('display','none');
+});
+let considerJobs = [];
+$(document).on('click','.doneCloseModal', function(e){
+    e.preventDefault();
+    let btn = $(this);
+    let parElem = btn.parent();
+    let formId = parElem.attr('id');
+    considerJobs = [];
+    $('input[type=checkbox]:checked', '#'+formId).each(function (){
+        considerJobs.push($(this).attr('id'));
+    });
+    closeModal();
+    
+})
+$(document).on('click','.sendReasons', function(e){
+    e.preventDefault();
+    let btn = $(this);
+    let parElem = btn.parent();
+    let rootElem = parElem.parent();
+    let reasonForm = parElem.find('.reasonsType');
+    let formId = reasonForm.attr('id');
+    let rType = $('input[type=radio]:checked', '#'+formId).val();
+    var app_id = btn.attr('value');
+    if(rType != 2){
+        considerJobs = [];
+    }
+    let showRejection = rootElem.find('.showRejection');
+    showRejection.css('display', 'block');
+    parElem.css('display', 'none');
     $.ajax({
         url:'/account/jobs/reject-candidate',
-        data:{app_id:app_id},
+        data:{app_id:app_id, rejectionType:rType, considerJobs:considerJobs, reasons:selectedReasons},
         method:'post',
         beforeSend:function()  {
             btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
@@ -1704,8 +2271,6 @@ $(document).on('click','.reject',function(e){
         success:function(data){
             if(data==true) {
                 btn.hide();
-                btn2.hide();
-                btn3.show();
                 $.pjax.reload({container: '#pjax_process', async: false});
                   setTimeout(function() {
                     hiring_process();
@@ -1719,7 +2284,11 @@ $(document).on('click','.reject',function(e){
 });
 $(document).on('click','.addReasonBtn', function (e){
    e.preventDefault();
+   var reasonInput = $(this).prev('input');
    var reason = $(this).prev('input').val().trim();
+   var parentElem = $(this).parentsUntil('form').parent();
+   var rootElem = parentElem.parent();
+   let embedList = $(rootElem).find('.rejectReasonsList');
    $.ajax({
         url:'/account/process-applications/add-reason',
         data:{reason:reason},
@@ -1729,11 +2298,36 @@ $(document).on('click','.addReasonBtn', function (e){
             if(res['status'] == 200){
                 let reasonID = res['reason_enc_id'];
                 let reasonTitle = res['reason'];
+                console.log(embedList);
+                let reasonLi = document.createElement('li');
+                reasonLi.innerHTML =  '<div class="reasonsReject"><input type="checkbox" value="'+ res['reason'] +'" name="reasons" id="'+ res['reason_enc_id'] +'" class="" checked><label for="'+ res['reason_enc_id'] +'">'+ res['reason'] +'</label></div>';
+                embedList[0].appendChild(reasonLi);
+                reasonInput.val('');
             }else{
                 
             }
         }
    })
+});
+$(document).on('click','.cCount', function (e){
+   e.preventDefault;
+   var btn = $(this);
+   var reject_id = btn.attr('id');
+   console.log(reject_id);
+    $('#conjobs').css('display', 'block');
+    $('body').addClass('modal-open');
+    $.ajax({
+        url:'/account/process-applications/show-consider-jobs',
+        data:{reject_id:reject_id},
+        method: 'post',
+        success: function (res){
+           if(res['status']==200){
+               $('#considerJobs').html('');
+               $('#considerJobs').append(Mustache.render($('#modalJobCards').html(),res['jobs']));
+           }
+        }
+        
+    })
 });
 $(document).on('click','.saveNote',function(e){
      e.preventDefault();
@@ -1764,6 +2358,7 @@ $(document).on('click','.url-forward',function (e){
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
+var pa = new PerfectScrollbar('.modal-jobs');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -1771,6 +2366,8 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweet
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 
 ?>
 <script>
@@ -1778,9 +2375,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');
         let clickedBtn = this.event.currentTarget;
-        if(paSidebar[0].classList.contains('pa-sidebar-show')){
+        if (paSidebar[0].classList.contains('pa-sidebar-show')) {
             clickedBtn.innerHTML = "<i class='fa fa-times'></i>";
-        }else {
+        } else {
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
@@ -1796,7 +2393,6 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             }
         }, 500);
     }
-
 
     let noteImg = document.getElementsByClassName('noteImg');
     for (let i = 0; i < noteImg.length; i++) {
@@ -1822,11 +2418,66 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         })
     }
 
-    function showRejectType(){
-        let rejectReason = document.getElementById('rejectReason');
-        let rejectType = document.getElementById('rejectType');
-        rejectReason.style.display = "none";
-        rejectType.style.display = "block";
+    function showRejectType(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectType');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
     }
 
+    function showRejectReason(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectRea');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
+    }
+
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    let bdy = document.getElementsByTagName('body');
+
+    function showJobsModal() {
+        modal.style.display = "block";
+        bdy[0].classList.add('modal-open');
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        bdy[0].classList.remove('modal-open');
+    }
+    let openConJob = document.getElementById('conjobs');
+    function openConJobs(){
+        openConJob.style.display = "block";
+        bdy[0].classList.remove('modal-open');
+    }
+    function closeConJobsModal(){
+        openConJob.style.display = "none";
+        bdy[0].classList.remove('modal-open');
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        } else if(event.target == openConJob){
+            openConJob.style.display = "none";
+        }
+    }
+</script>
+<script id="modalJobCards" type="text/template">
+    {{#.}}
+    <div class="col-md-3">
+        <a href="/<?= $app_type?>/{{slug}}" target="_blank">
+            <div class="customJobBox">
+                <div class="jc-icon">
+                    <img src="<?= Url::to('@commonAssets/categories/')?>{{icon}}">
+                </div>
+                <div class="jc-details-con">
+                    <p>{{job_title}}</p>
+                    <p class="font-16">Positions: {{positions}}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    {{/.}}
 </script>

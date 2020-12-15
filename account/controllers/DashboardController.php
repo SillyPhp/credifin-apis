@@ -353,6 +353,10 @@ class DashboardController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 1]
+            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
