@@ -205,7 +205,13 @@ class OrganizationsController extends ApiBaseController
                 }], true);
                 $b->joinWith(['applicationTypeEnc z']);
             }], true)
-            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active']);
+            ->where(['a.college_enc_id' => $options['college_id'],
+                'bb.slug' => $options['slug'],
+                'a.is_deleted' => 0,
+                'a.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => 2,
+                'b.status' => 'Active']);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
@@ -394,7 +400,10 @@ class OrganizationsController extends ApiBaseController
                     ->distinct()
                     ->alias('a')
                     ->innerJoinWith('erexxEmployerApplications b')
-                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0, 'b.is_college_approved' => 1])
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'],
+                        'a.is_deleted' => 0,
+                        'b.is_college_approved' => 1,
+                        'a.application_for' => 2])
                     ->count();
                 $result['opportunties_count'] = $opportunities_count;
 
