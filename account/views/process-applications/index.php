@@ -406,8 +406,7 @@ foreach ($fields as $f) {
                                                 <input type="radio" value="3"
                                                        name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
-                                                    Latter</label>
+                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For Later</label>
                                             </div>
                                         </li>
                                     </ul>
@@ -430,7 +429,7 @@ foreach ($fields as $f) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for latter. Please check CV in 
+                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
                                                         drop resume";
                                             break;
                                     }
