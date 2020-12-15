@@ -430,7 +430,7 @@ foreach ($fields as $f) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for latter. Please check CV in 
+                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
                                                         drop resume";
                                             break;
                                     }
