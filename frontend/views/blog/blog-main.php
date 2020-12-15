@@ -392,7 +392,6 @@ $this->registerCss('
     min-height: 450px;
     background-size: cover;
 }
-
 .blog-icon img{
     width: 580px;
 }
