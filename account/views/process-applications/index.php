@@ -406,8 +406,7 @@ foreach ($fields as $f) {
                                                 <input type="radio" value="3"
                                                        name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
-                                                    Latter</label>
+                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For Later</label>
                                             </div>
                                         </li>
                                     </ul>
