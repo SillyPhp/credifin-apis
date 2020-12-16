@@ -37,7 +37,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Popular Questions</div>
+                    <h1 class="heading-style">Popular Questions</h1>
                 </div>
             </div>
             <div class="row">

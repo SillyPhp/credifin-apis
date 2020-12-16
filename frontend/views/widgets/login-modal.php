@@ -21,15 +21,15 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                     </div>
                 </div>

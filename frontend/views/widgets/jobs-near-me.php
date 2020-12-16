@@ -134,7 +134,7 @@ if ($type == 'jobs') {
                                 </a>
                             </span>
                             <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name">{{organization_name}}</h4>
+                                <h4 class="org_name comp-name">{{{organization_name}}}</h4>
                             </a>
                         </div>
                         {{#city}}

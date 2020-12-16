@@ -12,21 +12,22 @@ use yii\helpers\Url;
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
-                    <h3>Low Rate of Interest</h3>
+                    <h2>Low Rate of Interest</h2>
                     <p>Apply for loans at lower interest rates and avail of better borrowing terms thus decreasing the financial burden off you.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
-                    <h3>Online Application</h3>
+                    <h2>Online Application</h2>
                     <p>Apply from the comfort of your home with quick, simple and easy documentation process and get fast approval of your application.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
                     <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
-                    <h3>Quick Disbursement</h3>
+                    <h2
+                    >Quick Disbursement</h2>
                     <p>with the state of the art system, we strive to complete the disbursement of loan as soon as possible.</p>
                 </div>
             </div>
@@ -65,7 +66,7 @@ $this->registerCss('
 .loan-logo img {
 	width: 50px;
 }
-.loan-box h3 {
+.loan-box h2 {
 	font-size: 20px;
 	font-family: lora;
 	font-weight: 600;
