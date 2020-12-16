@@ -211,7 +211,8 @@ class OrganizationsController extends ApiBaseController
                 'a.status' => 'Active',
                 'b.is_deleted' => 0,
                 'b.application_for' => 2,
-                'b.status' => 'Active']);
+                'b.status' => 'Active',
+                'b.for_all_colleges' => 1,]);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
