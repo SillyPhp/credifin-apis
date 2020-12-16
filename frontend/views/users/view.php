@@ -155,6 +155,11 @@ $this->params['header_dark'] = false;
                                     <i class="fab fa-whatsapp"></i>
                                 </a>
                             </li>
+                            <li class="skpe">
+                                <a href="<?= "tel:".$user['phone'] ?>">
+                                    <i class="fa fa-phone"></i>
+                                </a>
+                            </li>
                         <?php }
                         if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                             if (!empty($userApplied['applied_application_enc_id'])) {
