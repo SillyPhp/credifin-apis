@@ -1008,7 +1008,7 @@ class CollegeProfileController extends ApiBaseController
                             $c->innerJoinWith(['userOtherInfo d']);
                         }]);
                     }], false)
-                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(),'b.status'=>'Hired'])
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(), 'b.status' => 'Hired'])
                     ->asArray()
                     ->count();
 
@@ -1197,6 +1197,27 @@ class CollegeProfileController extends ApiBaseController
                     $f->innerJoinWith(['userOtherInfo g']);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
+                ->joinWith(['candidateRejections j' => function ($j) {
+                    $j->select(['j.candidate_rejection_enc_id',
+                        'j.applied_application_enc_id',
+                        'j.rejection_type',
+                        'GROUP_CONCAT(DISTINCT(j2.reason) SEPARATOR ",") reasons'
+                    ]);
+                    $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
+                        $j1->joinWith(['rejectionReasonsEnc j2']);
+                    }],false);
+                    $j->joinWith(['candidateConsiderJobs ccj' => function($ccj){
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                            $ae->select(['ae.application_enc_id', 'ae.slug', 'ccc.name job_title', 'pe.icon']);
+                            $ae->joinWith(['title bae' => function ($bae) {
+                                $bae->joinWith(['categoryEnc ccc'], false);
+                                $bae->joinWith(['parentEnc pe'], false);
+                            }], false);
+                        }]);
+                    }]);
+                    $j->onCondition(['j.is_deleted' => 0]);
+                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()

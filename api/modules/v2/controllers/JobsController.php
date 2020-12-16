@@ -303,6 +303,8 @@ class JobsController extends ApiBaseController
             $data['applied_count'] = $count;
             $data['applied_list'] = $applied;
             $data['is_blocked'] = $this->isHired();
+            $image = Yii::$app->params->digitalOcean->sharingImageUrl.$data['application_enc_id'].'.png';
+            $data['sharing_image'] = $image;
 
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
