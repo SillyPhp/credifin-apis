@@ -813,7 +813,9 @@ foreach ($fields as $f) {
                         <?php
                     }
                     ?>
-                    <button class="doneCloseModal">Done</button>
+                    <div class="col-md-12 text-center">
+                        <button class="doneCloseModal">Done</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -893,9 +895,6 @@ body, .page-content{
     padding: 8px 15px;
     text-align: center;
     border: 1px solid #00a0e3;
-    position: absolute;
-    bottom: 0;
-    right: 0;
 }
 .reject-box{
     display: none;
@@ -1036,6 +1035,9 @@ body, .page-content{
 .suggestJob .jobCard{
     margin: 0px;
     z-index: 2;
+}
+.suggestJob label{
+    border: 1px solid transparent;
 }
 .suggestJob input:checked ~ label{
     border: 1px solid #00a0e3; 
@@ -2211,6 +2213,8 @@ $(document).on('click', '.reconsiderBtn', function (e){
         }, 
        success:function(data){
            rejectBox.css('display', 'none');
+            btn.html('Reconsider');
+            btn.attr("disabled","false");
        }
    });
 });
@@ -2278,6 +2282,7 @@ $(document).on('click','.sendReasons', function(e){
             else {
                 alert('something went wrong..');
             }
+            $('#considerJobsModal')[0].reset();
         }
     });
 });
