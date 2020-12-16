@@ -291,7 +291,7 @@ class OrganizationsController extends ApiBaseController
             ->joinWith(['applicationTypeEnc z'])
             ->where([
                 'a.is_deleted' => 0,
-//                'a.status' => 'Active',
+                'a.status' => 'Active',
                 'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
