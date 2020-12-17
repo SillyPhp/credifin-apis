@@ -35,6 +35,7 @@ use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -502,11 +503,12 @@ class JobsController extends Controller
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1
             ])
             ->one();
-        if (!$application_details) {
-            return 'Not Found';
+        if (empty($application_details)) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();

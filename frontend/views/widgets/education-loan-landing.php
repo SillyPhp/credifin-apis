@@ -11,23 +11,22 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
                     <h2>Low Rate of Interest</h2>
                     <p>Apply for loans at lower interest rates and avail of better borrowing terms thus decreasing the financial burden off you.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
                     <h2>Online Application</h2>
                     <p>Apply from the comfort of your home with quick, simple and easy documentation process and get fast approval of your application.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img alt="Education loan" src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
-                    <h2
-                    >Quick Disbursement</h2>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
+                    <h2>Quick Disbursement</h2>
                     <p>with the state of the art system, we strive to complete the disbursement of loan as soon as possible.</p>
                 </div>
             </div>

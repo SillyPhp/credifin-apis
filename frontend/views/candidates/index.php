@@ -979,7 +979,7 @@ $(document).on('change', 'input[type=checkbox]', function() {
     var cls_sk = params.match(/skills=/g);
     var cls_sal = params.match(/salary=/g);
     if(!cls_loc && !cls_jt && !cls_sk){
-        params = params+'&locations=&job_titles=&skills=';
+        params = params+'locations=&job_titles=&skills=';
     }
     var p = [];
     $.each(params.split("&"),function(index,value) {

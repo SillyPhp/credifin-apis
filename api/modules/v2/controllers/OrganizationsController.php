@@ -10,6 +10,7 @@ use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
+use common\models\OrganizationLabels;
 use common\models\OrganizationReviews;
 use common\models\Utilities;
 use common\models\ErexxEmployerApplications;
@@ -137,74 +138,167 @@ class OrganizationsController extends ApiBaseController
 
     public function getJobs($options)
     {
-        $jobs = ErexxEmployerApplications::find()
+//        $jobs = ErexxEmployerApplications::find()
+//            ->alias('a')
+//            ->distinct()
+//            ->select([
+//                'bb.name',
+//                'a.is_college_approved',
+//                'bb.slug org_slug',
+//                'bb.organization_enc_id',
+//                'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+//                'e.name parent_category',
+//                'ee.name title',
+//                'a.employer_application_enc_id',
+//                'b.slug',
+//                'm.fixed_wage as fixed_salary',
+//                'm.wage_type salary_type',
+//                'm.max_wage as max_salary',
+//                'm.min_wage as min_salary',
+//                'm.wage_duration as salary_duration',
+//                'dd.designation',
+//                'z.name job_type',
+//                '(CASE
+//                WHEN b.experience = "0" THEN "No Experience"
+//                WHEN b.experience = "1" THEN "Less Than 1 Year Experience"
+//                WHEN b.experience = "2" THEN "1 Year Experience"
+//                WHEN b.experience = "3" THEN "2-3 Years Experience"
+//                WHEN b.experience = "3-5" THEN "3-5 Years Experience"
+//                WHEN b.experience = "5-10" THEN "5-10 Years Experience"
+//                WHEN b.experience = "10-20" THEN "10-20 Years Experience"
+//                WHEN b.experience = "20+" THEN "More Than 20 Years Experience"
+//                ELSE "No Experience"
+//               END) as experience',
+//                'b.type',
+//                'b.status',
+//                'm.positions'
+//            ])
+//            ->joinWith(['employerApplicationEnc b' => function ($b) {
+//                $b->joinWith(['organizationEnc bb'], false);
+//                $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
+//                $b->joinWith(['interviewProcessEnc y' => function ($y) {
+//                    $y->select(['y.interview_process_enc_id']);
+//                    $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+//                        $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
+//                    }]);
+//                }]);
+//                $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+//                    $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+//                    $bc->joinWith(['educationalRequirementEnc cb'], false);
+//                }]);
+//                $b->joinWith(['applicationSkills bbc' => function ($bbc) {
+//                    $bbc->select(['bbc.application_enc_id', 'skill']);
+//                    $bbc->joinWith(['skillEnc cbb'], false);
+//                }]);
+//                $b->joinWith(['designationEnc dd'], false);
+//                $b->joinWith(['title d' => function ($d) {
+//                    $d->joinWith(['parentEnc e']);
+//                    $d->joinWith(['categoryEnc ee']);
+//                }], false);
+//                $b->joinWith(['applicationOptions m'], false);
+//                $b->joinWith(['applicationPlacementLocations f' => function ($f) {
+//                    $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+//                    $f->joinWith(['locationEnc ff' => function ($z) {
+//                        $z->joinWith(['cityEnc g']);
+//                    }], false);
+//                    $f->groupBy(['f.placement_location_enc_id']);
+//                }], true);
+//                $b->joinWith(['applicationTypeEnc z']);
+//            }], true)
+//            ->where(['a.college_enc_id' => $options['college_id'],
+//                'bb.slug' => $options['slug'],
+//                'a.is_deleted' => 0,
+//                'a.status' => 'Active',
+//                'b.is_deleted' => 0,
+//                'b.application_for' => 2,
+//                'b.status' => 'Active',
+//                'b.for_all_colleges' => 1,]);
+        $jobs = EmployerApplications::find()
             ->alias('a')
             ->distinct()
             ->select([
-                'bb.name',
-                'a.is_college_approved',
-                'bb.slug org_slug',
+                'a.application_enc_id',
+                'a.slug',
+                'a.status',
+                'a.last_date',
+                'a.joining_date',
+                'b.employer_application_enc_id',
+                'b.is_college_approved',
+                'b.college_enc_id',
+                'y.interview_process_enc_id',
                 'bb.organization_enc_id',
+                'bb.name',
+                'bb.slug org_slug',
                 'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                 'e.name parent_category',
                 'ee.name title',
-                'a.employer_application_enc_id',
-                'b.slug',
+                'dd.designation',
+                'z.name job_type',
+                'b.is_deleted',
+                'm.positions',
+                '(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+                WHEN a.experience = "2" THEN "1 Year Experience"
+                WHEN a.experience = "3" THEN "2-3 Years Experience"
+                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                ELSE "No Experience"
+               END) as experience',
                 'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'dd.designation',
-                'z.name job_type',
-                '(CASE
-                WHEN b.experience = "0" THEN "No Experience"
-                WHEN b.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN b.experience = "2" THEN "1 Year Experience"
-                WHEN b.experience = "3" THEN "2-3 Years Experience"
-                WHEN b.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN b.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN b.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN b.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-               END) as experience',
-                'b.type',
-                'b.status',
-                'm.positions'
             ])
-            ->joinWith(['employerApplicationEnc b' => function ($b) {
-                $b->joinWith(['organizationEnc bb'], false);
-                $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
-                $b->joinWith(['interviewProcessEnc y' => function ($y) {
-                    $y->select(['y.interview_process_enc_id']);
-                    $y->joinWith(['interviewProcessFields yy' => function ($yy) {
-                        $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
-                    }]);
+            ->joinWith(['erexxEmployerApplications b' => function ($b) use ($options) {
+                $b->onCondition([
+                    'b.college_enc_id' => $options['college_id'],
+                    'b.status' => 'Active',
+                ]);
+            }], false)
+            ->joinWith(['organizationEnc bb'], false)
+            ->joinWith(['interviewProcessEnc y' => function ($y) {
+                $y->select(['y.interview_process_enc_id']);
+                $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+                    $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
                 }]);
-                $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
-                    $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
-                    $bc->joinWith(['educationalRequirementEnc cb'], false);
-                }]);
-                $b->joinWith(['applicationSkills bbc' => function ($bbc) {
-                    $bbc->select(['bbc.application_enc_id', 'skill']);
-                    $bbc->joinWith(['skillEnc cbb'], false);
-                }]);
-                $b->joinWith(['designationEnc dd'], false);
-                $b->joinWith(['title d' => function ($d) {
-                    $d->joinWith(['parentEnc e']);
-                    $d->joinWith(['categoryEnc ee']);
+            }])
+            ->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+                $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+                $bc->joinWith(['educationalRequirementEnc cb'], false);
+            }])
+            ->joinWith(['applicationSkills bbc' => function ($bbc) {
+                $bbc->select(['bbc.application_enc_id', 'skill']);
+                $bbc->joinWith(['skillEnc cbb'], false);
+                $bbc->onCondition(['bbc.is_deleted' => 0]);
+            }])
+            ->joinWith(['designationEnc dd'], false)
+            ->joinWith(['title d' => function ($d) {
+                $d->joinWith(['parentEnc e']);
+                $d->joinWith(['categoryEnc ee']);
+            }], false)
+            ->joinWith(['applicationOptions m'], false)
+            ->joinWith(['applicationPlacementLocations f' => function ($f) {
+                $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                $f->joinWith(['locationEnc ff' => function ($z) {
+                    $z->joinWith(['cityEnc g']);
                 }], false);
-                $b->joinWith(['applicationOptions m'], false);
-                $b->joinWith(['applicationPlacementLocations f' => function ($f) {
-                    $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
-                    $f->joinWith(['locationEnc ff' => function ($z) {
-                        $z->joinWith(['cityEnc g']);
-                    }], false);
-                    $f->groupBy(['f.placement_location_enc_id']);
-                }], true);
-                $b->joinWith(['applicationTypeEnc z']);
+                $f->onCondition(['f.is_deleted' => 0]);
             }], true)
-            ->where(['a.college_enc_id' => $options['college_id'], 'bb.slug' => $options['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active']);
+            ->joinWith(['applicationTypeEnc z'])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 'Active',
+                'a.application_for' => 2,
+                'a.for_all_colleges' => 1,
+                'bb.is_erexx_approved' => 1,
+                'bb.has_placement_rights' => 1,
+                'b.college_enc_id' => $options['college_id'],
+                'bb.slug' => $options['slug'],
+            ]);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
@@ -274,13 +368,13 @@ class OrganizationsController extends ApiBaseController
                     $f->innerJoinWith(['userOtherInfo g']);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
-                ->where(['a.application_enc_id' => $val['employer_application_enc_id'], 'a.is_deleted' => 0,
+                ->where(['a.application_enc_id' => $val['application_enc_id'], 'a.is_deleted' => 0,
                     'g.organization_enc_id' => $options['college_id'], 'g.is_deleted' => 0])
                 ->asArray()
                 ->one();
             $locations = [];
             $positions = 0;
-            foreach ($val['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+            foreach ($val['applicationPlacementLocations'] as $l) {
                 if (!in_array($l['name'], $locations)) {
                     array_push($locations, $l['name']);
                     $positions += $l['positions'];
@@ -393,7 +487,10 @@ class OrganizationsController extends ApiBaseController
                     ->distinct()
                     ->alias('a')
                     ->innerJoinWith('erexxEmployerApplications b')
-                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0, 'b.is_college_approved' => 1])
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'],
+                        'a.is_deleted' => 0,
+                        'b.is_college_approved' => 1,
+                        'a.application_for' => 2])
                     ->count();
                 $result['opportunties_count'] = $opportunities_count;
 
@@ -431,6 +528,49 @@ class OrganizationsController extends ApiBaseController
                         $result['follow'] = $follow['followed'];
                     }
                 }
+
+                $org_labels = OrganizationLabels::find()
+                    ->alias('a')
+                    ->select([
+                        'a.org_label_enc_id',
+                        'a.label_enc_id',
+                        'b.name'
+                    ])
+                    ->joinWith(['labelEnc b'])
+                    ->where(['a.label_for' => 1, 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $labels = [];
+                if ($org_labels) {
+                    foreach ($org_labels as $l) {
+                        switch ($l['name']) {
+                            case "Trending":
+                                $labels['Trending'] = true;
+                                break;
+                            case "Promoted":
+                                $labels['Promoted'] = true;
+                                break;
+                            case "New":
+                                $labels['New'] = true;
+                                break;
+                            case "Hot":
+                                $labels['Hot'] = true;
+                                break;
+                            case "Featured":
+                                $labels['Featured'] = true;
+                                break;
+                            case "trendd":
+                                $labels['trendd'] = true;
+                                break;
+                            case "Verified":
+                                $labels['Verified'] = true;
+                                break;
+                        }
+                    }
+                }
+
+                $result['labels'] = $labels;
 
                 return $this->response(200, $result);
             } else {

@@ -611,7 +611,7 @@ class CollegeProfileController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                     'bb.is_deleted' => 0,
                     'bb.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
@@ -881,7 +881,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
 //                    'b.status' => 'Active',
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1
                 ]);
@@ -947,6 +947,8 @@ class CollegeProfileController extends ApiBaseController
             }
 
             $resultt = [];
+            $total_applied_count = 0;
+            $total_hired_count = 0;
             foreach ($result as $j) {
 
                 $count = AppliedApplications::find()
@@ -999,19 +1001,34 @@ class CollegeProfileController extends ApiBaseController
                     array_push($skills, $s['skill']);
                 }
 
+                $hired = EmployerApplications::find()
+                    ->alias('a')
+                    ->joinWith(['appliedApplications b' => function ($b) {
+                        $b->joinWith(['createdBy c' => function ($c) {
+                            $c->innerJoinWith(['userOtherInfo d']);
+                        }]);
+                    }], false)
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(), 'b.status' => 'Hired'])
+                    ->asArray()
+                    ->count();
+
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions ? $positions : $j['positions'];
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
+                $total_applied_count += $count['count'];
+                $total_hired_count += $hired;
 
                 array_push($resultt, $data);
             }
 
             $count = [];
-            $count['pending_jobs_count'] = $this->pendingJobsCount($type, $college_id);
-            $count['pending_internships_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['approved_count'] = $this->approvedJobsCount($type, $college_id);
+            $count['pending_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['total_applied_count'] = $total_applied_count;
+            $count['total_hired_count'] = $total_hired_count;
 
             return $this->response(200, ['status' => 200, 'jobs' => $resultt, 'counts' => $count]);
         } else {
@@ -1035,7 +1052,7 @@ class CollegeProfileController extends ApiBaseController
                 'a.is_deleted' => 0,
                 'b.status' => 'Active',
                 'b.is_deleted' => 0,
-                'b.application_for' => [0, 2],
+                'b.application_for' => 2,
                 'b.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
@@ -1108,7 +1125,7 @@ class CollegeProfileController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.is_deleted' => 0,
                 'bb.status' => 'Active',
-                'a.application_for' => [0, 2],
+                'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
             ])
             ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
@@ -1144,7 +1161,9 @@ class CollegeProfileController extends ApiBaseController
             $process = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
-                    'f.username, CONCAT(f.first_name, " ", f.last_name) name, CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'f.username',
+                    'CONCAT(f.first_name, " ", f.last_name) name',
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
                     'gg.name title'])
@@ -1178,6 +1197,27 @@ class CollegeProfileController extends ApiBaseController
                     $f->innerJoinWith(['userOtherInfo g']);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
+                ->joinWith(['candidateRejections j' => function ($j) {
+                    $j->select(['j.candidate_rejection_enc_id',
+                        'j.applied_application_enc_id',
+                        'j.rejection_type',
+                        'GROUP_CONCAT(DISTINCT(j2.reason) SEPARATOR ",") reasons'
+                    ]);
+                    $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
+                        $j1->joinWith(['rejectionReasonsEnc j2']);
+                    }],false);
+                    $j->joinWith(['candidateConsiderJobs ccj' => function($ccj){
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                            $ae->select(['ae.application_enc_id', 'ae.slug', 'ccc.name job_title', 'pe.icon']);
+                            $ae->joinWith(['title bae' => function ($bae) {
+                                $bae->joinWith(['categoryEnc ccc'], false);
+                                $bae->joinWith(['parentEnc pe'], false);
+                            }], false);
+                        }]);
+                    }]);
+                    $j->onCondition(['j.is_deleted' => 0]);
+                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()
