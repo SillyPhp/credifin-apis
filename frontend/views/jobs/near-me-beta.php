@@ -1,4 +1,4 @@
-<?php,
+<?php
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
