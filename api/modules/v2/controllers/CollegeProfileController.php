@@ -556,7 +556,8 @@ class CollegeProfileController extends ApiBaseController
                     'dd.designation',
                     'z.name job_type',
                     'b.is_deleted',
-                    'm.positions'
+                    'm.positions',
+                    'a.created_on'
                 ])
                 ->joinWith(['applicationJobDescriptions ii' => function ($x) {
                     $x->onCondition(['ii.is_deleted' => 0]);
@@ -747,12 +748,17 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+
                 $data = [];
                 $locations = [];
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
-                $data['name'] = $j['name'];
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['organization_enc_id'] = $j['organization_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];
@@ -970,6 +976,11 @@ class CollegeProfileController extends ApiBaseController
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -1205,10 +1216,10 @@ class CollegeProfileController extends ApiBaseController
                     ]);
                     $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
                         $j1->joinWith(['rejectionReasonsEnc j2']);
-                    }],false);
-                    $j->joinWith(['candidateConsiderJobs ccj' => function($ccj){
-                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
-                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                    }], false);
+                    $j->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function ($ae) {
                             $ae->select(['ae.application_enc_id', 'ae.slug', 'ccc.name job_title', 'pe.icon']);
                             $ae->joinWith(['title bae' => function ($bae) {
                                 $bae->joinWith(['categoryEnc ccc'], false);

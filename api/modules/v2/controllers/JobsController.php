@@ -285,7 +285,8 @@ class JobsController extends ApiBaseController
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
                 ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $data['application_enc_id'], 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0]);
+                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
+                ->orderBy([new \yii\db\Expression("FIELD (a.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")]);
             $count = $applied->count();
             $applied = $applied->asArray()
                 ->all();
