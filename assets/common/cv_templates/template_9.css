@@ -1,52 +1,96 @@
-.head-resu {
+.res-main {
     max-width: 750px;
     margin: 0 auto;
 }
-.user-d{
-    float: right;
-    width: 70%;
-    font-family: Sans-Serif;
-    font-size: 30px;
-    background-color: #f1b79e;
-    padding: 15px;
+.head-left{
+    float: left;
+    width: 33%;
+    background-color: #8da0cd;
+    padding: 36px 30px;
 }
-.contact-info {
-    width: 30%;
+.head-right{
+    width: 67%;
     float: right;
+    background-color: #e9ecf5;
+    padding: 33px 36px;
 }
-.user-tiitle, .user-compny, .user-daate, .user-tittle {
-    font-size: 14px;
-    font-family: Sans-Serif;
+.u-name{
+    font-family: cursive;
+    font-size: 35px;
+    color: #8a8a8e;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+.u-location{
+    border-style: solid;
+    border-width: 2px 0 0 0;
+    border-color: #6d6a6a;
+    margin-bottom: 21px;
+}
+.u-location img{
+    margin-top: 10px;
+}
+.head-right h1{
+    font-family: cursive;
+    font-size: 18px;
+    font-weight: 600;
+    color: #9b9b9b;
+}
+.head-right p{
+    margin: 20px 0;
+    font-size: 13px;
+    font-family: Trebuchet MS;
+    color: #8f929b;
     font-weight: 600;
 }
-.u-description p, .user-stddy, .user-datte {
-    font-size: 14px;
+.user-exp{
+    float: right;
+    width: 67%;
+    background-color: #fff;
+    padding: 33px 36px;
 }
-.user-deescription{
-    font-size: 14px;
-    padding-bottom: 10px;
-}
-.mail, .call, .addresss, .skills{
-    margin-top: 20px;
-}
-.mail-txt, .call-txt, .addresss-txt{
-    font-size: 14px;
-    color: #000;
-    font-family: sans-serif;
-    padding-top: 5px;
-}
-.log-skills{
-    float:left;.user-d
-}
-.skills-txt{
-    font-size: 24px;
-    font-family: sans-serif;
-    color: #f1b79e;
+.exp-txt{
+    font-family: cursive;
+    font-size: 18px;
     font-weight: 600;
+    color: #9b9b9b;
 }
-.skills-d{
+.exp-date, .edu-date{
+    margin-top: 10px;
+    font-family: cursive;
+    font-weight: 600;
+    color: #9b9b9b;
+}
+.edu-txt{
+    margin-top: 30px;
+}
+.lo-name, .ed-name{
+    font-family: cursive;
+    font-weight: 600;
+    color: #9b9b9b;
+}
+.lo-pos, .edu-position{
+    font-family: cursive;
+    color: #9b9b9b;
+}
+.us-skill, .edu-txt{
+    font-family: cursive;
+    font-size: 18px;
+    font-weight: 600;
+    color: #9b9b9b;
+}
+.skill{
+    margin-top: 10px;
+    font-family: cursive;
+    color: #9b9b9b;
+}
+.skls{
+    float: left;
+    width: 33%;
+    background-color: #e9ecf5;
+    padding: 33px 36px;
+}
+.addr{
+    font-family: cursive;
     font-size: 15px;
-    font-family: sans-serif;
-    color: #000;
-    padding: 5px;
 }
