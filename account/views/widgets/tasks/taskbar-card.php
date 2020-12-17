@@ -365,6 +365,13 @@ $script = <<< JS
     
     $(document).on('submit', '#task-form', function (e) {
         e.preventDefault();
+        if ($('input[name="task"]').val()==""||$('input[name="task"]').val()==null){
+                 swal({
+                        title:"",
+                        text: "Input Should Not Be Empty.. !!!",
+                        });
+            return false;
+        }
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');
