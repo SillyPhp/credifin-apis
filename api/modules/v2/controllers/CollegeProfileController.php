@@ -759,6 +759,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['filling_soon'] = ($diff->days > 10) ? true : false;
+                $data['name'] = $j['name'];
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['organization_enc_id'] = $j['organization_enc_id'];
                 $data['is_deleted'] = $j['is_deleted'];

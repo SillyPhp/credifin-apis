@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v1\models\JobApply;
 use api\modules\v2\controllers\ApiBaseController;
+use api\modules\v2\models\ImageScript;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
@@ -304,7 +305,32 @@ class JobsController extends ApiBaseController
             $data['applied_count'] = $count;
             $data['applied_list'] = $applied;
             $data['is_blocked'] = $this->isHired();
-            $image = Yii::$app->params->digitalOcean->sharingImageUrl.$data['application_enc_id'].'.png';
+
+            $location = '';
+            if ($data['applicationPlacementLocations']) {
+                foreach ($data['applicationPlacementLocations'] as $l) {
+                    $location .= $l['name'];
+                }
+            }
+
+            $content = [
+                'job_title' => $data['name'],
+                'company_name' => $data['organization_name'],
+                'canvas' => (($data['logo']) ? false : true),
+                'bg_icon' => (($data['name'] == "Others") ? false : $data['category_enc_id']),
+                'logo' => (($data['logo']) ? $data['logo'] : null),
+                'initial_color' => '#73ef9c',
+                'location' => $location,
+                'app_id' => $data['application_enc_id'],
+                'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+            ];
+            if (empty($data['image']) || $data['image'] == 1) {
+                $image = ImageScript::widget(['content' => $content]);
+            } else {
+                $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['image'];
+            }
+
+//            $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['application_enc_id'] . '.png';
             $data['sharing_image'] = $image;
 
 
@@ -330,6 +356,7 @@ class JobsController extends ApiBaseController
                 'a.id',
                 'a.application_enc_id',
                 'x.industry',
+                'a.image',
                 'a.title',
                 '(CASE
                      WHEN a.preferred_gender = "0" THEN "No preferred gender"
