@@ -553,7 +553,8 @@ class CollegeIndexController extends ApiBaseController
                     'dd.designation',
                     'z.name job_type',
                     'b.is_deleted',
-                    'm.positions'
+                    'm.positions',
+                    'a.created_on'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition([
@@ -601,8 +602,9 @@ class CollegeIndexController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                 ])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
-                ->groupBy(['bb.organization_enc_id'])
-                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
+//                ->groupBy(['bb.organization_enc_id'])
+//                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
+                ->orderBy(new Expression('rand()'))
                 ->asArray()
                 ->all();
 
@@ -611,6 +613,11 @@ class CollegeIndexController extends ApiBaseController
                 $data = [];
                 $locations = [];
                 $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['logo'] = $j['logo'];
                 $data['is_deleted'] = $j['is_deleted'];
