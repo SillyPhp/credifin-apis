@@ -1,96 +1,56 @@
-.res-main {
+.head-resu {
     max-width: 750px;
     margin: 0 auto;
 }
-.head-left{
-    float: left;
-    width: 33%;
-    background-color: #8da0cd;
-    padding: 36px 30px;
-}
-.head-right{
-    width: 67%;
+.user-d{
     float: right;
-    background-color: #e9ecf5;
-    padding: 33px 36px;
+    width: 65%;
+    background-color: #F1B79E;
+    padding: 15px;
 }
-.u-name{
-    font-family: cursive;
-    font-size: 35px;
-    color: #8a8a8e;
-    font-weight: 600;
-    margin-bottom: 25px;
-}
-.u-location{
-    border-style: solid;
-    border-width: 2px 0 0 0;
-    border-color: #6d6a6a;
-    margin-bottom: 21px;
-}
-.u-location img{
-    margin-top: 10px;
-}
-.head-right h1{
-    font-family: cursive;
-    font-size: 18px;
-    font-weight: 600;
-    color: #9b9b9b;
-}
-.head-right p{
-    margin: 20px 0;
-    font-size: 13px;
-    font-family: Trebuchet MS;
-    color: #8f929b;
+.usr-naam{
+    font-size: 25px;
+    font-family: sans-serif;
     font-weight: 600;
 }
-.user-exp{
-    float: right;
-    width: 67%;
-    background-color: #fff;
-    padding: 33px 36px;
+.u-description p{
+    font-family: sans-serif;
+    font-size: 14px;
 }
-.exp-txt{
-    font-family: cursive;
-    font-size: 18px;
+.work-txt, .eddu-txt{
+    font-family: sans-serif;
+    font-size: 25px;
     font-weight: 600;
-    color: #9b9b9b;
+    padding-bottom: 10px;
 }
-.exp-date, .edu-date{
-    margin-top: 10px;
-    font-family: cursive;
-    font-weight: 600;
-    color: #9b9b9b;
+.eddu-location{
+    padding-bottom: 5px;
 }
-.edu-txt{
-    margin-top: 30px;
-}
-.lo-name, .ed-name{
-    font-family: cursive;
-    font-weight: 600;
-    color: #9b9b9b;
-}
-.lo-pos, .edu-position{
-    font-family: cursive;
-    color: #9b9b9b;
-}
-.us-skill, .edu-txt{
-    font-family: cursive;
-    font-size: 18px;
-    font-weight: 600;
-    color: #9b9b9b;
-}
-.skill{
-    margin-top: 10px;
-    font-family: cursive;
-    color: #9b9b9b;
-}
-.skls{
-    float: left;
-    width: 33%;
-    background-color: #e9ecf5;
-    padding: 33px 36px;
-}
-.addr{
-    font-family: cursive;
+.user-tiitle, .user-compny, .user-daate, .eddu-date{
     font-size: 15px;
+    font-weight: 600;
+    font-family: sans-serif;
+}
+.contact-info, .skills {
+    float: right;
+    width: 25%;
+}
+.mail, .call, .addresss{
+    padding-top: 15px;
+}
+.mail-txt, .call-txt, .addresss-txt{
+    padding-top: 5px;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+.skills-txt{
+    padding-top: 10px;
+    font-size: 25px;
+    color: #f1b79e;
+    font-weight: 600;
+}
+.skills-d{
+    font-size: 14px;
+    padding: 2px;
+    font-family: sans-serif;
 }

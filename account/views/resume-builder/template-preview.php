@@ -48,6 +48,9 @@ foreach ($templates as $temp)
                     . Html::endForm();
                     ?>
                 </div>
+                <div class="btn-edit">
+                    Edit
+                </div>
             </div>
         </div>
     </section>
@@ -85,13 +88,17 @@ margin-top:8px;
     cursor: pointer;
 }
 .temp-logo {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto;
-    padding: 5px;
+    width: 160px;
+    height: 160px;
+    margin: 5px auto;
 }
 .temp-logo img {
     width: 100%;
+    height: 100%;
+    border: 1px solid;
+    object-fit: fill;
+    border-radius: 6px;
+    padding: 5px;
 }
 .temp-text {
     text-align: center;

@@ -12,6 +12,17 @@ use yii\helpers\Url;
                 <p>{{description}}</p>
                 {{/description}}
             </div>
+                <div class="eddu-txt">Education</div>
+                {{#userEducations}}
+                <div class="eddu">
+                    <div class="eddu-date">
+                        <span>{{from_date}}</span> - <span>{{to_date}}</span> / <span class="edd-name">{{degree}} {{field}}</span>
+                    </div>
+                    <div class="eddu-location">
+                        {{institute}}
+                    </div>
+                </div>
+                {{/userEducations}}
             <div class="work-exp">
                 <div class="work-txt">Work Experience</div>
                 <div class="inner-work">
@@ -41,15 +52,15 @@ use yii\helpers\Url;
                 <div class="addresss-img">
                     <img src="https://www.empoweryouth.com/assets/themes/email/images/6mMpL8zN9QqGOyOeAlMKoAxKOrBbnw.png">
                 </div>
-                <div class="addresss-txt">{{phone}}</div>
+                <div class="addresss-txt">{{address}}</div>
             </div>
-            <div class="skills">
-                <div class="skills-txt">Skills</div>
-                {{#userSkills}}
-                <div class="skills-d">{{skill}}</div>
-                <progress id="file" value="32" max="100"> 32%</progress>
-                {{/userSkills}}
-            </div>
+        </div>
+        <div class="skills">
+            <div class="skills-txt">Skills</div>
+            {{#userSkills}}
+            <div class="skills-d">{{skill}}</div>
+            <progress id="file" value="32" max="100"> 32%</progress>
+            {{/userSkills}}
         </div>
     </div>
 
