@@ -1392,6 +1392,7 @@ class JobsController extends Controller
 
     public function actionTemplate($view){
         if(Yii::$app->user->identity->organization) {
+            $whatsAppmodel = new whatsAppShareForm();
             $application = ApplicationTemplates::find()
                 ->alias('a')
                 ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
@@ -1421,7 +1422,8 @@ class JobsController extends Controller
 
             return $this->render('/employer-applications/template-preview', [
                 'data' => $application,
-                'type' => 'Job'
+                'type' => 'Job',
+                'whatsAppmodel' => $whatsAppmodel,
             ]);
         }
     }

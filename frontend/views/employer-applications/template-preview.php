@@ -98,7 +98,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'website' => $org['website'],
                     'type' => $type,
                     'application_slug' => $application_details["slug"],
-                    'shortlist_btn_display' => false
+                    'shortlist_btn_display' => false,
+                    'whatsAppmodel' => $whatsAppmodel
                 ]);
                 ?>
             </div>
