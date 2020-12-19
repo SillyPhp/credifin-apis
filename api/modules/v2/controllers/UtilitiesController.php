@@ -141,8 +141,12 @@ class UtilitiesController extends ApiBaseController
         return $cities;
     }
 
-    public function actionGetCompanies($search = null)
+    public function actionGetCompanies($search = null, $a = null,$limit = null)
     {
+        $l = 25;
+        if($limit){
+            $l = $limit;
+        }
         $organizations = Organizations::find()
             ->select([
                 'organization_enc_id',
@@ -169,7 +173,10 @@ class UtilitiesController extends ApiBaseController
                 ['like', 'slug', $search]
             ]);
         }
-        $organizations = $organizations->asArray()
+        if ($a) {
+            $organizations->andWhere(['like', 'name', `$a%`]);
+        }
+        $organizations = $organizations->limit($l)->asArray()
             ->all();
 
         $i = 0;
