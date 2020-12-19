@@ -136,6 +136,21 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getJobs($options)
     {
         $jobs = EmployerApplications::find()
@@ -224,6 +239,7 @@ class OrganizationsController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.slug' => $options['slug'],
             ]);
+//            ->andWhere(['or', 'a.for_all_colleges', 1]);
         if ($options['type']) {
             $jobs->andWhere(['z.name' => $options['type']]);
         }
@@ -312,6 +328,7 @@ class OrganizationsController extends ApiBaseController
             $result[$i]['filling_soon'] = ($diff->days > 10) ? true : false;
             $result[$i]['positions'] = $positions;
             $result[$i]['applied_count'] = $count['count'];
+            $result[$i]['is_exclusive'] = $this->__exclusiveJob($val['application_enc_id']);
             $i++;
         }
 
