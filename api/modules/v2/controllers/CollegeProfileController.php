@@ -556,7 +556,8 @@ class CollegeProfileController extends ApiBaseController
                     'dd.designation',
                     'z.name job_type',
                     'b.is_deleted',
-                    'm.positions'
+                    'm.positions',
+                    'a.created_on'
                 ])
                 ->joinWith(['applicationJobDescriptions ii' => function ($x) {
                     $x->onCondition(['ii.is_deleted' => 0]);
@@ -564,7 +565,7 @@ class CollegeProfileController extends ApiBaseController
                     $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
                 }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
-                    $b->onCondition(['b.college_enc_id' => $college_id]);
+                    $b->onCondition(['b.college_enc_id' => $college_id, 'b.status' => 'Active']);
                 }], false)
                 ->joinWith(['organizationEnc bb'], false)
                 ->joinWith(['interviewProcessEnc y' => function ($y) {
@@ -614,6 +615,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
+//                ->andWhere(['or', 'a.for_all_colleges', 1])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if (isset($params['slug']) && !empty($params['slug'])) {
                 $jobs->andWhere(['bb.slug' => $params['slug']]);
@@ -747,11 +749,17 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+
                 $data = [];
                 $locations = [];
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['organization_enc_id'] = $j['organization_enc_id'];
@@ -780,6 +788,7 @@ class CollegeProfileController extends ApiBaseController
                     }
                 }
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['application_enc_id']);
                 foreach ($j['applicationEducationalRequirements'] as $a) {
                     array_push($educational_requirement, $a['educational_requirement']);
                 }
@@ -809,6 +818,21 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'jobs' => $data]);
         } else {
             return $this->response(401);
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -970,6 +994,11 @@ class CollegeProfileController extends ApiBaseController
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -1012,6 +1041,7 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->count();
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions ? $positions : $j['positions'];
@@ -1205,10 +1235,10 @@ class CollegeProfileController extends ApiBaseController
                     ]);
                     $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
                         $j1->joinWith(['rejectionReasonsEnc j2']);
-                    }],false);
-                    $j->joinWith(['candidateConsiderJobs ccj' => function($ccj){
-                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
-                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                    }], false);
+                    $j->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function ($ae) {
                             $ae->select(['ae.application_enc_id', 'ae.slug', 'ccc.name job_title', 'pe.icon']);
                             $ae->joinWith(['title bae' => function ($bae) {
                                 $bae->joinWith(['categoryEnc ccc'], false);
