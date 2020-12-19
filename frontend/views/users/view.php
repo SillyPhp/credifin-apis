@@ -149,7 +149,7 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
 
-                        if (!empty($user['phone'])) { ?>
+                        if (Yii::$app->user->identity->organization->organization_enc_id&&!empty($user['phone'])&&!empty($userApplied)) { ?>
                             <li class="whatsapp">
                                 <a href="<?= "https://api.whatsapp.com/send?phone=".$user['phone'] ?>" target="_blank">
                                     <i class="fab fa-whatsapp"></i>
