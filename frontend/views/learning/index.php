@@ -11,14 +11,14 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="newlogoset">
                     <div class="main-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>" align="right"
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>" align="right" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"
                              class="responsive"/>
                     </div>
                     <div class="anim-3">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element1.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element1.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                     <div class="anim-4">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element2.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element2.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
             </div>
@@ -36,10 +36,10 @@ use yii\helpers\Url;
                 </div>
                 <div class="animations-set">
                     <div class="anim-1">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/ele3.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/ele3.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                     <div class="anim-2">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lines.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lines.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
             </div>
@@ -284,7 +284,7 @@ use yii\helpers\Url;
                                                             font="20px"></canvas>
                                                 <?php } ?>
                                             <?php } else { ?>
-                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>">
+                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning">
                                             <?php } ?>
                                         </div>
                                         <div class="user-topic">
@@ -354,7 +354,7 @@ use yii\helpers\Url;
             <div class="row" style="margin:20px">
                 <div class="col-md-4">
                     <div class="col-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
                 <div class="col-md-8">
