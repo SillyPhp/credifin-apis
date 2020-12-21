@@ -35,9 +35,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-<?//= $this->render('/widgets/online-classes', [
-//    'model' => $model,
-//]) ?>
+
     <section>
         <div class="container">
             <div class="row mt-20">

@@ -565,7 +565,7 @@ class CollegeProfileController extends ApiBaseController
                     $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
                 }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
-                    $b->onCondition(['b.college_enc_id' => $college_id]);
+                    $b->onCondition(['b.college_enc_id' => $college_id, 'b.status' => 'Active']);
                 }], false)
                 ->joinWith(['organizationEnc bb'], false)
                 ->joinWith(['interviewProcessEnc y' => function ($y) {
@@ -615,6 +615,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
+//                ->andWhere(['or', 'a.for_all_colleges', 1])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if (isset($params['slug']) && !empty($params['slug'])) {
                 $jobs->andWhere(['bb.slug' => $params['slug']]);
@@ -787,6 +788,7 @@ class CollegeProfileController extends ApiBaseController
                     }
                 }
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['application_enc_id']);
                 foreach ($j['applicationEducationalRequirements'] as $a) {
                     array_push($educational_requirement, $a['educational_requirement']);
                 }
@@ -816,6 +818,21 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'jobs' => $data]);
         } else {
             return $this->response(401);
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -1024,6 +1041,7 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->count();
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions ? $positions : $j['positions'];
