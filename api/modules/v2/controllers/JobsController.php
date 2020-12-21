@@ -17,6 +17,7 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
+use common\models\UserResume;
 use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use Yii;
@@ -332,7 +333,8 @@ class JobsController extends ApiBaseController
 
 //            $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['application_enc_id'] . '.png';
             $data['sharing_image'] = $image;
-
+            $data['has_resume'] = (count($this->GetResume()) > 0) ? true : false;
+            $data['resume_ids'] = $this->GetResume();
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
@@ -344,6 +346,32 @@ class JobsController extends ApiBaseController
             return $this->response(200, $data);
         } else {
             return $this->response(422);
+        }
+    }
+
+    private function GetResume()
+    {
+        if ($user = $this->isAuthorized()) {
+            return UserResume::find()
+                ->select(['resume_enc_id', 'title'])
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->all();
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
