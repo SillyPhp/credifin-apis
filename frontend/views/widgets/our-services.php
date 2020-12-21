@@ -23,7 +23,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/employerO.png') ?>"
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Employers">
                             </div>
-                            <h3 class="service-txt">Employers</h3>
+                            <h2 class="service-txt">Employers</h2>
                         </div>
                     </a>
                 </div>
@@ -38,7 +38,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatesO.png') ?>"
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Candidates">
                             </div>
-                            <h3 class="service-txt">Candidates</h3>
+                            <h2 class="service-txt">Candidates</h2>
                         </div>
                     </a>
                 </div>
@@ -53,7 +53,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolsO.png') ?>"
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="schools">
                             </div>
-                            <h3 class="service-txt">Schools</h3>
+                            <h2 class="service-txt">Schools</h2>
                         </div>
                     </a>
                 </div>
@@ -68,7 +68,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesO.png') ?>"
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Educational Institute">
                             </div>
-                            <h3 class="service-txt">Educational Institute</h3>
+                            <h2 class="service-txt">Educational Institute</h2>
                         </div>
                     </a>
                 </div>
@@ -83,7 +83,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesO.png') ?>"
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Colleges">
                             </div>
-                            <h3 class="service-txt">Universities & Colleges</h3>
+                            <h2 class="service-txt">Universities & Colleges</h2>
                         </div>
                     </a>
                 </div>
@@ -97,7 +97,7 @@ use yii\helpers\Url;
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/RecruitersO.png') ?>"
                                  title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " alt="Recruiters">
                         </div>
-                        <h3 class="service-txt">Recruiters</h3>
+                        <h2 class="service-txt">Recruiters</h2>
                         <div class="overl">
                             <div class="overl-text">Coming Soon</div>
                         </div>
