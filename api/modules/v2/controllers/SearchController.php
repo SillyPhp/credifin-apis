@@ -432,8 +432,8 @@ class SearchController extends ApiBaseController
                 $jobs->limit = $options['limit'];
                 $jobs->offset = ($options['page'] - 1) * $options['limit'];
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs->orderBy([new \yii\db\Expression('b.status = "Active" desc'), 'a.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
         } else {
             $type = $options['type'];
@@ -530,8 +530,8 @@ class SearchController extends ApiBaseController
                 $jobs->limit = $options['limit'];
                 $jobs->offset = ($options['page'] - 1) * $options['limit'];
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs->orderBy([new \yii\db\Expression('b.status = "Active" desc'), 'a.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
         }
 
