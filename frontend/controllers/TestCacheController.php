@@ -56,60 +56,22 @@ class TestCacheController extends Controller
                 $handle = @fopen($remoteFile, 'r');
 
                 if (!$handle) {
-                    $res = UserResume::find()
+//                    $res = UserResume::find()
+//                        ->where(['resume_enc_id' => $v['resume_enc_id']])
+//                        ->one();
+//                    $res->resume = null;
+//                    $res->resume_location = null;
+//                    if (!$res->update()) {
+//                        print_r($res->getErrors());
+//                        die();
+//                    }
+                    $applied_resume = AppliedApplications::find()
                         ->where(['resume_enc_id' => $v['resume_enc_id']])
                         ->one();
-                    $res->resume = null;
-                    $res->resume_location = null;
-                    if (!$res->update()) {
-                        print_r($res->getErrors());
+                    $applied_resume->resume_enc_id = null;
+                    if(!$applied_resume->update()){
+                        print_r($applied_resume->getErrors());
                         die();
-                    }
-                }
-            }
-        }else{
-            print_r('done');
-            die();
-        }
-        print_r('updated');
-    }
-
-    public function actionApplied($page, $limit = 20)
-    {
-        $offset = ($page - 1) * $limit;
-        $applied = AppliedApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id', 'a.applied_application_enc_id', 'a.created_by'])
-            ->joinWith(['appliedApplicationProcesses b'])
-            ->limit($limit)
-            ->offset($offset)
-            ->asArray()
-            ->all();
-
-        if ($applied) {
-            foreach ($applied as $v) {
-                if (!$v['appliedApplicationProcesses']) {
-                    $process_list = EmployerApplications::find()
-                        ->alias('a')
-                        ->select(['b.field_name', 'b.field_enc_id'])
-                        ->where(['a.application_enc_id' => $v['application_enc_id']])
-                        ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
-                        ->asArray()
-                        ->all();
-
-                    foreach ($process_list as $process) {
-                        $processModel = new AppliedApplicationProcess;
-                        $utilitiesModel = new Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $processModel->process_enc_id = $utilitiesModel->encrypt();
-                        $processModel->applied_application_enc_id = $v['applied_application_enc_id'];
-                        $processModel->field_enc_id = $process['field_enc_id'];
-                        $processModel->created_on = date('Y-m-d h:i:s');
-                        $processModel->created_by = $v['created_by'];
-                        if (!$processModel->save()) {
-                            print_r($processModel->getErrors());
-                            die();
-                        }
                     }
                 }
             }
@@ -117,8 +79,6 @@ class TestCacheController extends Controller
             print_r('done');
             die();
         }
-
         print_r('updated');
-        die();
     }
 }
