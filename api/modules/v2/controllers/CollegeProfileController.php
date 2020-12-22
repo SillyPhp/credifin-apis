@@ -1188,11 +1188,11 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $process = AppliedApplications::find()
+            $applied_user = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
                     'f.username',
-                    'CONCAT(f.first_name, " ", f.last_name) name',
+                    'CONCAT(f.first_name, " ", f.last_name) name', 'a.current_round',
                     'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
@@ -1207,7 +1207,7 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', '(CASE
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.sequence', 'dd.field_name', '(CASE
                         WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
@@ -1231,11 +1231,11 @@ class CollegeProfileController extends ApiBaseController
                     $j->select(['j.candidate_rejection_enc_id',
                         'j.applied_application_enc_id',
                         'j.rejection_type',
-                        'GROUP_CONCAT(DISTINCT(j2.reason) SEPARATOR ",") reasons'
                     ]);
                     $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
+                        $j1->select(['j1.rejection_reasons_enc_id', 'j1.candidate_rejection_enc_id', 'j1.candidate_rejection_reasons_enc_id', 'j2.reason']);
                         $j1->joinWith(['rejectionReasonsEnc j2']);
-                    }], false);
+                    }]);
                     $j->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
                         $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
                         $ccj->joinWith(['applicationEnc ae' => function ($ae) {
@@ -1253,8 +1253,16 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            if ($applied_user) {
+                $process = $applied_user[0]['appliedApplicationProcesses'];
+                foreach ($process as $k => $v) {
+                    $process[$k]['count'] = 0;
+                }
+            }
+
+            $h_count = 0;
             $i = 0;
-            foreach ($process as $p) {
+            foreach ($applied_user as $p) {
                 $user_data = Users::find()
                     ->alias('a')
                     ->select(['a.user_enc_id', 'GROUP_CONCAT(DISTINCT(b1.skill) SEPARATOR ",") skill', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industry'])
@@ -1276,16 +1284,26 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                foreach ($process as $k => $v) {
+                    if ($v['sequence'] == $p['current_round']) {
+                        $process[$k]['count'] += 1;
+                    }
+                }
+
+                if ($p['status'] == 'Hired') {
+                    $h_count += 1;
+                }
+
 
                 if ($user_data['skill'] != null) {
                     $user_data['skill'] = explode(',', $user_data['skill']);
                 }
-                $process[$i]['user_data'] = $user_data;
+                $applied_user[$i]['user_data'] = $user_data;
                 $i++;
             }
 
-            if ($process) {
-                return $this->response(200, ['status' => 200, 'data' => $process]);
+            if ($applied_user) {
+                return $this->response(200, ['status' => 200, 'data' => $applied_user, 'process' => $process, 'hired_count' => $h_count, 'total_count' => count($applied_user)]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }
