@@ -92,24 +92,6 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="widget border">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3 class="sb-title open">Job Type</h3>
-                            <div class="type_widget">
-                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label
-                                            for="dsf">Full
-                                        Time</label></p>
-                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd"
-                                                         value="Part Time"><label for="sadd">Part
-                                        Time</label></p>
-                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa"
-                                                         value="Work From Home"><label for="assa">Work From Home
-                                    </label></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="widget border">
-                    <div class="row">
-                        <div class="col-md-12">
                             <h3 class="sb-title open">Date Posted</h3>
                             <div class="posted_widget">
                                 <input type="radio" name="choose" value="1" id="232"><label for="232">Last
