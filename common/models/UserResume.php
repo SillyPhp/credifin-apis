@@ -37,7 +37,7 @@ class UserResume extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['resume_enc_id', 'user_enc_id', 'resume', 'resume_location', 'created_on', 'created_by'], 'required'],
+            [['resume_enc_id', 'user_enc_id', 'created_on', 'created_by'], 'required'],
             [['resume'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['resume_enc_id', 'user_enc_id', 'title', 'alt', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
