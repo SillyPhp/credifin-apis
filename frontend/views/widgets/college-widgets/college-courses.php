@@ -9,7 +9,8 @@ use yii\helpers\Url;
             <div class="search-main set-sticky">
                 <h3 class="ou-head">Find Course</h3>
                 <div class="search-b">
-                    <input type="text" id="searchForm" placeholder="Search by Name" class="form-control" onkeyup="search()">
+                    <input type="text" id="searchForm" placeholder="Search by Name" class="form-control"
+                           onkeyup="search()">
                 </div>
                 <div class="p-listing">
                     <ul>
@@ -48,6 +49,36 @@ use yii\helpers\Url;
                         <div class="other-data">
                             <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
                             <div class="duration-c">1 Years</div>
+                        </div>
+                        <div class="s-process set-h2">
+                            <h2>Selection Process</h2>
+                            <p>This spring has brought unprecedented shifts to your child's educational
+                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
+                                support and guidance for your child in a rapidly changing academic environment.
+                                To simplify your spring and summer planning, we've broken down which national testing
+                                dates have or have not changed, as well as resources for keeping your junior engaged and
+                                inspired during the college application process.
+                            </p>
+                        </div>
+                        <div class="e-criteria set-h2">
+                            <h2>Eligibility Criteria</h2>
+                            <p>This spring has brought unprecedented shifts to your child's educational
+                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
+                                support and guidance for your child in a rapidly changing academic environment.
+                                To simplify your spring and summer planning, we've broken down which national testing
+                                dates have or have not changed, as well as resources for keeping your junior engaged and
+                                inspired during the college application process.
+                            </p>
+                        </div>
+                        <div class="other-info-c set-h2">
+                            <h2>Other Details</h2>
+                            <p>This spring has brought unprecedented shifts to your child's educational
+                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
+                                support and guidance for your child in a rapidly changing academic environment.
+                                To simplify your spring and summer planning, we've broken down which national testing
+                                dates have or have not changed, as well as resources for keeping your junior engaged and
+                                inspired during the college application process.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -133,6 +164,12 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.set-h2 h2 {
+	font-size: 16px;
+	font-weight: 500;
+	font-family: roboto;
+	margin: 10px 0 0px;
+}
 .search-main{
     position: -webkit-sticky; /* Safari */;
     position:sticky;
@@ -168,6 +205,9 @@ $this->registerCss('
 .courses-box h4{
     font-family:roboto;
     color:#ff7803;
+    text-align:center;
+    font-size: 20px;
+    font-weight: 500;
 } 
 .courses-b {
 	display: flex;
@@ -180,19 +220,21 @@ $this->registerCss('
 	font-family: roboto;
 }
 .course-box-details {
-	border: 1px solid #eee;
-	box-shadow: 0px 0px 10px -3px rgba(0, 0, 0, 0.1);
-	padding: 15px 10px;
+//	border: 1px solid #eee;
+//	box-shadow: 0px 0px 10px -3px rgba(0, 0, 0, 0.1);
+//	padding: 15px 10px;
 	margin-bottom:10px;
 }
 .course-title {
-	font-size: 18px;
+	font-size: 20px;
 	color: #00a0e3;
     font-weight:500;
 }
 .other-data {
 	display: flex;
 	flex-wrap: wrap;
+	font-family:roboto;
+	font-size:15px;
 }
 .other-data div {
 	flex-basis: 50%;
@@ -233,7 +275,7 @@ $this->registerJs($script);
             var index = para[0].innerText.toLowerCase().indexOf(pattern);
             if (index != -1) {
                 targetId = divs[i].parentNode;
-                targetId.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                targetId.scrollIntoView({behavior: 'smooth', block: 'center'});
                 // document.getElementById(targetId).scrollIntoView();
                 break;
             }

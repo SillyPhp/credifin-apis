@@ -556,7 +556,8 @@ class CollegeProfileController extends ApiBaseController
                     'dd.designation',
                     'z.name job_type',
                     'b.is_deleted',
-                    'm.positions'
+                    'm.positions',
+                    'a.created_on'
                 ])
                 ->joinWith(['applicationJobDescriptions ii' => function ($x) {
                     $x->onCondition(['ii.is_deleted' => 0]);
@@ -564,7 +565,7 @@ class CollegeProfileController extends ApiBaseController
                     $x->select(['ii.application_enc_id', 'jj.job_description_enc_id', 'jj.job_description']);
                 }])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
-                    $b->onCondition(['b.college_enc_id' => $college_id]);
+                    $b->onCondition(['b.college_enc_id' => $college_id, 'b.status' => 'Active']);
                 }], false)
                 ->joinWith(['organizationEnc bb'], false)
                 ->joinWith(['interviewProcessEnc y' => function ($y) {
@@ -611,9 +612,10 @@ class CollegeProfileController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                     'bb.is_deleted' => 0,
                     'bb.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
+//                ->andWhere(['or', 'a.for_all_colleges', 1])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if (isset($params['slug']) && !empty($params['slug'])) {
                 $jobs->andWhere(['bb.slug' => $params['slug']]);
@@ -747,11 +749,17 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+
                 $data = [];
                 $locations = [];
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['organization_enc_id'] = $j['organization_enc_id'];
@@ -780,6 +788,7 @@ class CollegeProfileController extends ApiBaseController
                     }
                 }
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['application_enc_id']);
                 foreach ($j['applicationEducationalRequirements'] as $a) {
                     array_push($educational_requirement, $a['educational_requirement']);
                 }
@@ -809,6 +818,21 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'jobs' => $data]);
         } else {
             return $this->response(401);
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -881,7 +905,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
 //                    'b.status' => 'Active',
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1
                 ]);
@@ -970,6 +994,11 @@ class CollegeProfileController extends ApiBaseController
                 $educational_requirement = [];
                 $skills = [];
                 $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
@@ -1008,10 +1037,11 @@ class CollegeProfileController extends ApiBaseController
                             $c->innerJoinWith(['userOtherInfo d']);
                         }]);
                     }], false)
-                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(),'b.status'=>'Hired'])
+                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(), 'b.status' => 'Hired'])
                     ->asArray()
                     ->count();
 
+                $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions ? $positions : $j['positions'];
@@ -1052,7 +1082,7 @@ class CollegeProfileController extends ApiBaseController
                 'a.is_deleted' => 0,
                 'b.status' => 'Active',
                 'b.is_deleted' => 0,
-                'b.application_for' => [0, 2],
+                'b.application_for' => 2,
                 'b.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
@@ -1125,7 +1155,7 @@ class CollegeProfileController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.is_deleted' => 0,
                 'bb.status' => 'Active',
-                'a.application_for' => [0, 2],
+                'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
             ])
             ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
@@ -1158,11 +1188,11 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $process = AppliedApplications::find()
+            $applied_user = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
                     'f.username',
-                    'CONCAT(f.first_name, " ", f.last_name) name',
+                    'CONCAT(f.first_name, " ", f.last_name) name', 'a.current_round',
                     'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
@@ -1177,7 +1207,7 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', '(CASE
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.sequence', 'dd.field_name', '(CASE
                         WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
@@ -1197,13 +1227,42 @@ class CollegeProfileController extends ApiBaseController
                     $f->innerJoinWith(['userOtherInfo g']);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
+                ->joinWith(['candidateRejections j' => function ($j) {
+                    $j->select(['j.candidate_rejection_enc_id',
+                        'j.applied_application_enc_id',
+                        'j.rejection_type',
+                    ]);
+                    $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
+                        $j1->select(['j1.rejection_reasons_enc_id', 'j1.candidate_rejection_enc_id', 'j1.candidate_rejection_reasons_enc_id', 'j2.reason']);
+                        $j1->joinWith(['rejectionReasonsEnc j2']);
+                    }]);
+                    $j->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function ($ae) {
+                            $ae->select(['ae.application_enc_id', 'ae.slug', 'ccc.name job_title', 'pe.icon']);
+                            $ae->joinWith(['title bae' => function ($bae) {
+                                $bae->joinWith(['categoryEnc ccc'], false);
+                                $bae->joinWith(['parentEnc pe'], false);
+                            }], false);
+                        }]);
+                    }]);
+                    $j->onCondition(['j.is_deleted' => 0]);
+                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()
                 ->all();
 
+            if ($applied_user) {
+                $process = $applied_user[0]['appliedApplicationProcesses'];
+                foreach ($process as $k => $v) {
+                    $process[$k]['count'] = 0;
+                }
+            }
+
+            $h_count = 0;
             $i = 0;
-            foreach ($process as $p) {
+            foreach ($applied_user as $p) {
                 $user_data = Users::find()
                     ->alias('a')
                     ->select(['a.user_enc_id', 'GROUP_CONCAT(DISTINCT(b1.skill) SEPARATOR ",") skill', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industry'])
@@ -1225,16 +1284,26 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                foreach ($process as $k => $v) {
+                    if ($v['sequence'] == $p['current_round']) {
+                        $process[$k]['count'] += 1;
+                    }
+                }
+
+                if ($p['status'] == 'Hired') {
+                    $h_count += 1;
+                }
+
 
                 if ($user_data['skill'] != null) {
                     $user_data['skill'] = explode(',', $user_data['skill']);
                 }
-                $process[$i]['user_data'] = $user_data;
+                $applied_user[$i]['user_data'] = $user_data;
                 $i++;
             }
 
-            if ($process) {
-                return $this->response(200, ['status' => 200, 'data' => $process]);
+            if ($applied_user) {
+                return $this->response(200, ['status' => 200, 'data' => $applied_user, 'process' => $process, 'hired_count' => $h_count, 'total_count' => count($applied_user)]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }

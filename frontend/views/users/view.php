@@ -143,8 +143,21 @@ $this->params['header_dark'] = false;
                         <?php }
                         if (!empty($user['skype'])) { ?>
                             <li class="skpe">
-                                <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
+                                <a href="skype:<?= Html::encode($user['skype']) ?>?chat" target="_blank">
                                     <i class="fab fa-skype"></i>
+                                </a>
+                            </li>
+                        <?php }
+
+                        if (Yii::$app->user->identity->organization->organization_enc_id&&!empty($user['phone'])&&!empty($userApplied)) { ?>
+                            <li class="whatsapp">
+                                <a href="<?= "https://api.whatsapp.com/send?phone=".$user['phone'] ?>" target="_blank">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </li>
+                            <li class="skpe">
+                                <a href="<?= "tel:".$user['phone'] ?>" id="phone-val" value="<?=$user['phone']?>">
+                                    <i class="fa fa-phone"></i>
                                 </a>
                             </li>
                         <?php }
@@ -474,6 +487,9 @@ $this->registerCss('
 }
 .skpe a {
 	background-color: #00a0e3;
+}
+.whatsapp a {
+	background-color: #25D366;
 }
 .talking a {
 	background-color: #3b5998;
@@ -1113,3 +1129,29 @@ ul.status-detail li>strong {
     }
 }
 ');
+$script = <<< JS
+$(document).on('click','#phone-val',function(e) {
+  e.preventDefault();
+  var phone = $(this).attr('value');
+                swal({
+                        title: phone,
+                        text: "",
+                        type:"info",
+                        showCancelButton: true,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Call",
+                        cancelButtonText:"Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             if (isConfirm){
+                                 window.open('tel:' + phone);
+                             }
+                         }
+                        );
+})
+JS;
+$this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');

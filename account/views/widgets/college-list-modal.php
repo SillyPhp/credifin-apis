@@ -30,18 +30,22 @@ $this->registerCss('
 	width: 170px;
 	box-shadow: 0 0 4px 0px rgba(0,0,0,0.3);
 	margin: 0 5px 12px;
-	padding: 20px;
+	padding: 20px 10px 10px;
 }
 .colleges img {
-	width: 130px;
-	height: 130px;
+	width: 80px;
+	height: 80px;
 	object-fit: contain;
 }
 .colleges p {
 	font-size: 14px;
 	font-family: roboto;
 	height: 42px;
-	margin: 0;
+	margin: 10px 0 0 0;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .overlay {
   position: fixed;
@@ -379,7 +383,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
     <div class="colleges">
         <a href="/{{slug}}" target="_blank"> <img src="{{college_logo}}"></a>
-        <a href="/{{slug}}" target="_blank"><p>{{{college_name}}}</p></a>
+        <a href="/{{slug}}" target="_blank" title="{{{college_name}}}"><p>{{{college_name}}}</p></a>
     </div>
 
     {{/.}}

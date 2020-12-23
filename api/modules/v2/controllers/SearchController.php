@@ -348,6 +348,7 @@ class SearchController extends ApiBaseController
                     'b.status',
                     'b.last_date',
                     'b.joining_date',
+                    'b.created_on',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -401,7 +402,7 @@ class SearchController extends ApiBaseController
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
 //                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
@@ -432,8 +433,8 @@ class SearchController extends ApiBaseController
                 $jobs->limit = $options['limit'];
                 $jobs->offset = ($options['page'] - 1) * $options['limit'];
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs->orderBy([new \yii\db\Expression('b.status = "Active" desc'), 'a.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
         } else {
             $type = $options['type'];
@@ -452,6 +453,7 @@ class SearchController extends ApiBaseController
                     'b.status',
                     'b.last_date',
                     'b.joining_date',
+                    'b.created_on',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -502,7 +504,7 @@ class SearchController extends ApiBaseController
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
 //                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'bb.is_erexx_approved' => 1,
@@ -530,8 +532,8 @@ class SearchController extends ApiBaseController
                 $jobs->limit = $options['limit'];
                 $jobs->offset = ($options['page'] - 1) * $options['limit'];
             }
-            $result = $jobs->
-            asArray()
+            $result = $jobs->orderBy([new \yii\db\Expression('b.status = "Active" desc'), 'a.is_college_approved' => SORT_DESC])
+                ->asArray()
                 ->all();
         }
 
@@ -592,6 +594,11 @@ class SearchController extends ApiBaseController
             $educational_requirement = [];
             $skills = [];
             $positions = 0;
+            $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+            $datetime2 = new \DateTime(date('Y-m-d'));
+
+            $diff = $datetime1->diff($datetime2);
+            $data['filling_soon'] = ($diff->days > 10) ? true : false;
             $data['application_enc_id'] = $j['employer_application_enc_id'];
             $data['name'] = $j['name'];
             $data['job_type'] = $j['job_type'];
@@ -624,6 +631,7 @@ class SearchController extends ApiBaseController
                 array_push($skills, $s['skill']);
             }
 
+            $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
             $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
             $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
             $data['positions'] = $positions;
@@ -634,6 +642,21 @@ class SearchController extends ApiBaseController
 
         return $resultt;
 
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

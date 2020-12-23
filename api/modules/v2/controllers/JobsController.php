@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v1\models\JobApply;
 use api\modules\v2\controllers\ApiBaseController;
+use api\modules\v2\models\ImageScript;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
@@ -16,6 +17,7 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
+use common\models\UserResume;
 use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use Yii;
@@ -285,7 +287,8 @@ class JobsController extends ApiBaseController
                     $f->onCondition(['f.is_deleted' => 0]);
                 }], false)
                 ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $data['application_enc_id'], 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0]);
+                ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
+                ->orderBy([new \yii\db\Expression("FIELD (a.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")]);
             $count = $applied->count();
             $applied = $applied->asArray()
                 ->all();
@@ -304,6 +307,34 @@ class JobsController extends ApiBaseController
             $data['applied_list'] = $applied;
             $data['is_blocked'] = $this->isHired();
 
+            $location = '';
+            if ($data['applicationPlacementLocations']) {
+                foreach ($data['applicationPlacementLocations'] as $l) {
+                    $location .= $l['name'];
+                }
+            }
+
+            $content = [
+                'job_title' => $data['name'],
+                'company_name' => $data['organization_name'],
+                'canvas' => (($data['logo']) ? false : true),
+                'bg_icon' => (($data['name'] == "Others") ? false : $data['category_enc_id']),
+                'logo' => (($data['logo']) ? $data['logo'] : null),
+                'initial_color' => '#73ef9c',
+                'location' => $location,
+                'app_id' => $data['application_enc_id'],
+                'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+            ];
+            if (empty($data['image']) || $data['image'] == 1) {
+                $image = ImageScript::widget(['content' => $content]);
+            } else {
+                $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['image'];
+            }
+
+//            $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['application_enc_id'] . '.png';
+            $data['sharing_image'] = $image;
+            $data['has_resume'] = (count($this->GetResume()) > 0) ? true : false;
+            $data['resume_ids'] = $this->GetResume();
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
@@ -318,6 +349,32 @@ class JobsController extends ApiBaseController
         }
     }
 
+    private function GetResume()
+    {
+        if ($user = $this->isAuthorized()) {
+            return UserResume::find()
+                ->select(['resume_enc_id', 'title'])
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->all();
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private function getApplication($slug)
     {
         return EmployerApplications::find()
@@ -327,6 +384,7 @@ class JobsController extends ApiBaseController
                 'a.id',
                 'a.application_enc_id',
                 'x.industry',
+                'a.image',
                 'a.title',
                 '(CASE
                      WHEN a.preferred_gender = "0" THEN "No preferred gender"
