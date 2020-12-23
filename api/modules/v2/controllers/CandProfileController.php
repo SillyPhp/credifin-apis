@@ -735,8 +735,8 @@ class CandProfileController extends ApiBaseController
             }
             $data['user_id'] = $user->user_enc_id;
             if ($resume->resume_file && $resume->validate()) {
-                if ($resume->upload($data)) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Saved']);
+                if ($id = $resume->upload($data)) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Saved', 'id' => $id]);
                 }
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             } else {

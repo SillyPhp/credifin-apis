@@ -53,7 +53,7 @@ class ResumeUpload extends Model
                 if ($result) {
 //                    print_r($result['ObjectURL']);
                     $transaction->commit();
-                    return true;
+                    return $userResumeModel->resume_enc_id;
                 } else {
                     return false;
                 }

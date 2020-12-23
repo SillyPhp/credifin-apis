@@ -608,7 +608,7 @@ class OrganizationsController extends ApiBaseController
             ->alias('a')
             ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
                 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name," ",f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
-                'a.created_by student_id'])
+                'a.created_by student_id','z.name type'])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                     $c->innerJoinWith(['collegeEnc d']);
@@ -619,6 +619,7 @@ class OrganizationsController extends ApiBaseController
                     $ee->joinWith(['parentEnc e2']);
                 }], false);
                 $b->joinWith(['designationEnc e3'], false);
+                $b->joinWith(['applicationTypeEnc z']);
                 $b->onCondition(['b.is_deleted' => 0]);
             }], false)
             ->innerJoinWith(['createdBy f' => function ($f) {

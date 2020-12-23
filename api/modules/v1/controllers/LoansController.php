@@ -336,6 +336,7 @@ class LoansController extends ApiBaseController
                 'a.image',
                 'a.image_location',
                 'a.email',
+                'a.gender'
 //                'c1.course_name',
             ])
             ->joinWith(['loanCoApplicants d' => function ($d) {
@@ -495,7 +496,28 @@ class LoansController extends ApiBaseController
             if ($id) {
                 return $this->response(200, ['id' => $id]);
             }
+        } elseif ($type == 'applicant') {
+            $id = $this->updateLoanApplications($params);
+            if ($id) {
+                return $this->response(200, ['id' => $id]);
+            }
         }
+
+    }
+
+    private function updateLoanApplications($params)
+    {
+        $loan = LoanApplications::find()
+            ->where(['loan_app_enc_id' => $params['loan_app_id']])
+            ->one();
+
+        if ($loan) {
+            $loan->gender = $params['gender'];
+            if ($loan->update()) {
+                return $loan->loan_app_enc_id;
+            }
+        }
+
 
     }
 

@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Speakers;
 use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarEvents;
@@ -12,6 +13,8 @@ use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\WebinarSpeakers;
 use frontend\models\webinars\webinarFunctions;
+use frontend\models\webinars\WebinarRequestForm;
+use yii\db\Expression;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -69,9 +72,9 @@ class WebinarsController extends Controller
         ]);
     }
 
-    public function actionWebinarDetails($slug,$referral=null)
+    public function actionDetail($slug, $referral = null)
     {
-        if (!empty($referral)){
+        if (!empty($referral)) {
             $cookies = Yii::$app->response->cookies;
             $cookies->add(new \yii\web\Cookie([
                 'name' => 'ref_csrf-webinar',
@@ -81,11 +84,11 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
-        if(empty($webinar)){
+        if (empty($webinar)) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found'));
         }
         $nextEvent = $webinar['webinarEvents'][0];
-        if(empty($nextEvent)){
+        if (empty($nextEvent)) {
 //                webinar finished
             return $this->render('/mentors/non-authorized', [
                 'type' => 1
@@ -260,10 +263,9 @@ class WebinarsController extends Controller
                     $model->created_by = $uid;
                     $model->created_on = date('Y-m-d H:i:s');
                 }
-                if (!empty($refcode))
-                {
-                    $refId = \common\models\Referral::findOne(['code'=>$refcode])->referral_enc_id;
-                    if ($refId){
+                if (!empty($refcode)) {
+                    $refId = \common\models\Referral::findOne(['code' => $refcode])->referral_enc_id;
+                    if ($refId) {
                         $model->referral_enc_id = $refId;
                     }
                 }
@@ -475,7 +477,99 @@ class WebinarsController extends Controller
             ->all();
         return $webinars;
     }
-    public function actionWebinarsLanding(){
-        return $this->render('webinars-landing');
+
+    public function actionWebinarsLanding()
+    {
+        $upcomingWebinar = self::showWebinar($status = 'upcoming');
+        $pastWebinar = self::showWebinar($status = 'past', '', false);
+        if (Yii::$app->user->identity->type->user_type == 'Individual') {
+            $userIdd = Yii::$app->user->identity->user_enc_id;
+            $optedWebinar = self::showWebinar($status = 'opted', $userIdd);
+        }
+        $model = new WebinarRequestForm();
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $speaker_id = Yii::$app->request->post('speaker_id');
+            $model->load(Yii::$app->request->post());
+            return $model->save($speaker_id);
+        }
+        return $this->render('webinars-landing', [
+            'upcomingWebinar' => $upcomingWebinar,
+            'pastWebinar' => $pastWebinar,
+            'optedWebinar' => $optedWebinar,
+            'model' => $model
+        ]);
+    }
+
+    private function showWebinar($status, $userIdd = null, $sortAsc = true)
+    {
+        $currentTime = date('Y-m-d H:i:s');
+        $webinars = Webinar::find()
+            ->alias('a')
+            ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->webinars->banner->image) . '", a.image_location, "/", a.image) END banner',
+                'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
+            ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
+                $b->distinct();
+                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                if ($status == 'upcoming' || $status == 'opted') {
+                    $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+                } else {
+                    $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                }
+                $b->groupBy(['b.webinar_enc_id']);
+                $b->joinWith(['webinarSpeakers d' => function ($d) {
+                    $d->select(['d.speaker_enc_id', 'd.webinar_event_enc_id']);
+                    $d->joinWith(['speakerEnc e' => function ($e) {
+                        $e->select(['e.speaker_enc_id', 'e.user_enc_id']);
+                        $e->joinWith(['userEnc f' => function ($f) {
+                            $f->select(['f.user_enc_id', 'f.first_name', 'f.last_name']);
+                        }]);
+                    }]);
+                }], false);
+            }])
+            ->joinWith(['webinarRegistrations c' => function ($c) use ($status, $userIdd) {
+                $c->select(['c.webinar_enc_id', 'c.register_enc_id', 'c.status', 'c.created_by', 'c.created_on']);
+                $c->joinWith(['createdBy cc' => function ($cc) {
+                    $cc->select(['cc.user_enc_id',
+                        'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)',
+//                        'CASE WHEN cc.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)  ELSE NULL END image'
+                    ])
+                        ->where(['OR',
+                            ['!=', 'cc.image', null],
+                            ['!=', 'cc.image', '']
+                        ]);
+                }]);
+                $c->orderBy(['c.created_on' => SORT_DESC]);
+                if (!empty($userIdd)) {
+                    $c->where(['c.created_by' => $userIdd]);
+                }
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['a.webinar_enc_id'])
+            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit(6)
+            ->asArray()
+            ->all();
+        return $webinars;
+    }
+    public function actionSearchSpeakers($q = null)
+    {
+        if (!is_null($q)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Speakers::find()
+                ->alias('z')
+                ->select(['CONCAT(a.first_name, " " ,a.last_name) as value',
+                    'z.speaker_enc_id id',
+                    'z.user_enc_id',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',])
+                ->joinWith(['userEnc a'],false)
+                ->andFilterWhere(['like', 'CONCAT(a.first_name, " " ,a.last_name)', $q])
+                ->andWhere(['z.is_deleted' => 0])
+                ->limit(20)
+                ->asArray()
+                ->all();
+            return $data;
+        }
     }
 }

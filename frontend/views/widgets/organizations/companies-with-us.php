@@ -63,7 +63,7 @@ $companies = $companies->all();
                             <div class="cmp-main">
                                 <div class="cmp-log">
                                     <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $c->logo_location . '/' . $c->logo) ?>"
-                                         alt="" title="<?= $c->name ?>"/>
+                                         alt="<?= $c->name ?>" title="<?= $c->name ?>"/>
                                 </div>
                                 <div class="cmp-name"><?= $c->name ?></div>
                             </div>

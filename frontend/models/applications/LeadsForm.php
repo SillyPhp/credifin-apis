@@ -54,7 +54,7 @@ class LeadsForm extends Model
            $model->last_name = $this->last_name;
            $model->student_mobile_number = $this->student_mobile_number;
            $model->student_email = $this->student_email;
-           $model->college_name = $this->university_name;
+           $model->college_institute_name = $this->university_name;
            $model->course_name = $this->course_name;
            $model->course_fee_annual = $this->course_fee_annual;
            $model->filled_by = 1;
