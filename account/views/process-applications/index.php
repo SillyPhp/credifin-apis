@@ -1017,6 +1017,7 @@ body, .page-content{
     border-radius: 8px;
     font-size: 14px;
     background: #fff;
+    text-transform: capitalize;
 }
 .reasonsReject button:hover{
     background: #00a0e3;
