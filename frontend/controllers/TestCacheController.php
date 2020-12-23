@@ -65,14 +65,16 @@ class TestCacheController extends Controller
 //                        print_r($res->getErrors());
 //                        die();
 //                    }
-                    $applied_resume = AppliedApplications::find()
-                        ->where(['resume_enc_id' => $v['resume_enc_id']])
-                        ->one();
-                    $applied_resume->resume_enc_id = null;
-                    if(!$applied_resume->update()){
-                        print_r($applied_resume->getErrors());
-                        die();
-                    }
+                    $rows = AppliedApplications::updateAll(['resume_enc_id' => null], 'resume_enc_id = "'.$v['resume_enc_id'].'"');
+
+//                    $applied_resume = AppliedApplications::find()
+//                        ->where(['resume_enc_id' => $v['resume_enc_id']])
+//                        ->one();
+//                    $applied_resume->resume_enc_id = null;
+//                    if (!$applied_resume->update()) {
+//                        print_r($applied_resume->getErrors());
+//                        die();
+//                    }
                 }
             }
         } else {
