@@ -117,7 +117,7 @@ if ($type == 'Internship') {
         $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " internships in " . $placements["name"]);
-            array_push($loc, $job_heading . " internships in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
         $lc = implode(", ", array_unique($loc));
