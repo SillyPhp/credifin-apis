@@ -649,7 +649,7 @@ class JobsController extends ApiBaseController
                         return $this->response(200, ['status' => 200, 'profile' => $d]);
                     }
                 } else {
-                    return $this->response(500);
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             } else {
                 return $this->response(409);

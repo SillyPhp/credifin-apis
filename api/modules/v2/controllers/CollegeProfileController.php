@@ -16,6 +16,7 @@ use common\models\CollegeSettings;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\InterviewProcessFields;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
 use common\models\Teachers;
@@ -1253,8 +1254,29 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            if ($applied_user) {
-                $process = $applied_user[0]['appliedApplicationProcesses'];
+            $process = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.field_enc_id', 'b.sequence', 'b.field_name', '(CASE
+                        WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
+                        WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
+                        WHEN b.icon = "fa fa-user" THEN "fas fa-user"
+                        WHEN b.icon = "fa fa-cogs" THEN "fas fa-cogs"
+                        WHEN b.icon = "fa fa-user-circle" THEN "fas fa-user-circle"
+                        WHEN b.icon = "fa fa-users" THEN "fas fa-users"
+                        WHEN b.icon = "fa fa-video-camera" THEN "fas fa-video"
+                        WHEN b.icon = "fa fa-check" THEN "fas fa-check"
+                        WHEN b.icon = "fa fa-pencil-square-o" THEN "fas fa-pen-square"
+                        WHEN b.icon = "fa fa-envelope" THEN "fas fa-envelope"
+                        WHEN b.icon = "fa fa-question" THEN "fas fa-question"
+                        WHEN b.icon = "fa fa-paper-plane" THEN "fas fa-paper-plane"
+                        ELSE "fas fa-plus"
+                        END) as icon'])
+                ->where(['a.slug' => $slug])
+                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
+                ->asArray()
+                ->all();
+
+            if ($process) {
                 foreach ($process as $k => $v) {
                     $process[$k]['count'] = 0;
                 }
