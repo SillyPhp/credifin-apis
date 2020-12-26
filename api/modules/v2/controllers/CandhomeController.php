@@ -376,7 +376,7 @@ class CandhomeController extends ApiBaseController
             $params = Yii::$app->request->post();
             $limit = 0;
             if (isset($params['limit']) && !empty($params['limit'])) {
-                $limit = int($params['limit']);
+                $limit = (int)$params['limit'];
             }
 
             $shortlisted_applications = ShortlistedApplications::find()
@@ -421,7 +421,7 @@ class CandhomeController extends ApiBaseController
                             $f->onCondition(['f.is_deleted' => 0]);
                         }], true)
                         ->joinWith(['applicationTypeEnc z']);
-                }], false)
+                }], true)
                 ->where([
                     'a.created_by' => $user->user_enc_id,
                     'a.shortlisted' => 1,
@@ -452,11 +452,11 @@ class CandhomeController extends ApiBaseController
                     $diff = $datetime1->diff($datetime2);
                     $shortlisted_applications[$k]['filling_soon'] = ($diff->days > 10) ? true : false;
                     if ($j['status'] != 'Active') {
-                        $data['is_closed'] = true;
+                        $shortlisted_applications[$k]['is_closed'] = true;
                     } else {
-                        $data['is_closed'] = false;
+                        $shortlisted_applications[$k]['is_closed'] = false;
                     }
-                    foreach ($j['applicationPlacementLocations'] as $l) {
+                    foreach ($j['applicationEnc']['applicationPlacementLocations'] as $l) {
                         if (!in_array($l['name'], $locations)) {
                             array_push($locations, $l['name']);
                             $positions += $l['positions'];
