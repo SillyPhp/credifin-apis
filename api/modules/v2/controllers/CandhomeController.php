@@ -380,8 +380,8 @@ class CandhomeController extends ApiBaseController
             }
 
             $shortlisted_applications = ShortlistedApplications::find()
-                ->alias('a')
                 ->distinct()
+                ->alias('a')
                 ->select([
                     'a.shortlisted_enc_id', 'a.application_enc_id',
                     'bb.name',
@@ -401,12 +401,11 @@ class CandhomeController extends ApiBaseController
                     'bb.name',
                     'bb.slug org_slug',
                     'cc.employer_application_enc_id',
-                    'cc.college_enc_id',
                     'cc.is_college_approved',
                 ])
                 ->joinWith(['applicationEnc c' => function ($c) {
-                    $c->joinWith(['organizationEnc bb']);
-                    $c->innerJoinWith(['erexxEmployerApplications cc']);
+                    $c->joinWith(['organizationEnc bb'],false);
+                    $c->innerJoinWith(['erexxEmployerApplications cc'],false);
                     $c->joinWith(['designationEnc dd'], false)
                         ->joinWith(['title d' => function ($d) {
                             $d->joinWith(['parentEnc e']);
@@ -441,6 +440,7 @@ class CandhomeController extends ApiBaseController
             }
             $shortlisted_applications = $shortlisted_applications->asArray()
                 ->all();
+
 
             if ($shortlisted_applications) {
                 foreach ($shortlisted_applications as $k => $j) {
