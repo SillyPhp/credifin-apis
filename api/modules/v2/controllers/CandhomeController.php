@@ -9,6 +9,7 @@ use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\ClassNotes;
 use common\models\ErexxCollaborators;
+use common\models\ErexxEmployerApplications;
 use common\models\OnlineClasses;
 use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireFields;
@@ -115,6 +116,7 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+
             $shortlisted_cnt = ShortlistedApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -130,7 +132,7 @@ class CandhomeController extends ApiBaseController
                     'cc.is_college_approved' => 1,
                     'c.status' => 'Active',
                     'c.is_deleted' => 0,
-                    'c.application_for' => [0, 2],
+                    'c.application_for' => 2,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                     'bb.status' => 'Active',
@@ -351,6 +353,7 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+
             $counts = [
                 'applied_cnt' => [0 => ['applied_count' => $applied_count]],
                 'companies_cnt' => $companies_cnt,
@@ -363,6 +366,131 @@ class CandhomeController extends ApiBaseController
             return $this->response(200, $counts);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShortlistedApplications()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $limit = 0;
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = (int)$params['limit'];
+            }
+
+            $shortlisted_applications = ShortlistedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.shortlisted_enc_id', 'a.application_enc_id',
+                    'bb.name',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'e.name parent_category',
+                    'ee.name title',
+                    'dd.designation',
+                    'z.name job_type',
+                    'm.positions',
+                    'c.application_enc_id',
+                    'c.slug',
+                    'c.status',
+                    'c.last_date',
+                    'c.joining_date',
+                    'c.created_on',
+                    'bb.organization_enc_id org_enc_id',
+                    'bb.name',
+                    'bb.slug org_slug',
+                    'cc.employer_application_enc_id',
+                    'cc.is_college_approved',
+                ])
+                ->joinWith(['applicationEnc c' => function ($c) {
+                    $c->joinWith(['organizationEnc bb'],false);
+                    $c->innerJoinWith(['erexxEmployerApplications cc'],false);
+                    $c->joinWith(['designationEnc dd'], false)
+                        ->joinWith(['title d' => function ($d) {
+                            $d->joinWith(['parentEnc e']);
+                            $d->joinWith(['categoryEnc ee']);
+                        }], false)
+                        ->joinWith(['applicationOptions m'], false)
+                        ->joinWith(['applicationPlacementLocations f' => function ($f) {
+                            $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                            $f->joinWith(['locationEnc ff' => function ($z) {
+                                $z->joinWith(['cityEnc g']);
+                            }], false);
+                            $f->onCondition(['f.is_deleted' => 0]);
+                        }], true)
+                        ->joinWith(['applicationTypeEnc z']);
+                }], true)
+                ->where([
+                    'a.created_by' => $user->user_enc_id,
+                    'a.shortlisted' => 1,
+                    'cc.status' => 'Active',
+                    'cc.is_deleted' => 0,
+                    'cc.is_college_approved' => 1,
+                    'c.status' => 'Active',
+                    'c.is_deleted' => 0,
+                    'c.application_for' => 2,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0,
+                ]);
+            if ($limit) {
+                $shortlisted_applications->limit($limit);
+            }
+            $shortlisted_applications = $shortlisted_applications->asArray()
+                ->all();
+
+
+            if ($shortlisted_applications) {
+                foreach ($shortlisted_applications as $k => $j) {
+                    $locations = [];
+                    $positions = 0;
+                    $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                    $datetime2 = new \DateTime(date('Y-m-d'));
+
+                    $diff = $datetime1->diff($datetime2);
+                    $shortlisted_applications[$k]['filling_soon'] = ($diff->days > 10) ? true : false;
+                    if ($j['status'] != 'Active') {
+                        $shortlisted_applications[$k]['is_closed'] = true;
+                    } else {
+                        $shortlisted_applications[$k]['is_closed'] = false;
+                    }
+                    foreach ($j['applicationEnc']['applicationPlacementLocations'] as $l) {
+                        if (!in_array($l['name'], $locations)) {
+                            array_push($locations, $l['name']);
+                            $positions += $l['positions'];
+                        }
+                    }
+                    $shortlisted_applications[$k]['is_exclusive'] = $this->__exclusiveJob($j['application_enc_id']);
+                    $shortlisted_applications[$k]['location'] = $locations ? implode(',', $locations) : 'Work From Home';
+                    if ($positions) {
+                        $shortlisted_applications[$k]['positions'] = $positions;
+                    } else {
+                        $shortlisted_applications[$k]['positions'] = $j['positions'];
+                    }
+                }
+                return $this->response(200, ['status' => 200, 'shortlisted' => $shortlisted_applications]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -413,7 +541,7 @@ class CandhomeController extends ApiBaseController
                     'a.is_deleted' => 0,
 //                    'b.status' => 'Active',
                     'b.is_deleted' => 0,
-                    'b.application_for' => [0, 2],
+                    'b.application_for' => 2,
                     'd.is_erexx_approved' => 1,
                     'd.has_placement_rights' => 1,
                     'd.status' => 'Active',

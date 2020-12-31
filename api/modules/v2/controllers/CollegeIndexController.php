@@ -925,24 +925,14 @@ class CollegeIndexController extends ApiBaseController
             $req = [];
             $req['college_id'] = $organizations['college_id'];
 
-//            $candidate = UserOtherDetails::find()f
-//                ->alias('a')
-//                ->select(['b.first_name', 'b.last_name', 'b.user_enc_id', 'a.starting_year', 'a.ending_year', 'a.cgpa', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-//                ->joinWith(['userEnc b' => function ($b) {
-//                    $b->joinWith(['cityEnc b1']);
-//                }], false)
-//                ->joinWith(['courseEnc cc'], false)
-//                ->joinWith(['departmentEnc c'], false)
-//                ->where(['a.organization_enc_id' => $req['college_id'], 'a.user_enc_id' => $data['user_id']])
-//                ->asArray()
-//                ->one();
-
             $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->select(['a.user_other_details_enc_id', 'a.user_enc_id',
                     'a.cgpa', 'a.university_roll_number', 'b.first_name', 'b.last_name',
                     'CONCAT(b.first_name, " " ,b.last_name) user_full_name',
-                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                    'b.email', 'b.phone',
+                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name',
+                    'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
@@ -966,19 +956,86 @@ class CollegeIndexController extends ApiBaseController
             $candidates = $candidates->asArray()
                 ->all();
 
-//            if ($candidate) {
-//                $candidate['loan_applied'] = $this->loanApplied($candidate['user_enc_id']);
-//                $candidate['applied_companies'] = $this->appliedCompanies($candidate['user_enc_id']);
-//            }
             if ($candidates) {
                 foreach ($candidates as $key => $val) {
                     $candidates[$key]['loan_applied'] = $this->loanApplied($val['user_enc_id']);
                     $candidates[$key]['applied_companies'] = $this->appliedCompanies($val['user_enc_id']);
+                    $candidates[$key]['applied_jobs'] = $this->appliedJobs($val['user_enc_id'], 'Jobs');
+                    $candidates[$key]['applied_internships'] = $this->appliedJobs($val['user_enc_id'], 'Internships');
                 }
             }
 
             return $this->response(200, ['status' => 200, 'all_candidates' => $candidates]);
         }
+    }
+
+    private function appliedJobs($user_id, $type)
+    {
+        $applied = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.applied_application_enc_id',
+                'a.application_enc_id',
+                'a.current_round',
+                'g.name application_type',
+                'b.slug',
+                'b.status',
+                'd.slug comp_slug',
+                'd.name organization_name',
+                'e2.name title',
+                'e1.name profile',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+            ])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->innerJoinWith(['erexxEmployerApplications c']);
+                $b->joinWith(['organizationEnc d']);
+                $b->joinWith(['title e' => function ($e) {
+                    $e->joinWith(['parentEnc e1']);
+                    $e->joinWith(['categoryEnc e2']);
+                }], false);
+                $b->joinWith(['applicationTypeEnc g']);
+            }], false)
+            ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                $f->joinWith(['cityEnc f1'], false);
+            }])
+            ->where([
+                'a.created_by' => $user_id,
+                'a.is_deleted' => 0,
+//                    'b.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => 2,
+                'd.is_erexx_approved' => 1,
+                'd.has_placement_rights' => 1,
+                'd.status' => 'Active',
+                'd.is_deleted' => 0,
+                'c.status' => 'Active',
+                'c.is_deleted' => 0,
+                'c.is_college_approved' => 1
+            ])
+            ->andWhere(['g.name' => $type])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        if ($applied) {
+            foreach ($applied as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied[$i]['cities'] = implode(',', $cities);
+                if ($a['status'] != 'Active') {
+                    $applied[$i]['is_closed'] = true;
+                } else {
+                    $applied[$i]['is_closed'] = false;
+                }
+                $i++;
+            }
+        }
+
+        return $applied;
     }
 
     private function loanApplied($user_id)
