@@ -44,6 +44,19 @@ class SkillUpController extends ApiBaseController
     public function actionFeed()
     {
         if ($user = $this->isAuthorized()) {
+
+            if (isset($param['limit']) && !empty($param['limit'])) {
+                $limit = $param['limit'];
+            } else {
+                $limit = 10;
+            }
+
+            if (isset($param['page']) && !empty($param['page'])) {
+                $page = $param['page'];
+            } else {
+                $page = 1;
+            }
+
             $feeds = SkillsUpPosts::find()
                 ->alias('a')
                 ->select([
@@ -53,12 +66,14 @@ class SkillUpController extends ApiBaseController
                     'a.post_short_summery',
                     'a.slug',
                     'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
-                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                     'b.name source_name',
                     'b.url source_url',
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
             if ($feeds) {
