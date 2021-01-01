@@ -54,7 +54,7 @@ class ProcessApplicationsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name job_title','a.slug','a.application_enc_id','a.interview_process_enc_id','ate.name application_type','pe.icon',
+                ->select(['c.name job_title','application_for','a.slug','a.application_enc_id','a.interview_process_enc_id','ate.name application_type','pe.icon',
                     '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
