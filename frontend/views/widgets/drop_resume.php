@@ -12,6 +12,79 @@ use yii\helpers\Url;
         </div>
     </div>
 
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="loggedIn"
+                       value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="org"
+                       value="<?= (!Yii::$app->user->identity->organization->organization_enc_id) ? 'yes' : '' ?>">
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="warn-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/landing/login-warn.png'); ?>">
+                            </div>
+                            <p class="warn-p">This feature only for candidates</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="dropcv">
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="existsModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Wait for company to create the feature</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
 <?php
 $this->registerCss('
 .fab-message{
@@ -107,6 +180,31 @@ $this->registerCss('
 }
 ');
 
+$script = <<<JS
+if('$type' == 'company'){
+var data = {slug: window.location.pathname.split('/')[1]};
+    $.ajax({
+        type: 'POST',
+        url: '/drop-resume/check-resume',
+        data : data,
+        success: function(response){
+            $('#dropcv').val(response.message);
+        }
+    });
+}else if('$type' == 'application'){
+
+    $.ajax({
+       type: 'POST',
+       url: '/drop-resume/check-resume',
+       data : {slug:'$slug'},
+       success: function(response){
+           $('#dropcv').val(response.message);
+       }
+    });
+}
+JS;
+
+$this->registerJs($script);
 
 $r = [
     'username' => $username,

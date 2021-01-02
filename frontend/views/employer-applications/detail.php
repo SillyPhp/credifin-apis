@@ -1,13 +1,16 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
+
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application'
+    'type' => 'application',
+    'slug' => $slug
 ]);
 $job_heading = (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name']));
 if ($type == 'Job') {
@@ -117,7 +120,7 @@ if ($type == 'Internship') {
         $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " internships in " . $placements["name"]);
-            array_push($loc, $job_heading . " internships in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
         $lc = implode(", ", array_unique($loc));
@@ -156,28 +159,26 @@ if ($type == 'Internship') {
     $keywords = $org['org_name'] . ' internships,Internships,Paid ' . $job_heading . ' Internships, ' . rtrim($lc_data, ',') . ', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,' . $job_heading . ' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
-if (!empty($data2))
-{
-    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
-}else{
-    $content_logo = (($org['logo'])?Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'],'https'):null);
+if (!empty($data2)) {
+    $content_logo = (($org['logo']) ? Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], 'https') : null);
+} else {
+    $content_logo = (($org['logo']) ? Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], 'https') : null);
 }
 $content = [
-    'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
-    'company_name'=>$org['org_name'],
-    'bg_icon'=>(($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
-    'canvas'=>(($org['logo'])?false:true),
-    'logo'=>$content_logo,
-    'initial_color'=>$org['color'],
-    'location'=>(($lc)?$lc:'Work From Home'),
-    'app_id'=>$application_details['application_enc_id'],
-    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
+    'job_title' => (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
+    'company_name' => $org['org_name'],
+    'bg_icon' => (($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'canvas' => (($org['logo']) ? false : true),
+    'logo' => $content_logo,
+    'initial_color' => $org['color'],
+    'location' => (($lc) ? $lc : 'Work From Home'),
+    'app_id' => $application_details['application_enc_id'],
+    'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
 ];
-if (empty($application_details['image'])||$application_details['image']==1){
-    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
-}else
-{
-    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$application_details['image'];
+if (empty($application_details['image']) || $application_details['image'] == 1) {
+    $image = \frontend\models\script\ImageScript::widget(['content' => $content]);
+} else {
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
@@ -220,65 +221,6 @@ $this->render('/widgets/employer_applications/top-banner', [
     'shortlist_btn_display' => true
 ]);
 ?>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="dropcv">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="existsModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Wait for company to create the feature</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="loggedIn"
-                   value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Please Login as Candidate to drop your resume</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
 <section>
     <div class="container">
         <div class="row m-0">
@@ -416,7 +358,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
                         'shortlist_btn_display' => true,
-                        'whatsAppmodel'=>$whatsAppmodel
+                        'whatsAppmodel' => $whatsAppmodel
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
@@ -435,12 +377,12 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
                         'shortlist_btn_display' => true,
-                        'whatsAppmodel'=>$whatsAppmodel
+                        'whatsAppmodel' => $whatsAppmodel
                     ]);
                 endif;
                 ?>
 
-                <?= $this->render('/widgets/join-social-groups');?>
+                <?= $this->render('/widgets/join-social-groups'); ?>
 
                 <?php
                 if (Yii::$app->user->isGuest) {
@@ -493,7 +435,7 @@ if ($settings["showNewPositionsWidget"]):
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="type-1">
                 <div>
-                    <a id="course-list-btn" href="<?= Url::to('/courses')?>" class="btn btn-3">
+                    <a id="course-list-btn" href="<?= Url::to('/courses') ?>" class="btn btn-3">
                         <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                         <span class="round"><i class="fas fa-chevron-right"></i></span>
                     </a>
@@ -505,19 +447,20 @@ if ($settings["showNewPositionsWidget"]):
 </div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
-        $ctt =  ucfirst(strtolower($cat_name));
-        $category_name = str_replace(' ','-',$ctt);
+        $ctt = ucfirst(strtolower($cat_name));
+        $category_name = str_replace(' ', '-', $ctt);
     }
     ?>
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-sm-8 col-xs-12">
-            <div class="heading-style">Enhance Your Skills With Free Learning Videos </div>
+                <div class="heading-style">Enhance Your Skills With Free Learning Videos</div>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/'.$category_name) :  Url::to('/learning')?>" class="btn btn-3">
+                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>"
+                           class="btn btn-3">
                             <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
@@ -578,7 +521,7 @@ if ($settings["showNewPositionsWidget"]):
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 <?php } ?>
 
 <script>
@@ -1895,10 +1838,10 @@ button.lc-item-video-menu {
 ");
 
 $script = <<<JS
-var slugg = '$slug'; 
 var type = "$type";
 var keyword = "$searchItems";
 var cat = '';
+var slugg = '$slug'
 
 function getCourseList(keyword=null,cat=null){
     $.ajax({
@@ -1948,14 +1891,6 @@ function getCourseList(keyword=null,cat=null){
     });
 }
 getCourseList(keyword,cat);
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : {slug: slugg},
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
 
  $(document).on('click','#close_btn',function()
  {

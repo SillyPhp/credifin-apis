@@ -16,6 +16,7 @@ use common\models\CollegeSettings;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\InterviewProcessFields;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
 use common\models\Teachers;
@@ -1188,11 +1189,11 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $process = AppliedApplications::find()
+            $applied_user = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
                     'f.username',
-                    'CONCAT(f.first_name, " ", f.last_name) name',
+                    'CONCAT(f.first_name, " ", f.last_name) name', 'a.current_round',
                     'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
@@ -1207,7 +1208,7 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', '(CASE
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.sequence', 'dd.field_name', '(CASE
                         WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
@@ -1231,11 +1232,11 @@ class CollegeProfileController extends ApiBaseController
                     $j->select(['j.candidate_rejection_enc_id',
                         'j.applied_application_enc_id',
                         'j.rejection_type',
-                        'GROUP_CONCAT(DISTINCT(j2.reason) SEPARATOR ",") reasons'
                     ]);
                     $j->joinWith(['candidateRejectionReasons j1' => function ($j1) {
+                        $j1->select(['j1.rejection_reasons_enc_id', 'j1.candidate_rejection_enc_id', 'j1.candidate_rejection_reasons_enc_id', 'j2.reason']);
                         $j1->joinWith(['rejectionReasonsEnc j2']);
-                    }], false);
+                    }]);
                     $j->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
                         $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
                         $ccj->joinWith(['applicationEnc ae' => function ($ae) {
@@ -1253,8 +1254,130 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $process = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.field_enc_id', 'b.sequence', 'b.field_name', '(CASE
+                        WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
+                        WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
+                        WHEN b.icon = "fa fa-user" THEN "fas fa-user"
+                        WHEN b.icon = "fa fa-cogs" THEN "fas fa-cogs"
+                        WHEN b.icon = "fa fa-user-circle" THEN "fas fa-user-circle"
+                        WHEN b.icon = "fa fa-users" THEN "fas fa-users"
+                        WHEN b.icon = "fa fa-video-camera" THEN "fas fa-video"
+                        WHEN b.icon = "fa fa-check" THEN "fas fa-check"
+                        WHEN b.icon = "fa fa-pencil-square-o" THEN "fas fa-pen-square"
+                        WHEN b.icon = "fa fa-envelope" THEN "fas fa-envelope"
+                        WHEN b.icon = "fa fa-question" THEN "fas fa-question"
+                        WHEN b.icon = "fa fa-paper-plane" THEN "fas fa-paper-plane"
+                        ELSE "fas fa-plus"
+                        END) as icon'])
+                ->where(['a.slug' => $slug])
+                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
+                ->asArray()
+                ->all();
+
+            $application_detail = EmployerApplications::find()
+                ->alias('a')
+                ->select(['c.name job_title', 'a.slug', 'a.status', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
+                    '(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
+                ELSE "No Experience" 
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'ao.positions'])
+                ->where(['a.slug' => $slug])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                    $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+                }], false, 'INNER JOIN')
+                ->joinWith(['applicationTypeEnc ate'], false)
+                ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                    $b->onCondition(['o.is_deleted' => 0]);
+                    $b->joinWith(['locationEnc s' => function ($b) {
+                        $b->joinWith(['cityEnc t'], false);
+                    }], false);
+                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                    $b->distinct();
+                }])
+                ->joinWith(['applicationOptions ao'], false)
+                ->asArray()
+                ->one();
+
+            if ($application_detail) {
+                if ($application_detail['status'] != 'Active') {
+                    $application_detail['is_closed'] = true;
+                } else {
+                    $application_detail['is_closed'] = false;
+                }
+
+                $locations = [];
+                $positions = 0;
+                if ($application_detail['applicationPlacementLocations']) {
+                    foreach ($application_detail['applicationPlacementLocations'] as $l) {
+                        if (!in_array($l['name'], $locations)) {
+                            array_push($locations, $l['name']);
+                            $positions += $l['positions'];
+                        }
+                    }
+                }
+
+                if ($application_detail['wage_type'] == 'Fixed') {
+                    if ($application_detail['wage_duration'] == 'Monthly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 12;
+                    } elseif ($application_detail['wage_duration'] == 'Hourly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 40 * 52;
+                    } elseif ($application_detail['wage_duration'] == 'Weekly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 52;
+                    }
+                    setlocale(LC_MONETARY, 'en_IN');
+                    $application_detail['amount'] = '₹' . utf8_encode(money_format('%!.0n', $application_detail['fixed_wage'])) . 'p.a.';
+                } else if ($application_detail['wage_type'] == 'Negotiable') {
+                    if ($application_detail['wage_duration'] == 'Monthly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 12;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 12;
+                    } elseif ($application_detail['wage_duration'] == 'Hourly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 40 * 52;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 40 * 52;
+                    } elseif ($application_detail['wage_duration'] == 'Weekly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 52;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 52;
+                    }
+                    setlocale(LC_MONETARY, 'en_IN');
+                    if (!empty($application_detail['min_wage']) && !empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = '₹' . utf8_encode(money_format('%!.0n', $application_detail['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $application_detail['max_wage'])) . 'p.a.';
+                    } elseif (!empty($application_detail['min_wage'])) {
+                        $application_detail['amount'] = 'From ₹' . utf8_encode(money_format('%!.0n', $application_detail['min_wage'])) . 'p.a.';
+                    } elseif (!empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = 'Upto ₹' . utf8_encode(money_format('%!.0n', $application_detail['max_wage'])) . 'p.a.';
+                    } elseif (empty($application_detail['min_wage']) && empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = 'Negotiable';
+                    }
+                }
+
+                $application_detail['locations'] = $locations;
+                $application_detail['positions'] = $positions ? $positions : $application_detail['positions'];
+                $application_detail['icon'] = Url::to('@commonAssets/categories/' . $application_detail['icon'], 'https');
+            }
+
+            if ($process) {
+                foreach ($process as $k => $v) {
+                    $process[$k]['count'] = 0;
+                }
+            }
+
+            $h_count = 0;
             $i = 0;
-            foreach ($process as $p) {
+            foreach ($applied_user as $p) {
                 $user_data = Users::find()
                     ->alias('a')
                     ->select(['a.user_enc_id', 'GROUP_CONCAT(DISTINCT(b1.skill) SEPARATOR ",") skill', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industry'])
@@ -1276,16 +1399,26 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                foreach ($process as $k => $v) {
+                    if ($v['sequence'] == $p['current_round']) {
+                        $process[$k]['count'] += 1;
+                    }
+                }
+
+                if ($p['status'] == 'Hired') {
+                    $h_count += 1;
+                }
+
 
                 if ($user_data['skill'] != null) {
                     $user_data['skill'] = explode(',', $user_data['skill']);
                 }
-                $process[$i]['user_data'] = $user_data;
+                $applied_user[$i]['user_data'] = $user_data;
                 $i++;
             }
 
-            if ($process) {
-                return $this->response(200, ['status' => 200, 'data' => $process]);
+            if ($applied_user) {
+                return $this->response(200, ['status' => 200, 'data' => $applied_user, 'process' => $process, 'hired_count' => $h_count, 'total_count' => count($applied_user), 'application_detail' => $application_detail]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }

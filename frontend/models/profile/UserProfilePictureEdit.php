@@ -28,7 +28,7 @@ class UserProfilePictureEdit extends Model
     public function rules()
     {
         return [
-            [['profile_image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
+            [['profile_image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 

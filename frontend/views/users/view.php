@@ -149,7 +149,7 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
 
-                        if (!empty($user['phone'])) { ?>
+                        if (Yii::$app->user->identity->organization->organization_enc_id&&!empty($user['phone'])&&!empty($userApplied)) { ?>
                             <li class="whatsapp">
                                 <a href="<?= "https://api.whatsapp.com/send?phone=".$user['phone'] ?>" target="_blank">
                                     <i class="fab fa-whatsapp"></i>
@@ -178,6 +178,7 @@ $this->params['header_dark'] = false;
                     </ul>
                     <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                         if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                            if (!empty($userCv['resume_location'])&&!empty($userCv['resume'])){
                             ?>
                             <div class="down-res">
                                 <?php
@@ -189,7 +190,7 @@ $this->params['header_dark'] = false;
                                     Resume<i
                                             class="fas fa-download"></i></a>
                             </div>
-                        <?php }
+                        <?php } }
                     } ?>
                 </div>
             </div>
