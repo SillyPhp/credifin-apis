@@ -138,6 +138,11 @@ foreach ($fields as $f) {
                         </div>
                     </div>
                 </div>
+                <div class="">
+                    <form>
+                        <input type="email" id="email" name="email">
+                    </form>
+                </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="j-detail">
@@ -838,7 +843,7 @@ foreach ($fields as $f) {
 <?php
 $this->registerCss('
 .page-content {
-    background-image: url(/assets/themes/ey/images/backgrounds/quickjob.png) !important;
+    background-image: url(/assets/common/categories/process-bg.png) !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
