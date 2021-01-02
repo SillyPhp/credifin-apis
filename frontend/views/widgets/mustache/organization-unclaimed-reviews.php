@@ -123,9 +123,14 @@ $link = Url::to($org_slug . '/reviews', true);
     </script>
 <?php
 $this->registerCss("
-.heading_style_1
-{
-font-size:18px;
+.heading_style_1 {
+	font-size: 18px;
+	text-align: center;
+	font-family: roboto;
+}
+.rev-image {
+	text-align: center;
+	margin: 40px;
 }
 ");
 
@@ -181,7 +186,7 @@ function getReviews(limit=null,offset=null) {
                        $('#load_more_btn').hide();
                    }
             } else if(response.status === 201){
-                $("#org-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
+                $("#org-reviews").html('<div><div class = "rev-image"><img src="/assets/themes/ey/images/pages/landing/no-reviews.png"></div><p class = "heading_style_1">Currenlty No Review Has Been Given To This Company</p></div>');
                 $('.viewbtn').hide();
                 $('#load_more_btn').hide();
             }

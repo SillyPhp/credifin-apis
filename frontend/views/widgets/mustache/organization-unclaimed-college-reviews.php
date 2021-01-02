@@ -118,6 +118,10 @@ $link = Url::to($org_slug . '/reviews', true);
     </script>
 <?php
 $this->registerCss("
+.rev-image {
+	text-align: center;
+	margin: 40px;
+}
 .ur-bg{
    background:#edecec;
     color: #000;
@@ -132,9 +136,10 @@ $this->registerCss("
     text-align:center;
     padding-top:20px;
 }
-.heading_style_1
-{
-font-size:18px;
+.heading_style_1 {
+	font-size: 18px;
+	text-align: center;
+	font-family: roboto;
 }
 @media only screen and (max-width: 767px){
     .ur-bg {
@@ -185,7 +190,7 @@ function getStudentReviews(limit=null,offset=null) {
                        $('#load_more_btn1').hide();
                    }
             } else if(response.status === 201){
-                $("#org-students-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
+                $("#org-students-reviews").html('<div><div class = "rev-image"><img src="/assets/themes/ey/images/pages/landing/no-reviews.png"></div><p class = "heading_style_1">Currenlty No Review Has Been Given To This Company</p></div>');
                 $('.viewbtn').hide();
                 $('#load_more_btn1').hide();
             }
