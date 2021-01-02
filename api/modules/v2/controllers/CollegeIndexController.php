@@ -1151,7 +1151,7 @@ class CollegeIndexController extends ApiBaseController
                         'c.status' => 'Active',
                         'c.is_deleted' => 0,
                         'c.for_all_colleges' => 1,
-                        'c.application_for' => [0, 2]
+                        'c.application_for' => 2
                     ]);
                 }])
                 ->joinWith(['industryEnc h'], false)

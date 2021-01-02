@@ -12,6 +12,12 @@ switch ($application_name['application_type']) {
         $app_type = 'internship';
         break;
 }
+if ($application_name['application_for']==2){
+    $slug_base = 'https://www.myecampus.in/detail?id=';
+}
+else{
+    $slug_base ='/'.$app_type.'/';
+}
 if ($application_name['wage_type'] == 'Fixed') {
     if ($application_name['wage_duration'] == 'Monthly') {
         $application_name['fixed_wage'] = $application_name['fixed_wage'] * 12;
@@ -116,7 +122,7 @@ foreach ($fields as $f) {
                     </div>
                     <div class="j-data">
                         <div class="j-title">
-                            <a href="/<?= $app_type . "/" . $application_name['slug'] ?>" target="_blank">
+                            <a href="<?= $slug_base. $application_name['slug']?>" target="_blank">
                                 <?= $application_name['job_title'] ?></a>
                         </div>
 
