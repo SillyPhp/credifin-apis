@@ -45,6 +45,9 @@ namespace common\models;
  * @property int $is_phone_verified Is User Phone Verified (0 as False, 1 as True)
  * @property int $is_credential_change
  * @property string $status User Status (Active, Inactive, Pending)
+ * @property string $last_visit user last login details
+ * @property string $last_visit_through user last login through which method
+ * @property string $signed_up_through from where user has first signed up
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
  * @property IndianGovtDepartments[] $indianGovtDepartments
@@ -529,8 +532,8 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'initials_color'], 'required'],
-            [['description', 'objective', 'user_of', 'status'], 'string'],
-            [['dob', 'created_on', 'last_updated_on'], 'safe'],
+            [['description', 'objective', 'user_of', 'status', 'last_visit_through', 'signed_up_through'], 'string'],
+            [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
@@ -3192,6 +3195,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Teachers::className(), ['user_enc_id' => 'user_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
