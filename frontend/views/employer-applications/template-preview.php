@@ -1103,17 +1103,6 @@ $this->registerCss("
     ");
 $this->registerJs("
 
-var slugg = '$slug'; 
-var data = {slug: slugg};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
-
  $(document).on('click','#close_btn',function()
  {
     $('.fader').css('display','none');
