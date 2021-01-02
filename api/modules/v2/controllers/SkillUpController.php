@@ -69,6 +69,8 @@ class SkillUpController extends ApiBaseController
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                     'b.name source_name',
                     'b.url source_url',
+                    'a.post_author',
+                    'a.content_type'
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0])
