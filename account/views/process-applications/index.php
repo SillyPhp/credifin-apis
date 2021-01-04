@@ -122,26 +122,22 @@ foreach ($fields as $f) {
 
                         <div class="j-share">
                             <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href=""
-                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                                                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
-                            <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a hred-mainonclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                            <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
+                                        hred-mainonclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
                             <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href=""
-                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                                                                                onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-twitter"></i></a></span>
                             <span class="mail" data-toggle="tooltip" title="Share via Email"><a href=""
-                                                  onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                                                                                onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
                             <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href=""
-                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                                                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
                         </div>
                     </div>
-                </div>
-                <div class="">
-                    <form>
-                        <input type="email" id="email" name="email">
-                    </form>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
@@ -248,6 +244,19 @@ foreach ($fields as $f) {
                     <div class="scd-btn">
                         <a href="/account/schedular/interview">Schedule Interview</a>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-12 use-ff">
+                <div class="job-txt">Invite Candidates via:</div>
+                <div class="job-mail">
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="Email">
+                    <button class="redd"><i class="fa fa-envelope"></i></button>
+                </div>
+                <div class="job-whatsapp">
+                    <input type="text" class="form-control" id="text" name="text"
+                           placeholder="Whatsapp">
+                    <button class="grn"><i class="fa fa-whatsapp"></i></button>
                 </div>
             </div>
         </div>
@@ -410,7 +419,8 @@ foreach ($fields as $f) {
                                                 <input type="radio" value="3"
                                                        name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For Later</label>
+                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
+                                                    Later</label>
                                             </div>
                                         </li>
                                     </ul>
@@ -440,31 +450,34 @@ foreach ($fields as $f) {
                                     ?>
                                     <p><?= $msg ?></p>
                                     <?php
-                                    if($arr['candidateRejections'][0]['candidateConsiderJobs']){
-                                    ?>
+                                    if ($arr['candidateRejections'][0]['candidateConsiderJobs']) {
+                                        ?>
                                         <div class="sr-jobs">
-                                        <?php
+                                            <?php
                                             $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
                                             $cCount -= 2;
-                                            $i=0;
+                                            $i = 0;
                                             foreach ($arr['candidateRejections'][0]['candidateConsiderJobs'] as $crj) {
-                                                if($i==2){
+                                                if ($i == 2) {
                                                     break;
                                                 }
-                                            ?>
-                                            <a href="/<?= $app_type ."/". $crj['applicationEnc']['slug']?>" target="_blank">
-                                                <div class="customJobBox">
-                                                    <div class="jc-icon">
-                                                        <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                ?>
+                                                <a href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
+                                                   target="_blank">
+                                                    <div class="customJobBox">
+                                                        <div class="jc-icon">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                        </div>
+                                                        <p><?= $crj['applicationEnc']['job_title'] ?></p>
                                                     </div>
-                                                    <p><?= $crj['applicationEnc']['job_title']?></p>
-                                                </div>
-                                            </a>
-                                        <?php
+                                                </a>
+                                                <?php
                                                 $i++;
-                                    }
-                                    ?>
-                                        <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>" class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?> More</p>
+                                            }
+                                            ?>
+                                            <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>"
+                                               class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?>
+                                                More</p>
                                         </div>
                                         <?php
                                     }
@@ -596,7 +609,7 @@ foreach ($fields as $f) {
                                            target="_blank">View
                                             Profile</a>
                                         <?php
-                                        if (!empty($arr['resume_location'])||!empty($arr['resume'])){
+                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
                                             $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                                             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                                             $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
@@ -842,8 +855,47 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.redd{
+    background-color: #ea4335;
+}
+.grn{
+    background-color: #43d854;
+}
+.job-txt{
+    font-size: 16px;
+    color: #000;
+    font-weight: 600;
+    margin-right: 10px;
+}
+.use-ff {
+    border-top: 2px solid #bdb7b7;
+    padding-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0 10px;
+}
+.job-mail, .job-whatsapp {
+    position: relative;
+    flex-basis: 25%;
+    margin: 0 5px;
+}
+.job-mail input, .job-whatsapp input {
+    height: 36px;
+    padding-right: 45px;
+}
+.job-mail button, .job-whatsapp button {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 40px;
+    height: 34px;
+    border: none;
+    font-size:20px;
+    color: #fff;
+}
 .page-content {
-    background-image: url(/assets/common/categories/process-bg.png) !important;
+    background-image: url(/assets/common/categories/process-application-bgg.png) !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
@@ -1336,12 +1388,12 @@ $this->registerCss('
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 25px 15px;
+	padding: 25px 15px 10px;
 	background: #fdfdfd;
 }
 .j-main {
 	display: flex;
-	border-right: 2px solid #333;
+	border-right: 2px solid #bdb7b7;
 	align-items:center;
 }
 .j-logo {
@@ -2393,6 +2445,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
+
     function roundClick() {
         let hp = document.querySelector('.hiring_process_list');
         let hpChild = hp.children;
@@ -2459,19 +2512,23 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         modal.style.display = "none";
         bdy[0].classList.remove('modal-open');
     }
+
     let openConJob = document.getElementById('conjobs');
-    function openConJobs(){
+
+    function openConJobs() {
         openConJob.style.display = "block";
         bdy[0].classList.remove('modal-open');
     }
-    function closeConJobsModal(){
+
+    function closeConJobsModal() {
         openConJob.style.display = "none";
         bdy[0].classList.remove('modal-open');
     }
+
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
-        } else if(event.target == openConJob){
+        } else if (event.target == openConJob) {
             openConJob.style.display = "none";
         }
     }
@@ -2479,10 +2536,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script id="modalJobCards" type="text/template">
     {{#.}}
     <div class="col-md-3">
-        <a href="/<?= $app_type?>/{{slug}}" target="_blank">
+        <a href="/<?= $app_type ?>/{{slug}}" target="_blank">
             <div class="customJobBox">
                 <div class="jc-icon">
-                    <img src="<?= Url::to('@commonAssets/categories/')?>{{icon}}">
+                    <img src="<?= Url::to('@commonAssets/categories/') ?>{{icon}}">
                 </div>
                 <div class="jc-details-con">
                     <p>{{job_title}}</p>
