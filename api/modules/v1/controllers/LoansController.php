@@ -513,6 +513,8 @@ class LoansController extends ApiBaseController
 
         if ($loan) {
             $loan->gender = $params['gender'];
+            $loan->updated_on = date('Y-m-d H:i:s');
+            $loan->updated_by = $this->userId();
             if ($loan->update()) {
                 return $loan->loan_app_enc_id;
             }
