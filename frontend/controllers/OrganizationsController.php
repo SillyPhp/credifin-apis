@@ -166,6 +166,18 @@ class OrganizationsController extends Controller
             $count_opportunities = \common\models\EmployerApplications::find()
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
                 ->count();
+            $jobs_count = EmployerApplications::find()
+                ->alias('a')
+                ->joinWith(['applicationTypeEnc b'])
+                ->where(['b.name' => 'Jobs', 'a.status' => 'Active','a.organization_enc_id'=>$organization['organization_enc_id'], 'a.is_deleted' => 0])
+                ->andWhere(['a.application_for' => 1])
+                ->count();
+            $internships_count = EmployerApplications::find()
+                ->alias('a')
+                ->joinWith(['applicationTypeEnc b'])
+                ->where(['b.name' => 'Internships', 'a.status' => 'Active','a.organization_enc_id'=>$organization['organization_enc_id'], 'a.is_deleted' => 0])
+                ->andWhere(['a.application_for' => 1])
+                ->count();
 
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -245,6 +257,8 @@ class OrganizationsController extends Controller
                     'org_products' => $org_products,
                     'review_stats' => $stats,
                     'reviews_count' => $reviews_count,
+                    'jobs_count' => $jobs_count,
+                    'internships_count' => $internships_count,
                 ]);
             }
         } else {

@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-    <div id="fab-message-open" class="fab-message" style="">
+    <div id="fab-message-open" class="fab-message fab-btn-hide" style="">
         <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
         <div class="fab-hover-message" style="">
             <div class="fab-hover-image">
@@ -177,26 +177,28 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-if('$type' == 'company'){
-var data = {slug: window.location.pathname.split('/')[1]};
-    $.ajax({
-        type: 'POST',
-        url: '/drop-resume/check-resume',
-        data : data,
-        success: function(response){
-            $('#dropcv').val(response.message);
-        }
-    });
-}else if('$type' == 'application'){
-
-    $.ajax({
-       type: 'POST',
-       url: '/drop-resume/check-resume',
-       data : {slug:'$slug'},
-       success: function(response){
-           $('#dropcv').val(response.message);
-       }
-    });
+if(!'$org_cards'){
+    if('$type' == 'company'){
+    var data = {slug: window.location.pathname.split('/')[1]};
+        $.ajax({
+            type: 'POST',
+            url: '/drop-resume/check-resume',
+            data : data,
+            success: function(response){
+                $('#dropcv').val(response.message);
+            }
+        });
+    }else if('$type' == 'application'){
+    
+        $.ajax({
+           type: 'POST',
+           url: '/drop-resume/check-resume',
+           data : {slug:'$slug'},
+           success: function(response){
+               $('#dropcv').val(response.message);
+           }
+        });
+    }
 }
 JS;
 

@@ -58,6 +58,7 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/companies-card');
 $this->registerCss('
+.fab-btn-hide{display:none !important;}
 .load-more-bttn
 {
 display:none;
