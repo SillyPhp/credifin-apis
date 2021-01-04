@@ -1260,9 +1260,9 @@ $(document).ready(function() {
 });
 JS;
 $this->registerJs("
-return_message = true;
-jobs_parent = '#jobs-cards-main';
-internships_parent = '#internships-cards-main';
+//return_message = true;
+//jobs_parent = '#jobs-cards-main';
+//internships_parent = '#internships-cards-main';
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
