@@ -119,7 +119,7 @@ class AuthController extends ApiBaseController
             } else {
                 $save_user_name = new Usernames();
                 $save_user_name->username = $username;
-                $save_user_name->assigned_to = 2;
+                $save_user_name->assigned_to = 1;
                 if ($save_user_name->save()) {
                     $user->username = $username;
                     $user->last_updated_on = date('Y-m-d H:i:s');
