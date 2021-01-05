@@ -141,8 +141,19 @@ class JobsController extends ApiBaseController
                         ->where(['review' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
+
+                    $is_college = Users::find()
+                        ->where(['user_enc_id' => $user->user_enc_id])
+                        ->one();
+
+                    if (!$is_college) {
+                        if ($this->getClgId() != $this->getOrgId()) {
+                            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+                        }
+                    }
+
                 } else {
-                    return $this->response(401);
+                    return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
                 }
             }
 
@@ -300,6 +311,9 @@ class JobsController extends ApiBaseController
                             $applied[$key]['process_name'] = $a['field_name'];
                         }
                     }
+                    if ($val['status'] == 'Hired') {
+                        $applied[$key]['process_name'] = $val['status'];
+                    }
                 }
             }
 
@@ -343,9 +357,9 @@ class JobsController extends ApiBaseController
             unset($data['max_wage']);
             unset($data['fixed_wage']);
 
-            return $this->response(200, $data);
+            return $this->response(200, ['status' => 200, 'data' => $data]);
         } else {
-            return $this->response(422);
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
     }
 
@@ -444,6 +458,7 @@ class JobsController extends ApiBaseController
             ->where([
                 'a.slug' => $slug,
                 'a.is_deleted' => 0,
+                'a.application_for' => 2,
             ])
             ->joinWith(['applicationTypeEnc r'], false)
             ->joinWith(['applicationOptions b'], false)
