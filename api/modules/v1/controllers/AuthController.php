@@ -123,6 +123,8 @@ class AuthController extends ApiBaseController
                 if ($save_user_name->save()) {
                     $user->username = $username;
                     $user->last_updated_on = date('Y-m-d H:i:s');
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = 'EYAPP';
                     if (!$user->update()) {
                         return $this->response(500, 'an error occurred');
                     }
@@ -245,6 +247,9 @@ class AuthController extends ApiBaseController
         $user->initials_color = RandomColors::one();
         $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
         $user->status = "Active";
+        $user->last_visit = date('Y-m-d H:i:s');
+        $user->last_visit_through = "EYAPP";
+        $user->signed_up_through = "EYAPP";
         $user->setPassword($model->password);
         $user->generateAuthKey();
         if ($user->save()) {
@@ -379,6 +384,11 @@ class AuthController extends ApiBaseController
             if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
                 if ($model->login()) {
                     $user = $this->findUser($model);
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = "EYAPP";
+                    if (!$user->update()) {
+                        return $this->response(500, 'an error occurred');
+                    }
                     $token = $this->findToken($user, $source);
                     if (empty($token)) {
                         if ($token = $this->newToken($user->user_enc_id, $source)) {

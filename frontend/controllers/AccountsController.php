@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -66,7 +67,9 @@ class AccountsController extends Controller
         $loginFormModel = new LoginForm();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
                 if (Yii::$app->user->identity->organization)
                 {
                     return $this->redirect('/account/dashboard');
@@ -88,6 +91,7 @@ class AccountsController extends Controller
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+            $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
