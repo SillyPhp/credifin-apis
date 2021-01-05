@@ -4,6 +4,7 @@ namespace account\models\applications;
 
 use common\models\ApplicationOption;
 use common\models\Currencies;
+use common\models\ErexxEmployerApplications;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -212,7 +213,12 @@ class ApplicationForm extends Model
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
-
+        if ($type=='Jobs'){
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $session->remove('campusPlacementData');
+            }
+        }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -308,7 +314,16 @@ class ApplicationForm extends Model
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->last_date));
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
-
+        $session = Yii::$app->session;
+        if ($session->has('campusPlacementData')){
+            $var = $session->get('campusPlacementData');
+            if(!empty($var)){
+                $employerApplicationsModel->application_for = 2;
+                if ($var['subscribed-to-all']){
+                    $employerApplicationsModel->for_all_colleges = 1;
+                }
+            }
+        }
         if ($employerApplicationsModel->save()) {
             if ($this->questionnaire_selection == 1) {
                 $process_questionnaire = json_decode($this->question_process);
@@ -607,10 +622,35 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $var = $session->get('campusPlacementData');
+                if(!empty($var)){
+                    $this->assignCampusJobs($employerApplicationsModel->application_enc_id,$var);
+                }
+            }
             return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
         }
+    }
+
+    private function assignCampusJobs($app,$var){
+        foreach ($var['colleges'] as $clg) {
+            $utilitiesModel = new Utilities();
+            $errexApplication = new ErexxEmployerApplications();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+            $errexApplication->employer_application_enc_id = $app;
+            $errexApplication->college_enc_id = $clg;
+            $errexApplication->created_on = date('Y-m-d H:i:s');
+            $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$errexApplication->save()) {
+                return false;
+            }
+        }
+        $session = Yii::$app->session;
+        $session->remove('campusPlacementData');
     }
 
     private function assignedJob($j_id, $cat_id,$type)
@@ -803,15 +843,19 @@ class ApplicationForm extends Model
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','a.icon_png'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
             ->andWhere(['b.status' => 'Approved'])
+            ->andWhere([
+                'or',
+                ['!=', 'a.icon', NULL],
+                ['!=', 'a.icon', ''],
+            ])
             ->asArray()
             ->all();
-        $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
-        return $primary_cat;
+        return $primaryfields;
     }
     public function getApplicationTypes()
     {

@@ -48,9 +48,9 @@ class AdmissionForm extends Model
     public function rules()
     {
         return [
-            [['email', 'first_name', 'last_name', 'phone', 'course'], 'required'],
+            [['email', 'first_name', 'last_name', 'phone'], 'required'],
             [['email'], 'email'],
-            [['amount', 'college', 'preference_college1'], 'safe'],
+            [['amount', 'college', 'preference_college1', 'course'], 'safe'],
             [['amount'], 'integer'],
             [['email', 'first_name', 'last_name', 'phone'], 'trim'],
             [['email', 'first_name', 'last_name', 'phone'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
@@ -135,11 +135,11 @@ class AdmissionForm extends Model
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $utilitiesModel = new \common\models\Utilities();
             if ($id) {
                 $model = LeadsApplications::findOne(['application_enc_id' => $id]);
             } else {
                 $model = new LeadsApplications();
-                $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $model->application_enc_id = $utilitiesModel->encrypt();
                 $model->application_number = date('ymd') . time();

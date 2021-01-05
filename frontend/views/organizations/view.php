@@ -33,13 +33,9 @@ $this->params['seo_tags'] = [
 ];
 
 if ($organization['logo']) {
-    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    if (!file_exists($image_path)) {
-        $image = $organization['name'];
-    }
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
-    $image = $organization['name'];
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -64,7 +60,7 @@ $round_avg = round($overall_avg);
                                 <div class="logo-box">
                                     <div class="logo">
                                         <?php
-                                        if (!empty($image_path)):
+                                        if (!empty($image)):
                                             ?>
                                             <img id="logo-img" src="<?= Url::to($image); ?>"
                                                  alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
@@ -545,68 +541,7 @@ $round_avg = round($overall_avg);
     </div>
     <input type="hidden" id="organisation_id"
            value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="loggedIn"
-                       value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="warn-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/landing/login-warn.png'); ?>">
-                            </div>
-                            <p class="warn-p">Please Login as Candidate to drop your resume</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="dropcv">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="existsModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Wait for company to create the feature</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
 <?php
 echo $this->render('/widgets/mustache/organization_locations', [
     'Edit' => false
@@ -1280,16 +1215,6 @@ $(document).on('click','.follow',function(e){
             }
         }
     });        
-});
-
-var data = {slug: window.location.pathname.split('/')[1]};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
 });
 
 var first_preview = $('.p-img-thumbnail:first-child a').attr('href');

@@ -8,6 +8,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 } else {
     $this->title = 'Total job vacancies available';
 }
+
 $this->params['header_dark'] = true;
 
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
@@ -192,9 +193,3 @@ JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
-<script>
-    setTimeout(function () {
-        let eyActiveMenu = document.getElementsByClassName('ey-active-menu');
-        eyActiveMenu[0].classList.remove('ey-active-menu');
-    }, 2000);
-</script>

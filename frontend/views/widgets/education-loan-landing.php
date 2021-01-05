@@ -7,27 +7,27 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="loan-heading">Discover the Benefits of Education Loan</div>
+                <h1 class="loan-heading">Discover the Benefits of Education Loan</h1>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
-                    <h3>Interest - Free Loans</h3>
-                    <p>The loans provided are interest free thus decreasing the financial burden off you.</p>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/interest-free-loan.png') ?>"></div>
+                    <h2>Low Rate of Interest</h2>
+                    <p>Apply for loans at lower interest rates and avail of better borrowing terms thus decreasing the financial burden off you.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
-                    <h3>Online Application</h3>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/coll.png') ?>"></div>
+                    <h2>Online Application</h2>
                     <p>Apply from the comfort of your home with quick, simple and easy documentation process and get fast approval of your application.</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="loan-box">
-                    <div class="loan-logo"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
-                    <h3>Quick disbursement</h3>
-                    <p>with the state of the art system, we strive to complete the disbursement of loan within 10 days.</p>
+                    <div class="loan-logo"><img alt="Education Loan, education loan with low interest rates, low interest rates for education loan, student loan interest rates, apply for Education loan, education loan interest rate" src="<?= Url::to('@eyAssets/images/pages/educational-loans/quick.png') ?>"></div>
+                    <h2>Quick Disbursement</h2>
+                    <p>with the state of the art system, we strive to complete the disbursement of loan as soon as possible.</p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="loan-req">
                     <div class="loan-data">
-                        <div class="loan-txtt">Get your application approved quickly with EmpowerYouth.com<br> Launch your loan request today.</div>
+                        <h2 class="loan-txtt">Get your application approved quickly with EmpowerYouth.com<br> Launch your loan request today.</h2>
                         <div class="loan-btn">
                             <a href="/education-loans">Apply Now!</a>
                         </div>
@@ -65,7 +65,7 @@ $this->registerCss('
 .loan-logo img {
 	width: 50px;
 }
-.loan-box h3 {
+.loan-box h2 {
 	font-size: 20px;
 	font-family: lora;
 	font-weight: 600;
@@ -78,7 +78,7 @@ $this->registerCss('
     line-height: 25px;
 }
 .loan-req{
-    background:url(' . Url::to('@eyAssets/images/pages/educational-loans/blue-strip.png') . ');  
+    background:url(' . Url::to('@eyAssets/images/pages/education-loans/skyblue-strip.png') . ');  
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -95,10 +95,11 @@ $this->registerCss('
 	font-size: 20px;
 	color: #fff;
 	font-family: lora;
+	margin:0;
 }
 .loan-btn a {
 	color: #fff;
-	background-color: #10b66a;
+	background-color: #ff7803;
 	padding: 10px 20px;
 	border-radius: 27px;
 	font-size: 18px;

@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v1\models\JobApply;
 use api\modules\v2\controllers\ApiBaseController;
+use api\modules\v2\models\ImageScript;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
@@ -15,6 +16,8 @@ use common\models\OrganizationInterviewProcess;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
+use common\models\UserOtherDetails;
+use common\models\UserResume;
 use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use Yii;
@@ -30,7 +33,9 @@ class JobsController extends ApiBaseController
             'except' => [
                 'application-detail',
                 'shortlist-application',
-                'apply'
+                'apply',
+                'process-bar',
+                'cancel-job'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -40,6 +45,8 @@ class JobsController extends ApiBaseController
                 'application-detail' => ['POST', 'OPTIONS'],
                 'shortlist-application' => ['POST', 'OPTIONS'],
                 'apply' => ['POST', 'OPTIONS'],
+                'process-bar' => ['POST', 'OPTIONS'],
+                'cancel-job' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -79,13 +86,23 @@ class JobsController extends ApiBaseController
         }
     }
 
+    private function getClgId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $clg_id = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id, 'is_deleted' => 0])
+                ->one();
+
+            return $clg_id->organization_enc_id;
+        }
+    }
+
     public function actionApplicationDetail()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
-
 
         $req = Yii::$app->request->post();
         if (!empty($req['slug'])) {
@@ -124,8 +141,19 @@ class JobsController extends ApiBaseController
                         ->where(['review' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
+
+                    $is_college = Users::find()
+                        ->where(['user_enc_id' => $user->user_enc_id])
+                        ->one();
+
+                    if (!$is_college) {
+                        if ($this->getClgId() != $this->getOrgId()) {
+                            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+                        }
+                    }
+
                 } else {
-                    return $this->response(401);
+                    return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
                 }
             }
 
@@ -223,7 +251,7 @@ class JobsController extends ApiBaseController
                 ->distinct()
                 ->select(['a.interview_process_enc_id'])
                 ->joinWith(['interviewProcessFields b' => function ($b) {
-                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', '(CASE
+                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', 'b.sequence', '(CASE
                         WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN b.icon = "fa fa-user" THEN "fas fa-user"
@@ -241,15 +269,16 @@ class JobsController extends ApiBaseController
                 }])
                 ->where(['a.interview_process_enc_id' => $data['interview_process_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
-                ->all();
+                ->one();
             $data['process'] = $application_process;
 
             $applied = AppliedApplications::find()
                 ->distinct()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
-                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
-                    'a.created_by student_id'])
+                    'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(f.first_name, " ", f.last_name), "&size=200&rounded=false&background=", REPLACE(f.initials_color, "#", ""), "&color=ffffff") END image',
+                    'a.created_by student_id', 'a.current_round'
+                ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                         $c->innerJoinWith(['collegeEnc d']);
@@ -270,9 +299,57 @@ class JobsController extends ApiBaseController
                 }], false)
                 ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $data['application_enc_id'], 'a.is_deleted' => 0, 'e.is_deleted' => 0])
                 ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
-                ->count();
+                ->orderBy([new \yii\db\Expression("FIELD (a.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")]);
+            $count = $applied->count();
+            $applied = $applied->asArray()
+                ->all();
 
-            $data['applied_count'] = $applied;
+            if ($applied && $application_process) {
+                foreach ($applied as $key => $val) {
+                    foreach ($application_process['interviewProcessFields'] as $a) {
+                        if ($val['current_round'] == $a['sequence']) {
+                            $applied[$key]['process_name'] = $a['field_name'];
+                        }
+                    }
+                    if ($val['status'] == 'Hired') {
+                        $applied[$key]['process_name'] = $val['status'];
+                    }
+                }
+            }
+
+            $data['applied_count'] = $count;
+            $data['applied_list'] = $applied;
+            $data['is_blocked'] = $this->isHired();
+
+            $location = '';
+            if ($data['applicationPlacementLocations']) {
+                foreach ($data['applicationPlacementLocations'] as $l) {
+                    $location .= $l['name'];
+                }
+            }
+
+            $content = [
+                'job_title' => $data['name'],
+                'company_name' => $data['organization_name'],
+                'canvas' => (($data['logo']) ? false : true),
+                'bg_icon' => (($data['name'] == "Others") ? false : $data['category_enc_id']),
+                'logo' => (($data['logo']) ? $data['logo'] : null),
+                'initial_color' => '#73ef9c',
+                'location' => $location,
+                'app_id' => $data['application_enc_id'],
+                'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey,
+                'is_ecampus' => true
+            ];
+            if (empty($data['image']) || $data['image'] == 1) {
+                $image = ImageScript::widget(['content' => $content]);
+            } else {
+                $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['image'];
+            }
+
+//            $image = Yii::$app->params->digitalOcean->sharingImageUrl . $data['application_enc_id'] . '.png';
+            $data['sharing_image'] = $image;
+            $data['has_resume'] = (count($this->GetResume()) > 0) ? true : false;
+            $data['resume_ids'] = $this->GetResume();
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
@@ -281,9 +358,35 @@ class JobsController extends ApiBaseController
             unset($data['max_wage']);
             unset($data['fixed_wage']);
 
-            return $this->response(200, $data);
+            return $this->response(200, ['status' => 200, 'data' => $data]);
         } else {
-            return $this->response(422);
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+    }
+
+    private function GetResume()
+    {
+        if ($user = $this->isAuthorized()) {
+            return UserResume::find()
+                ->select(['resume_enc_id', 'title'])
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->all();
+        }
+    }
+
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -296,6 +399,7 @@ class JobsController extends ApiBaseController
                 'a.id',
                 'a.application_enc_id',
                 'x.industry',
+                'a.image',
                 'a.title',
                 '(CASE
                      WHEN a.preferred_gender = "0" THEN "No preferred gender"
@@ -338,6 +442,8 @@ class JobsController extends ApiBaseController
                 'b.max_wage',
                 'b.fixed_wage',
                 'b.working_days',
+                'b.saturday_frequency',
+                'b.sunday_frequency',
                 'b.interview_start_date',
                 'b.interview_end_date',
                 'w.organization_enc_id',
@@ -347,12 +453,13 @@ class JobsController extends ApiBaseController
                 'w.website',
                 'w.slug org_slug',
                 'r.name application_type',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+                'CASE WHEN w.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", w.logo_location, "/", w.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", w.name, "&size=200&rounded=false&background=", REPLACE(w.initials_color, "#", ""), "&color=ffffff") END logo',
                 'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '",w.cover_image_location, "/", w.cover_image) END cover_image'
             ])
             ->where([
                 'a.slug' => $slug,
                 'a.is_deleted' => 0,
+                'a.application_for' => 2,
             ])
             ->joinWith(['applicationTypeEnc r'], false)
             ->joinWith(['applicationOptions b'], false)
@@ -504,19 +611,12 @@ class JobsController extends ApiBaseController
                 $city_enc_ids = [];
             }
 
-//            $application_type = ApplicationTypes::find()
-//                ->select(['application_type_enc_id'])
-//                ->where(['name' => 'Jobs'])
-//                ->asArray()
-//                ->one();
-
             $id = $reqParams['app_id'];
 
             $application_details = EmployerApplications::find()
                 ->where([
                     'application_enc_id' => $id,
                     'is_deleted' => 0,
-//                    'application_type_enc_id' => $application_type["application_type_enc_id"]
                 ])
                 ->one();
 
@@ -558,15 +658,283 @@ class JobsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
-                    return $this->response(200, ['status' => 200]);
+                    if ($d = $this->profileCompletions()) {
+                        return $this->response(200, ['status' => 200, 'profile' => $d]);
+                    } else {
+                        $d = ['is_completed' => false, 'percent' => 0];
+                        return $this->response(200, ['status' => 200, 'profile' => $d]);
+                    }
                 } else {
-                    return $this->response(500);
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             } else {
                 return $this->response(409);
             }
         } else {
             return $this->response(422);
+        }
+    }
+
+    private function profileCompletions()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Users::find()
+                ->alias('a')
+                ->select(['a.user_enc_id', 'a.city_enc_id', 'b.cgpa'])
+                ->joinWith(['userOtherInfo b'], false)
+                ->joinWith(['userPreferences c' => function ($c) {
+                    $c->select(['c.preference_enc_id', 'c.created_by', 'c.assigned_to']);
+                }])
+                ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->asArray()
+                ->one();
+
+            if ($data) {
+                $per = 0;
+                $total = 4;
+                $t = 100 / $total;
+                if ($data['city_enc_id']) {
+                    $per += $t;
+                }
+                if ($data['cgpa']) {
+                    $per += $t;
+                }
+                if ($data['userPreferences']) {
+                    foreach ($data['userPreferences'] as $p) {
+                        if ($p['preference_enc_id']) {
+                            $per += $t;
+                        }
+                    }
+                }
+                $profile_completed = false;
+                if ($per == 100) {
+                    $profile_completed = true;
+                }
+                return ['is_completed' => $profile_completed, 'percent' => $per];
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private function isHired()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $hired = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
+                        $c->onCondition(['c.is_deleted' => 0, 'c.status' => 'Active', 'c.college_enc_id' => $this->getClgId()]);
+                    }]);
+                }], false)
+                ->where([
+                    'a.created_by' => $user->user_enc_id,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Hired',
+                ])
+                ->asArray()
+                ->all();
+
+            if ($hired) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionUserProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (isset($params['application_id']) && !empty($params['application_id'])) {
+                $application_id = $params['application_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $applied_user = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->where(['a.application_enc_id' => $application_id, 'a.created_by' => $user->user_enc_id])
+                ->select(['a.applied_application_enc_id', 'a.status', 'i.icon', 'h.name org_name', 'h.slug org_slug', 'g.name title', 'b.slug', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc h'], false);
+                    $b->joinWith(['title f' => function ($b) {
+                        $b->joinWith(['parentEnc i'], false);
+                        $b->joinWith(['categoryEnc g'], false);
+                    }], false);
+
+                }], false)
+                ->joinWith(['appliedApplicationProcesses c' => function ($b) {
+                    $b->joinWith(['fieldEnc d'], false);
+                    $b->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                }])
+                ->groupBy(['a.applied_application_enc_id'])
+                ->asArray()
+                ->one();
+
+            if ($applied_user) {
+                return $this->response(200, ['status' => 200, 'data' => $applied_user]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCancelJob()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (isset($params['applied_application_id']) && !empty($params['applied_application_id'])) {
+                $applied_app_id = $params['applied_application_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $application = AppliedApplications::find()
+                ->where(['applied_application_enc_id' => $applied_app_id])
+                ->one();
+
+            if ($application) {
+                $application->status = 'Cancelled';
+                $application->last_updated_on = date('Y-m-d H:i:s');
+                $application->last_updated_by = $user->user_enc_id;
+                if ($application->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Cancelled']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionProcessBar()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            } else {
+                $limit = 5;
+            }
+
+            $process = EmployerApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.applied_application_enc_id', 'b.status',
+                    'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total',
+                    'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per',
+                    'i.name type', 'g.name as org_name',
+                    'd.name as title', 'cc.assigned_category_enc_id',
+                    'CASE WHEN e.icon IS NULL OR e.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to('@commonAssets/categories/', 'https') . '", e.icon) END icon'
+                ])
+                ->joinWith(['appliedApplications b' => function ($b) {
+                    $b->joinWith(['appliedApplicationProcesses h']);
+                }], false)
+                ->joinWith(['applicationTypeEnc i'], false)
+                ->joinWith(['organizationEnc g'], false)
+                ->joinWith(['title cc' => function ($c) {
+                    $c->joinWith(['categoryEnc d']);
+                    $c->joinWith(['parentEnc e']);
+                }], false)
+                ->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
+                    $c->onCondition(['c.is_deleted' => 0, 'c.status' => 'Active', 'c.college_enc_id' => $this->getClgId()]);
+                }], false)
+                ->where(['b.created_by' => $user->user_enc_id])
+                ->limit($limit)
+                ->groupBy(['h.applied_application_enc_id'])
+                ->orderBy(['b.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($process) {
+                return $this->response(200, ['status' => 200, 'data' => $process]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionApplicationProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['employer_app_id']) && !empty($params['employer_app_id'])) {
+                $app_id = $params['employer_app_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $application_name = EmployerApplications::find()
+                ->alias('a')
+                ->select(['c.name job_title', 'a.slug', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
+                    '(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
+                WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
+                WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
+                ELSE "No Experience" 
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration'])
+                ->where(['a.application_enc_id' => $app_id])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                    $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
+                }], false, 'INNER JOIN')
+                ->joinWith(['applicationTypeEnc ate'], false)
+                ->joinWith(['interviewProcessEnc d' => function ($d) {
+                    $d->select(['d.interview_process_enc_id']);
+                    $d->joinWith(['interviewProcessFields']);
+                }])
+                ->joinWith(['applicationPlacementLocations o' => function ($b) {
+                    $b->onCondition(['o.is_deleted' => 0]);
+                    $b->joinWith(['locationEnc s' => function ($b) {
+                        $b->joinWith(['cityEnc t'], false);
+                    }], false);
+                    $b->select(['o.location_enc_id', 'o.application_enc_id', 'SUM(o.positions) positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                    $b->distinct();
+                }])
+                ->joinWith(['applicationInterviewLocations p' => function ($b) {
+                    $b->onCondition(['p.is_deleted' => 0]);
+                    $b->joinWith(['locationEnc u' => function ($b) {
+                        $b->joinWith(['cityEnc v'], false);
+                    }], false);
+                    $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude as interview_lat', 'u.longitude as interview_long']);
+                }])
+                ->joinWith(['applicationOptions ao'], false)
+                ->asArray()
+                ->one();
+
+            return $this->response(200, ['status' => 200, 'message' => $application_name]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

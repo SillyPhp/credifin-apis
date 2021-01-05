@@ -10,6 +10,7 @@ use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\ErexxSettings;
 use common\models\Organizations;
+use common\models\UserCoachingTutorials;
 use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
@@ -439,7 +440,7 @@ class AuthController extends ApiBaseController
                     'a.last_name',
                     'a.organization_enc_id college_id',
                     'cc.college_enc_id',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                     'a.username', 'a.phone', 'a.email',
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
@@ -490,9 +491,9 @@ class AuthController extends ApiBaseController
                     $settings[$c['setting']] = $c['value'] == 2 ? true : false;
                 }
 
-                if($user_detail['user_org_business_type'] == 'School'){
+                if ($user_detail['user_org_business_type'] == 'School') {
                     $settings['show_quiz'] = true;
-                }else{
+                } else {
                     $settings['show_quiz'] = false;
                 }
             }
@@ -572,12 +573,22 @@ class AuthController extends ApiBaseController
 
             }
 
+            $is_viewed_loan_on_dashboard = UserCoachingTutorials::find()
+                ->alias('a')
+                ->select(['a.user_coaching_tutorial_enc_id', 'a.tutorial_enc_id', 'a.is_viewed'])
+                ->joinWith(['tutorialEnc b'])
+                ->where(['a.created_by' => $find_user['user_enc_id']])
+                ->andWhere(['b.name' => 'not_interested_for_loans'])
+                ->asArray()
+                ->one();
+
         }
 
         $data = [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
+            'is_viewed' => $is_viewed_loan_on_dashboard['is_viewed'] == 1 ? True : False,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['assigned_college_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],

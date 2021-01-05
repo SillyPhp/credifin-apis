@@ -17,6 +17,8 @@ class PaymentsController extends  ApiBaseController
             'actions' => [
                 'get-status' => ['GET'],
                 'retry-payment' => ['POST', 'OPTIONS'],
+                'update-transection' => ['POST', 'OPTIONS'],
+                'institute-update-transection' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -74,8 +76,43 @@ class PaymentsController extends  ApiBaseController
             if ($model->insert()) {
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
             } else {
-                return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
             }
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Attribute Values Not Found']);
         }
+    }
+
+    public function actionUpdateTransections()
+    {
+        date_default_timezone_set('Asia/Kolkata');
+        $options = Yii::$app->request->post();
+        $model = new RetryPayments();
+        if (!empty($options['signature'])){
+            if ($model->Update($options)){
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            }else {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Attribute Values Not Found']);
+        }
+
+    }
+    public function actionInstituteUpdateTransections()
+    {
+        date_default_timezone_set('Asia/Kolkata');
+        $options = Yii::$app->request->post();
+        $model = new RetryPayments();
+        if (!empty($options['signature'])){
+            if ($model->UpdateInstitute($options)){
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            }else {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Attribute Values Not Found']);
+        }
+
     }
 }

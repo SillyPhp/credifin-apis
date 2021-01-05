@@ -29,7 +29,7 @@ use yii\helpers\Url;
                                </div>
                         </div>
                         <div class="text-box">
-                            <h3 class="text-here">Amplify your Creative Talent</h3>
+                            <h1 class="text-here">Amplify your Creative Talent</h1>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">

@@ -133,10 +133,10 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </a>
                 </div>
             </div>
-             <?= $this->render('/widgets/templates-jobs', [
-            'jobs' => $jobs,
-             'type' => 'Jobs',
-        ]);?>
+            <?= $this->render('/widgets/templates-jobs', [
+                'jobs' => $jobs,
+                'type' => 'Jobs',
+            ]); ?>
         </div>
         <div class="col-md-10 col-sm-9">
             <div class="row widget-row">
@@ -183,11 +183,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                     <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
                                        title="Create Quick Job" class="quick">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" data-toggle="tooltip"
-                                           title="View All" class="view">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" data-toggle="tooltip"
+                                       title="View All" class="view">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +194,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                             if ($applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $applications['data'],
-                                    'col_width' => 'col-lg-3 col-md-4 col-sm-6',
+                                    'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                                 ]);
                             } else {
                                 ?>
@@ -231,11 +229,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                     <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
                                        title="Create AI Job" class="ai">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"></a>
-                                    <?php if ($erexx_applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
-                                           title="View All" class="ai">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
+                                       title="View All" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -243,7 +239,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 if ($erexx_applications['total'] > 0) {
                                     echo $this->render('/widgets/applications/card', [
                                         'applications' => $erexx_applications['data'],
-                                        'col_width' => 'col-lg-3 col-md-4 col-sm-6',
+                                        'card_type'=>'mec_card',
+                                        'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                                     ]);
                                 } else {
                                     ?>
@@ -292,11 +289,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($interview_processes['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -340,10 +335,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                             class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -384,11 +377,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($questionnaire['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -422,11 +413,19 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
         </div>
     </div>
-
+    <div class="pos-relative">
+        <?= $this->render('/widgets/college-list-modal')?>
+    </div>
 <?php
 $this->registerCss('
 .total-jobs{
     background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.pos-relative{
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    z-index: 9999;
 }
 .total-int-p{
     background: linear-gradient(145deg, #f41ea0, #f08143);
@@ -453,7 +452,7 @@ $this->registerCss('
 	border-radius: 6px;
 	padding: 5px 25px;
 	font-family: roboto;
-	font-size: 23px;
+	font-size: 20px;
 }
 .padd-top-20{
     padding-top:30px; 

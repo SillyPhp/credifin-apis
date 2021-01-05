@@ -26,7 +26,7 @@ class UtilitiesController extends ApiBaseController
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'c.business_activity', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['businessActivityEnc c'], false);
@@ -75,7 +75,7 @@ class UtilitiesController extends ApiBaseController
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['businessActivityEnc c'], false);
@@ -130,7 +130,7 @@ class UtilitiesController extends ApiBaseController
         $cities = Cities::find()
             ->alias('a')
             ->select(['a.city_enc_id', 'a.name'])
-            ->joinWith(['stateEnc b'],false)
+            ->joinWith(['stateEnc b'], false)
             ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
         if ($search != null && $search != '') {
             $cities->andWhere(['like', 'a.name', $search]);
@@ -141,8 +141,12 @@ class UtilitiesController extends ApiBaseController
         return $cities;
     }
 
-    public function actionGetCompanies($search = null)
+    public function actionGetCompanies($search = null, $a = null,$limit = null)
     {
+        $l = 25;
+        if($limit){
+            $l = $limit;
+        }
         $organizations = Organizations::find()
             ->select([
                 'organization_enc_id',
@@ -151,7 +155,7 @@ class UtilitiesController extends ApiBaseController
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
                 ) organization_logo'
             ])
             ->joinWith(['businessActivityEnc b'], false)
@@ -169,7 +173,10 @@ class UtilitiesController extends ApiBaseController
                 ['like', 'slug', $search]
             ]);
         }
-        $organizations = $organizations->asArray()
+        if ($a) {
+            $organizations->andWhere(['like', 'name', `$a%`]);
+        }
+        $organizations = $organizations->limit($l)->asArray()
             ->all();
 
         $i = 0;

@@ -34,7 +34,7 @@ $this->params['header_dark'] = false;
                         <?php
                         $name = $image = NULL;
                         if (!empty($user['image'])) {
-                            $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
+                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
                         }
                         $name = $user['first_name'] . ' ' . $user['last_name'];
                         if ($image):
@@ -63,7 +63,9 @@ $this->params['header_dark'] = false;
                                target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
-                                $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
                                 ?>
                                 <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
                             <?php }
@@ -141,8 +143,21 @@ $this->params['header_dark'] = false;
                         <?php }
                         if (!empty($user['skype'])) { ?>
                             <li class="skpe">
-                                <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
+                                <a href="skype:<?= Html::encode($user['skype']) ?>?chat" target="_blank">
                                     <i class="fab fa-skype"></i>
+                                </a>
+                            </li>
+                        <?php }
+
+                        if (Yii::$app->user->identity->organization->organization_enc_id&&!empty($user['phone'])&&!empty($userApplied)) { ?>
+                            <li class="whatsapp">
+                                <a href="<?= "https://api.whatsapp.com/send?phone=".$user['phone'] ?>" target="_blank">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </li>
+                            <li class="skpe">
+                                <a href="<?= "tel:".$user['phone'] ?>" id="phone-val" value="<?=$user['phone']?>">
+                                    <i class="fa fa-phone"></i>
                                 </a>
                             </li>
                         <?php }
@@ -163,15 +178,19 @@ $this->params['header_dark'] = false;
                     </ul>
                     <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                         if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                            if (!empty($userCv['resume_location'])&&!empty($userCv['resume'])){
                             ?>
                             <div class="down-res">
                                 <?php
-                                $cv = Yii::$app->params->upload_directories->resume->file . $userApplied['resume_location'] . DIRECTORY_SEPARATOR . $userApplied['resume'];
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
                                 ?>
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download Resume<i
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download
+                                    Resume<i
                                             class="fas fa-download"></i></a>
                             </div>
-                        <?php }
+                        <?php } }
                     } ?>
                 </div>
             </div>
@@ -181,179 +200,175 @@ $this->params['header_dark'] = false;
     <section class="detail-section">
         <div class="container">
             <div class="col-md-8 col-sm-12">
-                <div class="container-detail-box">
-                    <div class="apply-job-header">
-                        <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                        <?php
-                        if ($user['job_profile']) {
-                            ?>
-                            <a href="#" class="cl-success">
-                                <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
-                            </a>
+                <?php if ($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
+                    <div class="container-detail-box">
+                        <div class="apply-job-header">
                             <?php
-                        }
-                        if ($user['city']) {
-                            ?>
-                            <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                    <div class="apply-job-detail">
-                        <p><?= Html::encode($user['description']); ?></p>
-                    </div>
-                    <div class="apply-job-detail">
-                        <h5>Skills</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($skills) {
-                                foreach ($skills as $sk) { ?>
-                                    <li><?= $sk['skills']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                    <div class="apply-job-detail">
-                        <h5>Spoken Languages</h5>
-                        <ul class="skills">
-                            <?php
-                            if ($language) {
-                                foreach ($language as $lg) { ?>
-                                    <li><?= $lg['language']; ?></li>
-                                    <?php
-                                }
-                            } else {
-                                echo "<li>--</li>";
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </div>
-                <div class="container-detail-box">
-                    <?php
-                    if ($education) {
-                        ?>
-                        <div class="education-detail">
-                            <div class="education-head">Education</div>
-                            <?php
-                            foreach ($education as $edu) {
+                            if ($user['job_profile']) {
                                 ?>
-                                <div class="set">
-                                    <div class="prof-p">
-                                        <!--                                    <img src="-->
-                                        <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
-                                        <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80" height="80"
-                                                font="30px"></canvas>
-                                    </div>
-                                    <div class="prof-inner">
-                                        <div class="uni-name s-text"><?= $edu['institute'] ?>
-                                        </div>
-                                        <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
-                                        </div>
-                                        <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a href="#" class="cl-success">
+                                    <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
+                                </a>
+                                <?php
+                            }
+                            if ($user['city']) {
+                                ?>
+                                <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
                                 <?php
                             }
                             ?>
                         </div>
-                        <?php
-                    }
-                    if ($experience) {
-                        ?>
-                        <div class="experience-detail">
-                            <div class="education-head">Work Experience</div>
-                            <?php
-                            foreach ($experience as $exp) {
-                                ?>
-                                <div class="set">
-                                    <div class="prof-p">
-                                        <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80" height="80"
-                                                font="30px"></canvas>
-                                    </div>
-                                    <div class="prof-inner">
-                                        <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
-                                        </div>
-                                        <div class="quelification s-text-2"><?= $exp['title'] ?>
-                                        </div>
-                                        <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
-                                            <?php if ($exp['is_current']) {
-                                                echo 'Present';
-                                            } else { ?>
-                                                <?php echo date("d/m/Y", strtotime($exp['to_date']));
-                                            } ?>
-                                        </div>
-                                        <div class="s-time s-text-2"><?= $exp['description'] ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                            }
-                            ?>
+                        <div class="apply-job-detail">
+                            <p><?= Html::encode($user['description']); ?></p>
                         </div>
-                        <?php
-                    }
-                    ?>
-                    <div class="achievements-detail set-li">
-                    <?php
-                    if ($achievement) {
-                        ?>
-                        <div class="education-head">Achievements</div>
-                        <ul>
-                            <?php
-                            foreach ($achievement as $achive) {
-                                ?>
-                                <li><?= $achive['achievement'] ?></li>
-                                <?php
-                            }
+                        <?php if ($skills) { ?>
+                            <div class="apply-job-detail">
+                                <h5>Skills</h5>
+                                <ul class="skills">
+                                    <?php
+                                    foreach ($skills as $sk) { ?>
+                                        <li><?= $sk['skills']; ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        <?php }
+                        if ($language) {
                             ?>
-                        </ul>
+                            <div class="apply-job-detail">
+                                <h5>Spoken Languages</h5>
+                                <ul class="skills">
+                                    <?php
+                                    foreach ($language as $lg) { ?>
+                                        <li><?= $lg['language']; ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                        <?php } ?>
                     </div>
-    <?php
-    }
-    ?>
-                    <div class="hobbies-detail set-li">
+                <?php } ?>
+                <?php if ($education || $experience || $achievement || $hobbies || $interests) { ?>
+                    <div class="container-detail-box">
                         <?php
+                        if ($education) {
+                            ?>
+                            <div class="education-detail">
+                                <div class="education-head">Education</div>
+                                <?php
+                                foreach ($education as $edu) {
+                                    ?>
+                                    <div class="set">
+                                        <div class="prof-p">
+                                            <!--                                    <img src="-->
+                                            <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                            <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
+                                                    height="80"
+                                                    font="30px"></canvas>
+                                        </div>
+                                        <div class="prof-inner">
+                                            <div class="uni-name s-text"><?= $edu['institute'] ?>
+                                            </div>
+                                            <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                            </div>
+                                            <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                            <?php
+                        }
+                        if ($experience) {
+                            ?>
+                            <div class="experience-detail">
+                                <div class="education-head">Work Experience</div>
+                                <?php
+                                foreach ($experience as $exp) {
+                                    ?>
+                                    <div class="set">
+                                        <div class="prof-p">
+                                            <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
+                                                    height="80"
+                                                    font="30px"></canvas>
+                                        </div>
+                                        <div class="prof-inner">
+                                            <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                            </div>
+                                            <div class="quelification s-text-2"><?= $exp['title'] ?>
+                                            </div>
+                                            <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
+                                                <?php if ($exp['is_current']) {
+                                                    echo 'Present';
+                                                } else { ?>
+                                                    <?php echo date("d/m/Y", strtotime($exp['to_date']));
+                                                } ?>
+                                            </div>
+                                            <div class="s-time s-text-2"><?= $exp['description'] ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                            <?php
+                        }
+                        if ($achievement) {
+                            ?>
+                            <div class="achievements-detail set-li">
+                                <div class="education-head">Achievements</div>
+                                <ul>
+                                    <?php
+                                    foreach ($achievement as $achive) {
+                                        ?>
+                                        <li><?= $achive['achievement'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <?php
+                        }
                         if ($hobbies) {
-                        ?>
-                        <div class="education-head">Hobbies</div>
-                        <ul>
-                            <?php
-                            foreach ($hobbies as $hobby) {
-                                ?>
-                                <li><?= $hobby['hobby'] ?></li>
-                                <?php
-                            }
                             ?>
-                        </ul>
-                    </div>
+                            <div class="hobbies-detail set-li">
+                                <div class="education-head">Hobbies</div>
+                                <ul>
+                                    <?php
+                                    foreach ($hobbies as $hobby) {
+                                        ?>
+                                        <li><?= $hobby['hobby'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
                             <?php
-                            }
-                            ?>
-                    <div class="Interests-detail set-li">
-                        <?php
+                        }
                         if ($interests) {
+                            ?>
+                            <div class="Interests-detail set-li">
+                                <div class="education-head">Interests</div>
+                                <ul>
+                                    <?php
+                                    foreach ($interests as $intrst) {
+                                        ?>
+                                        <li><?= $intrst['interest'] ?></li>
+                                        <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <?php
+                        }
                         ?>
-                        <div class="education-head">Interests</div>
-                        <ul>
-                            <?php
-                            foreach ($interests as $intrst) {
-                                ?>
-                                <li><?= $intrst['interest'] ?></li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
                     </div>
-                            <?php
-                            }
-                            ?>
-                </div>
+                <?php } ?>
             </div>
             <?php
             if (array_filter($job_preference)) {
@@ -431,6 +446,9 @@ $this->params['header_dark'] = false;
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         echo $this->render('@common/widgets/chat-main');
+        $this->registerJs('
+            $(".open_chat").trigger("click");
+        ');
     }
 }
 $this->registerCss('
@@ -470,6 +488,9 @@ $this->registerCss('
 }
 .skpe a {
 	background-color: #00a0e3;
+}
+.whatsapp a {
+	background-color: #25D366;
 }
 .talking a {
 	background-color: #3b5998;
@@ -1109,3 +1130,29 @@ ul.status-detail li>strong {
     }
 }
 ');
+$script = <<< JS
+$(document).on('click','#phone-val',function(e) {
+  e.preventDefault();
+  var phone = $(this).attr('value');
+                swal({
+                        title: phone,
+                        text: "",
+                        type:"info",
+                        showCancelButton: true,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Call",
+                        cancelButtonText:"Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             if (isConfirm){
+                                 window.open('tel:' + phone);
+                             }
+                         }
+                        );
+})
+JS;
+$this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');

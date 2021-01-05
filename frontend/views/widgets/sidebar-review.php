@@ -285,6 +285,11 @@ li.draggable-item{position:relative;}
     top: 10px;
     z-index: 99999;
 }
+@media only screen and (max-width: 550px) {
+  .application-card-main {
+    margin-right: 0px;
+    }
+}
 ');
 
 $script = <<<JS

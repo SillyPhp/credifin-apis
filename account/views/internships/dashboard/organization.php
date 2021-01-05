@@ -128,7 +128,7 @@ use yii\widgets\Pjax;
             <?= $this->render('/widgets/templates-jobs', [
                 'jobs' => $internships,
                 'type' => 'Internships',
-            ]);?>
+            ]); ?>
         </div>
         <div class="col-md-10">
             <div class="loader"><img
@@ -174,12 +174,10 @@ use yii\widgets\Pjax;
                                     <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip"
                                        title="Post Internship Tweet" class="tweet">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/internships/active-internships'); ?>"
-                                           data-toggle="tooltip"
-                                           title="View All" class="view">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/internships/active-internships'); ?>"
+                                       data-toggle="tooltip"
+                                       title="View All" class="view">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +187,7 @@ use yii\widgets\Pjax;
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $applications['data'],
                                     'per_row' => 4,
-                                    'col_width' => 'col-lg-3 col-md-3 col-sm-3',
+                                    'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {
                                 ?>
@@ -225,11 +223,9 @@ use yii\widgets\Pjax;
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
                                    title="Create AI Internship" class="ai">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"></a>
-                                <?php if ($erexx_applications['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/internships/active-erexx-internships'); ?>"
-                                       data-toggle="tooltip" title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/internships/active-erexx-internships'); ?>"
+                                   data-toggle="tooltip" title="View All" class="view">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -237,8 +233,9 @@ use yii\widgets\Pjax;
                             if ($erexx_applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $erexx_applications['data'],
+                                    'card_type'=>'mec_card',
                                     'per_row' => 4,
-                                    'col_width' => 'col-lg-3 col-md-3 col-sm-3',
+                                    'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {
                                 ?>
@@ -286,11 +283,9 @@ use yii\widgets\Pjax;
                                 <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($questionnaire['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -335,10 +330,8 @@ use yii\widgets\Pjax;
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -377,11 +370,9 @@ use yii\widgets\Pjax;
                                 <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($interview_processes['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -415,6 +406,9 @@ use yii\widgets\Pjax;
             </div>
         </div>
     </div>
+    <div class="pos-relative">
+        <?= $this->render('/widgets/college-list-modal')?>
+    </div>
 
 <?php
 $this->registerCss('
@@ -446,7 +440,7 @@ $this->registerCss('
 	border-radius: 6px;
 	padding: 5px 25px;
 	font-family: roboto;
-	font-size: 23px;
+	font-size: 20px;
 }
 .padd-top-20{
     padding-top:30px;

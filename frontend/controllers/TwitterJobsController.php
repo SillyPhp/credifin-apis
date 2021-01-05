@@ -15,7 +15,7 @@ class TwitterJobsController extends Controller
         $tweets = TwitterJobs::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.job_type','c.name org_name','a.html_code','f.name profile','e.name job_title','c.initials_color color','CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.job_type','c.name org_name','a.html_code','f.name profile','e.name job_title','c.initials_color color','CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->FilterWhere([
                 'or',
                 ['like','a.job_type',$keywords],
@@ -50,7 +50,7 @@ class TwitterJobsController extends Controller
             $tweets = TwitterJobs::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.job_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+                ->select(['a.job_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
                 ->joinWith(['twitterJobSkills b'], false)
                 ->joinWith(['unclaimOrganizationEnc c'], false)
                 ->joinWith(['jobTitle d' => function ($b) {

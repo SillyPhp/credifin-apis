@@ -51,40 +51,52 @@ if (!empty($total_applications)) {
                             <?php endif; ?>
                             <button type="button" class="j-delete tt" data-toggle="tooltip"
                                     title="Delete <?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>"
+                                    data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="j-closed tt" data-toggle="tooltip"
                                     title="Close <?= $tipvalue ?>" data-name="<?= $tipvalue ?>"
-                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                    value="<?= $applications[$next]['application_enc_id']; ?>"
+                                    data-type="<?= $tipvalue ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
-                            <a href=""
+                            <a href="javascript:;"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                               title="Share on Facebook">
+                                <i class="fa fa-facebook-f"></i>
+                            </a>
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-email share_btn tt" type="button" data-toggle="tooltip"
                                title="Share via E-mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on Whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
-                            <a href=""
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                title="Share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="javascript:;" class="j-clipboard share_btn tt" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
                             </a>
                         </div>
                         <?php
@@ -119,12 +131,12 @@ if (!empty($total_applications)) {
                                 <?php
                                 $concat = "";
                                 if (!empty($applications[$next]['placementLocations'][0]['total'])):
-                                    if($applications[$next]['placementLocations'][0]['total'] > 1){
+                                    if ($applications[$next]['placementLocations'][0]['total'] > 1) {
                                         $concat = "s";
                                     }
                                     echo $applications[$next]['placementLocations'][0]['total'] . ' ' . 'Opening' . $concat;
                                 elseif (!empty($applications[$next]['positions'])):
-                                    if($applications[$next]['positions'] > 1){
+                                    if ($applications[$next]['positions'] > 1) {
                                         $concat = "s";
                                     }
                                     echo $applications[$next]['positions'] . ' ' . 'Opening' . $concat;
@@ -135,10 +147,8 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <!--                            <a href="-->
-                            <?//= Url::to($applications[$next]["link"], true); ?><!--">-->
-                            <?//= Yii::t('account', 'VIEW ' . strtoupper($applications[$next]['application_type'])); ?><!--</a>-->
                             <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
+                               class="detail-clg"
                                title="View Details"><i
                                         class="fa fa-info-circle"></i></a>
                             <div class="appl">
@@ -158,11 +168,18 @@ if (!empty($total_applications)) {
                                     }
                                     ?>
                                 </a>
-<!--                                <div class="new">-->
-<!--                                    <div class="pulse"></div>-->
-<!--                                    <div class="dot"></div>-->
-<!--                                </div>-->
+                                <!--                                <div class="new">-->
+                                <!--                                    <div class="pulse"></div>-->
+                                <!--                                    <div class="dot"></div>-->
+                                <!--                                </div>-->
                             </div>
+                            <?php if ($card_type == 'mec_card') { ?>
+                                <div class="college-asign">
+                                    <a href="javascript:;" class="fancy-btn open colleges-btn"
+                                       id="<?= $applications[$next]['application_enc_id']; ?>" data-toggle="tooltip"
+                                       title="View Colleges"><i class="fa fa-university"></i></a>
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -184,8 +201,11 @@ if (!empty($total_applications)) {
     </div>
 <?php }
 Pjax::end();
+?>
 
+<?php
 $this->registerCss("
+.detail-clg{flex-basis:10%;}
 .appl a span {
     background-color: #ff7803;
     color: #fff;
@@ -218,8 +238,16 @@ $this->registerCss("
     color: #807575;
 }
 .appl {
-    flex-basis: 100%;
+    flex-basis: 90%;
     position:relative;
+}
+.college-asign {
+	flex-basis: 10%;
+}
+.college-asign a i {
+	font-size: 20px;
+	color: #00a0e3;
+    transition: all .3s;
 }
 .appl a {
     font-family: roboto;
@@ -233,7 +261,7 @@ $this->registerCss("
     border-radius: 4px !important;
     padding: 6px 0;
     display: block;
-    margin-left: 10px;
+    margin:0 5px;
     flex-basis: 50%;
     position: relative;
 }
@@ -301,14 +329,26 @@ $this->registerCss("
     to{transform: scale(1.1)}
 }
 .j-twitter{
-    left: 40px !important;
+    left: 54px !important;
 }
 .j-email {
-    left: 65px !important;
+    left: 78px !important;
+}
+.j-whatsapp {
+    left: 30px !important;
 }
 .j-linkedin{
-    left: 93px !important;
+    left: 103px !important;
 }
+.j-clipboard{
+    left: 125px !important;
+    color:#797777;
+}
+.j-facebook {
+    left: 10px !important;
+    color:#3b5998;
+}
+.j-facebook:hover{color:#fff;}
 .expring-btn{
     position:absolute;
     top:35px;
@@ -339,7 +379,7 @@ $this->registerCss("
     margin: 0 auto;
     position: absolute;
     top: -6px;
-    right: -4px;
+    right: 0px;
 }
 
 .dot {
@@ -371,56 +411,122 @@ $this->registerCss("
   from {transform: scale(1)}
   to {transform: scale(0.5)}
 }
+.lead{
+    margin-bottom:20px !important;
+}
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
      e.preventDefault();
-     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Delete the current Application?")) { 
-        main_card.remove();
+        var dataTab = $(this).attr('data-type');
+        var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
         var data = $(this).attr('value');
-        var url = "/account/jobs/delete-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-                $.pjax.reload({container: "#pjax_active_jobs", async: false});
-                  if(data==true) {
-                      toastr.success('Deleted Successfully', 'Success');
-                    }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
-          });
-    }
-});
+       swal({ 
+             title: "Are you sure?",
+             text: "This "+dataTab+" will be deleted permanently from your dashboard",
+             type: "warning",
+             closeOnClickOutside: false,
+             showCancelButton : true,
+         },
+         function(isConfirm){
+             if (isConfirm) { 
+                main_card.remove();
+                var url = "/account/jobs/delete-application";
+                $.ajax({
+                    url:url,
+                    data:{data:data},
+                    method:'POST',
+                    success:function(data){
+                          if(data==true) {
+                              toastr.success('Deleted Successfully', 'Success');
+                            }
+                           else {
+                              toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                           }
+                           $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                       }
+                  });
+            }       
+         });
+    });
 
 $(document).on('click','.j-closed',function(e){
      e.preventDefault();
-     var data_name = $(this).attr('data-name');
-     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
-     if (window.confirm("Do you really want to Close the current Application?")) { 
-        main_card.remove();
-        var data = $(this).attr('value');
-        var url = "/account/jobs/close-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-                $.pjax.reload({container: "#pjax_active_jobs", async: false});
-                  if(data==true) {
-                      $.pjax.reload({container: "#pjax_closed_jobs", async: false});
-                      toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
-                    }
-                   else {
-                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                   }
-                 }
-          });
+      var dataTab = $(this).attr('data-type');
+      var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+      var data = $(this).attr('value');
+      swal({ 
+             title: "Are you sure?",
+             text: "If you close this "+dataTab+" you will stop receiving new applications",
+             type: "warning",
+             closeOnClickOutside: false,
+             showCancelButton : true,
+         },
+     function(isConfirm){
+         if (isConfirm) { 
+            main_card.remove();
+            var url = "/account/jobs/close-application";
+            $.ajax({
+                url:url,
+                data:{data:data},
+                method:'post',
+                success:function(data){
+                      if(data==true) {
+                          toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
+                        }
+                       else {
+                           toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                       }
+                       $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                     }
+            });
     }
-}); 
+         });
+});
+
+        $(document).on('click', '.j-clipboard',function (event) {
+            event.preventDefault();
+            var link = $(this).attr('data-link');
+            CopyToClipboard(link, true, "Link copied");
+        });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+    
+    $(document).on('click','.colleges-btn',function(event) {
+        let app_id = $(this).attr('id');
+        var url = "/account/jobs/get-job-colleges";
+            $.ajax({
+                url:url,
+                data:{app_id:app_id},
+                method:'post',
+                beforeSend: function(){
+                    $('#college_modal').html('<div class="text-center col-md-12"><i style="font-size:40px;" class="fa fa-circle-o-notch fa-spin fa-fw"></i></div>');
+                    $('.overlay').addClass('state-show');
+                    $('.frame').removeClass('state-leave').addClass('state-appear');
+                    $('body').addClass('modal-open');
+                },
+                success:function(data){
+                      if(data['status'] == 200) {
+                          $('#college_modal').html('');
+                          $('#college_modal').append(Mustache.render($('#college-modal').html(),data['colleges']));
+                      } else {
+                          $('.overlay').removeClass('state-show');
+                          $('.frame').removeClass('state-appear').addClass('state-leave');
+                          $('body').removeClass('modal-open');
+                           toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                      }
+                }
+            });
+    })
+
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

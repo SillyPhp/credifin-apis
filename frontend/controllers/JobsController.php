@@ -6,6 +6,7 @@ use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
@@ -30,10 +31,12 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\whatsAppShareForm;
 use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -445,13 +448,21 @@ class JobsController extends Controller
             $get = $this->musejobs($eaidk);
         }
         $app = EmployerApplications::find()
-            ->select(['application_enc_id', 'image', 'image_location', 'unclaimed_organization_enc_id'])
-            ->where(['unique_source_id' => $eaidk])->asArray()->one();
+            ->alias('a')
+            ->select(['a.application_enc_id','l.name profile_name','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->where(['a.unique_source_id' => $eaidk])
+            ->joinwith(['title k' => function ($b) {
+                $b->joinWith(['parentEnc l'], false);
+                $b->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->asArray()->one();
         if ($get['title']) {
+            $whatsAppForm = new whatsAppShareForm();
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
-                    'source' => $source, 'id' => $eaidk, 'app' => $app
+                    'source' => $source, 'id' => $eaidk, 'app' => $app,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return $this->render('expired-jobs');
@@ -493,11 +504,12 @@ class JobsController extends Controller
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1
             ])
             ->one();
-        if (!$application_details) {
-            return 'Not Found';
+        if (empty($application_details)) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
@@ -578,7 +590,7 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -591,6 +603,7 @@ class JobsController extends Controller
             'popular_videos' => $popular_videos,
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 
@@ -702,6 +715,7 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
+            $whatsAppForm = new whatsAppShareForm();
             $industry = Industries::find()
                 ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
@@ -730,7 +744,8 @@ class JobsController extends Controller
                     'industry' => $industry,
                     'primary_cat' => $primary_cat,
                     'benefits' => $benefits,
-                    'type' => $type
+                    'type' => $type,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return false;
@@ -1281,7 +1296,7 @@ class JobsController extends Controller
     {
         $tweets1 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -1304,7 +1319,7 @@ class JobsController extends Controller
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -1372,6 +1387,44 @@ class JobsController extends Controller
                         'cards' => ['jobs' => $total_jobs['total_applications'], 'internships' => $total_internships['total_applications'], 'location' => $total['locations'], 'companies' => $total_jobs['org']]
                     ];
             }
+        }
+    }
+
+    public function actionTemplate($view){
+        if(Yii::$app->user->identity->organization) {
+            $whatsAppmodel = new whatsAppShareForm();
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Job',
+                'whatsAppmodel' => $whatsAppmodel,
+            ]);
         }
     }
 

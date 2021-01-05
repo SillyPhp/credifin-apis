@@ -20,6 +20,8 @@ foreach ($templates as $temp)
                                 <div class="temp-logo">
                                     <?php if (empty($temp['thumb_image'])): ?>
                                     <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/mockup.png'); ?>"/>
+                                    <?php else: ?>
+                                        <img src="<?= Url::to('/assets/common/cv_templates/icons/'.$temp['thumb_image']); ?>"/>
                                     <?php endif; ?>
                             </div>
                                 <div class="temp-text"><?= $temp['name']; ?></div>

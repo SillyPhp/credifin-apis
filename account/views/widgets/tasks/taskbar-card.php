@@ -14,14 +14,14 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
             $name = $image = $link = NULL;
             if (!empty(Yii::$app->user->identity->organization)) {
                 if (Yii::$app->user->identity->organization->logo) {
-                    $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                 }
                 $name = Yii::$app->user->identity->organization->name;
                 $color = Yii::$app->user->identity->organization->initials_color;
                 $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
             } else {
                 if (Yii::$app->user->identity->image) {
-                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                 }
                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                 $color = Yii::$app->user->identity->initials_color;
@@ -365,6 +365,13 @@ $script = <<< JS
     
     $(document).on('submit', '#task-form', function (e) {
         e.preventDefault();
+        if ($('input[name="task"]').val()==""||$('input[name="task"]').val()==null){
+                 swal({
+                        title:"",
+                        text: "Input Should Not Be Empty.. !!!",
+                        });
+            return false;
+        }
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');

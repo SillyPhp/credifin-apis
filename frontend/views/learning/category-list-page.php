@@ -8,7 +8,7 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">All Categories</div>
+            <h1 class="heading-style col-md-6 col-sm-6">All Categories</h1>
         </div>
         <div class="row">
             <div class="col-md-12">
