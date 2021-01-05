@@ -3,9 +3,12 @@
 
 namespace api\modules\v2\controllers;
 
+use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
 use common\models\SkillsUpPostComments;
 use common\models\SkillsUpPosts;
+use common\models\UserPreferences;
+use common\models\UserPreferredSkills;
 use Yii;
 use \yii\db\Expression;
 use yii\helpers\Url;
@@ -88,12 +91,27 @@ class SkillUpController extends ApiBaseController
                 ->asArray()
                 ->all();
             if ($feeds) {
+
+                foreach ($feeds as $k => $v) {
+                    $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                }
+
                 return $this->response(200, ['status' => 200, 'data' => $feeds]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function getLikes($post_id)
+    {
+        if ($user = $this->isAuthorized()) {
+            $l = SkillsUpLikesDislikes::find()
+                ->where(['post_enc_id' => $post_id, 'created_by' => $user->user_enc_id])
+                ->one();
+            return $l->feedback_status;
         }
     }
 
@@ -149,20 +167,121 @@ class SkillUpController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $comment = SkillsUpPostComments::findOne(['post_enc_id' => $params['post_id'], 'created_by' => $user->user_enc_id]);
+            if (!isset($params['comment']) && empty($params['comment'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['comment_id']) && !empty($params['comment_id'])) {
+                $comment = SkillsUpPostComments::findOne(['comment_enc_id' => $params['comment_id'], 'is_deleted' => 0, 'status' => 'Approved']);
+            } else {
+                $comment = 0;
+            }
+
 
             if ($comment) {
                 $comment->comment = $params['comment'];
                 $comment->last_updated_by = $user->user_enc_id;
                 $comment->last_updated_on = date('Y-m-d H:i:s');
                 if ($comment->update()) {
-                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+                    return $this->response(200, ['status' => 200, 'message' => 'success', 'comment_enc_id' => $comment->comment_enc_id]);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             } else {
-
+                $model = new SkillsUpPostComments();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->comment_enc_id = $utilitiesModel->encrypt();
+                $model->post_enc_id = $params['post_id'];
+                if (isset($params['reply_to']) && !empty($params['reply_to'])) {
+                    $model->reply_to = $params['reply_to'];
+                }
+                $model->comment = $params['comment'];
+                $model->created_by = $user->user_enc_id;
+                $model->created_on = date('Y-m-d H:i:s');
+                if ($model->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'success', 'comment_enc_id' => $model->comment_enc_id]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetSkills()
+    {
+        if ($user = $this->isAuthorized()) {
+            $keyword = Yii::$app->request->post('keyword');
+
+            $skills = Skills::find()
+                ->select(['skill_enc_id', 'skill'])
+                ->where(['status' => 'Publish', 'is_deleted' => 0])
+                ->andWhere(['like', 'skill', $keyword])
+                ->all();
+
+            if ($skills) {
+                return $this->response(200, ['status' => 200, 'skills' => $skills]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        }
+    }
+
+    public function actionSavePrefSkills()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['skills']) && empty($params['skills'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['pref_id']) && !empty($params['pref_id'])) {
+
+            } else {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $prefs = new UserPreferences();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $prefs->preference_enc_id = $utilitiesModel->encrypt();
+                    $prefs->assigned_to = 'Skills_Up';
+                    $prefs->created_on = date('Y-m-d H:i:s');
+                    $prefs->created_by = $user->user_enc_id;
+                    if (!$prefs->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+
+                    foreach ($params['skills'] as $s) {
+                        $skills = new UserPreferredSkills();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $skills->preferred_skill_enc_id = $utilitiesModel->encrypt();
+                        $skills->skill_enc_id = $s;
+                        $skills->preference_enc_id = $prefs->preference_enc_id;
+                        $skills->created_on = date('Y-m-d H:i:s');
+                        $skills->created_by = $user->user_enc_id;
+                        if (!$skills->save()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+
+                    }
+
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
