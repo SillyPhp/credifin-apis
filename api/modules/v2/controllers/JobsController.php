@@ -337,7 +337,8 @@ class JobsController extends ApiBaseController
                 'initial_color' => '#73ef9c',
                 'location' => $location,
                 'app_id' => $data['application_enc_id'],
-                'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+                'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey,
+                'is_ecampus' => true
             ];
             if (empty($data['image']) || $data['image'] == 1) {
                 $image = ImageScript::widget(['content' => $content]);
