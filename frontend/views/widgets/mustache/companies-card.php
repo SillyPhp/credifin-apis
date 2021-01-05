@@ -56,7 +56,7 @@ use yii\helpers\Url;
                         </a>
                         {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank">{{{name}}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a></h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
                     <div class="com-rating comp-ratings">
@@ -68,8 +68,10 @@ use yii\helpers\Url;
                     {{/rating}}
                     {{^rating}}
                     <div class="com-rating comp-ratings">
-                        <span class="average-star" data-score="0"></span>
-                        <span class="stars rate-in">0</span>
+                        <a href="/{{review_link}}" target="_blank">
+                            <span class="average-star" data-score="0"></span>
+                            <span class="stars rate-in">0</span>
+                        </a>
                     </div>
                     <div class="rating">
                     </div>
@@ -79,19 +81,20 @@ use yii\helpers\Url;
                         <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{#employerApplications.1.total_application}} {{employerApplications.1.total_application}} {{/employerApplications.1.total_application}} {{^employerApplications.1.total_application}} 0 {{/employerApplications.1.total_application}} Internships</span></a>
                     </div>
                     <div class="flw-rvw">
-                        <a href="/{{profile_link}}" target="_blank">VIEW PROFILE</a>
-                        <a href="/{{review_link}}" target="_blank">REVIEW</a>
                         {{#login}}
                         {{#is_followed}}
-                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}" class="is_follow_up follow_btn" target="_blank">FOLLOWED</a>
+                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}"
+                           class="is_follow_up follow_btn" target="_blank">FOLLOWED</a>
                         {{/is_followed}}
                         {{^is_followed}}
-                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}" class="is_follow_up"  target="_blank">FOLLOW</a>
+                        <a href="javascript:;" value="{{organization_enc_id}}" type="{{is_claimed}}"
+                           class="is_follow_up" target="_blank">FOLLOW</a>
                         {{/is_followed}}
                         {{/login}}
                         {{^login}}
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal">FOLLOW</a>
                         {{/login}}
+                        <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
                     </div>
                 </a>
             </div>
@@ -99,6 +102,13 @@ use yii\helpers\Url;
         {{/.}}
     </script>
 <?php
+
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company',
+    'org_cards'=>true
+]);
+
 $this->registercss('
 .follow_btn
 {
@@ -148,7 +158,9 @@ $this->registercss('
 	font-family: lora;
 	margin: 20px 10px 5px;
 	line-height: 30px;
-	height: 60px;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
 .comp-relate {
@@ -225,9 +237,9 @@ $this->registercss('
 	border-radius: 4px;
 	font-weight: 500;
 	text-transform: uppercase;
-	border:2px solid;
+	border:2px solid #00a0e3;
 	background-color: #00a0e3;
-	flex-basis: 50%;
+	flex-basis: 35%;
 	margin: 0 4px;
 }
 .flw-rvw a:hover{
@@ -278,6 +290,33 @@ $(document).on('click','.is_follow_up',function(e) {
             alert(xhr);
         }
     }); 
-})
+});
+$(document).on('click', '.fab-message-open', function() {
+    var slug = $(this).attr('id');
+    var btn = $(this);
+    console.log(btn);
+    $.ajax({
+        type: 'POST',
+        url: '/drop-resume/check-resume',
+        data : {slug:slug},
+        beforeSend:function(){
+             btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+            btn.attr("disabled","true");
+        },
+        success: function(response){
+            btn.html('DROP RESUME');
+            btn.attr("disabled", false);
+            $('#dropcv').val(response.message);
+        },
+        complete: function() {
+            $('#fab-message-open').trigger('click');
+        }
+    });
+    
+});
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
+$this->registerJsFile('/assets/themes/dropresume/main.js');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+
