@@ -3081,6 +3081,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Teachers::className(), ['user_enc_id' => 'user_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
