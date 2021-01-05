@@ -118,7 +118,11 @@ class AuthController extends ApiBaseController
                 return $this->response(409, 'Already Exist');
             } else {
                 $save_user_name = new Usernames();
-                $save_user_name->username = $username;
+                if (strlen($username) >= 3 && strlen($username) <= 20) {
+                    $save_user_name->username = $username;
+                } else {
+                    return $this->response(409, 'Already Exist');
+                }
                 $save_user_name->assigned_to = 1;
                 if ($save_user_name->save()) {
                     $user->username = $username;
