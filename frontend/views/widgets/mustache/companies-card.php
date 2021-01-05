@@ -293,11 +293,19 @@ $(document).on('click','.is_follow_up',function(e) {
 });
 $(document).on('click', '.fab-message-open', function() {
     var slug = $(this).attr('id');
+    var btn = $(this);
+    console.log(btn);
     $.ajax({
         type: 'POST',
         url: '/drop-resume/check-resume',
         data : {slug:slug},
+        beforeSend:function(){
+             btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+            btn.attr("disabled","true");
+        },
         success: function(response){
+            btn.html('DROP RESUME');
+            btn.attr("disabled", false);
             $('#dropcv').val(response.message);
         },
         complete: function() {

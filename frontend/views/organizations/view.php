@@ -287,6 +287,9 @@ $round_avg = round($overall_avg);
                                         review</h4>
                                 </div>
                             </div>
+                            <div class="set-mar">
+                                <?= $this->render('/widgets/new-position');?>
+                            </div>
                         </div>
                     </div>
                     <div class="av-jobs-intern">
@@ -561,6 +564,12 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.set-mar{margin:20px 0;}
+.new-position-box{
+    min-height:250px;
+}
+.npb-pos-abso{top:55%;}
+.npb-main-heading{font-size:20px;}
 .mv-text{text-align:justify;font-family:roboto;}
 .j-profiles {
 	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);

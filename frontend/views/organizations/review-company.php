@@ -162,6 +162,9 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
                 </div>
+                <div class="set-mar">
+                    <?= $this->render('/widgets/new-position'); ?>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
@@ -521,6 +524,9 @@ if ($review_type == 'claimed') {
 }
 
 $this->registerCss('
+.set-mar {
+	margin: 30px 0 20px;
+}
 .i-review-next,.i-review-input-group,.i-review-selectbox,.i-review-input{
     background-color:#fff !important;
 }
