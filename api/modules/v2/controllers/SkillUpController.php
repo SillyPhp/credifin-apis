@@ -105,6 +105,33 @@ class SkillUpController extends ApiBaseController
         }
     }
 
+    public function actionUserPrefSkills()
+    {
+        if ($user = $this->isAuthorized()) {
+            $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
+            if ($prefs) {
+                $user_skills = UserPreferredSkills::find()
+                    ->alias('a.preferred_skill_enc_id', 'a.skill_enc_id', '')
+                    ->select(['a.preferred_skill_enc_id', 'a.preference_enc_id', 'a.skill_enc_id', 'b.skill'])
+                    ->joinWith(['skillEnc b'], false)
+                    ->where(['a.preference_enc_id' => $prefs->preference_enc_id, 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                if ($user_skills) {
+                    return $this->response(200, ['status' => 200, 'skills' => $user_skills]);
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     private function getLikes($post_id)
     {
         if ($user = $this->isAuthorized()) {
@@ -225,11 +252,10 @@ class SkillUpController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            if ($skills) {
-                return $this->response(200, ['status' => 200, 'skills' => $skills]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
+            return $this->response(200, ['status' => 200, 'skills' => $skills]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -442,12 +468,4 @@ class SkillUpController extends ApiBaseController
         }
     }
 
-    public function actionShowComments()
-    {
-        if ($user = $this->isAuthorized()) {
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
 }
