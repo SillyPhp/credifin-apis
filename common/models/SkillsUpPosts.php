@@ -10,8 +10,10 @@ use Yii;
  * @property int $id Primary Key
  * @property string $post_enc_id Post Encrypted ID
  * @property string $post_title
+ * @property string $post_author
  * @property string $post_source_url
  * @property string $source_enc_id
+ * @property string $content_type
  * @property string $cover_image Cover Image
  * @property string $cover_image_location
  * @property string $post_description  Description
@@ -24,11 +26,14 @@ use Yii;
  * @property string $status Status  Active, Inactive, Pending,  Rejected
  * @property int $is_deleted Is Deleted (0 as False, 1 as True)
  *
+ * @property SkillsUpLikesDislikes[] $skillsUpLikesDislikes
  * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs
  * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds
+ * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries
  * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews
  * @property SkillsUpPostAssignedSkills[] $skillsUpPostAssignedSkills
  * @property SkillsUpPostAssignedVideo[] $skillsUpPostAssignedVideos
+ * @property SkillsUpPostComments[] $skillsUpPostComments
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property SkillsUpSources $sourceEnc
@@ -36,7 +41,7 @@ use Yii;
 class SkillsUpPosts extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -44,23 +49,31 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['post_enc_id', 'post_title', 'source_enc_id', 'slug', 'created_by'], 'required'],
-            [['post_description', 'post_short_summery', 'status'], 'string'],
+            [['post_enc_id', 'post_title', 'post_author', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
+            [['content_type', 'post_description', 'post_short_summery', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['post_title', 'post_source_url'], 'string', 'max' => 255],
+            [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['post_title', 'post_author', 'post_source_url', 'slug'], 'string', 'max' => 255],
             [['post_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['source_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => SkillsUpSources::className(), 'targetAttribute' => ['source_enc_id' => 'source_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpLikesDislikes()
+    {
+        return $this->hasMany(SkillsUpLikesDislikes::className(), ['post_enc_id' => 'post_enc_id']);
     }
 
     /**
@@ -77,6 +90,14 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function getSkillsUpPostAssignedEmbeds()
     {
         return $this->hasMany(SkillsUpPostAssignedEmbeds::className(), ['post_enc_id' => 'post_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpPostAssignedIndustries()
+    {
+        return $this->hasMany(SkillsUpPostAssignedIndustries::className(), ['post_enc_id' => 'post_enc_id']);
     }
 
     /**
@@ -101,6 +122,14 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function getSkillsUpPostAssignedVideos()
     {
         return $this->hasMany(SkillsUpPostAssignedVideo::className(), ['post_enc_id' => 'post_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpPostComments()
+    {
+        return $this->hasMany(SkillsUpPostComments::className(), ['post_enc_id' => 'post_enc_id']);
     }
 
     /**
