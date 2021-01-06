@@ -234,7 +234,7 @@ $this->registerCss("
 #users-list{
     max-height: 430px;
     overflow-y: scroll;
-    width: 280px;
+    width: 100%;
     position:relative;
 }
 .chat-bounce {

@@ -136,7 +136,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <div id="fixed_stip">
                                 <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary'])->label(false); ?>
                             </div>
-                            <div id="min_max">
+                            <div id="min_max">job-det
                                 <div class="row">
                                     <div class="col-md-6">
                                         <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min'])->label(false) ?>
