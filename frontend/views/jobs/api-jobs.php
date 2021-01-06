@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
+use common\models\RandomColors;
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
@@ -32,7 +33,7 @@ $content = [
             'canvas'=>(($get['company_logo'])?false:true),
             'bg_icon'=>(($app['profile_name']=="Others")?false:$app['profile_id']),
             'logo'=>(($get['company_logo'])?$get['company_logo']:null),
-            'initial_color'=>'#73ef9c',
+            'initial_color'=>RandomColors::one(),
             'location'=>$location,
             'app_id'=>$app['application_enc_id'],
             'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
