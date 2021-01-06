@@ -214,12 +214,15 @@ class SkillUpController extends ApiBaseController
     public function actionGetSkills()
     {
         if ($user = $this->isAuthorized()) {
+
             $keyword = Yii::$app->request->post('keyword');
 
             $skills = Skills::find()
                 ->select(['skill_enc_id', 'skill'])
                 ->where(['status' => 'Publish', 'is_deleted' => 0])
                 ->andWhere(['like', 'skill', $keyword])
+                ->limit(20)
+                ->asArray()
                 ->all();
 
             if ($skills) {
@@ -240,8 +243,46 @@ class SkillUpController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            if (isset($params['pref_id']) && !empty($params['pref_id'])) {
+            $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
 
+            if ($prefs) {
+                $user_skill = UserPreferredSkills::find()
+                    ->select(['skill_enc_id'])
+                    ->where(['preference_enc_id' => $prefs->preference_enc_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $old_skills = [];
+                foreach ($user_skill as $skill_id) {
+                    array_push($old_skills, $skill_id);
+                }
+
+                $skills = [];
+                foreach ($params['skills'] as $s) {
+                    array_push($skills, $s['skill_enc_id']);
+                }
+
+                $new_userskill_to_update = $skills;
+
+                $to_be_added_userskill = array_diff($new_userskill_to_update, $old_skills);
+                $to_be_deleted_userskill = array_diff($old_skills, $new_userskill_to_update);
+
+                print_r('skills to add' . $to_be_added_userskill);
+                print_r('skills to delete' . $to_be_deleted_userskill);
+                die();
+
+                if (count($to_be_deleted_userskill) > 0) {
+                    foreach ($to_be_deleted_userskill as $del) {
+                        $this->delSkills($del, $prefs->preference_enc_id);
+                    }
+                }
+
+                if (count($to_be_added_userskill) > 0) {
+                    foreach ($to_be_added_userskill as $skill) {
+                        $this->setSkills($skill, $prefs->preference_enc_id, $user->user_enc_id);
+                    }
+                }
             } else {
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
@@ -262,7 +303,7 @@ class SkillUpController extends ApiBaseController
                         $utilitiesModel = new \common\models\Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $skills->preferred_skill_enc_id = $utilitiesModel->encrypt();
-                        $skills->skill_enc_id = $s;
+                        $skills->skill_enc_id = $s['skill_enc_id'];
                         $skills->preference_enc_id = $prefs->preference_enc_id;
                         $skills->created_on = date('Y-m-d H:i:s');
                         $skills->created_by = $user->user_enc_id;
@@ -270,7 +311,6 @@ class SkillUpController extends ApiBaseController
                             $transaction->rollback();
                             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
-
                     }
 
                     $transaction->commit();
@@ -282,6 +322,129 @@ class SkillUpController extends ApiBaseController
                 }
             }
 
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function delSkills($skill, $user_preference)
+    {
+        $skill_id = Skills::find()
+            ->select(['skill_enc_id'])
+            ->where(['skill' => $skill])
+            ->asArray()
+            ->one();
+
+        $to_delete_userskill = UserPreferredSkills::find()
+            ->where(['skill_enc_id' => $skill_id['skill_enc_id'], 'preference_enc_id' => $user_preference])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+        $to_delete_userskill->is_deleted = 1;
+        $to_delete_userskill->update();
+    }
+
+    private function setSkills($skills, $preference_enc_id, $user_enc_id)
+    {
+        $obj = new Skills();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $chk = Skills::find()
+            ->where(['skill' => $skills])
+            ->asArray()
+            ->one();
+        if (empty($chk)) {
+            $obj->skill_enc_id = $utilitiesModel->encrypt();
+            $obj->skill = $skills;
+            $obj->created_on = date('Y-m-d h:i:s');
+            $obj->created_by = $user_enc_id;
+            if (!$obj->save()) {
+                print_r($obj->getErrors());
+            } else {
+                $user_obj = new UserPreferredSkills();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $user_obj->preferred_skill_enc_id = $utilitiesModel->encrypt();
+                $user_obj->skill_enc_id = $obj->skill_enc_id;
+                $user_obj->preference_enc_id = $preference_enc_id;
+                $user_obj->created_on = date('Y-m-d h:i:s');
+                $user_obj->created_by = $user_enc_id;
+                if (!$user_obj->save()) {
+                    print_r($user_obj->getErrors());
+                }
+            }
+        } else {
+            $chkk = UserPreferredSkills::find()
+                ->where(['skill_enc_id' => $chk['skill_enc_id'], 'is_deleted' => 0])
+                ->andWhere(['created_by' => $user_enc_id, 'preference_enc_id' => $preference_enc_id])
+                ->asArray()
+                ->one();
+            if (!$chkk) {
+                $user_obj = new UserPreferredSkills();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $user_obj->preferred_skill_enc_id = $utilitiesModel->encrypt();
+                $user_obj->skill_enc_id = $chk['skill_enc_id'];
+                $user_obj->preference_enc_id = $preference_enc_id;
+                $user_obj->created_on = date('Y-m-d h:i:s');
+                $user_obj->created_by = $user_enc_id;
+                if (!$user_obj->save()) {
+                    print_r($user_obj->getErrors());
+                }
+            }
+        }
+    }
+
+    public function actionPostDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['post_id']) && !empty($params['post_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $detail = SkillsUpPosts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.post_title',
+                    'a.slug post_slug',
+                    'a.author',
+                    'a.post_source_url',
+                    'a.source_enc_id',
+                    'a.content_type',
+                    'a.post_short_summery',
+                    'a.post_description',
+                    'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
+                    'b.name source_name',
+                    'b.url source_url',
+                ])
+                ->joinWith(['sourceEnc b'], false)
+                ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
+                    $c->select(['c.assigned_skill_enc_id', 'c.post_enc_id', 'c.skill_enc_id', 'c1.skill']);
+                    $c->joinWith(['skillEnc c1'], false);
+                    $c->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
+                }])
+                ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->asArray()
+                ->all();
+
+            if ($detail) {
+                $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
+                return $this->response(200, ['status' => 200, 'data' => $detail]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShowComments()
+    {
+        if ($user = $this->isAuthorized()) {
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
