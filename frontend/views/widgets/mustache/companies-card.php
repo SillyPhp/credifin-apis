@@ -56,12 +56,15 @@ use yii\helpers\Url;
                         </a>
                         {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a>
+                    </h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
                     <div class="com-rating comp-ratings">
-                        <span class="average-star" data-score="{{rating}}"></span>
-                        <span class="stars rate-in">{{rating}}</span>
+                        <a href="/{{review_link}}" target="_blank">
+                            <span class="average-star" data-score="{{rating}}"></span>
+                            <span class="stars rate-in">{{rating}}</span>
+                        </a>
                     </div>
                     <div class="rating">
                     </div>
@@ -106,7 +109,7 @@ use yii\helpers\Url;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
-    'org_cards'=>true
+    'org_cards' => true
 ]);
 
 $this->registercss('

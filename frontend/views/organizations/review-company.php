@@ -41,8 +41,7 @@ $this->params['seo_tags'] = [
 
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => $org['slug']
+    'type' => 'company',
 ]);
 ?>
 <section class="rh-header">
@@ -526,9 +525,6 @@ if ($review_type == 'claimed') {
 $this->registerCss('
 .set-mar {
 	margin: 30px 0 20px;
-}
-.i-review-next,.i-review-input-group,.i-review-selectbox,.i-review-input{
-    background-color:#fff !important;
 }
 .share-btn{
     display:flex;
