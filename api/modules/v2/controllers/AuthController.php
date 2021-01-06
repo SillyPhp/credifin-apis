@@ -291,6 +291,14 @@ class AuthController extends ApiBaseController
                         return false;
                     }
                 }
+
+                $user->last_visit = date('Y-m-d H:i:s');
+                $user->last_visit_through = 'ECAMPUS';
+                $user->last_updated_on = date('Y-m-d H:i:s');
+                if (!$user->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
                 $token = $this->findToken($user, $source);
                 if (empty($token)) {
                     if ($token = $this->newToken($user->user_enc_id, $source)) {

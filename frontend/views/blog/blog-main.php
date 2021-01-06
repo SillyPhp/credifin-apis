@@ -382,7 +382,7 @@ $this->registerCss('
     display: flex;
 	justify-content: flex-start;
 	align-items: flex-end;
-	padding-left: 40px;
+	padding-left: 60px;
 	min-height: 380px;
 }
 .blog-header{

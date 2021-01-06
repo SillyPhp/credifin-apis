@@ -268,27 +268,40 @@ class ChatController extends Controller{
     }
 
     public function actionGetRandomValues(){
+        $referrerUrl = trim(Yii::$app->request->referrer, '/');
+        $urlParts = parse_url($referrerUrl);;
+        $actionid = explode('/', $urlParts['path'])[2];
+        $actionSlug = explode('/', $urlParts['path'])[3];
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             if(Yii::$app->user->identity->organization->organization_enc_id){
                 $applied_ids = [];
                 $applied_candidates = AppliedApplications::find()
                     ->alias('a')
-                    ->select(['a.created_by'])
+                    ->select(['a.created_by','a.application_enc_id'])
                     ->joinWith(['applicationEnc b' => function($x){
                         $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
                     }], false)
                     ->where(['a.is_deleted' => 0])
-                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+                    if($actionid == 'process-applications') {
+                        $applied_candidates ->andWhere(['not',['a.status' => 'Rejected']]);
+                    }
+                    $applied_candidates = $applied_candidates->groupBy(['a.created_by'])
+                    ->orderBy([new Expression('FIELD (a.application_enc_id, "'.$actionSlug.'") DESC'),'a.application_enc_id' => SORT_ASC])
                     ->groupBy(['a.created_by'])
                     ->limit(10)
                     ->asArray()
                     ->all();
-                foreach ($applied_candidates as $a){
-                    array_push($applied_ids, $a['created_by']);
-                }
+                    if($applied_candidates) {
+                        foreach ($applied_candidates as $a) {
+                            array_push($applied_ids, $a['created_by']);
+                        }
+                    }
+                $strAppliedUsers = implode(',',$applied_ids);
                 $applicable_users = Users::find()
                     ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                     ->where(['in', 'user_enc_id', $applied_ids])
+                    ->orderBy([new Expression('FIELD (user_enc_id, "' . $strAppliedUsers .'") ASC')])
                     ->asArray()
                     ->all();
                 return json_encode($applicable_users);
