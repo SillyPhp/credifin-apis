@@ -47,6 +47,8 @@ class GovtJobsController extends Controller
                 $b->joinWith(['deptEnc c'],false);
             }],false,'LEFT JOIN')
                 ->one();
+        print_r($get);
+        die();
         if (empty($get))
         {
             return 'Application Has Either Moved Or Deleted';
