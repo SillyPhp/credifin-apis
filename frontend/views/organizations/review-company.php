@@ -1,11 +1,13 @@
 <?php
-use yii\helpers\Url;
-use yii\helpers\Html;
+
 use yii\bootstrap\ActiveForm;
-$radios_array = [1=>1,2=>2,3=>3,4=>4,5=>5];
-$this->title = $org_details['name'].' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
-Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
-$overall_avg = array_sum($stats)/count($stats);
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
+$this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
+Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
+$overall_avg = array_sum($stats) / count($stats);
 $round_avg = round($overall_avg);
 $link = Url::to($slug . '/reviews', true);
 $logo_image = $org_details['logo'];
@@ -37,87 +39,113 @@ $this->params['seo_tags'] = [
     ],
 ];
 
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application',
+    'slug' => $org['slug']
+]);
 ?>
 <section class="rh-header">
     <div class="container">
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-                        <?php
-                        if (!empty($org_details['logo'])) {
-                            ?>
-                            <img src="<?= $logo_image; ?>">
-                            <?php
-                        } else {
-                            ?>
-                            <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                    color="<?= $org_details['initials_color']?>" font="70px"></canvas>
-                            <?php
-                        }
+                    <?php
+                    if (!empty($org_details['logo'])) {
                         ?>
+                        <img src="<?= $logo_image; ?>">
+                        <?php
+                    } else {
+                        ?>
+                        <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
+                                color="<?= $org_details['initials_color'] ?>" font="70px"></canvas>
+                        <?php
+                    }
+                    ?>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
-                    <?php for ($i=1;$i<=5;$i++){ ?>
-                        <i class="fas fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                        <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                     <?php } ?>
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
                 <div class="share-btn">
-                    <button id="sb">Share</button>
-                        <ul class="sd-btns share-hidden">
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-whatsapp marg"></i></a> </li>
-                        </ul>
+                    <a href="#" class="fbb"
+                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                class="fab fa-facebook-f"></i></a> </li>
+                    <a href="#" class="twit"
+                       onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                class="fab fa-twitter"></i></a> </li>
+                    <a href="#" class="linke"
+                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                class="fab fa-linkedin-in"></i></a> </li>
+                    <a href="#" class="whts"
+                       onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                class="fab fa-whatsapp marg"></i></a> </li>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
                     <div class="header-bttns-flex">
-                        <?php if (!Yii::$app->user->isGuest){ ?>
-                        <?php if (!empty($follow) && $follow['followed'] == 1) {
-                            ?>
+                        <?php if (!Yii::$app->user->isGuest) { ?>
+                            <?php if (!empty($follow) && $follow['followed'] == 1) {
+                                ?>
+                                <div class="follow-bttn hvr-icon-pulse">
+                                    <button type="button" class="follow"
+                                            value="<?= $org_details['organization_enc_id']; ?>"><i
+                                                class="far fa-heart hvr-icon"></i> Following
+                                    </button>
+                                </div>
+                                <?php
+                            } else {
+                                ?>
+                                <div class="follow-bttn hvr-icon-pulse">
+                                    <button type="button" class="follow"
+                                            value="<?= $org_details['organization_enc_id']; ?>"><i
+                                                class="far fa-heart hvr-icon"></i> Follow
+                                    </button>
+                                </div>
+                            <?php }
+                        } else { ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Following</button>
-                            </div>
-                            <?php
-                        } else  {
-                            ?>
-                            <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Follow</button>
-                            </div>
-                        <?php }} else { ?>
-                            <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="far fa-heart hvr-icon"></i> Follow</button>
+                                <button type="button" data-toggle="modal" data-target="#loginModal"><i
+                                            class="far fa-heart hvr-icon"></i> Follow
+                                </button>
                             </div>
                         <?php } ?>
-                            <?php if (!Yii::$app->user->isGuest){
-                                if(!empty($edit)){ ?>
-                        <div class="wr-bttn hvr-icon-pulse">
-                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="far fa-comments hvr-icon"></i> Edit Your Review</a>
-                        </div>
-                               <?php } else {
-                                     if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
-                        <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Write Review</button>
-                        </div>
-                            <?php } } } else{ ?>
-                        <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
-                        </div>
-                            <?php } ?>
+                        <?php if (!Yii::$app->user->isGuest) {
+                            if (!empty($edit)) { ?>
+                                <div class="wr-bttn hvr-icon-pulse">
+                                    <a href="javascript:;" data-toggle="modal" data-target="#edit_review"
+                                       class="btn_review"><i class="far fa-comments hvr-icon"></i> Edit Your Review</a>
+                                </div>
+                            <?php } else {
+                                if (empty(Yii::$app->user->identity->organization_enc_id)) { ?>
+                                    <div class="wr-bttn hvr-icon-pulse">
+                                        <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Write
+                                            Review
+                                        </button>
+                                    </div>
+                                <?php }
+                            }
+                        } else { ?>
+                            <div class="wr-bttn hvr-icon-pulse">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i
+                                            class="far fa-comments hvr-icon"></i> Write Review</a>
+                            </div>
+                        <?php } ?>
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
-                            <?php if ($review_type=='unclaimed'):?>
-<!--                                <a href="#" type="button"><i class="far fa-eye hvr-icon"></i> Claim This Profile</a>-->
+                            <?php if ($review_type == 'unclaimed'): ?>
+                                <!--                                <a href="#" type="button"><i class="far fa-eye hvr-icon"></i> Claim This Profile</a>-->
                             <?php else: ?>
-                                <a href="/<?=$slug;?>" type="button"><i class="far fa-eye hvr-icon"></i> View Company Profile</a>
-                            <?php endif;?>
+                                <a href="/<?= $slug; ?>" type="button"><i class="far fa-eye hvr-icon"></i> View Company
+                                    Profile</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -134,17 +162,20 @@ $this->params['seo_tags'] = [
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
                 </div>
+                <div class="set-mar">
+                    <?= $this->render('/widgets/new-position'); ?>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <h1 class="heading-style">Overall Ratings</h1>
+                    <h1 class="heading-style" style="text-align: center !important;">Overall Ratings</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
-                            <div class="rs-main <?= (($reviews) ? '': 'fade_background') ?>">
+                            <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
                                 <div class="rating-large"><?= $round_avg ?>/5</div>
                                 <div class="com-rating-1">
-                                    <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fas fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                        <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -155,10 +186,10 @@ $this->params['seo_tags'] = [
                             <div class="rs1">
                                 <div class="re-heading">Job Security</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fas fa-star <?=(($stats['job_avg']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['job_avg'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -166,12 +197,12 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Career growth </div>
+                                <div class="re-heading">Career growth</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['growth_avg']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['growth_avg'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -179,12 +210,12 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Company culture </div>
+                                <div class="re-heading">Company culture</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['avg_cult']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['avg_cult'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -194,10 +225,10 @@ $this->params['seo_tags'] = [
                             <div class="rs1">
                                 <div class="re-heading">Salary & Benefits</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['avg_compensation']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['avg_compensation'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -207,10 +238,10 @@ $this->params['seo_tags'] = [
                             <div class="rs1">
                                 <div class="re-heading">Work Satisfaction</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
-                                    <div class="threestar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['avg_work']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
+                                    <div class="threestar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['avg_work'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -220,10 +251,10 @@ $this->params['seo_tags'] = [
                             <div class="rs1">
                                 <div class="re-heading">Work-Life Balance</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['avg_work_life']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['avg_work_life'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -231,21 +262,18 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Skill development </div>
+                                <div class="re-heading">Skill development</div>
                                 <div class="summary-box">
-                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
-                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fas fa-star <?=(($stats['avg_skill']<$i) ?  '': 'active') ?>"></i>
+                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                            <i class="fas fa-star <?= (($stats['avg_skill'] < $i) ? '' : 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="review-summary mt-40">
-                <?= $this->render("/widgets/square_ads");?>
                 </div>
             </div>
         </div>
@@ -259,247 +287,246 @@ $this->params['seo_tags'] = [
                 <h4 class="modal-title">Edit Your Review</h4>
             </div>
             <div class="modal-body">
-            <?php
-            if ($review_type=='claimed') {
-                $url = Url::to(['/organizations/edit-review?request_type=1']);
-                $request_type = 1;
-            }
-            else
-            {
-                $url = Url::to(['/organizations/edit-review?request_type=2']);
-                $request_type = 2;
-            }
-            $form = ActiveForm::begin([
-            'id' => 'edit-review-form',
-            'action'=>$url,
-            'fieldConfig' => [
-                'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
-            ]
-            ]);
-            ?>
-             <div class="row">
-                 <div class="col-md-6 col-md-offset-1">
-                     <?= $form->field($editReviewForm, 'identity')->dropDownList([0=>Anonymous,1=>Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name])->label('Post As'); ?>
-                 </div>
-             </div>
-             <div class="row">
-                 <div class="col-md-3 col-md-offset-1">
-                     <label class="control-label padding_top">Career Growth</label>
-                 </div>
-                 <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'career_growth',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="career'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="career'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                 </div>
-             </div>
-               <div class="row">
-                 <div class="col-md-3 col-md-offset-1">
-                     <label class="control-label padding_top">Company Culture</label>
-                 </div>
-                   <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'compnay_culture',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="compnay_culture'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="compnay_culture'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                 </div>
-               </div>
+                <?php
+                if ($review_type == 'claimed') {
+                    $url = Url::to(['/organizations/edit-review?request_type=1']);
+                    $request_type = 1;
+                } else {
+                    $url = Url::to(['/organizations/edit-review?request_type=2']);
+                    $request_type = 2;
+                }
+                $form = ActiveForm::begin([
+                    'id' => 'edit-review-form',
+                    'action' => $url,
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                    ]
+                ]);
+                ?>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-1">
+                        <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => Anonymous, 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Career Growth</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'career_growth', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="career' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Company Culture</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'compnay_culture', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="compnay_culture' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="compnay_culture' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-3 col-md-offset-1">
                         <label class="control-label padding_top">Salary Benefits</label>
                     </div>
                     <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'salary_benefits',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="salary_benefits'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="salary_benefits'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                 </div>
-             </div>
-             <div class="row">
-                 <div class="col-md-3 col-md-offset-1">
-                     <label class="control-label padding_top">Work satisfaction</label>
-                 </div>
-                 <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'work_satisfaction',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="work_satisfaction'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="work_satisfaction'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                 </div>
-             </div>
-              <div class="row">
-                 <div class="col-md-3 col-md-offset-1">
-                     <label class="control-label padding_top">Work-Life Balance</label>
-                 </div>
-                  <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'work_life',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="work_life'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="work_life'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                  </div>
-              </div>
-               <div class="row">
-                 <div class="col-md-3 col-md-offset-1">
-                     <label class="control-label padding_top">Skill Development</label>
-                 </div>
-                   <div class="col-md-8">
-                     <div class="star-rating1">
-                         <fieldset>
-                             <?=
-                             $form->field($editReviewForm, 'skill_devel',['template'=>'{input}{error}'])->inline()->radioList([
-                                 5 => '5 stars',
-                                 4 => '4 stars',
-                                 3 => '3 stars',
-                                 2 => '2 stars',
-                                 1 => '1 stars',
-                             ], [
-                                 'item' => function($index, $label, $name, $checked, $value) {
-                                     $return = '<input type="radio" id="skill_devel'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                     $return .= '<label for="skill_devel'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                     return $return;
-                                 }
-                             ])->label(false);
-                             ?>
-                         </fieldset>
-                     </div>
-                   </div>
-             </div>
-             <div class="row">
-                     <div class="col-md-3 col-md-offset-1">
-                         <label class="control-label padding_top">Job Security</label>
-                     </div>
-                     <div class="col-md-8">
-                         <div class="star-rating1">
-                             <fieldset>
-                                 <?=
-                                 $form->field($editReviewForm, 'job_security',['template'=>'{input}{error}'])->inline()->radioList([
-                                     5 => '5 stars',
-                                     4 => '4 stars',
-                                     3 => '3 stars',
-                                     2 => '2 stars',
-                                     1 => '1 stars',
-                                 ], [
-                                     'item' => function($index, $label, $name, $checked, $value) {
-                                         $return = '<input type="radio" id="job_security'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
-                                         $return .= '<label for="job_security'.$index.'" title="'.$label.'">"'.$label.'"</label>';
-                                         return $return;
-                                     }
-                                 ])->label(false);
-                                 ?>
-                             </fieldset>
-                         </div>
-                     </div>
-             </div>
-             <div class="row">
-                 <div class="col-md-12">
-                     <?= $form->field($editReviewForm, 'likes')->textArea(['rows'=>4])->label('Likes'); ?>
-                 </div>
-                 <div class="col-md-12">
-                     <?= $form->field($editReviewForm, 'dislikes')->textArea(['rows'=>4])->label('Dislikes'); ?>
-                 </div>
-             </div>
-              <div class="row">
-                 <div class="col-md-12">
-                     <?= $form->field($editReviewForm, 'org_id',['template'=>'{input}'])->hiddenInput()->label(false); ?>
-                 </div>
-             </div>
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'salary_benefits', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="salary_benefits' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="salary_benefits' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Work satisfaction</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'work_satisfaction', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="work_satisfaction' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="work_satisfaction' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Work-Life Balance</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'work_life', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="work_life' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="work_life' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Skill Development</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'skill_devel', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="skill_devel' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="skill_devel' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Job Security</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($editReviewForm, 'likes')->textArea(['rows' => 4])->label('Likes'); ?>
+                    </div>
+                    <div class="col-md-12">
+                        <?= $form->field($editReviewForm, 'dislikes')->textArea(['rows' => 4])->label('Dislikes'); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($editReviewForm, 'org_id', ['template' => '{input}'])->hiddenInput()->label(false); ?>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>
                 <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
             </div>
             <?php ActiveForm::end(); ?>
-            </div>
         </div>
     </div>
+</div>
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
-if ($review_type=='claimed')
-{
-    echo $this->render('/widgets/mustache/organization-reviews',[
+if ($review_type == 'claimed') {
+    echo $this->render('/widgets/mustache/organization-reviews', [
     ]);
-}else
-{
-    echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+} else {
+    echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
     ]);
 }
 
 $this->registerCss('
+.set-mar {
+	margin: 30px 0 20px;
+}
 .i-review-next,.i-review-input-group,.i-review-selectbox,.i-review-input{
     background-color:#fff !important;
 }
@@ -507,37 +534,44 @@ $this->registerCss('
     display:flex;
     width:100%;
 }
-.share-hidden{
-    display:none;
-    opacity:0;
-    transition:.5s ease-in;
-}
-.share-btn button{
+.fbb i, .twit i, .whts i, .linke i{
     background: #fff;
-    border: 1px solid #00a0e3;
-    color: #00a0e3;
-    padding: 12px 15px;
+    margin:0 2px;
+    padding: 9px 0;
+    width:35px;
     font-size: 14px;
     border-radius: 5px;
-    text-transform: uppercase;
-    font-family:roboto;
+    text-align:Center;
+    transition: ease-in-out .3s;
+}  
+.fbb i{
+    color:#3b5998;    
 }
-.share-btn ul{
-    width:100%;
-    margin:10px 0 0 8px;
+.fbb i:hover{
+    background-color:#3b5998;
+    color:#fff;
 }
-.share-btn ul li{
-    display:inline;
+.twit i{
+    color:#1DA1F2;
 }
-.share-btn ul li a{
-     background: #fff;
-    border: 1px solid #00a0e3;
-    color: #00a0e3;
-    padding: 10px 13px;
-    font-size: 14px;
-    border-radius: 5px;
+.twit i:hover{
+    background-color:#1DA1F2;
+    color:#fff;
 }
-
+.whts i{ 
+   color:#4FCE5D;
+}
+.whts i:hover{ 
+   background-color:#4FCE5D;
+   color:#fff;
+}
+.linke i{
+    color:#0077B5;
+}
+.linke i:hover{
+    background-color:#0077B5;
+    color:#fff;
+}
 .i-review-navigation
 {
 display:none;
@@ -593,7 +627,7 @@ display:none;
     background:#f4f4f4 !important;
 }
 .rh-header{
-    background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
+    background-color:#437aa8;
     background-size:100% 300px;
     background-repeat: no-repeat;
 } 
@@ -615,8 +649,8 @@ padding:16px 0px;
 }
 .follow-bttn button ,.wr-bttn button, .cp-bttn a{
     background:#fff;
-    border:1px solid #00a0e3;
-    color:#00a0e3;
+    border:1px solid #437aa8;
+    color:#437aa8;
     padding:12px 15px;
     font-size:14px;
     border-radius:5px;
@@ -673,15 +707,12 @@ border: 2px solid #cadfe8 !important;
     transform: translate(-50%, -50%);
 }
 .com-name{
-    font-size:38px;
+    font-size:32px;
     font-family: roboto;
     font-weight: 700;
     color:#fff;
     line-height:50px;
-    margin-top: -16px;
-}
-.com-rating-1{
-    padding-top:15px;
+    margin-top: -12px;
 }
 .com-rating i{
     font-size:16px;
@@ -903,6 +934,7 @@ border: 2px solid #cadfe8 !important;
 }
 .rs1{
     padding-top:20px;
+    text-align:center;
 }
 .re-heading{
     font-size: 17px;
@@ -929,23 +961,23 @@ border: 2px solid #cadfe8 !important;
     text-align: center;
     color: #fff;
     border-radius: 6px;
+    margin:auto;
 }
 .rating-large{
     font-size:56px;
 }
 .com-rating-1 i{ 
-    font-size:16px;
-    background:#fff;
-    color:#ccc;
+    font-size:22px;
+    color:#fff;
     padding:7px 5px;
     border-radius:5px;
 }
 .com-rating-1 i.active{
-    background:#fff;
-    color:#00a0e3;
+    color:#ff7803;
 }
 .summary-box{ 
-    display:flex
+    display:flex;
+    justify-content:center;
 }
 .com-rating-2 {
     padding: 13px 23px 15px 42px;
@@ -1434,7 +1466,7 @@ function review_post_ajax(data) {
 }
 JS;
 $this->registerJs($script);
-$this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJs($headScript, yii\web\View::POS_HEAD);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');

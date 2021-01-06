@@ -1,8 +1,8 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
@@ -384,6 +384,10 @@ $this->render('/widgets/employer_applications/top-banner', [
 
                 <?= $this->render('/widgets/join-social-groups'); ?>
 
+                <div class="new-row col-md-10 col-md-offset-1">
+                    <?= $this->render('/widgets/new-position'); ?>
+                </div>
+
                 <?php
                 if (Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
@@ -536,6 +540,10 @@ if ($settings["showNewPositionsWidget"]):
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss("
+.new-row{
+	padding: 0;
+	margin-top: 20px;
+}
 .course-box{
     min-height: 179px;
 }

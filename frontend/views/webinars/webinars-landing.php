@@ -1,17 +1,39 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\html;
+use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = false;
+
+function finalAmount($totalPrice, $gstAmount)
+{
+    if ($gstAmount) {
+        $gstPercent = $gstAmount;
+        if ($totalPrice > 0) {
+            $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+        }
+    }
+    $finalPrice = $totalPrice + $gstAmount;
+    return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
+}
+
+function webDate($webDate)
+{
+    $date = $webDate;
+    $sec = strtotime($date);
+    $newDate = date('d-M', $sec);
+    return $newDate;
+}
 ?>
 <section class="header-web">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6">
                 <div class="header-txt">
-                    <h1>WEBINARS</h1>
+                    <h1>Webinars</h1>
                     <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
-                       Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -29,229 +51,146 @@ $this->params['header_dark'] = false;
             <div class="heading-style">Upcoming Webinars</div>
         </div>
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
+            <?php
+            foreach ($upcomingWebinar as $web) {
+                ?>
+                <div class="col-md-4 col-sm-6">
+                    <div class="web-card">
+                        <div class="web-img">
+                            <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
+                            <div class="web-date">
+                                <div class="date">
+                                    <?php
+                                    $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
+                                    echo $eventDate;
+                                    ?>
+                                </div>
                             </div>
-                            <span class="cont">25 Registered</span>
+                            <div class="web-paid">
+                                <?php
+                                $finalPrice = finalAmount($web['price'], $web['gst']);
+                                echo $finalPrice;
+                                ?>
+                            </div>
                         </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                        <div class="web-inr">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                            <div class="web-speaker">
+                                <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
+                            </div>
+                            <div class="web-des"><?= $web['description'] ?></div>
+                        </div>
+                        <div class="reg-btn-count">
+                            <div class="register-count">
+                                <div class="reg-img">
+                                    <?php
+                                    if (count($web['webinarRegistrations']) > 0) {
+                                        $reg = 1;
+                                        foreach ($web['webinarRegistrations'] as $uImage) {
+                                            ?>
+                                            <span class="reg<?= $reg ?> reg">
+                                    <img src="<?= $uImage['createdBy']['image'] ?>">
+                                </span>
+                                            <?php
+                                            $reg++;
+                                            if ($reg == 4) {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                                <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                            </div>
+                            <div class="register-btns">
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                            class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                            </div>
-                            <span class="cont">25 Registered</span>
-                        </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                            </div>
-                            <span class="cont">25 Registered</span>
-                        </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <?php
+            }
+            ?>
         </div>
     </div>
 </section>
 
-<section class="opted-web">
-    <div class="container">
-        <div class="row">
-            <div class="heading-opted">Opted Webinars</div>
+<?php
+if ($optedWebinar) {
+    ?>
+    <section class="opted-web">
+        <div class="container">
+            <div class="row">
+                <div class="heading-opted">Opted Webinars</div>
+            </div>
+            <?php
+            foreach ($optedWebinar as $opWeb) {
+                ?>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
+                                <div class="web-date">
+                                    <div class="date">
+                                        <?php
+                                        $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="web-paid">
+                                    <?php
+                                    $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
+                                    echo $finalPrice;
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a></div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
+                                </div>
+                                <div class="web-des"><?= $opWeb['description'] ?></div>
+                            </div>
+                            <div class="reg-btn-count">
+                                <div class="register-count">
+                                    <div class="reg-img">
+                                        <?php
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                ?>
+                                                <span class="reg<?= $reg ?> reg">
+                                                    <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                </span>
+                                                <?php
+                                                $reg++;
+                                                if ($reg == 4) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
+                                </div>
+                                <!--                        <div class="register-btns">-->
+                                <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
+                                <!--                        </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
         </div>
-        <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                            </div>
-                            <span class="cont">25 Registered</span>
-                        </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                            </div>
-                            <span class="cont">25 Registered</span>
-                        </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">free</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                    <div class="reg-btn-count">
-                        <div class="register-count">
-                            <div class="reg-img">
-                                <span class="reg1 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg2 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                                <span class="reg3 reg"><img
-                                            src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>"></span>
-                            </div>
-                            <span class="cont">25 Registered</span>
-                        </div>
-                        <div class="register-btns">
-                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
+    <?php
+}
+?>
 
 <section class="past-web">
     <div class="container">
@@ -259,63 +198,56 @@ $this->params['header_dark'] = false;
             <div class="heading-style">Past Webinars</div>
         </div>
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
+            <?php
+            foreach ($pastWebinar as $pWeb) {
+                $date = array();
+                foreach ($pWeb['webinarEvents'] as $key => $row)
+                {
+                    $date[$key] = $row['start_datetime'];
+                }
+                array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
+                ?>
+                <div class="col-md-4 col-sm-6">
+                    <div class="web-card">
+                        <div class="web-img">
+                            <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                                <img src="<?= $pWeb['banner'] ?>">
+                            </a>
+                            <div class="web-date">
+                                <div class="date">
+                                    <?php
+                                    $eventDate = webDate($pWeb['webinarEvents'][0]['start_datetime']);
+                                    echo $eventDate;
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="web-paid">
+                                <?php
+                                $totalPrice = $pWeb['price'];
+                                $gstAmount = 0;
+                                if ($pWeb['gst']) {
+                                    $gstPercent = $pWeb['gst'];
+                                    if ($totalPrice > 0) {
+                                        $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                    }
+                                }
+                                $finalPrice = $totalPrice + $gstAmount;
+                                ?>
+                                <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                            </div>
                         </div>
-                        <div class="web-paid">paid</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">paid</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="web-card">
-                    <div class="web-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar.jpg') ?>">
-                        <div class="web-date">
-                            <div class="date">12 oct</div>
-                        </div>
-                        <div class="web-paid">paid</div>
-                    </div>
-                    <div class="web-inr">
-                        <div class="web-title">Lorem ipsum</div>
-                        <div class="web-speaker">ivaan,sahil</span></div>
-                        <div class="web-des">Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in
-                            laying out print, graphic or web designs. The passage is attributed to an unknown typesetter
-                            in the 15th century who is thought to have
+                        <div class="web-inr">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                                    <?= $pWeb['name'] ?></a></div>
+                            <div class="web-speaker">
+                                <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
+                            <div class="web-des"><?= $pWeb['description'] ?></div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <?php
+            }
+            ?>
         </div>
     </div>
 </section>
@@ -323,10 +255,18 @@ $this->params['header_dark'] = false;
 <section class="speakers">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Speakers</div>
+            <div class="heading-style">Webinars Speaker</div>
         </div>
         <div class="row">
-            <div class=""
+            <div class="loader_screen">
+                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+            </div>
+            <div id="speakers_card">
+
+            </div>
+            <div class="align_btn">
+                <button id="loader" class="btn btn-success">View More</button>
+            </div>
         </div>
     </div>
 </section>
@@ -349,74 +289,390 @@ $this->params['header_dark'] = false;
             </div>
         </div>
         <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #fff;padding: 30px 20px;">
-            <form>
+            <?php $form = ActiveForm::begin([
+                'id'=>'requestWebForm'
+            ])
+            ?>
+            <div class="row">
                 <div class="col-md-12">
                     <div class="web-form">
-                        <label for="title">Title</label>
-                        <input type="text" class="form-control" name="title" placeholder="Enter The Title" style="font-style:italic"><br>
+                        <label for="title">Topic</label>
+                        <?= $form->field($model,'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false)?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="date">Date</label>
-                        <input type="date" class="form-control" name="date" style="font-style:italic"><br>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="web-form">
-                        <label for="time">Time</label>
-                        <input type="time" class="form-control" name="time"><br>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="web-form">
-                        <label for="duration">Duration</label>
-                        <input type="text" class="form-control" name="duration" placeholder="Duration Of The Webinar" style="font-style:italic"><br>
+                        <?= $form->field($model,'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false)?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="seats">Seats</label>
-                        <input type="number" class="form-control" name="seats" placeholder="Number Of Seats" style="font-style:italic"><br>
+                       <?= $form->field($model,'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false)?>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="speakers">Speakers</label>
-                        <input type="text" class="form-control" name="speakers" placeholder="Name Of The Speaker" style="font-style:italic"><br>
+                        <div class="load-suggestions">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <?= $form->field($model,'speakers[]',['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false)?>
+                        <div class="pf-field no-margin">
+                            <ul class="tags languages_tag_list">
+                                <li class="tagAdd taglist"></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="web-form">
-                        <label for="decription">Description</label><br>
-                        <textarea name="comment" placeholder="Enter Description" style="font-style:italic"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-12">
+                <div class="col-md-12 mt10">
                     <div class="web-form">
                         <label for="objectives">Objectives</label><br>
-                        <textarea name="comment" placeholder="Objectives Of Conducting A Webinar" style="font-style:italic"></textarea>
+                       <?= $form->field($model,'objective')->textArea(['rows'=> 6, 'cols'=> 20,'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false)?>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="web-button">
-                        <button type="button" class="button-slide" id="nextBtn">
-                            Submit
-                        </button>
-                    </div>
+                <div class="col-md-12 text-center">
+                    <?= Html::submitButton('Submit Request', ['class' => 'sub-btn gnt-btn']) ?>
                 </div>
-
-            </form>
-    </div>
+            </div>
+            <?php ActiveForm::end(); ?>
+        </div>
 </section>
 
 <?php
-$this->registerCss('
+echo $this->render('/widgets/mustache/speakers-card');
+$this->registerCss("
+.sub-btn{
+    background: #00a0e3;
+    color: #fff;
+    padding: 10px 15px;
+    border: 1px solid #00a0e3; 
+    font-size: 14px;
+    text-transform: uppercase;
+}
+.sub-btn:hover{
+    background: #fff;
+    color: #00a0e3;
+}
+.has-success .form-control{
+    border-color: unset;
+}
+.taglist{
+    float:left !important;
+}
+.btn_remove_picture{
+    margin-left:5px;
+}
+.mt10{
+    margin-top: 10px;
+}
+.cat_wrapper .Typeahead-spinner{
+    position: absolute;
+    right: 8px;
+    top: 18px;
+    font-size: 22px;
+    display:none;
+}
+.twitter-typeahead input{
+    padding-right:35px !important;
+}
+.social-edit > form{
+    padding-left:0px;
+}
+.add_loader{
+background-color: #ffffff;
+background-image: url('http://loadinggif.com/images/image-selection/3.gif');
+background-size: 25px 25px;
+background-position:right center;
+background-repeat: no-repeat;
+}
+.fb i{
+    color:#3b5998 !important;
+}
+.twitter i{
+    color:#1DA1F2 !important;
+}
+.gplus i{ 
+    color:#CC3333 !important;
+}
+.linkedin i{
+    color:#0077B5 !important;
+}
+.wrapper-bg{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . ');
+}
+.skill-input{
+    position: relative;
+    vertical-align: top;
+    background-color: transparent;
+    padding: 15px 10px !important;
+    font-size: 15px;
+    border-radius: 7px;
+}
+.lang-input{
+    margin-top: 0px !important;    
+}
+.help-block{
+    font-weight: 500 !important;
+    font-size: 14px;
+    margin-bottom: 30px;
+    line-height: 15px;
+}
+.tags > .addedTag{
+    margin-bottom:10px;
+}
+.pf-title{
+    margin-bottom: 5px;
+    font-weight:bold;
+}
+.profile-title > h3{
+    margin-top:0px;
+}
+.chosen-container .chosen-drop {
+    background:#fff !important;
+}
+.highlighted{
+    color:#00a0e3 !important;
+}
+/*-----------------*/
+.tags li{
+    display: inline-block;
+}
+.tags > .addedTag{
+    background: #00a0e3;
+    color: #fff;
+    padding: 5px 10px;
+    position: relative;
+    margin-right: 15px; 
+}
+.tags > .addedTag > span{
+    background: #fff;
+    position: absolute;
+    top: -11px;
+    right: -8px;
+    height: auto;
+    color: #000;
+    padding: 0px 5px;
+    border: 1px solid #00a0e3;
+    border-radius: 50%;
+    display: block;
+    line-height: 18px;
+    font-size: 12px;
+}
+.tags > .addedTag > span:hover{
+    cursor: pointer;
+    color: #00a0e3;
+}
+.typeahead,.tt-query{
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.form-wizard .steps>li.done>a.step .number {
+    background-color: #ffac64 !important;
+    color: #fff;
+}
+.typeahead {
+  background-color: #fff;
+}
+//.typeahead:focus {
+//  border: 2px solid #0097cf;
+//}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.twitter-typeahead{
+width:100%;
+}
+
+.form-control.tt-hint {
+  color: #999;
+  opacity: 0 !important;
+}
+.tt-menu {
+    width: 100%;
+    margin: 12px 0;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    max-height:158px;
+    overflow-y:auto;
+    margin-top: 0px;
+}
+.tt-suggestion {
+    padding: 3px 20px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.tt-suggestion:hover {
+    cursor: pointer;
+    color: #fff;
+    background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf !important;
+}
+.tt-suggestion p {
+    margin: 0;
+}
+.custom_label{
+   font-size: 13px !important;
+   font-weight: 100 !important;
+}
+.padding-left{
+    margin-top:20px;
+}
+.set-overlay{
+    background-color: #ffffffd9;
+    padding: 15px 30px 40px 30px;
+    box-shadow: 0px 0px 16px 6px rgba(179, 179, 179, 0.1);
+    border-radius: 6px;
+}
+input[type=radio] + label::after{
+    border: 3px solid #00a0e3;
+}
+.btn_pink{
+float: right;
+    background: #ffffff;
+    border: 2px solid #00a0e3;
+    color: #00a0e3;
+    font-size: 15px;
+    padding: 12px 30px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    margin-top: 10px;
+    letter-spacing: 0px;
+}
+.btn_pink:hover{
+    background:#00a0e3;
+color:#fff;
+}
+.tg-fileinput{
+    display:none !important;  
+}  
+.tg-fileuploadlabel::before{
+    border:none !important;
+}
+.tg-fileuploadlabel{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    padding-top: 150px;
+}
+.tg-fileuploadlabel span i{
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0px 0px 10px 1px #bbb;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+.tg-btn{
+    display: block !important;
+    color: #ff7803 !important;
+    position: relative;
+    text-align: center;
+    border-radius: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: capitalize;
+    background: rgba(0,0,0,0.00);
+    padding:10px 0 0 0 ;
+    font-weight: 500;
+    cursor: pointer;
+    font-size:15px;
+    width: 150px !important;
+   height: 45px;
+    border: 2px solid #ff7803;
+}
+.view_profile_btn
+{
+    padding: 4px 12px;
+    margin-top: 3px;
+    background: #ffffff !important;
+    border: 1px solid #ff7803 !important;
+    color: #ff7803 !important;
+    border-radius: 4px;
+    font-size: 13px;
+}
+.tg-btn:hover{
+color: #fff !important;
+    background:#ff7803;
+}
+.has-error .form-control {
+    border: 2px solid #e73d4a !important;
+    }
+#picture_submit{
+    margin-top:0px;
+    float:left;
+}    
+.label_element{
+    font-weight:100;
+    font-size:15px;
+}
+.pf-field > input{
+    height:56px;
+}
+.pf-field{
+    margin-top: -14px;
+}  
+#dob{
+    background-color: #fff;
+}
+.skill_wrapper,.language_wrapper{position:relative;}
+.skill_wrapper .Typeahead-spinner,.language_wrapper .Typeahead-spinner{
+    position: absolute;
+    right: 5px;
+    top: 13px;
+    z-index: 9;
+    display:none;
+}
 .footer{
     margin-top: 0px !important;
 }
 .ornge{
-    color: #edf9ff;
+    color: #fff;
+}
+.speakers{
+    padding-bottom: 50px; 
+}
+.align_btn{
+    text-align: center;
+}
+.align_btn button{
+    background: #00a0e3;
+    color: #fff;
+    text-transform: capitalize;
+    font-size: 16px;
+    padding: 7px 15px;
+    border: 1px solid #00a0e3;
+}
+.align_btn button:hover{
+    background: #fff;
+    color: #00a0e3;
+    transition: .3s ease;
+    border-color: #00a0e3;
 }
 .web-card:hover {
 	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
@@ -430,17 +686,21 @@ $this->registerCss('
 .header-txt h1 {
 	font-size: 60px;
 	font-family: lobster;
-	font-weight: 600;
+	font-weight: 500;
 	margin-top: 80px;
-	color: #edf9ff;
+	color: #fff;
 	margin-bottom: 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 .header-txt h2 {
 	font-size: 20px;
-	font-family: lora;
+	font-family: roboto;
 	margin: 0 0 0 8px;
-	color: #000308;
-	font-weight: 600;
+	color: #000;
+	font-weight: 500;
+    text-transform: capitalize;
+    letter-spacing:.5px; 
 }
 .header-img {
 	width: 450px;
@@ -453,8 +713,8 @@ $this->registerCss('
 .web-form label{
     font-size: 18px;
     font-family: lora;
-    font-style: oblique;
-    color: #040404;
+    color: #333;
+    margin-bottom: 0px;
 }
 .web-form input,
 .web-form textarea{
@@ -562,14 +822,21 @@ $this->registerCss('
 .web-inr {
 	padding: 5px 10px 10px;
 }
-.web-title {
+.web-title{
 	font-size: 22px;
 	font-family: lora;
 	font-weight: 600;
 	display: -webkit-box;
--webkit-line-clamp: 1;
--webkit-box-orient: vertical;
-overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.web-title a{
+    color: #333
+}
+
+.web-title a:hover{
+    color: #00a0e3;
 }
 .web-speaker {
 	font-size: 12px;
@@ -583,6 +850,7 @@ overflow: hidden;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+	min-height: 80px;
 }
 .opted-web {
 	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/wb2.png') . '); 
@@ -666,6 +934,72 @@ overflow: hidden;
 .icon-drib {
   margin-right: 5px;
 }
+.field-speakers span{
+    display: block !important;
+}
+.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
+    background-color: #eff1f6;
+}
+.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd):hover{
+    background-color: #00a0e3;
+    color:#fff;
+}
+.suggestion_wrap{
+    margin-top: 3px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+.logo_wrap{
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+.bg_black{
+    color: #000;
+}
+.logo_wrap img{ 
+    width:100%;
+}
+.no_result_found{
+    display:inline-block;
+}
+.no_result_display{
+    padding:0px 15px;
+}
+.no_result_display .add_org{
+    border-left: 1px solid #ddd;
+    padding: 0px 5px 0px 15px;
+}
+.no_result_display .add_org a{
+    color: #00a0e3;
+    font-size: 13px;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    top:10px;
+    right: 20px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
 @keyframes bounce {
   from, 20%, 53%, 80%, to {
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -684,27 +1018,165 @@ overflow: hidden;
   }
 }
 @media only screen and (max-width: 991px) {
-.header-txt h1{margin-top:40px;}
-.header-txt h2{font-size:18px;}
-.header-img{width:300px;}
+    .header-txt h1{margin-top:40px;}
+    .header-txt h2{font-size:18px;}
+    .header-img{width:300px;}
 }
 @media only screen and (max-width: 768px) and (min-width: 320px){
-.header-txt h1{
-    font-size: 35px;
-    margin-bottom: 10px;
+    .header-txt h1{
+        font-size: 35px;
+        margin-bottom: 10px;
+    }
+    .header-txt h2{
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+    .header-img{
+        width: 200px;
+    }
 }
-.header-txt h2{
-    font-size: 16px;
-    margin-bottom: 25px;
-}
-.header-img{
-    width: 200px;
-}
-}
-');
+");
 $script = <<<JS
+$(document).on('click', '.sub-btn', function (e){
+   e.preventDefault();
+   var btn = $(this);
+   var form = $('#requestWebForm');
+   var speakers = $('.addedTag');
+   var speaker_id = [];
+   for(var i = 0; i < speakers.length; i++){
+        speaker_id.push(speakers[i].getAttribute('data-id'));
+   }
+   var reqWebFrom = form.serializeArray();
+   var url = form.attr('action');
+   var method = form.attr('method');
+   reqWebFrom.push({name:"speaker_id",value:speaker_id});
+   $.ajax({
+        url:url,
+        method: method,
+        data: reqWebFrom,
+        beforeSend:function (){
+            btn.html('<i class="fas fa-circle-notch fa-spin"></i>');
+            btn.attr("disabled","true");
+        },
+        success:function(res){
+            btn.html('Submit Request');
+            btn.attr("disabled", false);
+            if(res.status == 200) {
+                toastr.success(res.message, res.title);
+                $('#requestWebForm')[0].reset();
+                $('.addedTag').remove();
+            }
+            else {
+                toastr.error(res.message, res.title);
+            }
+        }
+        
+   })
+   
+});
+$('.web-speaker').each(function (){
+    $(this).children('span').addClass('hidden');
+    $(this).children('span:first-child, span:nth-child(2), span:nth-child(3)').removeClass('hidden');
+    var count = $(this).children('span').length - 3;
+   if(count > 0){
+       $(this).append('<span>+' + count + ' more</span>')
+   }
+});
+var offset = 0;
+$(document).on('click','#loader',function(e) {
+  e.preventDefault();
+  fetchNews(template=$('#speakers_card'),limit_dept=8,offset = offset+8,loader=false,loader_btn=true);
+})
+fetchNews(template=$('#speakers_card'),limit_dept=8,offset=0,loader=true,loader_btn=false);
+var speakersData = [];
+function add_tags(thisObj,tag_class,name,ids,duplicates)
+{
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                        {
+                         duplicates.push($.trim($(this).val()).toUpperCase());
+                        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
+        thisObj.val('');
+    } else {
+         $('<li class="addedTag" data-id="'+ids+'">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();"><i class="fas fa-times"></i></span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+         thisObj.val('');
+    }
+} 
+// $(document).on('keyup','#speakers',function(e){
+//     if(e.which==13)
+//         {
+//           add_tags($(this),'languages_tag_list','searchSpeaker');
+//         }
+// });
+var searchSpeaker = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+  url:'/webinars/search-speakers',
+  prepare: function (query, settings) {
+           settings.url += '?q=' + $('#speakers').val();
+           return settings;
+      },  
+  'cache': true, 
+  filter: function(list) {
+      speakersData = [];
+      speakersData = list;
+           return list;
+      }
+}
+});
 
+$('#speakers').typeahead(null, {
+  name: 'value',
+  display: 'value',
+  source: searchSpeaker,
+  templates: {
+   suggestion: function (data) {
+      var result = '<div class="suggestion_wrap">' + '<div class="logo_wrap">' + (data.image !== null ? '<img src = "' + data.image + '">' : '<img src = "https://shshank.eygb.me/assets/themes/ey/images/pages/webinar/default-user.png">') + '</div>' + '<div class="suggestion">' + '<p class="tt_text">' + data.value + "</p></div></div>"
+      return result;
+   },
+   empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div></div>'],
+},
+}).on('typeahead:asyncrequest', function() {
+    $('.load-suggestions').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.load-suggestions').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      add_tags($(this),'languages_tag_list','searchSpeaker',datum.id);
+      setTimeout(function (){
+          $('#speakers').val('');
+      },200);
+      console.log(12);
+   });
+
+$(".datepicker").datepicker({
+    autoclose: true,
+    format: "yyyy-mm-dd",
+    startDate: new Date(),
+    fontAwesome: true
+});
+ function validateSelection() {
+  var theIndex = -1;
+  for (var i = 0; i < global.length; i++) {
+  if (global[i].value == $(this).val()) {
+  theIndex = i;
+ break;
+   }
+  }
+  if (theIndex == -1) {
+   $(this).val(""); 
+   global = [];
+  }
+  }
 JS;
+$this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJS($script);
+
 ?>
 <script></script>
