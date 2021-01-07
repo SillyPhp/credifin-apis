@@ -12,6 +12,7 @@ use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
+use common\models\RejectionReasons;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -1481,6 +1482,109 @@ class InternshipsController extends Controller
                 $erexxCollaboratorsModel->save();
             }
         }
+    }
+    public function actionAppliedApplications(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $userApplied = new UserAppliedApplication();
+            $applied_users = $userApplied->getUserOtherDetails('Internships');
+            $reasons = RejectionReasons::find()
+                ->select(['rejection_reason_enc_id', 'reason'])
+                ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
+                ->asArray()
+                ->all();
+            return $this->render('applied-applications', [
+                'applied_user' => $applied_users,
+                'reasons'=>$reasons,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionAllAppliedApplications($aidk){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $applied_users = $this->getAllAppliedApplications($aidk,'Internships');
+            $reasons = RejectionReasons::find()
+                ->select(['rejection_reason_enc_id', 'reason'])
+                ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
+                ->asArray()
+                ->all();
+            return $this->render('all-applied-applications', [
+                'fields' => $applied_users,
+                'reasons'=>$reasons,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+    private function getAllAppliedApplications($aidk,$type){
+        $application_id = $aidk;
+        $applied_users = EmployerApplications::find()
+            ->distinct()
+            ->alias('z')
+            ->select(['y1.name job_title','z.organization_enc_id','z.application_enc_id','z.slug','x2.name type'])
+            ->joinWith(['appliedApplications a'=>function($a)use($type){
+                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
+                $a->andWhere(['a.is_deleted'=>0]);
+                $a->orderBy(['a.created_on'=>SORT_DESC]);
+                $a->groupBy(['a.applied_application_enc_id']);
+                $a->joinWith(['resumeEnc e'],false);
+                $a->joinWith(['appliedApplicationProcesses c' => function ($c) {
+                    $c->joinWith(['fieldEnc d'], false);
+                    $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                }]);
+                $a->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userSkills b1' =>function($b1){
+                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id','b2.skill', 'b1.created_by']);
+                        $b1->joinWith(['skillEnc b2'], false);
+                        $b1->onCondition(['b1.is_deleted' => 0]);
+                    }]);
+                    $b->joinWith(['userWorkExperiences b11' => function($b11){
+                        $b11->select(['b11.created_by', 'b11.company', 'b11.is_current', 'b11.title']);
+                    }]);
+                    $b->joinWith(['userEducations b21' => function($b21){
+                        $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
+                    }]);
+                    $b->joinWith(['userPreferredIndustries b31' => function($b31){
+                        $b31->select(['b31.industry_enc_id', 'b32.industry', 'b31.created_by']);
+                        $b31->joinWith(['industryEnc b32'], false);
+                        $b31->onCondition(['b31.is_deleted' => 0]);
+                    }]);
+                }]);
+                $a->joinWith(['candidateRejections cr' => function($cr){
+                    $cr->select(['cr.rejection_type','cr.applied_application_enc_id', 'cr.candidate_rejection_enc_id']);
+                    $cr->joinWith(['candidateConsiderJobs ccj' => function($ccj){
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                            $ae->select(['ae.application_enc_id', 'ae.slug', 'cc.name job_title', 'pe.icon']);
+                            $ae->joinWith(['title bae' => function ($bae) {
+                                $bae->joinWith(['categoryEnc cc'], false);
+                                $bae->joinWith(['parentEnc pe'], false);
+                            }], false);
+                        }]);
+                    }]);
+                    $cr->groupBy(['cr.candidate_rejection_enc_id']);
+                }]);
+            }])
+            ->joinWith(['applicationInterviewQuestionnaires aiq'=>function($a1){
+                $a1->groupBy(['aiq.interview_questionnaire_enc_id']);
+                $a1->select(['aiq.application_enc_id','aiq.field_enc_id','aiq.interview_questionnaire_enc_id as id', 'aiq.questionnaire_enc_id as qid', 'aiq1.questionnaire_name as name', 'aiq2.field_label']);
+                $a1->joinWith(['questionnaireEnc aiq1'], false);
+                $a1->joinWith(['fieldEnc aiq2'], false);
+            }])
+            ->joinWith(['applicationTypeEnc x2' =>function($x2)use($type){
+                $x2->andWhere(['x2.name'=>$type],false);
+            }],false)
+            ->joinWith(['title0 y' => function($y){
+                $y->joinWith(['categoryEnc y1'],false);
+            }],false)
+            ->andWhere(['z.application_enc_id' => $application_id,'z.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id,'z.is_deleted' => 0])
+            ->groupBy(['z.application_enc_id'])
+            ->asArray()
+            ->one();
+//        print_r($applied_users);
+//        exit();
+        return $applied_users;
     }
 
 }

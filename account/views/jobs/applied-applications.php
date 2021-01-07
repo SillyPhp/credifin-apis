@@ -4,298 +4,34 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 $base_url = 'https://empoweryouth.com';
-switch ($application_name['application_type']) {
-    case 'Jobs':
-        $app_type = 'job';
-        break;
-    case 'Internships':
-        $app_type = 'internship';
-        break;
-}
-if ($application_name['wage_type'] == 'Fixed') {
-    if ($application_name['wage_duration'] == 'Monthly') {
-        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 12;
-    } elseif ($application_name['wage_duration'] == 'Hourly') {
-        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 40 * 52;
-    } elseif ($application_name['wage_duration'] == 'Weekly') {
-        $application_name['fixed_wage'] = $application_name['fixed_wage'] * 52;
-    }
-    setlocale(LC_MONETARY, 'en_IN');
-    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['fixed_wage'])) . ' p.a.';
-} else if ($application_name['wage_type'] == 'Negotiable') {
-    if ($application_name['wage_duration'] == 'Monthly') {
-        $application_name['min_wage'] = $application_name['min_wage'] * 12;
-        $application_name['max_wage'] = $application_name['max_wage'] * 12;
-    } elseif ($application_name['wage_duration'] == 'Hourly') {
-        $application_name['min_wage'] = $application_name['min_wage'] * 40 * 52;
-        $application_name['max_wage'] = $application_name['max_wage'] * 40 * 52;
-    } elseif ($application_name['wage_duration'] == 'Weekly') {
-        $application_name['min_wage'] = $application_name['min_wage'] * 52;
-        $application_name['max_wage'] = $application_name['max_wage'] * 52;
-    }
-    setlocale(LC_MONETARY, 'en_IN');
-    if (!empty($application_name['min_wage']) && !empty($application_name['max_wage'])) {
-        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
-    } elseif (!empty($application_name['min_wage'])) {
-        $amount = 'From ₹ ' . utf8_encode(money_format('%!.0n', $application_name['min_wage'])) . ' p.a.';
-    } elseif (!empty($application_name['max_wage'])) {
-        $amount = 'Upto ₹ ' . utf8_encode(money_format('%!.0n', $application_name['max_wage'])) . ' p.a.';
-    } elseif (empty($application_name['min_wage']) && empty($application_name['max_wage'])) {
-        $amount = 'Negotiable';
-    }
-} else if ($application_name['wage_type'] == 'Unpaid') {
-    $amount = 'Unpaid';
-}
-$user_pCount = [];
-foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-    $user_pCount[$p['field_name']] = 0;
-    foreach ($fields as $u) {
-        if ($p['sequence'] == $u['current_round']) {
-            $user_pCount[$p['field_name']] += 1;
-        }
-    }
-}
-$hcount = 0;
-foreach ($fields as $f) {
-    if ($f['status'] == 'Hired') {
-        $hcount += 1;
-    }
-}
+
 ?>
-<div class="hamburger-jobs">
-    <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
-    <div class="pa-sidebar" id="hamburgerJobs">
-        <?php
-        foreach ($similarApps as $app) {
-            $cnt = 0;
-            $arry = [];
-            $more = false;
-            ?>
-            <div class="jobCard">
-                <a href="<?= Url::to('/account/process-applications/') . $app['application_enc_id'] ?>">
-                    <div class="jc-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
-                    </div>
-                    <div class="jc-details">
-                        <h3><?= $app['job_title'] ?></h3>
-                        <p>
-                            <?php
-                            if ($app['applicationPlacementLocations']) {
-                                foreach ($app['applicationPlacementLocations'] as $ps) {
-                                    $cnt += $ps['positions'];
-                                    if (count($arry) >= 3) {
-                                        $more = true;
-                                    } else {
-                                        array_push($arry, $ps['name']);
-                                    }
-                                }
-                                echo implode(', ', array_unique($arry));
-                                echo $more ? ' and more' : ' ';
-                            } else {
-                                echo 'Work From Home';
-                            }
-                            ?></p>
-                        <p><?= $cnt ?> Openings</p>
-                    </div>
-                </a>
-            </div>
-            <?php
-        }
-        ?>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="job-det col-md-12 row">
-            <div class="col-md-4 col-sm-12">
-                <div class="j-main">
-                    <div class="j-logo">
-                        <?php if ($application_name['icon']) { ?>
-                            <img src="<?= Url::to('@commonAssets/categories/' . $application_name['icon']); ?>">
-                        <?php } ?>
-                    </div>
-                    <div class="j-data">
-                        <div class="j-title">
-                            <a href="/<?= $app_type . "/" . $application_name['slug'] ?>" target="_blank">
-                                <?= $application_name['job_title'] ?></a>
-                        </div>
-
-                        <div class="j-share">
-                            <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href=""
-                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                            class="fa fa-facebook"></i></a></span>
-                            <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a hred-mainonclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                            class="fa fa-whatsapp"></i></a></span>
-                            <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href=""
-                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
-                                        class="fa fa-twitter"></i></a></span>
-                            <span class="mail" data-toggle="tooltip" title="Share via Email"><a href=""
-                                                  onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
-                                        class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href=""
-                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
-                                        class="fa fa-linkedin"></i></a></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="j-detail">
-                    <div class="j-exp" style="margin-bottom: 22px;">
-                        <div class="e-logo"><i class="fa fa-clock-o"></i></div>
-                        <div class="e-detail">
-                            <h1>Experience</h1>
-                            <p><?= $application_name['experience'] ?></p>
-                        </div>
-                    </div>
-                    <div class="j-exp loc">
-                        <div class="e-logo"><i class="fa fa-map-marker"></i></div>
-                        <div class="e-detail">
-                            <h1>Locations</h1>
-                            <p>
-                                <?php
-                                $l = [];
-                                $cntt = 0;
-                                $more = false;
-                                if ($application_name['applicationPlacementLocations']) {
-                                    foreach ($application_name['applicationPlacementLocations'] as $apl) {
-                                        if (count($l) >= 5) {
-                                            $more = true;
-                                        } else {
-                                            array_push($l, $apl['name']);
-                                        }
-                                        $cntt += $apl['positions'];
-                                    }
-                                    echo implode(', ', array_unique($l));
-                                    echo $more ? ' and more' : '';
-                                } else {
-                                    echo 'Work From Home';
-                                }
-                                ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-6">
-                <div class="j-detail">
-                    <div class="j-exp salry" style="margin-bottom: 22px;">
-                        <div class="e-logo"><i class="fa fa-money"></i></div>
-                        <div class="e-detail">
-                            <?php
-                            if ($app_type == "internship") {
-                                ?>
-                                <h1>Offered Stipend</h1>
-                                <p><?= $amount ?></p>
-                                <?php
-                            } else {
-                                ?>
-                                <h1>Offered Salary</h1>
-                                <p><?= $amount ?></p>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="j-detail">
-                    <div class="j-exp salry">
-                        <div class="e-logo"><i class="fa fa-user-plus"></i></div>
-                        <div class="e-detail">
-                            <h1>Openings</h1>
-                            <p>
-                                <?php
-                                if ($cntt <= 1) {
-                                    echo $cntt . ' Opening';
-                                } else {
-                                    echo $cntt . ' Openings';
-                                }
-                                ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-12">
-                <div class="ed-main">
-                    <div class="option-1">
-                            <span class="j-edt">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
-                            </span>
-                        <span class="j-cln">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
-                            </span>
-                        <span class="j-delt">
-                                <a href="#" id="j-delete" data-toggle="tooltip"
-                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                            class="fa fa-trash-o"></i></a>
-                            </span>
-                        <span class="j-cls">
-                                <a href="#" id="j-closed" data-toggle="tooltip"
-                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
-                                   value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
-                            </span>
-                    </div>
-                    <div class="scd-btn">
-                        <a href="/account/schedular/interview">Schedule Interview</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<div class="aa-bg"></div>
 <div class="container">
     <?php
     Pjax::begin(['id' => 'pjax_process']);
     ?>
-    <div class="set-height">
-        <ul class="nav nav-tabs pr-process-tab" id="myHeader">
-            <li class="active"
-                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
-                        foreach ($user_pCount as $v) {
-                            $pcnt += $v;
-                        }
-                        echo $pcnt + $hcount;
-                        ?></span></a>
-            </li>
-            <?php
-            $k = 0;
-            foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-                ?>
-                <li id="<?= 'nav' . $p['field_enc_id'] ?>"
-                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                    <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                        <i class="<?= $p['icon'] ?>"
-                           aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
-                    </a>
-                </li>
-                <?php
-                $k++;
-            }
-            ?>
-            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
-                   href="#" onclick="roundClick()">
-                    <i class="fa fa-check-square-o"></i><span>
-                        <?php
-                        echo $hcount;
-                        ?>
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </div>
     <ul class="hiring_process_list gallery_zoom content-stick">
         <?php
-        if (!empty($fields)) {
-            foreach ($fields as $arr) {
+        if (!empty($applied_user)) {
+            foreach ($applied_user as $fields){
+                $app_type_link = rtrim($fields['type'], 's');
+                $app_type = strtolower($app_type_link);
+                if($fields['applied']){
+                    ?>
+                        <div class="jobsBoxes">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h3 class="job-title"> <?= $app_type_link . ': '.'<a href="javascript:;" class="url-forward" data-id="/'. $app_type .'/'. $fields['slug'].'" target="_blank">' . $fields['job_title'].'</a>'?></h3>
+                            </div>
+                            <div class="col-md-2 ">
+                                <div class="text-right">
+                                    <a class="btn btn-primary btn-md" href="/account/jobs/all-applied-applications?aidk=<?= $fields['application_enc_id']?>">View all</a>
+                                </div>
+                            </div>
+                        </div>
+        <?php
+            foreach ($fields['applied'] as $arr) {
                 $j = 0;
                 $fieldMain = "";
                 if ($arr['status'] == 'Hired') {
@@ -318,14 +54,14 @@ foreach ($fields as $f) {
                 }
                 $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
                 ?>
-                <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
+                <li class="<?= $tempfieldMain ?> appliedJobs" data-key="<?= $fieldMain ?>"
                     data-id="<?= $p['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
                         <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
                             <div class="pr-top-actions text-right">
-                                <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
-                                   target="_blank">View
+                                <a href="javascript:;" class="url-forward"
+                                   data-id="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>" target="_blank">View
                                     Profile</a>
                                 <?php
                                 $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
@@ -391,8 +127,7 @@ foreach ($fields as $f) {
                                             <div class="reasonsReject">
                                                 <input type="radio" value="2"
                                                        name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
-                                                       onclick="showJobsModal()" class="">
+                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>" class="reject-consider">
                                                 <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
                                                     For Other Job</label>
                                                 <!--                                                <button type="button" class="showJobs" >-->
@@ -436,9 +171,9 @@ foreach ($fields as $f) {
                                     <p><?= $msg ?></p>
                                     <?php
                                     if($arr['candidateRejections'][0]['candidateConsiderJobs']){
-                                    ?>
+                                        ?>
                                         <div class="sr-jobs">
-                                        <?php
+                                            <?php
                                             $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
                                             $cCount -= 2;
                                             $i=0;
@@ -446,20 +181,21 @@ foreach ($fields as $f) {
                                                 if($i==2){
                                                     break;
                                                 }
-                                            ?>
-                                            <a href="/<?= $app_type ."/". $crj['applicationEnc']['slug']?>" target="_blank">
-                                                <div class="customJobBox">
-                                                    <div class="jc-icon">
-                                                        <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                ?>
+                                                <a class="url-forward" href="#" target="_blank"
+                                                   data-id="/<?= $app_type ."/". $crj['applicationEnc']['slug']?>">
+                                                    <div class="customJobBox">
+                                                        <div class="jc-icon">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                        </div>
+                                                        <p><?= $crj['applicationEnc']['job_title']?></p>
                                                     </div>
-                                                    <p><?= $crj['applicationEnc']['job_title']?></p>
-                                                </div>
-                                            </a>
-                                        <?php
+                                                </a>
+                                                <?php
                                                 $i++;
-                                    }
-                                    ?>
-                                        <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>" class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?> More</p>
+                                            }
+                                            ?>
+                                            <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>" class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?> More</p>
                                         </div>
                                         <?php
                                     }
@@ -750,75 +486,16 @@ foreach ($fields as $f) {
                 </li>
                 <?php
             }
-        }
+            ?>
+                </div>
+            <?php
+                }
+        } }
         ?>
     </ul>
     <?php
     Pjax::end();
     ?>
-</div>
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-body modal-jobs">
-            <span class="close" onclick="closeModal()"><i class="fas fa-times"></i></span>
-            <div class="row h100">
-                <div class="col-md-12">
-                    <p class="modalHeading">Select Job</p>
-                </div>
-                <form id="considerJobsModal">
-                    <?php
-                    foreach ($similarApps as $app) {
-                        $cnt = 0;
-                        $arry = [];
-                        $more = false;
-                        ?>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="suggestJob">
-                                <input type="checkbox" value="<?= $app['job_title'] ?>" name="suggested-jobs"
-                                       id="<?= $app['application_enc_id'] ?>">
-                                <label for="<?= $app['application_enc_id'] ?>">
-                                    <div class="jobCard">
-                                        <div class="jc-icon">
-                                            <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
-                                        </div>
-                                        <div class="jc-details">
-                                            <h3><?= $app['job_title'] ?></h3>
-                                            <p>
-                                                <?php
-                                                if ($app['applicationPlacementLocations']) {
-                                                    foreach ($app['applicationPlacementLocations'] as $ps) {
-                                                        $cnt += $ps['positions'];
-                                                        if (count($arry) >= 3) {
-                                                            $more = true;
-                                                        } else {
-                                                            array_push($arry, $ps['name']);
-                                                        }
-                                                    }
-                                                    echo implode(', ', array_unique($arry));
-                                                    echo $more ? ' and more' : ' ';
-                                                } else {
-                                                    echo 'Work From Home';
-                                                }
-                                                ?></p>
-                                            <p><?= $cnt ?> Openings</p>
-                                        </div>
-                                    </div>
-                                </label>
-                                <a href="<?= Url::to('/job/') . $app['slug'] ?>" target="_blank">
-                                    <div class="clickSelect">View Job</div>
-                                </a>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                    ?>
-                    <div class="col-md-12 text-center">
-                        <button class="doneCloseModal">Done</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 <div id="conjobs" class="modal">
     <div class="modal-content">
@@ -836,7 +513,35 @@ foreach ($fields as $f) {
     </div>
 </div>
 <?php
+echo $this->render('/widgets/reject-job-card');
 $this->registerCss('
+a:focus{
+    text-decoration: none;
+}
+h3.job-title {
+    font-size: 28px;
+    font-family: lora;
+    font-weight: 600;
+    padding-left: 5px;
+    line-height: 0;
+}
+h3.job-title a{
+    color: #000;
+}
+h3.job-title a:hover{
+    color: #00a0e3;
+    transition: .3s ease;
+}
+.mt50{
+    margin-top: 50px;
+}
+.jobsBoxes{
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,.3);
+    padding: 20px;
+    margin-top: 30px; 
+    margin-bottom: 50px;
+}
 .page-content {
     background-image: url(/assets/themes/ey/images/backgrounds/quickjob.png) !important;
     background-size: cover !important;
@@ -1883,6 +1588,21 @@ overflow: hidden;
     background-color: #5cb85c;
     color: white;
 }
+.modal{
+    overflow: hidden !important;
+}
+.modal-content{
+    height: 80vh;
+}
+.modal-jobs{
+    height: 80vh;
+    overflow: hidden;
+}
+#considerJobsModal{
+    position: relative;
+    height: 60vh;
+    width: 100%;
+}
 @media (min-width:1400px){
     .sticky{
         max-width: 1140px;
@@ -1992,79 +1712,17 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
-window.onscroll = function() {myFunction()};
-
-var header = document.getElementById("myHeader");
-var sticky = header.offsetTop - 55;
-
-function myFunction() {
-  if (window.pageYOffset > sticky) {
-    header.classList.add("sticky");
-  } else {
-    header.classList.remove("sticky");
-  }
-}
-$(document).on('click','#j-delete',function(e){
-     e.preventDefault();
-     var data = $(this).attr('value');
-     swal({ 
-             title: "Are you sure?",
-             text: "This $app_type will be deleted permanently from your dashboard",
-             type: "warning",
-             closeOnClickOutside: false,
-             showCancelButton : true,
-         },
-         function (isConfirm) {
-           if (isConfirm){
-            var url = "/account/jobs/delete-application";
-            $.ajax({
-                url:url,
-                data:{data:data},
-                method:'post',
-                success:function(data){
-                    if(data==true) {
-                        toastr.success('Deleted Successfully', 'Success');
-                        location.replace('/account/dashboard');
-                    }
-                    else {
-                        toastr.error('Something went wrong. Please try again.', 'Opps!!');
-                    }
-                }
-          });
-        }
-     })
-});
-$(document).on('click','#j-closed',function(e){
-     e.preventDefault();
-     var data_name = $(this).attr('data-name');
-     var data = $(this).attr('value');
-     swal({
-         title: "Are you sure?",
-         text: "If you close this $app_type you will stop receiving new applications",
-         type: "warning",
-         closeOnClickOutside: false,
-         showCancelButton : true, 
-     },
-     function(isConfirm) {
-     if (isConfirm) { 
-        var url = "/account/jobs/close-application";
-        $.ajax({
-            url:url,
-            data:{data:data},
-            method:'post',
-            success:function(data){
-              if(data==true) {
-                  toastr.success('The Application moved to Closed ' + data_name +'s', 'Success');
-                }
-               else {
-                  toastr.error('Something went wrong. Please try again.', 'Opps!!');
-               }
-             }
-          });
-        }  
-        }
-     )
-});
+// window.onscroll = function() {myFunction()};
+// var header = document.getElementById("myHeader");
+// var sticky = header.offsetTop - 55;
+//
+// function myFunction() {
+//   if (window.pageYOffset > sticky) {
+//     header.classList.add("sticky");
+//   } else {
+//     header.classList.remove("sticky");
+//   }
+// }
 $('[data-toggle="tooltip"]').tooltip();
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
@@ -2247,14 +1905,15 @@ $(document).on('click','.doneCloseModal', function(e){
     e.preventDefault();
     let btn = $(this);
     let parElem = btn.parentsUntil('#considerJobsModal').parent();
-    let formId = parElem.attr('id');
+    let formDiv = parElem.find('#showJobsCards');
+    let formId = formDiv.attr('id');
     considerJobs = [];
     $('input[type=checkbox]:checked', '#'+formId).each(function (){
         considerJobs.push($(this).attr('id'));
     });
     closeModal();
-    
-})
+    console.log(considerJobs); 
+});
 $(document).on('click','.sendReasons', function(e){
     e.preventDefault();
     let btn = $(this);
@@ -2268,8 +1927,7 @@ $(document).on('click','.sendReasons', function(e){
         considerJobs = [];
     }
     let showRejection = rootElem.find('.showRejection');
-    showRejection.css('display', 'block');
-    parElem.css('display', 'none');
+    parElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
     $.ajax({
         url:'/account/jobs/reject-candidate',
         data:{app_id:app_id, rejectionType:rType, considerJobs:considerJobs, reasons:selectedReasons},
@@ -2277,6 +1935,7 @@ $(document).on('click','.sendReasons', function(e){
         beforeSend:function()  {
             btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
             btn.attr("disabled","true");
+            showRejection.html
         },    
         success:function(data){
             if(data==true) {
@@ -2284,7 +1943,9 @@ $(document).on('click','.sendReasons', function(e){
                 $.pjax.reload({container: '#pjax_process', async: false});
                   setTimeout(function() {
                     hiring_process();
-                  }, 100)
+                  }, 100);
+                showRejection.css('display', 'block');
+                parElem.css('display', 'none');
             }
             else {
                 alert('something went wrong..');
@@ -2363,13 +2024,34 @@ function hide_btn(res,total,thisObj,thisObj1,thisObj2){
 }
 $(document).on('click','.url-forward',function (e){ 
     e.preventDefault();  
-    var url = $(this).attr('data-id');  
+    var url = $(this).attr('data-id'); 
+    console.log(url);
     window.open(url, "_blank"); 
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
 
-var ps = new PerfectScrollbar('#hamburgerJobs');
-var pa = new PerfectScrollbar('.modal-jobs');
+$(document).on('click', '.reject-consider', function(e){
+    var app_id = $(this).parentsUntil('.appliedJobs').parent().attr('data-id');
+    $.ajax({
+        url:'/account/jobs/jobs-of-company',
+        data:{app_id:app_id, app_type: '$app_type_link'+'s'},
+        method:'post',
+        beforeSend:function(){
+          $('#rejectConsiderModal').css('display', 'block');  
+          $('#showJobsCards').html('<div class="text-center col-md-12"><i style="font-size:40px; padding: 30px 0;" class="fa fa-circle-o-notch fa-spin fa-fw"></i></div>');
+          $('body').addClass('modal-open');  
+        },
+        success:function(data){
+           if(data['status'] == 200) {
+                 $('#showJobsCards').html('');
+                $('#showJobsCards').append(Mustache.render($('#reject-job-card').html(),data['data']));
+            }   
+        } 
+    })
+});
+
+// var ps = new PerfectScrollbar('#rejectConsiderModal');
+var pa = new PerfectScrollbar('#considerJobsModal');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -2382,6 +2064,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
 ?>
 <script>
+
     function showJobsSidebar() {
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');
@@ -2445,7 +2128,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         parElem.style.display = "none";
     }
 
-    var modal = document.getElementById("myModal");
     var span = document.getElementsByClassName("close")[0];
     let bdy = document.getElementsByTagName('body');
 
@@ -2454,10 +2136,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         bdy[0].classList.add('modal-open');
     }
 
-    function closeModal() {
-        modal.style.display = "none";
-        bdy[0].classList.remove('modal-open');
-    }
     let openConJob = document.getElementById('conjobs');
     function openConJobs(){
         openConJob.style.display = "block";

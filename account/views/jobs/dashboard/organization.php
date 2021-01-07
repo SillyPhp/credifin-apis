@@ -357,6 +357,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     <?php
                     echo $this->render('/widgets/applied-applications/users-card', [
                         'applied_applications' => $applied_applications,
+                        'type' => 'jobs'
                     ]);
                     ?>
 
