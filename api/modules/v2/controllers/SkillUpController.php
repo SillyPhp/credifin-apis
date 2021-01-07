@@ -82,9 +82,17 @@ class SkillUpController extends ApiBaseController
                     'a.content_type'
                 ])
                 ->joinWith(['sourceEnc b'], false)
+                ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
+                    $c->joinWith(['skillEnc c1' => function ($c1) {
+                        $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
+                    }]);
+                }], false)
                 ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
             if (isset($param['content_type']) && !empty($param['content_type'])) {
-                $feeds->andWhere(['in', 'content_type', $param['content_type']]);
+                $feeds->andWhere(['in', 'a.content_type', $param['content_type']]);
+            }
+            if (isset($param['skills']) && !empty($param['skills'])) {
+                $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
             }
             $feeds = $feeds->limit($limit)
                 ->offset(($page - 1) * $limit)
@@ -111,7 +119,7 @@ class SkillUpController extends ApiBaseController
             $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
             if ($prefs) {
                 $user_skills = UserPreferredSkills::find()
-                    ->alias('a.preferred_skill_enc_id', 'a.skill_enc_id', '')
+                    ->alias('a')
                     ->select(['a.preferred_skill_enc_id', 'a.preference_enc_id', 'a.skill_enc_id', 'b.skill'])
                     ->joinWith(['skillEnc b'], false)
                     ->where(['a.preference_enc_id' => $prefs->preference_enc_id, 'a.is_deleted' => 0])
@@ -281,7 +289,7 @@ class SkillUpController extends ApiBaseController
 
                 $old_skills = [];
                 foreach ($user_skill as $skill_id) {
-                    array_push($old_skills, $skill_id);
+                    array_push($old_skills, $skill_id['skill_enc_id']);
                 }
 
                 $skills = [];
@@ -294,10 +302,6 @@ class SkillUpController extends ApiBaseController
                 $to_be_added_userskill = array_diff($new_userskill_to_update, $old_skills);
                 $to_be_deleted_userskill = array_diff($old_skills, $new_userskill_to_update);
 
-                print_r('skills to add' . $to_be_added_userskill);
-                print_r('skills to delete' . $to_be_deleted_userskill);
-                die();
-
                 if (count($to_be_deleted_userskill) > 0) {
                     foreach ($to_be_deleted_userskill as $del) {
                         $this->delSkills($del, $prefs->preference_enc_id);
@@ -309,6 +313,9 @@ class SkillUpController extends ApiBaseController
                         $this->setSkills($skill, $prefs->preference_enc_id, $user->user_enc_id);
                     }
                 }
+
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+
             } else {
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
@@ -354,71 +361,27 @@ class SkillUpController extends ApiBaseController
         }
     }
 
-    private function delSkills($skill, $user_preference)
+    private function delSkills($skill_id, $user_preference)
     {
-        $skill_id = Skills::find()
-            ->select(['skill_enc_id'])
-            ->where(['skill' => $skill])
-            ->asArray()
-            ->one();
-
         $to_delete_userskill = UserPreferredSkills::find()
-            ->where(['skill_enc_id' => $skill_id['skill_enc_id'], 'preference_enc_id' => $user_preference])
+            ->where(['skill_enc_id' => $skill_id, 'preference_enc_id' => $user_preference])
             ->andWhere(['is_deleted' => 0])
             ->one();
         $to_delete_userskill->is_deleted = 1;
         $to_delete_userskill->update();
     }
 
-    private function setSkills($skills, $preference_enc_id, $user_enc_id)
+    private function setSkills($skill_id, $preference_enc_id, $user_enc_id)
     {
-        $obj = new Skills();
-        $utilitiesModel = new Utilities();
+        $skills = new UserPreferredSkills();
+        $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $chk = Skills::find()
-            ->where(['skill' => $skills])
-            ->asArray()
-            ->one();
-        if (empty($chk)) {
-            $obj->skill_enc_id = $utilitiesModel->encrypt();
-            $obj->skill = $skills;
-            $obj->created_on = date('Y-m-d h:i:s');
-            $obj->created_by = $user_enc_id;
-            if (!$obj->save()) {
-                print_r($obj->getErrors());
-            } else {
-                $user_obj = new UserPreferredSkills();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $user_obj->preferred_skill_enc_id = $utilitiesModel->encrypt();
-                $user_obj->skill_enc_id = $obj->skill_enc_id;
-                $user_obj->preference_enc_id = $preference_enc_id;
-                $user_obj->created_on = date('Y-m-d h:i:s');
-                $user_obj->created_by = $user_enc_id;
-                if (!$user_obj->save()) {
-                    print_r($user_obj->getErrors());
-                }
-            }
-        } else {
-            $chkk = UserPreferredSkills::find()
-                ->where(['skill_enc_id' => $chk['skill_enc_id'], 'is_deleted' => 0])
-                ->andWhere(['created_by' => $user_enc_id, 'preference_enc_id' => $preference_enc_id])
-                ->asArray()
-                ->one();
-            if (!$chkk) {
-                $user_obj = new UserPreferredSkills();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $user_obj->preferred_skill_enc_id = $utilitiesModel->encrypt();
-                $user_obj->skill_enc_id = $chk['skill_enc_id'];
-                $user_obj->preference_enc_id = $preference_enc_id;
-                $user_obj->created_on = date('Y-m-d h:i:s');
-                $user_obj->created_by = $user_enc_id;
-                if (!$user_obj->save()) {
-                    print_r($user_obj->getErrors());
-                }
-            }
-        }
+        $skills->preferred_skill_enc_id = $utilitiesModel->encrypt();
+        $skills->skill_enc_id = $skill_id;
+        $skills->preference_enc_id = $preference_enc_id;
+        $skills->created_on = date('Y-m-d H:i:s');
+        $skills->created_by = $user_enc_id;
+        $skills->save();
     }
 
     public function actionPostDetail()
@@ -449,8 +412,13 @@ class SkillUpController extends ApiBaseController
                 ->joinWith(['sourceEnc b'], false)
                 ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
                     $c->select(['c.assigned_skill_enc_id', 'c.post_enc_id', 'c.skill_enc_id', 'c1.skill']);
-                    $c->joinWith(['skillEnc c1'], false);
-                    $c->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
+                    $c->joinWith(['skillEnc c1' => function ($c1) {
+                        $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
+                    }], false);
+                }])
+                ->joinWith(['skillsUpPostAssignedIndustries d' => function ($d) {
+                    $d->select(['d.assigned_industry_enc_id', 'd.industry_enc_id', 'd1.industry']);
+                    $d->joinWith(['industryEnc d1']);
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()

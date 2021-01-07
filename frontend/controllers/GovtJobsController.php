@@ -38,7 +38,8 @@ class GovtJobsController extends Controller
     {
         $get = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id','a.slug','Organizations','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
+                ->select(['a.job_enc_id','a.slug','Organizations','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image,
+                        'https') . '", c.image_location, "/", c.image) ELSE NULL END logo','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
                 ->where(['a.slug'=>$id])
                 ->asArray()
                 ->indexBy('job_enc_id')
@@ -47,8 +48,6 @@ class GovtJobsController extends Controller
                 $b->joinWith(['deptEnc c'],false);
             }],false,'LEFT JOIN')
                 ->one();
-        print_r($get);
-        die();
         if (empty($get))
         {
             return 'Application Has Either Moved Or Deleted';
@@ -165,7 +164,7 @@ class GovtJobsController extends Controller
             $dept_id = Yii::$app->request->post('dept_id');
             $d = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id id','a.slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
+                ->select(['a.job_enc_id id','a.slug','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
                 ->joinWith(['assignedIndianJobs b'=>function($b) use($dept_id)
                 {
                     $b->joinWith(['deptEnc c'],false);
