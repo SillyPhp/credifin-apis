@@ -952,7 +952,7 @@ border: 2px solid #cadfe8 !important;
 }
 .rs-main{
     background: #00a0e3;
-    max-width: 200px;
+    max-width: 220px;
     padding: 10px 13px 15px 13px;
     text-align: center;
     color: #fff;
@@ -969,7 +969,7 @@ border: 2px solid #cadfe8 !important;
     border-radius:5px;
 }
 .com-rating-1 i.active{
-    color:#ff7803;
+    color:#faa046;
 }
 .summary-box{ 
     display:flex;
