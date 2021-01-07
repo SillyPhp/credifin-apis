@@ -89,7 +89,7 @@ class Cards
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -141,7 +141,7 @@ class Cards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1])
             // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -515,7 +515,7 @@ class Cards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -550,7 +550,7 @@ class Cards
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -827,7 +827,7 @@ class Cards
             ->joinWith(['designationEnc l'], false)
             ->joinWith(['preferredIndustry o'], false)
             ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0]);
+            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0, 'a.application_for' => 2]);
 
         if (!empty($options['keyword'])) {
             $data->andWhere([

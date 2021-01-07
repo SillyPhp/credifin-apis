@@ -6,10 +6,12 @@ $this->title = 'Opportunities in ' . $org['name'];
 use yii\helpers\Url;
 use yii\helpers\Html;
 use frontend\widgets\login;
-Yii::$app->view->registerJs('var slug_var = "' . $org['slug'] . '"', \yii\web\View::POS_HEAD);
+
+//Yii::$app->view->registerJs('var slug_var = "' . $org['slug'] . '"', \yii\web\View::POS_HEAD);
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application'
+    'type' => 'application',
+    'slug' => $org['slug']
 ]);
 ?>
 
@@ -242,34 +244,40 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="social-menu">
                             <p>Share On : </p>
                             <?php
-                            $link = Url::to( $org['slug'] . '/jobs','https');
+                            $link = Url::to($org['slug'] . '/jobs', 'https');
                             ?>
                             <ul>
                                 <li>
-                                    <a href="javascript:;" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                    <a href="javascript:;"
+                                       onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $link ?>', '_blank', 'width=800,height=400,left=200,top=100')"
                                        class="share-elem-main">
                                         <i class="fab fa-facebook-f"></i>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                                    <a href="javascript:;"
+                                       onclick="window.open('https://twitter.com/intent/tweet?text=<?= $link ?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                       class="share-elem-main">
                                         <i class="fab fa-twitter"></i>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $link ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-elem-main">
                                         <i class="fab fa-linkedin-in"></i>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" onclick="window.open('https://api.whatsapp.com/send?text=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                    <a href="javascript:;"
+                                       onclick="window.open('https://api.whatsapp.com/send?text=<?= $link ?>', '_blank', 'width=800,height=400,left=200,top=100')"
                                        class="share-elem-main">
                                         <i class="fab fa-whatsapp"></i>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:;" onclick="window.open('https://telegram.me/share/url?url=<?= $link?>', '_blank', 'width=800,height=400,left=200,top=100')"
+                                    <a href="javascript:;"
+                                       onclick="window.open('https://telegram.me/share/url?url=<?= $link ?>', '_blank', 'width=800,height=400,left=200,top=100')"
                                        class="share-elem-main">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
@@ -337,71 +345,10 @@ echo $this->render('/widgets/drop_resume', [
     </div>
 </section>
 
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="dropcv">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="existsModal" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Wait for company to create the feature</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="loggedIn"
-                   value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade login-msg" id="myModal" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <p>Please Login as Candidate to drop your resume</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <?php
-                        if (Yii::$app->user->isGuest) {
-                            ?>
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#loginModal">
-                                Login
-                            </button>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <?php
 echo $this->render('/widgets/mustache/career-job-box');
-if (Yii::$app->user->isGuest){
+if (Yii::$app->user->isGuest) {
     echo login::widget();
 }
 //$this->registerCssFile('@eyAssets/css/chosen.css');
@@ -1808,17 +1755,7 @@ $(document).click(e => {
         $('.select-menu').removeClass('open');
     }
 })
-var slugg = slug_var;  
-var data = {slug: slugg};
 
-$.ajax({
-   type: 'POST',
-   url: '/drop-resume/check-resume',
-   data : data,
-   success: function(response){
-       $('#dropcv').val(response.message);
-   }
-});
 $(document).on('submit','#search_form',function(e) {
     e.preventDefault();
     var key = $('#keywords').val();

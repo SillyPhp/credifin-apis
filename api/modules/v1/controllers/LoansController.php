@@ -357,7 +357,7 @@ class LoansController extends ApiBaseController
                     'd.occupation'
                 ]);
                 $d->joinWith(['loanCertificates de' => function ($e) {
-                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image image', 'de.proof_image_location image_location']);
+                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image_name', 'de.proof_image image', 'de.proof_image_location image_location']);
                     $e->joinWith(['certificateTypeEnc de1'], false);
                     $e->onCondition(['de.is_deleted' => 0]);
                 }]);
@@ -369,7 +369,7 @@ class LoansController extends ApiBaseController
                 }]);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
-                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image image', 'e.proof_image_location image_location']);
+                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image_name', 'e.proof_image image', 'e.proof_image_location image_location']);
                 $e->joinWith(['certificateTypeEnc e1'], false);
                 $e->onCondition(['e.is_deleted' => 0]);
                 $e->orderBy(['e.created_on' => SORT_ASC]);
@@ -513,6 +513,8 @@ class LoansController extends ApiBaseController
 
         if ($loan) {
             $loan->gender = $params['gender'];
+            $loan->updated_on = date('Y-m-d H:i:s');
+            $loan->updated_by = $this->userId();
             if ($loan->update()) {
                 return $loan->loan_app_enc_id;
             }
@@ -550,8 +552,40 @@ class LoansController extends ApiBaseController
                 $loan_certificates->number = $params['number'];
                 $loan_certificates->updated_by = $this->userId();
                 $loan_certificates->updated_on = date('Y-m-d H:i:s');
+
+                if (!empty($params['image'])) {
+                    $image_ext = $params['image_ext'];
+                    $image = base64_decode($params['image']);
+
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+
+                    $loan_certificates->proof_image_name = $params['image_name'] . '.' . $image_ext;
+                    $loan_certificates->proof_image = $encrypted_string . '.' . $image_ext;
+                    $loan_certificates->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->loans->proof . $loan_certificates->proof_image_location . '/';
+                    $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_certificates->proof_image;
+                }
                 if ($loan_certificates->update()) {
-                    return $loan_certificates->certificate_enc_id;
+                    if (!empty($params['image'])) {
+                        if (file_put_contents($file, $image)) {
+                            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_certificates->proof_image, "public");
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
+                            return $loan_certificates->certificate_enc_id;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return $loan_certificates->certificate_enc_id;
+                    }
                 } else {
                     $loan_certificates->getErrors();
                     return false;
@@ -589,8 +623,39 @@ class LoansController extends ApiBaseController
             $loan_certificates->number = $params['number'];
             $loan_certificates->created_by = $this->userId();
             $loan_certificates->created_on = date('Y-m-d H:i:s');
+
+            if (!empty($params['image'])) {
+                $image_ext = $params['image_ext'];
+                $image = base64_decode($params['image']);
+
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $loan_certificates->proof_image_name = $params['image_name'] . '.' . $image_ext;
+                $loan_certificates->proof_image = $encrypted_string . '.' . $image_ext;
+                $loan_certificates->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->proof . $loan_certificates->proof_image_location . '/';
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_certificates->proof_image;
+            }
             if ($loan_certificates->save()) {
-                return $loan_certificates->certificate_enc_id;
+                if (!empty($params['image'])) {
+                    if (file_put_contents($file, $image)) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_certificates->proof_image, "public");
+                        if (file_exists($file)) {
+                            unlink($file);
+                        }
+                        return $loan_certificates->certificate_enc_id;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return $loan_certificates->certificate_enc_id;
+                }
             } else {
                 print_r($loan_certificates->getErrors());
                 return false;
@@ -892,6 +957,7 @@ class LoansController extends ApiBaseController
                         $encrypted_string = substr($encrypted_string, 0, -1);
                     }
 
+                    $proof->proof_image_name = $params['image_name'] . '.' . $image_ext;
                     $proof->proof_image = $encrypted_string . '.' . $image_ext;
                     $proof->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
                     $base_path = Yii::$app->params->upload_directories->loans->proof . $proof->proof_image_location . '/';

@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-    <div id="fab-message-open" class="fab-message" style="">
+    <div id="fab-message-open" class="fab-message fab-btn-hide" style="">
         <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
         <div class="fab-hover-message" style="">
             <div class="fab-hover-image">
@@ -12,8 +12,77 @@ use yii\helpers\Url;
         </div>
     </div>
 
+    <input type="hidden" id="loggedIn"
+           value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+
+
+    <input type="hidden" id="org"
+           value="<?= (!Yii::$app->user->identity->organization->organization_enc_id) ? 'yes' : '' ?>">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header set-border">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="warn-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/landing/only4candidate.png'); ?>">
+                    </div>
+                    <p class="warn-p">This feature is only for Candidates</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <input type="hidden" id="dropcv">
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="existsModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header set-border">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="warn-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/landing/wait4company.png'); ?>">
+                    </div>
+                    <p class="warn-p">Wait for company to create the feature</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
 <?php
 $this->registerCss('
+.main-content{
+    min-height:0 !important;
+}
+.warn-img img{
+	max-width: 350px;
+	display:block;
+	width:350px;
+	margin:20px auto;
+}
+.set-border{
+    border:none !important;
+}
+.warn-p {
+	text-align: center;
+	margin: 20px 0;
+	font-size: 18px;
+	font-family: roboto;
+}
 .fab-message{
     position:fixed;
     bottom: 20px;
@@ -107,6 +176,33 @@ $this->registerCss('
 }
 ');
 
+$script = <<<JS
+if(!'$org_cards'){
+    if('$type' == 'company'){
+    var data = {slug: window.location.pathname.split('/')[1]};
+        $.ajax({
+            type: 'POST',
+            url: '/drop-resume/check-resume',
+            data : data,
+            success: function(response){
+                $('#dropcv').val(response.message);
+            }
+        });
+    }else if('$type' == 'application'){
+    
+        $.ajax({
+           type: 'POST',
+           url: '/drop-resume/check-resume',
+           data : {slug:'$slug'},
+           success: function(response){
+               $('#dropcv').val(response.message);
+           }
+        });
+    }
+}
+JS;
+
+$this->registerJs($script);
 
 $r = [
     'username' => $username,

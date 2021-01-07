@@ -1294,17 +1294,13 @@ class CollegeProfileController extends ApiBaseController
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration'])
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'ao.positions'])
                 ->where(['a.slug' => $slug])
                 ->joinWith(['title b' => function ($b) {
                     $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
                     $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
                 }], false, 'INNER JOIN')
                 ->joinWith(['applicationTypeEnc ate'], false)
-                ->joinWith(['interviewProcessEnc d' => function ($d) {
-                    $d->select(['d.interview_process_enc_id']);
-                    $d->joinWith(['interviewProcessFields']);
-                }])
                 ->joinWith(['applicationPlacementLocations o' => function ($b) {
                     $b->onCondition(['o.is_deleted' => 0]);
                     $b->joinWith(['locationEnc s' => function ($b) {
@@ -1317,10 +1313,60 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            if ($application_detail['status'] != 'Active') {
-                $application_detail['is_closed'] = true;
-            } else {
-                $application_detail['is_closed'] = false;
+            if ($application_detail) {
+                if ($application_detail['status'] != 'Active') {
+                    $application_detail['is_closed'] = true;
+                } else {
+                    $application_detail['is_closed'] = false;
+                }
+
+                $locations = [];
+                $positions = 0;
+                if ($application_detail['applicationPlacementLocations']) {
+                    foreach ($application_detail['applicationPlacementLocations'] as $l) {
+                        if (!in_array($l['name'], $locations)) {
+                            array_push($locations, $l['name']);
+                            $positions += $l['positions'];
+                        }
+                    }
+                }
+
+                if ($application_detail['wage_type'] == 'Fixed') {
+                    if ($application_detail['wage_duration'] == 'Monthly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 12;
+                    } elseif ($application_detail['wage_duration'] == 'Hourly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 40 * 52;
+                    } elseif ($application_detail['wage_duration'] == 'Weekly') {
+                        $application_detail['fixed_wage'] = $application_detail['fixed_wage'] * 52;
+                    }
+                    setlocale(LC_MONETARY, 'en_IN');
+                    $application_detail['amount'] = '₹' . utf8_encode(money_format('%!.0n', $application_detail['fixed_wage'])) . 'p.a.';
+                } else if ($application_detail['wage_type'] == 'Negotiable') {
+                    if ($application_detail['wage_duration'] == 'Monthly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 12;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 12;
+                    } elseif ($application_detail['wage_duration'] == 'Hourly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 40 * 52;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 40 * 52;
+                    } elseif ($application_detail['wage_duration'] == 'Weekly') {
+                        $application_detail['min_wage'] = $application_detail['min_wage'] * 52;
+                        $application_detail['max_wage'] = $application_detail['max_wage'] * 52;
+                    }
+                    setlocale(LC_MONETARY, 'en_IN');
+                    if (!empty($application_detail['min_wage']) && !empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = '₹' . utf8_encode(money_format('%!.0n', $application_detail['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $application_detail['max_wage'])) . 'p.a.';
+                    } elseif (!empty($application_detail['min_wage'])) {
+                        $application_detail['amount'] = 'From ₹' . utf8_encode(money_format('%!.0n', $application_detail['min_wage'])) . 'p.a.';
+                    } elseif (!empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = 'Upto ₹' . utf8_encode(money_format('%!.0n', $application_detail['max_wage'])) . 'p.a.';
+                    } elseif (empty($application_detail['min_wage']) && empty($application_detail['max_wage'])) {
+                        $application_detail['amount'] = 'Negotiable';
+                    }
+                }
+
+                $application_detail['locations'] = $locations;
+                $application_detail['positions'] = $positions ? $positions : $application_detail['positions'];
+                $application_detail['icon'] = Url::to('@commonAssets/categories/' . $application_detail['icon'], 'https');
             }
 
             if ($process) {
@@ -1372,7 +1418,7 @@ class CollegeProfileController extends ApiBaseController
             }
 
             if ($applied_user) {
-                return $this->response(200, ['status' => 200, 'data' => $applied_user, 'process' => $process, 'hired_count' => $h_count, 'total_count' => count($applied_user)]);
+                return $this->response(200, ['status' => 200, 'data' => $applied_user, 'process' => $process, 'hired_count' => $h_count, 'total_count' => count($applied_user), 'application_detail' => $application_detail]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }

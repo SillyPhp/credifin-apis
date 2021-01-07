@@ -287,43 +287,52 @@ $round_avg = round($overall_avg);
                                         review</h4>
                                 </div>
                             </div>
+                            <div class="set-mar">
+                                <?= $this->render('/widgets/new-position');?>
+                            </div>
                         </div>
                     </div>
                     <div class="av-jobs-intern">
-                        <div id="jobs-cards-main" class="row">
-                            <div class="heading-style">
-                                Available Jobs
-                                <div class="pull-right">
-                                    <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
-                                       class="write-review">View
-                                        All</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="blogbox"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="internships-cards-main" class="row">
-                            <div class="internships-block">
+                        <?php if ($jobs_count > 0) {
+                            ?>
+                            <div id="jobs-cards-main" class="row">
                                 <div class="heading-style">
-                                    Available Internships
+                                    Available Jobs
                                     <div class="pull-right">
-                                        <a href="/internships/list?slug=<?= $organization['slug'] ?>"
-                                           class="write-review">View All</a>
+                                        <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
+                                           class="write-review">View
+                                            All</a>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="internships_main"></div>
+                                        <div class="blogbox"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
+
+                        <?php if ($internships_count > 0) {
+                            ?>
+                            <div id="internships-cards-main" class="row">
+                                <div class="internships-block">
+                                    <div class="heading-style">
+                                        Available Internships
+                                        <div class="pull-right">
+                                            <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                               class="write-review">View All</a>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="internships_main"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
                     <?php if (!empty($benefit)) {
                         ?>
@@ -541,68 +550,7 @@ $round_avg = round($overall_avg);
     </div>
     <input type="hidden" id="organisation_id"
            value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="loggedIn"
-                       value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="warn-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/landing/login-warn.png'); ?>">
-                            </div>
-                            <p class="warn-p">Please Login as Candidate to drop your resume</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="dropcv">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="existsModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Wait for company to create the feature</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
 <?php
 echo $this->render('/widgets/mustache/organization_locations', [
     'Edit' => false
@@ -616,6 +564,12 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.set-mar{margin:20px 0;}
+.new-position-box{
+    min-height:250px;
+}
+.npb-pos-abso{top:55%;}
+.npb-main-heading{font-size:20px;}
 .mv-text{text-align:justify;font-family:roboto;}
 .j-profiles {
 	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
@@ -853,7 +807,7 @@ $this->registerCss('
     margin-top:-5px;
 }
 .office-loc{
-    padding:10px 20px;
+    padding:0 0 10px;
 }
 .o-h2 img{
     max-width:15px;
@@ -1278,16 +1232,6 @@ $(document).on('click','.follow',function(e){
     });        
 });
 
-var data = {slug: window.location.pathname.split('/')[1]};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
-
 var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
 $('.p-preview-img a').attr('href', first_preview);
 $('.p-preview-img a img').attr('src', first_preview);
@@ -1331,9 +1275,9 @@ $(document).ready(function() {
 });
 JS;
 $this->registerJs("
-return_message = true;
-jobs_parent = '#jobs-cards-main';
-internships_parent = '#internships-cards-main';
+//return_message = true;
+//jobs_parent = '#jobs-cards-main';
+//internships_parent = '#internships-cards-main';
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
