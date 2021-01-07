@@ -25,7 +25,7 @@ class HeaderComponent extends Component
         $model = HeaderMenuItems::find()->alias('a')
             ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id','b.route','a.icon'])
             ->where(['a.header_enc_id' => $header_id])
-            ->andWhere(['a.parent_enc_id' => $parent]);
+            ->andWhere(['a.parent_enc_id' => $parent, 'a.is_deleted' => 0]);
         if(Yii::$app->user->identity->organization->organization_enc_id){
             $model->andWhere([
                 'or',
