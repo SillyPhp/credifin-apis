@@ -79,7 +79,8 @@ class SkillUpController extends ApiBaseController
                     'b.name source_name',
                     'b.url source_url',
                     'a.post_author',
-                    'a.content_type'
+                    'a.content_type',
+                    'a.post_image_url'
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
@@ -398,7 +399,7 @@ class SkillUpController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.post_enc_id', 'a.post_title',
                     'a.slug post_slug',
-                    'a.author',
+                    'a.post_author',
                     'a.post_source_url',
                     'a.source_enc_id',
                     'a.content_type',
@@ -422,7 +423,7 @@ class SkillUpController extends ApiBaseController
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
-                ->all();
+                ->one();
 
             if ($detail) {
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);

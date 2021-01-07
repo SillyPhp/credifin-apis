@@ -16,6 +16,7 @@ use Yii;
  * @property string $content_type
  * @property string $cover_image Cover Image
  * @property string $cover_image_location
+ * @property string $post_image_url Image Url
  * @property string $post_description  Description
  * @property string $post_short_summery
  * @property string $slug  Slug
@@ -59,7 +60,7 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['post_title', 'post_author', 'post_source_url', 'slug'], 'string', 'max' => 255],
+            [['post_title', 'post_author', 'post_source_url', 'post_image_url', 'slug'], 'string', 'max' => 255],
             [['post_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
