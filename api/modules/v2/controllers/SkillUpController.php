@@ -423,8 +423,8 @@ class SkillUpController extends ApiBaseController
                     $d->joinWith(['industryEnc d1']);
                 }])
                 ->joinWith(['skillsUpPostAssignedVideos e' => function ($e) {
-                    $e->select(['e.assigned_enc_id', 'e.video_enc_id', 'e1.youtube_video_id', 'e1.description',
-                        'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image','e1.view_count']);
+                    $e->select(['e.assigned_enc_id', 'e.post_enc_id', 'e.video_enc_id', 'e1.youtube_video_id', 'e1.description',
+                        'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image', 'e1.view_count']);
                     $e->joinWith(['videoEnc e1'], false);
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
