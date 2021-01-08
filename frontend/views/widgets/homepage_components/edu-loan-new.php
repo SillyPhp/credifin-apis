@@ -43,7 +43,7 @@ $this->registerCss('
 .heading-data-set h3 {
 	font-size: 38px;
 	color: #212d4b;
-	font-family: roboto;
+	font-family: lora;
 	font-weight: 700;
 	line-height: 46px;
 }
