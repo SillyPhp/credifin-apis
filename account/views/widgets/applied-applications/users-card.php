@@ -13,6 +13,11 @@ use yii\helpers\Url;
                 </span>
             </span>
         </div>
+        <div class="actions">
+            <a href="<?= Url::toRoute('/'.$type.'/applied-applications'); ?>" data-toggle="tooltip"
+               title="View All Applicants">
+                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+        </div>
     </div>
 <div class="portlet-body">
     <div class="row">
