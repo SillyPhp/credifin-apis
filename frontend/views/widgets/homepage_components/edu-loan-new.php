@@ -4,24 +4,22 @@ use yii\helpers\Url;
 
 ?>
 
-    <section class="row">
-        <div class="container">
-            <div class="col-md-12 bg-loans-set">
-                <div class="col-md-10 row">
-                    <div class="col-md-10 col-md-offset-1 col-sm-10">
-                        <div class="heading-data-set">
-                            <h3>Don't worry about paying your <br> college fees all at once.</h3>
-                            <h4>Choose our easy loan schemes with low interest rate.</h4>
-                            <p>Apply in colleges across India & Abroad</p>
-                            <div class="loan-btn">
-                                <a href="/education-loans">Apply Now!</a>
-                            </div>
+    <section class="bg-loans-set row">
+        <div class="col-md-12 row">
+            <div class="col-md-10 row">
+                <div class="col-md-10 col-md-offset-1 col-sm-10">
+                    <div class="heading-data-set">
+                        <h3>Don't worry about paying your <br> college fees all at once.</h3>
+                        <h4>Choose our easy loan schemes with low interest rate.</h4>
+                        <p>Apply in colleges across India & Abroad</p>
+                        <div class="loan-btn">
+                            <a href="/education-loans">Apply Now!</a>
                         </div>
                     </div>
-                    <div class="col-md-8 row col-sm-8" style="padding: 0;">
-                        <div class="image-topics">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-icons.png') ?>"/>
-                        </div>
+                </div>
+                <div class="col-md-8 row col-sm-8">
+                    <div class="image-topics">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-icons.png') ?>"/>
                     </div>
                 </div>
             </div>
