@@ -7,6 +7,7 @@ use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
 use common\models\SkillsUpPostComments;
 use common\models\SkillsUpPosts;
+use common\models\SkillsUpRecommendedPost;
 use common\models\UserOtherDetails;
 use common\models\UserPreferences;
 use common\models\UserPreferredSkills;
@@ -92,6 +93,7 @@ class SkillUpController extends ApiBaseController
                         foreach ($user_skills as $s) {
                             array_push($skills, $s['skill']);
                         }
+                        $param['skills'] = $skills;
 
                         $feeds = $this->feeds($page, $limit, $param);
 
@@ -159,6 +161,7 @@ class SkillUpController extends ApiBaseController
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                 }]);
             }], false)
+            ->joinWith(['skillsUpRecommendedPosts d'], false)
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
@@ -169,10 +172,14 @@ class SkillUpController extends ApiBaseController
             $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
         }
 
+        if (isset($param['skill_keyword']) && !empty($param['skill_keyword'])) {
+            $feeds->andWhere(['like', 'c1.skill', $param['skill_keyword']]);
+        }
+
         $feeds = $feeds->limit($limit)
             ->offset(($page - 1) * $limit)
             ->groupBy(['a.post_enc_id'])
-            ->orderBy(['a.created_on' => SORT_DESC])
+            ->orderBy(['d.recommended_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -290,9 +297,7 @@ class SkillUpController extends ApiBaseController
                 }
             } else {
                 $model = new SkillsUpPostComments();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->comment_enc_id = $utilitiesModel->encrypt();
+                $model->comment_enc_id = $params['id'];
                 $model->post_enc_id = $params['post_id'];
                 if (isset($params['reply_to']) && !empty($params['reply_to'])) {
                     $model->reply_to = $params['reply_to'];
@@ -491,6 +496,10 @@ class SkillUpController extends ApiBaseController
                         'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image', 'e1.view_count']);
                     $e->joinWith(['videoEnc e1'], false);
                 }])
+                ->joinWith(['skillsUpPostAssignedEmbeds f' => function ($f) {
+                    $f->select(['f.assigned_enc_id', 'f.embed_enc_id', 'f.post_enc_id', 'f1.body']);
+                    $f->joinWith(['embedEnc f1'], false);
+                }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
                 ->one();
@@ -500,6 +509,34 @@ class SkillUpController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'data' => $detail]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSaveRecommendedPost()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['post_id']) && empty($params['post_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $rec = new SkillsUpRecommendedPost();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $rec->recommended_enc_id = $utilitiesModel->encrypt();
+            $rec->post_enc_id = $params['post_id'];
+            $rec->recommended_by = $user->user_enc_id;
+            $rec->recommended_on = date('Y-m-s H:i:s');
+            if ($rec->save()) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
 
         } else {
