@@ -79,7 +79,8 @@ class SkillUpController extends ApiBaseController
                     'b.name source_name',
                     'b.url source_url',
                     'a.post_author',
-                    'a.content_type'
+                    'a.content_type',
+                    'a.post_image_url'
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
@@ -96,6 +97,7 @@ class SkillUpController extends ApiBaseController
             }
             $feeds = $feeds->limit($limit)
                 ->offset(($page - 1) * $limit)
+                ->groupBy(['a.post_enc_id'])
                 ->asArray()
                 ->all();
             if ($feeds) {
@@ -398,7 +400,7 @@ class SkillUpController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.post_enc_id', 'a.post_title',
                     'a.slug post_slug',
-                    'a.author',
+                    'a.post_author',
                     'a.post_source_url',
                     'a.source_enc_id',
                     'a.content_type',
@@ -420,9 +422,14 @@ class SkillUpController extends ApiBaseController
                     $d->select(['d.assigned_industry_enc_id', 'd.industry_enc_id', 'd1.industry']);
                     $d->joinWith(['industryEnc d1']);
                 }])
+                ->joinWith(['skillsUpPostAssignedVideos e' => function ($e) {
+                    $e->select(['e.assigned_enc_id', 'e.post_enc_id', 'e.video_enc_id', 'e1.youtube_video_id', 'e1.description',
+                        'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image', 'e1.view_count']);
+                    $e->joinWith(['videoEnc e1'], false);
+                }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
-                ->all();
+                ->one();
 
             if ($detail) {
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
