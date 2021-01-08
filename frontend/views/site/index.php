@@ -123,8 +123,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/education-loan-landing') ?>
-<?= $this->render('/widgets/institutional-loan') ?>
+<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading">
@@ -159,6 +158,7 @@ $this->registerCss('
 .h-heading{
     color:#fff;
     font-weight:400;
+    padding-top:0 !important;
 }
 .h-text{
     color:#ff7803;
@@ -1173,6 +1173,7 @@ if (!Yii::$app->user->isGuest) {
         'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getstudentLoan',
         'getShortcuts'
     ];
     ");
@@ -1196,6 +1197,7 @@ if (!Yii::$app->user->isGuest) {
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getstudentLoan',
         'getNewsletter',
         'getShortcuts'
     ];
