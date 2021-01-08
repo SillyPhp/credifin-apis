@@ -1173,7 +1173,7 @@ if (!Yii::$app->user->isGuest) {
         'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
-        'getstudentLoan',
+        'getStudentLoan',
         'getShortcuts'
     ];
     ");
@@ -1197,7 +1197,7 @@ if (!Yii::$app->user->isGuest) {
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
-        'getstudentLoan',
+        'getStudentLoan',
         'getNewsletter',
         'getShortcuts'
     ];
