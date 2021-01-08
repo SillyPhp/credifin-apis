@@ -352,6 +352,7 @@ use yii\widgets\Pjax;
                     <?php
                     echo $this->render('/widgets/applied-applications/users-card', [
                         'applied_applications' => $applied_applications,
+                        'type' => 'internships'
                     ]); ?>
 
                     <div class="portlet light nd-shadow">
