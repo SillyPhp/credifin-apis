@@ -319,11 +319,11 @@ use yii\helpers\Url;
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
                 </div>
                 <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>" alt="share-docs">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
                 </div>
                 <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>" alt="sanctioned-loan">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
                 </div>
             </div>
@@ -373,7 +373,7 @@ use yii\helpers\Url;
                            target="_blank">
                             <div class="loan-college">
                                 <div class="loan-college-img">
-                                    <img src="<?= $l['org_logo'] ?>">
+                                    <img src="<?= $l['org_logo'] ?>" alt="org-logo">
                                 </div>
                                 <p><?= $l['name'] ?></p>
                             </div>
@@ -397,7 +397,7 @@ use yii\helpers\Url;
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="">
+                                 alt="Avanse Financial Services">
                         </div>
                         <div class="lp-name">Avanse Financial Services</div>
                     </div>
@@ -405,7 +405,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
                         </div>
                         <div class="lp-name">Agile Finserv</div>
                     </div>
@@ -414,7 +414,7 @@ use yii\helpers\Url;
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                                 alt="">
+                                 alt="Exclusive Leasing & Finance">
                         </div>
                         <div class="lp-name">Exclusive Leasing & Finance</div>
                     </div>
@@ -422,7 +422,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
                         </div>
                         <div class="lp-name">EZ Capital</div>
                     </div>
@@ -430,7 +430,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
                         </div>
                         <div class="lp-name">PHF Leasing</div>
                     </div>
@@ -438,7 +438,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Private Limtied">
                         </div>
                         <div class="lp-name">Amrit Malwa Private Limtied</div>
                     </div>
@@ -447,7 +447,7 @@ use yii\helpers\Url;
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                                 alt="">
+                                 alt="ICICI Bank">
                         </div>
                         <div class="lp-name">ICICI Bank</div>
                     </div>
@@ -464,7 +464,7 @@ use yii\helpers\Url;
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>"
-                                    alt=""/>
+                                    alt="Live Help"/>
                             Live Help
                         </div>
 
@@ -477,7 +477,7 @@ use yii\helpers\Url;
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
-                                    alt=""/> Contact Us
+                                    alt="Contact Us"/> Contact Us
                         </div>
                         <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +91 8727985888</div>
                         <div class="l-help-txt-btn"><a href="tel:+918727985888">Call Us</a>
