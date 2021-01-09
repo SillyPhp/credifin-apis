@@ -41,7 +41,7 @@ class SkillsUpPostComments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['comment_enc_id', 'comment', 'post_enc_id', 'created_by', 'last_updated_by'], 'required'],
+            [['comment_enc_id', 'comment', 'post_enc_id', 'created_by'], 'required'],
             [['comment'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],

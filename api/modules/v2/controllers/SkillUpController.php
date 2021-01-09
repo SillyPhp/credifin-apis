@@ -93,7 +93,7 @@ class SkillUpController extends ApiBaseController
                         foreach ($user_skills as $s) {
                             array_push($skills, $s['skill']);
                         }
-                        $param['skills'] = $skills;
+                        $param['user_skills'] = $skills;
 
                         $feeds = $this->feeds($page, $limit, $param);
 
@@ -170,6 +170,8 @@ class SkillUpController extends ApiBaseController
 
         if (isset($param['skills']) && !empty($param['skills'])) {
             $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
+        } elseif (isset($param['user_skills']) && !empty($param['user_skills'])) {
+            $feeds->andWhere(['in', 'c1.skill', $param['user_skills']]);
         }
 
         if (isset($param['skill_keyword']) && !empty($param['skill_keyword'])) {
@@ -326,7 +328,7 @@ class SkillUpController extends ApiBaseController
             $skills = Skills::find()
                 ->select(['skill_enc_id', 'skill'])
                 ->where(['status' => 'Publish', 'is_deleted' => 0])
-                ->andWhere(['like', 'skill', $keyword])
+                ->andFilterWhere(['like', 'skill', $keyword])
                 ->limit(20)
                 ->asArray()
                 ->all();
