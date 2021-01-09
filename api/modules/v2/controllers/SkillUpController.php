@@ -507,8 +507,16 @@ class SkillUpController extends ApiBaseController
                 ->one();
 
             if ($detail) {
+                $skills = [];
+                if ($detail['skillsUpPostAssignedSkills']) {
+                    foreach ($detail['skillsUpPostAssignedSkills'] as $d) {
+                        array_push($skills, $d['skill']);
+                    }
+                }
+                $params['skills'] = $skills;
+                $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
-                return $this->response(200, ['status' => 200, 'data' => $detail]);
+                return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
@@ -545,5 +553,6 @@ class SkillUpController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
 
 }
