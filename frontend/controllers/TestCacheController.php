@@ -4,10 +4,16 @@ namespace frontend\controllers;
 
 use common\models\AppliedApplicationProcess;
 use common\models\AppliedApplications;
+use common\models\AssignedCategories;
 use common\models\Auth;
 use common\models\EmployerApplications;
 use common\models\InterviewProcessFields;
+use common\models\User;
+use common\models\UserAccessTokens;
+use common\models\Usernames;
+use common\models\UserOtherDetails;
 use common\models\UserResume;
+use common\models\Users;
 use common\models\Utilities;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -82,5 +88,55 @@ class TestCacheController extends Controller
             die();
         }
         print_r('updated');
+    }
+
+    public function actionMakeStudent(){
+        $students = UserAccessTokens::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['b.user_enc_id','b.username'])
+            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.user_enc_id')
+            ->innerJoin(UserOtherDetails::tableName().'as c','c.user_enc_id = b.user_enc_id')
+            ->orderBy('b.id desc')
+            ->asArray()
+            ->all();
+
+         foreach ($students as $student){
+             $model = Users::findOne(['user_enc_id'=>$student['user_enc_id']]);
+             $model->signed_up_through = 'ECAMPUS';
+             $model->update();
+         }
+    }
+
+    public function actionMakeAppUser(){
+        $user = UserAccessTokens::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['b.user_enc_id','b.username','b.signed_up_through'])
+            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.user_enc_id')
+            ->where(['!=','b.signed_up_through','ECAMPUS'])
+            ->orderBy('b.id desc')
+            ->asArray()
+            ->all();
+
+       foreach ($user as $u){
+           $model = Users::findOne(['user_enc_id'=>$u['user_enc_id']]);
+           $model->signed_up_through = 'EYAPP';
+           $model->update();
+
+           $userAssign = Usernames::findOne(['username'=>$u['username']]);
+           if (empty($userAssign)){
+               $modelName = new Usernames();
+               $modelName->assigned_to = 1;
+               $modelName->username = $u['username'];
+               if (!$modelName->save()){
+                   print_r($modelName->getErrors());
+               }
+           }else{
+               $userAssign->assigned_to = 1;
+               $userAssign->update();
+           }
+       }
+
     }
 }
