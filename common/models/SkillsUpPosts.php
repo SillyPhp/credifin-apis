@@ -38,6 +38,7 @@ use Yii;
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property SkillsUpSources $sourceEnc
+ * @property SkillsUpRecommendedPost[] $skillsUpRecommendedPosts
  */
 class SkillsUpPosts extends \yii\db\ActiveRecord
 {
@@ -55,7 +56,7 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['post_enc_id', 'post_title', 'post_author', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
+            [['post_enc_id', 'post_title', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
             [['content_type', 'post_description', 'post_short_summery', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
@@ -155,5 +156,13 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function getSourceEnc()
     {
         return $this->hasOne(SkillsUpSources::className(), ['source_enc_id' => 'source_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpRecommendedPosts()
+    {
+        return $this->hasMany(SkillsUpRecommendedPost::className(), ['post_enc_id' => 'post_enc_id']);
     }
 }
