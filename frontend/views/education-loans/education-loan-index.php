@@ -47,16 +47,6 @@ use yii\helpers\Url;
     </section>
 
     <div class="clearfix"></div>
-    <!--          <section class="edu-loans">-->
-    <!--               <div class="container">-->
-    <!--                   <div class="rupee-main">-->
-    <!--                      <div class="edu-loans-txt">Interest Free Loans For </br> All Your Educational Needs!!</div>-->
-    <!--                       <div class="rupe-img">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/rupee.png'); ?><!--"/>-->
-    <!--                       </div>-->
-    <!--                   </div>-->
-    <!--               </div>-->
-    <!--          </section>-->
 
     <section class="edu-with-us">
         <div class="container">
@@ -167,71 +157,8 @@ use yii\helpers\Url;
             </div>
     </section>
 
+<?= $this->render('/widgets/institutional-loan') ?>
 
-    <!--    <section class="edu-with-sec">-->
-    <!--        <div class="container">-->
-    <!--            <div class="row mt-20">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <h2 class="mb-20 pb-10 heading-style">--><? //= Yii::t('frontend', 'Why Empower Youth'); ?><!--</h2>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="row">-->
-    <!--                <div class="loan-ey-flex">-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?><!--"/>-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Up to 100% Financing'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?><!--"/>-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Customized Loans'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Quick Sanctions'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Minimal Documentation'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Flexible Repayment Options'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Get loan to study abroad'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Pre Admission Loan'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Pre Visa Loan'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/bridge-loan.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Bridge Loan'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                    <div class="categories">-->
-    <!--                        <img class="grids-image"-->
-    <!--                             src="--><? //= Url::to('@eyAssets/images/pages/education-loans/fast-track-loan.png'); ?><!--">-->
-    <!--                        <h4 class="font-georgia">--><? //= Yii::t('frontend', 'Fast Track Loan'); ?><!--</h4>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-    <?= $this->render('/widgets/institutional-loan') ?>
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -330,33 +257,6 @@ use yii\helpers\Url;
         </div>
     </section>
 
-
-    <div class="clearfix"></div>
-    <!--    <section class="edu-loan">-->
-    <!--        <div class="container">-->
-    <!--            <div class="us-flex">-->
-    <!--                <div class="edu-loan-txt">-->
-    <!--                    Collateral Free Loans-->
-    <!--                </div>-->
-    <!--                <div class="">-->
-    <!--                    <a href="--><? //= Url::to('/education-loans/apply') ?><!--"-->
-    <!--                       class="hvr-sweep-to-bottom">-->
-    <!--                        Apply Now-->
-    <!--                    </a>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-    <div class="clearfix"></div>
-
-
-    <!--    <section class="emicalcmain">-->
-    <!--        <div class="container">-->
-    <!--            <div class="heading-style ">EMI Calculator</div>-->
-    <!--        </div>-->
-    <!--        <div id="ecww-widget-iframeinner"></div>-->
-    <!--    </section>-->
-    <div class="clearfix"></div>
     <section class="bgEd">
         <div class="container">
             <div class="row">
@@ -455,7 +355,90 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+    <section class="faq-s">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="faq-main">
+                        <h2>Frequently Asked Question</h2>
+                        <ul class="questions-faq">
+                            <li>
+                                <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents are required for the approval of loan via EmpowerYouth?
+                                    <div class="collaspe-trigger">
+                                        <span class="collaspe-icon"></span>
+                                    </div>
+                                </a>
+                                <div id="documents" class="collapse using-pd">
+                                    The following documents will be required to submit for loan approval.<br>
+                                    AADHAR CARD<br>
+                                    PAN CARD (mandatory in certain Banks/NBFC's)<br>
+                                    PHOTO<br>
+                                    PASSPORT<br>
+                                    10TH to Last Qualification<br>
+                                    COLLEGE ADMISSION LETTER<br>
+                                    ENTRANCE EXAM SCORE CARD (if any)<br>
+                                    IELTS SCORE CARD<br>
+                                    OFFER LETTER (mandatory in certain Banks/NBFC's)<br>
+                                    MOBILE NUMBER<br>
+                                    EMAIL ID
+                                </div>
+                            </li>
+                            <li>
+                                <a class="faqs" data-toggle="collapse" data-target="#abroad">2. Is the loan available for abroad studies too?
+                                    <div class="collaspe-trigger">
+                                        <span class="collaspe-icon"></span>
+                                    </div>
+                                </a>
+                                <div id="abroad" class="collapse using-pd">
+                                    Yes. The loan is available for both India and abroad.
+                                </div>
+                            </li>
+                            <li>
+                                <a class="faqs" data-toggle="collapse" data-target="#repay">3. When do we have to start to repay the loan?
+                                    <div class="collaspe-trigger">
+                                        <span class="collaspe-icon"></span>
+                                    </div>
+                                </a>
+                                <div id="repay" class="collapse using-pd">
+                                    Direct EMI starts next month from the date of sanctioning of loan <br>
+                                    or<br>
+                                    Moratorium period (simple interest is charged on the amount disbursed)
+                                </div>
+                            </li>
+                            <li>
+                                <a class="faqs" data-toggle="collapse" data-target="#expenses">4. What all expenses will be covered in the loan?
+                                    <div class="collaspe-trigger">
+                                        <span class="collaspe-icon"></span>
+                                    </div>
+                                </a>
+                                <div id="expenses" class="collapse using-pd">
+                                    The following expenses will be covered depending upon the terms of Banks/NBFC:- <br>
+                                    Fee payable at college/ school/ hostel <br>
+                                    Examination/ library/ laboratory fee <br>
+                                    Travel expenses/ passage money for studies overseas <br>
+                                    Insurance premium for student borrower<br>
+                                    Caution deposit, building fund/ refundable deposit supported by institution bills/ receipts<br>
+                                    Purchase of books/ equipment/ uniforms/ instruments<br>
+                                    Purchase of computer at reasonable cost if required for completion of the course<br>
+                                    Any other expense required to complete the course like study tour, project work, thesis.
+                                </div>
+                            </li>
+                            <li>
+                                <a class="faqs" data-toggle="collapse" data-target="#collateral">5. Is there any collateral required to secure the loan?
+                                    <div class="collaspe-trigger">
+                                        <span class="collaspe-icon"></span>
+                                    </div>
+                                </a>
+                                <div id="collateral" class="collapse using-pd">
+                                    The collateral for security will depend from case to case. We will study your case and inform accordingly.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
@@ -484,16 +467,6 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <!--            <div class="col-md-4">-->
-                <!--                <div class="l-help-block1">-->
-                <!--                    <div class="l-help-title"><img-->
-                <!--                                src="-->
-                <? //= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?><!--" alt=""/>-->
-                <!--                        See our FAQs-->
-                <!--                    </div>-->
-                <!--                    <div class="l-help-txt">See answers to questions on how to use our services</div>-->
-                <!--                </div>-->
-                <!--            </div>-->
             </div>
         </div>
     </section>
@@ -528,1036 +501,765 @@ items: 7
 }
 }
 });
+$('.faqs').click(function () {
+    arrow= $(this).find('.collaspe-trigger')
+  if(!arrow.hasClass('close')) {
+    arrow.addClass('close');
+  } else {
+    arrow.removeClass('close');
+  }
+});
 
 JS;
 $this->registerJs($script);
 
 $this->registerCss('
-//body{
-//    padding-right: 0px !important;
-//}
-//#loginModal .modal-backdrop.in{display:none !important;}
-.btn-set{   
-    border: 1px solid #00a0e3;
-    padding: 6px 44px;
-    color: #fff;
-    background: #00a0e3;
-    border-radius: 5px;
-    display: inline-flex;
-    margin-top: 10px;
-    font-size: 20px;
-    font-family: roboto;
-    transition-duration: 0.3s ease-in-out;
-}
-.btn-set:hover{
-    background-color: #fff;
-    color: #00a0e3;;
-}
-.loan{
-    background-image: url(/assets/themes/ey/images/pages/education-loans/loan-widget-shape.png),url(/assets/themes/ey/images/pages/education-loans/edu-loan-icn.png);
-    background-repeat: no-repeat;
-    background-position: left top, right bottom;
-    min-height: 350px;
-    margin-top: 40px;
-}
-.loan-txt{
-    font-size: 30px;
-    font-family: roboto;
-    display: flex;
-    font-weight: 600;
-    line-height: 40px;
-    color: #000;
-    height: 350px;
-    align-items: center;
-    margin-left: 14%;
-}
-.blue-txt{
-    color: #00a0e3;
-}
-.blue1{
-    color: #EF9819;
- }
-.moving img {
-  position: relative;
-  animation: mymove 5s infinite;
-}
-@keyframes mymove {
-   0%  {left:0px; top:0px;}
-  25%  {left:5px; top:0px;}
-  50%  {left:5px; top:0px;}
-  75%  {left:0px; top:0px;}
-  100% {left:0px; top:0px;}
-}
-.moving1 img {
-  position: relative;
-  animation: mymove 5s infinite;
-}
-@keyframes mymove {
-   0%  {left:0px; top:0px;}
-  25%  {left:10px; top:0px;}
-  50%  {left:10px; top:0px;}
-  75%  {left:0px; top:0px;}
-  100% {left:0px; top:0px;}
-}
-.edu-with-us{
-    margin-bottom: 15px;
-}
-.row-mt10{
-    margin-top: 15px;
-}
-.finance:hover .overlay{
-	height: 100%;
-}
-.overlay{
-   	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-color: #00A0E3;
-	overflow: hidden;
-	width: 100%;
-	height: 0;
-	transition: .5s ease;
-}
-.overlay-txt{
-    color: #fff;
-    width:90%;
-	font-size: 15px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-	text-align: center;
-	font-family: roboto;
-    font-weight: 500;
-    line-height: 20px;
-}
-.finance-text{
-	font-size: 15px;
-	font-family: roboto;
-	font-weight: 700;
-	text-align: center;
-	color:#333;
-}
-.finance-icon{
-    text-align: center;
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 20px;
-    margin-top: 40px;
-}
-.finance{
-    width: 100%;
-    height: 200px;
-    box-shadow: 0 0 11px -4px #999;
-	margin-bottom: 20px;
-	background-color: #fff;
-	transition: all .2s;
-	position:relative;
-}
-.rupee-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.rupe-img{
-    flex-basis: 50%;
-    text-align:right;
-}
-.rupe-img img{
-    width:300px;
-}
-.callNumber{
-    color: #666;
-    font-size: 18px;
-    margin-top: 10px;
-    font-family: roboto;
-    text-align: center;
-}
-.callNumber i{
-    color: #1b4145
-}
-.edu-flex{
-    display: flex;
-    align-items: center;
-    justify-content: space-even
-}
-.edu-hw-block, .edu-des{
-    flex-basis: 50%;
-}
-.edu-des{
-    padding: 10px 20px 10px 0;
-}
-.order2{
-    order: 2;
-}
-.order1{
-    order: 1;
-}
-.ptb50{
-    padding-top: 25px;
-    padding-bottom: 25px; 
-}
-.bgEd{
-    background: #EDF4FC
-}
-.loan-college{
-    text-align: center;  
-    box-shadow: 3px 5px 10px rgba(0,0,0,.1);
-    margin-bottom: 30px;
-    background-color: #fff;
-}
-.loan-college:hover{
-    box-shadow: 3px 5px 10px rgba(0,0,0,.2);
-    transition:.3s ease; 
-}
+.using-pd{padding:0 0 0 16px;}
+ .faq-s {
+        background-image: linear-gradient(to right,#8ec3ff 20%,#edf4fc 100%);
+        margin:20px 0;
+    }
+    .faq-main {
+        padding: 30px 0 50px;
+    }
+    .faq-main h2 {
+        color: #fff;
+        font-family: lora;
+        font-size: 34px;
+        font-weight: bold;
+        margin: 0 0 15px;
+    }
+    .questions-faq li {
+        background-color: #fff;
+        margin-bottom: 7px;
+        padding: 8px 20px;
+        font-family: roboto;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .questions-faq li a {
+        color: #333;
+        display: block;
+        font-size: 15px;
+        position:relative;
+        font-weight:500;
+    }
+    .questions-faq li .collapse {
+        cursor: auto;
+    }
+    .collaspe-trigger {
+        position: absolute;
+        top: 18px;
+        right: 10px;
+        cursor: pointer;
+    }
+    .collaspe-icon {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        bottom: auto;
+        right: auto;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        display: inline-block;
+        width: 14px;
+        height: 2px;
+    }
+    .collaspe-icon::before, .collaspe-icon:after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #bfbdbd;
+        -webkit-transition: -webkit-transform .3s;
+        transition: transform .3s;
+        content: "";
+    }
+    .collaspe-icon::before {
+        -webkit-transform: translateY(-5px) rotate(-130deg);
+        transform: translateY(-5px) rotate(-130deg);
+        content: "";
+    }
+    .collaspe-icon::after {
+        -webkit-transform: translateY(-5px) translateX(8px) rotate(-50deg);
+        transform: translateY(-5px) translateX(8px) rotate(-50deg);
+        content: "";
+    }
 
-.loan-college:hover p{
-    color: #00a0e3;
-}
-
-.loan-college p{
-    font-size: 17px;
-    line-height: 25px;
-    padding: 5px 10px;
-//    border-top: 1px solid #eee;
-    position: relative;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 60px;
-    font-family: roboto;
-}
-.loan-college-img{
-    width: 100%;
-    height: 100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-//    background: #f7f7f7;
-    
-}
-.loan-college-img img{
-    max-width: 150px;
-    max-height: 100%;
-    margin: 0 auto;
-    padding: 5px 10px
-}
-.loan-ey-flex{
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 1600px;
-    margin: 0 auto;
-    justify-content: center;
-}
-.loan-ey-flex .categories{
-    width: 200px;
-    margin: 0 15px 10px;
-    text-transform: capitalize;
-}
-.loan-ey-flex .categories h4{
-    font-family: roboto;
-    font-size: 16px;
-}
-.clouds{
-    position: relative;
+    /* when drawer close */
+    .collaspe-trigger.close .collaspe-icon::before {
+        -webkit-transform: translateY(-5px) translateX(0px) rotate(-50deg);
+        transform: translateY(-5px) translateX(0px) rotate(-50deg);
+        content: "";
     }
-.cloud img {
-    width: 100%;
-} 
-.cloud{
-    position: absolute;
-    top: 60px;
-    left: 70px;
-    width: 90px;
-    height: 100px;
-    z-index: 2;
+    .collaspe-trigger.close .collaspe-icon::after {
+        -webkit-transform: translateY(-5px) translateX(8px) rotate(-130deg);
+        transform: translateY(-5px) translateX(8px) rotate(-130deg);
+        content: "";
     }
-.cloud1{
-    position: absolute;
-    top: 10px;
-    left: 200px;
-    z-index: 0;
-}
-.cloud2 img{
-    width: 100%
+    .blue1{
+        color: #EF9819;
     }
-.cloud2{
-    position: absolute;
-    top: 80px;
-    right: 60px;
-    width: 100px;
-    height: 20px;
-    z-index: 2
-}
-.cloud3 img{
-    width: 100%
+    .moving img {
+        position: relative;
+        animation: mymove 5s infinite;
     }
-.cloud3{
-    position: absolute;
-    top: 150px;
-    right: 0px;
-    width: 100px;
-    height: 80px;
-    z-index: 2;
-}
-.loan-image{
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
-.loan-image img{
-    width: 1000px;
-    max-height: 900px;
-    margin-top: 50px;
-}
-.loansWorks{
-    text-align: center;
- }
-.mb1{
-    margin-bottom: 10px
-}
-.loan-text {
-    padding-top: 140px;
-}
-.loan-text h1 {
-    color: #EF9819;
-    font-weight: 600;
-    font-size: 34px;
-    font-family: lobster;
-    margin-bottom: 20px;
-}
-.loan-text h2{
-    font-weight: 600;
-    font-size: 20px;
-    font-family: lora;
-    margin-bottom: 20px;
-}
-.loan-text h3{
-    margin: 10px 0 20px;
-    font-family: lora;
-    max-width: 500px;
-    line-height: 26px;
-}
-}
-.loansWorks{
-    text-align: center
-}
-.loansWorks img{
-    max-width:150px 
-}
-.loansWorks h4{
-    font-size: 16px;
-    max-width: 200px;
-    margin: 10px auto;
-    line-height: 25px;
-}
-.lp-name {
-    text-transform: capitalize;
-    font-weight: 500;
-    font-family: roboto;
-    padding: 10px 5px;
-    color: #333;
-    line-height: 20px;
-    min-height: 54px;
-    max-height: 54px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.lp-box {
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
-    text-align: center;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    padding: 10px 10px 5px;
-}
-.loan-logo {
-    width: 90%;
-    height: 65px;
-    line-height: 61px;
-    margin: auto;
-}
-.loan-logo img{
-    max-width: 100%;
-    max-height: 65px;
-}
-.backgrounds{
-    background-size: 100% 625px;
-//    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
-    background-position: right top;
-    background-repeat: no-repeat;
-    padding-top: 100px;
-    padding-bottom: 35px;
-    background-color: #bae6f8;
-}
-@media screen and (max-width:768px){
-    .loan-text {
-        padding-top: 70px;
+    @keyframes mymove {
+        0%  {left:0px; top:0px;}
+        25%  {left:5px; top:0px;}
+        50%  {left:5px; top:0px;}
+        75%  {left:0px; top:0px;}
+        100% {left:0px; top:0px;}
     }
-    .backgrounds{
-        background-size: 100% 380px;
-        min-height:380px;
+    .moving1 img {
+        position: relative;
+        animation: mymove 5s infinite;
     }
-       .loan-image img{
-        max-width: 300px;
+    @keyframes mymove {
+        0%  {left:0px; top:0px;}
+        25%  {left:10px; top:0px;}
+        50%  {left:10px; top:0px;}
+        75%  {left:0px; top:0px;}
+        100% {left:0px; top:0px;}
     }
-    .us-flex{
-        flex-direction: column;
+    .edu-with-us{
+        margin-bottom: 15px;
     }
-    .edu-loan-txt{
-        padding-right: 0px;
-        padding-bottom: 20px;
+    .row-mt10{
+        margin-top: 15px;
     }
-}
-@media (max-width:415px){
-.backgrounds{
-    background-size: cover;
-    min-height: 380px;
-    background-position: left;
-}
-}
-.bg2{
-    background-size: 95% 450px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/w1.png') . ');
-    background-position: right top;
-    background-repeat: no-repeat;
-    min-height: 400px;
-    padding-top: 100px;
-}
-.set-heading h1{
-    font-family: lobster;
-}
-.set-heading h4{
-    font-family: "Didact Gothic";
-}
-.input-srch{
-    background-color:#fff;
-    border-radius:20px;
-    height:46px;
-    width: 290px !important;
-    border-right: 0px;
-}
-.srch{
-    border-radius:20px;
-    height:46px;
-    width:50px;
-    background-color: #583de0;
-    border-color: #593de0;
-    color: #Fff;
-}
-/* First section with background css ends */
-/* Categories section css starts */
-.categories{
-    text-align: center;
-    min-height: 150px;
-    margin-bottom: 20px;
-}
-.grids {
-    display: block;
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 24px;
-    border-radius: 50%;
-    padding-top: 32px;
-    -webkit-transition: all .2s ease-out;
-    transition: all .2s ease-out;
-}
-.grids-image {
-    width: 72px;
-    height: 72px;
-    margin-top: 5px;
-}
-.grids::after {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 148px;
-    height: 148px;
-    border: 2px solid #afafaf;
-    border-radius: 50%;
-    content: "";
-    -webkit-transition: all .1s ease-out;
-    transition: all .1s ease-out;
-}
-.categories:hover .grids::after {
-    top: -1px;
-    left: -1px;
-    border: 2px solid #f08440;
-    -webkit-transform: scale(.9);
-    transform: scale(.9);
-}
-/* Categories section css ends */
-.list-items ol {
-    list-style-type: none;
-    padding-left: 38px;
-    counter-reset: li-counter;
-    border-left: 1px solid #f07706;
-    position: relative;
-}
-.list-items ol > li {
-    position: relative;
-    margin-bottom:28px;
-    clear: both;
-    font-family: "Didact Gothic";
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 25px;
-    color: #0e1318;
-}
-.list-items ol > li:before {
-    position: absolute;
-    top: 12px;
-    font-family: "Open Sans", sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    left: -59px;
-    width: 40px;
-    height: 40px;
-    line-height: 37px;
-    text-align: center;
-    z-index: 9;
-    color: #f07706;
-    border: 2px solid #f07706;
-    border-radius: 50%;
-    content: counter(li-counter);
-    background-color: #fff;
-    counter-increment: li-counter;
-}
-.background-mirror {
-    background: linear-gradient(180deg, #2b2d32 55%, #fff 55%);
-}
-/* owl Slider css starts */
-#company-slider .owl-stage-outer .owl-stage .owl-item .item{
-    display: block;
-    padding: 30px 0px;
-    margin: 5px;
-    color: #FFF;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    text-align: center;
-}
-#company-slider .owl-controls .nav div {
-    padding: 5px 9px;
-}
-.owl-nav i{
-    margin-top: 2px;
-}
-#company-slider .owl-controls .owl-nav div {
-    position: absolute;
-}
-#company-slider .owl-controls .owl-nav .owl-prev{
-    left: -60px;
-    top: 50px;
-}
-#company-slider .owl-controls .owl-nav .owl-prev i, #company-slider .owl-controls .owl-nav .owl-next i{
-    font-size:64px !important;
-}
-#company-slider .owl-controls .owl-nav .owl-prev, #company-slider .owl-controls .owl-nav .owl-next{
-    background: transparent !important;
-}
-#company-slider .owl-controls .owl-nav .owl-next{
-    right: -60px;
-    top: 50px;
-}
-.owl-item{
-    min-height:150px !important;
-}
-.partners-flex-box .logo-box:hover {
-    -webkit-box-shadow: 0 17px 27px -9px #757575;
-    box-shadow: 0 17px 27px -9px #757575;
-    -webkit-transition: -webkit-box-shadow .7s !important;
-    transition: -webkit-box-shadow .7s !important;
-    transition: box-shadow .7s !important;
-    transition: box-shadow .7s, -webkit-box-shadow .7s !important;
-}
-.partners-flex .partners-flex-box {
-    width: 20%;
-    -o-object-fit: contain;
-    object-fit: contain;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.partners-flex .partners-flex-box .logo-box {
-    height: 65px;
-    width: 65px;
-    background-color: #fff;
-}
-.partners-flex .partners-flex-box {
-    width: 20%;
-    -o-object-fit: contain;
-    object-fit: contain;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.partners-flex .partners-flex-box .logo-box {
-    height: 90px;
-    width: 90px;
-    background-color: #fff;
-}
-.partners-flex .partners-flex-box {
-    width: 130px;
-    -o-object-fit: contain;
-    object-fit: contain;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.partners-flex .partners-flex-box .logo-box {
-    height: 120px;
-    width: 120px;
-    background-color: #fff;
-}
-.partners-flex .partners-flex-box .image-partners {
-    height: 114px;
-    margin: 2px;
-    cursor: pointer;
-    padding: 6px;
-    width: 116px;
-}
-.partners-flex {
-    width: 90%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    margin: 1.5% auto;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-}
-/* owl Slider css ends */
-/*custom css */
-.bg-cl{
-    background: linear-gradient( to right, #00a0e3,#00a0e3ad);
-}
-//.hw-block1{
-//    background: linear-gradient( to left, #00a0e3,#00a0e370);
-//}
-//.hw-block2{
-//    background-color: #00a0e3;
-//}
-//.hw-block3{
-//    background: linear-gradient( to right, #00a0e3,#00a0e354);
-//}
-.edu-hw-block{
-    text-align: center;
-    margin-bottom:35px;
-//    min-height: 250px; 
-//    height: 350px;
-}
-.edu-hw-title{
-    font-size: 20px; 
-    color:#000; 
-    font-family: Roboto; 
-    text-transform: uppercase; 
-    font-weight: bold;
-    text-align: center;
-}
-.mt20{
-    margin-top: 20px;
-}
-.edu-hw-description{
-    color: #000;
-    text-align: center;
-    font-family: roboto;
-    font-size: 15px;
-}
-.edu-hw-icon{ 
-    padding: 20px; 
-}
-.edu-hw-icon img{
-    max-width: 400px;
-    width: 100%;
-}
-.edu-hw-text{
-    font-size: 16px; 
-    line-height: 20px; 
-    color:#fff; 
-    padding: 10px 30px; 
-    font-family: roboto; 
-}
-.heading-style{
-   font-family: lobster;
-   font-size: 28pt;
-   text-align: left;
-   margin: 15px 5px;
-}
-.heading-style:before{
-   content: "";
-   position: absolute;
-   width: 0;
-   height: 0;
-   border-style: solid;
-   border-width: 0 0 5px 52px;
-   border-color: #f07706;
-}
-.edu-with-sec{
-    padding:0px 0px 20px 0;
-}
-
-.edu-loans{
- background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-bg1.png') . '); 
-    background-repeat:no-repeat;
-    padding: 0px 0 15px 0; 
-    text-align: center; 
-    background-size: cover;  
-    margin-top: 20px; 
- }
- .us-flex1{
-  display: flex;
-    justify-content: right;
-    align-items: right;
-}
-.edu-loans-txt{
-   color: #fff; 
-    font-size: 50px;
-    flex-basis: 50%;
-    font-family: lobster;
-    text-align: center;
-}
-.edu-loan{ 
-    background: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-apply.png') . '); 
-    background-repeat:no-repeat;
-    padding: 50px 0 50px 0; 
-    text-align: center; 
-    background-size: cover;
-}
-.us-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.edu-loan-txt{ 
-    color: #fff; 
-    font-size: 38px;
-    font-family: lobster;
-    padding-right: 20px; 
-}
-.edu-loan-btn{ 
-    text-align: center; 
-    padding: 0px;
-}
-.edu-loan-btn a:hover{
-    text-decoration: none;
-}
-.hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2,.hvr-sweep-to-bottom-3  {
-    display: inline-block;
-    vertical-align: middle;
-    -webkit-transform: perspective(1px) translateZ(0);
-    transform: perspective(1px) translateZ(0);
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-    position: relative;
-    background: #ffffff;
-    padding:8px 25px;
-    color:#53bbeb; 
-    font-size: 20px;
-    text-transform: uppercase; 
-    font-family: roboto;
-    -webkit-transition-property: color;
-    transition-property: color;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    border-radius: 5px;
-}
-.hvr-sweep-to-bottom-2{
-    background: #53bbeb;
-    color:#ffffff; 
-}
-.hvr-sweep-to-bottom-3{
-    background: #ff7803;
-    color:#ffffff; 
-}
-.hvr-sweep-to-bottom:before,
-.hvr-sweep-to-bottom-2:before,
- .hvr-sweep-to-bottom-3:before{
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgb(0,0,0,.1);
-    border-radius: 5px;
-    -webkit-transform: scaleY(0);
-    transform: scaleY(0);
-    -webkit-transform-origin: 50% 0;
-    transform-origin: 50% 0;
-    -webkit-transition-property: transform;
-    transition-property: transform;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    -webkit-transition-timing-function: ease-out;
-    transition-timing-function: ease-out;
-}
-.hvr-sweep-to-bottom:hover, .hvr-sweep-to-bottom:focus, .hvr-sweep-to-bottom:active{
-  color: #00a0e3;
-  text-decoration: none;
-}
-.hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active,
-.hvr-sweep-to-bottom-3:hover, .hvr-sweep-to-bottom-3:focus, .hvr-sweep-to-bottom-3:active{
-     color: #fff;
-  text-decoration: none;
-}
-.hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
-.hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before,
-.hvr-sweep-to-bottom-3:hover:before, .hvr-sweep-to-bottom-3:focus:before, .hvr-sweep-to-bottom-3:active:before {
-  -webkit-transform: scaleY(1);
-  transform: scaleY(1);
-}
-.l-help{
-    padding:15px 0px 30px;
-    text-align: center; 
-    background:#eee;
-}
-.l-help-block1{
-    box-shadow: 0 0 10px rgb(0,0,0,.2); 
-    padding: 25px 20px; 
-    margin-bottom:20px; 
-    background:#fff; 
-    min-height: 180px;
- }
-.l-help-title{
-    font-size: 20px !important; 
-}
-.l-help-txt-btn{
-    margin-top: 20px;
-    text-align: center;
-}
-.l-help-txt-btn a{
-    border: 1px solid #00a0e3; 
-    padding: 10px 20px; 
-    color: #fff; 
-    background: #00a0e3;
-}
-.l-help-txt-btn a:hover{
-    border: 2px solid #00a0e3; 
-    padding: 10px 20px; 
-    color: #00a0e3; 
-    background: #fff; 
-    text-decoration: none;
-    transition: .3s ease-in-out;
-}
-.l-help-txt{
-    font-size: 15px; 
-    padding: 20px 30px 0 30px;
-    font-family: roboto;
-}
-/*Emi Calculator*/
-#ecww-formwrapper{
-    background:#EEE; 
-    margin-bottom:0px;
-}
-#ecww-formwrapper,#ecww-summary,#ecww-piechart{
-    height:300px;
-    overflow:hidden; 
-}
-#ecww-form{
-    background:#EEE;
-    padding:10px 30px 10px 70px;
-}
-#ecww-summary,#ecww-piechart{
-    background:#eee;
-    border:1px solid #EEE;
-    border-top:0 none;
-}
-#ecww-piechart{
-    border-bottom:0 none!important;
-}
-.no-pad{
-    padding-left:0; 
-    padding-right:0;
-}
-#ecww-header{
-    background:#333 url(../img/emicalculator.png) 50% 50% no-repeat;
-    margin:-1px 0 0 -1px; 
-    height:40px; 
-    text-indent:-9999px; 
-    padding:0; 
-    border:0 none;
-}
-.ecww-inline-input-group{
-    overflow:hidden;
-}
-.ecww-tenure-choice{
-    float:right; 
-    margin-left:10px;
-}
-.ecww-percent-sign{
-    font-weight:700; 
-    font-size:16px;
-}
-.glyphicon-rupee::before{
-    content:\'\20B9\';
-    font-weight:700;
-    font-size:16px;
-}
-.glyphicon-percent::before{
-    content:\'%\';
-    font-weight:700;
-    font-size:16px;
-}
-#ecww-monthlypayment,#ecww-totalinterest,#ecww-totalamount{
-    padding:18px 0;
-    text-align:center;
-    border-bottom:1px dotted #DBDAD7;
-}
-#ecww-totalamount{
-    border-bottom:0 none;
-}
-#ecww-summary h4{
-    color:#888;
-    font-size:14px; 
-    line-height:20px; 
-    margin:0 auto; 
-    padding:0;
-}
-#ecww-summary p{
-    font-size:18px; 
-    line-height:27px; 
-    font-weight:700; 
-    margin:0 auto; 
-    padding:0;
-}
-#ecww-monthlypayment p{
-    font-size:24px; 
-    line-height:36px; 
-    font-weight:700;
-}
-.glyphicon{
-    width:1.28571429em;
-    text-align:center;
-}
-.emicalcmain{
-    margin-bottom:0px !important; 
-    background: #eee;
-}
-@media screen and (max-width: 1030px) and (min-width:990px) {
-  .loan{
-        background-size: 10%, 57%;
+    .finance:hover .overlay{
+        height: 100%;
     }
-    .loan-txt{
-        font-size: 26px;
-        line-height: 35px;
+    .overlay{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #00A0E3;
+        overflow: hidden;
+        width: 100%;
+        height: 0;
+        transition: .5s ease;
     }
-}
-@media screen and (max-width: 986px) and (min-width:770px) {
-  .loan{
-        background-size: 0%, 70%;
-    }.temp-btn
-    .loan-txt{
-        margin-left: 3%;
-        font-size: 23px;
-        line-height: 30px;
+    .overlay-txt{
+        color: #fff;
+        width:90%;
+        font-size: 15px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-family: roboto;
+        font-weight: 500;
+        line-height: 20px;
     }
-}
-@media screen and (max-width: 768px) and (min-width:600px) {
-  .loan{
-            background-size: 0%, 74%;
+    .finance-text{
+        font-size: 15px;
+        font-family: roboto;
+        font-weight: 700;
+        text-align: center;
+        color:#333;
     }
-    .loan-txt{
-        margin-left: 2%;
-        font-size: 21px;
-        line-height: 28px;
+    .finance-icon{
+        text-align: center;
+        width: 100%;
+        display: inline-block;
+        margin: 0 0 20px;
+        margin-top: 40px;
     }
-}
-@media screen and (max-width: 590px) and (min-width:320px) {
-  .loan{
-           background-size: 33%, 0%;
-}
-    .loan-txt{
-        font-size: 27px;
-        line-height: 38px;
-        margin-left: 32%;
+    .finance{
+        width: 100%;
+        height: 200px;
+        box-shadow: 0 0 11px -4px #999;
+        margin-bottom: 20px;
+        background-color: #fff;
+        transition: all .2s;
+        position:relative;
     }
-    .btn-set{
-        padding: 3px 48px;
-        font-size: 17px;
-}
-}
-@media screen and (max-width:990px) and (min-width:760px){
-.loan-image img {
-    margin-top: 100px;
-}
-.edu-loans-txt{
-    font-size: 40px;
+    .rupe-img img{
+        width:300px;
     }
-.edu-flex{
-        flex-direction: column;
+    .callNumber{
+        color: #666;
+        font-size: 18px;
+        margin-top: 10px;
+        font-family: roboto;
+        text-align: center;
+    }
+    .callNumber i{
+        color: #1b4145
+    }
+    .edu-flex{
+        display: flex;
+        align-items: center;
+        justify-content: space-even
+    }
+    .edu-hw-block, .edu-des{
+        flex-basis: 50%;
+    }
+    .edu-des{
+        padding: 10px 20px 10px 0;
     }
     .order2{
-        order: 1;
-    }
-    .order1{
         order: 2;
     }
-}
-@media screen and (max-width:768px) and (min-width:200px){
-.rupee-main {
-    display: block;
-}
-.rupe-img{
-    display: none;
-}
-.edu-loans-txt{
-    font-size: 35px;
-     text-align: center;
-}
-#ecww-summary,#ecww-piechart{
-        border-left:0 none;
-        border-bottom:0 none; 
-        border-top:1px solid #EEE;
+    .order1{
+        order: 1;
     }
-}
-@media screen and (max-width:998px) and (min-width:774px){
-.moving1 img,.moving img{ 
-    animation: none;
-}
-}
-@media screen and (max-width:770px) {
-.moving1,.moving { 
-    display: none;
-}
-.loan-text h1 {
-    font-size: 30px;
- }
- .edu-loan-txt{
-        line-height: 60px;
-        margin-bottom:20px;
+    .ptb50{
+        padding-top: 25px;
+        padding-bottom: 25px;
     }
-    .us-flex{
-        flex-direction: column;
+    .bgEd{
+        background: #EDF4FC
+    }
+    .loan-college {
+        text-align: center;
+        box-shadow: 3px 5px 10px rgba(0,0,0,.1);
+        margin-bottom: 25px;
+        background-color: #fff;
+        padding: 20px 10px;
+    }
+    .loan-college:hover{
+        box-shadow: 3px 5px 10px rgba(0,0,0,.2);
+        transition:.3s ease;
+    }
+
+    .loan-college:hover p{
+        color: #00a0e3;
+    }
+
+    .loan-college p {
+        font-size: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 50px;
+        font-family: roboto;
+        margin: 5px 0 0 0;
+    }
+    
+    .loan-college-img img {
+        max-width: 100px;
+        max-height: 100px;
+        padding: 5px 10px;
+        height: 100px;
+        object-fit: contain;
+    }
+    .loan-ey-flex .categories{
+        width: 200px;
+        margin: 0 15px 10px;
+        text-transform: capitalize;
+    }
+    .loan-ey-flex .categories h4{
+        font-family: roboto;
+        font-size: 16px;
+    }
+    .clouds{
+        position: relative;
+    }
+    .cloud img {
+        width: 100%;
+    }
+    .cloud{
+        position: absolute;
+        top: 60px;
+        left: 70px;
+        width: 90px;
+        height: 100px;
+        z-index: 2;
+    }
+    .cloud1{
+        position: absolute;
+        top: 10px;
+        left: 200px;
+        z-index: 0;
+    }
+    .cloud2 img{
+        width: 100%
+    }
+    .cloud2{
+        position: absolute;
+        top: 80px;
+        right: 60px;
+        width: 100px;
+        height: 20px;
+        z-index: 2
+    }
+    .cloud3 img{
+        width: 100%
+    }
+    .cloud3{
+        position: absolute;
+        top: 150px;
+        right: 0px;
+        width: 100px;
+        height: 80px;
+        z-index: 2;
+    }
+    .loan-image{
+        text-align: center;
+        position: relative;
+        z-index: 1;
     }
     .loan-image img{
-        max-width: 250px;
+        width: 1000px;
+        max-height: 900px;
+        margin-top: 50px;
     }
-}
+    .loansWorks{
+        text-align: center;
+    }
+    .mb1{
+        margin-bottom: 10px
+    }
+    .loan-text {
+        padding-top: 140px;
+    }
+    .loan-text h1 {
+        color: #EF9819;
+        font-weight: 600;
+        font-size: 34px;
+        font-family: lobster;
+        margin-bottom: 20px;
+    }
+    .loan-text h2{
+        font-weight: 600;
+        font-size: 20px;
+        font-family: lora;
+        margin-bottom: 20px;
+    }
+    .loan-text h3{
+        margin: 10px 0 20px;
+        font-family: lora;
+        max-width: 500px;
+        line-height: 26px;
+    }
+    }
+    .loansWorks{
+        text-align: center
+    }
+    .loansWorks img{
+        max-width:150px
+    }
+    .loansWorks h4{
+        font-size: 16px;
+        max-width: 200px;
+        margin: 10px auto;
+        line-height: 25px;
+    }
+    .lp-name {
+        text-transform: capitalize;
+        font-weight: 500;
+        font-family: roboto;
+        padding: 5px 0 0 0;
+        color: #333;
+        line-height: 20px;
+        min-height: 45px;
+        max-height: 45px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+   .lp-box {
+        box-shadow: 0 0 5px rgba(0,0,0,.3);
+        text-align: center;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        padding: 10px;
+    }
+   .loan-logo img {
+        max-width: 80px;
+        max-height: 80px;
+        height: 65px;
+        object-fit: contain;
+    }
+    .backgrounds{
+        background-size: 100% 625px;
+    //    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/loan-hedr.png') . ');
+        background-position: right top;
+        background-repeat: no-repeat;
+        padding-top: 100px;
+        padding-bottom: 35px;
+        background-color: #bae6f8;
+    }
+    @media screen and (max-width:768px){
+        .loan-text {
+            padding-top: 70px;
+        }
+        .backgrounds{
+            background-size: 100% 380px;
+            min-height:380px;
+        }
+        .loan-image img{
+            max-width: 300px;
+        }
+    }
+    @media (max-width:415px){
+        .backgrounds{
+            background-size: cover;
+            min-height: 380px;
+            background-position: left;
+        }
+    }
+    .set-heading h1{
+        font-family: lobster;
+    }
+    .set-heading h4{
+        font-family: "Didact Gothic";
+    }
+    .categories:hover .grids::after {
+        top: -1px;
+        left: -1px;
+        border: 2px solid #f08440;
+        -webkit-transform: scale(.9);
+        transform: scale(.9);
+    }
+    /* Categories section css ends */
+    .list-items ol {
+        list-style-type: none;
+        padding-left: 38px;
+        counter-reset: li-counter;
+        border-left: 1px solid #f07706;
+        position: relative;
+    }
+    .list-items ol > li {
+        position: relative;
+        margin-bottom:28px;
+        clear: both;
+        font-family: "Didact Gothic";
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 25px;
+        color: #0e1318;
+    }
+    .list-items ol > li:before {
+        position: absolute;
+        top: 12px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        left: -59px;
+        width: 40px;
+        height: 40px;
+        line-height: 37px;
+        text-align: center;
+        z-index: 9;
+        color: #f07706;
+        border: 2px solid #f07706;
+        border-radius: 50%;
+        content: counter(li-counter);
+        background-color: #fff;
+        counter-increment: li-counter;
+    }
+
+    /* owl Slider css starts */
+    #company-slider .owl-stage-outer .owl-stage .owl-item .item{
+        display: block;
+        padding: 30px 0px;
+        margin: 5px;
+        color: #FFF;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    #company-slider .owl-controls .nav div {
+        padding: 5px 9px;
+    }
+    .owl-nav i{
+        margin-top: 2px;
+    }
+    #company-slider .owl-controls .owl-nav div {
+        position: absolute;
+    }
+    #company-slider .owl-controls .owl-nav .owl-prev{
+        left: -60px;
+        top: 50px;
+    }
+    #company-slider .owl-controls .owl-nav .owl-prev i, #company-slider .owl-controls .owl-nav .owl-next i{
+        font-size:64px !important;
+    }
+    #company-slider .owl-controls .owl-nav .owl-prev, #company-slider .owl-controls .owl-nav .owl-next{
+        background: transparent !important;
+    }
+    #company-slider .owl-controls .owl-nav .owl-next{
+        right: -60px;
+        top: 50px;
+    }
+    .owl-item{
+        min-height:150px !important;
+    }
+    .partners-flex-box .logo-box:hover {
+        -webkit-box-shadow: 0 17px 27px -9px #757575;
+        box-shadow: 0 17px 27px -9px #757575;
+        -webkit-transition: -webkit-box-shadow .7s !important;
+        transition: -webkit-box-shadow .7s !important;
+        transition: box-shadow .7s !important;
+        transition: box-shadow .7s, -webkit-box-shadow .7s !important;
+    }
+    .partners-flex .partners-flex-box {
+        width: 20%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .partners-flex .partners-flex-box .logo-box {
+        height: 65px;
+        width: 65px;
+        background-color: #fff;
+    }
+    .partners-flex .partners-flex-box {
+        width: 20%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .partners-flex .partners-flex-box .logo-box {
+        height: 90px;
+        width: 90px;
+        background-color: #fff;
+    }
+    .partners-flex .partners-flex-box {
+        width: 130px;
+        -o-object-fit: contain;
+        object-fit: contain;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .partners-flex .partners-flex-box .logo-box {
+        height: 120px;
+        width: 120px;
+        background-color: #fff;
+    }
+    .partners-flex .partners-flex-box .image-partners {
+        height: 114px;
+        margin: 2px;
+        cursor: pointer;
+        padding: 6px;
+        width: 116px;
+    }
+    /* owl Slider css ends */
+    /*custom css */
+    .edu-hw-block{
+        text-align: center;
+        margin-bottom:35px;
+    //    min-height: 250px;
+    //    height: 350px;
+    }
+    .edu-hw-title{
+        font-size: 20px;
+        color:#000;
+        font-family: Roboto;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+    }
+    .mt20{
+        margin-top: 20px;
+    }
+    .edu-hw-description{
+        color: #000;
+        text-align: center;
+        font-family: roboto;
+        font-size: 15px;
+    }
+    .edu-hw-icon{
+        padding: 20px;
+    }
+    .edu-hw-icon img{
+        max-width: 400px;
+        width: 100%;
+    }
+    .heading-style{
+        font-family: lobster;
+        font-size: 28pt;
+        text-align: left;
+        margin: 15px 5px;
+    }
+    .heading-style:before{
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 5px 52px;
+        border-color: #f07706;
+    }
+    .edu-with-sec{
+        padding:0px 0px 20px 0;
+    }
+    .edu-loan-btn a:hover{
+        text-decoration: none;
+    }
+    .hvr-sweep-to-bottom, .hvr-sweep-to-bottom-2,.hvr-sweep-to-bottom-3  {
+        display: inline-block;
+        vertical-align: middle;
+        -webkit-transform: perspective(1px) translateZ(0);
+        transform: perspective(1px) translateZ(0);
+        box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+        position: relative;
+        background: #ffffff;
+        padding:8px 25px;
+        color:#53bbeb;
+        font-size: 20px;
+        text-transform: uppercase;
+        font-family: roboto;
+        -webkit-transition-property: color;
+        transition-property: color;
+        -webkit-transition-duration: 0.3s;
+        transition-duration: 0.3s;
+        border-radius: 5px;
+    }
+    .hvr-sweep-to-bottom-2{
+        background: #53bbeb;
+        color:#ffffff;
+    }
+    .hvr-sweep-to-bottom-3{
+        background: #ff7803;
+        color:#ffffff;
+    }
+    .hvr-sweep-to-bottom:before,
+    .hvr-sweep-to-bottom-2:before,
+    .hvr-sweep-to-bottom-3:before{
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgb(0,0,0,.1);
+        border-radius: 5px;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0);
+        -webkit-transform-origin: 50% 0;
+        transform-origin: 50% 0;
+        -webkit-transition-property: transform;
+        transition-property: transform;
+        -webkit-transition-duration: 0.3s;
+        transition-duration: 0.3s;
+        -webkit-transition-timing-function: ease-out;
+        transition-timing-function: ease-out;
+    }
+    .hvr-sweep-to-bottom:hover, .hvr-sweep-to-bottom:focus, .hvr-sweep-to-bottom:active{
+        color: #00a0e3;
+        text-decoration: none;
+    }
+    .hvr-sweep-to-bottom-2:hover, .hvr-sweep-to-bottom-2:focus, .hvr-sweep-to-bottom-2:active,
+    .hvr-sweep-to-bottom-3:hover, .hvr-sweep-to-bottom-3:focus, .hvr-sweep-to-bottom-3:active{
+        color: #fff;
+        text-decoration: none;
+    }
+    .hvr-sweep-to-bottom:hover:before, .hvr-sweep-to-bottom:focus:before, .hvr-sweep-to-bottom:active:before,
+    .hvr-sweep-to-bottom-2:hover:before, .hvr-sweep-to-bottom-2:focus:before, .hvr-sweep-to-bottom-2:active:before,
+    .hvr-sweep-to-bottom-3:hover:before, .hvr-sweep-to-bottom-3:focus:before, .hvr-sweep-to-bottom-3:active:before {
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1);
+    }
+   
+    .l-help-block1{
+        box-shadow: 0 0 10px rgb(0,0,0,.2);
+        padding: 25px 20px;
+        margin-bottom:20px;
+        background:#fff;
+        min-height: 180px;
+    }
+    .l-help-title{
+        font-size: 20px !important;
+    }
+    .l-help-txt-btn{
+        margin-top: 20px;
+        text-align: center;
+    }
+    .l-help-txt-btn a{
+        border: 1px solid #00a0e3;
+        padding: 10px 20px;
+        color: #fff;
+        background: #00a0e3;
+    }
+    .l-help-txt-btn a:hover{
+        border: 2px solid #00a0e3;
+        padding: 10px 20px;
+        color: #00a0e3;
+        background: #fff;
+        text-decoration: none;
+        transition: .3s ease-in-out;
+    }
+    .l-help-txt{
+        font-size: 15px;
+        padding: 20px 30px 0 30px;
+        font-family: roboto;
+    }
+    @media screen and (max-width: 986px) and (min-width:770px) {
+       .temp-btn
+         .loan-txt{
+             margin-left: 3%;
+             font-size: 23px;
+             line-height: 30px;
+         }
+    }
+    @media screen and (max-width: 768px) and (min-width:600px) {
+       
+    }
+    @media screen and (max-width: 590px) and (min-width:320px) {
+        
+    }
+    @media screen and (max-width:990px) and (min-width:760px){
+        .loan-image img {
+            margin-top: 100px;
+        }
+        
+        .edu-flex{
+            flex-direction: column;
+        }
+        .order2{
+            order: 1;
+        }
+        .order1{
+            order: 2;
+        }
+    }
+    @media screen and (max-width:768px) and (min-width:200px){
+        
+    }
+    @media screen and (max-width:998px) and (min-width:774px){
+        .moving1 img,.moving img{
+            animation: none;
+        }
+    }
+    @media screen and (max-width:770px) {
+        .moving1,.moving {
+            display: none;
+        }
+        .loan-text h1 {
+            font-size: 30px;
+        }
+        .loan-image img{
+            max-width: 250px;
+        }
+    }
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
-//$this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('@eyAssets/js/emi-calculator/emicals.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
