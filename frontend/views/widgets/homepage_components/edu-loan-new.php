@@ -66,7 +66,6 @@ $this->registerCss('
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    margin:10px 0 30px;
 }
 .heading-data-set {
 	padding: 25px 0 35px;
