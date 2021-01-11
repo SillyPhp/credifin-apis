@@ -16,6 +16,7 @@ use Yii;
  * @property string $content_type
  * @property string $cover_image Cover Image
  * @property string $cover_image_location
+ * @property string $post_image_url Image Url
  * @property string $post_description  Description
  * @property string $post_short_summery
  * @property string $slug  Slug
@@ -37,6 +38,7 @@ use Yii;
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property SkillsUpSources $sourceEnc
+ * @property SkillsUpRecommendedPost[] $skillsUpRecommendedPosts
  */
 class SkillsUpPosts extends \yii\db\ActiveRecord
 {
@@ -54,12 +56,12 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['post_enc_id', 'post_title', 'post_author', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
+            [['post_enc_id', 'post_title', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
             [['content_type', 'post_description', 'post_short_summery', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['post_title', 'post_author', 'post_source_url', 'slug'], 'string', 'max' => 255],
+            [['post_title', 'post_author', 'post_source_url', 'post_image_url', 'slug'], 'string', 'max' => 255],
             [['post_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
@@ -154,5 +156,13 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function getSourceEnc()
     {
         return $this->hasOne(SkillsUpSources::className(), ['source_enc_id' => 'source_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpRecommendedPosts()
+    {
+        return $this->hasMany(SkillsUpRecommendedPost::className(), ['post_enc_id' => 'post_enc_id']);
     }
 }

@@ -77,7 +77,7 @@ foreach ($fields as $f) {
             $arry = [];
             $more = false;
             ?>
-            <div class="jobCard">
+            <div class="jobCard <?= ($app['application_enc_id'] == $application_id) ? 'activeJov' : '' ?>">
                 <a href="<?= Url::to('/account/process-applications/') . $app['application_enc_id'] ?>">
                     <div class="jc-icon">
                         <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
@@ -103,6 +103,7 @@ foreach ($fields as $f) {
                             ?></p>
                         <p><?= $cnt ?> Openings</p>
                     </div>
+                <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">Active</div>
                 </a>
             </div>
             <?php
@@ -861,6 +862,24 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.activeJov{
+    background: #fbfbfb;
+    border: 1px solid #eee;
+    box-shadow: 0 0 4px rgba(0,0,0,.5);
+}
+.activeIcon{
+    position: absolute;
+    bottom: 0px;
+    right:0px; 
+    background: #00a0e3;
+    color: #fff;
+    padding: 3px 8px 4px;
+    font-size: 13px;
+    display: none;
+}
+.activeIconNone{
+    display: block;
+}
 .redd{
     background-color: #ea4335;
 }
@@ -1133,12 +1152,13 @@ $this->registerCss('
     box-shadow: 0 0 4px rgba(0,0,0,.1);
     padding: 10px 8px;
     margin: 5px;
-    min-height: 130px;
+//    min-height: 130px;
     position: relative;
 }
 .hamburger-jobs .jobCard a{
     display: flex;
     color: #333;
+    min-height: 100px;
 }
 .suggestJob label{
     width: 100%;

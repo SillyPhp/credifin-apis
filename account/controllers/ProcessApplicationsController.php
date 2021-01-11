@@ -23,11 +23,11 @@ class ProcessApplicationsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
-    private function GetJobsOfCompany($appType,$app_id){
+    private function GetJobsOfCompany($appType,$app_id, $appFor){
         $all_application = EmployerApplications::find()
             ->distinct()
             ->alias('a')
-            ->select(['c.name job_title', 'a.slug', 'a.application_enc_id', 'ate.name application_type', 'pe.icon'])
+            ->select(['c.name job_title', 'a.slug', 'a.application_enc_id','a.application_for', 'ate.name application_type', 'pe.icon'])
             ->joinWith(['title b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
                 $b->joinWith(['parentEnc pe'], false, 'INNER JOIN');
@@ -42,8 +42,9 @@ class ProcessApplicationsController extends Controller
                 $b->distinct();
             }])
             ->joinWith(['applicationOptions ao'], false)
-            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0,'ate.name'=>$appType])
-            ->andWhere(['not',['a.application_enc_id'=>$app_id]])
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0,'ate.name'=>$appType, 'a.status' => 'Active'])
+            ->andWhere(['a.application_for' => $appFor])
+            ->orderBy([new \yii\db\Expression('FIELD (a.application_enc_id, "'.$app_id.'") DESC')])
             ->asArray()
             ->all();
         return $all_application;
@@ -175,7 +176,8 @@ class ProcessApplicationsController extends Controller
                     'que' => $question,
                     'application_name' => $application_name,
                     'application_id'=>$application_id,
-                    'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk),
+                    'similarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk, 1),
+                    'erexxSimilarApps'=>$this->GetJobsOfCompany($application_name['application_type'], $aidk, 2),
                     'reasons'=>$reasons,
                 ]);
             }
