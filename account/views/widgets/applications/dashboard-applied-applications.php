@@ -16,7 +16,7 @@ use yii\helpers\Url;
                     <div class="m-widget4 m-widget4--progress">
                         <?php if ($applied) { ?>
                             <?php foreach ($applied as $apply) { ?>
-                                <div class="m-widget4__item row">
+                                <div class="m-widget4__item row <?= (in_array($apply['status'],['Rejected','Cancelled'])) ? 'cand_status can-hide': ''?>">
                                     <div class="m-widget4__img m-widget4__img--pic col-md-1">
                                         <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" alt="">
                                     </div>
@@ -67,6 +67,9 @@ use yii\helpers\Url;
 
                                 </div>
                             <?php } ?>
+                            <div class="show-btn-more">
+                                <button class="show-btn-n" id="showmore">Show More</button>
+                            </div>
                         <?php } else {
                                 ?>
                         <div class="col-md-12">
@@ -221,6 +224,16 @@ use yii\helpers\Url;
 <?php
     }
 $this->registerCss("
+.show-btn-n {
+	background-color: #00a0e3;
+	border: none;
+	color: #fff;
+	padding: 8px 20px;
+	display: block;
+	text-align: center;
+	margin: 10px auto 0;
+	border-radius: 4px;
+}
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
@@ -418,6 +431,13 @@ $this->registerCss("
     }
 }
 /* Application process css ends */
+.can-hide{
+    display:none !important;
+}
+.can-show{
+    display:block !important;
+}
+
 ");
 $script = <<< JS
 $(document).on('click','.cancel-app',function(e)
@@ -459,6 +479,20 @@ $(document).on('click','.cancel-app',function(e)
        });
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+});
+$('#showmore').click(function () {
+    var status = $('.cand_status');
+   var chk = status.hasClass('can-hide');
+   var btn = $(this);
+  if(chk){
+      btn.html('Less');
+      status.addClass('can-show');
+      status.removeClass('can-hide');
+  } else {
+      btn.html('Show More');
+      status.removeClass('can-show');
+      status.addClass('can-hide');
+  }
 });
 JS;
 $this->registerJs($script);
