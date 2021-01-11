@@ -37,7 +37,7 @@ class PreferredApplicationCards
             'k.industry',
             'CONCAT(1) percentage',
             'g.icon',
-            '(CASE
+            '(CASE WHEN a.name = "Jobs" THEN CASE
                 WHEN z.experience = "0" THEN "No Experience"
                 WHEN z.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN z.experience = "2" THEN "1 Year Experience"
@@ -47,7 +47,7 @@ class PreferredApplicationCards
                 WHEN z.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN z.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
-            END) as experience', 'z.organization_enc_id', 'z.unclaimed_organization_enc_id',
+            END ELSE "" END) as experience', 'z.organization_enc_id', 'z.unclaimed_organization_enc_id',
             '(CASE WHEN d.name IS NOT NULL THEN d.name ELSE q.name END) as city',
         ]);
         if ($type == 'Jobs') {
