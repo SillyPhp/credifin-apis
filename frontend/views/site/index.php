@@ -146,8 +146,11 @@ $this->registerCss('
 #app-data{
     overflow-x: hidden;
 }
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
-    margin-top: -150px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -576,7 +579,7 @@ how-icon{
 }
 @media screen and (max-width: 1400px){
     .header-row{
-        margin-top: -132px;
+        margin-top: -147px;
     }
     .box-border{
          min-width: 157px !important;
