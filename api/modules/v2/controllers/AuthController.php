@@ -518,21 +518,6 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->all();
 
-//                $j = 0;
-//                foreach ($college_settings as $c) {
-//                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
-//                        if ($c['value'] == null) {
-//                            $college_settings[$j]['value'] = 2;
-//                        }
-//                    }
-//                    $j++;
-//                }
-//
-//                $settings = [];
-//                foreach ($college_settings as $c) {
-//                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
-//                }
-
                 $education_loan_college = Organizations::find()
                     ->select(['has_loan_featured'])
                     ->where(['organization_enc_id' => $college_id])
@@ -617,6 +602,8 @@ class AuthController extends ApiBaseController
             'access_token_expiry_time' => $find_user['access_token_expiration'],
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration']
         ];
+
+        $data['college_enc_id'] = $data['college_enc_id'] ? $data['college_enc_id'] : $user_detail['college_id'];
 
         if ($user_detail['teacher_org_type']) {
             $type = BusinessActivities::find()
