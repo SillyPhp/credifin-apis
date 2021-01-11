@@ -7,8 +7,11 @@ use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
 use common\models\SkillsUpPostComments;
 use common\models\SkillsUpPosts;
+use common\models\SkillsUpRecommendedPost;
+use common\models\UserOtherDetails;
 use common\models\UserPreferences;
 use common\models\UserPreferredSkills;
+use common\models\Users;
 use Yii;
 use \yii\db\Expression;
 use yii\helpers\Url;
@@ -66,53 +69,123 @@ class SkillUpController extends ApiBaseController
                 $page = 1;
             }
 
-            $feeds = SkillsUpPosts::find()
-                ->alias('a')
-                ->select([
-                    'a.post_enc_id',
-                    'a.post_title',
-                    'a.source_enc_id',
-                    'a.post_short_summery',
-                    'a.slug',
-                    'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
-                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
-                    'b.name source_name',
-                    'b.url source_url',
-                    'a.post_author',
-                    'a.content_type',
-                    'a.post_image_url'
-                ])
-                ->joinWith(['sourceEnc b'], false)
-                ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
-                    $c->joinWith(['skillEnc c1' => function ($c1) {
-                        $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
-                    }]);
-                }], false)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
-            if (isset($param['content_type']) && !empty($param['content_type'])) {
-                $feeds->andWhere(['in', 'a.content_type', $param['content_type']]);
-            }
-            if (isset($param['skills']) && !empty($param['skills'])) {
-                $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
-            }
-            $feeds = $feeds->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->groupBy(['a.post_enc_id'])
-                ->asArray()
-                ->all();
-            if ($feeds) {
+            $student = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->exists();
 
-                foreach ($feeds as $k => $v) {
-                    $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+            if ($student) {
+
+                $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
+
+                if ($prefs) {
+
+                    $user_skills = UserPreferredSkills::find()
+                        ->alias('a')
+                        ->select(['a.preferred_skill_enc_id', 'a.preference_enc_id', 'a.skill_enc_id', 'b.skill'])
+                        ->joinWith(['skillEnc b'], false)
+                        ->where(['a.preference_enc_id' => $prefs->preference_enc_id, 'a.is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    if ($user_skills) {
+
+                        $skills = [];
+                        foreach ($user_skills as $s) {
+                            array_push($skills, $s['skill']);
+                        }
+                        $param['user_skills'] = $skills;
+
+                        $feeds = $this->feeds($page, $limit, $param);
+
+                        if ($feeds) {
+                            foreach ($feeds as $k => $v) {
+                                $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                            }
+
+                            if ($page == 1) {
+                                return $this->response(200, ['status' => 200, 'data' => $feeds, 'skills' => $user_skills]);
+                            } else {
+                                return $this->response(200, ['status' => 200, 'data' => $feeds]);
+                            }
+
+                        } else {
+                            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                        }
+                    } else {
+                        return $this->response(409, ['status' => 409, 'message' => 'skills not found']);
+                    }
+                } else {
+                    return $this->response(409, ['status' => 409, 'message' => 'skills not found']);
                 }
-
-                return $this->response(200, ['status' => 200, 'data' => $feeds]);
             } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                $feeds = $this->feeds($page, $limit, $param);
+
+                if ($feeds) {
+                    foreach ($feeds as $k => $v) {
+                        $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                    }
+
+                    return $this->response(200, ['status' => 200, 'data' => $feeds]);
+
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
             }
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function feeds($page, $limit, $param)
+    {
+        $feeds = SkillsUpPosts::find()
+            ->alias('a')
+            ->select([
+                'a.post_enc_id',
+                'a.post_title',
+                'a.source_enc_id',
+                'a.post_short_summery',
+                'a.slug',
+                'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
+                'b.name source_name',
+                'b.url source_url',
+                'a.post_author',
+                'a.content_type',
+                'a.post_image_url'
+            ])
+            ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
+                $c->joinWith(['skillEnc c1' => function ($c1) {
+                    $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
+                }]);
+            }], false)
+            ->joinWith(['skillsUpRecommendedPosts d'], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
+
+        if (isset($param['content_type']) && !empty($param['content_type'])) {
+            $feeds->andWhere(['in', 'a.content_type', $param['content_type']]);
+        }
+
+        if (isset($param['skills']) && !empty($param['skills'])) {
+            $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
+        } elseif (isset($param['user_skills']) && !empty($param['user_skills'])) {
+            $feeds->andWhere(['in', 'c1.skill', $param['user_skills']]);
+        }
+
+        if (isset($param['skill_keyword']) && !empty($param['skill_keyword'])) {
+            $feeds->andWhere(['like', 'c1.skill', $param['skill_keyword']]);
+        }
+
+        $feeds = $feeds->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->groupBy(['a.post_enc_id'])
+            ->orderBy(['d.recommended_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        return $feeds;
     }
 
     public function actionUserPrefSkills()
@@ -226,9 +299,7 @@ class SkillUpController extends ApiBaseController
                 }
             } else {
                 $model = new SkillsUpPostComments();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->comment_enc_id = $utilitiesModel->encrypt();
+                $model->comment_enc_id = $params['id'];
                 $model->post_enc_id = $params['post_id'];
                 if (isset($params['reply_to']) && !empty($params['reply_to'])) {
                     $model->reply_to = $params['reply_to'];
@@ -257,7 +328,7 @@ class SkillUpController extends ApiBaseController
             $skills = Skills::find()
                 ->select(['skill_enc_id', 'skill'])
                 ->where(['status' => 'Publish', 'is_deleted' => 0])
-                ->andWhere(['like', 'skill', $keyword])
+                ->andFilterWhere(['like', 'skill', $keyword])
                 ->limit(20)
                 ->asArray()
                 ->all();
@@ -427,13 +498,25 @@ class SkillUpController extends ApiBaseController
                         'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image', 'e1.view_count']);
                     $e->joinWith(['videoEnc e1'], false);
                 }])
+                ->joinWith(['skillsUpPostAssignedEmbeds f' => function ($f) {
+                    $f->select(['f.assigned_enc_id', 'f.embed_enc_id', 'f.post_enc_id', 'f1.body']);
+                    $f->joinWith(['embedEnc f1'], false);
+                }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
                 ->one();
 
             if ($detail) {
+                $skills = [];
+                if ($detail['skillsUpPostAssignedSkills']) {
+                    foreach ($detail['skillsUpPostAssignedSkills'] as $d) {
+                        array_push($skills, $d['skill']);
+                    }
+                }
+                $params['skills'] = $skills;
+                $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
-                return $this->response(200, ['status' => 200, 'data' => $detail]);
+                return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
@@ -442,5 +525,34 @@ class SkillUpController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionSaveRecommendedPost()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['post_id']) && empty($params['post_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $rec = new SkillsUpRecommendedPost();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $rec->recommended_enc_id = $utilitiesModel->encrypt();
+            $rec->post_enc_id = $params['post_id'];
+            $rec->recommended_by = $user->user_enc_id;
+            $rec->recommended_on = date('Y-m-s H:i:s');
+            if ($rec->save()) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 
 }
