@@ -100,6 +100,7 @@ class SkillUpController extends ApiBaseController
                         if ($feeds) {
                             foreach ($feeds as $k => $v) {
                                 $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                                $feeds[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
                             }
 
                             if ($page == 1) {
@@ -123,6 +124,7 @@ class SkillUpController extends ApiBaseController
                 if ($feeds) {
                     foreach ($feeds as $k => $v) {
                         $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                        $feeds[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
                     }
 
                     return $this->response(200, ['status' => 200, 'data' => $feeds]);
@@ -161,7 +163,10 @@ class SkillUpController extends ApiBaseController
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                 }]);
             }], false)
-            ->joinWith(['skillsUpRecommendedPosts d'], false)
+            ->joinWith(['skillsUpRecommendedPosts d' => function ($d) {
+                $d->select(['d.recommended_enc_id', 'd.post_enc_id']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }])
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
@@ -169,13 +174,15 @@ class SkillUpController extends ApiBaseController
         }
 
         if (isset($param['skills']) && !empty($param['skills'])) {
-            $feeds->andWhere(['in', 'c1.skill', $param['skills']]);
+            $feeds->andFilterWhere(['in', 'c1.skill', $param['skills']]);
         } elseif (isset($param['user_skills']) && !empty($param['user_skills'])) {
-            $feeds->andWhere(['in', 'c1.skill', $param['user_skills']]);
+            $feeds->andFilterWhere(['in', 'c1.skill', $param['user_skills']]);
         }
 
-        if (isset($param['skill_keyword']) && !empty($param['skill_keyword'])) {
-            $feeds->andWhere(['like', 'c1.skill', $param['skill_keyword']]);
+        if (isset($param['keyword']) && !empty($param['keyword'])) {
+            $feeds->andFilterWhere(['like', 'c1.skill', $param['keyword']]);
+            $feeds->andFilterWhere(['like', 'a.post_title', $param['keyword']]);
+            $feeds->andFilterWhere(['like', 'a.post_short_summery', $param['keyword']]);
         }
 
         $feeds = $feeds->limit($limit)
@@ -481,6 +488,8 @@ class SkillUpController extends ApiBaseController
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                     'b.name source_name',
                     'b.url source_url',
+                    'e1.description',
+                    'e1.youtube_video_id'
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
@@ -507,15 +516,22 @@ class SkillUpController extends ApiBaseController
                 ->one();
 
             if ($detail) {
+
+                switch ($detail['content_type']) {
+
+                }
+
                 $skills = [];
                 if ($detail['skillsUpPostAssignedSkills']) {
                     foreach ($detail['skillsUpPostAssignedSkills'] as $d) {
                         array_push($skills, $d['skill']);
                     }
                 }
+
                 $params['skills'] = $skills;
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
+
                 return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
