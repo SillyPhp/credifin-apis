@@ -146,6 +146,9 @@ $this->registerCss('
 #app-data{
     overflow-x: hidden;
 }
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
     margin-top: -159px;
     background-color:#ffffff2b;
