@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Url;
-
+if(!$company){
+    $company = 'Empower Youth';
+}
 ?>
 <div class="new-position-box">
     <div class="drop-im">
@@ -17,7 +19,7 @@ use yii\helpers\Url;
             Don't see a position that strikes your <span>fancy</span> ?
         </div>
         <div class="npb-text">
-            Empower Youth is always looking for great talent. Go ahead and send an application!
+            <?= $company ?> is always looking for great talent. Go ahead and send an application!
         </div>
         <div class="npb-btn">
             <button type="button" class="fab-message-open">Apply</button>

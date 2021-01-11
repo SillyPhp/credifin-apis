@@ -64,7 +64,7 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= ucwords($org_details['name']); ?></div>
+                <div><a href="<?= Url::to('/'.$slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a></div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
                         <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
@@ -160,9 +160,6 @@ echo $this->render('/widgets/drop_resume', [
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
-                </div>
-                <div class="set-mar">
-                    <?= $this->render('/widgets/new-position'); ?>
                 </div>
             </div>
             <div class="col-md-4">
@@ -274,6 +271,12 @@ echo $this->render('/widgets/drop_resume', [
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-12 set-mar">
+                <?=
+                $this->render('/widgets/new-position',[
+                    'company' => $org_details['name'], ]);
+                ?>
             </div>
         </div>
     </div>
@@ -710,6 +713,7 @@ border: 2px solid #cadfe8 !important;
     line-height:50px;
     margin-top: -12px;
 }
+.com-name:hover{color:#fff;}
 .com-rating i{
     font-size:16px;
     background:#ccc;
