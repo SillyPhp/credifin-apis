@@ -50,9 +50,7 @@ class PreferredApplicationCards
             END ELSE "" END) as experience', 'z.organization_enc_id', 'z.unclaimed_organization_enc_id',
             '(CASE WHEN d.name IS NOT NULL THEN d.name ELSE q.name END) as city',
         ]);
-        if ($type == 'Jobs') {
-            $dataProvider->query->addSelect(['DATE_FORMAT(z.created_on, "%d-%m-%Y") created_on']);
-        }
+        $dataProvider->query->addSelect(['DATE_FORMAT(z.created_on, "%d-%m-%Y") created_on']);
         if (isset($filters['job_titles'])) {
             $dataProvider->query->andWhere(['in', 'f.name', $filters['job_titles']]);
         }
