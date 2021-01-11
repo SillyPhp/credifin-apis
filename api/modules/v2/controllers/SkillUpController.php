@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 
 use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
+use common\models\SkillsUpPostAssignedVideo;
 use common\models\SkillsUpPostComments;
 use common\models\SkillsUpPosts;
 use common\models\SkillsUpRecommendedPost;
@@ -476,10 +477,12 @@ class SkillUpController extends ApiBaseController
 
             $detail = SkillsUpPosts::find()
                 ->alias('a')
-                ->select(['a.post_enc_id', 'a.post_title',
+                ->select(['a.post_enc_id',
+                    'a.post_title',
                     'a.slug post_slug',
                     'a.post_author',
                     'a.post_source_url',
+                    'a.post_image_url',
                     'a.source_enc_id',
                     'a.content_type',
                     'a.post_short_summery',
@@ -488,8 +491,6 @@ class SkillUpController extends ApiBaseController
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                     'b.name source_name',
                     'b.url source_url',
-                    'e1.description',
-                    'e1.youtube_video_id'
                 ])
                 ->joinWith(['sourceEnc b'], false)
                 ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
@@ -503,13 +504,20 @@ class SkillUpController extends ApiBaseController
                     $d->joinWith(['industryEnc d1']);
                 }])
                 ->joinWith(['skillsUpPostAssignedVideos e' => function ($e) {
-                    $e->select(['e.assigned_enc_id', 'e.post_enc_id', 'e.video_enc_id', 'e1.youtube_video_id', 'e1.description',
-                        'e1.slug', 'e1.channel_enc_id', 'e1.title', 'e1.cover_image', 'e1.view_count']);
+                    $e->select(['e.assigned_enc_id', 'e.post_enc_id', 'e.video_enc_id', 'e1.youtube_video_id', 'e1.description']);
                     $e->joinWith(['videoEnc e1'], false);
                 }])
                 ->joinWith(['skillsUpPostAssignedEmbeds f' => function ($f) {
-                    $f->select(['f.assigned_enc_id', 'f.embed_enc_id', 'f.post_enc_id', 'f1.body']);
+                    $f->select(['f.assigned_enc_id', 'f.embed_enc_id', 'f.post_enc_id', 'f1.body', 'f1.description']);
                     $f->joinWith(['embedEnc f1'], false);
+                }])
+                ->joinWith(['skillsUpPostAssignedNews g' => function ($e) {
+                    $e->select(['g.post_enc_id', 'g1.description']);
+                    $e->joinWith(['newsEnc g1'], false);
+                }])
+                ->joinWith(['skillsUpPostAssignedBlogs h' => function ($h) {
+                    $h->select(['h.post_enc_id', 'h1.description']);
+                    $h->joinWith(['blogPostEnc h1'], false);
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
@@ -518,7 +526,27 @@ class SkillUpController extends ApiBaseController
             if ($detail) {
 
                 switch ($detail['content_type']) {
-
+                    case 'Blog':
+                    case 'Article':
+                        $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedBlogs'][0]['description'];
+                        break;
+                    case 'Audio':
+                    case 'Podcast':
+                        $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedEmbeds'][0]['description'];
+                        $detail['frame'] = $detail['skillsUpPostAssignedEmbeds'][0]['body'];
+                        break;
+                    case 'Video':
+                        if ($detail['source_name'] == 'Youtube') {
+                            $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedVideos'][0]['description'];
+                            $detail['frame'] = '<iframe width="1519" height="562" src="https://www.youtube.com/embed/' . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'] . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                        } else {
+                            $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedEmbeds'][0]['description'];
+                            $detail['frame'] = $detail['skillsUpPostAssignedEmbeds'][0]['body'];
+                        }
+                        break;
+                    case 'News':
+                        $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedNews'][0]['description'];
+                        break;
                 }
 
                 $skills = [];
@@ -531,6 +559,11 @@ class SkillUpController extends ApiBaseController
                 $params['skills'] = $skills;
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
+
+                unset($detail['skillsUpPostAssignedVideos']);
+                unset($detail['skillsUpPostAssignedEmbeds']);
+                unset($detail['skillsUpPostAssignedNews']);
+                unset($detail['skillsUpPostAssignedBlogs']);
 
                 return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {
