@@ -147,7 +147,7 @@ $this->registerCss('
     overflow-x: hidden;
 }
 .header-row {
-    margin-top: -142px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -576,7 +576,7 @@ how-icon{
 }
 @media screen and (max-width: 1400px){
     .header-row{
-        margin-top: -159px;
+        margin-top: -142px;
     }
     .box-border{
          min-width: 157px !important;
