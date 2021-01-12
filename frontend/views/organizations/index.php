@@ -458,7 +458,7 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                   }
                 });
                     if (total==response.total){
-                        // $('.load-more-bttn').hide();
+                        $('.load-more-bttn').hide();
                         loadmorecards = false;
                     }
                 }
@@ -467,7 +467,7 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                     if(page === 1) {
                         $('.empty').css('display','block');
                     }
-                    // $('.load-more-bttn').hide();
+                    $('.load-more-bttn').hide();
                     loadmorecards = false;
                     }
             }
