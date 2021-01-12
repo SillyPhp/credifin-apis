@@ -9,6 +9,7 @@ use common\models\SkillsUpPostAssignedVideo;
 use common\models\SkillsUpPostComments;
 use common\models\SkillsUpPosts;
 use common\models\SkillsUpRecommendedPost;
+use common\models\Teachers;
 use common\models\UserOtherDetails;
 use common\models\UserPreferences;
 use common\models\UserPreferredSkills;
@@ -50,6 +51,17 @@ class SkillUpController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    private function __studentCollegeId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $user_college = UserOtherDetails::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+            return $user_college['organization_enc_id'];
+        }
     }
 
     public function actionFeed()
@@ -101,7 +113,10 @@ class SkillUpController extends ApiBaseController
                         if ($feeds) {
                             foreach ($feeds as $k => $v) {
                                 $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
-                                $feeds[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
+                                $rec = $this->__getStudentRecommended($v['post_enc_id']);
+                                $feeds[$k]['is_recommended'] = (count($rec) > 0) ? true : false;
+                                $feeds[$k]['recommended_count'] = count($rec);
+                                $feeds[$k]['recommended_by'] = $rec;
                             }
 
                             if ($page == 1) {
@@ -126,6 +141,7 @@ class SkillUpController extends ApiBaseController
                     foreach ($feeds as $k => $v) {
                         $feeds[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
                         $feeds[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
+                        $feeds[$k]['teacher_recommended'] = $this->__getTeacherRecommended($v['post_enc_id']);
                     }
 
                     return $this->response(200, ['status' => 200, 'data' => $feeds]);
@@ -167,7 +183,7 @@ class SkillUpController extends ApiBaseController
             ->joinWith(['skillsUpRecommendedPosts d' => function ($d) {
                 $d->select(['d.recommended_enc_id', 'd.post_enc_id']);
                 $d->onCondition(['d.is_deleted' => 0]);
-            }])
+            }], false)
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
@@ -560,6 +576,8 @@ class SkillUpController extends ApiBaseController
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
 
+                $detail['teacher_recommended'] = $this->__getTeacherRecommended($detail['post_enc_id']);
+
                 unset($detail['skillsUpPostAssignedVideos']);
                 unset($detail['skillsUpPostAssignedEmbeds']);
                 unset($detail['skillsUpPostAssignedNews']);
@@ -585,6 +603,24 @@ class SkillUpController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
+            $already_rec = SkillsUpRecommendedPost::find()
+                ->where(['post_enc_id' => $params['post_id'], 'recommended_by' => $user->user_enc_id])
+                ->one();
+
+            if ($already_rec) {
+                $already_rec->last_updated_by = $user->user_enc_id;
+                $already_rec->last_updated_on = date('Y-m-d H:i:s');
+                if ($already_rec->is_deleted == 0) {
+                    $already_rec->is_deleted = 1;
+                } else {
+                    $already_rec->is_deleted = 0;
+                }
+                if ($already_rec->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
             $rec = new SkillsUpRecommendedPost();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -600,6 +636,51 @@ class SkillUpController extends ApiBaseController
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function __getTeacherRecommended($post_id)
+    {
+        if ($user = $this->isAuthorized()) {
+            $teacher = Teachers::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($teacher) {
+                $recommend = SkillsUpRecommendedPost::find()
+                    ->where(['recommended_by' => $user->user_enc_id, 'post_enc_id' => $post_id, 'is_deleted' => 0])
+                    ->exists();
+                return $recommend;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private function __getStudentRecommended($post_id)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->__studentCollegeId();
+
+            $recommended = SkillsUpRecommendedPost::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.recommended_enc_id', 'a.post_enc_id', 'a.recommended_by',
+                    'b.first_name', 'b.last_name',
+                ])
+                ->innerJoinWith(['recommendedBy b' => function ($b) {
+                    $b->innerJoinWith(['teachers c']);
+                }], false)
+                ->where(['a.post_enc_id' => $post_id, 'a.is_deleted' => 0, 'c.college_enc_id' => $college_id])
+                ->asArray()
+                ->all();
+
+            return $recommended;
+
         }
     }
 
