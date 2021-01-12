@@ -97,6 +97,7 @@ use yii\helpers\Url;
                         {{^login}}
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal">FOLLOW</a>
                         {{/login}}
+                        <a href="/{{review_link}}" target="_blank">Review</a>
                         <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
                     </div>
                 </a>
@@ -236,7 +237,7 @@ $this->registercss('
 	color: #fff;
 	font-size: 12px;
 	font-family: roboto;
-	padding: 6px 0;
+	padding: 5px 0 4px;
 	border-radius: 4px;
 	font-weight: 500;
 	text-transform: uppercase;

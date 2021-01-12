@@ -920,7 +920,7 @@ $this->registerCss('
     color: #fff;
 }
 .page-content {
-    background-image: url(/assets/common/categories/process-application-bgg.png) !important;
+    background-image: url(/assets/common/categories/lines-bbg.png) !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
