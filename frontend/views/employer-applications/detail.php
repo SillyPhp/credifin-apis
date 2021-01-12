@@ -385,7 +385,10 @@ $this->render('/widgets/employer_applications/top-banner', [
                 <?= $this->render('/widgets/join-social-groups'); ?>
 
                 <div class="new-row col-md-10 col-md-offset-1">
-                    <?= $this->render('/widgets/new-position'); ?>
+                    <?=
+                    $this->render('/widgets/new-position',[
+                        'company' => $org['org_name'], ]);
+                    ?>
                 </div>
 
                 <?php
