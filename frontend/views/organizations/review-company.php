@@ -64,7 +64,8 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div><a href="<?= Url::to('/'.$slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a></div>
+                <div><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
+                </div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
                         <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
@@ -72,18 +73,21 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
                 <div class="share-btn">
-                    <a href="#" class="fbb"
+                    <a href="javascript:;" class="fbb"
                        onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-facebook-f"></i></a> </li>
-                    <a href="#" class="twit"
+                                class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:;" class="twit"
                        onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-twitter"></i></a> </li>
-                    <a href="#" class="linke"
+                                class="fab fa-twitter"></i></a>
+                    <a href="javascript:;" class="linke"
                        onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-linkedin-in"></i></a> </li>
-                    <a href="#" class="whts"
+                                class="fab fa-linkedin-in"></i></a>
+                    <a href="javascript:;" class="whts"
                        onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-whatsapp marg"></i></a> </li>
+                                class="fab fa-whatsapp marg"></i></a>
+                    <a href="javascript:;" class="telgram"
+                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-telegram-plane"></i></a>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12">
@@ -274,8 +278,8 @@ echo $this->render('/widgets/drop_resume', [
             </div>
             <div class="col-md-12 set-mar">
                 <?=
-                $this->render('/widgets/new-position',[
-                    'company' => $org_details['name'], ]);
+                $this->render('/widgets/new-position', [
+                    'company' => $org_details['name'],]);
                 ?>
             </div>
         </div>
@@ -533,7 +537,7 @@ $this->registerCss('
     display:flex;
     width:100%;
 }
-.fbb i, .twit i, .whts i, .linke i{
+.fbb i, .twit i, .whts i, .linke i, .telgram i{
     background: #fff;
     margin:0 2px;
     padding: 9px 0;
@@ -569,6 +573,11 @@ $this->registerCss('
 }
 .linke i:hover{
     background-color:#0077B5;
+    color:#fff;
+}
+.telgram i{color: #0088cc;}
+.telgram i:hover{
+    background-color:#0088cc;
     color:#fff;
 }
 .i-review-navigation

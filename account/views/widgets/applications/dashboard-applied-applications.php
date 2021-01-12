@@ -16,7 +16,7 @@ use yii\helpers\Url;
                     <div class="m-widget4 m-widget4--progress">
                         <?php if ($applied) { ?>
                             <?php foreach ($applied as $apply) { ?>
-                                <div class="m-widget4__item row <?= (in_array($apply['status'],['Rejected','Cancelled'])) ? 'cand_status can-hide': ''?>">
+                                <div class="m-widget4__item row <?= (in_array($apply['status'],['Rejected','Cancelled'])) ? 'cand_status can-hide': 'can-else'?>">
                                     <div class="m-widget4__img m-widget4__img--pic col-md-1">
                                         <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" alt="">
                                     </div>
@@ -67,6 +67,7 @@ use yii\helpers\Url;
 
                                 </div>
                             <?php } ?>
+                            <?php  ?>
                             <div class="show-btn-more">
                                 <button class="show-btn-n" id="showmore">Show More</button>
                             </div>
@@ -440,6 +441,17 @@ $this->registerCss("
 
 ");
 $script = <<< JS
+$(window).on('load',function() {
+  var can_else_length = $('.can-else').length;
+  var can_hide_length = $('.can-hide').length;
+  if(can_hide_length <= 0){
+      $('.show-btn-more').css('display','none');
+  }
+  if(can_else_length <= 0){
+      $('.cand_status').removeClass('can-hide');
+      $('.show-btn-more').css('display','none');
+  }
+})
 $(document).on('click','.cancel-app',function(e)
        {
           e.preventDefault();
