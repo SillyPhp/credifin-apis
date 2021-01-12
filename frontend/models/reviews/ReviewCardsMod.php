@@ -209,6 +209,7 @@ class ReviewCardsMod
         $q2 = $q2->limit($limit)
             ->offset($offset);
         $q = $q1->union($q2)
+            ->distinct()
             ->asArray()
             ->all();
         return [
