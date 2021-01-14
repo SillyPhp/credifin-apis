@@ -385,7 +385,10 @@ $this->render('/widgets/employer_applications/top-banner', [
                 <?= $this->render('/widgets/join-social-groups'); ?>
 
                 <div class="new-row col-md-10 col-md-offset-1">
-                    <?= $this->render('/widgets/new-position'); ?>
+                    <?=
+                    $this->render('/widgets/new-position',[
+                        'company' => $org['org_name'], ]);
+                    ?>
                 </div>
 
                 <?php
@@ -439,7 +442,7 @@ if ($settings["showNewPositionsWidget"]):
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="type-1">
                 <div>
-                    <a id="course-list-btn" href="<?= Url::to('/courses') ?>" class="btn btn-3">
+                    <a id="course-list-btn" href="<?= Url::to('/courses') ?>" target="_blank" class="btn btn-3">
                         <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                         <span class="round"><i class="fas fa-chevron-right"></i></span>
                     </a>
@@ -463,7 +466,7 @@ if ($settings["showNewPositionsWidget"]):
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>"
+                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>" target="_blank"
                            class="btn btn-3">
                             <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
@@ -481,7 +484,7 @@ if ($settings["showNewPositionsWidget"]):
                     <?php foreach ($popular_videos as $p) { ?>
                         <div class="item lc-single-item-main">
                             <div class="lc-item-img">
-                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
+                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link" target="_blank">
                                 </a>
                                 <div class="lc-item-video-img"
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
@@ -489,7 +492,7 @@ if ($settings["showNewPositionsWidget"]):
                             <div class="lc-item-desciption">
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank" class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
@@ -501,19 +504,19 @@ if ($settings["showNewPositionsWidget"]):
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
                                     ?>
                                     <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                                       target="blank">
+                                       target="_blank">
                                             <span>
                                                 <i class="fab fa-facebook-f"></i>
                                             </span>
                                         </a>
                                         <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
-                                           target="blank">
+                                           target="_blank">
                                             <span>
                                                 <i class="fab fa-twitter"></i>
                                             </span>
                                         </a>
                                         <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="blank">
+                                           target="_blank">
                                             <span>
                                                 <i class="fab fa-linkedin"></i>
                                             </span>

@@ -331,7 +331,10 @@ $round_avg = round($overall_avg);
                                 </div>
                             </div>
                             <div class="set-mar">
-                                <?= $this->render('/widgets/new-position');?>
+                                <?=
+                                $this->render('/widgets/new-position',[
+                                    'company' => $organization['name'], ]);
+                                ?>
                             </div>
                         </div>
                     </div>

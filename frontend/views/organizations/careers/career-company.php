@@ -334,7 +334,8 @@ echo $this->render('/widgets/drop_resume', [
                     <div class="col-md-12">
                         <div class="new-position-widget">
                             <?=
-                            $this->render('/widgets/new-position');
+                            $this->render('/widgets/new-position',[
+                                   'company' => $org['name'], ]);
                             ?>
                         </div>
                     </div>
