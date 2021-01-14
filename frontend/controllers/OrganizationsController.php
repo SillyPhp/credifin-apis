@@ -9,6 +9,7 @@ use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
 use common\models\EmployerApplications;
+use common\models\OrganizationLabels;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -135,6 +136,19 @@ class OrganizationsController extends Controller
             ->one();
 
         if ($organization) {
+            $labels = OrganizationLabels::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.label_enc_id',
+                    '(CASE WHEN count(CASE WHEN b.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_featured',
+                    '(CASE WHEN count(CASE WHEN b.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_trending',
+                    '(CASE WHEN count(CASE WHEN b.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
+                    '(CASE WHEN count(CASE WHEN b.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
+                    '(CASE WHEN count(CASE WHEN b.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
+                ])
+                ->joinWith(['labelEnc b'], false)
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0, 'a.label_for' => 0,])
+                ->asArray()
+                ->one();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon) . '", b.icon_location, "/", b.icon) END icon'])
@@ -245,7 +259,8 @@ class OrganizationsController extends Controller
                     ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
                     ->asArray()
                     ->count();
-
+//                print_r($labels);
+//                exit();
                 return $this->render('view', [
                     'organization' => $organization,
                     'follow' => $follow,
@@ -259,6 +274,7 @@ class OrganizationsController extends Controller
                     'reviews_count' => $reviews_count,
                     'jobs_count' => $jobs_count,
                     'internships_count' => $internships_count,
+                    'labels' => $labels
                 ]);
             }
         } else {

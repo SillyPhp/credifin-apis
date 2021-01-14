@@ -72,7 +72,10 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
+                                    <div class="com-name">
+                                        <?= htmlspecialchars_decode($organization['name']) ?>
+
+                                    </div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Tagline:</span> -->
@@ -84,7 +87,47 @@ $round_avg = round($overall_avg);
                                             <!--                                        <span class="detail-title">Industry:</span> -->
                                             <?= htmlspecialchars_decode($industry['industry']); ?>
                                         </div>
-                                    <?php } ?>
+                                    <?php }
+                                    ?>
+                                    <div class="status-icon">
+                                        <?php
+                                        if($labels['is_new'] == 1){
+                                            ?>
+                                            <span class="new-j" data-toggle="tooltip" title="New">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_featured'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Featured">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_promoted'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Promoted">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_hot'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Hot">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_trending'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Trending">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -564,13 +607,32 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
-.set-mar{margin:20px 0;}
+.fIcons img{
+    max-width: 25px;
+}
+.status-icon{
+    padding: 0 0 0 30px;
+}
+.status-icon span{
+    font-size: 0px;
+    margin-right: 8px;
+}
+.set-mar{
+    margin:20px 0;
+}
 .new-position-box{
     min-height:250px;
 }
-.npb-pos-abso{top:55%;}
-.npb-main-heading{font-size:20px;}
-.mv-text{text-align:justify;font-family:roboto;}
+.npb-pos-abso{
+    top:55%;
+}
+.npb-main-heading{
+    font-size:20px;
+}
+.mv-text{
+    text-align:justify;
+    font-family:roboto;
+}
 .j-profiles {
 	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
 	position: relative;
@@ -1018,6 +1080,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 31px;
+    margin-bottom: 10px;
 }
 .com-establish{
     color:#fff;
