@@ -158,6 +158,9 @@ class SkillUpController extends ApiBaseController
 
     private function feeds($page, $limit, $param)
     {
+
+        $college_id = $this->__studentCollegeId();
+
         $feeds = SkillsUpPosts::find()
             ->alias('a')
             ->select([
@@ -180,10 +183,14 @@ class SkillUpController extends ApiBaseController
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                 }]);
             }], false)
-            ->joinWith(['skillsUpRecommendedPosts d' => function ($d) {
-                $d->select(['d.recommended_enc_id', 'd.post_enc_id']);
+            ->joinWith(['skillsUpRecommendedPosts d' => function ($d) use ($college_id) {
+                $d->joinWith(['recommendedBy d1' => function ($b) use ($college_id) {
+                    $b->joinWith(['teachers d2' => function ($d2) use ($college_id) {
+                        $d2->onCondition(['d2.college_enc_id' => $college_id]);
+                    }]);
+                }]);
                 $d->onCondition(['d.is_deleted' => 0]);
-            }], false)
+            }], true)
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
@@ -205,7 +212,7 @@ class SkillUpController extends ApiBaseController
         $feeds = $feeds->limit($limit)
             ->offset(($page - 1) * $limit)
             ->groupBy(['a.post_enc_id'])
-            ->orderBy(['d.recommended_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
+            ->orderBy(['d2.teacher_enc_id' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -684,5 +691,33 @@ class SkillUpController extends ApiBaseController
         }
     }
 
+    public function actionTeacherRecommendedPosts()
+    {
+        if ($user = $this->isAuthorized()) {
 
+            $param = Yii::$app->request->post();
+
+            if (isset($param['limit']) && !empty($param['limit'])) {
+                $limit = (int)$param['limit'];
+            } else {
+                $limit = 10;
+            }
+
+            if (isset($param['page']) && !empty($param['page'])) {
+                $page = (int)$param['page'];
+            } else {
+                $page = 1;
+            }
+            $teacher_recommendations = $this->feeds($page, $limit, $param);
+
+            if ($teacher_recommendations) {
+                return $this->response(200, ['status' => 200, 'message' => 'success', 'data' => $teacher_recommendations]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 }
