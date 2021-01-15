@@ -79,13 +79,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Saved</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlisted</a>
                                     <?php
                                 } else {
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Save</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlist</a>
                                     <?php
                                 }
                             }

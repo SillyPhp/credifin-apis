@@ -157,8 +157,6 @@ use yii\helpers\Url;
             </div>
     </section>
 
-<?= $this->render('/widgets/institutional-loan') ?>
-
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -470,6 +468,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/institutional-loan') ?>
+
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({
@@ -514,6 +515,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.footer{
+    margin-top: 0px !important;
+}
 .using-pd{padding:0 0 0 16px;}
  .faq-s {
         background-image: linear-gradient(to right,#8ec3ff 20%,#edf4fc 100%);
