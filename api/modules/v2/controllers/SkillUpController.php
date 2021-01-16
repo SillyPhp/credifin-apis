@@ -158,6 +158,11 @@ class SkillUpController extends ApiBaseController
 
     private function feeds($page, $limit, $param)
     {
+
+        $college_id = $this->__studentCollegeId();
+
+        $user = $this->isAuthorized();
+
         $feeds = SkillsUpPosts::find()
             ->alias('a')
             ->select([
@@ -179,12 +184,28 @@ class SkillUpController extends ApiBaseController
                 $c->joinWith(['skillEnc c1' => function ($c1) {
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                 }]);
-            }], false)
-            ->joinWith(['skillsUpRecommendedPosts d' => function ($d) {
-                $d->select(['d.recommended_enc_id', 'd.post_enc_id']);
+            }], false);
+        if (isset($param['teacher_recommendations']) && $param['teacher_recommendations']) {
+            $feeds->innerJoinWith(['skillsUpRecommendedPosts d' => function ($d) use ($college_id, $user) {
+                $d->innerJoinWith(['recommendedBy d1' => function ($b) use ($college_id, $user) {
+                    $b->innerJoinWith(['teachers d2' => function ($d2) use ($college_id, $user) {
+                        $d2->onCondition(['d2.college_enc_id' => $college_id, 'd2.user_enc_id' => $user->user_enc_id]);
+                    }]);
+                }]);
                 $d->onCondition(['d.is_deleted' => 0]);
-            }], false)
-            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
+            }], true);
+        } else {
+            $feeds->joinWith(['skillsUpRecommendedPosts d' => function ($d) use ($college_id) {
+                $d->joinWith(['recommendedBy d1' => function ($b) use ($college_id) {
+                    $b->joinWith(['teachers d2' => function ($d2) use ($college_id) {
+                        $d2->onCondition(['d2.college_enc_id' => $college_id]);
+                    }]);
+                }]);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }], true);
+        }
+
+        $feeds->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
             $feeds->andWhere(['in', 'a.content_type', $param['content_type']]);
@@ -205,7 +226,7 @@ class SkillUpController extends ApiBaseController
         $feeds = $feeds->limit($limit)
             ->offset(($page - 1) * $limit)
             ->groupBy(['a.post_enc_id'])
-            ->orderBy(['d.recommended_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
+            ->orderBy(['d2.teacher_enc_id' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -684,5 +705,87 @@ class SkillUpController extends ApiBaseController
         }
     }
 
+    public function actionTeacherRecommendedPosts()
+    {
+        if ($user = $this->isAuthorized()) {
 
+            $param = Yii::$app->request->post();
+
+            if (isset($param['limit']) && !empty($param['limit'])) {
+                $limit = (int)$param['limit'];
+            } else {
+                $limit = 10;
+            }
+
+            if (isset($param['page']) && !empty($param['page'])) {
+                $page = (int)$param['page'];
+            } else {
+                $page = 1;
+            }
+            $param['teacher_recommendations'] = true;
+            $teacher_recommendations = $this->feeds($page, $limit, $param);
+
+            if ($teacher_recommendations) {
+                return $this->response(200, ['status' => 200, 'message' => 'success', 'data' => $teacher_recommendations]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetTeacherStats()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $recommended_count = SkillsUpRecommendedPost::find()
+                ->where(['recommended_by' => $user->user_enc_id, 'is_deleted' => 0])
+                ->count();
+
+            $like_count = SkillsUpLikesDislikes::find()
+                ->where(['created_by' => $user->user_enc_id, 'feedback_status' => 1])
+                ->count();
+
+            $dislike_count = SkillsUpLikesDislikes::find()
+                ->where(['created_by' => $user->user_enc_id, 'feedback_status' => 2])
+                ->count();
+
+            $counts = [];
+            $counts['recommended_count'] = $recommended_count;
+            $counts['likes_count'] = $like_count;
+            $counts['dislikes_count'] = $dislike_count;
+
+            return $this->response(200, ['status' => 200, 'counts' => $counts]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetStudentStats()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $like_count = SkillsUpLikesDislikes::find()
+                ->where(['created_by' => $user->user_enc_id, 'feedback_status' => 1])
+                ->count();
+
+            $dislike_count = SkillsUpLikesDislikes::find()
+                ->where(['created_by' => $user->user_enc_id, 'feedback_status' => 2])
+                ->count();
+
+            $counts = [];
+            $counts['likes_count'] = $like_count;
+            $counts['dislikes_count'] = $dislike_count;
+
+            return $this->response(200, ['status' => 200, 'counts' => $counts]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 }

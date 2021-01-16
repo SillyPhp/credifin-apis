@@ -449,7 +449,7 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','l.name profile_name','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->select(['a.application_enc_id','l.name profile_name','a.square_image','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
             ->where(['a.unique_source_id' => $eaidk])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
