@@ -27,6 +27,13 @@ if (empty($app['image'])||$app['image']==1){
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
 }
+
+if (empty($app['square_image'])||$app['square_image']==1){
+    $Instaimage =  \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+}else
+{
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$app['square_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -195,7 +202,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="down-img">
                     <h3>Download Sharing Image</h3>
-                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
                 </div>
                 <?= $this->render("/widgets/square_ads");?>
             </div>
