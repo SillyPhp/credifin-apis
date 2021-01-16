@@ -802,6 +802,10 @@ class SkillUpController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
+            if (isset($params['college_id']) && !empty($params['college_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             if (!isset($params['conversation_enc_id']) && empty($params['conversation_enc_id'])) {
                 $conversation = new Conversations();
                 $utilitiesModel = new \common\models\Utilities();
@@ -827,7 +831,7 @@ class SkillUpController extends ApiBaseController
                 $conversation_participants->participant_enc_id = $utilitiesModel->encrypt();
                 $conversation_participants->conversation_enc_id = $conversation_enc_id;
                 $conversation_participants->user_enc_id = $user->user_enc_id;
-                $conversation_participants->organization_enc_id = '';
+                $conversation_participants->organization_enc_id = $params['college_id'];
                 $conversation_participants->created_by = $user->user_enc_id;
                 $conversation_participants->created_on = date('Y-m-d H:i:s');
                 if (!$conversation_participants->save()) {
