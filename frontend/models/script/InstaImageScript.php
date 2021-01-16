@@ -19,7 +19,6 @@ class InstaImageScript extends Widget
 
     public function run()
     {
-        $this->content['bg_icon'] = $this->getProfile($this->content['bg_icon']);
         $params = http_build_query($this->content);
         $url = "https://services.empoweryouth.com/script/parse-insta-image"."?".$params;
         $ch = curl_init();
@@ -47,37 +46,6 @@ class InstaImageScript extends Widget
             return $results['url'];
         }else{
             return Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
-        }
-    }
-
-    private function getProfile($profile)
-    {
-        $path = Categories::find()
-            ->alias('a')
-            ->select(['a.category_enc_id','a.icon_png'])
-            ->where([
-                'or',
-                ['!=','a.icon_png',null],
-                ['!=','a.icon_png',''],
-
-            ])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where([
-                'or',
-                ['!=','a.icon_png',null],
-                ['!=','a.icon_png',''],
-
-            ])
-            ->andWhere(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
-            ->andWhere(['b.status' => 'Approved']);
-
-        if ($profile){
-            $bg_icon = $path->andWhere(['a.category_enc_id'=>$profile])->asArray()->one();
-            return $bg_icon['icon_png'];
-        }else
-        {
-            $bg_icon = $path->orderBy(new Expression('rand()'))->asArray()->one();
-           return $bg_icon['icon_png'];
         }
     }
 }
