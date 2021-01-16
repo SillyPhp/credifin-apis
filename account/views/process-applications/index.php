@@ -908,8 +908,7 @@ $this->registerCss('
 .job-mail input, .job-whatsapp input {
     height: 36px;
     padding-right: 45px;
-}
-.job-mail button, .job-whatsapp button {
+}.job-whatsapp button {
     position: absolute;
     top: 1px;
     right: 1px;
@@ -919,6 +918,7 @@ $this->registerCss('
     font-size:20px;
     color: #fff;
 }
+.job-mail button, 
 .page-content {
     background-image: url(/assets/common/categories/lines-bbg.png) !important;
     background-size: cover !important;

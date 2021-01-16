@@ -22,12 +22,12 @@ use yii\helpers\Url;
                                     if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                         ?>
                                         <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Saved</a></span>
+                                                        class="far fa-heart"></i> Shortlisted</a></span>
                                         <?php
                                     } else {
                                         ?>
                                         <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Save</a></span>
+                                                        class="far fa-heart"></i> Shortlist</a></span>
                                         <?php
                                     }
                                 }
