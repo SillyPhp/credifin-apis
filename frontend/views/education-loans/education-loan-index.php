@@ -473,12 +473,12 @@ use yii\helpers\Url;
                         </div>
                         <div class="whats">
                             <input type="text" class="form-control" id="text" name="text"
-                            placeholder="Whatsapp">
+                            placeholder="Type Message & Press Enter">
                             <button class="grn"><i class="fab fa-whatsapp"></i></button>
                         </div>
                         <div class="tele">
                             <input type="text" class="form-control" id="text" name="text"
-                                   placeholder="Telegram">
+                                   placeholder="Type Message & Press Enter">
                             <button class="blu"><i class="fab fa-telegram-plane"></i></button>
                         </div>
                     </div>

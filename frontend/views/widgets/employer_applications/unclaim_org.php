@@ -183,7 +183,8 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="down-img">
             <h3>Download Sharing Image</h3>
-            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
         </div>
     </div>
 <?php
@@ -212,6 +213,8 @@ $this->registerCss('
 	font-family: roboto;
 	font-weight: 500;
 	border-radius:6px;
+	display: inline-block;
+    margin: 5px 0px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;

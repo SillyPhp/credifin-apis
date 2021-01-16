@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use common\models\RandomColors;
+use frontend\models\script\ImageScript;
 $link = Url::to('/govt-jobs/detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -21,11 +22,19 @@ $content = [
 ];
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
 if (empty($app['image'])||$app['image']==1){
-    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+    $image =  ImageScript::widget(['content' => $content]);
 }else
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
+}
+
+if (empty($app['square_image'])||$app['square_image']==1){
+    $Instaimage =  \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+}else
+{
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$app['square_image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
@@ -195,7 +204,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="down-img">
                     <h3>Download Sharing Image</h3>
-                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
                 </div>
                 <?= $this->render("/widgets/square_ads");?>
             </div>
@@ -231,7 +241,8 @@ text-align:center;
     text-transform: capitalize;
     color: #fff;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.2);
-    display:block;
+    display: inline-block;
+    margin: 5px 0px;
 }
 .tags-bar > span {
     background: #f4f5fa;

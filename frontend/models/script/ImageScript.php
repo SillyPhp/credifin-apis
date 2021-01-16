@@ -19,7 +19,6 @@ class ImageScript extends Widget
 
     public function run()
     {
-        $this->content['bg_icon'] = $this->getProfile($this->content['bg_icon']);
         $params = http_build_query($this->content);
         $url = "https://services.empoweryouth.com/script"."?".$params;
         $ch = curl_init();
@@ -50,7 +49,7 @@ class ImageScript extends Widget
         }
     }
 
-    private function getProfile($profile)
+    public static function getProfile($profile)
     {
         $path = Categories::find()
             ->alias('a')
