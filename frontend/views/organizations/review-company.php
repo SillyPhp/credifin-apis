@@ -1224,6 +1224,7 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
+
 $(document).on("click", ".star-rating1 label", function(e){
     e.preventDefault();
     var id = "#" + $(this).attr("for");
@@ -1240,8 +1241,8 @@ $(document).on('click','.load_reviews',function(e){
         success:function(res){
             if(res==true){
                 $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
-                }
-         }
+            }
+        }
     });        
 });
 var yearsObj = [];
@@ -1449,11 +1450,13 @@ var popup = new ideaboxPopup({
 					},
 			]
 			});
+
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
+
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1473,6 +1476,7 @@ function review_post_ajax(data) {
           }
 	});
 }
+
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);

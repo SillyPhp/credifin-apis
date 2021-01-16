@@ -921,7 +921,7 @@ class OrganizationsController extends Controller
         }
     }
 
-    public function actionReviews($slug)
+    public function actionReviews($slug,$id = null)
     {
         $referral = Yii::$app->referral->getReferralCode();
         $editReviewForm = new EditReview;
@@ -1189,11 +1189,11 @@ class OrganizationsController extends Controller
         }
     }
 
-    public function actionGetReviews($slug, $limit = null, $offset = null)
+    public function actionGetReviews($slug, $limit = null, $offset = null, $ridk = null)
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $reviews = $this->getReviews($slug, $limit, $offset);
+            $reviews = $this->getReviews($slug, $limit, $offset, $ridk);
             if ($reviews['total'] > 0) {
                 $response = [
                     'status' => 200,
@@ -1294,11 +1294,23 @@ class OrganizationsController extends Controller
         }
     }
 
-    private function getReviews($slug, $limit, $offset)
+    private function getReviews($slug, $limit, $offset, $ridk)
     {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color','b.name seo_title','CONCAT(" ' .Url::to($slug . '/reviews', true) . ' ") seo_link'])
+            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not',
+                '(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details',
+                'a.review_enc_id', 'a.status', 'overall_experience',
+                'ROUND(a.average_rating) average', 'd.name profile',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on',
+                'a.is_current_employee', 'a.overall_experience', 'a.skill_development',
+                'designation', 'a.work_life', 'a.compensation', 'a.organization_culture',
+                'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes',
+                'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name',
+                'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image',
+                'c.initials_color','b.name seo_title',
+                'CONCAT("'.Url::to($slug . '/reviews/',true).'",a.review_enc_id) review_sharing_link',
+                'CONCAT("'.Url::to($slug . '/reviews', true).'") seo_link'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1309,10 +1321,9 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationReviewLikeDislikes f' => function ($b) {
                 $b->onCondition(['f.created_by' => Yii::$app->user->identity->user_enc_id]);
             }], false);
-
         return [
             'total' => $reviews->count(),
-            'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+            'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC, FIELD (a.review_enc_id,"' . $ridk . '") ASC')])
                 ->limit($limit)
                 ->offset($offset)
                 ->asArray()
