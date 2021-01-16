@@ -10,6 +10,7 @@ namespace common\models;
  * @property string $Organizations name of the organizations
  * @property string $Location location
  * @property string $image sharing image
+ * @property string $square_image square sharing image
  * @property string $image_location sharing image location
  * @property string $Position job title or position
  * @property string $Eligibility qualification
@@ -46,7 +47,7 @@ class IndianGovtJobs extends \yii\db\ActiveRecord
             [['Position', 'Eligibility', 'Data'], 'string'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['job_enc_id', 'image', 'image_location', 'created_by'], 'string', 'max' => 100],
+            [['job_enc_id', 'image', 'square_image','image_location', 'created_by'], 'string', 'max' => 100],
             [['Organizations', 'Location', 'Pdf_link', 'slug', 'Last_date', 'job_id'], 'string', 'max' => 200],
             [['job_enc_id'], 'unique'],
             [['job_id'], 'unique'],
