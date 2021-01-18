@@ -72,7 +72,10 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
+                                    <div class="com-name">
+                                        <?= htmlspecialchars_decode($organization['name']) ?>
+
+                                    </div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Tagline:</span> -->
@@ -84,7 +87,47 @@ $round_avg = round($overall_avg);
                                             <!--                                        <span class="detail-title">Industry:</span> -->
                                             <?= htmlspecialchars_decode($industry['industry']); ?>
                                         </div>
-                                    <?php } ?>
+                                    <?php }
+                                    ?>
+                                    <div class="status-icon">
+                                        <?php
+                                        if($labels['is_new'] == 1){
+                                            ?>
+                                            <span class="new-j" data-toggle="tooltip" title="New">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_featured'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Featured">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_promoted'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Promoted">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_hot'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Hot">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_trending'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Trending">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -520,18 +563,21 @@ $round_avg = round($overall_avg);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="address-division">
+                    <div class="address-division-new">
                         <div class="heading-style">
                             Address
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-5 col-xs-12 pull-right">
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
                                 <div id="map"></div>
                             </div>
-                            <div class="col-md-7 col-xs-12">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="head-office">
 
+                                </div>
+                                <div class="view-btn">
+                                    <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -567,13 +613,32 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
-.set-mar{margin:20px 0;}
+.fIcons img{
+    max-width: 25px;
+}
+.status-icon{
+    padding: 0 0 0 30px;
+}
+.status-icon span{
+    font-size: 0px;
+    margin-right: 8px;
+}
+.set-mar{
+    margin:20px 0;
+}
 .new-position-box{
     min-height:250px;
 }
-.npb-pos-abso{top:55%;}
-.npb-main-heading{font-size:20px;}
-.mv-text{text-align:justify;font-family:roboto;}
+.npb-pos-abso{
+    top:55%;
+}
+.npb-main-heading{
+    font-size:20px;
+}
+.mv-text{
+    text-align:justify;
+    font-family:roboto;
+}
 .j-profiles {
 	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
 	position: relative;
@@ -800,17 +865,39 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+.head-office {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:0 0 10px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -1021,6 +1108,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 31px;
+    margin-bottom: 10px;
 }
 .com-establish{
     color:#fff;
@@ -1056,6 +1147,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -1080,6 +1172,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1112,6 +1205,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         background-color: transparent;
     }
     
+}
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
 }
 .followed {
     background: #00a0e3;

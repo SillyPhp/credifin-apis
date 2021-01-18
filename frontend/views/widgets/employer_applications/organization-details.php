@@ -42,9 +42,12 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                             Compare Internship</a>
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
+                    <a href="#"
+                       data-toggle="modal" data-target="#loginModal"
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
@@ -79,13 +82,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Saved</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlisted</a>
                                     <?php
                                 } else {
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Save</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlist</a>
                                     <?php
                                 }
                             }

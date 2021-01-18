@@ -157,8 +157,6 @@ use yii\helpers\Url;
             </div>
     </section>
 
-<?= $this->render('/widgets/institutional-loan') ?>
-
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -467,9 +465,30 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+<!--                    <div class="l-help-block1">-->
+<!--                        <div class="l-help-title"><img-->
+<!--                                    src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?><!--"-->
+<!--                                    alt=""/> Chat With Us-->
+<!--                        </div>-->
+<!--                        <div class="whats">-->
+<!--                            <input type="text" class="form-control" id="text" name="text"-->
+<!--                            placeholder="Type Message & Press Enter">-->
+<!--                            <button class="grn"><i class="fab fa-whatsapp"></i></button>-->
+<!--                        </div>-->
+<!--                        <div class="tele">-->
+<!--                            <input type="text" class="form-control" id="text" name="text"-->
+<!--                                   placeholder="Type Message & Press Enter">-->
+<!--                            <button class="blu"><i class="fab fa-telegram-plane"></i></button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/institutional-loan') ?>
+
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({
@@ -514,6 +533,43 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.blu{
+    background-color: #0088cc;
+    }
+.grn{
+    background-color: #43d854;
+}
+.whats, .tele{
+    position: relative;
+    flex-basis: 25%;
+    margin: 10px 30px;
+}
+.whats input, .tele input{
+    height: 36px;
+    padding-right: 45px;
+}
+.whats button, .tele button {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 40px;
+    height: 34px;
+    border: none;
+    font-size:20px;
+    color: #fff;
+}
+.size{
+    font-size: 21px;
+    }
+.whatsapp {
+    color: #666;
+    font-size: 18px;
+    margin: 10px 5px;
+    font-family: roboto;
+    }
+.footer{
+    margin-top: 0px !important;
+}
 .using-pd{padding:0 0 0 16px;}
  .faq-s {
         background-image: linear-gradient(to right,#8ec3ff 20%,#edf4fc 100%);
@@ -1182,7 +1238,7 @@ $this->registerCss('
    
     .l-help-block1{
         box-shadow: 0 0 10px rgb(0,0,0,.2);
-        padding: 25px 20px;
+        padding: 22px 20px;
         margin-bottom:20px;
         background:#fff;
         min-height: 180px;
