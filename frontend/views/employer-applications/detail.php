@@ -3,6 +3,7 @@
 use frontend\models\applications\CandidateApply;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use frontend\models\script\ImageScript;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
@@ -175,12 +176,12 @@ $content = [
     'app_id' => $application_details['application_enc_id'],
     'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
 ];
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
 if (empty($application_details['image']) || $application_details['image'] == 1) {
-    $image = \frontend\models\script\ImageScript::widget(['content' => $content]);
+    $image = ImageScript::widget(['content' => $content]);
 } else {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['image'];
 }
-
 if (empty($application_details['square_image']) || $application_details['square_image'] == 1) {
     $Instaimage = \frontend\models\script\InstaImageScript::widget(['content' => $content]);
 } else {

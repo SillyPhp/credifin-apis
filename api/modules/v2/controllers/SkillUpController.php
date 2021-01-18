@@ -3,6 +3,9 @@
 
 namespace api\modules\v2\controllers;
 
+use common\models\ConversationMessages;
+use common\models\ConversationParticipants;
+use common\models\Conversations;
 use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
 use common\models\SkillsUpPostAssignedVideo;
@@ -783,6 +786,77 @@ class SkillUpController extends ApiBaseController
             $counts['dislikes_count'] = $dislike_count;
 
             return $this->response(200, ['status' => 200, 'counts' => $counts]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSaveChat()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['message_id']) && !empty($params['message_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['college_id']) && !empty($params['college_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (!isset($params['conversation_enc_id']) && empty($params['conversation_enc_id'])) {
+                $conversation = new Conversations();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $conversation->conversation_enc_id = $utilitiesModel->encrypt();
+                $conversation->conversation_type = 2;
+                $conversation->created_by = $user->user_enc_id;
+                $conversation->created_on = date('Y-m-d H:i:s');
+                if (!$conversation->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+                $conversation_enc_id = $conversation->conversation_enc_id;
+            } else {
+                $conversation_enc_id = $params['conversation_enc_id'];
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+
+                $conversation_participants = new ConversationParticipants();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $conversation_participants->participant_enc_id = $utilitiesModel->encrypt();
+                $conversation_participants->conversation_enc_id = $conversation_enc_id;
+                $conversation_participants->user_enc_id = $user->user_enc_id;
+                $conversation_participants->organization_enc_id = $params['college_id'];
+                $conversation_participants->created_by = $user->user_enc_id;
+                $conversation_participants->created_on = date('Y-m-d H:i:s');
+                if (!$conversation_participants->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                $conversation_messages = new ConversationMessages();
+                $conversation_messages->message_enc_id = $params['message_id'];
+                $conversation_messages->conversation_enc_id = $conversation_enc_id;
+                $conversation_messages->participant_enc_id = $conversation_participants->participant_enc_id;
+                $conversation_messages->created_by = $user->user_enc_id;
+                $conversation_messages->created_on = date('Y-m-d H:i:s');
+                if (!$conversation_messages->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'saved', 'conversation_enc_id' => $conversation_enc_id]);
+
+            } catch (Exception $e) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

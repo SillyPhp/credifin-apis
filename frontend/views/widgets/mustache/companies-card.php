@@ -52,7 +52,7 @@ use yii\helpers\Url;
                         {{^logo}}
                         <a href="/{{profile_link}}" target="_blank">
                             <canvas class="user-icon" name="{{name}}" width="110" height="110"
-                                    color="{{color}}" font="35px"></canvas>
+                                    color="{{color}}" font="50px"></canvas>
                         </a>
                         {{/logo}}
                     </div>

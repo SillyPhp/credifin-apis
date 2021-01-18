@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use common\models\RandomColors;
+use frontend\models\script\ImageScript;
 $link = Url::to('/govt-jobs/detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -21,8 +22,9 @@ $content = [
 ];
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
 if (empty($app['image'])||$app['image']==1){
-    $image =  \frontend\models\script\ImageScript::widget(['content' => $content]);
+    $image =  ImageScript::widget(['content' => $content]);
 }else
 {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
@@ -239,7 +241,8 @@ text-align:center;
     text-transform: capitalize;
     color: #fff;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.2);
-    display:block;
+    display: inline-block;
+    margin: 5px 0px;
 }
 .tags-bar > span {
     background: #f4f5fa;

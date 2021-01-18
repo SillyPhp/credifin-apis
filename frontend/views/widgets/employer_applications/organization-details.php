@@ -42,9 +42,12 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                             Compare Internship</a>
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
+                    <a href="#"
+                       data-toggle="modal" data-target="#loginModal"
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
