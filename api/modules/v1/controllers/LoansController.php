@@ -1041,7 +1041,7 @@ class LoansController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/temp/' . 'faqs.json');
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'faqs.json');
         $faqs = json_decode($strJsonFileContents);
 
 
