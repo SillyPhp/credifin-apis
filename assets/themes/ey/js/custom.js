@@ -444,9 +444,37 @@ function ajax(method, url, data = null) {
 ajax().done(function (result) {
     return result;
 });
+function hasInitials(urlToFile) {
+    var checkInitialsLength = $('.do-image').length;
+    var defaultLength = 0;
+    $('.do-image').each(function (){
+        var elem = $(this);
+        var image = $(this).attr('src')
+        $.get(image, function(data, statusText, xhr) {
+            if(xhr.status != 200) {
+                elem.replaceWith('<canvas class="user-icon" name="'+elem.attr('data-name')+'" width="'+elem.attr('data-width')+'" height="'+elem.attr('data-height')+'" color="'+elem.attr('data-color')+'" font="'+elem.attr('data-font')+'"></canvas>');
+                return true;
+            }
+        })
+            .done(function() {
 
+            }).fail(function() {
+            elem.replaceWith('<canvas class="user-icon" name="'+elem.attr('data-name')+'" width="'+elem.attr('data-width')+'" height="'+elem.attr('data-height')+'" color="'+elem.attr('data-color')+'" font="'+elem.attr('data-font')+'"></canvas>');
+        });
+        if(defaultLength == checkInitialsLength -1){
+            setTimeout(function (){
+                utilities.setInitials();
+            },500)
+        }
+        defaultLength++;
+    });
+    utilities.setInitials();
+}
 var utilities = {
     initials: function(){
+        hasInitials();
+    },
+    setInitials:function (){
         var canvas = document.getElementsByClassName("user-icon");
         for (var i = 0; i < canvas.length; i++) {
             var context = canvas[i].getContext("2d");

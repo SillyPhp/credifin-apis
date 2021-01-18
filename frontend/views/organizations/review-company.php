@@ -49,18 +49,7 @@ echo $this->render('/widgets/drop_resume', [
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-                    <?php
-                    if (!empty($org_details['logo'])) {
-                        ?>
-                        <img src="<?= $logo_image; ?>">
-                        <?php
-                    } else {
-                        ?>
-                        <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                color="<?= $org_details['initials_color'] ?>" font="70px"></canvas>
-                        <?php
-                    }
-                    ?>
+                    <img src="<?= $logo_image; ?>" class="do-image" data-name="<?= $org_details['name']; ?>" data-color="<?= $org_details['initials_color'] ?>" data-width="150" data-height="150" data-font="70px">
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -1481,7 +1470,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
@@ -1490,9 +1479,11 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 </script>
 
 <script>
-    document.getElementById('sb').addEventListener("click", function () {
-        var sharecom = document.querySelector('.sd-btns');
-        sharecom.classList.toggle('share-hidden');
+    if(document.getElementById('sb')) {
+        document.getElementById('sb').addEventListener("click", function () {
+            var sharecom = document.querySelector('.sd-btns');
+            sharecom.classList.toggle('share-hidden');
 
-    })
+        });
+    }
 </script>
