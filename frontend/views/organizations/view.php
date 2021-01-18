@@ -563,7 +563,7 @@ $round_avg = round($overall_avg);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="address-division">
+                    <div class="address-division-new">
                         <div class="heading-style">
                             Address
                         </div>
