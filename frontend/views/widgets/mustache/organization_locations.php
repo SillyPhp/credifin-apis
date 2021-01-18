@@ -151,6 +151,7 @@ function getLocations() {
                 },1000);
                 // renderLocations(response.locations);
             } else{
+                $('.view-btn').hide();
                 $('.location_tab').css('display','none');
             }
         }

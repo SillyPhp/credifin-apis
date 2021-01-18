@@ -569,10 +569,10 @@ $round_avg = round($overall_avg);
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-6 col-xs-12 pull-right mb-20">
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
                                 <div id="map"></div>
                             </div>
-                            <div class="col-md-6 col-xs-12">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="head-office">
 
                                 </div>
@@ -1147,6 +1147,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -1171,6 +1172,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1203,6 +1205,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         background-color: transparent;
     }
     
+}
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
 }
 .followed {
     background: #00a0e3;
