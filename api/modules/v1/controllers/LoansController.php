@@ -41,6 +41,7 @@ class LoansController extends ApiBaseController
                 'college-courses',
                 'loan-purpose',
                 'save-application',
+                'home'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -51,6 +52,7 @@ class LoansController extends ApiBaseController
                 'college-courses' => ['POST'],
                 'loan-purpose' => ['POST'],
                 'save-application' => ['POST'],
+                'home' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -1019,6 +1021,39 @@ class LoansController extends ApiBaseController
             }
         }
 
+    }
+
+    public function actionHome()
+    {
+        $partner_colleges = Organizations::find()
+            ->select(['organization_enc_id', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+            ->asArray()
+            ->all();
+
+        $loan_partners = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END org_logo', 'a.initials_color'])
+            ->innerJoinWith(['selectedServices b' => function ($b) {
+                $b->innerJoinWith(['serviceEnc c']);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'c.name' => 'Loans', 'b.is_selected' => 1])
+            ->asArray()
+            ->all();
+
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/temp/' . 'faqs.json');
+        $faqs = json_decode($strJsonFileContents);
+
+
+        $data = [];
+        $data['partner_college'] = $partner_colleges;
+        $data['loan_partners'] = $loan_partners;
+        $data['faqs'] = $faqs;
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
     }
 
 }
