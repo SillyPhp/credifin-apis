@@ -211,7 +211,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 500px;
-    min-height:200px;
+    min-height:300px;
     display: block;
     overflow-x: scroll;
 }

@@ -62,7 +62,7 @@ $round_avg = round($overall_avg);
                                         <?php
                                         if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>"
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px"
                                                  alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
@@ -563,18 +563,21 @@ $round_avg = round($overall_avg);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="address-division">
+                    <div class="address-division-new">
                         <div class="heading-style">
                             Address
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-5 col-xs-12 pull-right">
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
                                 <div id="map"></div>
                             </div>
-                            <div class="col-md-7 col-xs-12">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="head-office">
 
+                                </div>
+                                <div class="view-btn">
+                                    <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -862,17 +865,39 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+.head-office {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:0 0 10px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -1122,6 +1147,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -1146,6 +1172,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1178,6 +1205,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         background-color: transparent;
     }
     
+}
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
 }
 .followed {
     background: #00a0e3;

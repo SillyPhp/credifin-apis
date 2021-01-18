@@ -75,7 +75,7 @@ $industries = Json::encode($industries);
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-                                        <img id="logo-img" src="<?= Url::to($image); ?>">
+                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px">
                                         <?php
                                         $form = ActiveForm::begin([
                                             'id' => 'upload-logo',

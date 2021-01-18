@@ -44,17 +44,9 @@ use yii\helpers\Url;
                         {{/total_vaccency}}
                     </div>
                     <div class="comp-logo">
-                        {{#logo}}
                         <a href="/{{profile_link}}" target="_blank">
-                            <img src="{{logo}}">
+                            <img src="{{logo}}" class="do-image" data-name="{{name}}" data-width="110" data-height="110" data-color="{{color}}" data-font="45px">
                         </a>
-                        {{/logo}}
-                        {{^logo}}
-                        <a href="/{{profile_link}}" target="_blank">
-                            <canvas class="user-icon" name="{{name}}" width="110" height="110"
-                                    color="{{color}}" font="35px"></canvas>
-                        </a>
-                        {{/logo}}
                     </div>
                     <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a>
                     </h3>
