@@ -975,6 +975,18 @@ class OrganizationsController extends Controller
                 ->where(['organization_enc_id' => $org['organization_enc_id'], 'status' => 1])
                 ->asArray()
                 ->one();
+            $jobs_count = EmployerApplications::find()
+                ->alias('a')
+                ->joinWith(['applicationTypeEnc b'])
+                ->where(['b.name' => 'Jobs', 'a.status' => 'Active','a.organization_enc_id'=>$org['organization_enc_id'], 'a.is_deleted' => 0])
+                ->andWhere(['a.application_for' => 1])
+                ->count();
+            $internships_count = EmployerApplications::find()
+                ->alias('a')
+                ->joinWith(['applicationTypeEnc b'])
+                ->where(['b.name' => 'Internships', 'a.status' => 'Active','a.organization_enc_id'=>$org['organization_enc_id'], 'a.is_deleted' => 0])
+                ->andWhere(['a.application_for' => 1])
+                ->count();
         }
         if (!empty($unclaimed_org)) {
             $obj = new ReviewCards();
@@ -1016,7 +1028,20 @@ class OrganizationsController extends Controller
                 return $this->render('review-college-company', ['review_type' => $review_type, 'follow' => $follow, 'reviews_students' => $reviews_students, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats_students' => $stats_students, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
             }
         }
-        return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews]);
+
+        return $this->render('review-company', [
+            'review_type' => $review_type,
+            'follow' => $follow,
+            'primary_cat' => $primary_cat,
+            'editReviewForm' => $editReviewForm,
+            'edit' => $edit_review,
+            'slug' => $slug,
+            'stats' => $stats,
+            'org_details' => $org,
+            'reviews' => $reviews,
+            'jobs_count' => $jobs_count,
+            'internships_count' => $internships_count
+        ]);
     }
 
     public function actionPostReviews($slug = null, $request_type = null)
@@ -1323,7 +1348,7 @@ class OrganizationsController extends Controller
             }], false);
         return [
             'total' => $reviews->count(),
-            'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC, FIELD (a.review_enc_id,"' . $ridk . '") ASC')])
+            'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.review_enc_id,"' . $ridk . '") DESC,FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
                 ->limit($limit)
                 ->offset($offset)
                 ->asArray()
@@ -1660,5 +1685,9 @@ class OrganizationsController extends Controller
             ->where("replace(name, '.', '') LIKE '%$q%'")
             ->andWhere(['is_deleted' => 0]);
         return $params1->limit(20)->all();
+    }
+
+    public function actionCompanyJobs(){
+
     }
 }
