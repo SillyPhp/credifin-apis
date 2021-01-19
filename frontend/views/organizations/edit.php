@@ -1263,15 +1263,16 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   font-weight: 400;
   margin-bottom:0px;
 }
-.p-category img, .checkbox-text--title img{
-    width: 80px;
-    height: 50px;
+.p-category img, .checkbox-text--title img {
+	width: 60px !important;
+	height: 60px !important;
+	object-fit: contain;
 }
 .checkbox-label-v2:before {
   content: \'\';
   position: absolute;
   top: 80px;
-  right: 16px;
+  right: 10px;
   width: 40px;
   height: 40px;
   opacity: 0;
@@ -1286,7 +1287,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   transition: all 0.4s ease;
 }
 .checkbox-input:checked + .checkbox-label-v2:before {
-  top: 0;
+  top: 30px;
   opacity: 1;
 }
 .checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
@@ -1302,11 +1303,11 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     width: 100%;
 }
 .p-category {
-    float: left;
-    width: 100%;
-    z-index: 1;
-    position: relative;
-    display:flex;
+	height: 152px;
+	border-bottom: 1px solid #e8ecec;
+	border-right: 1px solid #e8ecec;
+	text-align: center;
+	padding: 20px;
 }
 .p-category, .p-category *{
     -webkit-transition: all 0.4s ease 0s;
@@ -1315,13 +1316,14 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
-.p-category .checkbox-text {
-    float: left;
-    width: 100%;
-    text-align: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #e8ecec;
-    border-right: 1px solid #e8ecec;
+.checkbox-text--description2 {
+	display: block;
+	height: 51px;
+	margin-top: 8px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .p-category .checkbox-text span i {
     float: left;
@@ -1332,32 +1334,23 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     line-height: initial !important;
 }
 .p-category .checkbox-text span {
-    float: left;
-    width: 100%;
-    font-family: Open Sans;
-    font-size: 15px;
-    color: #202020;
-    margin-top: 10px;
+	font-family: roboto;
+	font-size: 15px;
+	color: #202020;
 }
 .p-category:hover {
-    background: #ffffff;
-    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    height: 102%;
-    z-index: 10;
-}
-.p-category:hover .checkbox-text {
-    border-color: #ffffff;
+	background: #ffffff;
+	-webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 4px;
+	border-color: #fff;
 }
 .p-category:hover .checkbox-label-v2 i{
     color: #f07d1d;
