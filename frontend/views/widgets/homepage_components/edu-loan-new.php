@@ -96,11 +96,11 @@ $this->registerCss('
     pading-right: 0px;
 }
 .heading-data-set h3 {
-	font-size: 38px;
+	font-size: 28px;
     color: #ED6D1E;
     font-family: roboto;
     font-weight: 600;
-    line-height: 46px;
+    line-height: 40px;
 }
 .heading-data-set h4 {
 	font-size: 20px;
