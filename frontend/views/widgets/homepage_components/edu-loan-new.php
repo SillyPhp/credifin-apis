@@ -20,7 +20,7 @@ use yii\helpers\Url;
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-12 p0">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="image-topics">
                                     <div class="icon-loan">
                                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="">

@@ -37,4 +37,9 @@ class TestCacheController extends Controller
         }
     }
 
+    public function actionTemplateView(){
+        $this->layout = 'null-layout';
+        return $this->render('templates/schedular-for-interviewers');
+    }
+
 }

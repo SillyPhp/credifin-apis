@@ -78,8 +78,8 @@ $this->registerCss('
   }
   .appss img
   {
-	height: 50px;
-	width: 110px;
+	height: 55px;
+	width: 130px;
   }
   .copyright{
     padding:10px 0 0 0; 

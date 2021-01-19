@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+
 $this->registerCss('
     body{
         margin:0 auto;
@@ -65,18 +66,6 @@ $this->registerCss('
     .ey-team img{
         max-width:220px;
     }
-    .appstore {
-    font-weight: 600;
-    font-size: 16px;
-    font-family: lora;
-    padding-top: 15px;
-    text-align: center;
-  }
-  .appss img
-  {
-	height: 50px;
-	width: 110px;
-  }
     .copyright{
         padding:0px 0 0 0;
         font-size:13px;
@@ -182,16 +171,8 @@ $this->registerCss('
             <div class="header-icon"><img src="<?= Url::to('@commonAssets/email_service/header-icon.png', 'https'); ?>" class="responsive"></div>
         </div>
         <div class="jboxs">
-            <div class="date-main">
-<!--                <div class="month-detail">-->
-<!--                    January-->
-<!--                </div>-->
-<!--                <div class="day-detail">-->
-<!--                    5-->
-<!--                </div>-->
-            </div>
             <div class="title">
-                <h2>Your Interview has been Scheduled for job <span>"<?= $data['data']['name']; ?>"</span></h2>
+                <h2 class="capitalize"><?= $data['name'];?> you are Invited to take interview for <span>"<?= $data['data']['name']; ?>"</span> job.</h2>
             </div>
             <div class="clear">
                 <div class="head-main">
@@ -201,14 +182,6 @@ $this->registerCss('
                     <?= $data['data']['name']; ?>
                 </div>
             </div>
-<!--            <div class="clear">-->
-<!--                <div class="head-main">-->
-<!--                    Salary:-->
-<!--                </div>-->
-<!--                <div class="desc-main">-->
-<!--                    3,00,000 p.a.-->
-<!--                </div>-->
-<!--            </div>-->
             <div class="clear">
                 <div class="head-main">
                     when:
@@ -228,20 +201,14 @@ $this->registerCss('
                 </div>
             </div>
             <div class="clear text-center">
-                <a class="link primary" href="<?= Url::to('/account/dashboard/calendar', 'https'); ?>">view</a>
+                <a href="<?= Url::to('/schedular/inerviewer-status?id='.$data['id']. '&type=accept','https')?>" class="link primary">Accept</a>
+                <a href="<?= Url::to('/schedular/inerviewer-status?id='.$data['id']. '&type=reject','https')?>" class="link danger">Decline</a>
             </div>
         </div>
 
         <div class="text-center">
             <div class="ey-team">
                 <img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', 'https'); ?>"/>
-            </div>
-            <div class="appstore">Download Our App
-                <div class="appss">
-                    <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play">
-                        <img alt="Get it on Google Play" src="https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png" title="Download Empower Youth App on Google Play">
-                    </a>
-                </div>
             </div>
             <div class="copyright">
                 <div class="">Copyright © 2019 Empower Youth</div>
