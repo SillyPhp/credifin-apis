@@ -182,6 +182,10 @@ class SkillUpController extends ApiBaseController
                 'a.post_image_url'
             ])
             ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors i' => function ($i) {
+                $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                $i->joinWith(['authorEnc i1'], false);
+            }])
             ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
                 $c->joinWith(['skillEnc c1' => function ($c1) {
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
@@ -556,6 +560,10 @@ class SkillUpController extends ApiBaseController
                 ->joinWith(['skillsUpPostAssignedBlogs h' => function ($h) {
                     $h->select(['h.post_enc_id', 'h1.description']);
                     $h->joinWith(['blogPostEnc h1'], false);
+                }])
+                ->joinWith(['skillsUpAuthors i' => function ($i) {
+                    $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                    $i->joinWith(['authorEnc i1'], false);
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
