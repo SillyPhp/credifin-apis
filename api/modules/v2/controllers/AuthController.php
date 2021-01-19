@@ -455,6 +455,8 @@ class AuthController extends ApiBaseController
                     'd.cgpa', 'd.assigned_college_enc_id', 'd.section_enc_id', 'd.semester',
                     'e.has_loan_featured',
                     'e.has_skillup_featured',
+                    'c1.has_skillup_featured teacher_skill_up',
+                    'c1.has_loan_featured t_loan_featured',
                     'c1.business_activity_enc_id teacher_org_type', 'ee.business_activity user_org_business_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
@@ -619,6 +621,9 @@ class AuthController extends ApiBaseController
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
             $data['has_skillup_featured'] = (int)$education_loan_college['has_skillup_featured'] == 1 ? true : false;
+        } elseif ($user_detail['teachers']) {
+            $data['has_skillup_featured'] = (int)$user_detail['teacher_skill_up'] == 1 ? true : false;
+            $data['education_loan'] = (int)$user_detail['t_loan_featured'] == 1 ? true : false;
         } else {
             $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
