@@ -466,22 +466,22 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="l-help-block1">
-                        <div class="l-help-title"><img
-                                    src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
-                                    alt=""/> Chat With Us
-                        </div>
-                        <div class="whats">
-                            <input type="text" class="form-control" id="text" name="text"
-                            placeholder="Type Message & Press Enter">
-                            <button class="grn"><i class="fab fa-whatsapp"></i></button>
-                        </div>
-                        <div class="tele">
-                            <input type="text" class="form-control" id="text" name="text"
-                                   placeholder="Type Message & Press Enter">
-                            <button class="blu"><i class="fab fa-telegram-plane"></i></button>
-                        </div>
-                    </div>
+<!--                    <div class="l-help-block1">-->
+<!--                        <div class="l-help-title"><img-->
+<!--                                    src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?><!--"-->
+<!--                                    alt=""/> Chat With Us-->
+<!--                        </div>-->
+<!--                        <div class="whats">-->
+<!--                            <input type="text" class="form-control" id="text" name="text"-->
+<!--                            placeholder="Type Message & Press Enter">-->
+<!--                            <button class="grn"><i class="fab fa-whatsapp"></i></button>-->
+<!--                        </div>-->
+<!--                        <div class="tele">-->
+<!--                            <input type="text" class="form-control" id="text" name="text"-->
+<!--                                   placeholder="Type Message & Press Enter">-->
+<!--                            <button class="blu"><i class="fab fa-telegram-plane"></i></button>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>

@@ -49,18 +49,7 @@ echo $this->render('/widgets/drop_resume', [
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-                    <?php
-                    if (!empty($org_details['logo'])) {
-                        ?>
-                        <img src="<?= $logo_image; ?>">
-                        <?php
-                    } else {
-                        ?>
-                        <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                color="<?= $org_details['initials_color'] ?>" font="70px"></canvas>
-                        <?php
-                    }
-                    ?>
+                    <img src="<?= $logo_image; ?>" class="do-image" data-name="<?= $org_details['name']; ?>" data-color="<?= $org_details['initials_color'] ?>" data-width="150" data-height="150" data-font="70px">
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -275,6 +264,47 @@ echo $this->render('/widgets/drop_resume', [
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-12">
+                <?php if ($jobs_count > 0) {
+                    ?>
+                    <div id="jobs-cards-main" class="row">
+                        <div class="heading-style">
+                            Available Jobs
+                            <div class="pull-right">
+                                <a href="/jobs/list?slug=<?= $slug ?>"
+                                   class="write-review">View
+                                    All</a>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="blogbox"></div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if ($internships_count > 0) {
+                    ?>
+                    <div id="internships-cards-main" class="row">
+                        <div class="internships-block">
+                            <div class="heading-style">
+                                Available Internships
+                                <div class="pull-right">
+                                    <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                       class="write-review">View All</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="internships_main"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
             <div class="col-md-12 set-mar">
                 <?=
@@ -521,6 +551,8 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/application-card');
+
 if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-reviews', [
     ]);
@@ -530,6 +562,13 @@ if ($review_type == 'claimed') {
 }
 
 $this->registerCss('
+#jobs-cards-main{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.form-group.form-md-line-input.form-md-floating-label .form-control~label{
+    top: 5px;
+}
 .set-mar {
 	margin: 30px 0 20px;
 }
@@ -1158,7 +1197,26 @@ border: 2px solid #cadfe8 !important;
   }
 }
 /*Load Suggestions loader css ends */
+.write-review {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    background-color: #00a0e3;
+    color: #fff;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+}
+.write-review:hover{
+    color: #00a0e3;
+    background-color: #fff;
+}
 /*-----*/
+
 @media only screen and (max-width: 992px){
     .cp-bttn button {
         margin-top: 20px; 
@@ -1456,7 +1514,8 @@ document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
-
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1485,7 +1544,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
@@ -1494,9 +1553,11 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 </script>
 
 <script>
-    document.getElementById('sb').addEventListener("click", function () {
-        var sharecom = document.querySelector('.sd-btns');
-        sharecom.classList.toggle('share-hidden');
+    if(document.getElementById('sb')) {
+        document.getElementById('sb').addEventListener("click", function () {
+            var sharecom = document.querySelector('.sd-btns');
+            sharecom.classList.toggle('share-hidden');
 
-    })
+        });
+    }
 </script>

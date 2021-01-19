@@ -62,7 +62,7 @@ $round_avg = round($overall_avg);
                                         <?php
                                         if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>"
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px"
                                                  alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
@@ -867,8 +867,6 @@ $this->registerCss('
 /*----address----*/
 .head-office {
 	display: flex;
-	justify-content: center;
-	align-items: center;
 	flex-wrap: wrap;
 }
 .org-location {
