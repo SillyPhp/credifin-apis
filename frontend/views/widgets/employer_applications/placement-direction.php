@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
     <ul class="p-locations">
         <?php
         foreach ($placement_locations as $placements) {
-            echo'<li><a target="_blank" class="map-navigate" title="Navigate to Google Map" href="http://maps.google.com/maps?daddr=' . $placements['latitude'] . ',' . $placements['longitude'] . '"><img src="/assets/themes/ey/images/pages/jobs/city-map.png" /><span>' . $placements['name'] . '</span></a></li>';
+            echo'<li><a target="_blank" class="map-navigate" title="Navigate to Google Map" href="http://maps.google.com/maps?daddr=' . $placements['latitude'] . ',' . $placements['longitude'] . '"><img src="/assets/themes/ey/images/pages/jobs/city-map.png" /><span>' . $placements['location_name'] . '</span></a></li>';
         }
         ?>
     </ul>

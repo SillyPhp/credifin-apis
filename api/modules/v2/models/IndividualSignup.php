@@ -96,6 +96,9 @@ class IndividualSignup extends Model
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->status = 'Active';
+            $user->last_visit = date('Y-m-d H:i:s');
+            $user->last_visit_through = 'ECAMPUS';
+            $user->signed_up_through = 'ECAMPUS';
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if (!$user->save()) {

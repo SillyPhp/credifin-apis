@@ -291,6 +291,14 @@ class AuthController extends ApiBaseController
                         return false;
                     }
                 }
+
+                $user->last_visit = date('Y-m-d H:i:s');
+                $user->last_visit_through = 'ECAMPUS';
+                $user->last_updated_on = date('Y-m-d H:i:s');
+                if (!$user->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
                 $token = $this->findToken($user, $source);
                 if (empty($token)) {
                     if ($token = $this->newToken($user->user_enc_id, $source)) {
@@ -311,7 +319,7 @@ class AuthController extends ApiBaseController
 
     private function onlyTokens($token)
     {
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s', time());
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
@@ -327,7 +335,7 @@ class AuthController extends ApiBaseController
         $token = new UserAccessTokens();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s', time());
         $token->access_token_enc_id = $utilitiesModel->encrypt();
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
@@ -446,6 +454,7 @@ class AuthController extends ApiBaseController
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
                     'd.cgpa', 'd.assigned_college_enc_id', 'd.section_enc_id', 'd.semester',
                     'e.has_loan_featured',
+                    'e.has_skillup_featured',
                     'c1.business_activity_enc_id teacher_org_type', 'ee.business_activity user_org_business_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
@@ -510,23 +519,8 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->all();
 
-//                $j = 0;
-//                foreach ($college_settings as $c) {
-//                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
-//                        if ($c['value'] == null) {
-//                            $college_settings[$j]['value'] = 2;
-//                        }
-//                    }
-//                    $j++;
-//                }
-//
-//                $settings = [];
-//                foreach ($college_settings as $c) {
-//                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
-//                }
-
                 $education_loan_college = Organizations::find()
-                    ->select(['has_loan_featured'])
+                    ->select(['has_loan_featured', 'has_skillup_featured'])
                     ->where(['organization_enc_id' => $college_id])
                     ->asArray()
                     ->one();
@@ -610,6 +604,8 @@ class AuthController extends ApiBaseController
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration']
         ];
 
+        $data['college_enc_id'] = $data['college_enc_id'] ? $data['college_enc_id'] : $user_detail['college_id'];
+
         if ($user_detail['teacher_org_type']) {
             $type = BusinessActivities::find()
                 ->where(['business_activity_enc_id' => $user_detail['teacher_org_type']])
@@ -622,9 +618,11 @@ class AuthController extends ApiBaseController
         if ($college_id) {
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$education_loan_college['has_skillup_featured'] == 1 ? true : false;
         } else {
             $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$user_detail['has_skillup_featured'] == 1 ? true : false;
         }
 
         return $data;

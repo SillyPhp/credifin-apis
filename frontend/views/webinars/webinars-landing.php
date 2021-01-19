@@ -52,64 +52,66 @@ function webDate($webDate)
         </div>
         <div class="row">
             <?php
-            foreach ($upcomingWebinar as $web) {
-                ?>
-                <div class="col-md-4 col-sm-6">
-                    <div class="web-card">
-                        <div class="web-img">
-                            <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
-                            <div class="web-date">
-                                <div class="date">
+            if($upcomingWebinar){
+                foreach ($upcomingWebinar as $web) {
+                    ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
+                                <div class="web-date">
+                                    <div class="date">
+                                        <?php
+                                        $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="web-paid">
                                     <?php
-                                    $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
-                                    echo $eventDate;
+                                    $finalPrice = finalAmount($web['price'], $web['gst']);
+                                    echo $finalPrice;
                                     ?>
                                 </div>
                             </div>
-                            <div class="web-paid">
-                                <?php
-                                $finalPrice = finalAmount($web['price'], $web['gst']);
-                                echo $finalPrice;
-                                ?>
+                            <div class="web-inr">
+                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
+                                </div>
+                                <div class="web-des"><?= $web['description'] ?></div>
                             </div>
-                        </div>
-                        <div class="web-inr">
-                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
-                            <div class="web-speaker">
-                                <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
-                            </div>
-                            <div class="web-des"><?= $web['description'] ?></div>
-                        </div>
-                        <div class="reg-btn-count">
-                            <div class="register-count">
-                                <div class="reg-img">
-                                    <?php
-                                    if (count($web['webinarRegistrations']) > 0) {
-                                        $reg = 1;
-                                        foreach ($web['webinarRegistrations'] as $uImage) {
-                                            ?>
-                                            <span class="reg<?= $reg ?> reg">
-                                    <img src="<?= $uImage['createdBy']['image'] ?>">
-                                </span>
-                                            <?php
-                                            $reg++;
-                                            if ($reg == 4) {
-                                                break;
+                            <div class="reg-btn-count">
+                                <div class="register-count">
+                                    <div class="reg-img">
+                                        <?php
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                ?>
+                                                <span class="reg<?= $reg ?> reg">
+                                        <img src="<?= $uImage['createdBy']['image'] ?>">
+                                    </span>
+                                                <?php
+                                                $reg++;
+                                                if ($reg == 4) {
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                    ?>
+                                        ?>
+                                    </div>
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
-                            </div>
-                            <div class="register-btns">
-                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
-                                            class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                <div class="register-btns">
+                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
+                    <?php
+                }
             }
             ?>
         </div>

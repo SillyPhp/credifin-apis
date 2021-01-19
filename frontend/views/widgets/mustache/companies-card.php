@@ -44,24 +44,19 @@ use yii\helpers\Url;
                         {{/total_vaccency}}
                     </div>
                     <div class="comp-logo">
-                        {{#logo}}
                         <a href="/{{profile_link}}" target="_blank">
-                            <img src="{{logo}}">
+                            <img src="{{logo}}" class="do-image" data-name="{{name}}" data-width="110" data-height="110" data-color="{{color}}" data-font="45px">
                         </a>
-                        {{/logo}}
-                        {{^logo}}
-                        <a href="/{{profile_link}}" target="_blank">
-                            <canvas class="user-icon" name="{{name}}" width="110" height="110"
-                                    color="{{color}}" font="35px"></canvas>
-                        </a>
-                        {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a>
+                    </h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
                     <div class="com-rating comp-ratings">
-                        <span class="average-star" data-score="{{rating}}"></span>
-                        <span class="stars rate-in">{{rating}}</span>
+                        <a href="/{{review_link}}" target="_blank">
+                            <span class="average-star" data-score="{{rating}}"></span>
+                            <span class="stars rate-in">{{rating}}</span>
+                        </a>
                     </div>
                     <div class="rating">
                     </div>
@@ -94,6 +89,7 @@ use yii\helpers\Url;
                         {{^login}}
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal">FOLLOW</a>
                         {{/login}}
+                        <a href="/{{review_link}}" target="_blank">Review</a>
                         <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
                     </div>
                 </a>
@@ -106,7 +102,7 @@ use yii\helpers\Url;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
-    'org_cards'=>true
+    'org_cards' => true
 ]);
 
 $this->registercss('
@@ -233,7 +229,7 @@ $this->registercss('
 	color: #fff;
 	font-size: 12px;
 	font-family: roboto;
-	padding: 6px 0;
+	padding: 5px 0 4px;
 	border-radius: 4px;
 	font-weight: 500;
 	text-transform: uppercase;

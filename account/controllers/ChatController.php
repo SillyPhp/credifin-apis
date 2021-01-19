@@ -486,4 +486,7 @@ class ChatController extends Controller{
         return false;
     }
 
+    public function actionChatPage(){
+        return $this->render('chat-page');
+    }
 }

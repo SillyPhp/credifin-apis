@@ -1,7 +1,7 @@
 <script id="course-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6">
-        <a href="/courses/detail/{{id}}">
+        <a href="/courses/detail/{{id}}" target="_blank">
             <div class="course-box">
                 <div class="course-upper">
                     <div class="course-logo">

@@ -1,14 +1,41 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
+use common\models\RandomColors;
+use frontend\models\script\ImageScript;
 $link = Url::to('/govt-jobs/detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
 $sharing_title = str_replace('|','',$this->title);
+$content = [
+    'job_title'=>$get['Position'],
+    'company_name'=>$get['Organizations'],
+    'canvas'=>(($get['logo'])?false:true),
+    'bg_icon'=>false,
+    'logo'=>(($get['logo'])?$get['logo']:null),
+    'initial_color'=>RandomColors::one(),
+    'location'=>(($get['Location'])?$get['Location']:''),
+    'app_id'=>$get['job_enc_id'],
+    'is_govt_job'=>true,
+    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
+];
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
+if (empty($app['image'])||$app['image']==1){
+    $image =  ImageScript::widget(['content' => $content]);
+}else
+{
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
+}
+
+if (empty($app['square_image'])||$app['square_image']==1){
+    $Instaimage =  \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+}else
+{
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$app['square_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -175,6 +202,11 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <div class="down-img">
+                    <h3>Download Sharing Image</h3>
+                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
+                </div>
                 <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
@@ -182,6 +214,36 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 $this->registerCss('
+.down-img {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 67px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #eee;
+    width: 100%;
+    text-align:center;
+}
+.down-img h3 {  
+	color: #000;
+	font-size: 15px;
+	font-family: roboto;
+	margin: 10px 0 15px;
+}
+.down-img a {
+text-align:center;
+	padding: 10px 0px;
+    width: 100%;
+    background: #00a0e3;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+    color: #fff;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.2);
+    display: inline-block;
+    margin: 5px 0px;
+}
 .tags-bar > span {
     background: #f4f5fa;
     -webkit-border-radius: 8px;

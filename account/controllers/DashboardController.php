@@ -108,7 +108,7 @@ class DashboardController extends Controller
                 ->where(['f.created_by' => Yii::$app->user->identity->user_enc_id])
                 ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
                 ->groupBy(['h.applied_application_enc_id'])
-                ->orderBy(['f.id' => SORT_DESC])
+                ->orderBy([new \yii\db\Expression("FIELD (f.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")])
                 ->asArray()
                 ->all();
 

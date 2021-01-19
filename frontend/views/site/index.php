@@ -123,8 +123,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/education-loan-landing') ?>
-<?= $this->render('/widgets/institutional-loan') ?>
+<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
 <div id="app-data"></div>
 <div id="sectionIsLoading">
@@ -147,8 +146,11 @@ $this->registerCss('
 #app-data{
     overflow-x: hidden;
 }
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
-    margin-top: -150px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -159,6 +161,7 @@ $this->registerCss('
 .h-heading{
     color:#fff;
     font-weight:400;
+    padding-top:0 !important;
 }
 .h-text{
     color:#ff7803;
@@ -576,7 +579,7 @@ how-icon{
 }
 @media screen and (max-width: 1400px){
     .header-row{
-        margin-top: -132px;
+        margin-top: -147px;
     }
     .box-border{
          min-width: 157px !important;
@@ -1173,6 +1176,7 @@ if (!Yii::$app->user->isGuest) {
         'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getShortcuts'
     ];
     ");
@@ -1196,6 +1200,7 @@ if (!Yii::$app->user->isGuest) {
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getNewsletter',
         'getShortcuts'
     ];

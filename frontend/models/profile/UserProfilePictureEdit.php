@@ -28,7 +28,7 @@ class UserProfilePictureEdit extends Model
     public function rules()
     {
         return [
-            [['profile_image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 5],
+            [['profile_image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 5,'tooBig'=>'The Image file You Uploaded is too large, Its size cannot exceed more than 5 MB'],
         ];
     }
 

@@ -41,8 +41,7 @@ $this->params['seo_tags'] = [
 
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => $org['slug']
+    'type' => 'company',
 ]);
 ?>
 <section class="rh-header">
@@ -50,22 +49,12 @@ echo $this->render('/widgets/drop_resume', [
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-                    <?php
-                    if (!empty($org_details['logo'])) {
-                        ?>
-                        <img src="<?= $logo_image; ?>">
-                        <?php
-                    } else {
-                        ?>
-                        <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                color="<?= $org_details['initials_color'] ?>" font="70px"></canvas>
-                        <?php
-                    }
-                    ?>
+                    <img src="<?= $logo_image; ?>" class="do-image" data-name="<?= $org_details['name']; ?>" data-color="<?= $org_details['initials_color'] ?>" data-width="150" data-height="150" data-font="70px">
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= ucwords($org_details['name']); ?></div>
+                <div><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
+                </div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
                         <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
@@ -73,18 +62,21 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
                 <div class="share-btn">
-                    <a href="#" class="fbb"
+                    <a href="javascript:;" class="fbb"
                        onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-facebook-f"></i></a> </li>
-                    <a href="#" class="twit"
+                                class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:;" class="twit"
                        onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-twitter"></i></a> </li>
-                    <a href="#" class="linke"
+                                class="fab fa-twitter"></i></a>
+                    <a href="javascript:;" class="linke"
                        onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-linkedin-in"></i></a> </li>
-                    <a href="#" class="whts"
+                                class="fab fa-linkedin-in"></i></a>
+                    <a href="javascript:;" class="whts"
                        onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
-                                class="fab fa-whatsapp marg"></i></a> </li>
+                                class="fab fa-whatsapp marg"></i></a>
+                    <a href="javascript:;" class="telgram"
+                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-telegram-plane"></i></a>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12">
@@ -161,9 +153,6 @@ echo $this->render('/widgets/drop_resume', [
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
-                </div>
-                <div class="set-mar">
-                    <?= $this->render('/widgets/new-position'); ?>
                 </div>
             </div>
             <div class="col-md-4">
@@ -275,6 +264,53 @@ echo $this->render('/widgets/drop_resume', [
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-12">
+                <?php if ($jobs_count > 0) {
+                    ?>
+                    <div id="jobs-cards-main" class="row">
+                        <div class="heading-style">
+                            Available Jobs
+                            <div class="pull-right">
+                                <a href="/jobs/list?slug=<?= $slug ?>"
+                                   class="write-review">View
+                                    All</a>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="blogbox"></div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if ($internships_count > 0) {
+                    ?>
+                    <div id="internships-cards-main" class="row">
+                        <div class="internships-block">
+                            <div class="heading-style">
+                                Available Internships
+                                <div class="pull-right">
+                                    <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                       class="write-review">View All</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="internships_main"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="col-md-12 set-mar">
+                <?=
+                $this->render('/widgets/new-position', [
+                    'company' => $org_details['name'],]);
+                ?>
             </div>
         </div>
     </div>
@@ -515,6 +551,8 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/application-card');
+
 if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-reviews', [
     ]);
@@ -524,17 +562,21 @@ if ($review_type == 'claimed') {
 }
 
 $this->registerCss('
+#jobs-cards-main{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.form-group.form-md-line-input.form-md-floating-label .form-control~label{
+    top: 5px;
+}
 .set-mar {
 	margin: 30px 0 20px;
-}
-.i-review-next,.i-review-input-group,.i-review-selectbox,.i-review-input{
-    background-color:#fff !important;
 }
 .share-btn{
     display:flex;
     width:100%;
 }
-.fbb i, .twit i, .whts i, .linke i{
+.fbb i, .twit i, .whts i, .linke i, .telgram i{
     background: #fff;
     margin:0 2px;
     padding: 9px 0;
@@ -570,6 +612,11 @@ $this->registerCss('
 }
 .linke i:hover{
     background-color:#0077B5;
+    color:#fff;
+}
+.telgram i{color: #0088cc;}
+.telgram i:hover{
+    background-color:#0088cc;
     color:#fff;
 }
 .i-review-navigation
@@ -714,6 +761,7 @@ border: 2px solid #cadfe8 !important;
     line-height:50px;
     margin-top: -12px;
 }
+.com-name:hover{color:#fff;}
 .com-rating i{
     font-size:16px;
     background:#ccc;
@@ -956,7 +1004,7 @@ border: 2px solid #cadfe8 !important;
 }
 .rs-main{
     background: #00a0e3;
-    max-width: 200px;
+    max-width: 220px;
     padding: 10px 13px 15px 13px;
     text-align: center;
     color: #fff;
@@ -973,7 +1021,7 @@ border: 2px solid #cadfe8 !important;
     border-radius:5px;
 }
 .com-rating-1 i.active{
-    color:#ff7803;
+    color:#faa046;
 }
 .summary-box{ 
     display:flex;
@@ -1149,7 +1197,26 @@ border: 2px solid #cadfe8 !important;
   }
 }
 /*Load Suggestions loader css ends */
+.write-review {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    background-color: #00a0e3;
+    color: #fff;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+}
+.write-review:hover{
+    color: #00a0e3;
+    background-color: #fff;
+}
 /*-----*/
+
 @media only screen and (max-width: 992px){
     .cp-bttn button {
         margin-top: 20px; 
@@ -1215,6 +1282,7 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
+
 $(document).on("click", ".star-rating1 label", function(e){
     e.preventDefault();
     var id = "#" + $(this).attr("for");
@@ -1231,8 +1299,8 @@ $(document).on('click','.load_reviews',function(e){
         success:function(res){
             if(res==true){
                 $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
-                }
-         }
+            }
+        }
     });        
 });
 var yearsObj = [];
@@ -1440,11 +1508,14 @@ var popup = new ideaboxPopup({
 					},
 			]
 			});
+
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1464,6 +1535,7 @@ function review_post_ajax(data) {
           }
 	});
 }
+
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
@@ -1472,7 +1544,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
@@ -1481,9 +1553,11 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 </script>
 
 <script>
-    document.getElementById('sb').addEventListener("click", function () {
-        var sharecom = document.querySelector('.sd-btns');
-        sharecom.classList.toggle('share-hidden');
+    if(document.getElementById('sb')) {
+        document.getElementById('sb').addEventListener("click", function () {
+            var sharecom = document.querySelector('.sd-btns');
+            sharecom.classList.toggle('share-hidden');
 
-    })
+        });
+    }
 </script>

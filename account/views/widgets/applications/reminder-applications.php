@@ -16,6 +16,9 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
             <div class="actions">
                 <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
             </div>
+            <div class="col-md-12">
+                A Gentle Reminder About The Job And Internships Either Applied By You Or Which You Are Willing To Apply.
+            </div>
         </div>
         <div class="portlet-body">
             <div class="add-reminder">
@@ -231,8 +234,8 @@ $this->registerCss("
     border-top:2px solid;
 }
 .record-text{
-    font-size:28px;
-    margin:10px;
+    font-size: 20px;
+    margin:15px;
 }
 .cross{
     padding-top:10px;
