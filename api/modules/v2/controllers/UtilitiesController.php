@@ -141,9 +141,9 @@ class UtilitiesController extends ApiBaseController
         return $cities;
     }
 
-    public function actionGetCompanies($search = null, $a = null, $limit = null)
+    public function actionGetCompanies($search = null, $filterby = null, $limit = null)
     {
-        $l = 25;
+        $l = 20;
         if ($limit) {
             $l = $limit;
         }
@@ -173,8 +173,8 @@ class UtilitiesController extends ApiBaseController
                 ['like', 'slug', $search]
             ]);
         }
-        if ($a) {
-            $organizations->andWhere(['like', 'name', `$a%`]);
+        if ($filterby) {
+            $organizations->andWhere(['like', 'name', $filterby . '%', false]);
         }
         $organizations = $organizations->limit($l)->asArray()
             ->all();
