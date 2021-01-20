@@ -359,7 +359,7 @@ use yii\helpers\Url;
         <div class="faq-s-bg"></div>
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-7 col-sm-12">
                     <div class="faq-main">
                         <h2>Frequently Asked Question</h2>
                         <ul class="questions-faq">
@@ -371,17 +371,19 @@ use yii\helpers\Url;
                                 </a>
                                 <div id="documents" class="collapse using-pd">
                                     The following documents will be required to submit for loan approval.<br>
-                                    AADHAR CARD<br>
-                                    PAN CARD (mandatory in certain Banks/NBFC's)<br>
-                                    PHOTO<br>
-                                    PASSPORT<br>
-                                    10TH to Last Qualification<br>
-                                    COLLEGE ADMISSION LETTER<br>
-                                    ENTRANCE EXAM SCORE CARD (if any)<br>
-                                    IELTS SCORE CARD<br>
-                                    OFFER LETTER (mandatory in certain Banks/NBFC's)<br>
-                                    MOBILE NUMBER<br>
-                                    EMAIL ID
+                                      <ul class="li-doc">
+                                        <li>- AADHAR CARD</li>
+                                        <li>- PAN CARD (mandatory in certain Banks/NBFC's)</li>
+                                        <li>- PHOTO</li>
+                                        <li>- PASSPORT</li>
+                                        <li>- 10TH to Last Qualification</li>
+                                        <li>- COLLEGE ADMISSION LETTER</li>
+                                        <li>- ENTRANCE EXAM SCORE CARD (if any)</li>
+                                        <li>- IELTS SCORE CARD</li>
+                                        <li>- OFFER LETTER (mandatory in certain Banks/NBFC's)</li>
+                                        <li>- MOBILE NUMBER</li>
+                                        <li>- EMAIL ID</li>
+                                      </ul>
                                 </div>
                             </li>
                             <li>
@@ -402,8 +404,7 @@ use yii\helpers\Url;
                                 </a>
                                 <div id="repay" class="collapse using-pd">
                                     Direct EMI starts next month from the date of sanctioning of loan <br>
-                                    or<br>
-                                    Moratorium period (simple interest is charged on the amount disbursed)
+                                    or Moratorium period (simple interest is charged on the amount disbursed)
                                 </div>
                             </li>
                             <li>
@@ -539,9 +540,15 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.li-doc li{
+    line-height: 3px;
+}
 .faq-btn{
     text-align: center;
     margin-top: 15px;
+}
+.collapse using-pd li{
+    padding-top: 3px;
 }
 .faq-btn a {
 	color: #539ffe;
