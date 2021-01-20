@@ -68,7 +68,7 @@ $this->beginPage();
                 </div>
             </div>
             <?php
-            if ($userType == organization) {
+            if ($userType == "organization") {
             ?>
             <div class="pos-abso-individual">
                 <div class="pai-rel">
@@ -83,7 +83,7 @@ $this->beginPage();
                 </div>
             </div>
                 <?php
-            } elseif ($userType == individual) {
+            } elseif ($userType == "individual") {
                 ?>
                 <div class="pos-abso-individual">
                     <div class="pai-rel">
