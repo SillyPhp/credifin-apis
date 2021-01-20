@@ -538,8 +538,49 @@ if ($settings["showNewPositionsWidget"]):
             </div>
         </div>
     </div>
-<?php } ?>
-
+<?php }
+if (!empty($data2)){
+?>
+    <script type="application/ld+json">
+        {
+            "@context" : "https://schema.org/",
+            "@type" : "JobPosting",
+            "title" : "<?=(($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'])?>",
+            "description" : "<?=$data2['applicationJobDescriptions']?>",
+            "identifier": {
+                "@type": "PropertyValue",
+                "name": "Google",
+                "value": "1234567"
+            },
+            "datePosted" : "<?=$data2['created_on']?>",
+            "validThrough" : "<?= $data1['last_date']?>",
+            "employmentType" : "CONTRACTOR",
+            "hiringOrganization" : {
+                "@type" : "Organization",
+                "name" : "<?=$org['org_name']?>",
+                "sameAs" : "<?=$org['website']?>",
+                "logo" : "<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], true)?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "<?=$lc?>",
+                    "addressCountry": "IN"
+                }
+            },
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "INR",
+                "value": {
+                    "value": "<?=$amount?>"
+                }
+            }
+        }
+    </script>
+<?php
+}
+?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
