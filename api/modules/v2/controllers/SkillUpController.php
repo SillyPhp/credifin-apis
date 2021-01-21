@@ -192,6 +192,9 @@ class SkillUpController extends ApiBaseController
                 }]);
             }], false);
         if (isset($param['teacher_recommendations']) && $param['teacher_recommendations']) {
+
+            $college_id = $param['teacher_college_id'];
+
             $feeds->innerJoinWith(['skillsUpRecommendedPosts d' => function ($d) use ($college_id, $user) {
                 $d->innerJoinWith(['recommendedBy d1' => function ($b) use ($college_id, $user) {
                     $b->innerJoinWith(['teachers d2' => function ($d2) use ($college_id, $user) {
@@ -732,9 +735,18 @@ class SkillUpController extends ApiBaseController
                 $page = 1;
             }
             $param['teacher_recommendations'] = true;
+            $teacher = Teachers::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->one();
+            $param['teacher_college_id'] = $teacher->college_enc_id;
             $teacher_recommendations = $this->feeds($page, $limit, $param);
 
             if ($teacher_recommendations) {
+                foreach ($teacher_recommendations as $k => $v) {
+                    $teacher_recommendations[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                    $teacher_recommendations[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
+                    $teacher_recommendations[$k]['teacher_recommended'] = $this->__getTeacherRecommended($v['post_enc_id']);
+                }
                 return $this->response(200, ['status' => 200, 'message' => 'success', 'data' => $teacher_recommendations]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
