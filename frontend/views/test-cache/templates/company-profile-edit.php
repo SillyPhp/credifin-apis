@@ -11,18 +11,6 @@ body{
     font-family: open sans;
     color:#000 !important;
 }
-.appstore {
-    font-weight: 600;
-    font-size: 16px;
-    font-family: lora;
-    padding-top: 15px;
-    text-align: center;
-  }
-  .appss img
-  {
-	height: 50px;
-	width: 110px;
-  }
 .wrapper{
     max-width:600px;
     margin: 0 auto;
@@ -73,17 +61,16 @@ img + div{
     text-align:center;
 }
 .editProfile a{
-    background: #00a0e3;
+    background: #ff575a;
     color:#fff;
     padding:8px 20px;
     text-decoration: none;
     border-radius:8px;
 }
 .mail-text{
-    text-align:left;
+    text-align:center;
     max-width:450px;
     margin: 0 auto;
-    color:#000;
 }
 .text-bold{
     margin-top:30px;
@@ -131,9 +118,9 @@ p{
 ');
 ?>
 <div class="wrapper">
-    <div class=" bg-blue">
+    <div class="bg-blue">
         <div class="logo">
-            <a href="https://www.empoweryouth.com">
+            <a href="<?= Url::to('/', true);?>">
                 <img src="<?= Url::to('@commonAssets/email_service/email-logo.png', true); ?>" class="responsive">
             </a>
         </div>
@@ -156,26 +143,46 @@ p{
     </div>
     <div>
         <div class="banner">
-            <img src="<?= Url::to('@commonAssets/email_service/review/reviews-hdr.png', 'https'); ?>">
+            <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/company-profile-hdr.png', 'https'); ?>">
         </div>
     </div>
-    <div class="mail-text">
-        <div class="text-bold mb1">Thank you so much for joining us.</div>
-        <p>We feel so grateful if you can share your currently working company review with us. That helps us to improve our audience satisfaction by writing a quick review by you.</p>
-        <p>Your this one step will be very appreciable from us.</p>
-    </div>
     <div class="editProfile">
-        <a href="https://www.empoweryouth.com">Write a Review</a>
+        <a href="<?= Url::to('/' . $data['username'] . '/edit', true);?>">Edit Profile</a>
+    </div>
+    <div class="mail-text">
+        <div class="text-bold mb1">SET IT, FORGET IT</div>
+        <p>We recommend that Its Important to build complete profile & update your preferences.</p>
+
+        <div class="display-flex">
+            <div class="icon">
+                <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/write-abt-comp.png', true); ?>">
+            </div>
+            <div class="text">
+                <div class="heading-bold">Write about yourself</div>
+                <p class="font14">If you haven’t yet uploaded your details to help Candidates know you before inviting into your company.</p>
+            </div>
+        </div>
+        <div class="display-flex">
+            <div class="icon">
+                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/verifyinfo.png', true); ?>">
+            </div>
+            <div class="text">
+                <div class="heading-bold">Verify your information</div>
+                <p class="font14"> Consider connecting your social networks and quickly verify your email or phone number to help build trust in Empower Youth.</p>
+            </div>
+        </div>
+        <div class="display-flex">
+            <div class="icon">
+                <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/update-job.png', true); ?>">
+            </div>
+            <div class="text">
+                <div class="heading-bold">Do update the jobs</div>
+                <p class="font14">Update the vacancies and latest openings. create quick, AI, & tweet jobs that will ease candidates to applied for. and Select jobs for campus hiring.</p>
+            </div>
+        </div>
     </div>
     <div class="border3">
         <div class="end"><img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', true); ?>"></div>
-        <div class="appstore">Download Our App
-            <div class="appss">
-                <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play" target="_blank">
-                    <img alt="Get it on Google Play" src="https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png" title="Download Empower Youth App on Google Play">
-                </a>
-            </div>
-        </div>
         <div class="copyright">
             <div class="">Copyright © 2020 Empower Youth</div>
         </div>

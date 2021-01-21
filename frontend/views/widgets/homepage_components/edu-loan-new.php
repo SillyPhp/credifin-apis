@@ -20,7 +20,7 @@ use yii\helpers\Url;
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-12 p0">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="image-topics">
                                     <div class="icon-loan">
                                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="">
@@ -96,11 +96,11 @@ $this->registerCss('
     pading-right: 0px;
 }
 .heading-data-set h3 {
-	font-size: 38px;
+	font-size: 28px;
     color: #ED6D1E;
     font-family: roboto;
     font-weight: 600;
-    line-height: 46px;
+    line-height: 40px;
 }
 .heading-data-set h4 {
 	font-size: 20px;

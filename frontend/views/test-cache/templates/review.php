@@ -171,7 +171,7 @@ p{
         <div class="end"><img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', true); ?>"></div>
         <div class="appstore">Download Our App
             <div class="appss">
-                <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play" target="_blank">
+                <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play">
                     <img alt="Get it on Google Play" src="https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png" title="Download Empower Youth App on Google Play">
                 </a>
             </div>

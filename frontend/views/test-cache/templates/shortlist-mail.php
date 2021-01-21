@@ -164,18 +164,6 @@ use yii\helpers\ArrayHelper;
             font-size: 18px;
             color: #00a0e3;
         }
-        .appstore {
-            font-weight: 600;
-            font-size: 16px;
-            font-family: lora;
-            padding-top: 15px;
-            text-align: center;
-        }
-        .appss img
-        {
-            height: 50px;
-            width: 110px;
-        }
 
         .copyright {
             padding: 5px 0 10px 0;
@@ -377,13 +365,6 @@ use yii\helpers\ArrayHelper;
         <div class="text-center">
             <div class="ey-team">
                 <img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', 'https'); ?>"/>
-            </div>
-            <div class="appstore">Download Our App
-                <div class="appss">
-                    <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play" target="_blank">
-                        <img alt="Get it on Google Play" src="https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png" title="Download Empower Youth App on Google Play">
-                    </a>
-                </div>
             </div>
             <div class="copyright">
                 <div class="">Copyright © 2019 Empower Youth</div>
