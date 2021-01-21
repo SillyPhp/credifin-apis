@@ -611,7 +611,7 @@ $this->registerCss('
 }
 .faq-s-bg{
     position: absolute;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/qna-iconn.png') . ');
+    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/qna-iccn.png') . ');
     background-repeat: no-repeat;
     background-position: right bottom;
     background-size: contain;
