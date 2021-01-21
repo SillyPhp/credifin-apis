@@ -178,11 +178,14 @@ class SkillUpController extends ApiBaseController
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                 'b.name source_name',
                 'b.url source_url',
-                'a.post_author',
                 'a.content_type',
                 'a.post_image_url'
             ])
             ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors i' => function ($i) {
+                $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                $i->joinWith(['authorEnc i1'], false);
+            }])
             ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
                 $c->joinWith(['skillEnc c1' => function ($c1) {
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
@@ -520,7 +523,6 @@ class SkillUpController extends ApiBaseController
                 ->select(['a.post_enc_id',
                     'a.post_title',
                     'a.slug post_slug',
-                    'a.post_author',
                     'a.post_source_url',
                     'a.post_image_url',
                     'a.source_enc_id',
@@ -558,6 +560,10 @@ class SkillUpController extends ApiBaseController
                 ->joinWith(['skillsUpPostAssignedBlogs h' => function ($h) {
                     $h->select(['h.post_enc_id', 'h1.description']);
                     $h->joinWith(['blogPostEnc h1'], false);
+                }])
+                ->joinWith(['skillsUpAuthors i' => function ($i) {
+                    $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                    $i->joinWith(['authorEnc i1'], false);
                 }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()

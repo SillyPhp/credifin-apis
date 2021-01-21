@@ -20,7 +20,12 @@ $this->beginPage();
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <script src="https://accounts.google.com/gsi/client" async defer></script>
         <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
+        <?php if(Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
         if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([

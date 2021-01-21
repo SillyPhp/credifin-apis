@@ -539,7 +539,7 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </div>
 <?php }
-if (!empty($data2)){
+if (!empty($data2) && Yii::$app->params->options->showSchema){
 ?>
     <script type="application/ld+json">
         {
