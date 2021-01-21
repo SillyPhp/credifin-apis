@@ -1,7 +1,7 @@
 <?php
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
     ],
