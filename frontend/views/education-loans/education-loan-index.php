@@ -371,19 +371,17 @@ use yii\helpers\Url;
                                 </a>
                                 <div id="documents" class="collapse using-pd">
                                     The following documents will be required to submit for loan approval.<br>
-                                      <ul class="li-doc">
-                                        <li>- AADHAR CARD</li>
-                                        <li>- PAN CARD (mandatory in certain Banks/NBFC's)</li>
-                                        <li>- PHOTO</li>
-                                        <li>- PASSPORT</li>
-                                        <li>- 10TH to Last Qualification</li>
-                                        <li>- COLLEGE ADMISSION LETTER</li>
-                                        <li>- ENTRANCE EXAM SCORE CARD (if any)</li>
-                                        <li>- IELTS SCORE CARD</li>
-                                        <li>- OFFER LETTER (mandatory in certain Banks/NBFC's)</li>
-                                        <li>- MOBILE NUMBER</li>
-                                        <li>- EMAIL ID</li>
-                                      </ul>
+                                        - AADHAR CARD<br>
+                                        - PAN CARD (mandatory in certain Banks/NBFC's)<br>
+                                        - PHOTO<br>
+                                        - PASSPORT<br>
+                                        - 10TH to Last Qualification<br>
+                                        - COLLEGE ADMISSION LETTER<br>
+                                        - ENTRANCE EXAM SCORE CARD (if any)<br>
+                                        - IELTS SCORE CARD<br>
+                                        - OFFER LETTER (mandatory in certain Banks/NBFC's)<br>
+                                        - MOBILE NUMBER<br>
+                                        - EMAIL ID<br>
                                 </div>
                             </li>
                             <li>
@@ -540,9 +538,6 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-.li-doc li{
-    line-height: 3px;
-}
 .faq-btn{
     text-align: center;
     margin-top: 15px;
