@@ -12,6 +12,8 @@ use common\models\CertificateTypes;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
@@ -41,7 +43,8 @@ class LoansController extends ApiBaseController
                 'college-courses',
                 'loan-purpose',
                 'save-application',
-                'home'
+                'home',
+                'enquiry-form'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -53,6 +56,7 @@ class LoansController extends ApiBaseController
                 'loan-purpose' => ['POST'],
                 'save-application' => ['POST'],
                 'home' => ['POST'],
+                'enquiry-form' => ['POST']
             ]
         ];
         return $behaviors;
@@ -70,7 +74,7 @@ class LoansController extends ApiBaseController
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
-        return $user->user_enc_id;
+        return $user ? $user->user_enc_id : null;
     }
 
     public function actionCollegeList()
@@ -1053,6 +1057,66 @@ class LoansController extends ApiBaseController
             return $this->response(200, $data);
         } else {
             return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionEnquiryForm()
+    {
+        $user_id = $this->userId();
+
+        $data = Yii::$app->request->post();
+
+        if (!$data) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $model = new LeadsApplications();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+        $model->application_number = date('ymd') . time();
+        if ($user_id) {
+            $model->created_by = $user_id;
+        }
+
+        $model->first_name = $data['first_name'];
+        $model->last_name = $data['last_name'];
+        $model->student_mobile_number = $data['phone'];
+        $model->student_email = $data['student_email'];
+        $model->loan_for = $data['loan_for'];
+        $model->admission_taken = $data['admission_taken'];
+        $model->college_institute_name = $data['college_name'];
+        $model->course_name = $data['course_name'];
+        if (isset($data['apply_now']) && $data['apply_now'] == 'no') {
+            $model->loan_amount = $data['loan_amount'];
+        }
+        if ($user_id) {
+            $model->last_updated_by = $user_id;
+        }
+        if ($model->save()) {
+            if ($data['clg_prefs']) {
+                $i = 1;
+                foreach ($data['clg_prefs'] as $c) {
+                    $clg_pref = new LeadsCollegePreference();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $clg_pref->preference_enc_id = $utilitiesModel->encrypt();
+                    $clg_pref->application_enc_id = $model->application_enc_id;
+                    $clg_pref->sequence = $i;
+                    $clg_pref->college_name = $c;
+                    if ($user_id) {
+                        $clg_pref->created_by = $user_id;
+                    }
+                    if (!$clg_pref->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                    $i++;
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'app_enc_id' => $model->application_enc_id]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
         }
     }
 
