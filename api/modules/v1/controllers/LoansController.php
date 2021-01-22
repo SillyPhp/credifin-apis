@@ -1037,7 +1037,7 @@ class LoansController extends ApiBaseController
 
         $loan_partners = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END org_logo', 'a.initials_color'])
+            ->select(['a.organization_enc_id', 'REPLACE(a.name, "&amp;", "&") as name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END org_logo', 'a.initials_color'])
             ->innerJoinWith(['selectedServices b' => function ($b) {
                 $b->innerJoinWith(['serviceEnc c']);
             }], false)
