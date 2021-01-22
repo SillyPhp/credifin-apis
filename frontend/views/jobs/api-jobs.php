@@ -272,7 +272,35 @@ if ($settings["showNewPositionsWidget"]):
             ?>
         </div>
     </section>
-<?php endif; ?>
+<?php endif;
+if (Yii::$app->params->options->showSchema){
+    ?>
+    <script type="application/ld+json">
+        {
+            "@context" : "https://schema.org/",
+            "@type" : "JobPosting",
+            "title" : "<?= $get['title']; ?>",
+            "description" : "<?= $get['description'] ?>",
+            "datePosted" : "<?=$get['created_at']?>",
+            "employmentType" : "<?=$get['type']?>",
+            "hiringOrganization" : {
+                "@type" : "Organization",
+                "name" : "<?= $get['company'] ?>",
+                "sameAs" : "<?= $get['company_url'] ?>",
+                "logo" : "<?= $get['company_logo']; ?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "<?=$location?>",
+                }
+            }
+        }
+    </script>
+    <?php
+}
+?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
