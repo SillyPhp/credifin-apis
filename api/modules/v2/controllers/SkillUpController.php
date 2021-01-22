@@ -214,7 +214,7 @@ class SkillUpController extends ApiBaseController
             }], true);
         }
 
-        $feeds->where(['a.is_deleted' => 0, 'a.status' => 'Active']);
+        $feeds->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'b.is_deleted' => 0]);
 
         if (isset($param['content_type']) && !empty($param['content_type'])) {
             $feeds->andWhere(['in', 'a.content_type', $param['content_type']]);
