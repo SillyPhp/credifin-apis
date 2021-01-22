@@ -78,8 +78,8 @@ $this->registerCss('
   }
   .appss img
   {
-	height: 50px;
-	width: 110px;
+	height: 55px;
+	width: 130px;
   }
   .copyright{
     padding:10px 0 0 0; 
@@ -148,7 +148,7 @@ $this->registerCss('
         </div>
         <div class="appstore">Download Our App
             <div class="appss">
-                <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play" target="_blank">
+                <a href="https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1" title="Get it on Google Play">
                     <img alt="Get it on Google Play" src="https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png" title="Download Empower Youth App on Google Play">
                 </a>
             </div>

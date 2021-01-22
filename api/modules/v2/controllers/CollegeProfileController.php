@@ -147,7 +147,17 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'detail' => $organizations, 'courses' => $courses]);
+            $streams = AssignedCollegeCourses::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream', 'c.course_enc_id'])
+                ->joinWith(['courseEnc c'], false)
+                ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0, 'c.type' => 'Stream'])
+                ->orderBy(['c.course_name' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'detail' => $organizations, 'courses' => $courses, 'streams' => $streams]);
         } else {
             return $this->response(401);
         }
@@ -450,6 +460,50 @@ class CollegeProfileController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetStreams()
+    {
+        $streams = CollegeCoursesPool::find()
+            ->select(['course_enc_id', 'course_name stream'])
+            ->where(['is_deleted' => 0, 'status' => 'Approved', 'type' => 'Stream'])
+            ->asArray()
+            ->all();
+
+        if ($streams) {
+            return $this->response(200, ['status' => 200, 'streams' => $streams]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionSaveStreams()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $param = Yii::$app->request->post();
+            $college_id = $this->getOrgId();
+
+            if (!isset($param['course_enc_id']) && empty($param['course_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $assigned = new AssignedCollegeCourses();
+            $utilities = new Utilities();
+            $utilities->variables['string'] = time() . rand(100, 100000);
+            $assigned->assigned_college_enc_id = $utilities->encrypt();
+            $assigned->organization_enc_id = $college_id;
+            $assigned->course_enc_id = $param['course_enc_id'];
+            $assigned->created_by = $user->user_enc_id;
+            $assigned->created_on = date('Y-m-d H:i:s');
+            if (!$assigned->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
