@@ -189,7 +189,7 @@ if (empty($application_details['square_image']) || $application_details['square_
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -204,7 +204,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -540,21 +540,21 @@ if ($settings["showNewPositionsWidget"]):
     </div>
 <?php }
 if (!empty($data2) && Yii::$app->params->options->showSchema){
+    $onlyJd = [];
+    foreach ($data2['applicationJobDescriptions'] as $jd){
+        array_push($onlyJd,$jd['job_description']);
+    }
+    $finalJobDescription = implode("<br/>",$onlyJd);
 ?>
     <script type="application/ld+json">
         {
             "@context" : "https://schema.org/",
             "@type" : "JobPosting",
-            "title" : "<?=(($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'])?>",
-            "description" : "<?=$data2['applicationJobDescriptions']?>",
-            "identifier": {
-                "@type": "PropertyValue",
-                "name": "Google",
-                "value": "1234567"
-            },
+            "title" : "<?=$data2['cat_name']?>",
+            "description" : "<?=$finalJobDescription;?>",
             "datePosted" : "<?=$data2['created_on']?>",
             "validThrough" : "<?= $data1['last_date']?>",
-            "employmentType" : "CONTRACTOR",
+            "employmentType" : "<?=$data2['type']?>",
             "hiringOrganization" : {
                 "@type" : "Organization",
                 "name" : "<?=$org['org_name']?>",
@@ -573,7 +573,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema){
                 "@type": "MonetaryAmount",
                 "currency": "INR",
                 "value": {
-                    "value": "<?=$amount?>"
+                    "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
                 }
             }
         }
