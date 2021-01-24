@@ -194,7 +194,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'applied' => $applied,
                     'application_slug' => $application_details["slug"],
                     'shortlist' => $shortlist,
-                    'shortlist_btn_display'=>false
+                    'shortlist_btn_display'=>false,
+                    'whatsAppmodel' => $whatsAppmodel
                 ]); ?>
             </div>
         </div>
@@ -234,7 +235,6 @@ $this->render('/widgets/employer_applications/top-banner', [
         copyText.select();
         document.execCommand("copy");
         toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
     }
 </script>
 <?php
