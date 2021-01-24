@@ -5,46 +5,46 @@
 use yii\helpers\Url;
 
 ?>
-    <section class="backgrounds">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <div class="loan-text">
-                        <h1>Education Loan With Lower Interest Rates.</h1>
-                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>
-                            <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!
-                        </h2>
-                        <!--                        <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
-                        <a href="<?= Url::to('/education-loans/apply') ?>"
-                           class="hvr-sweep-to-bottom-2">
-                            Apply Now
-                        </a>
-                        <a href="<?= Url::to('/site/admission-form') ?>"
-                           class="hvr-sweep-to-bottom-3">
-                            Enquire Now
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6 clouds">
-                    <div class="loan-image">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-hdr-icn.png') ?>"/>
-                    </div>
-                    <div class="cloud moving">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c1.png') ?>"/>
-                    </div>
-                    <div class="cloud1 moving1">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c2.png') ?>"/>
-                    </div>
-                    <div class="cloud2 moving">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c3.png') ?>"/>
-                    </div>
-                    <div class="cloud3 moving1">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/c4.png') ?>"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="backgrounds">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <div class="loan-text">-->
+<!--                        <h1>Education Loan With Lower Interest Rates.</h1>-->
+<!--                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>-->
+<!--                            <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!-->
+<!--                        </h2>-->
+<!--                                             <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
+<!--                        <a href="--><?//= Url::to('/education-loans/apply') ?><!--"-->
+<!--                           class="hvr-sweep-to-bottom-2">-->
+<!--                            Apply Now-->
+<!--                        </a>-->
+<!--                        <a href="--><?//= Url::to('/site/admission-form') ?><!--"-->
+<!--                           class="hvr-sweep-to-bottom-3">-->
+<!--                            Enquire Now-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-6 col-sm-6 clouds">-->
+<!--                    <div class="loan-image">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/loan-hdr-icn.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                    <div class="cloud moving">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c1.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                    <div class="cloud1 moving1">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c2.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                    <div class="cloud2 moving">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c3.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                    <div class="cloud3 moving1">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c4.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
