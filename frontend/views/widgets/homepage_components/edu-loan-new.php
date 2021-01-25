@@ -87,7 +87,7 @@ $this->registerCss('
     padding: 30px 0px 10px 0px;
 }
 .heading-data-set {
-	padding: 25px 0 35px;
+	padding: 40px 0 35px;
 }
 .m0{
     margin-left: 0px;
