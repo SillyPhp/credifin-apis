@@ -16,11 +16,12 @@ use yii\helpers\Url;
                                     <h4>Choose our easy loan schemes with low interest rate.</h4>
                                     <p>Apply in colleges across India & Abroad</p>
                                     <div class="loan-btn">
-                                        <a href="/education-loans">Apply Now!</a>
+                                        <a href="/education-loans/apply">Apply Now!</a>
+                                        <a href="/site/admission-form">Enquire Now!</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-12">
+                            <div class="col-md-12 col-sm-12 p0">
                                 <div class="image-topics">
                                     <div class="icon-loan">
                                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="">
@@ -83,6 +84,7 @@ $this->registerCss('
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    padding: 30px 0px 10px 0px;
 }
 .heading-data-set {
 	padding: 25px 0 35px;
