@@ -159,6 +159,33 @@ use yii\helpers\Url;
             </div>
     </section>
 
+    <section class="edu-with-sec">
+        <div class="container">
+            <div class="row mt-20">
+                <div class="col-md-12">
+                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="loansWorks col-md-3 col-sm-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
+                </div>
+                <div class="loansWorks col-md-3 col-sm-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/suggest-loan.png') ?>">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
+                </div>
+                <div class="loansWorks col-md-3 col-sm-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>" alt="share-docs">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
+                </div>
+                <div class="loansWorks col-md-3 col-sm-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>" alt="sanctioned-loan">
+                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
+                </div>
+            </div>
+        </div>
+    </section>
     <section>
         <div class="ptb50 bgEd">
             <div class="container">
@@ -229,35 +256,8 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section class="edu-with-sec">
-        <div class="container">
-            <div class="row mt-20">
-                <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>">
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
-                </div>
-                <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/suggest-loan.png') ?>">
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
-                </div>
-                <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>" alt="share-docs">
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
-                </div>
-                <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>" alt="sanctioned-loan">
-                    <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="bgEd">
+    <section class="bgeEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -538,6 +538,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.bgeEd {
+    background-color: #edf4fc;
+}
 .faq-btn{
     text-align: center;
     margin-top: 15px;
@@ -810,9 +813,10 @@ $this->registerCss('
 .ptb50{
     padding-top: 25px;
     padding-bottom: 25px;
+    background-color: #edf4fc;
 }
 .bgEd{
-    background: #EDF4FC
+    background: #fff;
 }
 .loan-college {
     text-align: center;
@@ -1206,6 +1210,7 @@ $this->registerCss('
 }
 .edu-with-sec{
     padding:0px 0px 20px 0;
+    background-color: #edf4fc;
 }
 .edu-loan-btn a:hover{
     text-decoration: none;
