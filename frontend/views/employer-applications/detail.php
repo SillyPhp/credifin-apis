@@ -572,9 +572,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema){
             "baseSalary": {
                 "@type": "MonetaryAmount",
                 "currency": "INR",
-                "value": {
-                    "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
-                }
+                "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
             }
         }
     </script>
