@@ -16,7 +16,7 @@ namespace common\models;
  * @property string $created_by By which User Application information was added
  * @property string $last_updated_on On which date Application information was updated
  * @property string $last_updated_by By which User Application information was updated
- * @property string $status Application Status (Accepted, Rejected, Pending, Hired, Cancelled)
+ * @property string $status Application Status (Accepted, Rejected, Pending, Hired, Cancelled, Blocked by college)
  * @property int $is_deleted Is Application Deleted (0 as False, 1 as True)
  *
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires
