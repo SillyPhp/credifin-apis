@@ -361,7 +361,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-7 col-sm-12">
                     <div class="faq-main">
-                        <h2>Frequently Asked Question</h2>
+                        <h2>Frequently Asked Questions</h2>
                         <ul class="questions-faq">
                             <li>
                                 <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents are required for the approval of loan via EmpowerYouth?
@@ -372,7 +372,7 @@ use yii\helpers\Url;
                                 <div id="documents" class="collapse using-pd">
                                     The following documents will be required to submit for loan approval.<br>
                                         - AADHAR CARD<br>
-                                        - PAN CARD (mandatory in certain Banks/NBFC's)<br>
+   s                                     - PAN CARD (mandatory in certain Banks/NBFC's)<br>
                                         - PHOTO<br>
                                         - PASSPORT<br>
                                         - 10TH to Last Qualification<br>
@@ -1171,18 +1171,18 @@ $this->registerCss('
 }
 .edu-hw-title{
     font-size: 20px;
-    color:#000;
+    color: #000;
     font-family: Roboto;
     text-transform: uppercase;
     font-weight: bold;
-    text-align: center;
+    text-align: justify;
 }
 .mt20{
     margin-top: 20px;
 }
 .edu-hw-description{
     color: #000;
-    text-align: center;
+    text-align: justify;
     font-family: roboto;
     font-size: 15px;
 }
