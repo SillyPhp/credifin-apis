@@ -372,7 +372,7 @@ use yii\helpers\Url;
                                 <div id="documents" class="collapse using-pd">
                                     The following documents will be required to submit for loan approval.<br>
                                         - AADHAR CARD<br>
-   s                                     - PAN CARD (mandatory in certain Banks/NBFC's)<br>
+                                        - PAN CARD (mandatory in certain Banks/NBFC's)<br>
                                         - PHOTO<br>
                                         - PASSPORT<br>
                                         - 10TH to Last Qualification<br>

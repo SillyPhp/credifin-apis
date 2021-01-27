@@ -376,7 +376,7 @@ AppAssets::register($this);
                 <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
                         <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
-                           title='Download Empower Youth App on Google Play'>
+                           title='Download Empower Youth App on Google Play' target="_blank">
                             <img alt='Get it on Google Play'
                                  src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
                                  title='Download Empower Youth App on Google Play'/>
