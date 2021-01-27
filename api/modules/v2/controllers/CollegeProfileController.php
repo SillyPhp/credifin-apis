@@ -150,7 +150,7 @@ class CollegeProfileController extends ApiBaseController
             $streams = AssignedCollegeCourses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id', 'c.course_name stream', 'c.course_enc_id'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
                 ->joinWith(['courseEnc c'], false)
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0, 'c.type' => 'Stream'])
                 ->orderBy(['c.course_name' => SORT_ASC])
@@ -427,7 +427,7 @@ class CollegeProfileController extends ApiBaseController
             if (isset($params['course_enc_id']) && !empty($params['course_enc_id'])) {
                 $course_id = $params['course_enc_id'];
             } else {
-                return $this->response(422, ['status' => 422, 'message' => 'missing informtion']);
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
             $course = AssignedCollegeCourses::find()
@@ -503,10 +503,62 @@ class CollegeProfileController extends ApiBaseController
             if (!$assigned->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
-            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
+
+            $streams = AssignedCollegeCourses::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                ->joinWith(['courseEnc c'], false)
+                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0, 'c.type' => 'Stream'])
+                ->orderBy(['c.course_name' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully added', 'streams' => $streams]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveStream()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+            $param = Yii::$app->request->post();
+            if (!isset($param['course_enc_id']) && empty($param['course_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $stream = AssignedCollegeCourses::find()
+                ->where(['assigned_college_enc_id' => $param['course_enc_id']])
+                ->one();
+
+            if ($stream) {
+                $stream->is_deleted = 1;
+                $stream->updated_by = $user->user_enc_id;
+                $stream->updated_on = date('Y-m-d H:i:s');
+                if ($stream->update()) {
+                    $streams = AssignedCollegeCourses::find()
+                        ->distinct()
+                        ->alias('a')
+                        ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                        ->joinWith(['courseEnc c'], false)
+                        ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0, 'c.type' => 'Stream'])
+                        ->orderBy(['c.course_name' => SORT_ASC])
+                        ->asArray()
+                        ->all();
+
+                    return $this->response(200, ['status' => 200, 'streams' => $streams]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'deleted']);
+
+        } else {
+            return $this->response(404, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -1112,6 +1164,7 @@ class CollegeProfileController extends ApiBaseController
             $count = [];
             $count['approved_count'] = $this->approvedJobsCount($type, $college_id);
             $count['pending_count'] = $this->pendingJobsCount($type, $college_id);
+            $count['rejected_count'] = $this->rejectedJobsCount($type, $college_id);
             $count['total_applied_count'] = $total_applied_count;
             $count['total_hired_count'] = $total_hired_count;
 
@@ -1135,14 +1188,35 @@ class CollegeProfileController extends ApiBaseController
                 'a.is_college_approved' => 1,
                 'a.status' => 'Active',
                 'a.is_deleted' => 0,
-                'b.status' => 'Active',
-                'b.is_deleted' => 0,
                 'b.application_for' => 2,
-                'b.for_all_colleges' => 1,
-                'bb.is_erexx_approved' => 1,
-                'bb.has_placement_rights' => 1,
+                'b.is_deleted' => 0,
                 'bb.is_deleted' => 0,
-                'bb.status' => 'Active',
+                'bb.is_erexx_approved' => 1,
+                'bb.has_placement_rights' => 1
+            ])
+            ->andWhere(['c.name' => $type])
+            ->count();
+    }
+
+    private function RejectedJobsCount($type, $college_id)
+    {
+        return ErexxEmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->joinWith(['employerApplicationEnc b' => function ($b) {
+                $b->joinWith(['organizationEnc bb'], false);
+                $b->joinWith(['applicationTypeEnc c']);
+            }], false)
+            ->where([
+                'a.college_enc_id' => $college_id,
+                'a.is_college_approved' => 1,
+                'a.status' => 'Active',
+                'a.is_deleted' => 1,
+                'b.application_for' => 2,
+                'b.is_deleted' => 0,
+                'bb.is_deleted' => 0,
+                'bb.is_erexx_approved' => 1,
+                'bb.has_placement_rights' => 1
             ])
             ->andWhere(['c.name' => $type])
             ->count();
