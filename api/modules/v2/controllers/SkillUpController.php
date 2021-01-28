@@ -227,9 +227,11 @@ class SkillUpController extends ApiBaseController
         }
 
         if (isset($param['keyword']) && !empty($param['keyword'])) {
-            $feeds->andFilterWhere(['like', 'c1.skill', $param['keyword']]);
-            $feeds->andFilterWhere(['like', 'a.post_title', $param['keyword']]);
-            $feeds->andFilterWhere(['like', 'a.post_short_summery', $param['keyword']]);
+            $feeds->andFilterWhere(['or',
+                ['like', 'c1.skill', $param['keyword']],
+                ['like', 'a.post_title', $param['keyword']],
+                ['like', 'a.post_short_summery', $param['keyword']]
+            ]);
         }
 
         $feeds = $feeds->limit($limit)
@@ -568,6 +570,10 @@ class SkillUpController extends ApiBaseController
                     $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
                     $i->joinWith(['authorEnc i1'], false);
                 }])
+                ->joinWith(['skillsUpPostAssignedCourses j' => function ($j) {
+                    $j->select(['j.course_enc_id', 'j.assigned_enc_id', 'j.post_enc_id', 'j1.is_paid', 'j1.currency', 'j1.price', 'j1.url']);
+                    $j->joinWith(['courseEnc j1'], false);
+                }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
                 ->one();
@@ -596,6 +602,12 @@ class SkillUpController extends ApiBaseController
                     case 'News':
                         $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedNews'][0]['description'];
                         break;
+                    case 'Course':
+                        $detail['price'] = $detail['skillsUpPostAssignedCourses'][0]['price'];
+                        $detail['currency'] = $detail['skillsUpPostAssignedCourses'][0]['currency'];
+                        $detail['is_paid'] = $detail['skillsUpPostAssignedCourses'][0]['is_paid'];
+                        $detail['course_url'] = $detail['source_url'] . $detail['skillsUpPostAssignedCourses'][0]['url'];
+                        break;
                 }
 
                 $skills = [];
@@ -615,6 +627,7 @@ class SkillUpController extends ApiBaseController
                 unset($detail['skillsUpPostAssignedEmbeds']);
                 unset($detail['skillsUpPostAssignedNews']);
                 unset($detail['skillsUpPostAssignedBlogs']);
+                unset($detail['skillsUpPostAssignedCourses']);
 
                 return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {

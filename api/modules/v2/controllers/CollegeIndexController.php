@@ -2105,8 +2105,21 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
-            $limit = Yii::$app->request->post('limit');
-            $type = Yii::$app->request->post('type');
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['limit']) && !empty($param['limit'])) {
+                $limit = Yii::$app->request->post('limit');
+            } else {
+                $limit = 10;
+            }
+
+            if (!isset($param['type']) && empty($param['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $type = $param['type'];
+
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -2291,17 +2304,6 @@ class CollegeIndexController extends ApiBaseController
                     array_push($skills, $s['skill']);
                 }
 
-                $hired = EmployerApplications::find()
-                    ->alias('a')
-                    ->joinWith(['appliedApplications b' => function ($b) {
-                        $b->joinWith(['createdBy c' => function ($c) {
-                            $c->innerJoinWith(['userOtherInfo d']);
-                        }]);
-                    }], false)
-                    ->where(['a.application_enc_id' => $j['application_enc_id'], 'd.organization_enc_id' => $this->getOrgId(), 'b.status' => 'Hired'])
-                    ->asArray()
-                    ->count();
-
                 $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
@@ -2310,8 +2312,14 @@ class CollegeIndexController extends ApiBaseController
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
 
-                array_push($resultt, $data);
+                if ($count['count'] == 0) {
+                    array_push($resultt, $data);
+                }
+
             }
+
+            return $this->response(200, ['status' => 200, 'data' => $resultt]);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
