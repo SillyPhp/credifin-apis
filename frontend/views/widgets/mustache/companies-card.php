@@ -320,7 +320,7 @@ $(document).on('click', '.fab-message-open', function() {
 });
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_drop_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 

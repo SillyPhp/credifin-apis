@@ -607,7 +607,8 @@ echo $this->render('/widgets/mustache/organization_locations', [
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'company'
+    'slug' => $organization['slug'],
+    'type' => 'company',
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],

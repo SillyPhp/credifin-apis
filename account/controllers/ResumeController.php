@@ -2,6 +2,8 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationForm;
+use common\models\DropResumeChoiceTitles;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
@@ -17,6 +19,7 @@ use common\models\DropResumeApplicationTitles;
 use common\models\OrganizationAssignedCategories;
 use common\models\OrganizationLocations;
 use common\models\Utilities;
+use yii\web\Response;
 
 class ResumeController extends Controller
 {
@@ -32,10 +35,9 @@ class ResumeController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $category_enc_id = Yii::$app->request->post('parent_id');
             $type = Yii::$app->request->post('type');
-
-            $second_modal_categories = AssignedCategories::find()
+            $organization_created_titles = AssignedCategories::find()
                 ->alias('a')
-                ->select(['b.name', 'b.category_enc_id'])
+                ->select(['b.name', 'a.assigned_category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id, 'a.is_deleted' => 0])
                 ->andWhere([
@@ -45,15 +47,27 @@ class ResumeController extends Controller
                 ])
                 ->asArray()
                 ->all();
+            $pre_selected_choices = DropResumeChoiceTitles::find()
+                ->alias('a')
+                ->select(['c.name','b.assigned_category_enc_id'])
+                ->where(['title_for'=>$type])
+                ->andWhere(['b.parent_enc_id'=>$category_enc_id])
+                ->andWhere(['a.is_deleted'=>0])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.assigned_category_enc_id')
+                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                ->asArray()
+                ->all();
+            $result = array_merge($organization_created_titles, $pre_selected_choices);
+            $unique = array_map("unserialize", array_unique(array_map("serialize", $result)));
 
+            //intersect from job unselected titles
+            //**
+            //intersect from job unselected titles
             $already_selected_categories = $this->savedData($category_enc_id, $type);
-
             $response = [];
             $response["parent_enc_id"] = $category_enc_id;
             $response["already_selected_categories"] = $already_selected_categories;
-            $response["second_modal_categories"] = $second_modal_categories;
-
-
+            $response["second_modal_categories"] = $unique;
             return json_encode($response);
         }
     }
@@ -155,7 +169,6 @@ class ResumeController extends Controller
     public function actionSave()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-
             $second_category_enc_id = Yii::$app->request->post('checked');
             $parent_enc_id = Yii::$app->request->post('parent_enc_id');
             $type = Yii::$app->request->post('type');
@@ -327,7 +340,7 @@ class ResumeController extends Controller
     public function actionResumeType()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            $selected_answer = Yii::$app->request->post('selected_answer');
+            $type = Yii::$app->request->post('selected_answer');
             $company_name = Yii::$app->request->post('company_name');
             $link_type = Yii::$app->request->post('link_type');
 
@@ -345,18 +358,8 @@ class ResumeController extends Controller
                 $company_name = $org['slug'];
             }
 
-            $data = OrganizationAssignedCategories::find()
-                ->alias('a')
-                ->select(['a.category_enc_id', 'c.name', 'a.assigned_category_enc_id'])
-                ->joinWith(['organizationEnc b'], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->where(['b.slug' => $company_name])
-                ->andWhere(['a.assigned_to' => $selected_answer])
-                ->andWhere(['a.parent_enc_id' => NULL])
-                ->andWhere(['a.is_deleted' => 0])
-                ->asArray()
-                ->all();
-
+            $model = new ApplicationForm();
+            $data = $model->getPrimaryFields($type);
 
             return json_encode($data);
         }
@@ -384,17 +387,34 @@ class ResumeController extends Controller
                 $company_name = $org['slug'];
             }
 
-            $assigned_categories = OrganizationAssignedCategories::find()
+            $org_id = Organizations::findOne(['slug'=>$company_name])->organization_enc_id;
+            $organization_created_titles = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'c.name'])
-                ->joinWith(['organizationEnc b'], false)
-                ->where(['b.slug' => $company_name])
-                ->joinWith(['categoryEnc c'], false)
-                ->andWhere(['a.assigned_to' => $type])
-                ->andWhere(['a.parent_enc_id' => $selected_answer])
-                ->andWhere(['a.is_deleted' => 0])
+                ->select(['b.name', 'a.assigned_category_enc_id'])
+                ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $selected_answer, 'a.is_deleted' => 0])
+                ->andWhere(['=', 'a.status', 'Approved'])
+                ->andWhere(['a.organization_enc_id' => $org_id])
                 ->asArray()
                 ->all();
+
+
+            $pre_selected_choices = DropResumeChoiceTitles::find()
+                ->alias('a')
+                ->select(['c.name','b.assigned_category_enc_id'])
+                ->where(['title_for'=>$type])
+                ->andWhere(['b.parent_enc_id'=>$selected_answer])
+                ->andWhere(['a.is_deleted'=>0])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.assigned_category_enc_id')
+                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                ->asArray()
+                ->all();
+            $result = array_merge($organization_created_titles, $pre_selected_choices);
+            $unique = array_map("unserialize", array_unique(array_map("serialize", $result)));
+
+            //intersect from job unselected titles
+            //**
+            //intersect from job unselected titles
             $location = OrganizationLocations::find()
                 ->alias('a')
                 ->distinct()
@@ -407,7 +427,7 @@ class ResumeController extends Controller
                 ->all();
             $username = Yii::$app->user->identity->username;
             $data = [];
-            $data['sub_categories'] = $assigned_categories;
+            $data['sub_categories'] = $unique;
             $data['location'] = $location;
             $data['username'] = $username;
 
