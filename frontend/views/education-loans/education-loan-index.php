@@ -471,22 +471,22 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-<!--                    <div class="l-help-block1">-->
-<!--                        <div class="l-help-title"><img-->
-<!--                                    src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?><!--"-->
-<!--                                    alt=""/> Chat With Us-->
-<!--                        </div>-->
-<!--                        <div class="whats">-->
-<!--                            <input type="text" class="form-control" id="text" name="text"-->
-<!--                            placeholder="Type Message & Press Enter">-->
-<!--                            <button class="grn"><i class="fab fa-whatsapp"></i></button>-->
-<!--                        </div>-->
-<!--                        <div class="tele">-->
-<!--                            <input type="text" class="form-control" id="text" name="text"-->
-<!--                                   placeholder="Type Message & Press Enter">-->
-<!--                            <button class="blu"><i class="fab fa-telegram-plane"></i></button>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div class="l-help-block1">
+                        <div class="l-help-title"><img
+                                    src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
+                                    alt=""/> Chat With Us
+                        </div>
+                        <div class="whats">
+                            <input type="text" class="form-control" id="whatsAppText" name="text"
+                            placeholder="Type Message & Start Chat">
+                            <button onclick="window.open('https://api.whatsapp.com/send?phone=+918727985888&text=' + document.getElementById('whatsAppText').value, '_blank', 'width=800,height=400,left=200,top=100')" class="grn"><i class="fab fa-whatsapp"></i></button>
+                        </div>
+                        <div class="tele">
+                            <input type="text" class="form-control" id="telegramText" name="text"
+                                   placeholder="Type Message & Start Chat">
+                            <button onclick="window.open('https://t.me/feefinancing', '_blank', 'width=800,height=400,left=200,top=100')" class="blu"><i class="fab fa-telegram-plane"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -533,7 +533,27 @@ $('.faqs').click(function () {
     arrow.removeClass('close');
   }
 });
-
+var num = '+918727985888';
+$(document).on("keypress",'#whatsAppText', function(e) {
+     if (e.keyCode == 13) {
+         if ($(this).val()!=''){
+             window.open('https://api.whatsapp.com/send?phone='+num+'&text=' + $(this).val(), '_blank', 'width=800,height=400,left=200,top=100');
+            return false; // prevent the button click from happening   
+         }else{
+             alert('Enter Text');
+         }
+        }
+});
+$(document).on("keypress",'#telegramText', function(e) {
+     if (e.keyCode == 13) {
+         if ($(this).val()!=''){
+             window.open('https://t.me/feefinancing', '_blank', 'width=800,height=400,left=200,top=100');
+            return false; // prevent the button click from happening   
+         }else{
+             alert('Enter Text');
+         }
+        }
+});
 JS;
 $this->registerJs($script);
 
