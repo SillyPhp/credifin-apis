@@ -1087,7 +1087,7 @@ class LoansController extends ApiBaseController
         $model->admission_taken = $data['admission_taken'];
         $model->college_institute_name = $data['college_name'];
         $model->course_name = $data['course_name'];
-        if (isset($data['apply_now']) && $data['apply_now'] == 'no') {
+        if (isset($data['apply_now']) && $data['apply_now']) {
             $model->loan_amount = $data['loan_amount'];
         }
         if ($user_id) {
@@ -1102,7 +1102,7 @@ class LoansController extends ApiBaseController
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $clg_pref->preference_enc_id = $utilitiesModel->encrypt();
                     $clg_pref->application_enc_id = $model->application_enc_id;
-                    $clg_pref->sequence = $i;
+                    $clg_pref->sequence = parse_str($i);
                     $clg_pref->college_name = $c;
                     if ($user_id) {
                         $clg_pref->created_by = $user_id;
