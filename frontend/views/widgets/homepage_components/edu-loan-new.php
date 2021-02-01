@@ -15,7 +15,13 @@ use yii\helpers\Url;
                                     <h3>DON'T WORRY ABOUT PAYING YOUR <br> COLLEGE FEES ALL AT ONCE.</h3>
                                     <h4>Choose our easy loan schemes with low interest rate.</h4>
                                     <p>Apply in colleges across India & Abroad</p>
-                                    <div class="loan-btn"<div class="col-md-12 col-sm-12">
+                                    <div class="loan-btn">
+                                        <a href="/education-loans/apply">Apply Now!</a>
+                                        <a href="/site/admission-form">Enquire Now!</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 p0">
                                 <div class="image-topics">
                                     <div class="icon-loan">
                                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="">
@@ -30,7 +36,6 @@ use yii\helpers\Url;
                                         <p>Online Application</p>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -79,20 +84,25 @@ $this->registerCss('
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    padding: 30px 0px 10px 0px;
 }
 .heading-data-set {
-	padding: 25px 0 35px;
+	padding: 40px 0 35px;
 }
 .m0{
     margin-left: 0px;
     margin-right: 0px; 
 }
+.p0{
+    padding-left: 0px;
+    pading-right: 0px;
+}
 .heading-data-set h3 {
-	font-size: 38px;
+	font-size: 28px;
     color: #ED6D1E;
     font-family: roboto;
     font-weight: 600;
-    line-height: 46px;
+    line-height: 40px;
 }
 .heading-data-set h4 {
 	font-size: 20px;

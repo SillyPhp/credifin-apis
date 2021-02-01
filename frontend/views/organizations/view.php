@@ -9,7 +9,7 @@ $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -62,8 +62,7 @@ $round_avg = round($overall_avg);
                                         <?php
                                         if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>"
-                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="100px" alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -563,16 +562,16 @@ $round_avg = round($overall_avg);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="address-division">
+                    <div class="address-division-new">
                         <div class="heading-style">
                             Address
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-6 col-xs-12 pull-right mb-20">
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
                                 <div id="map"></div>
                             </div>
-                            <div class="col-md-6 col-xs-12">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="head-office">
 
                                 </div>
@@ -868,8 +867,6 @@ $this->registerCss('
 /*----address----*/
 .head-office {
 	display: flex;
-	justify-content: center;
-	align-items: center;
 	flex-wrap: wrap;
 }
 .org-location {
@@ -1148,6 +1145,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -1172,6 +1170,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1204,6 +1203,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         background-color: transparent;
     }
     
+}
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
 }
 .followed {
     background: #00a0e3;

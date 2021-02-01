@@ -542,14 +542,18 @@ function getReviews(limit=null,offset=null, ridk='') {
         }
     });
 }
+const urlParams = window.location.pathname.split('/');
+const myParam = urlParams[3];
 $(document).on('click','#load_more_btn',function(e) {
   e.preventDefault();
   page_name = page_name+3;
   total = total+3;
-  getReviews(limit=3,offset=page_name);
+  if(myParam){
+    getReviews(limit=3,offset=page_name, myParam);
+  } else {
+    getReviews(limit=3,offset=page_name);
+  }
 })
-const urlParams = window.location.pathname.split('/');
-const myParam = urlParams[3];
 if(myParam){
     getReviews(limit=3,offset=page_name, myParam);
 } else {

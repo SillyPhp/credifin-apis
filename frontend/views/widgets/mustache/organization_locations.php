@@ -151,6 +151,8 @@ function getLocations() {
                 },1000);
                 // renderLocations(response.locations);
             } else{
+                $('.view-btn').hide();
+                $('.address-division-new').hide();
                 $('.location_tab').css('display','none');
             }
         }
