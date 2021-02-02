@@ -355,6 +355,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/partners-with-uss') ?>
+
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
