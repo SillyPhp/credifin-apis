@@ -1169,6 +1169,13 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['erexxCollaborators0 g' => function ($g) use ($college_id) {
                     $g->onCondition(['g.college_enc_id' => $college_id]);
                 }], false)
+                ->joinWith(['organizationLabels h1' => function ($h) {
+                    $h->select(['h1.organization_enc_id', 'h2.name']);
+                    $h->joinWith(['labelEnc h2' => function ($h2) {
+                        $h2->onCondition(['h2.is_deleted' => 0]);
+                    }], false);
+                    $h->onCondition(['h1.is_deleted' => 0, 'h1.label_for' => 1]);
+                }])
                 ->where([
                     'a.is_erexx_approved' => 1,
                     'a.has_placement_rights' => 1,
@@ -1204,6 +1211,10 @@ class CollegeIndexController extends ApiBaseController
                         new \yii\db\Expression('FIELD (c.for_all_colleges, 1)ASC'),
                         new \yii\db\Expression('FIELD (g.organization_approvel, 1)ASC'),
                         new \yii\db\Expression('FIELD (g.college_approvel, 1)ASC'),
+                    ]);
+                } elseif ($sort_by == 'Verified') {
+                    $companies->orderBy([
+                        new \yii\db\Expression('FIELD (h2.name, "Verified")DESC'),
                     ]);
                 }
             } else {

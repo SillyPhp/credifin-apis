@@ -594,6 +594,7 @@ class SkillUpController extends ApiBaseController
                         if ($detail['source_name'] == 'Youtube') {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedVideos'][0]['description'];
                             $detail['frame'] = '<iframe width="1519" height="562" src="https://www.youtube.com/embed/' . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'] . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                            $detail['post_source_url'] = "https://www.youtube.com/watch?v=" . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'];
                         } else {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedEmbeds'][0]['description'];
                             $detail['frame'] = $detail['skillsUpPostAssignedEmbeds'][0]['body'];
@@ -620,7 +621,8 @@ class SkillUpController extends ApiBaseController
                 $params['skills'] = $skills;
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
-
+                $rec = $this->__getStudentRecommended($detail['post_enc_id']);
+                $detail['is_recommended'] = (count($rec) > 0) ? true : false;
                 $detail['teacher_recommended'] = $this->__getTeacherRecommended($detail['post_enc_id']);
 
                 unset($detail['skillsUpPostAssignedVideos']);
