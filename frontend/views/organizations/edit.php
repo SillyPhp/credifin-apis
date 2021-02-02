@@ -157,7 +157,7 @@ $industries = Json::encode($industries);
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['facebook']) ?>"
-                           class="facebook model-link"><i
+                           class="facebook-social model-link"><i
                                     class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['twitter']) ?>"
@@ -165,7 +165,7 @@ $industries = Json::encode($industries);
                                     class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['linkedin']) ?>"
-                           class="linkedin model-link"><i
+                           class="linkedin-social model-link"><i
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['website']) ?>" class="web model-link"><i
@@ -908,19 +908,19 @@ a.twitter{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -947,8 +947,8 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-#enable, #enable:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+#enable, #enable:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/
