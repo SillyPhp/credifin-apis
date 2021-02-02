@@ -3,7 +3,11 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationForm;
+use common\models\DropResumeAppliedApplications;
+use common\models\DropResumeAppliedTitles;
 use common\models\DropResumeChoiceTitles;
+use common\models\DropResumeSelectedLocations;
+use common\models\DropResumeSelectedTitles;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
@@ -35,18 +39,15 @@ class ResumeController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $category_enc_id = Yii::$app->request->post('parent_id');
             $type = Yii::$app->request->post('type');
-            $organization_created_titles = AssignedCategories::find()
+            $organization_created_titles = EmployerApplications::find()
                 ->alias('a')
-                ->select(['b.name', 'a.assigned_category_enc_id'])
-                ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id, 'a.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    ['=', 'a.status', 'Approved'],
-                    ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
-                ])
-                ->asArray()
-                ->all();
+                ->select(['c.name', 'a.title assigned_category_enc_id'])
+                ->distinct()
+                ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id])
+                ->andWhere(['b.assigned_to'=>$type])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                ->asArray()->all();
             $pre_selected_choices = DropResumeChoiceTitles::find()
                 ->alias('a')
                 ->select(['c.name','b.assigned_category_enc_id'])
@@ -388,16 +389,15 @@ class ResumeController extends Controller
             }
 
             $org_id = Organizations::findOne(['slug'=>$company_name])->organization_enc_id;
-            $organization_created_titles = AssignedCategories::find()
+            $organization_created_titles = EmployerApplications::find()
                 ->alias('a')
-                ->select(['b.name', 'a.assigned_category_enc_id'])
-                ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $selected_answer, 'a.is_deleted' => 0])
-                ->andWhere(['=', 'a.status', 'Approved'])
-                ->andWhere(['a.organization_enc_id' => $org_id])
-                ->asArray()
-                ->all();
-
+                ->select(['c.name', 'a.title assigned_category_enc_id'])
+                ->distinct()
+                ->where(['a.organization_enc_id'=>$org_id])
+                ->andWhere(['b.assigned_to'=>$type])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                ->asArray()->all();
 
             $pre_selected_choices = DropResumeChoiceTitles::find()
                 ->alias('a')
@@ -442,42 +442,6 @@ class ResumeController extends Controller
             $experience = $data['experience'];
             $job_title = $data['job_title'];
             $location = $data['locations'];
-
-            switch ($experience) {
-
-                case 'no':
-                    $exp = 0;
-                    break;
-
-                case 'less than one':
-                    $exp = 1;
-                    break;
-
-                case 'one':
-                    $exp = 2;
-                    break;
-
-                case 'two to three':
-                    $exp = 3;
-                    break;
-
-                case 'three to five':
-                    $exp = 4;
-                    break;
-
-                case 'five to ten':
-                    $exp = 5;
-                    break;
-
-                case 'ten to twenty':
-                    $exp = 6;
-                    break;
-
-                case 'twenty above':
-                    $exp = 7;
-                    break;
-            };
-
             $failure = [
                 'message' => 201
             ];
@@ -487,7 +451,6 @@ class ResumeController extends Controller
             ];
 
             if ($applied_app_enc_id = $this->alreadyApplied()) {
-
                 $alreadySelectedLocation = $this->getAlreadyAppliedLocation($applied_app_enc_id['applied_application_enc_id']);
                 $selectedLocation = [];
                 for ($i = 0; $i < count($alreadySelectedLocation); $i++) {
@@ -507,13 +470,13 @@ class ResumeController extends Controller
                 }
                 $to_be_added_title = array_diff($job_title, $selectedTitle);
 
-                $updateExp = DropResumeApplications::find()
+                $updateExp = DropResumeAppliedApplications::find()
                     ->where(['applied_application_enc_id' => $applied_app_enc_id['applied_application_enc_id']])
                     ->one();
-                $updateExp->experience = $exp;
-                $updateExp->save();
-
-
+                $updateExp->experience = $experience;
+                if (!$updateExp->save()){
+                    return json_encode($failure);
+                }
                 if (count($to_be_added_location) > 0) {
                     foreach ($to_be_added_location as $loc) {
                         if (!$this->dropResumeApplicationLocation($loc, $applied_app_enc_id['applied_application_enc_id'])) {
@@ -532,8 +495,7 @@ class ResumeController extends Controller
                 return json_encode($success);
 
             } else {
-
-                if ($app_enc_id = $this->dropResumeApplications($exp)) {
+                if ($app_enc_id = $this->dropResumeApplications($experience)) {
 
                     if (count($location) > 0) {
                         foreach ($location as $loc) {
@@ -556,14 +518,10 @@ class ResumeController extends Controller
     }
 
     private function alreadyApplied()
-    {
-        $user = Yii::$app->user->identity->user_enc_id;
-
-        $alreadyApplied = DropResumeApplications::find()
-            ->alias('a')
-            ->select(['a.applied_application_enc_id'])
-            ->where(['a.user_enc_id' => $user])
-            ->andWhere(['a.status' => 0])
+    {   $alreadyApplied = DropResumeAppliedApplications::find()
+            ->select(['applied_application_enc_id'])
+            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['status' => 0])
             ->asArray()
             ->one();
 
@@ -572,10 +530,9 @@ class ResumeController extends Controller
 
     private function getAlreadyAppliedTitle($applied_app_enc_id)
     {
-        $titles = DropResumeApplicationTitles::find()
-            ->alias('a')
-            ->select(['a.title'])
-            ->where(['a.applied_application_enc_id' => $applied_app_enc_id])
+        $titles = DropResumeAppliedTitles::find()
+            ->select(['assigned_category_enc_id'])
+            ->where(['applied_application_enc_id' => $applied_app_enc_id])
             ->asArray()
             ->all();
 
@@ -584,10 +541,9 @@ class ResumeController extends Controller
 
     private function getAlreadyAppliedLocation($applied_app_enc_id)
     {
-        $location = DropResumeApplicationLocations::find()
-            ->alias('a')
-            ->select(['a.city_enc_id'])
-            ->where(['a.applied_application_enc_id' => $applied_app_enc_id])
+        $location = DropResumeSelectedLocations::find()
+            ->select(['city_enc_id'])
+            ->where(['applied_application_enc_id' => $applied_app_enc_id])
             ->asArray()
             ->all();
 
@@ -596,15 +552,11 @@ class ResumeController extends Controller
 
     private function dropResumeApplications($exp)
     {
-        $d_r_applications = new DropResumeApplications();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $d_r_applications->applied_application_enc_id = $utilitiesModel->encrypt();
-        $d_r_applications->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_applications = new DropResumeAppliedApplications();
+        $d_r_applications->applied_application_enc_id = Yii::$app->security->generateRandomString(12);
         $d_r_applications->experience = $exp;
         $d_r_applications->created_on = date('Y-m-d H:i:s');
         $d_r_applications->created_by = Yii::$app->user->identity->user_enc_id;
-        $d_r_applications->last_updated_by = Yii::$app->user->identity->user_enc_id;
         if ($d_r_applications->save()) {
             return $d_r_applications->applied_application_enc_id;
         }
@@ -612,13 +564,10 @@ class ResumeController extends Controller
 
     private function dropResumeApplicationLocation($location, $applied_app_enc_id)
     {
-        $d_r_a_locations = new DropResumeApplicationLocations();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $d_r_a_locations->applied_location_enc_id = $utilitiesModel->encrypt();
+        $d_r_a_locations = new DropResumeSelectedLocations();
+        $d_r_a_locations->selected_location_enc_id = Yii::$app->security->generateRandomString(12);
         $d_r_a_locations->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_locations->city_enc_id = $location;
-        $d_r_a_locations->user_enc_id = Yii::$app->user->identity->user_enc_id;
         $d_r_a_locations->created_on = date('Y-m-d H:i:s');
         $d_r_a_locations->created_by = Yii::$app->user->identity->user_enc_id;
         $d_r_a_locations->last_updated_by = Yii::$app->user->identity->user_enc_id;
@@ -629,17 +578,12 @@ class ResumeController extends Controller
 
     private function dropResumeApplicationTitle($job_title, $applied_app_enc_id)
     {
-        $d_r_a_title = new DropResumeApplicationTitles();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $d_r_a_title->applied_title_enc_id = $utilitiesModel->encrypt();
+        $d_r_a_title = new DropResumeAppliedTitles();
+        $d_r_a_title->applied_title_enc_id = Yii::$app->security->generateRandomString(12);
         $d_r_a_title->applied_application_enc_id = $applied_app_enc_id;
-        $d_r_a_title->title = $job_title;
-        $d_r_a_title->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_title->assigned_category_enc_id = $job_title;
         $d_r_a_title->created_on = date('Y-m-d H:i:s');
         $d_r_a_title->created_by = Yii::$app->user->identity->user_enc_id;
-        $d_r_a_title->last_updated_by = Yii::$app->user->identity->user_enc_id;
-
         if ($d_r_a_title->save()) {
             return true;
         }

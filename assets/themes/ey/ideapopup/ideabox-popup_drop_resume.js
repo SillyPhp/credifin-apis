@@ -895,7 +895,7 @@ function random_fn(t) {
                             answerType: 'drops',
                             formName: 'locations',
                             choices: location,
-                            description: 'Please select your preffered location and press next button',
+                            description: 'Please select your preffered locations and press next button',
                             required: true,
                             errorMsg: '<b style="color:#900;">Select the location to proceed.</b>'
                         });
