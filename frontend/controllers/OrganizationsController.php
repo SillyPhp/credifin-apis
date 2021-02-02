@@ -134,7 +134,7 @@ class OrganizationsController extends Controller
             ->where(['slug' => $slug, 'status' => 'Active', 'is_deleted' => 0])
             ->asArray()
             ->one();
-
+        $is_claim = 1;
         if ($organization) {
             $labels = OrganizationLabels::find()
                 ->alias('a')
@@ -258,10 +258,9 @@ class OrganizationsController extends Controller
                     ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
                     ->asArray()
                     ->count();
-//                print_r($labels);
-//                exit();
                 return $this->render('view', [
                     'organization' => $organization,
+                    'is_claim' => $is_claim,
                     'follow' => $follow,
                     'benefit' => $benefit,
                     'gallery' => $gallery,

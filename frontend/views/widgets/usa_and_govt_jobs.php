@@ -4,11 +4,6 @@ use yii\helpers\Url;
 <section class="goven-jobs-sec">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1 class="gov-heading">Find Latest Government Jobs</h1>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/usa-jobs">

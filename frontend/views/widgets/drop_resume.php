@@ -1,7 +1,8 @@
 <?php
-
 use yii\helpers\Url;
-
+Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var is_claim = "' . $is_claim . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var org_id = "' . $org_id . '"', \yii\web\View::POS_HEAD);
 ?>
     <div id="fab-message-open" class="fab-message fab-btn-hide" style="">
         <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
@@ -55,7 +56,7 @@ use yii\helpers\Url;
                     <div class="warn-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/landing/wait4company.png'); ?>">
                     </div>
-                    <p class="warn-p">Wait for company to create the feature</p>
+                    <p class="warn-p">Wait For Company To Create Some Jobs Suitable For Your Resume</p>
                 </div>
             </div>
 
@@ -177,29 +178,6 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-if(!'$org_cards'){
-    if('$type' == 'company'){
-    var data = {slug: window.location.pathname.split('/')[1]};
-        $.ajax({
-            type: 'POST',
-            url: '/drop-resume/check-resume',
-            data : data,
-            success: function(response){
-                $('#dropcv').val(response.message);
-            }
-        });
-    }else if('$type' == 'application'){
-    
-        $.ajax({
-           type: 'POST',
-           url: '/drop-resume/check-resume',
-           data : {slug:'$slug'},
-           success: function(response){
-               $('#dropcv').val(response.message);
-           }
-        });
-    }
-}
 JS;
 
 $this->registerJs($script);
@@ -212,7 +190,7 @@ $result = json_encode($r);
 
 \Yii::$app->view->registerJs('var result = ' . $result, \yii\web\View::POS_HEAD);
 
-$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_drop_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
