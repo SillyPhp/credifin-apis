@@ -19,8 +19,10 @@ namespace common\models;
  * @property Users $lastUpdatedBy
  * @property UserResume $resumeEnc
  * @property DropResumeAppliedTitles[] $dropResumeAppliedTitles
+ * @property DropResumeOrgApplication[] $dropResumeOrgApplications
  * @property DropResumeSelectedLocations[] $dropResumeSelectedLocations
  * @property Cities[] $cityEncs
+ * @property DropResumeUnclaimOrgApplication[] $dropResumeUnclaimOrgApplications
  */
 class DropResumeAppliedApplications extends \yii\db\ActiveRecord
 {
@@ -85,6 +87,14 @@ class DropResumeAppliedApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getDropResumeOrgApplications()
+    {
+        return $this->hasMany(DropResumeOrgApplication::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getDropResumeSelectedLocations()
     {
         return $this->hasMany(DropResumeSelectedLocations::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
@@ -99,11 +109,10 @@ class DropResumeAppliedApplications extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
-     * @return DropResumeAppliedApplicationsQuery the active query used by this AR class.
+     * @return \yii\db\ActiveQuery
      */
-    public static function find()
+    public function getDropResumeUnclaimOrgApplications()
     {
-        return new DropResumeAppliedApplicationsQuery(get_called_class());
+        return $this->hasMany(DropResumeUnclaimOrgApplication::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 }

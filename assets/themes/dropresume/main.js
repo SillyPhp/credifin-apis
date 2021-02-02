@@ -11,6 +11,8 @@ var popup = new ideaboxPopup({
         inAnimation: 'zoomIn'
     },
     onFinish: function () {
+        this.values['org_id'] = org_id;
+        this.values['is_claim'] = is_claim;
         if (this.values["experience"]) {
             $.ajax({
                 type: 'POST',
