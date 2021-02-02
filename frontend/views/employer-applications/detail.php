@@ -284,6 +284,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                             endif;
                         } ?>
                     </div>
+                    <?php if (!Yii::$app->user->identity->organization){ ?>
+                    <div class="btn-parent showOnTab">
+                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
+                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
+                        <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
+                    </div>
+                    <?php } ?>
                     <div class="job-details">
                         <?php if (!empty($data2['interview_process_enc_id'])) { ?>
                             <?=
@@ -1838,6 +1845,9 @@ button.lc-item-video-menu {
         padding-right: 15px;
         margin:auto;
     }
+    .showOnTab{
+        display: none;
+    }
     @media screen and (max-width: 1150px) and (min-width: 1025px) {
           .profile_icons{
                width: 290px;
@@ -1860,6 +1870,12 @@ button.lc-item-video-menu {
                width: 370px;
           }
     }
+    @media screen and (max-width: 992px){
+        .showOnTab{
+            position: relative !important;
+            display: block;
+        }
+    }
     @media screen and (max-width: 889px) and (min-width: 650px) {
           .profile_icons{
                width: 210px;
@@ -1873,7 +1889,7 @@ button.lc-item-video-menu {
                padding-top: 160px;
           }
     }
-    @media screen and (max-width: 649px) and (min-width: 0px) {
+    @media screen and (max-width: 649px) {
           .profile_icons{
                width: 150px;
                position: relative;
@@ -1891,6 +1907,11 @@ button.lc-item-video-menu {
           }
           .job-statistic{
                display:none;
+          }
+          .btn-parent{
+                left: 0px;
+                transform: unset;
+                border-radius: 0px 10px 0 0;
           }
     }
     /* Profile icons css ends */

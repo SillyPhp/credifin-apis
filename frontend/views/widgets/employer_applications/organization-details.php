@@ -3,6 +3,7 @@
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+
 $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -69,9 +70,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
                     <div class="btn-parent">
                         <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
-                                    class="fas fa-paper-plane hvr-icon"></i>Apply
-                            for
-                            <?= $type ?></a>
+                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
                         <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
                     </div>
                     <?php if ($shortlist_btn_display): ?>
@@ -150,9 +149,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
-<!--            <div class="qr-code">-->
-<!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
-<!--            </div>-->
+            <!--            <div class="qr-code">-->
+            <!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
+            <!--            </div>-->
             <div class="wts-ap">
                 <h3>Share on Whatsapp via Number</h3>
                 <div class="col-md-12 form-whats">
@@ -167,7 +166,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
@@ -487,6 +486,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     display: block;
     color: #ddd;
 }
+
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
@@ -499,7 +499,9 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .overlay-top{
         padding-bottom:10px;
     }
-    .job-thumb{max-width: 125px;}
+    .job-thumb{
+        max-width: 125px;
+    }
     .job-head-info{
         max-width: 275px;
         text-align: left;
@@ -515,8 +517,15 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         display: inline-block;
         width: 42%;
     }
-    a.add-or-compare{padding: 10px 5px;}
-    .effect.thurio{clear:both;}
+    a.add-or-compare{
+        padding: 10px 5px;
+    }
+    .effect.thurio{
+        clear:both;
+    }
+    .showOnTab{
+        display: block;
+    }
 }
 @media only screen and (max-width: 720px) {
     .actions-main{
