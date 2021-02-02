@@ -593,8 +593,8 @@ $industries = Json::encode($industries);
                 </div>
             </div>
         </div>
-        </div>
-        </div>
+<!--        </div>-->
+<!--        </div>-->
     </section>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">

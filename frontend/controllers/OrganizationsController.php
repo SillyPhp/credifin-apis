@@ -192,7 +192,6 @@ class OrganizationsController extends Controller
                 ->where(['b.name' => 'Internships', 'a.status' => 'Active','a.organization_enc_id'=>$organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->andWhere(['a.application_for' => 1])
                 ->count();
-
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $organizationLocations = OrganizationLocations::find()
