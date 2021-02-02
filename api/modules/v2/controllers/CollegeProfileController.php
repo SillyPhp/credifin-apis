@@ -1188,14 +1188,16 @@ class CollegeProfileController extends ApiBaseController
                 'a.is_college_approved' => 1,
                 'a.status' => 'Active',
                 'a.is_deleted' => 0,
+                'b.status' => 'Active',
                 'b.application_for' => 2,
                 'b.is_deleted' => 0,
                 'bb.is_deleted' => 0,
                 'bb.is_erexx_approved' => 1,
-                'bb.has_placement_rights' => 1
+                'bb.has_placement_rights' => 1,
+                'bb.status' => 'Active',
             ])
             ->andWhere(['c.name' => $type])
-            ->count();
+        ->count();
     }
 
     private function RejectedJobsCount($type, $college_id)
