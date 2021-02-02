@@ -110,10 +110,17 @@ class LoansController extends ApiBaseController
 
     public function actionCollegeCourses()
     {
+        $params = Yii::$app->request->post();
+
         $courses = CollegeCoursesPool::find()
-            ->select(['course_name'])
-            ->where(['status' => 'Approved', 'is_deleted' => 0])
-            ->asArray()
+            ->alias('a')
+            ->select(['a.course_name'])
+            ->where(['a.status' => 'Approved', 'a.is_deleted' => 0]);
+        if (isset($params['college_id']) && !empty($params['college_id'])) {
+            $courses->joinWith(['assignedCollegeCourses b'],false)
+                ->andWhere(['b.organization_enc_id' => $params['college_id']]);
+        }
+        $courses = $courses->asArray()
             ->all();
 
         if ($courses) {
@@ -184,13 +191,7 @@ class LoansController extends ApiBaseController
                 $parser['is_claim'] = 3;
                 $pref = explode(',', $params['clg_pref']);
             }
-//            if (!$parser['college_id']) {
-//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
-//            }
-//            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
-//            if (!$parser2['assigned_course_id']) {
-//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
-//            }
+
             $orgDate = $params['applicant_dob'];
             $userId = $this->userId();
             if (!$params['is_india']) {
