@@ -608,6 +608,8 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'slug' => $organization['slug'],
     'type' => 'company',
+    'is_claim' => $is_claim,
+    'org_id' => $organization['organization_enc_id'],
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
