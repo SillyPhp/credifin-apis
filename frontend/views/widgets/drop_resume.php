@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var is_claim = "' . $is_claim . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var org_id = "' . $org_id . '"', \yii\web\View::POS_HEAD);
 ?>
     <div id="fab-message-open" class="fab-message fab-btn-hide" style="">
         <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">

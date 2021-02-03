@@ -160,13 +160,13 @@ $round_avg = round($overall_avg);
                     </div>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook"
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook-social"
                             target="_blank"><i class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter"
                             target="_blank"><i class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin"
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin-social"
                             target="_blank"><i class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank">
@@ -608,6 +608,8 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'slug' => $organization['slug'],
     'type' => 'company',
+    'is_claim' => $is_claim,
+    'org_id' => $organization['organization_enc_id'],
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
@@ -975,19 +977,19 @@ a.twitter{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -1014,8 +1016,8 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-.follow, .follow:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+.follow, .follow:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/

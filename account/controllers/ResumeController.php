@@ -6,8 +6,10 @@ use account\models\applications\ApplicationForm;
 use common\models\DropResumeAppliedApplications;
 use common\models\DropResumeAppliedTitles;
 use common\models\DropResumeChoiceTitles;
+use common\models\DropResumeOrgApplication;
 use common\models\DropResumeSelectedLocations;
 use common\models\DropResumeSelectedTitles;
+use common\models\DropResumeUnclaimOrgApplication;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\spaces\Spaces;
@@ -442,6 +444,8 @@ class ResumeController extends Controller
             $experience = $data['experience'];
             $job_title = $data['job_title'];
             $location = $data['locations'];
+            $is_claimed = $data['is_claim'];
+            $org_id = $data['org_id'];
             $failure = [
                 'message' => 201
             ];
@@ -450,7 +454,7 @@ class ResumeController extends Controller
                 'message' => 200
             ];
 
-            if ($applied_app_enc_id = $this->alreadyApplied()) {
+            if ($applied_app_enc_id = $this->alreadyApplied($is_claimed,$org_id)) {
                 $alreadySelectedLocation = $this->getAlreadyAppliedLocation($applied_app_enc_id['applied_application_enc_id']);
                 $selectedLocation = [];
                 for ($i = 0; $i < count($alreadySelectedLocation); $i++) {
@@ -495,8 +499,7 @@ class ResumeController extends Controller
                 return json_encode($success);
 
             } else {
-                if ($app_enc_id = $this->dropResumeApplications($experience)) {
-
+                if ($app_enc_id = $this->dropResumeApplications($experience,$org_id,$is_claimed)) {
                     if (count($location) > 0) {
                         foreach ($location as $loc) {
                             if (!$this->dropResumeApplicationLocation($loc, $app_enc_id)) {
@@ -517,15 +520,34 @@ class ResumeController extends Controller
         }
     }
 
-    private function alreadyApplied()
-    {   $alreadyApplied = DropResumeAppliedApplications::find()
-            ->select(['applied_application_enc_id'])
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['status' => 0])
-            ->asArray()
-            ->one();
+    private function alreadyApplied($is_claimed,$org_id)
+    {
+        if ($is_claimed==1){
+            $alreadyApplied = DropResumeAppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.applied_application_enc_id'])
+                    ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->andWhere(['b.organization_enc_id'=>$org_id])
+                    ->innerJoin(DropResumeOrgApplication::tableName().' b','b.applied_application_enc_id = a.applied_application_enc_id')
+                    ->andWhere(['status' => 0])
+                    ->asArray()
+                    ->one();
 
-        return $alreadyApplied;
+            return $alreadyApplied;
+        }else{
+            $alreadyApplied = DropResumeAppliedApplications::find()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['b.organization_enc_id'=>$org_id])
+                ->innerJoin(DropResumeUnclaimOrgApplication::tableName().' b','b.applied_application_enc_id = a.applied_application_enc_id')
+                ->andWhere(['status' => 0])
+                ->asArray()
+                ->one();
+
+            return $alreadyApplied;
+        }
+
     }
 
     private function getAlreadyAppliedTitle($applied_app_enc_id)
@@ -550,7 +572,7 @@ class ResumeController extends Controller
         return $location;
     }
 
-    private function dropResumeApplications($exp)
+    private function dropResumeApplications($exp,$org_id,$is_claimed)
     {
         $d_r_applications = new DropResumeAppliedApplications();
         $d_r_applications->applied_application_enc_id = Yii::$app->security->generateRandomString(12);
@@ -558,7 +580,30 @@ class ResumeController extends Controller
         $d_r_applications->created_on = date('Y-m-d H:i:s');
         $d_r_applications->created_by = Yii::$app->user->identity->user_enc_id;
         if ($d_r_applications->save()) {
+            if ($is_claimed==1){
+                $model = new DropResumeOrgApplication();
+                $model->application_enc_id = Yii::$app->security->generateRandomString(12);
+                $model->applied_application_enc_id = $d_r_applications->applied_application_enc_id;
+                $model->organization_enc_id = $org_id;
+                $model->created_on = date('Y-m-d H:i:s');
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$model->save()){
+                    return false;
+                }
+            }else{
+                $model = new DropResumeUnclaimOrgApplication();
+                $model->application_enc_id = Yii::$app->security->generateRandomString(12);
+                $model->applied_application_enc_id = $d_r_applications->applied_application_enc_id;
+                $model->organization_enc_id = $org_id;
+                $model->created_on = date('Y-m-d H:i:s');
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$model->save()){
+                    return false;
+                }
+            }
             return $d_r_applications->applied_application_enc_id;
+        }else{
+            return false;
         }
     }
 

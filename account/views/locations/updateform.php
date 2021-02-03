@@ -128,7 +128,6 @@ $form->field($locationFormModel, 'longitude', [
 
 <div class="modal-footer">
     <?= Html::submitbutton('update', ['class' => 'btn btn-primary custom-buttons2']); ?>
-<!--    --><?//= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
 </div>
 <?php ActiveForm::end(); ?>
 <?php
@@ -137,6 +136,12 @@ $this->registerCss('
     opacity: 1 !important;
     color: #e73d4a !important;
     filter: alpha(opacity=100);
+}
+.iti{
+    width: 100%;
+}
+.iti input{
+    padding-left: 46px;
 }
 ');
 $script = <<<JS
