@@ -1169,6 +1169,13 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['erexxCollaborators0 g' => function ($g) use ($college_id) {
                     $g->onCondition(['g.college_enc_id' => $college_id]);
                 }], false)
+//                ->joinWith(['organizationLabels h1' => function ($h) {
+//                    $h->select(['h1.organization_enc_id', 'h2.name']);
+//                    $h->joinWith(['labelEnc h2' => function ($h2) {
+//                        $h2->onCondition(['h2.is_deleted' => 0]);
+//                    }], false);
+//                    $h->onCondition(['h1.is_deleted' => 0, 'h1.label_for' => 1]);
+//                }])
                 ->where([
                     'a.is_erexx_approved' => 1,
                     'a.has_placement_rights' => 1,
