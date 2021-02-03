@@ -33,7 +33,7 @@ $this->registerCss('
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;
     background-size:cover;
-    padding:0px 0px 40px 0px;
+    padding: 40px 0px 40px 0px;
 }
 .gov-heading {
     text-align: center;
