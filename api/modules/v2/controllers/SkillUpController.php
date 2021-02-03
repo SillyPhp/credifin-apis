@@ -230,8 +230,14 @@ class SkillUpController extends ApiBaseController
             $feeds->andFilterWhere(['or',
                 ['like', 'c1.skill', $param['keyword']],
                 ['like', 'a.post_title', $param['keyword']],
-                ['like', 'a.post_short_summery', $param['keyword']]
+                ['like', 'a.post_short_summery', $param['keyword']],
+                ['like', 'i1.name', $param['keyword']],
+                ['like', 'b.name', $param['keyword']],
             ]);
+        }
+
+        if (isset($param['related']) && !empty($param['related'])) {
+            $feeds->andWhere(['NOT', ['a.post_enc_id' => $param['related_post_id']]]);
         }
 
         $feeds = $feeds->limit($limit)
@@ -594,6 +600,7 @@ class SkillUpController extends ApiBaseController
                         if ($detail['source_name'] == 'Youtube') {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedVideos'][0]['description'];
                             $detail['frame'] = '<iframe width="1519" height="562" src="https://www.youtube.com/embed/' . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'] . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                            $detail['post_source_url'] = "https://www.youtube.com/watch?v=" . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'];
                         } else {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedEmbeds'][0]['description'];
                             $detail['frame'] = $detail['skillsUpPostAssignedEmbeds'][0]['body'];
@@ -618,9 +625,12 @@ class SkillUpController extends ApiBaseController
                 }
 
                 $params['skills'] = $skills;
+                $params['related'] = true;
+                $params['related_post_id'] = $detail['post_enc_id'];
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
-
+                $rec = $this->__getStudentRecommended($detail['post_enc_id']);
+                $detail['is_recommended'] = (count($rec) > 0) ? true : false;
                 $detail['teacher_recommended'] = $this->__getTeacherRecommended($detail['post_enc_id']);
 
                 unset($detail['skillsUpPostAssignedVideos']);
