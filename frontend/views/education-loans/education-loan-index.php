@@ -272,7 +272,7 @@ use yii\helpers\Url;
                         <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
                            target="_blank">
                             <div class="loan-college">
-                                <div class="loan-college-img">nm,
+                                <div class="loan-college-img">
                                     <img src="<?= $l['org_logo'] ?>" alt="org-logo">
                                 </div>
                                 <p><?= $l['name'] ?></p>
