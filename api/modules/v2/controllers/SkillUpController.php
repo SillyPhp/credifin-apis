@@ -230,8 +230,14 @@ class SkillUpController extends ApiBaseController
             $feeds->andFilterWhere(['or',
                 ['like', 'c1.skill', $param['keyword']],
                 ['like', 'a.post_title', $param['keyword']],
-                ['like', 'a.post_short_summery', $param['keyword']]
+                ['like', 'a.post_short_summery', $param['keyword']],
+                ['like', 'i1.name', $param['keyword']],
+                ['like', 'b.name', $param['keyword']],
             ]);
+        }
+
+        if (isset($param['related']) && !empty($param['related'])) {
+            $feeds->andWhere(['NOT', ['a.post_enc_id' => $param['related_post_id']]]);
         }
 
         $feeds = $feeds->limit($limit)
@@ -619,6 +625,8 @@ class SkillUpController extends ApiBaseController
                 }
 
                 $params['skills'] = $skills;
+                $params['related'] = true;
+                $params['related_post_id'] = $detail['post_enc_id'];
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
                 $rec = $this->__getStudentRecommended($detail['post_enc_id']);
