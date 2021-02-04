@@ -272,7 +272,7 @@ use yii\helpers\Url;
                         <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
                            target="_blank">
                             <div class="loan-college">
-                                <div class="loan-college-img">nm,
+                                <div class="loan-college-img">
                                     <img src="<?= $l['org_logo'] ?>" alt="org-logo">
                                 </div>
                                 <p><?= $l['name'] ?></p>
@@ -355,7 +355,6 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/partners-with-uss') ?>
 
     <section class="faq-s">
         <div class="faq-s-bg"></div>
@@ -478,16 +477,8 @@ use yii\helpers\Url;
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
                                     alt=""/> Chat With Us
                         </div>
-                        <div class="whats">
-                            <input type="text" class="form-control" id="whatsAppText" name="text"
-                            placeholder="Type Message & Start Chat">
-                            <button onclick="window.open('https://api.whatsapp.com/send?phone=+918727985888&text=' + document.getElementById('whatsAppText').value, '_blank', 'width=800,height=400,left=200,top=100')" class="grn"><i class="fab fa-whatsapp"></i></button>
-                        </div>
-                        <div class="tele">
-                            <input type="text" class="form-control" id="telegramText" name="text"
-                                   placeholder="Type Message & Start Chat">
-                            <button onclick="window.open('https://t.me/feefinancing', '_blank', 'width=800,height=400,left=200,top=100')" class="blu"><i class="fab fa-telegram-plane"></i></button>
-                        </div>
+                        <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>
+                        <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i class="fab fa-telegram-plane"></i>  Telegram</a></div>
                     </div>
                 </div>
             </div>
@@ -560,6 +551,34 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.whats-btn, .tele-btn {
+    padding: 20px 0px 14px 0px;
+    text-align: center;
+}
+.tele-btn {
+    padding: 10px 0px 8px 0px;
+    text-align: center;
+}
+.whats-btn a{
+    border: 1px solid #43d854;
+    padding: 10px 20px;
+    color: #fff;
+    background: #43d854;
+}
+.whats-btn a:hover{
+    color: #43d854;
+    background-color: #fff;
+}
+.tele-btn a{
+    border: 1px solid #00405d;
+    padding: 10px 22px;
+    color: #fff;
+    background: #00405d;
+}
+.tele-btn a:hover{
+    color: #00405d;
+    background-color: #fff;
+}
 .bgeEd {
     background-color: #edf4fc;
 }
@@ -585,31 +604,7 @@ $this->registerCss('
     color:#fff;
     background-color:#539ffe;
 }
-.blu{
-    background-color: #0088cc;
-    }
-.grn{
-    background-color: #43d854;
-}
-.whats, .tele{
-    position: relative;
-    flex-basis: 25%;
-    margin: 10px 30px;
-}
-.whats input, .tele input{
-    height: 36px;
-    padding-right: 45px;
-}
-.whats button, .tele button {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    width: 40px;
-    height: 34px;
-    border: none;
-    font-size:20px;
-    color: #fff;
-}
+
 .size{
     font-size: 21px;
     }
