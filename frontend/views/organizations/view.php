@@ -971,7 +971,7 @@ $this->registerCss('
 }
 a.twitter{
     padding:8px 6px 8px 10px;
-      color:#1DA1F2;
+    color:#1DA1F2;
 }
 .twitter:hover{
     background:#1da1f2;
