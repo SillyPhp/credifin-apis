@@ -109,6 +109,8 @@ echo $this->render('/widgets/jobs-by-tag');
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/drop-resume-for-teachers'); ?>
+
 <?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <?= $this->render('/widgets/international-jobs'); ?>
