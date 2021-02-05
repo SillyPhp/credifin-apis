@@ -44,7 +44,7 @@ class LoanCertificates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['certificate_enc_id', 'certificate_type_enc_id', 'number', 'created_by'], 'required'],
+            [['certificate_enc_id', 'certificate_type_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
