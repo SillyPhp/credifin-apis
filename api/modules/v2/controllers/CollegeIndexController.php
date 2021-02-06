@@ -1222,7 +1222,7 @@ class CollegeIndexController extends ApiBaseController
                 ]);
             }
 
-            if (isset($param['filter']) && empty($param['filter'])) {
+            if (isset($param['filter']) && !empty($param['filter'])) {
                 if ($param['filter'] == 'Verified') {
                     $companies->andWhere(['h2.name' => 'Verified']);
                 } elseif ($param['filter'] == 'Hot') {
