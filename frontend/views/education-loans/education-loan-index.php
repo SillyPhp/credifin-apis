@@ -296,18 +296,27 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="Avanse Financial Services">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
                         </div>
-                        <div class="lp-name">Avanse Financial Services</div>
+                        <div class="lp-name">Agile Finserv</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
+                                 alt="ICICI Bank">
                         </div>
-                        <div class="lp-name">Agile Finserv</div>
+                        <div class="lp-name">ICICI Bank</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="Avanse Financial Services">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">
@@ -338,18 +347,9 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Private Limtied">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="Amrit Malwa Private Limtied">
                         </div>
-                        <div class="lp-name">Amrit Malwa Private Limtied</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                                 alt="ICICI Bank">
-                        </div>
-                        <div class="lp-name">ICICI Bank</div>
+                        <div class="lp-name">We Pay India</div>
                     </div>
                 </div>
             </div>
@@ -604,7 +604,6 @@ $this->registerCss('
     color:#fff;
     background-color:#539ffe;
 }
-
 .size{
     font-size: 21px;
     }
