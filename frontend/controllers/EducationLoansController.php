@@ -106,4 +106,8 @@ class EducationLoansController extends Controller
             return $this->render('leads-form',['model'=>$model]);
         }
     }
+
+    public function actionStudyInUSA(){
+        return $this->render('study-in-usa');
+    }
 }
