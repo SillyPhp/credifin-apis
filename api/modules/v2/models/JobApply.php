@@ -17,7 +17,7 @@ class JobApply extends Model
 {
     public $id;
     public $check;
-    public $resume_list;
+    public $resume_id;
     public $questionnaire_id;
     public $fill_question;
     public $location_pref;
@@ -26,7 +26,7 @@ class JobApply extends Model
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
+            [['id', 'resume_file', 'status', 'check', 'resume_id', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
         ];
     }
 
@@ -48,7 +48,7 @@ class JobApply extends Model
             $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
             $appliedModel->application_number = date('ymd') . time();
             $appliedModel->application_enc_id = $this->id;
-//        $appliedModel->resume_enc_id = $this->resume_list;
+            $appliedModel->resume_enc_id = $this->resume_id;
             $appliedModel->status = $this->status;
             $appliedModel->created_on = date('Y-m-d h:i:s');
             $appliedModel->created_by = $user->user_enc_id;
