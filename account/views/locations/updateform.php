@@ -138,10 +138,10 @@ $this->registerCss('
     filter: alpha(opacity=100);
 }
 .iti{
-    width: 100%;
+    width: 100% !important;
 }
 .iti input{
-    padding-left: 46px;
+    padding-left: 46px !important;
 }
 ');
 $script = <<<JS
