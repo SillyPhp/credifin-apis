@@ -144,9 +144,14 @@ $this->registerCss('
 @media only screen and (max-width: 992px) {
     .heading-data-set h3 {
         font-size: 30px;
+        margin-left: 30px;
     }
     .heading-data-set p, .heading-data-set h4 {
         font-size: 16px;
+        margin-left: 30px;
+    }
+    .loan-btn {
+         margin-left: 30px;
     }
     .student-icon img{
         padding-left: 0px; 
