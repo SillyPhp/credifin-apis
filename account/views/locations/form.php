@@ -163,10 +163,10 @@ $this->registerCss('
     z-index:999 !important;
 }
 .iti, .intl-tel-input {
-    width: 100%;
+    width: 100% !important;
 }
 .iti input{
-    padding-left: 46px;
+    padding-left: 46px !important;
 ');
 $script = <<<JS
     $('.country-list, .iti__country-list').css('width',$('#phone').width());
