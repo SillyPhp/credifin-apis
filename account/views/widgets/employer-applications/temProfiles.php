@@ -389,9 +389,9 @@ $script = <<< JS
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
     var tabs2 = $('#tab_index_2');
-     $('input[type="radio"]:checked').each(function(){
-      $(this).prop('checked', false);
-  });
+  //    $('input[type="radio"]:checked').each(function(){
+  //     $(this).prop('checked', false);
+  // });
     tabs2.hide();
     tabs1.show();
     Btback.hide(); 
