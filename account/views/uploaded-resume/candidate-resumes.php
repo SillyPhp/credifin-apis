@@ -90,9 +90,9 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
         </div>
         </div>
         </div>
-            {{#appliedApplicationEnc.resume}}
-        <a href="{{appliedApplicationEnc.resume}}" target="_blank" class="btn btn-paid-candidate bt-1">Download Resume</a>
-            {{/appliedApplicationEnc.resume}}
+            {{#resume}}
+        <a href="{{resume}}" target="_blank" class="btn btn-paid-candidate bt-1">Download Resume</a>
+            {{/resume}}
         <a href="/{{username}}" target="_blank" class="btn btn-paid-candidate bt-1">View Profile</a>
         </div>
         </label>
