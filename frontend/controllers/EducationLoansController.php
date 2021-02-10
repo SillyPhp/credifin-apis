@@ -107,7 +107,11 @@ class EducationLoansController extends Controller
         }
     }
 
-    public function actionStudyInUSA(){
+    public function actionStudyInUsa(){
         return $this->render('study-in-usa');
+    }
+
+    public function actionRefinanceLoan(){
+        return $this->render('refinance-loan');
     }
 }
