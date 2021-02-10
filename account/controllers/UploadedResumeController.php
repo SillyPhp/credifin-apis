@@ -50,7 +50,7 @@ class UploadedResumeController extends Controller
                     'status'=>201,
                 ];
             }
-        }
+       }
         $profile = Categories::findOne(['category_enc_id'=>Yii::$app->request->get('id')])->name;
         return $this->render('candidate-resumes', [
             'available_applications' => '',
@@ -90,7 +90,7 @@ class UploadedResumeController extends Controller
                         $x->joinWith(['categoryEnc e'],false);
                     }],false);
                 }],true,'INNER JOIN');
-                $x->joinWith(['resumeEnc g'],false,'INNER JOIN');
+                $x->joinWith(['resumeEnc g'],false,'LEFT JOIN');
             }],true,'INNER JOIN')
             ->joinWith(['createdBy f'],false,'INNER JOIN')
             ->groupBy(['a.organization_enc_id','application_enc_id'])
