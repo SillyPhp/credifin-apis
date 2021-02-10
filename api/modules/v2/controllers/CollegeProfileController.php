@@ -11,14 +11,20 @@ use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\Cities;
 use common\models\CollegeCoursesPool;
+use common\models\CollegeCutoff;
+use common\models\CollegeFaculty;
+use common\models\CollegeScholarships;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
+use common\models\Departments;
+use common\models\Designations;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\InterviewProcessFields;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
+use common\models\ReferralReviewTracking;
 use common\models\Teachers;
 use common\models\User;
 use common\models\Users;
@@ -1197,7 +1203,7 @@ class CollegeProfileController extends ApiBaseController
                 'bb.status' => 'Active',
             ])
             ->andWhere(['c.name' => $type])
-        ->count();
+            ->count();
     }
 
     private function RejectedJobsCount($type, $college_id)
@@ -1576,6 +1582,187 @@ class CollegeProfileController extends ApiBaseController
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unathorized']);
+        }
+    }
+
+    public function actionSaveInfo()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $org_other_detail = OrganizationOtherDetails::find()
+                ->where(['organization_enc_id' => $this->getOrgId()])
+                ->one();
+
+            $org = Organizations::find()
+                ->where(['organization_enc_id' => $this->getOrgId()])
+                ->one();
+
+            if ($org) {
+                $org->description = $params['description'];
+                $org->website = $params['website'];
+                if (!$org->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
+            if (!$org_other_detail) {
+                $org_other_detail = new OrganizationOtherDetails();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $org_other_detail->organization_other_details_enc_id = $utilitiesModel->encrypt();
+                $org_other_detail->organization_enc_id = $this->getOrgId();
+                $org_other_detail->affiliated_to = $params['affiliated_to'];
+                $org_other_detail->accredited_to = $params['accredited_to'];
+                $org_other_detail->entrance_exam = $params['entrance_exam'];
+                $org_other_detail->total_programs = $params['total_programs'];
+                $org_other_detail->popular_course = $params['popular_course'];
+                $org_other_detail->top_recruiter = $params['top_recruiter'];
+//                $org_other_detail->brochure = $params['brochure'];
+                $org_other_detail->updated_on = date('Y-m-d H:i:s');
+                if (!$org_other_detail->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            }
+
+            $org_other_detail->affiliated_to = $params['affiliated_to'];
+            $org_other_detail->accredited_to = $params['accredited_to'];
+            $org_other_detail->entrance_exam = $params['entrance_exam'];
+            $org_other_detail->total_programs = $params['total_programs'];
+            $org_other_detail->popular_course = $params['popular_course'];
+            $org_other_detail->top_recruiter = $params['top_recruiter'];
+//            $org_other_detail->brochure = $params['brochure'];
+            $org_other_detail->updated_on = date('Y-m-d H:i:s');
+            if (!$org_other_detail->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+        }
+        return $this->response(401, ['status' => 401, 'unauthorized']);
+    }
+
+    public function actionSaveScholarships()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $scholarship = new CollegeScholarships();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $scholarship->college_scholarship_enc_id = $utilitiesModel->encrypt();
+            $scholarship->college_enc_id = $this->getOrgId();
+            $scholarship->title = $params['title'];
+            $scholarship->amount = $params['amount'];
+            $scholarship->detail = $params['detail'];
+            $scholarship->apply_link = $params['apply_link'];
+            $scholarship->created_by = $user->user_enc_id;
+            $scholarship->created_on = date('Y-m-d H:i:s');
+            if (!$scholarship->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSaveCutoff()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $cutoff = new CollegeCutoff();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $cutoff->college_cut_off_enc_id = $utilitiesModel->encrypt();
+            $cutoff->assgined_course_enc_id = $params['course_id'];
+            $cutoff->college_enc_id = $this->getOrgId();
+            $cutoff->general = $params['general'];
+            $cutoff->obc = $params['obc'];
+            $cutoff->sc = $params['sc'];
+            $cutoff->st = $params['st'];
+            $cutoff->pwd = $params['pwd'];
+            $cutoff->ews = $params['ews'];
+            $cutoff->created_by = $user->user_enc_id;
+            $cutoff->created_on = date('Y-m-d H:i:s');
+            if (!$cutoff->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddFaculty()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $faculty = new CollegeFaculty();
+            $faculty->college_faculty_enc_id = '';
+            $faculty->college_enc_id = '';
+            $faculty->faculty_name = '';
+            $faculty->designation_enc_id = '';
+            $faculty->department = '';
+            $faculty->experience = '';
+            $faculty->created_by = $user->user_enc_id;
+            $faculty->created_on = date('Y-m-d H:i:s');
+            if (!$faculty->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function saveDesignation($designation)
+    {
+        $user = $this->isAuthorized();
+
+        $desi = Designations::find()
+            ->where(['designation' => $designation, 'is_deleted' => 0])
+            ->one();
+
+        if ($desi) {
+            return $desi->designation_enc_id;
+        }
+
+        $desigModel = new Designations;
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $desigModel->designation_enc_id = $utilitiesModel->encrypt();
+        $utilitiesModel->variables['name'] = $designation;
+        $utilitiesModel->variables['table_name'] = Designations::tableName();
+        $utilitiesModel->variables['field_name'] = 'slug';
+        $desigModel->slug = $utilitiesModel->create_slug();
+        $desigModel->designation = $designation;
+        $desigModel->organization_enc_id = $this->getOrgId();
+        $desigModel->created_on = date('Y-m-d H:i:s');
+        $desigModel->created_by = $user->user_enc_id;
+        if ($desigModel->save()) {
+            return $desigModel->designation_enc_id;
+        }
+        return false;
+    }
+
+    private function saveDepartment($department)
+    {
+        $department = new Departments();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $department->department_enc_id = $utilitiesModel->encrypt();
+        $department->name = $department;
+        if (!$department->save()) {
+
         }
     }
 
