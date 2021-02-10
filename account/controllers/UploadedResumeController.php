@@ -39,7 +39,7 @@ class UploadedResumeController extends Controller
             $type = Yii::$app->request->post('type');
             $limit = Yii::$app->request->post('limit');
             $page = Yii::$app->request->post('page');
-            $user_data = $this->getDropResumeApplication($profile='jL9zWvg3wlJbPm9zKo8vlpoqEG6OB1', $type='Jobs',$limit=6,$page=1);
+            $user_data = $this->getDropResumeApplication($profile, $type,$limit,$page);
             if ($user_data){
                 return [
                     'status'=>200,
@@ -59,7 +59,7 @@ class UploadedResumeController extends Controller
     }
 
     private function getDropResumeApplication($profile, $type,$limit,$page){
-        if (isset($limit)) {
+        if (isset($limit)&&!empty($limit)) {
             $limit = $limit;
             $offset = ($page - 1) * $limit;
         }
