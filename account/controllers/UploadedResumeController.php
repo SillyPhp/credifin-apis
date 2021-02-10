@@ -39,7 +39,7 @@ class UploadedResumeController extends Controller
             $type = Yii::$app->request->post('type');
             $limit = Yii::$app->request->post('limit');
             $page = Yii::$app->request->post('page');
-            $user_data = $this->getDropResumeApplication($profile='jL9zWvg3wlJbPm9zKo8vlpoqEG6OB1', $type='Jobs',$limit=6,$page=1);
+            $user_data = $this->getDropResumeApplication($profile, $type,$limit,$page);
             if ($user_data){
                 return [
                     'status'=>200,
@@ -50,7 +50,7 @@ class UploadedResumeController extends Controller
                     'status'=>201,
                 ];
             }
-        }
+       }
         $profile = Categories::findOne(['category_enc_id'=>Yii::$app->request->get('id')])->name;
         return $this->render('candidate-resumes', [
             'available_applications' => '',
@@ -59,7 +59,7 @@ class UploadedResumeController extends Controller
     }
 
     private function getDropResumeApplication($profile, $type,$limit,$page){
-        if (isset($limit)) {
+        if (isset($limit)&&!empty($limit)) {
             $limit = $limit;
             $offset = ($page - 1) * $limit;
         }
@@ -90,7 +90,7 @@ class UploadedResumeController extends Controller
                         $x->joinWith(['categoryEnc e'],false);
                     }],false);
                 }],true,'INNER JOIN');
-                $x->joinWith(['resumeEnc g'],false,'INNER JOIN');
+                $x->joinWith(['resumeEnc g'],false,'LEFT JOIN');
             }],true,'INNER JOIN')
             ->joinWith(['createdBy f'],false,'INNER JOIN')
             ->groupBy(['a.organization_enc_id','application_enc_id'])
