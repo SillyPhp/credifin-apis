@@ -544,6 +544,7 @@ class LearningController extends Controller
                 ])
                 ->andWhere(['a.is_deleted' => 0])
                 ->groupBy(['a.assigned_category_enc_id'])
+                ->groupBy(['c.name'])
                 ->asArray()
                 ->limit(15)
                 ->all();

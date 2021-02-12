@@ -924,7 +924,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <div class="application-card-description">
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
-                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                    <h5>{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5>Negotiable</h5>
