@@ -498,29 +498,43 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
-            $assigned = new AssignedCollegeCourses();
-            $utilities = new Utilities();
-            $utilities->variables['string'] = time() . rand(100, 100000);
-            $assigned->assigned_college_enc_id = $utilities->encrypt();
-            $assigned->organization_enc_id = $college_id;
-            $assigned->course_enc_id = $param['course_enc_id'];
-            $assigned->created_by = $user->user_enc_id;
-            $assigned->created_on = date('Y-m-d H:i:s');
-            if (!$assigned->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-            }
-
-            $streams = AssignedCollegeCourses::find()
+            $already_exists = AssignedCollegeCourses::find()
                 ->distinct()
                 ->alias('a')
                 ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
                 ->joinWith(['courseEnc c'], false)
-                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0, 'c.type' => 'Stream'])
-                ->orderBy(['c.course_name' => SORT_ASC])
+                ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0, 'c.type' => 'Stream', 'c.course_enc_id' => $param['course_enc_id']])
                 ->asArray()
-                ->all();
+                ->one();
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully added', 'streams' => $streams]);
+            if (!$already_exists) {
+
+                $assigned = new AssignedCollegeCourses();
+                $utilities = new Utilities();
+                $utilities->variables['string'] = time() . rand(100, 100000);
+                $assigned->assigned_college_enc_id = $utilities->encrypt();
+                $assigned->organization_enc_id = $college_id;
+                $assigned->course_enc_id = $param['course_enc_id'];
+                $assigned->created_by = $user->user_enc_id;
+                $assigned->created_on = date('Y-m-d H:i:s');
+                if (!$assigned->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                $streams = AssignedCollegeCourses::find()
+                    ->distinct()
+                    ->alias('a')
+                    ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                    ->joinWith(['courseEnc c'], false)
+                    ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0, 'c.type' => 'Stream'])
+                    ->orderBy(['c.course_name' => SORT_ASC])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully added', 'streams' => $streams]);
+            } else {
+                return $this->response(409, ['status' => 409, 'message' => 'already exists']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
