@@ -477,8 +477,10 @@ use yii\helpers\Url;
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
                                     alt=""/> Chat With Us
                         </div>
+                        <div class="chat">
                         <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>
                         <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i class="fab fa-telegram-plane"></i>  Telegram</a></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -551,15 +553,17 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-.whats-btn, .tele-btn {
-    padding: 20px 0px 14px 0px;
+.whats-btn {
+    padding: 10px 0px 8px 0px;
     text-align: center;
+    margin-right: 10px;
 }
 .tele-btn {
     padding: 10px 0px 8px 0px;
     text-align: center;
 }
 .whats-btn a{
+    border-radius: 4px;
     border: 1px solid #43d854;
     padding: 10px 20px;
     color: #fff;
@@ -568,16 +572,25 @@ $this->registerCss('
 .whats-btn a:hover{
     color: #43d854;
     background-color: #fff;
+    text-decoration: none;
+    transition: .3s ease-in-out;
 }
-.tele-btn a{
+.tele-btn a {
+    border-radius: 4px;
     border: 1px solid #00405d;
     padding: 10px 22px;
     color: #fff;
     background: #00405d;
 }
-.tele-btn a:hover{
+.tele-btn a:hover {
     color: #00405d;
     background-color: #fff;
+    text-decoration: none;
+    transition: .3s ease-in-out;
+}
+.chat {
+    padding: 30px;
+    display: -webkit-inline-box;
 }
 .bgeEd {
     background-color: #edf4fc;

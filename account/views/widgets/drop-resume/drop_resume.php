@@ -432,16 +432,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <!--                    <div class="col-md-10">-->
-                    <!--                        <div class="form-group add_new_field">-->
-                    <!--                            <input type="text" id="add_new" placeholder="Add New Category" class="form-control">-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="col-md-2">-->
-                    <!--                        <div class="form-group">-->
-                    <!--                            <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
                 </div>
                 <div class="row padd10 cards-cont">
                     {{#.}}
@@ -470,8 +460,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 </script>
 
 <script id="selected-categories" type="text/template">
-
-
     <div class="tab-content">
         <div class="tab-pane active" id="tab_actions_pending">
             <!-- BEGIN: Actions -->
@@ -486,13 +474,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                         <i class="fa fa-pencil"></i>
                                     </div>
                                     <div class="count-cat" title="Resume Count">{{count}}</div>
-                                    <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=<?=$type?>">
+                                    <a href="/account/uploaded-resume/candidate-resumes?id={{category_enc_id}}&type=<?=$type?>">
                                         <div class="work-profile">
                                             <div class="rb-cat-icon"><img src="{{icon}}" alt=""></div>
                                             {{name}}
-                                        </div>
-                                        <div class="totalResumes">
-                                            {{Resumes}}
                                         </div>
                                     </a>
                                 </div>
