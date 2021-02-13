@@ -11,6 +11,11 @@ $ucType = ucwords($type);
                             <div class="wizard-header">
                                 <div class="row">
                                     <div class="col-xs-12">
+                                        <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-12">
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>

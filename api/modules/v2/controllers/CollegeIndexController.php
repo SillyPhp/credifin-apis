@@ -1169,13 +1169,13 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['erexxCollaborators0 g' => function ($g) use ($college_id) {
                     $g->onCondition(['g.college_enc_id' => $college_id]);
                 }], false)
-//                ->joinWith(['organizationLabels h1' => function ($h) {
-//                    $h->select(['h1.organization_enc_id', 'h2.name']);
-//                    $h->joinWith(['labelEnc h2' => function ($h2) {
-//                        $h2->onCondition(['h2.is_deleted' => 0]);
-//                    }], false);
-//                    $h->onCondition(['h1.is_deleted' => 0, 'h1.label_for' => 1]);
-//                }])
+                ->joinWith(['organizationLabels h1' => function ($h) {
+                    $h->select(['h1.organization_enc_id', 'h2.name']);
+                    $h->joinWith(['labelEnc h2' => function ($h2) {
+                        $h2->onCondition(['h2.is_deleted' => 0]);
+                    }], false);
+                    $h->onCondition(['h1.is_deleted' => 0, 'h1.label_for' => 1]);
+                }])
                 ->where([
                     'a.is_erexx_approved' => 1,
                     'a.has_placement_rights' => 1,
@@ -1220,6 +1220,22 @@ class CollegeIndexController extends ApiBaseController
                     new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
                     new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
                 ]);
+            }
+
+            if (isset($param['filter']) && !empty($param['filter'])) {
+                if ($param['filter'] == 'Verified') {
+                    $companies->andWhere(['h2.name' => 'Verified']);
+                } elseif ($param['filter'] == 'Hot') {
+                    $companies->andWhere(['h2.name' => 'Hot']);
+                } elseif ($param['filter'] == 'Featured') {
+                    $companies->andWhere(['h2.name' => 'Featured']);
+                } elseif ($param['filter'] == 'New') {
+                    $companies->andWhere(['h2.name' => 'New']);
+                } elseif ($param['filter'] == 'Promoted') {
+                    $companies->andWhere(['h2.name' => 'Promoted']);
+                } elseif ($param['filter'] == 'Trending') {
+                    $companies->andWhere(['h2.name' => 'Trending']);
+                }
             }
 
             if (!empty($company_name)) {

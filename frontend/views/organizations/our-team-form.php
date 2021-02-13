@@ -27,8 +27,8 @@ $eform = ActiveForm::begin([
                 </div>
                 <div class="g-image-edit">
                     <?= $eform->field($organizationEmployeesForm, 'image', [
-                        'template' => '{input}',
-                        'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                        'template' => '{error}{input}',
+                        ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                     ?>
                     <label for="employeeImageUpload">Select Image</label>
                     <p class="ot-image help-block help-block-error"></p>
@@ -93,6 +93,7 @@ $this->registerCss('
 .office-gallery .g-image-edit input {
     display: none;
 }
+.office-gallery .g-image-edit label,
 .office-gallery .g-image-edit input + label {
     display: inline-block;
     width: 124px;
@@ -143,22 +144,14 @@ function readGalleryImgURL(input) {
             $('#employeeImagePreview').fadeIn(650);
         }
         reader.readAsDataURL(input.files[0]);
+    } else {
+        $('#employeeImagePreview').css('background-image', 'url(/assets/themes/ey/images/pages/company-profile/user_avatar.png)');
     }
 }
 $("#employeeImageUpload").change(function() {
     readGalleryImgURL(this);
-    validateImage();
 });
-$(document).on('click', '.our-team', function() {
-    validateImage();
-});
-function validateImage(){
-    if($('#employeeImageUpload').val() == ''){
-        $('.ot-image').html('Image is Required.');
-    } else{
-        $('.ot-image').html('');
-    }
-}
+
 $(document).on('submit', '#add_employee', function(event) {
     var btn = $('.our-team');
     event.preventDefault();

@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <!--light box-->
@@ -8,7 +9,16 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
             <div class="light-box-content">
                 <form id="temProfilesForm">
                 <div class="tab_pane" id="tab_index_1">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="disFlex">
+                                <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
+                                </a>
                                 <h3 class="text-center" style="font-family: roboto;">Select Profile For Your Job</h3>
+                            </div>
+                        </div>
+                    </div>
                                 <div class="row">
                                     <ul class="relationList">
                                         <?php foreach ($primary_cat as $pCat){ ?>
@@ -76,6 +86,14 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
 <!--light box-->
 <?php
 $this->registerCss("
+.disFlex{
+    position: relative;
+    text-align: center;
+}
+.disFlex a{
+    position: absolute !important;
+    left:10px;
+}
 .margin_right{
 margin: 0 6px;
 }
@@ -371,9 +389,9 @@ $script = <<< JS
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
     var tabs2 = $('#tab_index_2');
-     $('input[type="radio"]:checked').each(function(){
-      $(this).prop('checked', false);
-  });
+  //    $('input[type="radio"]:checked').each(function(){
+  //     $(this).prop('checked', false);
+  // });
     tabs2.hide();
     tabs1.show();
     Btback.hide(); 

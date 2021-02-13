@@ -284,13 +284,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                             endif;
                         } ?>
                     </div>
-                    <?php if (!Yii::$app->user->identity->organization){ ?>
-                    <div class="btn-parent showOnTab">
-                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
-                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
-                        <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
-                    </div>
-                    <?php } ?>
                     <div class="job-details">
                         <?php if (!empty($data2['interview_process_enc_id'])) { ?>
                             <?=

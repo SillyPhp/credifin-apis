@@ -526,6 +526,15 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .showOnTab{
         display: block;
     }
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
 }
 @media only screen and (max-width: 720px) {
     .actions-main{
@@ -561,6 +570,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .job-head-info h4{
         margin-left:0px !Important;
+    }
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
     }
 }
 ');

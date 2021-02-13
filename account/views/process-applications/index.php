@@ -58,9 +58,11 @@ foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $
     $user_pCount[$p['field_name']] = 0;
     foreach ($fields as $u) {
         if ($p['sequence'] == $u['current_round']) {
-            $user_pCount[$p['field_name']] += 1;
-        }else{
-            $rejected_count += 1;
+            if($u['status'] != 'Rejected'){
+                $user_pCount[$p['field_name']] += 1;
+            }else{
+                $rejected_count += 1;
+            }
         }
     }
 }

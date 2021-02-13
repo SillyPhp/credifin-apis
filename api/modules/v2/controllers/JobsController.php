@@ -666,7 +666,7 @@ class JobsController extends ApiBaseController
                     ->exists();
 
                 $model->id = $reqParams['app_id'];
-//                $model->resume_list = $reqParams['resume_enc_id'];
+                $model->resume_id = $reqParams['resume_enc_id'];
                 $model->location_pref = $city_enc_ids;
 
                 if ($application_questionnaire) {

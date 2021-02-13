@@ -18,6 +18,7 @@ use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
+use common\models\PathToOpenLeads;
 use common\models\Utilities;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
@@ -117,7 +118,7 @@ class LoansController extends ApiBaseController
             ->select(['a.course_name'])
             ->where(['a.status' => 'Approved', 'a.is_deleted' => 0]);
         if (isset($params['college_id']) && !empty($params['college_id'])) {
-            $courses->joinWith(['assignedCollegeCourses b'],false)
+            $courses->joinWith(['assignedCollegeCourses b'], false)
                 ->andWhere(['b.organization_enc_id' => $params['college_id']]);
         }
         $courses = $courses->asArray()
@@ -427,10 +428,18 @@ class LoansController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+            $path_lead = PathToOpenLeads::find()
+                ->select(['course_name'])
+                ->where(['loan_app_enc_id' => $application['loan_app_enc_id']])
+                ->asArray()
+                ->one();
+
             if ($path_claim) {
                 $course_name = $path_claim['course_name'];
             } elseif ($path_uclaim) {
                 $course_name = $path_uclaim['course_name'];
+            } elseif ($path_lead) {
+                $course_name = $path_lead['course_name'];
             }
 
             $application['course_name'] = $course_name;

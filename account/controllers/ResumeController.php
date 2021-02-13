@@ -273,22 +273,21 @@ class ResumeController extends Controller
     public function actionFinalData()
     {
         $type = Yii::$app->request->post('type');
-        $selectedfields = OrganizationAssignedCategories::find()
+        $selectedfields = DropResumeOrgApplication::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'b.name', 'b.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon'])
-            ->joinWith(['categoryEnc b'], false)
-            ->where(['a.assigned_to' => $type])
-            ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id, 'a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['a.parent_enc_id' => NULL])
-            ->andWhere(['a.is_deleted' => 0])
+            ->select(['e.category_enc_id','e.name','COUNT(e.name) count','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", e.icon) icon'])
+            ->joinWith(['appliedApplicationEnc b'=>function($x) use ($type){
+                $x->joinWith(['dropResumeAppliedTitles c'=>function($x) use ($type){
+                    $x->joinWith(['assignedCategoryEnc d'=>function($x) use ($type){
+                        $x->andWhere(['assigned_to'=>$type]);
+                        $x->joinWith(['parentEnc e'],false);
+                    }],false);
+                }],false);
+            }],false)
+            ->groupBy(['e.name'])
+            ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
             ->asArray()
             ->all();
-
-        if ($selectedfields) {
-            foreach ($selectedfields as $k => $v) {
-                $selectedfields[$k]['count'] = count($this->dropResumeCounts($v['assigned_category_enc_id'], $type));
-            }
-        }
 
         return json_encode($selectedfields);
     }
