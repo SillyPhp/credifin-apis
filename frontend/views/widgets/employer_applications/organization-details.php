@@ -27,7 +27,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
             <div class="organization-details">
                 <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
+                    <p><i class="fas fa-unlink"></i><a href="<?= $website; ?>"><?= $website; ?></a></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -234,6 +234,11 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.organization-details p{
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
 .qr-code {
 	width: 100px;
 	margin: 5px auto 20px;

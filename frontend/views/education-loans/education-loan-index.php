@@ -820,12 +820,12 @@ $this->registerCss('
     text-align: center;
 }
 .callNumber i{
-    color: #1b4145
+    color: #1b4145;
 }
 .edu-flex{
     display: flex;
     align-items: center;
-    justify-content: space-even
+    justify-content: space-even;
 }
 .edu-hw-block, .edu-des{
     flex-basis: 50%;

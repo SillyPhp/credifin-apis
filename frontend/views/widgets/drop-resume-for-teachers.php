@@ -19,7 +19,7 @@ use yii\helpers\Url;
                        <p>Drop your resume in the institution's resume box.<br>
                            Get noticed by them first as soon as any vacancy arises.</p>
                        <div class="teacher-btn">
-                           <a href="#">DROP RESUME FOR TEACHERS</a>
+                           <a href="<?= Url::to('/hsbcbankpvtltd3098/reviews'); ?>" target="_blank">DROP RESUME FOR TEACHERS</a>
                        </div>
                    </div>
                </div>
