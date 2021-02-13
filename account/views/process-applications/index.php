@@ -53,11 +53,14 @@ if ($application_name['wage_type'] == 'Fixed') {
     $amount = 'Unpaid';
 }
 $user_pCount = [];
+$rejected_count = 0;
 foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
     $user_pCount[$p['field_name']] = 0;
     foreach ($fields as $u) {
         if ($p['sequence'] == $u['current_round']) {
             $user_pCount[$p['field_name']] += 1;
+        }else{
+            $rejected_count += 1;
         }
     }
 }
@@ -282,7 +285,7 @@ Pjax::begin(['id' => 'pjax_process']);
                     foreach ($user_pCount as $v) {
                         $pcnt += $v;
                     }
-                    echo $pcnt + $hcount;
+                    echo $pcnt + $hcount + $rejected_count;
                     ?></span></a>
         </li>
         <?php
@@ -2278,10 +2281,8 @@ $(document).on('click','.reject',function(e){
     var btn2 = $(this).prev();
     var btn3 = $(this).next();
     var app_id = $(this).attr('value');
-    console.log(app_id);
     var rootElem = btn.parentsUntil('.pr-user-main').parent();
     var rejectBox = $(rootElem).find('.reject-box');
-    console.log(rejectBox);
     $.ajax({
         url:'/account/process-applications/rejection-window',
         data:{app_id:app_id},
@@ -2297,7 +2298,6 @@ $(document).on('click', '.reconsiderBtn', function (e){
     var btn = $(this);
     var app_id = $(this).attr('value');
     var rejectBox = btn.parentsUntil('.reject-box').parent();
-    console.log(rejectBox);
    $.ajax({
        url: '/account/process-applications/hide-rejection-window',
        data:{app_id:app_id},
@@ -2324,7 +2324,6 @@ $(document).on('click', '.getReasonsId', function (e){
     $('input[type=checkbox]:checked', '#'+formId).each(function (){
         selectedReasons.push($(this).attr('value'));
     });
-    console.log(selectedReasons);
     let rootElem = parElem.parent();
     if(selectedReasons.length == 0){
         alert('Please Select Atleast One Reason');
@@ -2401,9 +2400,8 @@ $(document).on('click','.addReasonBtn', function (e){
             if(res['status'] == 200){
                 let reasonID = res['reason_enc_id'];
                 let reasonTitle = res['reason'];
-                console.log(embedList);
                 let reasonLi = document.createElement('li');
-                reasonLi.innerHTML =  '<div class="reasonsReject"><input type="checkbox" value="'+ res['reason'] +'" name="reasons" id="'+ res['reason_enc_id'] +'" class="" checked><label for="'+ res['reason_enc_id'] +'">'+ res['reason'] +'</label></div>';
+                reasonLi.innerHTML =  '<div class="reasonsReject"><input type="checkbox" value="'+ res['reason_enc_id'] +'" name="reasons" id="'+ res['reason_enc_id'] +'" class="" checked><label for="'+ res['reason_enc_id'] +'">'+ res['reason'] +'</label></div>';
                 embedList[0].appendChild(reasonLi);
                 reasonInput.val('');
             }else{
@@ -2416,7 +2414,6 @@ $(document).on('click','.cCount', function (e){
    e.preventDefault;
    var btn = $(this);
    var reject_id = btn.attr('id');
-   console.log(reject_id);
     $('#conjobs').css('display', 'block');
     $('body').addClass('modal-open');
     $.ajax({
