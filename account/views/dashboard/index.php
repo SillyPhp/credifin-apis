@@ -426,6 +426,10 @@ endif;
     </script>
 <?php
 $this->registerCss("
+a:focus, a:hover{
+    outline: none;
+    text-decoration: none !important;
+}
 .portlet.light.portlet-fit{
     padding:12px 20px 15px;
 }
