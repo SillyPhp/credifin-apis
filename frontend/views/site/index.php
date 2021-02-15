@@ -19,8 +19,8 @@ $this->params['header_dark'] = false;
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>The World's First Integrated Career Platform</h3>
-                                <span>The Easiest Way to Build Your Career</span>
+                                <h2>The World's First Integrated Career Platform</h2>
+                                <h3>The Easiest Way to Build Your Career</h3>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
@@ -231,7 +231,7 @@ $this->registerCss('
 .tweet-btn button:hover{
     color:#00a0e3;
 }
-.job-search > span{
+.job-search > h3{
     color:#fff !important;
 }
 .feature-links a{
