@@ -332,7 +332,7 @@ $(document).on('click', '#save', function(e){
         }
         
         if (check.length == 0){
-            toastr.error('Please Select Job Title','Error');
+            toastr.error('Please Select Title For Apply','Error');
         } 
         else {
             $.ajax({
