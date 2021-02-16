@@ -7,6 +7,7 @@ use common\models\CollegeSettings;
 use common\models\crud\Referral;
 use common\models\Departments;
 use common\models\EducationalRequirements;
+use common\models\EmailLogs;
 use common\models\ErexxSettings;
 use common\models\ReferralSignUpTracking;
 use common\models\UserAccessTokens;
@@ -166,6 +167,30 @@ class IndividualSignup extends Model
 
             if ($this->ref != '') {
                 $this->saveRefferal($user->user_enc_id, $this->ref);
+            }
+
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                "name" => $this->first_name ." " . $this->last_name,
+                "email" => $this->email,
+            ];
+            $mail->subject = 'Welcome to My eCampus';
+            $mail->template = 'mec-thank-you';
+            if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $mail_logs->email_type = 5;
+                $mail_logs->user_enc_id = $user->user_enc_id;
+                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_email = $user->email;
+                $mail_logs->receiver_phone = $user->phone;
+                $mail_logs->subject = 'Welcome to My eCampus';
+                $mail_logs->template = 'mec-thank-you';
+                $mail_logs->is_sent = 1;
+                $mail_logs->save();
             }
 
             $transaction->commit();
