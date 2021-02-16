@@ -1903,6 +1903,7 @@ button.lc-item-video-menu {
           }
           .btn-parent{
                 left: 0px;
+                bottom: 28px;
                 transform: unset;
                 border-radius: 0px 10px 0 0;
           }
