@@ -344,6 +344,9 @@ $this->registercss('
 	margin-bottom: 10px;
 	padding: 5px;
 }
+.h-point1 a{
+    color: #333333
+}
 .fa-icon {
 	font-size: 28px;
 	margin-right: 8px;
@@ -540,13 +543,23 @@ function getDetails(){
         method: 'POST',
         data: {slug:slug},
         success: function (res){
+            // var res = JSON.parse(JSON.stringify(res));
+            console.log(res.response.data['phone']);
             if(res.response.status == 200){
-                var re = res.response.data;
+                var response = res.response.data; 
+                // console.log(response)
                 let Hpoints =  `<div class="h-point1">
                                     <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
                                     <div class="fa-text">
                                     <h3>Affiliated to</h3>
-                                    <p>`re['affiliated_to']`</p>
+                                    <p>`+res.response.data['affiliated_to']+`</p>
+                                    </div>
+                                </div>
+                                <div class="h-point1">
+                                    <div class="fa-icon"><i class="fas fa-link"></i></div>
+                                    <div class="fa-text">
+                                        <h3>Official Website</h3>
+                                        <p><a href="`+res.response.data['website_link']+`">`+res.response.data['website']+`</a></p>
                                     </div>
                                 </div>`;
                 console.log(Hpoints);
