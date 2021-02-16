@@ -833,11 +833,11 @@ function random_fn(t) {
                             next_res.push(obj_add);
                         }
                         that.options.data.splice(1, 0, {
-                            question: 'Select Job Profile',
+                            question: 'Select Profile',
                             answerType: 'radio2',
                             formName: 'job_profile',
                             choices: next_res,
-                            description: 'Please select your job profile',
+                            description: 'Please select your profile',
                             required: true,
                             errorMsg: '<b style="color:#900;">Select the choices.</b>'
                         });
@@ -874,11 +874,11 @@ function random_fn(t) {
                         next_res.push(obj_add);
                     }
                     that.options.data.splice(2, 0, {
-                        question: 'Select Job Title',
+                        question: 'Select Titles For Apply',
                         answerType: 'checkbox2',
                         formName: 'job_title',
                         choices: next_res,
-                        description: 'Please select job titles that you are interested in and press next button',
+                        description: 'Please select  titles that you are interested in and press next button',
                         required: true,
                         errorMsg: '<b style="color:#900;">Select atleast one choice.</b>'
                     });
