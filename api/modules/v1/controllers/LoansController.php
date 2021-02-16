@@ -249,8 +249,6 @@ class LoansController extends ApiBaseController
                 'a.email',
                 'a.phone',
                 'd.payment_token',
-//                'd.payment_id',
-//                'd.payment_status',
                 '(CASE
                 WHEN d.payment_status IS NULL THEN "failed"
                 WHEN d.payment_status = "captured" THEN "received"
@@ -262,11 +260,11 @@ class LoansController extends ApiBaseController
                 END) as payment_id',
                 'd.payment_amount application_fees',
                 'd.payment_gst application_fees_gst',
-                'd.education_loan_payment_enc_id'
+                'd.education_loan_payment_enc_id',
+                "DATE_FORMAT(a.created_on, '%d-%b-%Y') applied_date"
             ])
-//            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
             ->joinWith(['educationLoanPayments d'], false)
-            ->where(['a.created_by' => $this->userId()])
+            ->where(['a.created_by' => $this->userId(), 'a.is_deleted' => 0])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
