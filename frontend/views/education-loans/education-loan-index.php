@@ -488,6 +488,7 @@ use yii\helpers\Url;
     </section>
 
 <?= $this->render('/widgets/institutional-loan') ?>
+<?= $this->render('/widgets/why-study-in-us') ?>
 
 <?php
 $script = <<<JS
