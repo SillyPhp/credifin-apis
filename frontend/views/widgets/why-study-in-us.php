@@ -17,32 +17,36 @@ use yii\helpers\Url;
                         USA is famous for its latest technology and cultural diversity. Studying in such an environment will surely
                         proved to stand you out of the crowd.</p>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/opportunities.png')?>" alt="">
                                 </div>
+                                <div class="opp-txt"> A Large Pool Of Opportunities</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/High-Acceptance-Rate.png')?>" alt="">
                                 </div>
+                                <div class="opp-txt">High Acceptance Rate </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/Technology.png')?>" alt="">
                                 </div>
+                                <div class="opp-txt"> Passage for The Latest Technology</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/opportunities.png')?>" alt="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/Cultural-Diversity.png')?>" alt="">
                                 </div>
+                                <div class="opp-txt"> Cultural Diversity</div>
                             </div>
                         </div>
                     </div>
@@ -71,8 +75,8 @@ $this->registerCss('
 }
 .whystudy img {
     height: 100%;
-    max-height: 340px;
-    border-radius: 50%;
+    max-height: 370px;
+    border-radius: 8px;
     box-shadow: 0 1px 3px 0px #797979;
 }
 .opp-img img {
@@ -84,4 +88,13 @@ $this->registerCss('
 .opp-img {
     text-align: center;
 }
+.opp-txt {
+    text-align: center;
+    font-size: 14px;
+    font-family: lora;
+    line-height: 20px;
+    color: #000;
+    font-weight: 600;
+}
+
 ');
