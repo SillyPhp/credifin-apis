@@ -213,12 +213,8 @@ use yii\helpers\Url;
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
-.application-card-img{
-    margin-top: 25px;
-    margin-left:0px;
-}
-.application-card-description{
-    margin: 20px 0px 0px 20px;
+.salary a {
+    color: #2b7cb7;
 }
 .search-bar{
     width:66%;
@@ -608,12 +604,15 @@ a.wn-overlay-text {
 }
 
 .company-name-span{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width:100%;
-    padding:0 10px;
+    width: 100%;
+    padding: 0 10px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 10px;
+    text-overflow: ellipsis;
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {
