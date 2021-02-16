@@ -181,7 +181,7 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
 
-        return $this->render('study-in-canada',[
+        return $this->render('study-in-india',[
             'model' => $model
         ]);
     }
@@ -200,7 +200,7 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
 
-        return $this->render('study-in-canada',[
+        return $this->render('study-in-europe',[
             'model' => $model
         ]);
     }
@@ -219,7 +219,7 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
 
-        return $this->render('study-in-canada',[
+        return $this->render('study-abroad',[
             'model' => $model
         ]);
     }

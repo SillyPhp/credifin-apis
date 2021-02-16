@@ -1,17 +1,16 @@
 <?php
 use yii\helpers\Url;
 ?>
-<section class="pb30">
     <div class="container">
         <h3 class="heading-style">Why Choose Education Loan</h3>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-12">
                 <div class="detail-div">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/transparency.png')?>">
                     <p>We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side every step of the way.</p>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6">
                 <ul>
                     <li>
                         <div class="clickedItem ciActive"
@@ -39,7 +38,7 @@ use yii\helpers\Url;
                     </li>
                 </ul>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-6">
                 <ul>
                     <li>
                         <div class="clickedItem rightElem"
@@ -69,7 +68,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-</section>
+
 <?php
 $this->registerCss('
 .clickedItem{
@@ -85,6 +84,7 @@ $this->registerCss('
     font-family: Roboto;
     font-weight: 400;
     cursor: pointer; 
+    background: #fff
 }
 .clickedItem i{
     position: absolute;
@@ -92,7 +92,7 @@ $this->registerCss('
     transform: translateY(-50%);
     left: 10px;
     border: 1px solid transparent;
-    background: #fff;
+    background: #f7fbfb;
     color: #ff7803;
     font-size: 14px;
     border-radius: 50px;
@@ -108,6 +108,9 @@ $this->registerCss('
     background: #00a0e3;
     transition: .2s ease;
 }
+.ciActive i{
+    background:#fff;
+}
 .detail-div{
     text-align: center;
     padding: 0px 30px;
@@ -116,12 +119,18 @@ $this->registerCss('
     color: #000;
     margin-top: 15px;
     font-family: roboto;
+    margin-bottom: 20px;
 }
 .detail-div img{
     max-width: 100px;
     max-height: 100px;
     margin-bottom: 25px;
 }
+@media only screen and (max-width: 768px){
+    .detail-div{
+        
+    }
+} 
 ');
 $script = <<<JS
 

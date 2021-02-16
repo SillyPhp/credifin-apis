@@ -1,11 +1,11 @@
 <?php
 use yii\helpers\Url;
 ?>
-<section>
+<section class="padd-30">
     <div class="container">
         <div class="row disFlex">
             <div class="col-md-4 col-sm-12 col-xs-12">
-                <h3 class="loan-style">We are here<br> to make your<br> <span>loan</span> process <span>ease</span></h3>
+                <h3 class="loan-style">We are here<br> to make your<br> <span class="cOrange">loan</span> process <span class="cBlue">ease</span></h3>
                 <hr>
                 <div class="applyLink">
                     <a href="/education-loans/apply" class="apply-btn">Apply Now <i class="fas fa-arrow-right"></i></a>
@@ -26,7 +26,7 @@ use yii\helpers\Url;
                             <div class="nbfc-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Easy-education-loan.png')?>">
                             </div>
-                            <p>Easy disbursement</p>
+                            <p>Easy Apply</p>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 tc">
@@ -40,9 +40,9 @@ use yii\helpers\Url;
                     <div class="col-md-6 col-sm-6 tc">
                         <div class="nbfc-opt-box">
                             <div class="nbfc-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/No-Loan-Margin.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Multiple-Lending-Partners.png')?>">
                             </div>
-                            <p>No Loan Margin</p>
+                            <p>Multiple Lending Partners</p>
                         </div>
                     </div>
                 </div>
@@ -52,19 +52,26 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.padd-30{
+    padding:30px 0;
+}
 hr{
     max-width: 60px;
-    border-color: #ffb67a;
+    border-color: #eee;
     border-width: 2px;
     margin-left: 0px;
 }
 .apply-btn{
-    font-size: 25px;
-    color: #000;
+    font-size: 20px;
+    color: #fff;
     text-transform: capitalize;
     display: inline-flex;
     align-items: center;
     line-height: 25px;
+    background: #00a0e3;
+    padding: 10px 25px 13px;
+    border: 2px solid transparent;
+    border-radius: 12px;
 }
 .apply-btn i{
     margin-left: 10px;
@@ -72,7 +79,9 @@ hr{
     margin-top: 2px;
 }
 .apply-btn:hover{
-    color: #ff7803;
+    color: #00a0e3;
+    background: #fff;
+    border: 2px solid #00a0e3;
     transition: .3s ease;
 }
 .disFlex{
@@ -87,8 +96,11 @@ hr{
     font-weight: 400;
     font-family: Roboto;
 }
-.loan-style span{
-    color: #ff7803;
+.cBlue{
+    color: #00a0e3;
+}
+.cOrange{
+    color: #ff7803
 }
 .nbfc-opt-box{
     box-shadow: 0 0px 8px rgba(146,139,139,.3);
@@ -101,10 +113,10 @@ hr{
 }
 .nbfc-opt-box p{
     font-size: 16px;
-    font-weight: 500;
     text-transform: capitalize;
     line-height: 26px;
-    color: #333;
+    color: #000;
+    font-family: roboto;
     margin-top: 10px;
 }
 @media only screen and (max-width: 992px){

@@ -12,14 +12,13 @@ use borales\extensions\phoneInput\PhoneInput;
             <div class="col-md-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
-                          data-type='["Study In USA.", "Quick Education Loan.", "Easy EMIs To Pay.", "Quick Disbursement.", "Less Paperwork." ]'>
+                          data-type='["Study In USA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling your desire to study in your dream college.
-                    <br>Achieve your goals without any worry as we are here to help with our Education Loan Policy</p>
+                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
                 <ul>
-                    <li><a href="#contact" class="apply-now">Reach Us</a></li>
+                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
             </div>
@@ -27,20 +26,22 @@ use borales\extensions\phoneInput\PhoneInput;
     </div>
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
+<?= $this->render('/widgets/usa-course')?>
 <?= $this->render('/widgets/loan-table')?>
-<?= $this->render('/widgets/choose-education-loan') ?>
-<section class="bg-blue padd30" id="contact">
+<section class="bg-blue">
+    <?= $this->render('/widgets/choose-education-loan') ?>
+</section>
+<?= $this->render('/widgets/education-loan-faqs');?>
+<section class="bg-caller padd30" id="contact">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
-            </div>
-            <div class="col-md-3 border-right tc">
-                <div class="">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/caller-guy.png') ?>">
+            <div class="col-md-5 tc">
+                <div class="le-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/call-us1.png') ?>">
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-7">
+                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
                         <?php $form = ActiveForm::begin([
@@ -244,6 +245,12 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?php
 $this->registerCss('
+.padd30{
+    padding-bottom: 30px;
+}
+.le-img img{
+    border-radius: 15px;
+}
 #typed{
     font-size: 25px;
     color: #fff;
@@ -259,11 +266,19 @@ $this->registerCss('
     border: 1px solid #00a0e3;
     box-shadow: 0 5px 10px rgba(0,0,0,.3);
 }
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+}
 .apply-now:hover{
     background: #ff7803; 
     color: #fff;
     border: 1px solid #ff7803;
     transition: .3s ease;
+}
+.btn-orange:hover{
+    background: #00a0e3 !important;
+    border: 1px solid #00a0e3 !important;
 }
 
 .padd-15{
@@ -307,7 +322,7 @@ $this->registerCss('
 
 .study-in-usa-bg{
        background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 100vh;
+       min-height: 500px;
        background-repeat: no-repeat;
        background-size: cover;
        display: flex;
@@ -321,17 +336,19 @@ $this->registerCss('
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255,255,255,.6);
+    background: rgba(255,255,255,.85);
 }
 .study-in-usa-bg p{
-    font-size: 18px;
+    font-size: 23px;
     font-family: roboto;
     color: #000;
     padding: 0 0 18px;
+    line-height: 30px;
 }
 .study-in-usa-bg h1{
     font-size: 50px;
     margin-bottom: 20px;
+    color: #ff7803;
 }
 .footer{
     margin-top: 0px !important;
@@ -357,47 +374,8 @@ $this->registerCss('
     text-align:center;
 }
 .bg-blue{
-    background: #f7f7f7;
-    padding: 0 0 20px 0;
-}
-
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    border-bottom: 2px solid #00a0e3;
-}
-/* Zebra striping */
-tr{
-    padding: 5px 0; 
-}
-tr:nth-child(odd) { 
-    background: #fbfbfb; 
-}
-th { 
-    background: #00a0e3; 
-    color: #fff; 
-    font-weight: bold; 
-}
-td, th { 
-    padding: 15px 6px; 
-//    border: 1px solid #ccc; 
-    text-align: center;
-    height: 70px;
-}
-td p{
-    margin-bottom: 0px !important;
-    text-align: center !
-    important;
-}
-.loanProviderIcon{
-    max-width: 100px;
-    max-height: 100px;
-    margin: 0 auto;
-}
-.loanProviderIcon img{
-    width: 100%;
-    object-fit: contain;
-    max-height: 40px;
+    background: #f7fbfb;
+    padding: 0 0 30px 0;
 }
 .intl-tel-input, .phoneInput {
     width:100% !important;
@@ -653,6 +631,9 @@ label {
 
 
 @media only screen and (max-width: 767px) {
+.study-in-usa-bg h1{
+    font-size: 30px;
+}
 .h-point1 {
     width: 50%;
 }
@@ -662,52 +643,7 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
-table, thead, tbody, th, td, tr { 
-    display: block; 
-}
-	
-/* Hide table headers (but not display: none;, for accessibility) */
-thead tr { 
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-}
 
-tr {
-    border: 1px solid #ccc; 
-    margin-bottom: 10px;
-}
-
-td { 
-    /* Behave  like a "row" */
-    border: none;
-    border-bottom: 1px solid #eee; 
-    position: relative;
-    padding-left: 50%; 
-}
-
-td:before { 
-    /* Now like a table header */
-    position: absolute;
-    /* Top/left values mimic padding */
-    top: 6px;
-    left: 6px;
-    width: 45%; 
-    padding-right: 10px; 
-    white-space: nowrap;
-}
-
-/*
-Label the data
-*/
-td:nth-of-type(1):before { content: "Bank/Financier"; }
-td:nth-of-type(2):before { content: "Applicable Rate of Interest"; }
-td:nth-of-type(3):before { content: "Maximum Loan Size with Collateral*"; }
-td:nth-of-type(4):before { content: "Maximum Loan Size without Collateral"; }
-td:nth-of-type(5):before { content: "Processing Fees"; }
-td:nth-of-type(5):before { content: "Repayment Period"; }
-
-}
 ');
 $script = <<<JS
 setTimeout(function (){

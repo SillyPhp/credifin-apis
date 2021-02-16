@@ -12,14 +12,13 @@ use borales\extensions\phoneInput\PhoneInput;
             <div class="col-md-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
-                          data-type='["Study In Australia.", "Quick Education Loan.", "Easy EMIs To Pay.", "Quick Disbursement.", "Less Paperwork." ]'>
+                          data-type='["Study In AUSTRALIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling your desire to study in your dream college.
-                    <br>Achieve your goals without any worry as we are here to help with our Education Loan Policy</p>
+                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
                 <ul>
-                    <li><a href="#contact" class="apply-now">Reach Us</a></li>
+                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
             </div>
@@ -27,20 +26,22 @@ use borales\extensions\phoneInput\PhoneInput;
     </div>
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
+<?= $this->render('/widgets/australia-course')?>
 <?= $this->render('/widgets/loan-table')?>
-<?= $this->render('/widgets/choose-education-loan') ?>
-<section class="bg-blue padd30" id="contact">
+<section class="bg-blue">
+    <?= $this->render('/widgets/choose-education-loan') ?>
+</section>
+<?= $this->render('/widgets/education-loan-faqs');?>
+<section class="bg-caller padd30" id="contact">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
-            </div>
-            <div class="col-md-3 border-right tc">
-                <div class="">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/caller-guy.png') ?>">
+            <div class="col-md-5 tc">
+                <div class="le-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/call-us1.png') ?>">
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-7">
+                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
                 <div class="right-sec">
                     <div class="ls-box-shadow">
                         <?php $form = ActiveForm::begin([
@@ -244,6 +245,12 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?php
 $this->registerCss('
+.padd30{
+    padding-bottom: 30px;
+}
+.le-img img{
+    border-radius: 15px;
+}
 #typed{
     font-size: 25px;
     color: #fff;
@@ -259,11 +266,19 @@ $this->registerCss('
     border: 1px solid #00a0e3;
     box-shadow: 0 5px 10px rgba(0,0,0,.3);
 }
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+}
 .apply-now:hover{
     background: #ff7803; 
     color: #fff;
     border: 1px solid #ff7803;
     transition: .3s ease;
+}
+.btn-orange:hover{
+    background: #00a0e3 !important;
+    border: 1px solid #00a0e3 !important;
 }
 
 .padd-15{
@@ -307,13 +322,13 @@ $this->registerCss('
 
 .study-in-usa-bg{
        background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 100vh;
+       min-height: 500px;
        background-repeat: no-repeat;
        background-size: cover;
        display: flex;
        align-items: center;
        position: relative;
-       text-align: center;
+        text-align: center;
 }
 .opacity-div{
     position: absolute;
@@ -321,17 +336,19 @@ $this->registerCss('
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255,255,255,.8);
+    background: rgba(255,255,255,.85);
 }
 .study-in-usa-bg p{
-    font-size: 18px;
+    font-size: 23px;
     font-family: roboto;
     color: #000;
     padding: 0 0 18px;
+    line-height: 30px;
 }
 .study-in-usa-bg h1{
     font-size: 50px;
     margin-bottom: 20px;
+    color: #ff7803;
 }
 .footer{
     margin-top: 0px !important;
@@ -357,10 +374,15 @@ $this->registerCss('
     text-align:center;
 }
 .bg-blue{
-    background: #f7f7f7;
-    padding: 0 0 20px 0;
+    background: #f7fbfb;
+    padding: 0 0 30px 0;
 }
-
+.colorOrange{
+    color: #ff7803;
+}
+.colorBlue{
+    color: #00a0e3;
+}
 
 .intl-tel-input, .phoneInput {
     width:100% !important;
