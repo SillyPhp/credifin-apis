@@ -1236,6 +1236,11 @@ class SiteController extends Controller
         return $this->render('resume-builder-landing-page');
     }
 
+    public function actionDropResumeLandingPage()
+    {
+        return $this->render('drop-resume-landing-page');
+    }
+
     public function actionEducationalInstitutionLoan()
     {
         $this->layout = 'blank-layout';
