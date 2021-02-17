@@ -454,6 +454,9 @@ class AuthController extends ApiBaseController
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
                     'd.cgpa', 'd.assigned_college_enc_id', 'd.section_enc_id', 'd.semester',
                     'e.has_loan_featured',
+                    'e.has_skillup_featured',
+                    'c1.has_skillup_featured teacher_skill_up',
+                    'c1.has_loan_featured t_loan_featured',
                     'c1.business_activity_enc_id teacher_org_type', 'ee.business_activity user_org_business_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
@@ -519,7 +522,7 @@ class AuthController extends ApiBaseController
                     ->all();
 
                 $education_loan_college = Organizations::find()
-                    ->select(['has_loan_featured'])
+                    ->select(['has_loan_featured', 'has_skillup_featured'])
                     ->where(['organization_enc_id' => $college_id])
                     ->asArray()
                     ->one();
@@ -617,9 +620,14 @@ class AuthController extends ApiBaseController
         if ($college_id) {
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$education_loan_college['has_skillup_featured'] == 1 ? true : false;
+        } elseif ($user_detail['teachers']) {
+            $data['has_skillup_featured'] = (int)$user_detail['teacher_skill_up'] == 1 ? true : false;
+            $data['education_loan'] = (int)$user_detail['t_loan_featured'] == 1 ? true : false;
         } else {
             $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$user_detail['has_skillup_featured'] == 1 ? true : false;
         }
 
         return $data;

@@ -156,6 +156,7 @@ class ProcessApplicationsController extends Controller
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
                     ->orderBy(['a.created_on' => SORT_DESC])
+                    ->orderBy([new \yii\db\Expression("FIELD (a.status, 'Rejected') asc")])
                     ->asArray()
                     ->all();
                 $question = ApplicationInterviewQuestionnaire::find()

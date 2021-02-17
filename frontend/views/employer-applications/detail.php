@@ -189,7 +189,7 @@ if (empty($application_details['square_image']) || $application_details['square_
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -204,7 +204,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -538,8 +538,47 @@ if ($settings["showNewPositionsWidget"]):
             </div>
         </div>
     </div>
-<?php } ?>
-
+<?php }
+if (!empty($data2) && Yii::$app->params->options->showSchema){
+    $onlyJd = [];
+    foreach ($data2['applicationJobDescriptions'] as $jd){
+        array_push($onlyJd,$jd['job_description']);
+    }
+    $finalJobDescription = implode("<br/>",$onlyJd);
+?>
+    <script type="application/ld+json">
+        {
+            "@context" : "https://schema.org/",
+            "@type" : "JobPosting",
+            "title" : "<?=$data2['cat_name']?>",
+            "description" : "<?=$finalJobDescription;?>",
+            "datePosted" : "<?=$data2['created_on']?>",
+            "validThrough" : "<?= $data1['last_date']?>",
+            "employmentType" : "<?=$data2['type']?>",
+            "hiringOrganization" : {
+                "@type" : "Organization",
+                "name" : "<?=$org['org_name']?>",
+                "sameAs" : "<?=$org['website']?>",
+                "logo" : "<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], true)?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "<?=$lc?>",
+                    "addressCountry": "IN"
+                }
+            },
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "INR",
+                "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
+            }
+        }
+    </script>
+<?php
+}
+?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
@@ -1799,6 +1838,9 @@ button.lc-item-video-menu {
         padding-right: 15px;
         margin:auto;
     }
+    .showOnTab{
+        display: none;
+    }
     @media screen and (max-width: 1150px) and (min-width: 1025px) {
           .profile_icons{
                width: 290px;
@@ -1821,6 +1863,12 @@ button.lc-item-video-menu {
                width: 370px;
           }
     }
+    @media screen and (max-width: 992px){
+        .showOnTab{
+            position: relative !important;
+            display: block;
+        }
+    }
     @media screen and (max-width: 889px) and (min-width: 650px) {
           .profile_icons{
                width: 210px;
@@ -1834,7 +1882,7 @@ button.lc-item-video-menu {
                padding-top: 160px;
           }
     }
-    @media screen and (max-width: 649px) and (min-width: 0px) {
+    @media screen and (max-width: 649px) {
           .profile_icons{
                width: 150px;
                position: relative;
@@ -1852,6 +1900,11 @@ button.lc-item-video-menu {
           }
           .job-statistic{
                display:none;
+          }
+          .btn-parent{
+                left: 0px;
+                transform: unset;
+                border-radius: 0px 10px 0 0;
           }
     }
     /* Profile icons css ends */

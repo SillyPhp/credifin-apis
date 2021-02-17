@@ -178,17 +178,23 @@ class SkillUpController extends ApiBaseController
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END source_image',
                 'b.name source_name',
                 'b.url source_url',
-                'a.post_author',
                 'a.content_type',
                 'a.post_image_url'
             ])
             ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors i' => function ($i) {
+                $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                $i->joinWith(['authorEnc i1'], false);
+            }])
             ->joinWith(['skillsUpPostAssignedSkills c' => function ($c) {
                 $c->joinWith(['skillEnc c1' => function ($c1) {
                     $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                 }]);
             }], false);
         if (isset($param['teacher_recommendations']) && $param['teacher_recommendations']) {
+
+            $college_id = $param['teacher_college_id'];
+
             $feeds->innerJoinWith(['skillsUpRecommendedPosts d' => function ($d) use ($college_id, $user) {
                 $d->innerJoinWith(['recommendedBy d1' => function ($b) use ($college_id, $user) {
                     $b->innerJoinWith(['teachers d2' => function ($d2) use ($college_id, $user) {
@@ -221,9 +227,17 @@ class SkillUpController extends ApiBaseController
         }
 
         if (isset($param['keyword']) && !empty($param['keyword'])) {
-            $feeds->andFilterWhere(['like', 'c1.skill', $param['keyword']]);
-            $feeds->andFilterWhere(['like', 'a.post_title', $param['keyword']]);
-            $feeds->andFilterWhere(['like', 'a.post_short_summery', $param['keyword']]);
+            $feeds->andFilterWhere(['or',
+                ['like', 'c1.skill', $param['keyword']],
+                ['like', 'a.post_title', $param['keyword']],
+                ['like', 'a.post_short_summery', $param['keyword']],
+                ['like', 'i1.name', $param['keyword']],
+                ['like', 'b.name', $param['keyword']],
+            ]);
+        }
+
+        if (isset($param['related']) && !empty($param['related'])) {
+            $feeds->andWhere(['NOT', ['a.post_enc_id' => $param['related_post_id']]]);
         }
 
         $feeds = $feeds->limit($limit)
@@ -520,7 +534,6 @@ class SkillUpController extends ApiBaseController
                 ->select(['a.post_enc_id',
                     'a.post_title',
                     'a.slug post_slug',
-                    'a.post_author',
                     'a.post_source_url',
                     'a.post_image_url',
                     'a.source_enc_id',
@@ -559,6 +572,14 @@ class SkillUpController extends ApiBaseController
                     $h->select(['h.post_enc_id', 'h1.description']);
                     $h->joinWith(['blogPostEnc h1'], false);
                 }])
+                ->joinWith(['skillsUpAuthors i' => function ($i) {
+                    $i->select(['i.post_enc_id', 'i.author_enc_id', 'i1.name']);
+                    $i->joinWith(['authorEnc i1'], false);
+                }])
+                ->joinWith(['skillsUpPostAssignedCourses j' => function ($j) {
+                    $j->select(['j.course_enc_id', 'j.assigned_enc_id', 'j.post_enc_id', 'j1.is_paid', 'j1.currency', 'j1.price', 'j1.url']);
+                    $j->joinWith(['courseEnc j1'], false);
+                }])
                 ->where(['a.post_enc_id' => $params['post_id'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
                 ->asArray()
                 ->one();
@@ -579,6 +600,7 @@ class SkillUpController extends ApiBaseController
                         if ($detail['source_name'] == 'Youtube') {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedVideos'][0]['description'];
                             $detail['frame'] = '<iframe width="1519" height="562" src="https://www.youtube.com/embed/' . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'] . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                            $detail['post_source_url'] = "https://www.youtube.com/watch?v=" . $detail['skillsUpPostAssignedVideos'][0]['youtube_video_id'];
                         } else {
                             $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedEmbeds'][0]['description'];
                             $detail['frame'] = $detail['skillsUpPostAssignedEmbeds'][0]['body'];
@@ -586,6 +608,12 @@ class SkillUpController extends ApiBaseController
                         break;
                     case 'News':
                         $detail['post_description'] = $detail['post_description'] ? $detail['post_description'] : $detail['skillsUpPostAssignedNews'][0]['description'];
+                        break;
+                    case 'Course':
+                        $detail['price'] = $detail['skillsUpPostAssignedCourses'][0]['price'];
+                        $detail['currency'] = $detail['skillsUpPostAssignedCourses'][0]['currency'];
+                        $detail['is_paid'] = $detail['skillsUpPostAssignedCourses'][0]['is_paid'];
+                        $detail['course_url'] = $detail['source_url'] . $detail['skillsUpPostAssignedCourses'][0]['url'];
                         break;
                 }
 
@@ -597,15 +625,19 @@ class SkillUpController extends ApiBaseController
                 }
 
                 $params['skills'] = $skills;
+                $params['related'] = true;
+                $params['related_post_id'] = $detail['post_enc_id'];
                 $related_post = $this->feeds(1, 5, $params);
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
-
+                $rec = $this->__getStudentRecommended($detail['post_enc_id']);
+                $detail['is_recommended'] = (count($rec) > 0) ? true : false;
                 $detail['teacher_recommended'] = $this->__getTeacherRecommended($detail['post_enc_id']);
 
                 unset($detail['skillsUpPostAssignedVideos']);
                 unset($detail['skillsUpPostAssignedEmbeds']);
                 unset($detail['skillsUpPostAssignedNews']);
                 unset($detail['skillsUpPostAssignedBlogs']);
+                unset($detail['skillsUpPostAssignedCourses']);
 
                 return $this->response(200, ['status' => 200, 'data' => $detail, 'related_posts' => $related_post]);
             } else {
@@ -726,9 +758,18 @@ class SkillUpController extends ApiBaseController
                 $page = 1;
             }
             $param['teacher_recommendations'] = true;
+            $teacher = Teachers::find()
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->one();
+            $param['teacher_college_id'] = $teacher->college_enc_id;
             $teacher_recommendations = $this->feeds($page, $limit, $param);
 
             if ($teacher_recommendations) {
+                foreach ($teacher_recommendations as $k => $v) {
+                    $teacher_recommendations[$k]['feedback_status'] = $this->getLikes($v['post_enc_id']) ? $this->getLikes($v['post_enc_id']) : 0;
+                    $teacher_recommendations[$k]['is_recommended'] = $v['skillsUpRecommendedPosts'] ? true : false;
+                    $teacher_recommendations[$k]['teacher_recommended'] = $this->__getTeacherRecommended($v['post_enc_id']);
+                }
                 return $this->response(200, ['status' => 200, 'message' => 'success', 'data' => $teacher_recommendations]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);

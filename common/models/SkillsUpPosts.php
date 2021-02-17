@@ -10,7 +10,6 @@ use Yii;
  * @property int $id Primary Key
  * @property string $post_enc_id Post Encrypted ID
  * @property string $post_title
- * @property string $post_author
  * @property string $post_source_url
  * @property string $source_enc_id
  * @property string $content_type
@@ -27,8 +26,10 @@ use Yii;
  * @property string $status Status  Active, Inactive, Pending,  Rejected
  * @property int $is_deleted Is Deleted (0 as False, 1 as True)
  *
+ * @property SkillsUpAuthors[] $skillsUpAuthors
  * @property SkillsUpLikesDislikes[] $skillsUpLikesDislikes
  * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs
+ * @property SkillsUpPostAssignedCourses[] $skillsUpPostAssignedCourses
  * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds
  * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries
  * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews
@@ -61,13 +62,21 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['post_title', 'post_author', 'post_source_url', 'post_image_url', 'slug'], 'string', 'max' => 255],
+            [['post_title', 'post_source_url', 'post_image_url', 'slug'], 'string', 'max' => 255],
             [['post_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['source_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => SkillsUpSources::className(), 'targetAttribute' => ['source_enc_id' => 'source_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpAuthors()
+    {
+        return $this->hasMany(SkillsUpAuthors::className(), ['post_enc_id' => 'post_enc_id']);
     }
 
     /**
@@ -84,6 +93,14 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
     public function getSkillsUpPostAssignedBlogs()
     {
         return $this->hasMany(SkillsUpPostAssignedBlogs::className(), ['post_enc_id' => 'post_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSkillsUpPostAssignedCourses()
+    {
+        return $this->hasMany(SkillsUpPostAssignedCourses::className(), ['post_enc_id' => 'post_enc_id']);
     }
 
     /**

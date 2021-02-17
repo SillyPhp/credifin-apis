@@ -9,7 +9,7 @@ $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -62,8 +62,7 @@ $round_avg = round($overall_avg);
                                         <?php
                                         if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px"
-                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="100px" alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -161,13 +160,13 @@ $round_avg = round($overall_avg);
                     </div>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook"
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook-social"
                             target="_blank"><i class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter"
                             target="_blank"><i class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin"
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin-social"
                             target="_blank"><i class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank">
@@ -607,7 +606,10 @@ echo $this->render('/widgets/mustache/organization_locations', [
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'company'
+    'slug' => $organization['slug'],
+    'type' => 'company',
+    'is_claim' => $is_claim,
+    'org_id' => $organization['organization_enc_id'],
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
@@ -867,8 +869,6 @@ $this->registerCss('
 /*----address----*/
 .head-office {
 	display: flex;
-	justify-content: center;
-	align-items: center;
 	flex-wrap: wrap;
 }
 .org-location {
@@ -971,25 +971,25 @@ $this->registerCss('
 }
 a.twitter{
     padding:8px 6px 8px 10px;
-      color:#1DA1F2;
+    color:#1DA1F2;
 }
 .twitter:hover{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -1016,8 +1016,8 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-.follow, .follow:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+.follow, .follow:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/

@@ -131,7 +131,7 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
     <div class="row">
         <div class="col-lg-6 col-xs-12 col-sm-12">
-            <?= $this->render('/widgets/drop-resume/jobs_drop_resume', [
+            <?= $this->render('/widgets/drop-resume/drop_resume', [
                 'data' => $primary_fields
             ]); ?>
         </div>

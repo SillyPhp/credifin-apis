@@ -12,6 +12,7 @@ use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
 use http\Env\Response;
+use yii\helpers\Url;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
@@ -455,7 +456,9 @@ class AuthController extends ApiBaseController
         ]);
 
         $user = Users::find()
-            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email'])
+            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email', 'initials_color',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END user_image'
+            ])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->one();

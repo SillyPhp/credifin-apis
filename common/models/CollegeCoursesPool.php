@@ -6,6 +6,8 @@ namespace common\models;
  *
  * @property int $id
  * @property string $course_enc_id
+ * @property string $parent_enc_id
+ * @property string $type
  * @property string $course_name Course Name
  * @property string $created_by user_enc_id
  * @property string $created_on created on
@@ -22,7 +24,7 @@ namespace common\models;
 class CollegeCoursesPool extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -30,17 +32,18 @@ class CollegeCoursesPool extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['course_enc_id', 'course_name', 'created_by'], 'required'],
+            [['type', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
-            [['status'], 'string'],
             [['is_deleted'], 'integer'],
-            [['course_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['course_enc_id', 'parent_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['course_name'], 'string', 'max' => 200],
+            [['course_enc_id'], 'unique'],
             [['course_name'], 'unique'],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

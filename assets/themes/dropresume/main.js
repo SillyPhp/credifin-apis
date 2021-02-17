@@ -11,6 +11,8 @@ var popup = new ideaboxPopup({
         inAnimation: 'zoomIn'
     },
     onFinish: function () {
+        this.values['org_id'] = org_id;
+        this.values['is_claim'] = is_claim;
         if (this.values["experience"]) {
             $.ajax({
                 type: 'POST',
@@ -47,14 +49,14 @@ var popup = new ideaboxPopup({
             answerType: 'radio',
             formName: 'experience',
             choices: [
-                {label: 'No Experince', value: 'no'},
-                {label: '<1 Year', value: 'less than one'},
-                {label: '1 Year', value: 'one'},
-                {label: '2-3 Years', value: 'two to three'},
-                {label: '3-5 Years', value: 'three to five'},
-                {label: '5-10 Years', value: 'five to ten'},
-                {label: '10-20 Years', value: 'ten to twenty'},
-                {label: '20+ Years', value: 'twenty above'},
+                {label: 'No Experince', value: '0'},
+                {label: '<1 Year', value: '1'},
+                {label: '1 Year', value: '2'},
+                {label: '2-3 Years', value: '3'},
+                {label: '3-5 Years', value: '4'},
+                {label: '5-10 Years', value: '5'},
+                {label: '10-20 Years', value: '6'},
+                {label: '20+ Years', value: '7'},
             ],
             description: 'How much experience do you have?',
             nextLabel: 'Apply Now',

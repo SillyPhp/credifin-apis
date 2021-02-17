@@ -22,7 +22,7 @@ class OrganizationEmployeesForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'designation'], 'required'],
+            [['first_name', 'last_name', 'designation','image'], 'required'],
             [['facebook', 'twitter', 'linkedin'], 'url', 'defaultScheme' => 'http'],
             [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
             [['first_name', 'last_name', 'facebook', 'twitter', 'linkedin'], 'trim'],

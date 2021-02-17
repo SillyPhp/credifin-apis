@@ -159,13 +159,17 @@ $this->registerCss('
     filter: alpha(opacity=100);
    
 }
-.country-list
-{
-z-index:999 !important;
+.country-list{
+    z-index:999 !important;
 }
+.iti, .intl-tel-input {
+    width: 100% !important;
+}
+.iti input{
+    padding-left: 46px !important;
 ');
 $script = <<<JS
-
+    $('.country-list, .iti__country-list').css('width',$('#phone').width());
     function drp_down(id, data) {
         var selectbox = $('#' + id + '');
         $.each(data, function () {

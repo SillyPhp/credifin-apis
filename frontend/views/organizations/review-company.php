@@ -16,7 +16,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -31,7 +31,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -264,6 +264,47 @@ echo $this->render('/widgets/drop_resume', [
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-12">
+                <?php if ($jobs_count > 0) {
+                    ?>
+                    <div id="jobs-cards-main" class="row">
+                        <div class="heading-style">
+                            Available Jobs
+                            <div class="pull-right">
+                                <a href="/jobs/list?slug=<?= $slug ?>"
+                                   class="write-review">View
+                                    All</a>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="blogbox"></div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if ($internships_count > 0) {
+                    ?>
+                    <div id="internships-cards-main" class="row">
+                        <div class="internships-block">
+                            <div class="heading-style">
+                                Available Internships
+                                <div class="pull-right">
+                                    <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                       class="write-review">View All</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="internships_main"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
             <div class="col-md-12 set-mar">
                 <?=
@@ -510,6 +551,8 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/application-card');
+
 if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-reviews', [
     ]);
@@ -519,6 +562,13 @@ if ($review_type == 'claimed') {
 }
 
 $this->registerCss('
+#jobs-cards-main{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.form-group.form-md-line-input.form-md-floating-label .form-control~label{
+    top: 5px;
+}
 .set-mar {
 	margin: 30px 0 20px;
 }
@@ -695,7 +745,7 @@ border: 2px solid #cadfe8 !important;
 }
 .logo-box img{
     width: 100%;
-    //height: 100%;
+    height: auto !Important;
     object-fit: fill;
     object-position: top center;
     position: absolute;
@@ -1147,7 +1197,26 @@ border: 2px solid #cadfe8 !important;
   }
 }
 /*Load Suggestions loader css ends */
+.write-review {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    background-color: #00a0e3;
+    color: #fff;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+}
+.write-review:hover{
+    color: #00a0e3;
+    background-color: #fff;
+}
 /*-----*/
+
 @media only screen and (max-width: 992px){
     .cp-bttn button {
         margin-top: 20px; 
@@ -1445,7 +1514,8 @@ document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
-
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
