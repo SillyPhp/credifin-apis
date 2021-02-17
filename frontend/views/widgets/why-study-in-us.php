@@ -11,7 +11,7 @@ use yii\helpers\Url;
             </div>
                 <div class="col-md-7">
                     <h3 class="heading-style">Why Study In USA?</h3>
-                    <p class="why-des">No doubts that U.S.A is the most famous worldwide study destination for Indian students.
+                    <p class="why-des">No doubt that U.S.A is the most famous worldwide study destination for Indian students.
                         It is just because of the large pool of opportunities that it provides like Endless Degree Options
                         in Business, Engineering, Medicine, Liberal Arts, Education, Law and many more.
                         USA is famous for its latest technology and cultural diversity. Studying in such an environment will surely
