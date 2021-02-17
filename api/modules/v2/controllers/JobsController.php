@@ -9,6 +9,7 @@ use api\modules\v2\models\ImageScript;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
+use common\models\CandidateRejection;
 use common\models\EmployerApplications;
 use common\models\ErexxEmployerApplications;
 use common\models\InterviewProcessFields;
@@ -872,7 +873,7 @@ class JobsController extends ApiBaseController
                 ->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                     $c->onCondition(['c.is_deleted' => 0, 'c.status' => 'Active', 'c.college_enc_id' => $this->getClgId()]);
                 }], false)
-                ->where(['b.created_by' => $user->user_enc_id])
+                ->where(['b.created_by' => $user->user_enc_id, 'b.is_deleted' => 0, 'a.is_deleted' => 0])
                 ->limit($limit)
                 ->groupBy(['h.applied_application_enc_id'])
                 ->orderBy(['b.id' => SORT_DESC])
@@ -880,6 +881,22 @@ class JobsController extends ApiBaseController
                 ->all();
 
             if ($process) {
+
+                foreach ($process as $key => $val) {
+                    $rejections_reasons = CandidateRejection::find()
+                        ->alias('a')
+                        ->select(['a.candidate_rejection_enc_id', 'a.rejection_type'])
+                        ->joinWith(['candidateRejectionReasons b' => function ($b) {
+                            $b->select(['b.candidate_rejection_reasons_enc_id', 'b.candidate_rejection_enc_id', 'b.rejection_reasons_enc_id', 'b1.reason']);
+                            $b->joinWith(['rejectionReasonsEnc b1'],false);
+                        }])
+                        ->where(['a.is_deleted' => 0, 'a.applied_application_enc_id' => $val['applied_application_enc_id']])
+                        ->asArray()
+                        ->one();
+
+                    $process[$key]['rejection_reasons'] = $rejections_reasons;
+                }
+
                 return $this->response(200, ['status' => 200, 'data' => $process]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
