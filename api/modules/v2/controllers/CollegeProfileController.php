@@ -740,7 +740,7 @@ class CollegeProfileController extends ApiBaseController
                         $f->onCondition(['fa.is_deleted' => 0]);
                     }], false);
                     $zaa->onCondition(['zaa.is_deleted' => 0]);
-                }])
+                }], false)
                 ->where([
                     'a.is_deleted' => 0,
 //                    'a.status' => 'Active',
