@@ -39,6 +39,9 @@ class LeadsController extends Controller
                     }
                 } else {
                     $model = LeadsApplications::findOne(['application_enc_id' => $key]);
+                    if($field_name == 'college_name'){
+                        $field_name = 'college_institute_name';
+                    }
                     $enc_id = $key;
                 }
             } else {
@@ -48,6 +51,9 @@ class LeadsController extends Controller
                 $model->application_number = date('ymd') . time();
                 if (!Yii::$app->user->isGuest) {
                     $model->created_by = Yii::$app->user->identity->user_enc_id;
+                }
+                if($field_name == 'college_name'){
+                    $field_name = 'college_institute_name';
                 }
             }
             $model->$field_name = $value;

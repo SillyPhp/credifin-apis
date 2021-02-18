@@ -533,7 +533,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .btn-parent{
         position: fixed;
-        bottom:0px;
+        bottom:28px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9;
