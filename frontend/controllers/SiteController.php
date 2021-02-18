@@ -30,6 +30,7 @@ use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
 use frontend\models\SubscribeNewsletterForm;
+use frontend\widgets\Login;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -132,6 +133,8 @@ class SiteController extends Controller
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();
+        $login = new LoginForm();
+        $login->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
@@ -1015,6 +1018,9 @@ class SiteController extends Controller
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
                 break;
+            case 'getStudentLoan':
+                return $this->renderAjax('/widgets/institutional-loan');
+                break;
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
                 break;
@@ -1228,6 +1234,11 @@ class SiteController extends Controller
     public function actionResumeBuilderLandingPage()
     {
         return $this->render('resume-builder-landing-page');
+    }
+
+    public function actionDropResumeLandingPage()
+    {
+        return $this->render('drop-resume-landing-page');
     }
 
     public function actionEducationalInstitutionLoan()

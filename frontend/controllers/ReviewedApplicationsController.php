@@ -30,8 +30,8 @@ class ReviewedApplicationsController extends Controller{
     public function actionReviewList()
     {
         if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             if (!Yii::$app->user->isGuest) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
                 $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
                 $l = 20;
                 $o = ($sidebarpage-1)*$l;

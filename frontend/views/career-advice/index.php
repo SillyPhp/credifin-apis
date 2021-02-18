@@ -81,7 +81,10 @@ $careerAdviceCategories = [
     <section class="career-advice-header">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 col-sm-6">
+                    <div class="career-txt">
+                        <h1>Develop Your Skills With<br> Expert Career Advice</h1>
+                    </div>
                 </div>
             </div>
         </div>
@@ -179,6 +182,15 @@ if (Yii::$app->user->isGuest) {
 
 <?php
 $this->registerCss('
+.career-txt h1 {
+    font-size: 42px;
+    font-family: lobster;
+    min-height: 370px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    color: #000;
+}
 .ca-comming-soon-icon{
     text-align:right
 }
@@ -194,9 +206,11 @@ $this->registerCss('
     margin-top:40px;
 }
 .career-advice-header{
-    background:url(' . Url::to('@eyAssets/images/pages/custom/career-advice-header.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/custom/careeradvice-hdr-bg.png') . ');
     min-height:500px;
     background-size:cover;
+    background-position: left;
+    background-repeat: no-repeat;
 }
 body {
   background-color:#fefefe;
@@ -318,8 +332,11 @@ body {
 } 
 @media only screen and (max-width: 992px){
     .career-advice-header{
-        background-size: contain;
         min-height:300px;
+    }
+    .career-txt h1{
+    font-size: 35px;
+    min-height: 260px;
     }
 }
 .card:hover::before{
@@ -426,7 +443,6 @@ body {
   letter-spacing: .15rem;
   padding: .75rem 1.5rem;
 }
-
 .button--primary {
   background-color: hsl(210, 5%, 41%);
   border-color: hsl(210, 5%, 36%);
@@ -460,4 +476,10 @@ body {
   height: 25px;
   width: 25px;
 } 
+@media only screen and (max-width: 600px) and (min-width:320px){
+.career-txt h1 {
+    font-size: 30px;
+    min-height:190px;
+    }
+}
 ');

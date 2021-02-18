@@ -14,6 +14,7 @@ use Yii;
  * @property string $certificate_type_enc_id id proof type
  * @property string $number id proof number
  * @property string $proof_image id proof image
+ * @property string $proof_image_name
  * @property string $proof_image_location id proof image location
  * @property string $created_by
  * @property string $created_on
@@ -30,7 +31,7 @@ use Yii;
 class LoanCertificates extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -38,15 +39,15 @@ class LoanCertificates extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['certificate_enc_id', 'certificate_type_enc_id', 'number', 'created_by'], 'required'],
+            [['certificate_enc_id', 'certificate_type_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['number'], 'string', 'max' => 20],
             [['certificate_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],

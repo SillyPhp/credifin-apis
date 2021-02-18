@@ -123,13 +123,22 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/education-loan-landing') ?>
-<?= $this->render('/widgets/institutional-loan') ?>
+<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
 <div id="app-data"></div>
-<div id="sectionIsLoading" class="sectionIsLoading">
-    <div></div>
-    <div></div>
+<div id="sectionIsLoading">
+    <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <circle cx="50" cy="50" r="15" fill="#00a0e3">
+            <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+        </circle>
+        <circle cx="50" cy="50" r="15" fill="#ff7803">
+            <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+        </circle>
+    </svg>
 </div>
 
 <?php
@@ -137,8 +146,11 @@ $this->registerCss('
 #app-data{
     overflow-x: hidden;
 }
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
-    margin-top: -150px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -149,43 +161,44 @@ $this->registerCss('
 .h-heading{
     color:#fff;
     font-weight:400;
+    padding-top:0 !important;
 }
 .h-text{
     color:#ff7803;
 }
-.sectionIsLoading {
-    display: none;
-    position: relative;
-    width: 80px;
-    height: 80px;
-    margin: auto;
-}
-.sectionIsLoading div {
-  position: absolute;
-  border: 4px solid #00a0e3;
-  opacity: 1;
-  border-radius: 50%;
-  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.sectionIsLoading div:nth-child(2) {
-  animation-delay: -0.5s;
-}
-@keyframes sectionIsLoading {
-  0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
-  }
-}
+//.sectionIsLoading {
+//    display: none;
+//    position: relative;
+//    width: 80px;
+//    height: 80px;
+//    margin: auto;
+//}
+//.sectionIsLoading div {
+//  position: absolute;
+//  border: 4px solid #00a0e3;
+//  opacity: 1;
+//  border-radius: 50%;
+//  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+//}
+//.sectionIsLoading div:nth-child(2) {
+//  animation-delay: -0.5s;
+//}
+//@keyframes sectionIsLoading {
+//  0% {
+//    top: 36px;
+//    left: 36px;
+//    width: 0;
+//    height: 0;
+//    opacity: 1;
+//  }
+//  100% {
+//    top: 0px;
+//    left: 0px;
+//    width: 72px;
+//    height: 72px;
+//    opacity: 0;
+//  }
+//}
 
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
@@ -566,7 +579,7 @@ how-icon{
 }
 @media screen and (max-width: 1400px){
     .header-row{
-        margin-top: -132px;
+        margin-top: -147px;
     }
     .box-border{
          min-width: 157px !important;
@@ -1163,6 +1176,7 @@ if (!Yii::$app->user->isGuest) {
         'getWhatsappCommunityj',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getShortcuts'
     ];
     ");
@@ -1186,6 +1200,7 @@ if (!Yii::$app->user->isGuest) {
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getNewsletter',
         'getShortcuts'
     ];

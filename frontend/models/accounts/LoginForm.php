@@ -2,6 +2,7 @@
 
 namespace frontend\models\accounts;
 
+use common\models\Users;
 use Yii;
 use yii\base\Model;
 use common\models\UserLogin;
@@ -88,6 +89,14 @@ class LoginForm extends Model
             $this->_user = UserLogin::findByUsername($this->username, $this->user_type);
         }
         return $this->_user;
+    }
+
+    public function updateUserLogin($method='EY',$user_enc_id){
+        date_default_timezone_set('Asia/Kolkata');
+        $model = Users::findOne(['user_enc_id'=>$user_enc_id]);
+        $model->last_visit = date('Y-m-d H:i:s');
+        $model->last_visit_through = $method;
+        $model->update();
     }
 
     private function _checkPassword($user)

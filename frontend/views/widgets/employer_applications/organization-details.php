@@ -3,6 +3,7 @@
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+
 $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -26,7 +27,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
             <div class="organization-details">
                 <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
+                    <p><i class="fas fa-unlink"></i><a href="<?= $website; ?>"><?= $website; ?></a></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -42,9 +43,12 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                             Compare Internship</a>
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
+                    <a href="#"
+                       data-toggle="modal" data-target="#loginModal"
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
@@ -66,9 +70,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
                     <div class="btn-parent">
                         <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
-                                    class="fas fa-paper-plane hvr-icon"></i>Apply
-                            for
-                            <?= $type ?></a>
+                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
                         <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
                     </div>
                     <?php if ($shortlist_btn_display): ?>
@@ -79,13 +81,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Saved</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlisted</a>
                                     <?php
                                 } else {
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Save</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlist</a>
                                     <?php
                                 }
                             }
@@ -147,9 +149,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
-<!--            <div class="qr-code">-->
-<!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
-<!--            </div>-->
+            <!--            <div class="qr-code">-->
+            <!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
+            <!--            </div>-->
             <div class="wts-ap">
                 <h3>Share on Whatsapp via Number</h3>
                 <div class="col-md-12 form-whats">
@@ -164,7 +166,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
@@ -189,7 +191,8 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="down-img">
             <h3>Download Sharing Image</h3>
-            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
         </div>
     </div>
 <?php
@@ -231,6 +234,11 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.organization-details p{
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
 .qr-code {
 	width: 100px;
 	margin: 5px auto 20px;
@@ -265,6 +273,8 @@ $this->registerCss('
 	font-family: roboto;
 	font-weight: 500;
 	border-radius:6px;
+	display: inline-block;
+    margin: 5px 0px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -481,6 +491,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     display: block;
     color: #ddd;
 }
+
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
@@ -493,7 +504,9 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .overlay-top{
         padding-bottom:10px;
     }
-    .job-thumb{max-width: 125px;}
+    .job-thumb{
+        max-width: 125px;
+    }
     .job-head-info{
         max-width: 275px;
         text-align: left;
@@ -509,8 +522,24 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         display: inline-block;
         width: 42%;
     }
-    a.add-or-compare{padding: 10px 5px;}
-    .effect.thurio{clear:both;}
+    a.add-or-compare{
+        padding: 10px 5px;
+    }
+    .effect.thurio{
+        clear:both;
+    }
+    .showOnTab{
+        display: block;
+    }
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
 }
 @media only screen and (max-width: 720px) {
     .actions-main{
@@ -546,6 +575,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .job-head-info h4{
         margin-left:0px !Important;
+    }
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
     }
 }
 ');

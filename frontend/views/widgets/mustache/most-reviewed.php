@@ -150,6 +150,6 @@ function fetch_cards_most_uncliam_user(params,template,is_clear=false)
     });
 }    
 JS;
-$this->registerJs($script);
-JS;
+$this->registerJS($script);
 ?>
+

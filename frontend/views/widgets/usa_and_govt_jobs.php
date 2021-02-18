@@ -4,11 +4,6 @@ use yii\helpers\Url;
 <section class="goven-jobs-sec">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1 class="gov-heading">Find Latest Government Jobs</h1>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/usa-jobs">
@@ -38,7 +33,7 @@ $this->registerCss('
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;
     background-size:cover;
-    padding:0px 0px 40px 0px;
+    padding: 40px 0px 40px 0px;
 }
 .gov-heading {
     text-align: center;

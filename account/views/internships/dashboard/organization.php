@@ -263,8 +263,9 @@ use yii\widgets\Pjax;
 
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
-                        'data' => $primary_fields
+                    <?= $this->render('/widgets/drop-resume/drop_resume', [
+                        'data' => $primary_fields,
+                        'type' => 'Internships'
                     ]); ?>
 
                     <div class="portlet light nd-shadow">
@@ -352,6 +353,7 @@ use yii\widgets\Pjax;
                     <?php
                     echo $this->render('/widgets/applied-applications/users-card', [
                         'applied_applications' => $applied_applications,
+                        'type' => 'internships'
                     ]); ?>
 
                     <div class="portlet light nd-shadow">

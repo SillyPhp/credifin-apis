@@ -506,7 +506,7 @@ class JobsController extends ApiBaseController
             ->innerJoinWith(['organizationEnc b' => function ($a) {
                 $a->onCondition(['b.status' => 'Active', 'b.is_deleted' => 0]);
             }], false)
-            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'j.name' => $options['type']]);
+            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1, 'j.name' => $options['type']]);
 
         if (!empty($options['keyword'])) {
 

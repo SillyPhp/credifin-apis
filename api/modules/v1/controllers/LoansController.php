@@ -12,10 +12,13 @@ use common\models\CertificateTypes;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\LeadsApplications;
+use common\models\LeadsCollegePreference;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
+use common\models\PathToOpenLeads;
 use common\models\Utilities;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
@@ -41,6 +44,8 @@ class LoansController extends ApiBaseController
                 'college-courses',
                 'loan-purpose',
                 'save-application',
+                'home',
+                'enquiry-form'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -51,6 +56,8 @@ class LoansController extends ApiBaseController
                 'college-courses' => ['POST'],
                 'loan-purpose' => ['POST'],
                 'save-application' => ['POST'],
+                'home' => ['POST'],
+                'enquiry-form' => ['POST']
             ]
         ];
         return $behaviors;
@@ -68,7 +75,7 @@ class LoansController extends ApiBaseController
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
-        return $user->user_enc_id;
+        return $user ? $user->user_enc_id : null;
     }
 
     public function actionCollegeList()
@@ -104,10 +111,17 @@ class LoansController extends ApiBaseController
 
     public function actionCollegeCourses()
     {
+        $params = Yii::$app->request->post();
+
         $courses = CollegeCoursesPool::find()
-            ->select(['course_name'])
-            ->where(['status' => 'Approved', 'is_deleted' => 0])
-            ->asArray()
+            ->alias('a')
+            ->select(['a.course_name'])
+            ->where(['a.status' => 'Approved', 'a.is_deleted' => 0]);
+        if (isset($params['college_id']) && !empty($params['college_id'])) {
+            $courses->joinWith(['assignedCollegeCourses b'], false)
+                ->andWhere(['b.organization_enc_id' => $params['college_id']]);
+        }
+        $courses = $courses->asArray()
             ->all();
 
         if ($courses) {
@@ -178,13 +192,7 @@ class LoansController extends ApiBaseController
                 $parser['is_claim'] = 3;
                 $pref = explode(',', $params['clg_pref']);
             }
-//            if (!$parser['college_id']) {
-//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
-//            }
-//            $parser2 = $organizationObject->conditionCourseParser($parser, $params);
-//            if (!$parser2['assigned_course_id']) {
-//                return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
-//            }
+
             $orgDate = $params['applicant_dob'];
             $userId = $this->userId();
             if (!$params['is_india']) {
@@ -241,8 +249,6 @@ class LoansController extends ApiBaseController
                 'a.email',
                 'a.phone',
                 'd.payment_token',
-//                'd.payment_id',
-//                'd.payment_status',
                 '(CASE
                 WHEN d.payment_status IS NULL THEN "failed"
                 WHEN d.payment_status = "captured" THEN "received"
@@ -254,11 +260,11 @@ class LoansController extends ApiBaseController
                 END) as payment_id',
                 'd.payment_amount application_fees',
                 'd.payment_gst application_fees_gst',
-                'd.education_loan_payment_enc_id'
+                'd.education_loan_payment_enc_id',
+                "DATE_FORMAT(a.created_on, '%d-%b-%Y') applied_date"
             ])
-//            ->innerJoinWith(['pathToClaimOrgLoanApplications cc'], false)
             ->joinWith(['educationLoanPayments d'], false)
-            ->where(['a.created_by' => $this->userId()])
+            ->where(['a.created_by' => $this->userId(), 'a.is_deleted' => 0])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
@@ -336,6 +342,7 @@ class LoansController extends ApiBaseController
                 'a.image',
                 'a.image_location',
                 'a.email',
+                'a.gender'
 //                'c1.course_name',
             ])
             ->joinWith(['loanCoApplicants d' => function ($d) {
@@ -356,7 +363,7 @@ class LoansController extends ApiBaseController
                     'd.occupation'
                 ]);
                 $d->joinWith(['loanCertificates de' => function ($e) {
-                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image image', 'de.proof_image_location image_location']);
+                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image_name', 'de.proof_image image', 'de.proof_image_location image_location']);
                     $e->joinWith(['certificateTypeEnc de1'], false);
                     $e->onCondition(['de.is_deleted' => 0]);
                 }]);
@@ -368,7 +375,7 @@ class LoansController extends ApiBaseController
                 }]);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
-                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image image', 'e.proof_image_location image_location']);
+                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image_name', 'e.proof_image image', 'e.proof_image_location image_location']);
                 $e->joinWith(['certificateTypeEnc e1'], false);
                 $e->onCondition(['e.is_deleted' => 0]);
                 $e->orderBy(['e.created_on' => SORT_ASC]);
@@ -419,10 +426,18 @@ class LoansController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+            $path_lead = PathToOpenLeads::find()
+                ->select(['course_name'])
+                ->where(['loan_app_enc_id' => $application['loan_app_enc_id']])
+                ->asArray()
+                ->one();
+
             if ($path_claim) {
                 $course_name = $path_claim['course_name'];
             } elseif ($path_uclaim) {
                 $course_name = $path_uclaim['course_name'];
+            } elseif ($path_lead) {
+                $course_name = $path_lead['course_name'];
             }
 
             $application['course_name'] = $course_name;
@@ -495,7 +510,30 @@ class LoansController extends ApiBaseController
             if ($id) {
                 return $this->response(200, ['id' => $id]);
             }
+        } elseif ($type == 'applicant') {
+            $id = $this->updateLoanApplications($params);
+            if ($id) {
+                return $this->response(200, ['id' => $id]);
+            }
         }
+
+    }
+
+    private function updateLoanApplications($params)
+    {
+        $loan = LoanApplications::find()
+            ->where(['loan_app_enc_id' => $params['loan_app_id']])
+            ->one();
+
+        if ($loan) {
+            $loan->gender = $params['gender'];
+            $loan->updated_on = date('Y-m-d H:i:s');
+            $loan->updated_by = $this->userId();
+            if ($loan->update()) {
+                return $loan->loan_app_enc_id;
+            }
+        }
+
 
     }
 
@@ -528,8 +566,40 @@ class LoansController extends ApiBaseController
                 $loan_certificates->number = $params['number'];
                 $loan_certificates->updated_by = $this->userId();
                 $loan_certificates->updated_on = date('Y-m-d H:i:s');
+
+                if (!empty($params['image'])) {
+                    $image_ext = $params['image_ext'];
+                    $image = base64_decode($params['image']);
+
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $encrypted_string = $utilitiesModel->encrypt();
+                    if (substr($encrypted_string, -1) == '.') {
+                        $encrypted_string = substr($encrypted_string, 0, -1);
+                    }
+
+                    $loan_certificates->proof_image_name = $params['image_name'] . '.' . $image_ext;
+                    $loan_certificates->proof_image = $encrypted_string . '.' . $image_ext;
+                    $loan_certificates->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->loans->proof . $loan_certificates->proof_image_location . '/';
+                    $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_certificates->proof_image;
+                }
                 if ($loan_certificates->update()) {
-                    return $loan_certificates->certificate_enc_id;
+                    if (!empty($params['image'])) {
+                        if (file_put_contents($file, $image)) {
+                            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_certificates->proof_image, "public");
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
+                            return $loan_certificates->certificate_enc_id;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return $loan_certificates->certificate_enc_id;
+                    }
                 } else {
                     $loan_certificates->getErrors();
                     return false;
@@ -567,8 +637,39 @@ class LoansController extends ApiBaseController
             $loan_certificates->number = $params['number'];
             $loan_certificates->created_by = $this->userId();
             $loan_certificates->created_on = date('Y-m-d H:i:s');
+
+            if (!empty($params['image'])) {
+                $image_ext = $params['image_ext'];
+                $image = base64_decode($params['image']);
+
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $loan_certificates->proof_image_name = $params['image_name'] . '.' . $image_ext;
+                $loan_certificates->proof_image = $encrypted_string . '.' . $image_ext;
+                $loan_certificates->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->proof . $loan_certificates->proof_image_location . '/';
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_certificates->proof_image;
+            }
             if ($loan_certificates->save()) {
-                return $loan_certificates->certificate_enc_id;
+                if (!empty($params['image'])) {
+                    if (file_put_contents($file, $image)) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_certificates->proof_image, "public");
+                        if (file_exists($file)) {
+                            unlink($file);
+                        }
+                        return $loan_certificates->certificate_enc_id;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return $loan_certificates->certificate_enc_id;
+                }
             } else {
                 print_r($loan_certificates->getErrors());
                 return false;
@@ -870,6 +971,7 @@ class LoansController extends ApiBaseController
                         $encrypted_string = substr($encrypted_string, 0, -1);
                     }
 
+                    $proof->proof_image_name = $params['image_name'] . '.' . $image_ext;
                     $proof->proof_image = $encrypted_string . '.' . $image_ext;
                     $proof->proof_image_location = Yii::$app->getSecurity()->generateRandomString();
                     $base_path = Yii::$app->params->upload_directories->loans->proof . $proof->proof_image_location . '/';
@@ -931,6 +1033,99 @@ class LoansController extends ApiBaseController
             }
         }
 
+    }
+
+    public function actionHome()
+    {
+        $partner_colleges = Organizations::find()
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+            ->asArray()
+            ->all();
+
+        $loan_partners = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'REPLACE(a.name, "&amp;", "&") as name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END org_logo', 'a.initials_color'])
+            ->innerJoinWith(['selectedServices b' => function ($b) {
+                $b->innerJoinWith(['serviceEnc c']);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'c.name' => 'Loans', 'b.is_selected' => 1])
+            ->asArray()
+            ->all();
+
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'faqs.json');
+        $faqs = json_decode($strJsonFileContents);
+
+
+        $data = [];
+        $data['partner_college'] = $partner_colleges;
+        $data['loan_partners'] = $loan_partners;
+        $data['faqs'] = $faqs;
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionEnquiryForm()
+    {
+        $user_id = $this->userId();
+
+        $data = Yii::$app->request->post();
+
+        if (!$data) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $model = new LeadsApplications();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+        $model->application_number = date('ymd') . time();
+        if ($user_id) {
+            $model->created_by = $user_id;
+        }
+
+        $model->first_name = $data['first_name'];
+        $model->last_name = $data['last_name'];
+        $model->student_mobile_number = $data['phone'];
+        $model->student_email = $data['student_email'];
+        $model->loan_for = $data['loan_for'];
+        $model->admission_taken = $data['admission_taken'];
+        $model->college_institute_name = $data['college_name'];
+        $model->course_name = $data['course_name'];
+        if (isset($data['apply_now']) && $data['apply_now']) {
+            $model->loan_amount = $data['loan_amount'];
+        }
+        if ($user_id) {
+            $model->last_updated_by = $user_id;
+        }
+        if ($model->save()) {
+            if ($data['clg_prefs']) {
+                $i = 1;
+                foreach ($data['clg_prefs'] as $c) {
+                    $clg_pref = new LeadsCollegePreference();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $clg_pref->preference_enc_id = $utilitiesModel->encrypt();
+                    $clg_pref->application_enc_id = $model->application_enc_id;
+                    $clg_pref->sequence = parse_str($i);
+                    $clg_pref->college_name = $c;
+                    if ($user_id) {
+                        $clg_pref->created_by = $user_id;
+                    }
+                    if (!$clg_pref->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                    $i++;
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'app_enc_id' => $model->application_enc_id]);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
     }
 
 }
