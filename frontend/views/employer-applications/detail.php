@@ -1910,7 +1910,6 @@ button.lc-item-video-menu {
     }
     /* Profile icons css ends */
 ");
-
 $script = <<<JS
 var type = "$type";
 var keyword = "$searchItems";
