@@ -338,8 +338,8 @@ $this->registerCss('
     padding-bottom: 50px;
 }
 #logo_img {
-    width: 115px !Important;
-    height: 115px !Important;
+    width: 85px !Important;
+    height: 100px !Important;
 }
 .organization-details{
     display: block;

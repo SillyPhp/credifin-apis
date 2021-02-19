@@ -1034,8 +1034,8 @@ button.lc-item-video-menu {
         display:none;
     }
     #logo_img{
-        width: 115px;
-        height: 115px;
+        max-width: 85px !Important;
+        max-height: 100px !Important;
         background-color:#fff;
         object-fit: contain;
     }
