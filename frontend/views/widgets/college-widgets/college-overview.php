@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <div class="container">
         <div class="col-md-12">
             <div class="set-sticky">
-                <h3 class="ou-head">Highlights</h3>
+                <h3 class="heading-style">Highlights</h3>
                 <div class="h-points">
 
                 </div>
@@ -91,29 +91,16 @@ use yii\helpers\Url;
 <!--                    </div>-->
 <!--                </div>-->
             </div>
+<!--            <div class="set-sticky">-->
+<!--                <h3 class="heading-style">About College</h3>-->
+<!--                <p>-->
+<!--                    What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting-->
+<!--                    industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s-->
+<!--                    when-->
+<!--                </p>-->
+<!--            </div>-->
             <div class="set-sticky">
-                <h3 class="ou-head">About College</h3>
-                <p>
-                    What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                    when
-                    an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    it
-                    has What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                    when
-                    an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    it
-                    has What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                    when
-                    an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    it
-                    has
-                </p>
-            </div>
-            <div class="set-sticky">
-                <h3 class="ou-head">All Courses</h3>
+                <h3 class="heading-style">All Courses</h3>
                 <div class="course-main">
                 </div>
                 <div class="view-btn">
@@ -135,19 +122,19 @@ use yii\helpers\Url;
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>
-                                <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?>">
-                                </div>
-                            </td>
-                            <td>8% To 12% p.a.</td>
-                            <td>Listed Universities: Rs.80 lakh<br>
-                                Unlisted Universities: Rs.60 lakh
-                            </td>
-                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
-                            <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td>-->
+<!--                                <div class="loanProviderIcon">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?><!--">-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                            <td>8% To 12% p.a.</td>-->
+<!--                            <td>Listed Universities: Rs.80 lakh<br>-->
+<!--                                Unlisted Universities: Rs.60 lakh-->
+<!--                            </td>-->
+<!--                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>-->
+<!--                            <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>-->
+<!--                        </tr>-->
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
@@ -209,7 +196,7 @@ use yii\helpers\Url;
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>">
                                 </div>
                             </td>
                             <td>12% Flat</td>
@@ -229,6 +216,9 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registercss('
+.heading-style{
+    font-size: 35px;
+}
 .w15{
     width: 15%;
 }

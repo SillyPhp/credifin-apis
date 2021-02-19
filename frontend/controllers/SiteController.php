@@ -905,11 +905,14 @@ class SiteController extends Controller
             case 'getInfrastructure':
                 return $this->renderAjax('/widgets/college-widgets/college-infrastructure');
                 break;
-            case 'getLoans':
-                return $this->renderAjax('/widgets/college-widgets/college-loans');
-                break;
             case 'getReviews':
                 return $this->renderAjax('/widgets/college-widgets/college-review');
+                break;
+            case 'getLoans':
+                $model = new AdmissionForm();
+                return $this->renderAjax('/widgets/college-widgets/college-loans',[
+                    'model' => $model,
+                ]);
                 break;
             case 'getGallery':
                 return $this->renderAjax('/widgets/college-widgets/college-gallery');
@@ -917,7 +920,21 @@ class SiteController extends Controller
             default :
         }
     }
-
+    public function actionCollegeLoanEnquiry(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+    }
     public function actionLoadData()
     {
         $type = Yii::$app->request->post('type');

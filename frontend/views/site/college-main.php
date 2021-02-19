@@ -559,6 +559,7 @@ function getDetails(){
                 var response = res.response.data;
                 let collegeDet = collegeInfo(res);
                 let Hpoints = overviewTemp(res);
+                console.log(Hpoints);
                 $('.h-points').append(Hpoints);
                 $('.college-main').append(collegeDet);
             }
@@ -567,7 +568,8 @@ function getDetails(){
 }
 getDetails();
 function overviewTemp(res){
-    let mainTemp;
+    let mainTemp = '';
+    
     if(res.response.data['affiliated_to']){
         var overviewTemp = `<div class="h-point1">
                                 <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
@@ -576,7 +578,7 @@ function overviewTemp(res){
                                     <p>`+res.response.data['affiliated_to']+`</p>
                                 </div>
                             </div>`;
-        mainTemp = overviewTemp;
+        mainTemp += overviewTemp;
     }
     
     if(res.response.data['website']){
@@ -590,7 +592,6 @@ function overviewTemp(res){
                     </div>`;        
         mainTemp += website;
     }
-    console.log(mainTemp);
     return mainTemp;
 }
 
