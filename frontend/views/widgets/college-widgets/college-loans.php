@@ -3,37 +3,78 @@ use yii\helpers\Url;
 ?>
 <div class="container">
     <div class="set-sticky">
-        <h3 class="ou-head">Loan Choices</h3>
+        <h3 class="heading-style">Education Loan Options</h3>
         <div class="table-view">
             <table>
                 <thead>
                 <tr>
                     <th class="w15">Bank/Financier</th>
-                    <th class="w15">Applicable Rate of Interest</th>
-                    <th class="w20">Maximum Loan Size with Collateral</th>
-                    <th class="w20">Maximum Loan Size without Collateral</th>
-                    <th class="w15">Processing Fees</th>
-                    <th class="w15">Repayment Period</th>
+                    <th class="w15">Rate of Interest</th>
+                    <th class="w18">Loan Amount Available</th>
+                    <th class="w22">Collateral</th>
+                    <th class="w18">Processing Fee</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>
                         <div class="loanProviderIcon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?>">
+                        </div>
+                    </td>
+                    <td>8% To 12% p.a.</td>
+                    <td>Listed Universities: Rs.80 lakh<br>
+                        Unlisted Universities: Rs.60 lakh
+                    </td>
+                    <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
+                    <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="loanProviderIcon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
+                        </div>
+                    </td>
+                    <td>8% To 12% p.a.</td>
+                    <td>Rs.1 crore (With Collateral)<br>
+                        Rs. 40 Lakhs (Without Collateral)</td>
+                    <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
+                    <td>1 % of Loan Amount + GST</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="loanProviderIcon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>">
                         </div>
                     </td>
-                    <td>12.00 - 14.5%</td>
+                    <td>12% to 16% p.a.</td>
+                    <td>Rs.40 lakh</td>
+                    <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
+                    <td>2 % of Loan Amount + GST</td>
+                </tr>
+                <tr>
                     <td>
-                        <p>No Upper Limit (India)</p>
-                        <p>No Upper Limit (Abroad)</p>
+                        <div class="loanProviderIcon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>">
+                        </div>
                     </td>
+                    <td>12% - 16% p.a.</td>
+                    <td>Rs.1 crore (With Collateral) <br>
+                        Rs. 40 Lakhs (Without Collateral)</td>
+                    <td>Loan With & Without Collateral <br> Available +  Moratorium period</td>
+                    <td>1% to 1.25% + GST</td>
+                </tr>
+                </tr>
+                <tr>
                     <td>
-                        <p>20 Lacs (India)</p>
-                        <p>40 Lacs (Abroad)</p>
+                        <div class="loanProviderIcon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>">
+                        </div>
                     </td>
-                    <td>1 - 2 %</td>
-                    <td>7 - 15 Years</td>
+                    <td>14% to 16% p.a.</td>
+                    <td>7 Lakh</td>
+                    <td>With Collateral - <br>Without Moratorium</td>
+                    <td>4% + GST</td>
                 </tr>
                 <tr>
                     <td>
@@ -41,20 +82,28 @@ use yii\helpers\Url;
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>">
                         </div>
                     </td>
-                    <td>12.00 - 14.5%</td>
+                    <td>8% to 12% p.a.</td>
+                    <td>7 Lakh</td>
+                    <td>With Collateral - <br>Without Moratorium</td>
+                    <td>4% + GST</td>
+                </tr>
+                <tr>
                     <td>
-                        <p>No Upper Limit (India)</p>
-                        <p>No Upper Limit (Abroad)</p>
+                        <div class="loanProviderIcon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png') ?>">
+                        </div>
                     </td>
-                    <td>
-                        <p>20 Lacs (India)</p>
-                        <p>40 Lacs (Abroad)</p>
-                    </td>
-                    <td>1 - 2 %</td>
-                    <td>7 - 15 Years</td>
+                    <td>12% Flat</td>
+                    <td>2 Lakh</td>
+                    <td>Without Collateral - <br> 10 Months Repayment</td>
+                    <td>Up To - 5% + GST</td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="displayFlex">
+            <div>*Terms&conditionsapplicable</div>
+            <div>**Processingfeedependentonbank/nbfc</div>
         </div>
     </div>
     <div class="set-sticky">
@@ -94,27 +143,34 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 table { 
-  width: 100%; 
-  border-collapse: collapse; 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 0px !important;
 }
 /* Zebra striping */
-tr:nth-of-type(odd) { 
-  background: #fff; 
+tr{
+    padding: 5px 0; 
+}
+tr:nth-child(odd) { 
+    background: #fbfbfb; 
 }
 th { 
-  background: #eee; 
-  color: #000; 
-  font-weight: bold; 
+    background: #00a0e3; 
+    color: #fff; 
+    font-weight: bold; 
 }
 td, th { 
-  padding: 6px; 
-  border: 1px solid #ccc; 
-  text-align: center; 
-  
+    padding: 15px 6px; 
+    border-left: 1px solid #f1f1f1; 
+    border-right: 1px solid #f1f1f1; 
+    text-align: center;
+    height: 70px;
+    
 }
 td p{
     margin-bottom: 0px !important;
-    text-align: center !important;
+    text-align: center !
+    important;
 }
 .loanProviderIcon{
     max-width: 100px;
@@ -123,8 +179,17 @@ td p{
 }
 .loanProviderIcon img{
     width: 100%;
+    object-fit: contain;
+    max-height: 40px;
 }
-
+.displayFlex{
+    display: flex;
+    justify-content: space-between;
+    background: #ff7803;
+    padding: 5px 10px;
+    color: #fff;    
+    flex-wrap: wrap;
+}
 @media only screen and (max-width: 767px) {
 .h-point1 {
     width: 50%;
@@ -135,48 +200,59 @@ td p{
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
+.loanProviderIcon{
+    float: right;
+    margin: unset;
+}
 table, thead, tbody, th, td, tr { 
     display: block; 
 }
-	
+        
 /* Hide table headers (but not display: none;, for accessibility) */
 thead tr { 
     position: absolute;
     top: -9999px;
     left: -9999px;
 }
-
-tr { border: 1px solid #ccc; }
-
+tr {
+    border: 1px solid #ccc; 
+    margin-bottom: 10px;
+}
 td { 
     /* Behave  like a "row" */
     border: none;
     border-bottom: 1px solid #eee; 
     position: relative;
-    padding-left: 50%; 
+    padding-left: 50% !important;
+    min-height: 70px;
+    height: auto; 
 }
-
+td:last-child{
+    border-bottom: none;
+}
 td:before { 
-    /* Now like a table header */
     position: absolute;
-    /* Top/left values mimic padding */
-    top: 6px;
-    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 3px;
     width: 45%; 
-    padding-right: 10px; 
-    white-space: nowrap;
+    padding-right: 10px;
 }
-
-/*
-Label the data
-*/
-td:nth-of-type(1):before { content: "Bank/Financier"; }
-td:nth-of-type(2):before { content: "Applicable Rate of Interest"; }
-td:nth-of-type(3):before { content: "Maximum Loan Size with Collateral*"; }
-td:nth-of-type(4):before { content: "Maximum Loan Size without Collateral"; }
-td:nth-of-type(5):before { content: "Processing Fees"; }
-td:nth-of-type(5):before { content: "Repayment Period"; }
-
+td:nth-of-type(1):before { 
+    content: "Bank/Financier"; 
+}
+td:nth-of-type(2):before { 
+    content: "ROI"; 
+}
+td:nth-of-type(3):before { 
+    content: "Loan Amount Available"; 
+}
+td:nth-of-type(4):before { 
+    content: "Collateral"; 
+}
+td:nth-of-type(5):before { 
+    content: "Processing Fees"; 
+}
 }
 ');
 $script = <<<JS
