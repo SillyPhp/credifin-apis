@@ -44,11 +44,12 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionApply()
+    public function actionApply($ref_id = null)
     {
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
         return $this->render('apply-general-loan-form', [
             'india' => $india,
+            'ref_id' => $ref_id
         ]);
     }
 
