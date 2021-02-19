@@ -289,7 +289,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style"><?= Yii::t('frontend', 'Our Loaning Partners'); ?></div>
+                    <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
                 </div>
             </div>
             <div class="row">
@@ -317,6 +317,15 @@ use yii\helpers\Url;
                                  alt="Avanse Financial Services">
                         </div>
                         <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
+                                 alt="InCred">
+                        </div>
+                        <div class="lp-name">InCred</div>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-3">

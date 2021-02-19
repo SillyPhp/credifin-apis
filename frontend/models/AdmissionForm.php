@@ -149,12 +149,12 @@ class AdmissionForm extends Model
             $model->student_mobile_number = $this->phone;
             $model->student_email = $this->email;
             if ($this->college) {
-                $model->college_name = $this->college;
+                $model->college_institute_name = $this->college;
             }
             $model->has_taken_addmission = 0;
             if ($this->appliedCollege == 'yes') {
                 $model->has_taken_addmission = 1;
-                $model->college_name = $this->college;
+                $model->college_institute_name = $this->college;
             }
             if ($this->amount) {
                 $model->loan_amount = $this->amount;

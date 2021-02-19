@@ -42,7 +42,7 @@ class EyCollegeProfileController extends ApiBaseController
 
         $college_detail = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.email', 'a.website', 'b.affiliated_to', 'b1.name city_name', 'a.phone',
+            ->select(['a.organization_enc_id', 'a.email','a.name', 'a.website website_link', 'b.affiliated_to', 'b1.name city_name', 'a.phone',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
             ])
             ->innerJoinWith(['organizationOtherDetails b' => function ($b) {
@@ -50,14 +50,22 @@ class EyCollegeProfileController extends ApiBaseController
             }], false)
             ->where(['a.slug' => $params['slug'], 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.is_erexx_registered' => 1])
             ->asArray()
-            ->all();
+            ->one();
 
         if ($college_detail) {
+            $college_detail['website'] = $this->get_domain($college_detail['website_link']);
             return $this->response(200, ['status' => 200, 'data' => $college_detail]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
+
+    function get_domain($url){
+        $charge = explode('/', $url);
+        $charge = $charge[2]; //assuming that the url starts with http:// or https://
+        return $charge;
+    }
+
 
     public function actionCourses()
     {
@@ -74,7 +82,7 @@ class EyCollegeProfileController extends ApiBaseController
         $courses = AssignedCollegeCourses::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+            ->select(['a.assigned_college_enc_id', 'c.course_name','a.organization_enc_id college_id', 'a.course_duration', 'a.type'])
             ->joinWith(['courseEnc c'], false)
             ->where(['a.organization_enc_id' => $college->organization_enc_id, 'a.is_deleted' => 0])
             ->asArray()

@@ -905,6 +905,9 @@ class SiteController extends Controller
             case 'getInfrastructure':
                 return $this->renderAjax('/widgets/college-widgets/college-infrastructure');
                 break;
+            case 'getLoans':
+                return $this->renderAjax('/widgets/college-widgets/college-loans');
+                break;
             case 'getGallery':
                 return $this->renderAjax('/widgets/college-widgets/college-gallery');
                 break;

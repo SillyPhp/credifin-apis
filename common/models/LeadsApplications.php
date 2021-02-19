@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 
 /**
  * This is the model class for table "{{%leads_applications}}".
@@ -52,13 +53,14 @@ namespace common\models;
  * @property Users $managedBy
  * @property Users $leadBy
  * @property Users $careBy
+ * @property LeadsApplicationsCallingLogs[] $leadsApplicationsCallingLogs
  * @property LeadsCollegePreference[] $leadsCollegePreferences
  * @property LeadsParentInformation[] $leadsParentInformations
  */
 class LeadsApplications extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -66,7 +68,7 @@ class LeadsApplications extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -136,6 +138,14 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function getCareBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'care_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLeadsApplicationsCallingLogs()
+    {
+        return $this->hasMany(LeadsApplicationsCallingLogs::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**
