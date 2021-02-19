@@ -92,7 +92,7 @@ use yii\helpers\Url;
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>">
                                 </div>
                             </td>
                             <td>12% Flat</td>
@@ -104,8 +104,8 @@ use yii\helpers\Url;
                     </table>
                 </div>
                 <div class="displayFlex">
-                    <div>*Terms & conditions applicable</div>
-                    <div>**Processing fee dependent on bank/nbfc</div>
+                    <div>*Terms & Conditions Applicable</div>
+                    <div>*Processing Fee Dependent On Bank/NBFC</div>
                 </div>
             </div>
         </div>
