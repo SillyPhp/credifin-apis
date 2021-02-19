@@ -304,10 +304,10 @@ $this->registerCss('
     text-align: center;
 }
 .why-des{
-    font-size: 18px;
+    font-size: 16px;
     line-height: 26px;
     color: #000;
-    font-family: lora;
+    font-family: roboto;
     text-align: justify;
 }
 .whystudy {
@@ -331,7 +331,7 @@ $this->registerCss('
 .opp-txt {
     text-align: center;
     font-size: 14px;
-    font-family: lora;
+    font-family: roboto;
     line-height: 20px;
     color: #000;
     font-weight: 600;

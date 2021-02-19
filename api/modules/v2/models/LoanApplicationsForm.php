@@ -15,6 +15,7 @@ use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
+use common\models\Users;
 use Yii;
 use yii\base\Model;
 
@@ -39,7 +40,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [])
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)) {
@@ -62,12 +63,21 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
+            if($refferal_id){
+                $lead_by_id = Users::find()
+                    ->where(['user_enc_id' => $refferal_id])
+                    ->asArray()->one();
+                if($lead_by_id){
+                $this->lead_by = $refferal_id;
+                }
+            }
             if (!$this->save()) {
                 $transaction->rollback();
                 return false;
             } else {
                 $this->_flag = true;
             }
+
             if ($is_claimed == 1) {
                 $path_to_claim = new PathToClaimOrgLoanApplication();
                 $utilitiesModel = new \common\models\Utilities();
@@ -159,6 +169,7 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
+
             if ($this->co_applicants && !empty($this->co_applicants) && $this->co_applicants != null) {
                 foreach ($this->co_applicants as $key => $applicant) {
                     $model = new LoanCoApplicants();
@@ -175,6 +186,7 @@ class LoanApplicationsForm extends LoanApplications
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
                         return false;
                     } else {
                         $this->_flag = true;
@@ -192,7 +204,6 @@ class LoanApplicationsForm extends LoanApplications
                 $gst = 0;
                 $amount = 500;
             }
-
 
             $args = [];
             $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
@@ -241,7 +252,7 @@ class LoanApplicationsForm extends LoanApplications
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return false;
+            return $exception->getMessage();
         }
     }
 
