@@ -695,9 +695,16 @@ class CollegeIndexController extends ApiBaseController
     public function actionGetReasons()
     {
         if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['reason_for']) && empty($params['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
-                ->where(['is_deleted' => 0, 'reason_by' => 0])
+                ->where(['is_deleted' => 0, 'reason_by' => 0, 'reason_for' => $params['reason_for']])
                 ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
                 ->all();
 
