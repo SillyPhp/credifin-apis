@@ -834,7 +834,7 @@ class CollegeIndexController extends ApiBaseController
             $reason->created_by = $user->user_enc_id;
             $reason->created_on = date('Y-m-d H:i:s');
             if ($reason->save()) {
-                return $this->response(200, ['status' => 200, 'reason_enc_id' => $reason->rejection_reason_enc_id]);
+                return $this->response(200, ['status' => 200, 'data' => ['rejection_reason_enc_id' => $reason->rejection_reason_enc_id, 'reason' => $reason->reason]]);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
