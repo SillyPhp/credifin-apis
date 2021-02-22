@@ -25,9 +25,64 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
+
+<section class="studyus-head">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 tac">
+                <div class="whystudy">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/Australia-flag.jpg')?>" alt="">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h3 class="heading-style">Why Study In Australia?</h3>
+                <p class="why-des">Australia  has become the third most popular destination amongst the students to study
+                    after USA and UK. It offers a wide variety of courses and degrees and institutions to choose from.
+                    There are many opportunities for students to work along with their degree.
+                    It offers high quality education at an affordable price.
+                    The cost of living too is inexpensive as compared to many other options.</p>
+                <div class="row">
+                    <div class="col-md-3 col-sm-3">
+                        <div class="opportunity">
+                            <div class="opp-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/opportunities.png')?>" alt="">
+                            </div>
+                            <div class="opp-txt"> A Large Pool Of Opportunities</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="opportunity">
+                            <div class="opp-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/High-Acceptance-Rate.png')?>" alt="">
+                            </div>
+                            <div class="opp-txt">High Acceptance Rate </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="opportunity">
+                            <div class="opp-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/Technology.png')?>" alt="">
+                            </div>
+                            <div class="opp-txt"> Passage for The Latest Technology</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <div class="opportunity">
+                            <div class="opp-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/Cultural-Diversity.png')?>" alt="">
+                            </div>
+                            <div class="opp-txt"> Cultural Diversity</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/australia-course')?>
 <?= $this->render('/widgets/loan-table')?>
+
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
@@ -245,6 +300,45 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?php
 $this->registerCss('
+.studyus-head {
+    padding: 30px;
+}
+.tac {
+    text-align: center;
+}
+.why-des{
+    font-size: 18px;
+    line-height: 26px;
+    color: #000;
+    font-family: lora;
+    text-align: justify;
+}
+.whystudy {
+    text-align: center;
+}
+.whystudy img {
+    height: 100%;
+    max-height: 370px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0px #797979;
+}
+.opp-img img {
+    height: 100%;
+    max-width: 70px;
+    max-height: 60px;
+    margin: 20px;
+}
+.opp-img {
+    text-align: center;
+}
+.opp-txt {
+    text-align: center;
+    font-size: 14px;
+    font-family: lora;
+    line-height: 20px;
+    color: #000;
+    font-weight: 600;
+}
 .padd30{
     padding-bottom: 30px;
 }
@@ -261,10 +355,15 @@ $this->registerCss('
 }
 .apply-now{
     padding: 10px 15px;
-    background: #00a0e3;
-    color: #fff;
-    border: 1px solid #00a0e3;
-    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -319,36 +418,39 @@ $this->registerCss('
     box-shadow: 0 0 10px rgba(0,0,0,.3);
     transition: .3s ease;
 }
-
-.study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 500px;
-       background-repeat: no-repeat;
-       background-size: cover;
-       display: flex;
-       align-items: center;
-       position: relative;
-        text-align: center;
+.study-in-usa-bg {
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+	min-height: 500px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	align-items: center;
+	position: relative;
+	text-align: center;
+	height: 100vh;
+	max-height: 700px;
 }
 .opacity-div{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,.85);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
-    font-size: 23px;
-    font-family: roboto;
-    color: #000;
-    padding: 0 0 18px;
-    line-height: 30px;
+    font-size: 24px;
+	font-family: roboto;
+	color: #fff;
+	padding: 0 0 18px;
+	line-height: 30px;
 }
 .study-in-usa-bg h1{
-    font-size: 50px;
-    margin-bottom: 20px;
-    color: #ff7803;
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;

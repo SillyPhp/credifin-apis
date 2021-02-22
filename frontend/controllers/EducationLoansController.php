@@ -226,4 +226,8 @@ class EducationLoansController extends Controller
     public function actionRefinanceLoan(){
         return $this->render('refinance-loan');
     }
+    public function actionRefinancingEducationLoan()
+    {
+        return $this->render('refinancing-education-loan');
+    }
 }
