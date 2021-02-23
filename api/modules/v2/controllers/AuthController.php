@@ -378,6 +378,7 @@ class AuthController extends ApiBaseController
             'phone' => $user->phone,
             'initials_color' => $user->initials_color,
             'access_token' => $source->access_token,
+            'source' => $source->source,
             'refresh_token' => $source->refresh_token,
             'access_token_expiry_time' => $source->access_token_expiration,
             'refresh_token_expiry_time' => $source->refresh_token_expiration,

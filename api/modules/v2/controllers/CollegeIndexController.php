@@ -800,6 +800,7 @@ class CollegeIndexController extends ApiBaseController
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $reason->erexx_college_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $reason->erexx_college_rejection_enc_id = $rejection->erexx_college_rejection_enc_id;
                 $reason->reason_enc_id = $reason_id;
                 $reason->created_by = $data['user_id'];
                 $reason->created_on = date('Y-m-d H:i:s');
@@ -808,6 +809,9 @@ class CollegeIndexController extends ApiBaseController
                     die();
                 }
             }
+        } else {
+            print_r($rejection->getErrors());
+            die();
         }
     }
 
