@@ -44,11 +44,12 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionApply()
+    public function actionApply($ref_id = null)
     {
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
         return $this->render('apply-general-loan-form', [
             'india' => $india,
+            'ref_id' => $ref_id
         ]);
     }
 
@@ -117,7 +118,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
@@ -136,7 +137,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
@@ -156,7 +157,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
@@ -175,7 +176,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
@@ -194,7 +195,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
@@ -213,7 +214,7 @@ class EducationLoansController extends Controller
                 return $model->updateData($lead_id);
             }
         }
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
