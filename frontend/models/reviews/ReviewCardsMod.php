@@ -48,7 +48,10 @@ class ReviewCardsMod
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
-                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
+                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency',
+                '(CASE WHEN h.name = "jobs" THEN COUNT(distinct b.application_enc_id) ELSE "0" END) as jobs_cnt',
+                '(CASE WHEN h.name = "internships" THEN COUNT(distinct b.application_enc_id) ELSE "0" END) as internships_cnt'
+            ])
             ->joinWith(['businessActivityEnc y'], false)
             ->joinWith(['organizationReviews z'], false)
             ->joinWith(['employerApplications b' => function ($x) {
@@ -66,7 +69,7 @@ class ReviewCardsMod
                     $x->groupBy(['h.name']);
                     $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0]);
+                $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                 $x->groupBy(['b.organization_enc_id']);
             }], true)
             ->joinWith(['followedOrganizations fo' => function ($x) {
@@ -131,7 +134,9 @@ class ReviewCardsMod
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link',
-                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vaccency'])
+                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vaccency',
+                '(CASE WHEN h.name = "jobs" THEN COUNT(distinct b.application_enc_id) ELSE "0" END) as jobs_cnt',
+                '(CASE WHEN h.name = "internships" THEN COUNT(distinct b.application_enc_id) ELSE "0" END) as internships_cnt'])
             ->joinWith(['organizationTypeEnc y'], false)
             ->joinWith(['newOrganizationReviews z' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);

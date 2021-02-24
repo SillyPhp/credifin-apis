@@ -695,9 +695,16 @@ class CollegeIndexController extends ApiBaseController
     public function actionGetReasons()
     {
         if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['reason_for']) && empty($params['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
-                ->where(['is_deleted' => 0, 'reason_by' => 0])
+                ->where(['is_deleted' => 0, 'reason_by' => 0, 'reason_for' => $params['reason_for']])
                 ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
                 ->all();
 
@@ -793,6 +800,7 @@ class CollegeIndexController extends ApiBaseController
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $reason->erexx_college_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $reason->erexx_college_rejection_enc_id = $rejection->erexx_college_rejection_enc_id;
                 $reason->reason_enc_id = $reason_id;
                 $reason->created_by = $data['user_id'];
                 $reason->created_on = date('Y-m-d H:i:s');
@@ -801,6 +809,9 @@ class CollegeIndexController extends ApiBaseController
                     die();
                 }
             }
+        } else {
+            print_r($rejection->getErrors());
+            die();
         }
     }
 
@@ -827,7 +838,7 @@ class CollegeIndexController extends ApiBaseController
             $reason->created_by = $user->user_enc_id;
             $reason->created_on = date('Y-m-d H:i:s');
             if ($reason->save()) {
-                return $this->response(200, ['status' => 200, 'reason_enc_id' => $reason->rejection_reason_enc_id]);
+                return $this->response(200, ['status' => 200, 'data' => ['rejection_reason_enc_id' => $reason->rejection_reason_enc_id, 'reason' => $reason->reason]]);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
