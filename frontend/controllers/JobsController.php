@@ -512,6 +512,9 @@ class JobsController extends Controller
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
+        if ($application_details->source==2||$application_details->source==3){
+
+        }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
@@ -1548,18 +1551,6 @@ class JobsController extends Controller
                     }
                 }
             }
-        }
-    }
-
-    public function actionClearMyCache()
-    {
-        $cache = Yii::$app->cache->flush();
-
-        if ($cache) {
-            $this->redirect(Yii::$app->request->referrer);
-        } else {
-            $this->redirect('/jobs/clear-my-cache');
-            return 'something went wrong...! please try again later';
         }
     }
 }
