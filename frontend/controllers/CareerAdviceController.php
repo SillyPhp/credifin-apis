@@ -11,6 +11,7 @@ use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\HttpException;
+use yii\db\Expression;
 use common\models\Utilities;
 use common\models\CareerAdvisePosts;
 
@@ -25,7 +26,37 @@ class CareerAdviceController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $postsModel = new Posts();
+        $posts = $postsModel->find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not', ['c.category_enc_id' => null]])
+            ->orderby(['a.created_on' => SORT_ASC])
+            ->limit(8)
+            ->asArray()
+            ->all();
+
+        $quotes = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => null])
+            ->groupBy(['a.post_enc_id'])
+            ->orderby(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
+        return $this->render('index', [
+            'posts' => $posts,
+            'quotes' => $quotes,
+        ]);
     }
 
     public function actionDetail($category)
