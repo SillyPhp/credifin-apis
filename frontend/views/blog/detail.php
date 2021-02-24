@@ -532,10 +532,10 @@ textarea::placeholder{
     margin-bottom: 10px;
     padding-left: 40px;
 }
-div#blog-description * {
-    font-size: 20px !important;
-    line-height: 29px !important;
-}
+//div#blog-description * {
+//    font-size: 20px !important;
+//    line-height: 29px !important;
+//}
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
