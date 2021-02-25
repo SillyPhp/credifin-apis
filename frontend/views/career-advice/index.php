@@ -344,6 +344,40 @@ $this->registerCss('
 .blog-mirror {
     background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
 }
+.zoom {
+    transition: transform .4s;
+    width: 253px;
+    height: 320px;
+    margin: 0 auto;
+    padding: 50px 0;
+    top:-10px;
+    left:-10px;
+    transition-timing-function: linear;
+    z-index:300;
+}
+.zoom img{
+    height:200px;
+    z-index:-500;
+}
+.zoom:hover{
+    -ms-transform: scale(1.4); /* IE 9 */
+    -webkit-transform: scale(1.4); /* Safari 3-8 */
+    transform: scale(1.4);
+    z-index: 999;
+}
+.owl-controls {
+    display: none !important;
+}
+.my-container{
+    max-width: 100%;
+    overflow:hidden;
+    display: block;
+    margin: auto;
+}
+#slider1 .owl-stage-outer{
+    overflow: visible !important;
+    z-index: 1000;
+}
 .whats-block-heading, .popular-heading, .trending-heading{
     position:relative;
     text-align:right;
@@ -727,7 +761,7 @@ body {
   fill: #fff;
   height: 25px;
   width: 25px;
-} 
+}
 @media only screen and (max-width: 600px) and (min-width:320px){
 .career-txt h1 {
     font-size: 30px;
@@ -870,6 +904,61 @@ a.button:hover span {
 a.button:hover span:after {
   opacity: 1;
   right: 0;
+}
+
+@media only screen and (max-width: 768px){
+    .owl-stage-outer{
+        overflow: hidden !important;
+    }
+    .zoom:hover{
+        -ms-transform: scale(1.5,1.2);
+        -webkit-transform: scale(1.5,1.2);
+        transform: scale(1.5,1.2);
+        left: 8%;
+    }
+     .whats-popular-heading:before{
+        border-width: 1px 250px 0px 0px;
+    }
+} 
+@media screen and (max-width: 450px){
+    .zoom img{
+        width:79vw !important;
+    }
+    .zoom{
+        padding-left: 26px;
+    }
+}
+@media screen and (max-width: 500px){
+    .whats-block-heading:before{
+        border-width: 1px 200px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 170px 0px 0px;
+    }
+}
+@media screen and (max-width: 425px){
+    .whats-block-heading:before{
+        border-width: 1px 180px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 150px 0px 0px;
+    }
+}
+@media screen and (max-width: 400px){
+    .whats-block-heading:before{
+        border-width: 1px 120px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 120px 0px 0px;
+    }
+}
+@media screen and (max-width: 374px){
+    .whats-block-heading:before{
+        border-width: 1px 50px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 80px 0px 0px;
+    }
 }
 
 ');
