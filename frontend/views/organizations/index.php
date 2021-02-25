@@ -489,21 +489,17 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                  $('#load_review_card_btn').removeAttr('disabled');
                  $('#loading_img').css('display','none');
                 if(response.status == 200){
-                    
-                    var i;
-                    for (i = 0; i < response.cards.length; i++) {
-                        response.cards[i]['jobs_cnt'] = 0
-                        response.cards[i]['internships_cnt'] = 0
-                        var j;
-                        for(j=0; j < response.cards[i]['employerApplications'].length; j++){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
                             if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
-                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application']
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
                             }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
-                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application']
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
                             }
                         }
                     }
-                  
                     total=total+response.cards.length;
                     var get_companies = $('#companies-card-all').html();
                     template.append(Mustache.render(get_companies, response.cards));
