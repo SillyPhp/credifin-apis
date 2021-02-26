@@ -353,7 +353,7 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px 0;
+    padding: 10px 5px;
     width: 42%;
     font-size: 14px;
     font-family: roboto;
