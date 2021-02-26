@@ -452,6 +452,9 @@ form {
     min-height:390px !important;
     }
 }  
+@media only screen and (max-width:1200px) and (min-width: 992px){
+.flw-rvw a{font-size:11px;}
+}
 ');
 
 $script = <<<JS
