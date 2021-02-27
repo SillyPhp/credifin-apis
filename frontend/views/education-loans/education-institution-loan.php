@@ -10,7 +10,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-12">
                     <h1>Education Institution Loan</h1>
-                    <p>So you’ve taken a loan. What if we have cool options to slash your outstanding?</p>
+                    <p>To Lead the Way to A Brighter Future.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                         <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
@@ -128,8 +128,8 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/finance.png') . ');
-	min-height: 500px;
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/edu-in.png') . ');
+	min-height: 550px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
