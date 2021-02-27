@@ -298,4 +298,26 @@ class HomeController extends ApiBaseController
             return $this->response(404, 'not found');
         }
     }
+
+    public function actionCountries()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'countries.json');
+        $countries = json_decode($strJsonFileContents, true);
+
+        foreach ($countries as $k => $v) {
+            if ($v['name'] == 'New Zealand') {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/newzealan.png', 'https');
+            } elseif ($v['name'] == 'Hong Kong') {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/hong-kong.png', 'https');
+            } else {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/' . strtolower($v['name']) . '.png', 'https');
+            }
+        }
+
+        if ($countries) {
+            return $this->response(200, $countries);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
 }

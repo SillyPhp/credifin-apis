@@ -2,7 +2,6 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
-
 $this->registerCssFile('@eyAssets/css/blog-main.css');
 $careerAdviceCategories = [
     [
@@ -1052,7 +1051,7 @@ body {
         box-shadow: none;
     }
  }
- a.button{
+ a.button {
   display: inline-block;
   background-color: #00a0e3;
   border-radius: 5px;
@@ -1066,14 +1065,14 @@ body {
   cursor: pointer;
   margin-top:15px;
 }
-a.button span{
+a.button span {
   color:#fff;
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.3s;
 }
-a.button span:after{
+a.button span:after {
   content: "\00bb";
   position: absolute;
   opacity: 0;
@@ -1090,11 +1089,7 @@ a.button:hover span:after {
   opacity: 1;
   right: 0;
 }
-@media screen and (max-width: 768px){
-    .wn-box-icon{
-        max-width: 100% !important;
-    }
-} 
+
 ');
 $script = <<<JS
 $.ajax({

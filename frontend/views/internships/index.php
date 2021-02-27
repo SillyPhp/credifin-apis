@@ -802,7 +802,7 @@ font-weight: 100;}
         width:90%;
     }
 }
-@media only screen and (max-width: 991px) and (min-width: 375px){
+@media only screen and (max-width: 768px) and (min-width: 375px){
 .sett-marg{
 	margin-top: 15px;
 }
