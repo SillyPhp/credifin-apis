@@ -197,6 +197,121 @@ class EducationLoansController extends Controller
         ]);
     }
 
+    public function actionDsaDashboard($filter = null)
+    {
+        $model = new LoanSanctionedForm();
+        $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
+        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
+        if (!$chkPermission) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            $model->documents = Yii::$app->request->post('documents');
+            if ($model->updateReport()) {
+                return $this->refresh();
+            } else {
+                return false;
+            }
+        }
+
+        $loans = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+                'a.created_on as apply_date',
+                '(CASE
+                    WHEN i.status = "0" THEN "New Lead"
+                    WHEN i.status = "1" THEN "Accepted"
+                    WHEN i.status = "2" THEN "Pre Verification"
+                    WHEN i.status = "3" THEN "Under Process"
+                    WHEN i.status = "4" THEN "Sanctioned"
+                    WHEN i.status = "5" THEN "Disbursed"
+                    WHEN i.status = "10" THEN "Reject"
+                    ELSE "N/A"
+                END) as loan_status',
+                'a.applicant_name',
+                'a.amount',
+                'a.amount_received',
+                'a.amount_due',
+                'a.scholarship',
+                'a.degree',
+                'f.course_name',
+                'REPLACE(g.name, "&amp;", "&") as org_name',
+                'a.semesters',
+                'a.years',
+                'a.phone',
+                'a.email',
+                'a.applicant_current_city as city',
+                '(CASE
+                    WHEN a.gender = "1" THEN "Male"
+                    WHEN a.gender = "2" THEN "Female"
+                    ELSE "N/A"
+                END) as gender',
+                'a.applicant_dob as dob',
+                'a.created_by',
+            ])
+            ->joinWith(['collegeCourseEnc f'], false)
+            ->joinWith(['collegeEnc g'], false)
+            ->joinWith(['loanCoApplicants h' => function ($h) {
+                $h->select(['h.loan_app_enc_id',
+                    'h.relation',
+                    'h.name',
+                    'h.annual_income',
+                    '(CASE
+                        WHEN h.employment_type = "0" THEN "Non Working"
+                        WHEN h.employment_type = "1" THEN "Salaried"
+                        WHEN h.employment_type = "2" THEN "Self Employed"
+                        ELSE "N/A"
+                    END) as employment_type',
+                ]);
+            }])
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->onCondition(['or',
+                    ['not', ['i.provider_enc_id' => null]],
+                    ['not', ['i.provider_enc_id' => '']]
+                ]);
+            }])
+            ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id]);
+        if ($filter != null) {
+            if ($filter != 'all') {
+                $filter = explode(',', $filter);
+                $loans->andWhere(['in', 'i.status', $filter]);
+            }
+        }
+        $loans = $loans->asArray()->all();
+        $stats = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.id', 'a.loan_app_enc_id',
+                'COUNT(DISTINCT a.loan_app_enc_id) as all_applications',
+                'COUNT(CASE WHEN i.status = "0" THEN 1 END) as new_leads',
+                'COUNT(CASE WHEN i.status = "1" THEN 1 END) as accepted',
+                'COUNT(CASE WHEN i.status = "2" THEN 1 END) as pre_verification',
+                'COUNT(CASE WHEN i.status = "3" THEN 1 END) as under_process',
+                'COUNT(CASE WHEN i.status = "4" THEN 1 END) as sanctioned',
+                'COUNT(CASE WHEN i.status = "5" THEN 1 END) as disbursed',
+                'COUNT(CASE WHEN i.status = "10" THEN 1 END) as rejected',
+            ])
+            ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->onCondition(['or',
+                    ['not', ['i.provider_enc_id' => null]],
+                    ['not', ['i.provider_enc_id' => '']]
+                ]);
+            }], false)
+            ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id])
+            ->asArray()
+            ->one();
+
+        $documents = LoanDocuments::findAll(['is_deleted' => 0, 'visible_for' => 'Loan']);
+
+        return $this->render('dsa-dashboard', [
+            'loans' => $loans,
+            'model' => $model,
+            'documents' => $documents,
+            'stats' => $stats
+        ]);
+    }
+
     public function actionChangeStatus()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->post()) {
