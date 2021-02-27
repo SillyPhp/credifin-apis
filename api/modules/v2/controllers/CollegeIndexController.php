@@ -460,8 +460,9 @@ class CollegeIndexController extends ApiBaseController
                     $approve->is_deleted = 1;
                     $d['collab_enc_id'] = $approve->collaboration_enc_id;
                     $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
                     if ($d['reasons']) {
-                        $this->__rejectReasons($d, 0);
+                        $this->__rejectReasons($d, 1);
                     }
                 }
                 $approve->last_updated_by = $user->user_enc_id;
@@ -486,15 +487,16 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($action == 'Reject') {
                     $model->college_approvel = 0;
                     $model->is_deleted = 1;
+                    $d['collab_enc_id'] = $model->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_by = $user->user_enc_id;
                 $model->created_on = date('Y-m-d H:i:s');
                 if ($model->save()) {
-                    $d['collab_enc_id'] = $model->collaboration_enc_id;
-                    $d['reasons'] = $req['reasons'];
-                    if ($d['reasons']) {
-                        $this->__rejectReasons($d, 0);
-                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occurred']);
@@ -737,6 +739,7 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_deleted = 1;
                     $d['erexx_app_id'] = $data->application_enc_id;
                     $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
                     if ($d['reasons']) {
                         $this->__rejectReasons($d, 1);
                     }
@@ -761,15 +764,16 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($req['action'] == 'Reject') {
                     $model->is_college_approved = 0;
                     $model->is_deleted = 1;
+                    $d['erexx_app_id'] = $model->application_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_on = date('Y-m-d H:i:s');
                 $model->created_by = $user->user_enc_id;
                 if ($model->save()) {
-                    $d['erexx_app_id'] = $model->application_enc_id;
-                    $d['reasons'] = $req['reasons'];
-                    if ($d['reasons']) {
-                        $this->__rejectReasons($d, 1);
-                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
