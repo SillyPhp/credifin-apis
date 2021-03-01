@@ -512,8 +512,14 @@ class JobsController extends Controller
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
+        $whatsAppForm = new whatsAppShareForm();
         if ($application_details->source==2||$application_details->source==3){
-
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk, 'app' => $application_details,
+                    'whatsAppmodel' => $whatsAppForm,
+                ]);
         }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
@@ -593,7 +599,6 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
