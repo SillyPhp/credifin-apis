@@ -918,6 +918,7 @@ border: 2px solid #cadfe8 !important;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
+    color:#333;
 }
 #autocomplete-list div,.tt-dataset{
     padding: 3px;

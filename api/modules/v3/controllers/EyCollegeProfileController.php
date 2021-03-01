@@ -253,7 +253,7 @@ class EyCollegeProfileController extends ApiBaseController
             }
             $data['hasReviewed'] = $hasReviewed;
             $data['total_reviewers'] = $overall['reviews_cnt'];
-            $data['average_count'] = $overall['average_rating'];
+            $stats['average_count'] = $overall['average_rating'];
             $data['overall_rating'] = $stats;
             $data['reviews'] = $result;
             $data['count'] = $count;
@@ -263,6 +263,8 @@ class EyCollegeProfileController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
 }
