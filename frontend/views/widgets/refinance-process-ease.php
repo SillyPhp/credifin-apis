@@ -16,34 +16,47 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-md-6 col-sm-6 tc">
                         <div class="nbfc-opt-box">
-                            <div class="nbfc-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Faster-processing-time.png')?>">
+                            <div class="rpe-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/applynow.png')?>">
                             </div>
-                            <p>Look for Different Lenders and their offers.</p>
+                            <p>Apply</p>
+                            <ul>
+                                <li>Start by submitting your documents and those of your cosigner.</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 tc">
                         <div class="nbfc-opt-box">
-                            <div class="nbfc-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rates.png')?>">
+                            <div class="rpe-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Check-Rates.png')?>">
                             </div>
-                            <p>Look for loans with low interest rates</p>
+                            <p>Check rates</p>
+                            <ul>
+                                <li>In order to get the best rate quotes, provide some basic info. A list
+                                    of lenders will be recommended to you online in a few minutes.</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 tc">
                         <div class="nbfc-opt-box">
-                            <div class="nbfc-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Less-Paperwork.png')?>">
+                            <div class="rpe-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Consider-Options.png')?>">
                             </div>
-                            <p>Compare and Select from all loan offers</p>
+                            <p>Consider your options</p>
+                            <ul>
+                                <li>Look for different options by checking the reviews and reading FAQ's about refinancing.</li>
+                            </ul>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 tc">
                         <div class="nbfc-opt-box">
-                            <div class="nbfc-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Multiple-Lending-Partners.png')?>">
+                            <div class="rpe-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Choose-Loan.png')?>">
                             </div>
-                            <p>Apply for the best loan offer</p>
+                            <p>Choose a loan</p>
+                            <ul>
+                                <li>Choose a loan scheme that best suits your needs and requirements</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -55,6 +68,16 @@ use yii\helpers\Url;
 $this->registerCss('
 .padd-30{
     padding:30px 0;
+}
+.rpe-icon{
+    height: 60px;   
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;    
+}
+.rpe-icon img{
+    max-width: 60px !important;
+    max-height: 60px !important; 
 }
 hr{
     max-width: 60px;
@@ -105,22 +128,30 @@ hr{
 }
 .nbfc-opt-box{
     box-shadow: 0 0px 8px rgba(146,139,139,.3);
-    padding: 30px 15px; 
+    padding: 25px 15px; 
     margin: 15px 0;
     border-radius: 15px;
-    text-align: center;
+//    text-align: center;
+    min-height: 210px;
+    display: flex;
+    flex-direction: column;
+//    justify-content: center;
+    position: relative;
+}
+.nbfc-opt-box ul li{
+    text-align: left;
 }
 .nbfc-opt-box img{
     max-width: 100px;
     max-height: 100px;
 }
 .nbfc-opt-box p{
-    font-size: 16px;
+    font-size: 18px;
     text-transform: capitalize;
-    line-height: 26px;
-    color: #000;
+    line-height: 10px;
+    color: #ff7803;
     font-family: roboto;
-    margin-top: 10px;
+    margin-top: 0px;
 }
 @media only screen and (max-width: 992px){
     .loan-style{

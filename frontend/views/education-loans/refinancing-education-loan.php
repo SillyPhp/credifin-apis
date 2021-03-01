@@ -85,50 +85,8 @@ use borales\extensions\phoneInput\PhoneInput;
             </div>
         </div>
     </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="cl-icon">
-                    <p>Our Lenders</p>
-                    <ul>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-    <section class="padd-50">
+
+<section class="padd-50">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -169,6 +127,49 @@ use borales\extensions\phoneInput\PhoneInput;
             </div>
         </div>
     </section>
+<section class="bg-blue">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cl-icon">
+                    <h2 class="heading-style">Our Lending Partners</h2>
+                    <ul>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lender-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <section class="bg-caller padd30" id="contact">
     <div class="container">
@@ -386,6 +387,22 @@ $this->registerCss('
 .mt10{
     margin-top: 15px;
 }
+.cl-icon ul{
+    text-align: center;
+}
+.cl-icon ul li{
+    display: inline-block;
+    margin: 15px; 
+}
+.lender-icon{
+    width: 130px;
+    max-height: 125px;
+    
+}
+.lender-icon img{
+    max-width: 110px;
+    max-height: 110px;
+}
 .padd-50{
     padding-bottom: 50px;
 }
@@ -437,7 +454,7 @@ $this->registerCss('
     display: flex;
     flex-direction: column;
     justify-content: center;
-    max-width: 475px;
+    max-width: 570px;
 }
 .conRelative{
     position: relative;
@@ -487,6 +504,7 @@ $this->registerCss('
     display: inline;
     margin-right: 10px;
 }
+
 .apply-now {
 	padding: 10px 15px;
 	background: #00A0E3;
@@ -610,7 +628,7 @@ $this->registerCss('
 //    left: 15px !important;
 }
 #submitBtn{
-display:none;
+    display:none;
 }
 .twitter-typeahead{
     width:100%
