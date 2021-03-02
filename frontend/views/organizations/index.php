@@ -73,41 +73,44 @@ use yii\helpers\Url;
                             </circle>
                         </svg>
                     </div>
-                    <div id="companies-card"></div>
-                    <div class="col-md-12">
-                        <div class="load-more-bttn">
-                            <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
-                                 viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-                                <circle cx="50" cy="50" r="15" fill="#00a0e3">
-                                    <animate attributeName="cx"
-                                             values="65.55634918610404;34.44365081389595;65.55634918610404"
-                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
-                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
-                                             begin="-0.32894736842105265s"></animate>
-                                    <animate attributeName="cy"
-                                             values="65.55634918610404;34.44365081389596;65.55634918610404"
-                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
-                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
-                                             begin="-0.32894736842105265s"></animate>
-                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
-                                             dur="1.3157894736842106s" repeatCount="indefinite"
-                                             begin="-0.32894736842105265s"></animate>
-                                </circle>
-                                <circle cx="50" cy="50" r="15" fill="#ff7803">
-                                    <animate attributeName="cx"
-                                             values="34.44365081389596;65.55634918610404;34.44365081389596"
-                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
-                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
-                                             begin="0s"></animate>
-                                    <animate attributeName="cy"
-                                             values="65.55634918610404;34.44365081389595;65.55634918610404"
-                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
-                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
-                                             begin="0s"></animate>
-                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
-                                             dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
-                                </circle>
-                            </svg>
+                    <div id="companies-card" class="row"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="load-more-bttn">
+                                <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
+                                     viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                                    <circle cx="50" cy="50" r="15" fill="#00a0e3">
+                                        <animate attributeName="cx"
+                                                 values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                        <animate attributeName="cy"
+                                                 values="65.55634918610404;34.44365081389596;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                        <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                                 dur="1.3157894736842106s" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                    </circle>
+                                    <circle cx="50" cy="50" r="15" fill="#ff7803">
+                                        <animate attributeName="cx"
+                                                 values="34.44365081389596;65.55634918610404;34.44365081389596"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                        <animate attributeName="cy"
+                                                 values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                        <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                                 dur="1.3157894736842106s" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                    </circle>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                     <div class="empty">
