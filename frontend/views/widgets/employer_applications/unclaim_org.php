@@ -1,9 +1,9 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
@@ -12,7 +12,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <?php
             if (!empty($org_logo)) {
                 ?>
-                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                <a href="javascript:;">
+                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                </a>
                 <?php
             } else {
                 ?>
@@ -27,7 +29,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <div class="organization-details">
                 <!--            <h4>Company Detail</h4>-->
                 <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
+                    <a href="<?= $website ?>">
+                        <i class="fas fa-unlink"> Visit on website</i>
+                    </a>
                 <?php endif; ?>
             </div>
         </div>
@@ -128,11 +132,11 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <i class="fab fa-facebook-f"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-twitter"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
                 <a href="#"
@@ -158,7 +162,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
@@ -189,6 +193,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $this->registerCss('
+#logo_img {
+	max-width: 85px !Important;
+	max-height: 100px !Important;
+	/* background-color: #fff; */
+	object-fit: contain;
+	width: 85px;
+	height: 85px;
+}
 .form-whats {
 	position: relative;
 }
@@ -215,6 +227,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -256,9 +269,9 @@ $this->registerCss('
 }
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -266,7 +279,7 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px;
+    padding:5px;
     width: 42%;
     font-size: 12px;
     border-radius: 2px;

@@ -1034,8 +1034,8 @@ button.lc-item-video-menu {
         display:none;
     }
     #logo_img{
-        width: 115px;
-        height: 115px;
+        max-width: 85px !Important;
+        max-height: 100px !Important;
         background-color:#fff;
         object-fit: contain;
     }
@@ -1590,7 +1590,7 @@ button.lc-item-video-menu {
     -o-border-radius: 2px;
     border-radius: 2px;
     font-family: roboto;
-    font-size: 18px;
+    font-size: 16px;
     color: #fff;
     width: 175px;
     height: auto;
@@ -1608,7 +1608,7 @@ button.lc-item-video-menu {
     }
     .apply-job-btn i {
         float: none;
-        font-size: 18px;
+        font-size: 16px;
         margin-right: 6px;
         line-height: 8px;
         position: relative;

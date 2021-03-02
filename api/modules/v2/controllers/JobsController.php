@@ -898,7 +898,7 @@ class JobsController extends ApiBaseController
                     if ($rejections_reasons) {
                         $consider_jobs = CandidateConsiderJobs::find()
                             ->alias('a')
-                            ->select(['a.consider_job_enc_id','a.application_enc_id', 'e.name parent_category',
+                            ->select(['a.consider_job_enc_id', 'a.application_enc_id', 'e.name parent_category', 'b.slug',
                                 'ee.name title', 'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                             ])
                             ->joinWith(['applicationEnc b' => function ($b) {

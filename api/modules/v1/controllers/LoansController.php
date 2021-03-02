@@ -16,6 +16,7 @@ use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
+use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
 use common\models\PathToOpenLeads;
@@ -226,7 +227,7 @@ class LoansController extends ApiBaseController
 
         $userId = $this->userId();
         $status = LoanApplications::find()
-            ->where(['created_by' => $userId, 'status' => 0])
+            ->where(['created_by' => $userId, 'status' => 0, 'is_deleted' => 0])
             ->one();
 
         if ($status) {
@@ -270,12 +271,138 @@ class LoansController extends ApiBaseController
             ->all();
 
         if ($loans) {
+
+            foreach ($loans as $k => $v) {
+                $loans[$k]['payment_status'] = ucwords($v['payment_status']);
+            }
+
             $d["name"] = "Empower Youth";
             $d["description"] = "Application Processing Fee";
             $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
             $d['theme_color'] = "#ff7803";
             $d['username'] = Yii::$app->getSecurity()->generateRandomString(3);
             return $this->response(200, ['status' => 200, 'data' => $loans, 'payment_detail' => $d]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionLoanDetail()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id']) && empty($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $loan = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id',
+                'a.applicant_name',
+                'a.amount loan_amount',
+                'a.status',
+                'a.email',
+                'a.phone',
+                'a.had_taken_addmission',
+                'd.payment_token',
+                '(CASE
+                WHEN d.payment_status IS NULL THEN "failed"
+                WHEN d.payment_status = "captured" THEN "received"
+                ELSE d.payment_status
+                END) as payment_status',
+                '(CASE
+                WHEN d.payment_id IS NULL THEN ""
+                ELSE d.payment_id
+                END) as payment_id',
+                'd.payment_amount application_fees',
+                'd.payment_gst application_fees_gst',
+                'd.education_loan_payment_enc_id',
+                "DATE_FORMAT(a.created_on, '%d-%b-%Y') applied_date"
+            ])
+            ->joinWith(['educationLoanPayments d'], false)
+            ->joinWith(['loanCoApplicants dd' => function ($d) {
+                $d->select([
+                    'dd.loan_co_app_enc_id',
+                    'dd.loan_app_enc_id',
+                    'dd.name',
+                    'dd.relation',
+                    'dd.employment_type',
+                    'dd.annual_income'
+                ]);
+            }])
+            ->joinWith(['loanPurposes e' => function ($e) {
+                $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
+                $e->joinWith(['feeComponentEnc e1'], false);
+            }])
+            ->where(['a.created_by' => $this->userId(), 'a.is_deleted' => 0, 'a.loan_app_enc_id' => $params['loan_app_enc_id']])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->one();
+
+        if ($loan) {
+
+            $course_name = '';
+            $college_name = '';
+            $path_claim = PathToClaimOrgLoanApplication::find()
+                ->alias('a')
+                ->select(['a.bridge_enc_id', 'a.loan_app_enc_id', 'assigned_course_enc_id', 'c1.course_name', 'b.name country_name', 'c2.name college_name'])
+                ->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                    $cc->joinWith(['organizationEnc c2']);
+                }], false)
+                ->joinWith(['countryEnc b'], false)
+                ->where(['a.loan_app_enc_id' => $loan['loan_app_enc_id']])
+                ->asArray()
+                ->one();
+
+            $path_uclaim = PathToUnclaimOrgLoanApplication::find()
+                ->alias('a')
+                ->select(['a.bridge_enc_id', 'a.loan_app_enc_id', 'assigned_course_enc_id', 'c1.course_name', 'b.name country_name', 'c2.name college_name'])
+                ->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                    $cc->joinWith(['organizationEnc c2']);
+                }], false)
+                ->joinWith(['countryEnc b'], false)
+                ->where(['a.loan_app_enc_id' => $loan['loan_app_enc_id']])
+                ->asArray()
+                ->one();
+
+            $path_lead = PathToOpenLeads::find()
+                ->select(['course_name'])
+                ->where(['loan_app_enc_id' => $loan['loan_app_enc_id']])
+                ->asArray()
+                ->one();
+
+            $loan['prefs'] = [];
+            if ($loan['had_taken_addmission'] == 0) {
+                $prefs = LoanApplicationsCollegePreference::find()
+                    ->select(['preference_enc_id', 'college_name'])
+                    ->where(['loan_app_enc_id' => $loan['loan_app_enc_id']])
+                    ->asArray()
+                    ->all();
+
+                $loan['prefs'] = $prefs;
+            }
+
+            if ($path_claim) {
+                $course_name = $path_claim['course_name'];
+                $college_name = $path_claim['college_name'];
+            } elseif ($path_uclaim) {
+                $course_name = $path_uclaim['course_name'];
+                $college_name = $path_uclaim['college_name'];
+            } elseif ($path_lead) {
+                $course_name = $path_lead['course_name'];
+            }
+
+            $loan['course_name'] = $course_name;
+            $loan['college_name'] = $college_name;
+            $loan['payment_status'] = ucwords($loan['payment_status']);
+            $d["name"] = "Empower Youth";
+            $d["description"] = "Application Processing Fee";
+            $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+            $d['theme_color'] = "#ff7803";
+            $d['username'] = Yii::$app->getSecurity()->generateRandomString(3);
+            return $this->response(200, ['status' => 200, 'data' => $loan, 'payment_detail' => $d]);
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }

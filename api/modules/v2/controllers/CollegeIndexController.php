@@ -460,8 +460,9 @@ class CollegeIndexController extends ApiBaseController
                     $approve->is_deleted = 1;
                     $d['collab_enc_id'] = $approve->collaboration_enc_id;
                     $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
                     if ($d['reasons']) {
-                        $this->__rejectReasons($d, 0);
+                        $this->__rejectReasons($d, 1);
                     }
                 }
                 $approve->last_updated_by = $user->user_enc_id;
@@ -486,15 +487,16 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($action == 'Reject') {
                     $model->college_approvel = 0;
                     $model->is_deleted = 1;
+                    $d['collab_enc_id'] = $model->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_by = $user->user_enc_id;
                 $model->created_on = date('Y-m-d H:i:s');
                 if ($model->save()) {
-                    $d['collab_enc_id'] = $model->collaboration_enc_id;
-                    $d['reasons'] = $req['reasons'];
-                    if ($d['reasons']) {
-                        $this->__rejectReasons($d, 0);
-                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occurred']);
@@ -695,9 +697,16 @@ class CollegeIndexController extends ApiBaseController
     public function actionGetReasons()
     {
         if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['reason_for']) && empty($params['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
-                ->where(['is_deleted' => 0, 'reason_by' => 0])
+                ->where(['is_deleted' => 0, 'reason_by' => 0, 'reason_for' => $params['reason_for']])
                 ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
                 ->all();
 
@@ -730,6 +739,7 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_deleted = 1;
                     $d['erexx_app_id'] = $data->application_enc_id;
                     $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
                     if ($d['reasons']) {
                         $this->__rejectReasons($d, 1);
                     }
@@ -754,15 +764,16 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($req['action'] == 'Reject') {
                     $model->is_college_approved = 0;
                     $model->is_deleted = 1;
+                    $d['erexx_app_id'] = $model->application_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_on = date('Y-m-d H:i:s');
                 $model->created_by = $user->user_enc_id;
                 if ($model->save()) {
-                    $d['erexx_app_id'] = $model->application_enc_id;
-                    $d['reasons'] = $req['reasons'];
-                    if ($d['reasons']) {
-                        $this->__rejectReasons($d, 1);
-                    }
                     return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
@@ -793,6 +804,7 @@ class CollegeIndexController extends ApiBaseController
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $reason->erexx_college_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $reason->erexx_college_rejection_enc_id = $rejection->erexx_college_rejection_enc_id;
                 $reason->reason_enc_id = $reason_id;
                 $reason->created_by = $data['user_id'];
                 $reason->created_on = date('Y-m-d H:i:s');
@@ -801,6 +813,9 @@ class CollegeIndexController extends ApiBaseController
                     die();
                 }
             }
+        } else {
+            print_r($rejection->getErrors());
+            die();
         }
     }
 
@@ -827,7 +842,7 @@ class CollegeIndexController extends ApiBaseController
             $reason->created_by = $user->user_enc_id;
             $reason->created_on = date('Y-m-d H:i:s');
             if ($reason->save()) {
-                return $this->response(200, ['status' => 200, 'reason_enc_id' => $reason->rejection_reason_enc_id]);
+                return $this->response(200, ['status' => 200, 'data' => ['rejection_reason_enc_id' => $reason->rejection_reason_enc_id, 'reason' => $reason->reason]]);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }

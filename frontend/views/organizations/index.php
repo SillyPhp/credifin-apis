@@ -1,6 +1,8 @@
 <?php
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+
 ?>
     <section class="headerbg">
         <div class="bg-vector"></div>
@@ -10,10 +12,13 @@ use yii\helpers\Url;
                     <div class="main-heading">
                         <div class="pos-center">
                             <h1 class="main-text mt-50 pt-90">Explore All Companies</h1>
-                            <h3 class="main-sub-text mb-20">Top companies are searching for candidates just like you. Explore the profile of the companies, follow the best ones and give your reviews. </h3>
+                            <h3 class="main-sub-text mb-20">Top companies are searching for candidates just like you.
+                                Explore the profile of the companies, follow the best ones and give your reviews. </h3>
                             <div class="search-container">
                                 <form action="" id="form_search_cmp">
-                                    <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
+                                    <input id="company_search" type="text"
+                                           value="<?= ((Yii::$app->request->get('keyword')) ? Yii::$app->request->get('keyword') : '') ?>"
+                                           placeholder="Search Companies" name="keyword">
                                     <button id="search"><i class="fas fa-search"></i></button>
                                 </form>
                             </div>
@@ -26,7 +31,7 @@ use yii\helpers\Url;
 
     <div class="container">
         <div class="row">
-            <?php echo $this->render('/widgets/sorting-filters')?>
+            <?php echo $this->render('/widgets/sorting-filters') ?>
         </div>
     </div>
 
@@ -35,32 +40,72 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="padd-top-20">
                     <div id="loading_img">
-                        <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                        <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
+                             viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                             <circle cx="50" cy="50" r="15" fill="#00a0e3">
-                                <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-                                <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+                                <animate attributeName="cx"
+                                         values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
+                                <animate attributeName="cy"
+                                         values="65.55634918610404;34.44365081389596;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
+                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                         dur="1.3157894736842106s" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
                             </circle>
                             <circle cx="50" cy="50" r="15" fill="#ff7803">
-                                <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-                                <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+                                <animate attributeName="cx"
+                                         values="34.44365081389596;65.55634918610404;34.44365081389596"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="0s"></animate>
+                                <animate attributeName="cy"
+                                         values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="0s"></animate>
+                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                         dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
                             </circle>
                         </svg>
                     </div>
                     <div id="companies-card"></div>
                     <div class="col-md-12">
                         <div class="load-more-bttn">
-                            <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                            <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
+                                 viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                                 <circle cx="50" cy="50" r="15" fill="#00a0e3">
-                                    <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-                                    <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+                                    <animate attributeName="cx"
+                                             values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                             begin="-0.32894736842105265s"></animate>
+                                    <animate attributeName="cy"
+                                             values="65.55634918610404;34.44365081389596;65.55634918610404"
+                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                             begin="-0.32894736842105265s"></animate>
+                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                             dur="1.3157894736842106s" repeatCount="indefinite"
+                                             begin="-0.32894736842105265s"></animate>
                                 </circle>
                                 <circle cx="50" cy="50" r="15" fill="#ff7803">
-                                    <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-                                    <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+                                    <animate attributeName="cx"
+                                             values="34.44365081389596;65.55634918610404;34.44365081389596"
+                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                             begin="0s"></animate>
+                                    <animate attributeName="cy"
+                                             values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                             keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                             keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                             begin="0s"></animate>
+                                    <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                             dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
                                 </circle>
                             </svg>
                         </div>
@@ -407,6 +452,9 @@ form {
     min-height:390px !important;
     }
 }  
+@media only screen and (max-width:1200px) and (min-width: 992px){
+.flw-rvw a{font-size:11px;}
+}
 ');
 
 $script = <<<JS
@@ -444,6 +492,17 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                  $('#load_review_card_btn').removeAttr('disabled');
                  $('#loading_img').css('display','none');
                 if(response.status == 200){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
+                            if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }
+                        }
+                    }
                     total=total+response.cards.length;
                     var get_companies = $('#companies-card-all').html();
                     template.append(Mustache.render(get_companies, response.cards));

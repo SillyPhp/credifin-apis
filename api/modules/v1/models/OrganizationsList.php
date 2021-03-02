@@ -1,27 +1,17 @@
 <?php
 
-namespace frontend\models\reviews;
 
-use common\models\ApplicationOptions;
-use common\models\ApplicationPlacementCities;
-use common\models\ApplicationPlacementLocations;
-use common\models\ApplicationTypes;
-use common\models\ApplicationUnclaimOptions;
-use common\models\BusinessActivities;
-use common\models\Cities;
-use common\models\EmployerApplications;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationLocations;
-use common\models\OrganizationReviews;
+namespace api\modules\v1\models;
+
+
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use yii\db\Expression;
 use yii\helpers\Url;
 use Yii;
 
-class ReviewCardsMod
+class OrganizationsList
 {
-
     public function getAllCompanies($options = [])
     {
         if (isset($options['limit'])) {
@@ -29,13 +19,10 @@ class ReviewCardsMod
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        if (Yii::$app->user->identity->user_enc_id) {
-            $is_login = 1;
-        }
         $q1 = Organizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "1" as is_claimed'), '(CASE
+            ->select([new Expression(' "1" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -48,8 +35,7 @@ class ReviewCardsMod
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
-                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'
-            ])
+                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
             ->joinWith(['businessActivityEnc y'], false)
             ->joinWith(['organizationReviews z'], false)
             ->joinWith(['employerApplications b' => function ($x) {
@@ -67,11 +53,11 @@ class ReviewCardsMod
                     $x->groupBy(['h.name']);
                     $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
+                $x->onCondition(['b.is_deleted' => 0]);
                 $x->groupBy(['b.organization_enc_id']);
             }], true)
-            ->joinWith(['followedOrganizations fo' => function ($x) {
-                $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
+            ->joinWith(['followedOrganizations fo' => function ($x) use ($options) {
+                $x->onCondition(['fo.created_by' => $options['user_id']]);
             }], false)
             ->joinWith(['organizationLabels ol' => function ($x) {
                 $x->select(['ol.organization_enc_id', 'ol.org_label_enc_id', 'ol.label_enc_id', 'le.name label_name']);
@@ -119,7 +105,7 @@ class ReviewCardsMod
         $q2 = UnclaimedOrganizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "0" as is_claimed'), '(CASE
+            ->select([new Expression(' "0" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -132,8 +118,7 @@ class ReviewCardsMod
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link',
-                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vaccency'
-            ])
+                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vaccency'])
             ->joinWith(['organizationTypeEnc y'], false)
             ->joinWith(['newOrganizationReviews z' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
@@ -148,11 +133,11 @@ class ReviewCardsMod
                 $x->joinWith(['applicationPlacementCities t' => function ($x) {
                     $x->joinWith(['cityEnc x'], false);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE']);
+                $x->onCondition(['b.is_deleted' => 0]);
                 $x->groupBy('b.organization_enc_id');
             }], true)
-            ->joinWith(['unclaimedFollowedOrganizations fo' => function ($x) {
-                $x->onCondition(['fo.created_by' => Yii::$app->user->identity->user_enc_id]);
+            ->joinWith(['unclaimedFollowedOrganizations fo' => function ($x) use ($options) {
+                $x->onCondition(['fo.created_by' => $options]);
             }], false)
             ->joinWith(['unclaimOrganizationLabels ul' => function ($x) {
                 $x->select(['ul.organization_enc_id', 'ul.org_label_enc_id', 'ul.label_enc_id', 'le.name label_name']);
@@ -194,7 +179,6 @@ class ReviewCardsMod
         if (isset($options['rating'])) {
             $q2->orFilterHaving(['ROUND(AVG(c.average_rating))' => $options['rating']]);
         }
-        $count = $q2->count() + $q1->count();
 
         $q1 = $q1->groupBy(['a.organization_enc_id'])->limit($limit)
             ->offset($offset);
@@ -205,10 +189,8 @@ class ReviewCardsMod
             ->distinct()
             ->asArray()
             ->all();
-        return [
-            'total' => $count,
-            'cards' => $q
-        ];
+
+        return $q;
     }
 
     public static function makeSQL_search_pattern($search)
