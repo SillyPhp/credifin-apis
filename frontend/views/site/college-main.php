@@ -69,7 +69,8 @@ use yii\helpers\Url;
                                 </a>
                             </li>
                             <li class="nav-item loans" data-toggle="tab">
-                                <a class="nav-link" href="#reviews" data-key="getReviews" role="tab" data-toggle="tab">
+                                <a class="nav-link" href="#reviews" data-key="getReviews" role="tab"
+                                   data-toggle="tab">
                                     Reviews
                                 </a>
                             </li>
@@ -454,7 +455,6 @@ body{
 }
 ');
 $script = <<<JS
-
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
   $('.tab-content').css('height',mainHeight);
@@ -583,13 +583,13 @@ function overviewTemp(res){
     
     if(res.response.data['website']){
         var website = `<div class="h-point1">
-                        <div class="fa-icon"><i class="fas fa-link"></i></div>
-                        <div class="fa-text">
-                            <h3>Official Website</h3>
-                            <p><a href="`+res.response.data['website_link']+`">
-                            `+res.response.data['website']+`</a></p>
-                        </div>
-                    </div>`;        
+                            <div class="fa-icon"><i class="fas fa-link"></i></div>
+                            <div class="fa-text">
+                                <h3>Official Website</h3>
+                                <p><a href="`+res.response.data['website_link']+`">
+                                `+res.response.data['website']+`</a></p>
+                            </div>
+                        </div>`;        
         mainTemp += website;
     }
     return mainTemp;
@@ -600,7 +600,7 @@ function collegeInfo(res) {
                         <img src="`+res.response.data['logo']+`">
                     </div>
                     <div class="college-info">
-                        <h3>`+res.response.data['name']+`</h3>
+                        <h3 data-id="`+res.response.data['organization_enc_id']+`" id="orgDetail">`+res.response.data['name']+`</h3>
                         <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+res.response.data['city_name']+`</div>
                     </div>`;
             return collegeInfo;
@@ -611,6 +611,12 @@ JS;
 $this->registerJs($script);
 ?>
 <script>
+    window.addEventListener('unload', function (event){
+        var currentUrl = window.location.href;
+        console.log(currentUrl);
+        console.log('1');
+    });
+    console.log('2');
     function showJobsSidebar() {
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');
@@ -621,4 +627,5 @@ $this->registerJs($script);
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
+
 </script>
