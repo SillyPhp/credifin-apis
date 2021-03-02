@@ -231,7 +231,21 @@ class EducationLoansController extends Controller
         return $this->render('refinancing-education-loan');
     }
     public function actionEducationInstitutionLoan()
-    {
-        return $this->render('education-institution-loan');
+    {  $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+//        if (Yii::$app->request->isAjax) {
+//            Yii::$app->response->format = Response::FORMAT_JSON;
+//            $model->load(Yii::$app->request->post());
+//            return ActiveForm::validate($model);
+//        }
+        return $this->render('education-institution-loan',[
+            'model'  => $model
+        ]);
     }
 }

@@ -124,7 +124,11 @@ use yii\helpers\Url;
 
 
 <?= $this->render('/widgets/loan-table') ?>
-<?= $this->render('/widgets/education-loan-faqs');?>
+<?= $this->render('/widgets/education-loan-faqs'); ?>
+<?= $this->render('/widgets/loan-form-detail',[
+        'model' =>$model
+]); ?>
+
 <?php
 $this->registerCss('
 .study-in-usa-bg {
