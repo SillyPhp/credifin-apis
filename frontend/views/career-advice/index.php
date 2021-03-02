@@ -207,72 +207,72 @@ $careerAdviceCategories = [
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 row">
-                    <div class="infographics">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="info-head">
-                                    Infographics
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="info-g">
-                                <?php
-                                $i = 1;
-                                if ($infographicsPosts) {
-                                    foreach ($infographicsPosts as $post) {
-                                        $new_row = ($i % 4 == 0) ? true : false;
-                                        if ($new_row) {
-                                            ?>
-                                            <div class="row">
-                                            <?php
-                                        }
-                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                                        if (!file_exists($image_path)) {
-                                            $image = '//placehold.it/330x200';
-                                        }
-                                        ?>
-                                        <div class="col-md-12">
-                                            <div class="whats-new-box">
-                                                <div class="wn-box-icon">
-                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                                        <img src="<?= $image; ?>" alt="<?= $post['title']; ?>"/>
-                                                    </a>
-                                                </div>
-                                                <div class="wn-box-details">
-                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                                        <div class="wn-box-title">
-                                                            <?= $post['title']; ?>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php
-                                        if ($new_row) {
-                                            ?>
-                                            </div>
-                                            <?php
-                                        }
-                                        $i++;
-                                    }
-                                }
-                                ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="info-btn">
-                                    <a href="<?= Url::to('/blog/category/infographics'); ?>" target="_blank">
-                                        View All
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="col-md-12 row">-->
+<!--                    <div class="infographics">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12">-->
+<!--                                <div class="info-head">-->
+<!--                                    Infographics-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="info-g">-->
+<!--                                --><?php
+//                                $i = 1;
+//                                if ($infographicsPosts) {
+//                                    foreach ($infographicsPosts as $post) {
+//                                        $new_row = ($i % 4 == 0) ? true : false;
+//                                        if ($new_row) {
+//                                            ?>
+<!--                                            <div class="row">-->
+<!--                                            --><?php
+//                                        }
+//                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+//                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+//                                        if (!file_exists($image_path)) {
+//                                            $image = '//placehold.it/330x200';
+//                                        }
+//                                        ?>
+<!--                                        <div class="col-md-12">-->
+<!--                                            <div class="whats-new-box">-->
+<!--                                                <div class="wn-box-icon">-->
+<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
+<!--                                                        <img src="--><?//= $image; ?><!--" alt="--><?//= $post['title']; ?><!--"/>-->
+<!--                                                    </a>-->
+<!--                                                </div>-->
+<!--                                                <div class="wn-box-details">-->
+<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
+<!--                                                        <div class="wn-box-title">-->
+<!--                                                            --><?//= $post['title']; ?>
+<!--                                                        </div>-->
+<!--                                                    </a>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        --><?php
+//                                        if ($new_row) {
+//                                            ?>
+<!--                                            </div>-->
+<!--                                            --><?php
+//                                        }
+//                                        $i++;
+//                                    }
+//                                }
+//                                ?>
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12">-->
+<!--                                <div class="info-btn">-->
+<!--                                    <a href="--><?//= Url::to('/blog/category/infographics'); ?><!--" target="_blank">-->
+<!--                                        View All-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="col-md-12 row">
                     <div class="articles">
                         <div class="row">
