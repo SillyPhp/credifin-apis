@@ -135,6 +135,7 @@ $this->registerCss('
     padding: 5px 10px;
     color: #fff;    
     flex-wrap: wrap;
+    font-family:roboto;
 }
 table { 
     width: 100%; 
@@ -159,7 +160,7 @@ td, th {
     border-right: 1px solid #f1f1f1; 
     text-align: center;
     height: 70px;
-    
+    font-family:roboto;
 }
 td p{
     margin-bottom: 0px !important;
