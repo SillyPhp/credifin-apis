@@ -177,13 +177,13 @@ img + div{
         </div>
         <div class="reviews">
             <div class="mb3">
-                <img src="<?= Url::to('@commonAssets/email_service/thank-you/review-icon.png', true)?>">
+                <img src="<?= Url::to('@commonAssets/email_service/thank-you/edu-icon.png', true)?>">
             </div>
-            <div>Give your <span class="text-bold">review</span>, it might help someone!</div>
+            <div>Through <span class="text-bold">MyECampus</span>, you can get the following benefits-</div>
             <ul>
-                <li>Post reviews about any firm or company.</li>
-                <li>Also, give reviews on educational institutes.</li>
-                <li>Also, see other people’s reviews.</li>
+                <li>Enhance your skills and stand out of the crowd with <span class="text-bold">SkillUp</span>.</li>
+                <li>Falling short of funds!! Get <span class="text-bold">Education Loan</span> at Low Interest Rates.</li>
+                <li>Get the benefits of online seminars and presentations with our <span class="text-bold">Webinar feature</span>.</li>
             </ul>
         </div>
     </div>
