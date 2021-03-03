@@ -378,32 +378,56 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <ul>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
+                                            </span>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                                            </span>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                                            </span>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                                            </span>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                                            </span>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="lender-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span class="li-text">+10 More</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -502,13 +526,14 @@ border: 1px solid #ddd !important;
 }
 .cl-icon ul li img{
     max-width: 80px;
-    max-height: 80px;
+    max-height: 60px;
 }
 .lender-icon{
     display: flex;
     height: 100%;
     align-items: center;
     justify-content: center;
+    font-size: 16px;
 }
 .form-start{
     max-width:400px;
@@ -543,7 +568,7 @@ border: 1px solid #ddd !important;
     color: #fff;
 }
 .max-300{
-    max-width:400px;
+    max-width:auto;
     margin:0 auto;
 }
 .sign-up-details {

@@ -255,7 +255,7 @@ if(!Yii::$app->user->isGuest){
 }
 $this->registerCss('
 .college-header {
-	background-image: url("/assets/themes/ey/images/pages/college-new-module/lpu.jpg");
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -311,6 +311,8 @@ $this->registerCss('
     background-color:#fff;
     padding:0 50px;
     margin-bottom:35px;
+    box-shadow:0 0 10px rgba(139,139,139,.1);
+    box-shadow:0 0 10px rgba(139,139,139,.1);
 }
 #tile-1 .tab-pane
 {
@@ -617,18 +619,10 @@ function collegeInfo(res) {
                     </div>`;
             return collegeInfo;
 }
-
-
 JS;
 $this->registerJs($script);
 ?>
 <script>
-    window.addEventListener('unload', function (event){
-        var currentUrl = window.location.href;
-        console.log(currentUrl);
-        console.log('1');
-    });
-    console.log('2');
     function showJobsSidebar() {
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');
@@ -639,5 +633,4 @@ $this->registerJs($script);
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
-
 </script>

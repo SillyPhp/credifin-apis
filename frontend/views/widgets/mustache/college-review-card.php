@@ -142,6 +142,65 @@
     </div>
     {{/.}}
 </script>
+    <input type="hidden" name="review_enc_id" id="review_enc_id">
+    <div id="report" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Reason for reporting?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group form-md-radios">
+                        <label></label>
+                        <form id="report_form">
+                            <div class="md-radio-list">
+                                <div class="md-radio">
+                                    <input type="radio" id="radio1" name="reporting_radio" value="1"
+                                           class="md-radiobtn">
+                                    <label for="radio1">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains hateful, violent, or inappropriate content </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio2" name="reporting_radio" value="2"
+                                           class="md-radiobtn">
+                                    <label for="radio2">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains advertising or spam</label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio3" name="reporting_radio" value="3"
+                                           class="md-radiobtn">
+                                    <label for="radio3">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> Off-topic </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio4" name="reporting_radio" value="4"
+                                           class="md-radiobtn">
+                                    <label for="radio4">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains conflicts of interest </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $this->registerCSS('
 .ur-bg {
@@ -154,6 +213,72 @@ $this->registerCSS('
 }
 .light-bg {
     background: #f4f4f4 !important;
+}
+.md-radio {
+  position: relative;
+}
+.md-radio input[type=radio] {
+    visibility: hidden;
+    position: absolute; 
+}
+.md-radio label {
+    cursor: pointer;
+    padding-left: 30px; 
+}
+.md-radio label > span {
+    display: block;
+    position: absolute;
+    left: 0;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    transition-duration: 0.3s; 
+}
+.md-radio label > span.inc {
+    background: #fff;
+    left: -20px;
+    top: -20px;
+    height: 60px;
+    width: 60px;
+    opacity: 0;
+    border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -webkit-border-radius: 50% !important; 
+}
+.md-radio label > .box {
+    top: 0px;
+    border: 2px solid #666;
+    height: 20px;
+    width: 20px;
+    border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    z-index: 5;
+ }
+.md-radio label > .check {
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background: #36c6d3;
+    opacity: 0;
+    z-index: 6;
+    border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    transform: scale(0); 
+}
+.md-radio label > span.inc {
+    -webkit-animation: growCircleRadio 0.3s ease;
+    -moz-animation: growCircleRadio 0.3s ease;
+    animation: growCircleRadio 0.3s ease; 
+}
+.md-radio input[type=radio]:checked ~ label > .check {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    transform: scale(1); 
 }
 ');
 

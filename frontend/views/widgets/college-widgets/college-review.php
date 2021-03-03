@@ -396,8 +396,8 @@ $this->registerCSS('
 ');
 $script = <<<JS
 var user_id = '$user_id';
-console.log(user_id);
 var baseUrl = '';
+
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
@@ -424,7 +424,6 @@ function getUserReviews(limit=3, page=null){
         method: 'POST',
         data: {org_enc_id:org_enc_id, limit:limit, page:page},
         success: function (res){
-            console.log(res);
             var reviews_data = $('#organization-reviews').html();
             $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
@@ -443,6 +442,7 @@ function getUserReviews(limit=3, page=null){
     })
 }
 getUserReviews();
+
 $(document).on('click','#load_more_btn',function(e){
     e.preventDefault();
     page = page + 1;
@@ -560,6 +560,30 @@ $(document).on('click','.btn_usefull',function() {
     },
   })
 });
+$(document).on('click','input[name="reporting_radio"]',function() {
+  var r_id = $('#review_enc_id').val();
+  var id = $(this).val();
+    $.ajax({
+        url:baseUrl+'/api/v3/ey-college-profile/report',
+        data:{review_enc_id:r_id, value:id, user_enc_id: user_id},                         
+        method: 'post',
+        success:function(response){  
+           if (response.response.status == 200)
+               {
+                   toastr.success(response.message, 'Review Reported');
+               }
+           else 
+               {
+                   toastr.error(response.message, 'Something went wrong');
+               }
+            $('#report').modal('toggle');
+           $("#report_form").trigger("reset");
+        }
+    });
+})
+$(document).on('click','#report_btn',function() {
+  $('#review_enc_id').val($(this).attr('data-key'));
+})
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
