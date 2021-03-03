@@ -63,7 +63,6 @@ class JobApply extends Model
                         $locModel->city_enc_id = $location;
                         $locModel->created_on = date('Y-m-d h:i:s');
                         $locModel->created_by = $user->user_enc_id;
-                        $user_enc_id = $user->user_enc_id;
                         if (!$locModel->save()) {
                             $transaction->rollBack();
                             print_r($locModel->getErrors());
@@ -75,7 +74,7 @@ class JobApply extends Model
                 $status = [
                     'applied_application_enc_id' => $appliedModel->applied_application_enc_id,
                 ];
-                if ($this->save_process($id, $app_id, $user_enc_id)) {
+                if ($this->save_process($id, $app_id, $user->user_enc_id)) {
                     $transaction->commit();
                     return $status;
                 } else {
