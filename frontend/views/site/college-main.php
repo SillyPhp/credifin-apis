@@ -68,7 +68,7 @@ use yii\helpers\Url;
                                     Loans
                                 </a>
                             </li>
-                            <li class="nav-item loans" data-toggle="tab">
+                            <li class="nav-item reviews" data-toggle="tab">
                                 <a class="nav-link" href="#reviews" data-key="getReviews" role="tab"
                                    data-toggle="tab">
                                     Reviews
@@ -249,6 +249,10 @@ use yii\helpers\Url;
         </div>
     </section>
 <?php
+$user_id = '';
+if(!Yii::$app->user->isGuest){
+    $user_id = Yii::$app->user->identity->user_enc_id;
+}
 $this->registerCss('
 .college-header {
 	background-image: url("/assets/themes/ey/images/pages/college-new-module/lpu.jpg");
@@ -455,6 +459,7 @@ body{
 }
 ');
 $script = <<<JS
+var user_id = '$user_id';
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
   $('.tab-content').css('height',mainHeight);
@@ -495,6 +500,7 @@ $("#tile-1 ul > li > a").on('click', function(event) {
     } 
   });
 var loadedData = [];
+var Hpoints;
 $(document).on('click','.getDataList > li > a', function(e) {
     var key = $(this).attr('data-key');
     var elem = $(this).attr('href');
@@ -511,11 +517,16 @@ $(document).on('click','.getDataList > li > a', function(e) {
             complete: function() {
                 loadedData.push(key);
                 window.history.pushState({},"", window_url);
-                // if(elem != '#gallery'){
-                //     initializePosSticky();
-                // } else {
+                if(elem != '#gallery'){
+                    setTimeout(function (){
+                        if(elem == '#overview' && Hpoints != '' && $('.h-points').children().length < 1) {
+                            $('.h-points').append(Hpoints);
+                        }
+                        initializePosSticky();
+                    },800)
+                } else {
                     $('.tab-content').css('height','auto');
-                // }
+                }
             },
             error: function(xhr, textStatus, errorThrown){
                
@@ -533,7 +544,7 @@ $(document).on('click','.getDataList > li > a', function(e) {
 });
 
 if($(window.location.hash).length){
-    $('#getDataList .nav-item').removeClass('active');
+    $('#hamburgerJobs .nav-item').removeClass('active');
     var nav_item_id = '.' + $(window.location.hash).attr('id');
     $(nav_item_id).addClass('active');
     $(nav_item_id + ' a').trigger('click');
@@ -547,18 +558,19 @@ if($(window.location.hash).length){
     },500)
 }
 
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getDetails(){
     var slug = 'erexxtesting';
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
         method: 'POST',
+        async:false,
         data: {slug:slug},
         success: function (res){
             if(res.response.status == 200){
                 var response = res.response.data;
                 let collegeDet = collegeInfo(res);
-                let Hpoints = overviewTemp(res);
+                Hpoints = overviewTemp(res);
                 $('.college-main').append(collegeDet);
                 setTimeout(function (){
                     $('.h-points').append(Hpoints);

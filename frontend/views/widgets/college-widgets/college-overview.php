@@ -473,7 +473,7 @@ $(document).on('click','.view-btn',function(e) {
   },700);
 });
 
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getCourses() {
   var slug = 'erexxtesting';
   $.ajax({

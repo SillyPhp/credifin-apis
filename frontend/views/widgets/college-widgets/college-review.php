@@ -8,7 +8,7 @@
                 <div class="set-sticky">
                     <h1 class="heading-style">Reviews </h1>
                     <div id="org-reviews"></div>
-                    <div class="col-md-offset-2 load-more-bttn">
+                    <div class="load-more-bttn">
                         <button type="button" id="load_more_btn">Load More</button>
                     </div>
                 </div>
@@ -26,6 +26,10 @@
 </section>
 <?php
 echo $this->render('/widgets/mustache/college-review-card');
+$user_id = '';
+if(!Yii::$app->user->isGuest){
+    $user_id = Yii::$app->user->identity->user_enc_id;
+}
 $this->registerCSS('
 .m0, section > .container, section > .container-fluid{
     padding-top: 0px !important;
@@ -267,24 +271,6 @@ $this->registerCSS('
     background:#ff7803;
     color:#fff;
 }
-
-@media screen and (max-width: 768px){
-    .user-rating{
-        display: block !important;
-        justify-content: normal !important;
-    }
-    .ur-bg{
-        display: inline-block;
-        margin-bottom: 5px;
-    }
-    .refirst {
-        border-bottom: 2px solid #ccc;
-        margin-bottom: 20px !important;
-    }
-    .user-review-main {
-        border-left: 0px;
-    }
-}
 .usefull_btn_color{
     color: #00a0e3 !important;
     border-color: #00a0e3 !important;
@@ -360,6 +346,9 @@ $this->registerCSS('
 .fourstar-box i.active {
     color: #fa8f01;
 }
+.load-more-bttn{
+    text-align: center;
+}
 .filter-bttn button, .load-more-bttn button {
     background: #00a0e3;
     border: 1px solid #00a0e3;
@@ -373,9 +362,42 @@ $this->registerCSS('
     -moz-transition: .3s all;
     -o-transition: .3s all;
 }
+@media screen and (max-width: 1200px){
+    .rs-main{
+        margin: auto;
+    }
+    .re-heading, .rs1, .review-summary {
+        text-align: center;
+    }
+    .review-summary{
+        padding-left: 0px;
+    }
+    .summary-box {
+        justify-content: center;    
+    }
+}
+@media screen and (max-width: 768px){
+    .user-rating{
+        display: block !important;
+        justify-content: normal !important;
+    }
+    .ur-bg{
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+    .refirst {
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px !important;
+    }
+    .user-review-main {
+        border-left: 0px;
+    }
+} 
 ');
 $script = <<<JS
-var baseUrl = 'https://ravinder.eygb.me';
+var user_id = '$user_id';
+console.log(user_id);
+var baseUrl = '';
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
@@ -393,12 +415,14 @@ function getReviews(){
     })
 }
 getReviews();
-function getUserReviews(){
+var count = 0;
+var page = 1;
+function getUserReviews(limit=3, page=null){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page},
         success: function (res){
             console.log(res);
             var reviews_data = $('#organization-reviews').html();
@@ -411,10 +435,19 @@ function getUserReviews(){
                     return $(this).attr('data-score');
                 }
             });
+            if(res.response.data.reviews.length+count == res.response.data.count){
+                $('#load_more_btn').hide()  
+            }
+            count = count+limit;
         }
     })
 }
 getUserReviews();
+$(document).on('click','#load_more_btn',function(e){
+    e.preventDefault();
+    page = page + 1;
+    getUserReviews(limit=3, page=page)
+});
 function reviewStats(overall_rating){
     let reviewStat = ` <div class="row">
         <div class="col-md-12 col-sm-4">
@@ -497,11 +530,40 @@ function showStars(count){
         stars += `<i class="fas fa-star `+ ((count < i) ? '' : 'active') +`"></i>`;
     }
     return stars;
-    
 }
-
+$(document).on('click','.btn_usefull',function() {
+  var id = $(this).attr('value');
+  var r_id = $(this).attr('data-key');
+  if (id=='one'){
+      if ($(this).hasClass('usefull_btn_color'))
+          {
+              return false;
+          }
+      $(this).addClass('usefull_btn_color');
+      $(this).closest('.usefull-bttn').find('.notuse-bttn button').removeClass('notusefull_btn_color');
+  }
+  else if(id=='zero'){
+      if ($(this).hasClass('notusefull_btn_color'))
+          {
+              return false;
+          }
+      $(this).addClass('notusefull_btn_color');
+      $(this).closest('.usefull-bttn').find('.use-bttn button').removeClass('usefull_btn_color');
+  }
+  $.ajax({
+    url: baseUrl+'/api/v3/ey-college-profile/like-dislike',
+    method: 'POST',
+    data: {review_enc_id:r_id, user_enc_id: user_id, value: id}, 
+    success: function (res){
+         // if (res.response.status==200){
+        // }
+    },
+  })
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

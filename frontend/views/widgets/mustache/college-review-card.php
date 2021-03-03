@@ -106,24 +106,24 @@
                     <div class="usefull-bttn pull-right">
                         <div class="use-bttn">
                             {{#feedback_type}}
-                                <button type="button" class="btn_usefull usefull_btn_color" data-key="{{review_enc_id}}" value="1"><i
+                                <button type="button" class="btn_usefull usefull_btn_color" data-key="{{review_enc_id}}" value="one"><i
                                         class="fas fa-thumbs-up"></i> Usefull
                             </button>
                             {{/feedback_type}}
                             {{^feedback_type}}
-                            <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
+                            <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="one"><i
                                         class="fas fa-thumbs-up"></i> Usefull
                             </button>
                             {{/feedback_type}}
                         </div>
                         <div class="notuse-bttn">
                             {{#feedback_type_not}}
-                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="0"><i
+                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="zero"><i
                                         class="fas fa-thumbs-down"></i> Not Usefull
                                 </button>
                             {{/feedback_type_not}}
                             {{^feedback_type_not}}
-                            <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
+                            <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="zero"><i
                                         class="fas fa-thumbs-down"></i> Not Usefull
                                 </button>
                             {{/feedback_type_not}}
