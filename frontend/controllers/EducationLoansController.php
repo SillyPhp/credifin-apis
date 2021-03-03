@@ -224,7 +224,7 @@ class EducationLoansController extends Controller
             'model' => $model
         ]);
     }
-    public function actionRefinancingEducationLoan(){
+    public function actionRefinance(){
         $model = new AdmissionForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
