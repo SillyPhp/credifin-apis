@@ -19,6 +19,8 @@ use common\models\Organizations;
 use common\models\Skills;
 use common\models\States;
 use common\models\UnclaimedOrganizations;
+use common\models\UserPreferences;
+use frontend\models\profiles\ResumeData;
 use Yii;
 use yii\helpers\Url;
 use yii\db\Expression;
@@ -32,8 +34,138 @@ class Cards
         return self::_getCardsFromJobs($options);
     }
 
+    public static function getPreference($type, $user_id)
+    {
+        if ($user_id) {
+            $p = UserPreferences::find()
+                ->alias('a')
+                ->select([
+                    'a.preference_enc_id',
+                    'a.type',
+                    'a.assigned_to',
+                    'a.timings_from',
+                    'a.timings_to',
+                    'a.salary',
+                    'a.min_expected_salary',
+                    'a.max_expected_salary',
+                    'a.experience',
+                    'a.working_days',
+                    'c1.slug industry_slug',
+                ])
+                ->innerJoinWith(['userPreferredJobProfiles b' => function ($b) {
+                    $b->select(['b.preference_enc_id', 'b.job_profile_enc_id', 'b1.category_enc_id', 'b1.name']);
+                    $b->joinWith(['jobProfileEnc b1'], false);
+                    $b->andWhere(['b.is_deleted' => 0]);
+                }])
+                ->innerJoinWith(['userPreferredIndustries c' => function ($c) {
+                    $c->select(['c.preference_enc_id', 'c.industry_enc_id', 'c1.industry']);
+                    $c->joinWith(['industryEnc c1'], false);
+                    $c->andWhere(['c.is_deleted' => 0]);
+                }])
+                ->innerJoinWith(['userPreferredSkills d' => function ($d) {
+                    $d->select(['d.preference_enc_id', 'd.preferred_skill_enc_id', 'd1.skill_enc_id', 'd1.skill']);
+                    $d->joinWith(['skillEnc d1'], false);
+                    $d->andWhere(['d.is_deleted' => 0]);
+                }])
+                ->innerJoinWith(['userPreferredLocations e' => function ($e) {
+                    $e->select(['e.preference_enc_id', 'e.city_enc_id', 'e1.name city_name', 'e2.name state_name', 'e3.name country_name']);
+                    $e->joinWith(['cityEnc e1' => function ($e1) {
+                        $e1->joinWith(['stateEnc e2' => function ($e2) {
+                            $e2->joinWith(['countryEnc e3']);
+                        }]);
+                    }], false);
+                    $e->andWhere(['e.is_deleted' => 0]);
+                }])
+                ->andWhere(['a.is_deleted' => 0, 'a.created_by' => $user_id, 'a.assigned_to' => $type])
+                ->asArray()
+                ->one();
+            $skills = [];
+            $locations = [];
+            $profiles = [];
+            $industries = [];
+            foreach ($p['userPreferredIndustries'] as $inds) {
+                array_push($industries, $inds['industry']);
+            }
+            foreach ($p['userPreferredJobProfiles'] as $prof) {
+                array_push($profiles, $prof['name']);
+            }
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
+            foreach ($p['userPreferredLocations'] as $l) {
+                $loc = $l['city_name'] . ", " . $l['state_name'] . ", " . $l['country_name'];
+                array_push($locations, $loc);
+            }
+            return [
+                'profiles' => array_unique($profiles),
+                'industries' => array_unique($industries),
+                'skills' => array_unique($skills),
+                'locations' => array_unique($locations),
+                'working_days' => $p['working_days'],
+                'experience' => $p['experience'],
+                'min_expected_salary' => $p['min_expected_salary'],
+                'max_expected_salary' => $p['max_expected_salary'],
+                'timings_from' => $p['timings_from'],
+                'timings_to' => $p['timings_to'],
+                'salary' => $p['salary'],
+                'work_type' => $p['type'],
+            ];
+        }
+    }
+
     private static function _getCardsFromJobs($options)
     {
+
+        $locations = [];
+        $resumeSkills = [];
+        $jobTitles = [];
+        if (!empty($options['location'])) {
+            $optLocations = explode(", ", $options['location']);
+            foreach ($optLocations as $loc) {
+                array_push($locations, $loc);
+            }
+        }
+        if (isset($options['user_id']) && $options['user_id']) {
+            $userId = $options['user_id'];
+            $resumeModel = new ResumeData();
+            $resumeData = $resumeModel->getResumeData($userId);
+            $job_preference = self::getPreference('Jobs', $userId);
+
+            if (!empty($job_preference) || !empty($resumeData)) {
+                if (!empty($job_preference['locations'])) {
+                    foreach ($job_preference['locations'] as $loc) {
+                        $expLoc = explode(", ", $loc);
+                        foreach ($expLoc as $el) {
+                            array_push($locations, $el);
+                        }
+                    }
+                }
+                if (!empty($resumeData['userSkills'])) {
+                    $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
+                }
+                if (!empty($resumeData['userWorkExperiences'])) {
+                    foreach ($resumeData['userWorkExperiences'] as $exp) {
+                        array_push($jobTitles, $exp['title']);
+                        array_push($locations, $exp['city'], $exp['state'], $exp['country']);
+                    }
+                }
+
+                $locations = array_unique($locations);
+                $profiles = $job_preference['profiles'];
+                $industries = $job_preference['industries'];
+                $skills = array_unique(array_merge($job_preference['skills'], $resumeSkills));
+                $working_days = $job_preference['working_days'];
+                $experience = $job_preference['experience'];
+                $min_expected_salary = $job_preference['min_expected_salary'];
+                $max_expected_salary = $job_preference['max_expected_salary'];
+                $timings_from = $job_preference['timings_from'];
+                $timings_to = $job_preference['timings_to'];
+                $salary = $job_preference['salary'];
+                $work_type = $job_preference['work_type'];
+
+            }
+        }
+        $optLocation = $options['location'];
 
         $cards1 = (new \yii\db\Query())
             ->distinct()
