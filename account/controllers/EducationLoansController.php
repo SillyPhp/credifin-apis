@@ -103,7 +103,7 @@ class EducationLoansController extends Controller
             ->where(['z.organization_enc_id' => $org_id])
             ->asArray()
             ->one();
-        if ($organization['selectedServices'] && !$organization['selectedServices'][0]['is_selected']) {
+        if (empty($organization['selectedServices']) && !$organization['selectedServices'][0]['is_selected']) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
