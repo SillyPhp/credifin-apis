@@ -529,6 +529,8 @@ class SkillUpController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
+            $college_id = $this->__studentCollegeId();
+
             $detail = SkillsUpPosts::find()
                 ->alias('a')
                 ->select(['a.post_enc_id',
@@ -552,6 +554,14 @@ class SkillUpController extends ApiBaseController
                         $c1->onCondition(['c1.is_deleted' => 0, 'c1.status' => 'Publish']);
                     }], false);
                 }])
+                ->joinWith(['skillsUpRecommendedPosts dd' => function ($d) use ($college_id) {
+                    $d->joinWith(['recommendedBy d11' => function ($b) use ($college_id) {
+                        $b->joinWith(['teachers d2' => function ($d2) use ($college_id) {
+                            $d2->onCondition(['d2.college_enc_id' => $college_id]);
+                        }]);
+                    }]);
+                    $d->onCondition(['dd.is_deleted' => 0]);
+                }], true)
                 ->joinWith(['skillsUpPostAssignedIndustries d' => function ($d) {
                     $d->select(['d.assigned_industry_enc_id', 'd.industry_enc_id', 'd1.industry']);
                     $d->joinWith(['industryEnc d1']);
@@ -628,10 +638,13 @@ class SkillUpController extends ApiBaseController
                 $params['related'] = true;
                 $params['related_post_id'] = $detail['post_enc_id'];
                 $related_post = $this->feeds(1, 5, $params);
-                $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']);
+                $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']) ? $this->getLikes($detail['post_enc_id']) : 0;
                 $rec = $this->__getStudentRecommended($detail['post_enc_id']);
                 $detail['is_recommended'] = (count($rec) > 0) ? true : false;
                 $detail['teacher_recommended'] = $this->__getTeacherRecommended($detail['post_enc_id']);
+
+                $detail['recommended_count'] = count($rec);
+                $detail['recommended_by'] = $rec;
 
                 unset($detail['skillsUpPostAssignedVideos']);
                 unset($detail['skillsUpPostAssignedEmbeds']);

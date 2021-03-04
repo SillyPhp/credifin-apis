@@ -369,14 +369,68 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                         <div class="max-300">
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
-                                <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
                                 <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
                                     the students in a particular <span>academic year</span>.</li>
                                 <li>- Loan will be <span>repaid</span> with in the semester</li>
                             </ul>
                             <div class="cl-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
-                                     alt="">
+                                <p>Our Lenders</p>
+                                <ul>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span class="li-text">+10 More</span>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -390,7 +444,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
 <?php
 $this->registerCss('
 #loadBtn{
-display:none;
+    display:none;
 }
 
 .padd-20{
@@ -451,9 +505,35 @@ border: 1px solid #ddd !important;
     display:inline-block;
     padding-right:15px;
 }
-.cl-icon img{
-    margin-top: 30px;
-    max-height: 300px;
+.cl-icon{
+    margin-top: 20px;
+}
+.cl-icon p{
+    color:#fff;
+    font-size:20px;
+    padding-top:10px;
+    font-weight:bold;
+    padding-bottom:10px;
+}
+.cl-icon ul li{
+    display: inline-grid;
+    background: #fff;
+    height: 100px;
+    width: 100px; 
+    border-radius: 10px; 
+    margin:0 5px 15px;
+    box-shadow: 0 0 10px rgba(149,139,139, .3);
+}
+.cl-icon ul li img{
+    max-width: 80px;
+    max-height: 60px;
+}
+.lender-icon{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
 }
 .form-start{
     max-width:400px;
@@ -488,7 +568,7 @@ border: 1px solid #ddd !important;
     color: #fff;
 }
 .max-300{
-    max-width:350px;
+    max-width:auto;
     margin:0 auto;
 }
 .sign-up-details {
@@ -545,7 +625,7 @@ border: 1px solid #ddd !important;
 .cl-heading{
     color:#fff;
     font-size:20px;
-    padding-top:30px;
+//    padding-top:30px;
     font-weight:bold;
 }
 .footer{

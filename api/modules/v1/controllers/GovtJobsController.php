@@ -341,7 +341,7 @@ class GovtJobsController extends ApiBaseController
         $search_pattern = $this->makeSQL_search_pattern($search);
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['job_id id', 'c.slug company_slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -355,7 +355,7 @@ class GovtJobsController extends ApiBaseController
             }], false, 'LEFT JOIN')
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-            ->orderBy(['job_id' => SORT_DESC])
+            ->orderBy(['a.job_id' => SORT_DESC])
             ->asArray()
             ->all();
 

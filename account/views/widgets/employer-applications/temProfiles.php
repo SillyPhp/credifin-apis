@@ -449,7 +449,7 @@ $script = <<< JS
            $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
        }else {
            $('#choose_temp').hide();
-           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile, <button class="tab_key_continue btn btn-default">Continue</button> Creating Job With Your Current Selected Profile</h3></div>')
+           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile,<br> Creating Job With Your Current Selected Profile</h3><button class="tab_key_continue btn btn-default">Continue</button></div>')
        }
      }
    })

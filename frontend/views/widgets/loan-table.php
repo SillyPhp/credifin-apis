@@ -135,6 +135,7 @@ $this->registerCss('
     padding: 5px 10px;
     color: #fff;    
     flex-wrap: wrap;
+    font-family:roboto;
 }
 table { 
     width: 100%; 
@@ -159,7 +160,7 @@ td, th {
     border-right: 1px solid #f1f1f1; 
     text-align: center;
     height: 70px;
-    
+    font-family:roboto;
 }
 td p{
     margin-bottom: 0px !important;
@@ -178,75 +179,71 @@ td p{
 }
 
 @media only screen and (max-width: 767px) {
-.loan-table{
-    overflow: hidden;
-}
-.h-point1 {
-    width: 50%;
-}
-.course-box{
-    width:100%;
-}
-.course-box:nth-child(3n+0){
-    margin-right:1%;
-}
-.loanProviderIcon{
-    float: right;
-    margin: unset;
-}
-table, thead, tbody, th, td, tr { 
-    display: block; 
-}
-	
-/* Hide table headers (but not display: none;, for accessibility) */
-thead tr { 
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-}
-
-tr {
-    border: 1px solid #ccc; 
-    margin-bottom: 10px;
-}
-
-td { 
-    /* Behave  like a "row" */
-    border: none;
-    border-bottom: 1px solid #eee; 
-    position: relative;
-    padding-left: 50% !important;
-    min-height: 70px;
-    height: auto; 
-}
-td:last-child{
-    border-bottom: none;
-}
-td:before { 
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 3px;
-    width: 45%; 
-    padding-right: 10px;
-}
-
-td:nth-of-type(1):before { 
-    content: "Bank/Financier"; 
-}
-td:nth-of-type(2):before { 
-    content: "ROI"; 
-}
-td:nth-of-type(3):before { 
-    content: "Loan Amount Available"; 
-}
-td:nth-of-type(4):before { 
-    content: "Collateral"; 
-}
-td:nth-of-type(5):before { 
-    content: "Processing Fees"; 
-}
-
+    .loan-table{
+        overflow: hidden;
+    }
+    .h-point1 {
+        width: 50%;
+    }
+    .course-box{
+        width:100%;
+    }
+    .course-box:nth-child(3n+0){
+        margin-right:1%;
+    }
+    .loanProviderIcon{
+        float: right;
+        margin: unset;
+    }
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+        
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    tr {
+        border: 1px solid #ccc; 
+        margin-bottom: 10px;
+    }
+    td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50% !important;
+        min-height: 70px;
+        height: auto; 
+    }
+    td:last-child{
+        border-bottom: none;
+    }
+    td:before { 
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 3px;
+        width: 45%; 
+        padding-right: 10px;
+    }
+    td:nth-of-type(1):before { 
+        content: "Bank/Financier"; 
+    }
+    td:nth-of-type(2):before { 
+        content: "ROI"; 
+    }
+    td:nth-of-type(3):before { 
+        content: "Loan Amount Available"; 
+    }
+    td:nth-of-type(4):before { 
+        content: "Collateral"; 
+    }
+    td:nth-of-type(5):before { 
+        content: "Processing Fees"; 
+    }
 }
 ')
 ?>

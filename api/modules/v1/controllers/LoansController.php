@@ -271,6 +271,11 @@ class LoansController extends ApiBaseController
             ->all();
 
         if ($loans) {
+
+            foreach ($loans as $k => $v) {
+                $loans[$k]['payment_status'] = ucwords($v['payment_status']);
+            }
+
             $d["name"] = "Empower Youth";
             $d["description"] = "Application Processing Fee";
             $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
@@ -391,6 +396,7 @@ class LoansController extends ApiBaseController
 
             $loan['course_name'] = $course_name;
             $loan['college_name'] = $college_name;
+            $loan['payment_status'] = ucwords($loan['payment_status']);
             $d["name"] = "Empower Youth";
             $d["description"] = "Application Processing Fee";
             $d["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');

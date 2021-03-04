@@ -27,7 +27,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
             <div class="organization-details">
                 <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><a href="<?= $website; ?>"><?= $website; ?></a></p>
+                    <a href="<?= $website ?>">
+                        <i class="fas fa-unlink"> Visit on Website</i>
+                    </a>
                 <?php endif; ?>
             </div>
         </div>
@@ -275,6 +277,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -338,14 +341,14 @@ $this->registerCss('
     padding-bottom: 50px;
 }
 #logo_img {
-    width: 115px !Important;
-    height: 115px !Important;
+    width: 85px !Important;
+    height: 100px !Important;
 }
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -353,9 +356,9 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px 0;
+    padding:5px;
     width: 42%;
-    font-size: 14px;
+    font-size: 12px;
     font-family: roboto;
     border-radius: 2px;
     color: #333;
