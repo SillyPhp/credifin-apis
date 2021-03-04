@@ -160,4 +160,18 @@ class NotificationEmails extends Component
             return false;
         }
     }
+
+    public function educationLoanThankYou($params){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose(
+            ['html' => 'education-loan-thanks'],['data'=>$params]
+            )
+            //->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setFrom(['info@empoweryouth.com' => 'Empower Youth'])
+            ->setTo([$params['email'] => $params['name']])
+            ->setSubject('Congratulations! Your Application Has Been Received');
+        if ($mail->send()) {
+            return true;
+        }
+    }
 }
