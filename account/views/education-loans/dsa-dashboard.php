@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use borales\extensions\phoneInput\PhoneInput;
 
 $filters = [];
 if (isset($_GET['filter'])) {
@@ -16,10 +17,10 @@ if (isset($_GET['filter'])) {
             'id' => 'stat-container',
         ]);
     ?>
-    <div class="col-md-12">
+    <div class="col-md-9">
         <div class="widget-row">
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=0" data-pjax = "0">
+                <a href="/account/education-loans/dsa-dashboard?filter=0" data-pjax = "0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
                         <span class="count"><?= $stats['new_leads'] ?></span>
@@ -28,7 +29,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=all" data-pjax = "0">
+                <a href="/account/education-loans/dsa-dashboard?filter=all" data-pjax = "0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
                         <span class="count"><?= $stats['all_applications'] ?></span>
@@ -37,25 +38,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=1" data-pjax = "0">
-                    <div class="box-des box6 mt">
-                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                        <span class="count"><?= $stats['accepted'] ?></span>
-                        <span class="box-text">Accepted</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=2" data-pjax = "0">
-                    <div class="box-des box4 mt box2set">
-                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
-                        <span class="count"><?= $stats['pre_verification'] ?></span>
-                        <span class="box-text">Pre Verification</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=3" data-pjax = "0">
+                <a href="/account/education-loans/dsa-dashboard?filter=3" data-pjax = "0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
                         <span class="count"><?= $stats['under_process'] ?></span>
@@ -64,7 +47,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=4" data-pjax = "0">
+                <a href="/account/education-loans/dsa-dashboard?filter=4" data-pjax = "0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
                         <span class="count"><?= $stats['sanctioned'] ?></span>
@@ -72,14 +55,93 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dashboard?filter=5" data-pjax = "0">
-                    <div class="box-des box7 mt">
-                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                        <span class="count"><?= $stats['disbursed'] ?></span>
-                        <span class="box-text">Disbursed</span>
-                    </div>
+<!--            <div class="col-md-offset-2 col-md-4 col-sm-6">-->
+<!--                <a href="javascript:;" data-pjax = "0">-->
+<!--                    <div class="box-des box6 mt">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?><!--">-->
+<!--                        <span class="count">--><?//= "1,50000.00" ?><!--</span>-->
+<!--                        <span class="box-text">Total Sanctioned Amount</span>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 col-sm-6">-->
+<!--                <a href="javascript:;" data-pjax = "0">-->
+<!--                    <div class="box-des box4 mt box2set">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?><!--">-->
+<!--                        <span class="count">--><?//= "15,000.00" ?><!--</span>-->
+<!--                        <span class="box-text">Total Earning</span>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--            </div>-->
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="effect thurio">
+            <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip" title="This is your personalized invite link which is used to add referral leads direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
+            <div class="buttons">
+                <?php
+                $link= "https://www.empoweryouth.com/education-loans/apply?ref=" . $referrer_code;
+                ?>
+                <a href="javascript:;" class="facebook-f"
+                   onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fa fa-facebook-f"></i>
                 </a>
+                <a href="javascript:;" class="twitter-t"
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a href="javascript:;" class="linked-l"
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+                <a href="javascript:;" class="whatsapp-w"
+                   onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fa fa-whatsapp"></i>
+                </a>
+                <a href="javascript:;" class="enve-e"
+                   onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fa fa-envelope"></i>
+                </a>
+                <a href="javascript:;" class="enve-e"
+                   onclick="copyToClipboard()">
+                    <i class="fa fa-copy"></i>
+                </a>
+            </div>
+            <div class="wts-ap">
+<!--                <h3>Invite on Whatsapp via Number</h3>-->
+                <div class="col-md-12 p0 form-whats">
+                    <?php
+                    $form = ActiveForm::begin([
+                        'id' => 'whatsapp-form',
+                        'fieldConfig' => [
+                            'template' => '<div class="form-group">{input}{error}</div>',
+                            'labelOptions' => ['class' => ''],
+                        ],
+                    ]);
+                    ?>
+                    <?=
+                    $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
+                        'jsOptions' => [
+                            'allowExtensions' => false,
+                            'preferredCountries' => ['in'],
+                            'nationalMode' => false,
+                        ]
+                    ]);
+                    ?>
+                    <?php ActiveForm::end(); ?>
+                    <div class="send"><i class="fa fa-arrow-right"></i></div>
+                </div>
+            </div>
+            <div class="row m-0">
+                <div class="col-lg-12">
+<!--                    <h4 class="text-white">or</h4>-->
+                    <div class="pf-field">
+                        <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
+                               class="form-control hidden" value="<?= $link ?>" readonly>
+<!--                        <i class="far fa-copy"></i>-->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -104,10 +166,10 @@ if (isset($_GET['filter'])) {
                         'all' => 'All',
                         0 => 'New Lead',
                         1 => 'Accepted',
-                        2 => 'Pre Verification',
+//                        2 => 'Pre Verification',
                         3 => 'Under Process',
                         4 => 'Sanctioned',
-                        5 => 'Disbursed',
+//                        5 => 'Disbursed',
                         10 => 'Rejected',
                     ];
                     $jsonFilterList = json_encode($filterList);
@@ -153,31 +215,32 @@ if (isset($_GET['filter'])) {
                                             <th class="loanAction">Loan Status</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
-                                            <th class="amountReceived">Amount Received</th>
-                                            <th class="amountDue">Amount Due</th>
-                                            <th class="scholarship">Scholarship</th>
+                                            <th class="loanAmount">Lenders</th>
+<!--                                            <th class="amountReceived">Amount Received</th>-->
+<!--                                            <th class="amountDue">Amount Due</th>-->
+<!--                                            <th class="scholarship">Scholarship</th>-->
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
-                                            <th class="collegeName">College/University Name</th>
-                                            <th class="startDate">Semester</th>
-                                            <th class="endDate">Year</th>
-                                            <th class="phoneNumber">Phone Number</th>
-                                            <th class="applicantEmail">Email Address</th>
+<!--                                            <th class="collegeName">College/University Name</th>-->
+<!--                                            <th class="startDate">Semester</th>-->
+<!--                                            <th class="endDate">Year</th>-->
+<!--                                            <th class="phoneNumber">Phone Number</th>-->
+<!--                                            <th class="applicantEmail">Email Address</th>-->
                                             <th class="city">City</th>
                                             <th class="applicantGender">Gender</th>
-                                            <th class="dobwidth">DOB</th>
-                                            <th class="coApplicantWidth">Co-Applicant</th>
-                                            <th class="coName">Co-Applicant's Name</th>
-                                            <th class="coEmployment">Co-Applicant's employment type</th>
-                                            <th class="coAnnual">Co-Applicant's Annual Income</th>
-                                            <th class="coApplicantWidth">2nd Co-Applicant</th>
-                                            <th class="coName">2nd Co-Applicant's Name</th>
-                                            <th class="coEmployment">2nd Co-Applicant's employment type</th>
-                                            <th class="coAnnual">2nd Co-Applicant's Annual Income</th>
-                                            <th class="coApplicantWidth">3rd Co-Applicant</th>
-                                            <th class="coName">3rd Co-Applicant's Name</th>
-                                            <th class="coEmployment">3rd Co-Applicant's employment type</th>
-                                            <th class="coAnnual">3rd Co-Applicant's Annual Income</th>
+<!--                                            <th class="dobwidth">DOB</th>-->
+<!--                                            <th class="coApplicantWidth">Co-Applicant</th>-->
+<!--                                            <th class="coName">Co-Applicant's Name</th>-->
+<!--                                            <th class="coEmployment">Co-Applicant's employment type</th>-->
+<!--                                            <th class="coAnnual">Co-Applicant's Annual Income</th>-->
+<!--                                            <th class="coApplicantWidth">2nd Co-Applicant</th>-->
+<!--                                            <th class="coName">2nd Co-Applicant's Name</th>-->
+<!--                                            <th class="coEmployment">2nd Co-Applicant's employment type</th>-->
+<!--                                            <th class="coAnnual">2nd Co-Applicant's Annual Income</th>-->
+<!--                                            <th class="coApplicantWidth">3rd Co-Applicant</th>-->
+<!--                                            <th class="coName">3rd Co-Applicant's Name</th>-->
+<!--                                            <th class="coEmployment">3rd Co-Applicant's employment type</th>-->
+<!--                                            <th class="coAnnual">3rd Co-Applicant's Annual Income</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -186,10 +249,10 @@ if (isset($_GET['filter'])) {
                                             $dropDowns = [
                                                 0 => 'New Lead',
                                                 1 => 'Accepted',
-                                                2 => 'Pre Verification',
+//                                                2 => 'Pre Verification',
                                                 3 => 'Under Process',
                                                 4 => 'Sanctioned',
-                                                5 => 'Disbursed',
+//                                                5 => 'Disbursed',
                                                 10 => 'Reject',
                                             ];
                                             foreach ($loans as $loan) {
@@ -197,7 +260,7 @@ if (isset($_GET['filter'])) {
                                                 <tr>
                                                     <td><?= date('d M Y', strtotime($loan['apply_date'])) ?></td>
                                                     <td class="actionColoum">
-                                                        
+
                                                         <span class="currentState"><?= $loan['loan_status'] ?></span>
                                                         <button class="viewStatus"
                                                                 style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
@@ -211,31 +274,32 @@ if (isset($_GET['filter'])) {
                                                     </td>
                                                     <td><?= $loan['applicant_name'] ?></td>
                                                     <td><?= $loan['amount'] ?></td>
-                                                    <td><?= $loan['amount_received'] ?></td>
-                                                    <td><?= $loan['amount_due'] ?></td>
-                                                    <td><?= $loan['scholarship'] ?></td>
+                                                    <td><?= $loan['assignedLoanProviders'][0]['providerEnc']['name'] ?></td>
+<!--                                                    <td>--><?//= $loan['amount_received'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['amount_due'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['scholarship'] ?><!--</td>-->
                                                     <td><?= $loan['degree'] ?></td>
                                                     <td><?= $loan['course_name'] ?></td>
-                                                    <td><?= $loan['org_name'] ?></td>
-                                                    <td><?= $loan['semesters'] ?></td>
-                                                    <td><?= $loan['years'] ?></td>
-                                                    <td><?= $loan['phone'] ?></td>
-                                                    <td><?= $loan['email'] ?></td>
+<!--                                                    <td>--><?//= $loan['org_name'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['semesters'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['years'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['phone'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['email'] ?><!--</td>-->
                                                     <td><?= $loan['city'] ?></td>
                                                     <td><?= $loan['gender'] ?></td>
-                                                    <td><?= date('d F Y', strtotime($loan['dob'])) ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][0]['relation'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][0]['name'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][0]['employment_type'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][0]['annual_income'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][1]['relation'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][1]['name'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][1]['employment_type'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][1]['annual_income'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][2]['relation'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][2]['name'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][2]['employment_type'] ?></td>
-                                                    <td><?= $loan['loanCoApplicants'][2]['annual_income'] ?></td>
+<!--                                                    <td>--><?//= date('d F Y', strtotime($loan['dob'])) ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['relation'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['name'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['employment_type'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['annual_income'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['relation'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['name'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['employment_type'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['annual_income'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['relation'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['name'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['employment_type'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['annual_income'] ?><!--</td>-->
                                                 </tr>
                                                 <?php
                                             }
@@ -424,6 +488,137 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+.tooltip-text{
+    cursor:pointer;
+}
+.effect {
+  width: 100%;
+}
+.effect .buttons {
+  display: block;
+  padding: 10px 0px;
+}
+.effect a {
+  text-decoration: none !important;
+  width: 35px;
+  height: 35px;
+  display: inline-block;
+  border-radius: 50%;
+  margin: 0 3px;
+  font-size: 17px;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  border: 2px solid #fff;
+}
+.effect a i {
+  position: relative;
+  z-index: 3;
+}
+.effect a i {    
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    line-height: 0;
+}
+.effect a.facebook-f:hover{
+    background:#3b5998;
+    border-color:#3b5998;
+} 
+.effect a.twitter-t:hover{
+    background:#6699FF;
+    border-color:#6699FF;
+} 
+.effect a.linked-l:hover{
+    background:#0e76a8;
+    border-color:#0e76a8;
+}
+.effect a.whatsapp-w:hover{
+    background:#25D366;
+    border-color:#25D366;
+}
+.effect a.enve-e:hover{
+    background:#00a0e3;
+    border-color:#00a0e3;
+}
+
+.effect.thurio {
+    background-color: #000;
+    text-align: center;
+    padding: 1px 10px;
+}
+.size-set {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.text-white {
+    color: #ffffff;
+}
+.wts-ap {
+    position: relative;
+}
+.wts-ap h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px !important;
+    font-family: roboto;
+}
+.send {
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    font-size: 22px;
+    cursor: pointer;
+}
+.wts-ap input {
+    font-family: roboto;
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group {
+    margin-bottom: 0;
+}
+.pf-field {
+    float: left;
+    width: 100%;
+    position: relative;
+}
+.pf-field > input {
+    height: 56px;
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 14px 45px 14px 15px;
+    background: #ffffff !important;
+    font-family: Open Sans;
+    font-size: 13px;
+    font-weight: 400;
+    color: #101010;
+    line-height: 24px;
+    cursor: pointer;
+}
+.pf-field > i {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 20px;
+    color: #848484;
+    line-height: 56px;
+    cursor: pointer;
+}
 .form-group{
     margin-bottom: 5px;
 }
@@ -802,6 +997,13 @@ input.checkbox:checked + label:before {
 #loanModalScroll .ps--active-x > .ps__rail-x{
     display: none !important;
 }
+.p0{
+    padding-left: 0px !important;
+    padding-right: 0px !important; 
+}
+.intl-tel-input{
+    width: 100% !important;
+}
 @media screen and (max-width: 992px){
     .loan-icon img{
       display: none;
@@ -960,6 +1162,41 @@ $(document).on('change', '.status_filters', function(e) {
         $('#list_all').prop('checked', true);
     }
     $.pjax.reload({container: '#list-container', async: false});
+});
+
+$(document).on('keypress','.wts-txt',function(e) {
+    if(e.which == 13) {
+        var val = $(this).val();
+        var location = "$link";
+        if(val.length < 8){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $(this).val('');
+    } else {
+        var iKeyCode = (e.which) ? e.which : e.keyCode;
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 43){
+            return false;
+        }
+        // return true;
+    }
+});
+$(document).on('submit','#whatsapp-form',function(e) {
+  e.preventDefault();
+  return false;
+});
+$('.send').click(function () {        
+    var val = $('.wts-txt').val();
+    var location = "$link";
+       if(val.length < 10){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $('.wts-txt').val('');
 });
 JS;
 $this->registerJS($script);
@@ -1151,5 +1388,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-
+    function copyToClipboard() {
+        $('#share_manually').removeClass('hidden');
+        var copyText = document.getElementById("share_manually");
+        copyText.select();
+        document.execCommand("copy");
+        toastr.success("", "Copied");
+        $('#share_manually').addClass('hidden');
+    }
 </script>

@@ -11,6 +11,8 @@ use common\models\Organizations;
 use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserOtherDetails;
+use common\models\Users;
+use frontend\models\whatsAppShareForm;
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
@@ -90,12 +92,20 @@ class EducationLoansController extends Controller
     public function actionDashboard($filter = null)
     {
         $model = new LoanSanctionedForm();
-        $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
-        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
-        if (!$chkPermission) {
+        $org_id = Yii::$app->user->identity->organization_enc_id;
+        $organization = Organizations::find()
+            ->alias('z')
+            ->joinWith(['selectedServices a' => function($a){
+                $a->joinWith(['serviceEnc b' => function($b){
+                    $b->andwhere(['b.name' => 'Loans']);
+                }],false);
+            }])
+            ->where(['z.organization_enc_id' => $org_id])
+            ->asArray()
+            ->one();
+        if ($organization['selectedServices'] && !$organization['selectedServices'][0]['is_selected']) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
-
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             $model->documents = Yii::$app->request->post('documents');
             if ($model->updateReport()) {
@@ -199,6 +209,8 @@ class EducationLoansController extends Controller
 
     public function actionDsaDashboard($filter = null)
     {
+        $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
+        $referrer_code = $user->getReferrals0()->one()->code;
         $model = new LoanSanctionedForm();
         $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
         $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
@@ -222,11 +234,8 @@ class EducationLoansController extends Controller
                 'a.created_on as apply_date',
                 '(CASE
                     WHEN i.status = "0" THEN "New Lead"
-                    WHEN i.status = "1" THEN "Accepted"
-                    WHEN i.status = "2" THEN "Pre Verification"
                     WHEN i.status = "3" THEN "Under Process"
                     WHEN i.status = "4" THEN "Sanctioned"
-                    WHEN i.status = "5" THEN "Disbursed"
                     WHEN i.status = "10" THEN "Reject"
                     ELSE "N/A"
                 END) as loan_status',
@@ -267,10 +276,12 @@ class EducationLoansController extends Controller
                 ]);
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) {
+                $i->joinWith(['providerEnc j']);
                 $i->onCondition(['or',
                     ['not', ['i.provider_enc_id' => null]],
                     ['not', ['i.provider_enc_id' => '']]
                 ]);
+                $i->andWhere(['in','i.status',[0,3,4,10]]);
             }])
             ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id]);
         if ($filter != null) {
@@ -297,18 +308,22 @@ class EducationLoansController extends Controller
                     ['not', ['i.provider_enc_id' => null]],
                     ['not', ['i.provider_enc_id' => '']]
                 ]);
+                $i->andWhere(['in','i.status',[0,3,4,10]]);
             }], false)
             ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
             ->one();
 
         $documents = LoanDocuments::findAll(['is_deleted' => 0, 'visible_for' => 'Loan']);
+        $whatsAppForm = new whatsAppShareForm();
 
         return $this->render('dsa-dashboard', [
             'loans' => $loans,
             'model' => $model,
             'documents' => $documents,
-            'stats' => $stats
+            'stats' => $stats,
+            'whatsAppmodel' => $whatsAppForm,
+            'referrer_code' => $referrer_code,
         ]);
     }
 
