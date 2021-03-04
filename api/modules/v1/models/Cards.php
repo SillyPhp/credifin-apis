@@ -119,12 +119,12 @@ class Cards
         $locations = [];
         $resumeSkills = [];
         $jobTitles = [];
-        if (!empty($options['location'])) {
-            $optLocations = explode(", ", $options['location']);
-            foreach ($optLocations as $loc) {
-                array_push($locations, $loc);
-            }
-        }
+//        if (!empty($options['location'])) {
+//            $optLocations = explode(", ", $options['location']);
+//            foreach ($optLocations as $loc) {
+//                array_push($locations, $loc);
+//            }
+//        }
         if (isset($options['user_id']) && $options['user_id']) {
             $userId = $options['user_id'];
             $resumeModel = new ResumeData();
