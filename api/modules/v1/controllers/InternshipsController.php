@@ -44,10 +44,26 @@ class InternshipsController extends ApiBaseController
         return $behaviors;
     }
 
+    private function userId()
+    {
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        return $user;
+    }
+
     public function actionList()
     {
         $parameters = \Yii::$app->request->post();
         $options = [];
+
+        $options['user_id'] = $this->userId();
 
         if ($parameters['page'] && (int)$parameters['page'] >= 1) {
             $options['page'] = $parameters['page'];
