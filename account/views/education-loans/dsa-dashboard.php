@@ -20,7 +20,7 @@ if (isset($_GET['filter'])) {
     <div class="col-md-9">
         <div class="widget-row">
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dsa-dashboard?filter=0" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=0" data-pjax = "0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
                         <span class="count"><?= $stats['new_leads'] ?></span>
@@ -29,7 +29,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dsa-dashboard?filter=all" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=all" data-pjax = "0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
                         <span class="count"><?= $stats['all_applications'] ?></span>
@@ -38,7 +38,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dsa-dashboard?filter=3" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=3" data-pjax = "0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
                         <span class="count"><?= $stats['under_process'] ?></span>
@@ -47,7 +47,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/dsa-dashboard?filter=4" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=4" data-pjax = "0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
                         <span class="count"><?= $stats['sanctioned'] ?></span>
@@ -1154,7 +1154,7 @@ $(document).on('change', '.status_filters', function(e) {
             }
         }
     });
-    var cur_params = '/account/education-loans/dsa-dashboard';
+    var cur_params = '/account/education-loans/leads';
     if(list){
         history.pushState('data', 'title', cur_params + '?filter=' + list);
     } else {

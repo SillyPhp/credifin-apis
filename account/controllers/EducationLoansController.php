@@ -92,18 +92,8 @@ class EducationLoansController extends Controller
     public function actionDashboard($filter = null)
     {
         $model = new LoanSanctionedForm();
-        $org_id = Yii::$app->user->identity->organization_enc_id;
-        $organization = Organizations::find()
-            ->alias('z')
-            ->joinWith(['selectedServices a' => function($a){
-                $a->joinWith(['serviceEnc b' => function($b){
-                    $b->andwhere(['b.name' => 'Loans']);
-                }],false);
-            }])
-            ->where(['z.organization_enc_id' => $org_id])
-            ->asArray()
-            ->one();
-        if (empty($organization['selectedServices']) && !$organization['selectedServices'][0]['is_selected']) {
+        $permissions = Yii::$app->userData->checkServicePermission(Yii::$app->user->identity->user_enc_id);
+        if (!in_array('Loans', $permissions)) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
@@ -207,14 +197,13 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionDsaDashboard($filter = null)
+    public function actionLeads($filter = null)
     {
         $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
         $referrer_code = $user->getReferrals0()->one()->code;
         $model = new LoanSanctionedForm();
-        $service_id = Services::findOne(['name' => 'E-Partners'])['service_enc_id'];
-        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'created_by' => Yii::$app->user->identity->user_enc_id])['is_selected'];
-        if ($chkPermission != 1) {
+        $permissions = Yii::$app->userData->checkServicePermission(Yii::$app->user->identity->user_enc_id);
+        if (!in_array('E-Partners', $permissions)) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
 
