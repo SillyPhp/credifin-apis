@@ -462,6 +462,9 @@ body{
 ');
 $script = <<<JS
 var user_id = '$user_id';
+var url = window.location.pathname.split('/');
+var slug = url[1];
+
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
   $('.tab-content').css('height',mainHeight);
@@ -562,7 +565,6 @@ if($(window.location.hash).length){
 
 var baseUrl = '';
 function getDetails(){
-    var slug = 'erexxtesting';
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
         method: 'POST',
@@ -583,41 +585,43 @@ function getDetails(){
 }
 getDetails();
 function overviewTemp(res){
+    const {affiliated_to, website, website_link} = res.response.data;
     let mainTemp = '';
     if(res.response.data['affiliated_to']){
-        var overviewTemp = `<div class="h-point1">
+        var affiliatedTemp = `<div class="h-point1">
                                 <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
                                 <div class="fa-text">
                                     <h3>Affiliated to</h3>
-                                    <p>`+res.response.data['affiliated_to']+`</p>
+                                    <p>`+affiliated_to+`</p>
                                 </div>
                             </div>`;
-        mainTemp += overviewTemp;
+        mainTemp += affiliatedTemp;
     }
     
     if(res.response.data['website']){
-        var website = `<div class="h-point1">
+        var websiteTemp= `<div class="h-point1">
                             <div class="fa-icon"><i class="fas fa-link"></i></div>
                             <div class="fa-text">
                                 <h3>Official Website</h3>
-                                <p><a href="`+res.response.data['website_link']+`">
-                                `+res.response.data['website']+`</a></p>
+                                <p><a href="`+website_link+`">
+                                `+website+`</a></p>
                             </div>
                         </div>`;        
-        mainTemp += website;
+        mainTemp += websiteTemp;
     }
     return mainTemp;
 }
 
 function collegeInfo(res) {
-  var collegeInfo = `<div class="college-logo">
-                        <img src="`+res.response.data['logo']+`">
+    const {city_name, logo, name, organization_enc_id} = res.response.data;
+    var collegeInfo = `<div class="college-logo">
+                        <img src="`+logo+`">
                     </div>
                     <div class="college-info">
-                        <h3 data-id="`+res.response.data['organization_enc_id']+`" id="orgDetail">`+res.response.data['name']+`</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+res.response.data['city_name']+`</div>
+                        <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
+                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
                     </div>`;
-            return collegeInfo;
+    return collegeInfo;
 }
 JS;
 $this->registerJs($script);

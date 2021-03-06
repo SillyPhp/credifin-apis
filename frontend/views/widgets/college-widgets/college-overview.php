@@ -493,11 +493,12 @@ function getCourses() {
 getCourses();
 
 function courseCard(res) {
-    let durationRes = res.course_duration;
-    let Cduration = durationRes == 1 ? durationRes+'Year' : durationRes+'Years';
+    const {course_duration, course_name} = res;
+    // let durationRes = res.course_duration;
+    let Cduration = course_duration == 1 ? course_duration+'Year' : course_duration+'Years';
     var collegeCard = `<div class="course-box" >
                         <a href="">
-                            <h3>`+res.course_name+`</h3>
+                            <h3>`+course_name+`</h3>
                             <div class="seats">Duration : <span>`+Cduration+`</span></div>
                         </a>
                     </div>`;
