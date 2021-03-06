@@ -193,7 +193,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad.png') ?>"
-                                 alt=""/>
+                                 alt="apply-for-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -215,7 +215,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block order2">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-india-1.png') ?>"
-                                 alt=""/>
+                                 alt="online-study-loan-in-India"/>
                         </div>
                     </div>
                     <div class="edu-des order1">
@@ -225,7 +225,7 @@ use yii\helpers\Url;
                             universities
                             are offering a variety of study programs and courses in almost every niche - You Name It And
                             You
-                            Have It. Here, Empoweryouth with their student education loan will help you to pursue your
+                            Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in India</a> will help you to pursue your
                             desired education without getting worried about the money.
                         </p>
                     </div>
@@ -238,7 +238,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
-                                 alt=""/>
+                                 alt="interest-free-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -564,6 +564,11 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.edu-hw-description a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+}
 .whats-btn {
     padding: 10px 0px 8px 0px;
     text-align: center;
