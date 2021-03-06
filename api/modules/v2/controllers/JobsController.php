@@ -711,7 +711,7 @@ class JobsController extends ApiBaseController
 
             if ($data) {
                 $per = 0;
-                $total = 4;
+                $total = 5;
                 $t = 100 / $total;
                 if ($data['city_enc_id']) {
                     $per += $t;
@@ -727,7 +727,7 @@ class JobsController extends ApiBaseController
                     }
                 }
                 $profile_completed = false;
-                if ($per == 100) {
+                if ($per >= 100) {
                     $profile_completed = true;
                 }
                 return ['is_completed' => $profile_completed, 'percent' => $per];

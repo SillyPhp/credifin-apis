@@ -163,6 +163,10 @@ class EducationLoanController extends ApiBaseController
                 $loan_application->updated_by = null;
                 $loan_application->updated_on = date('Y-m-d H:i:s');
                 $loan_application->update();
+                $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
+                $params['name'] = $loan_application->applicant_name;
+                $params['email'] = $loan_application->email;
+                Yii::$app->notificationEmails->educationLoanThankYou($params);
             }
         }
 

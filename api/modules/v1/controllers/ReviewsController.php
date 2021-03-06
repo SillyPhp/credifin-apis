@@ -349,7 +349,7 @@ class ReviewsController extends ApiBaseController
                 $overall_avg = array_sum($emp_stats) / count($emp_stats);
                 $round_avg = round($overall_avg);
             }
-            if(!empty($stats_students)){
+            if (!empty($stats_students)) {
                 $student_overall_avg = array_sum($stats_students) / count($stats_students);
                 $round_students_avg = round($student_overall_avg);
             }
@@ -460,8 +460,8 @@ class ReviewsController extends ApiBaseController
                 '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type',
                 'a.review_enc_id',
                 'ROUND(a.average_rating) average_rating',
-                'c.name profile',
-                'e.designation',
+                '(CASE WHEN e.designation IS NOT NULL THEN e.designation ELSE "Others" END) as designation',
+                '(CASE WHEN c.name IS NOT NULL THEN c.name ELSE "others" END) as profile',
                 'f.feedback report',
                 'd.feedback_type',
                 'a.created_on',
@@ -485,6 +485,7 @@ class ReviewsController extends ApiBaseController
                 }
                 $result[$i]['link'] = Url::to($org['slug'] . '/reviews', 'https');
                 $result[$i]['rating'] = $rating[$i];
+                $result[$i]['designation'] = ucwords($result[$i]['designation']);
             }
 
             $data['reviews'] = $result;
@@ -1721,7 +1722,7 @@ class ReviewsController extends ApiBaseController
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo,'https') . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating', 'b.business_activity'])
+            ->select(['a.organization_enc_id', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating', 'b.business_activity'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);

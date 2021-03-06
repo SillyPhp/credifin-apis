@@ -4,20 +4,38 @@ use yii\helpers\Url;
     <section class="egoven-jobs-sec">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-md-offset-3">
+                <div class="col-md-6">
                     <div class="egov-job">
                         <a href="/education-loans/apply">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/us-mba-ultra-bg.png')?>" alt="">
                             <h1 class="link-none">US MBA Ultra</h1>
                             <p class="link-sub-head">Education Financing to fulfil your aspirations</p>
-                            <div class="gj-text">
+                            <div class="gj-text gj-orange">
                                 <ul>
                                     <li>Covering 17 esteemed colleges in the<br>
                                         US offering business programs</li>
                                     <li>Unsecured Loan Limit Up to ₹65 Lac*</li>
-                                    <li>Maximum LoanTenure of 10 Years</li>
+                                    <li>Maximum Loan Tenure of 10 Years</li>
                                 </ul>
                             </div>
+                            <div class="applyBtn">Apply</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="egov-job">
+                        <a href="/education-loans/apply">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/uk-mba-prime.png')?>" alt="">
+                            <h1 class="link-none">Ivy  League </h1>
+                            <p class="link-sub-head">Education Financing to fulfil your aspirations</p>
+                            <div class="gj-text gj-blue">
+                                <ul>
+                                    <li>Covering 8 esteemed Ivy League colleges</li>
+                                    <li>Unsecured Loan Limit Up to ₹75 Lac*</li>
+                                    <li>Maximum Loan Tenure of 10 Years</li>
+                                </ul>
+                            </div>
+                            <div class="applyBtn applyBlue">Apply</div>
                         </a>
                     </div>
                 </div>
@@ -26,7 +44,22 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-
+.applyBtn{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    color: #ff7803;
+    font-size: 22px;
+    font-family: lora;
+    text-transform: capitalize;
+    font-weight: 500;
+    background: #fff;
+    padding: 5px 15px;
+    border-radius: 16px 0;
+}
+.applyBlue{
+    color: #00a0e3;
+}
 .egoven-jobs-sec{
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;
@@ -113,6 +146,12 @@ $this->registerCss('
     margin-left: -1.5em;
     padding-right: 5px;
   
+}
+.gj-orange ul li::before{
+    color: #fca006;
+}
+.gj-blue ul li::before{
+    color: #00a0e3;    
 }
 @media (max-width:415px){
 .gov-heading{

@@ -638,6 +638,10 @@ class SkillUpController extends ApiBaseController
                 $params['related'] = true;
                 $params['related_post_id'] = $detail['post_enc_id'];
                 $related_post = $this->feeds(1, 5, $params);
+                if (empty($related_post)) {
+                    unset($params['skills']);
+                    $related_post = $this->feeds(1, 5, $params);
+                }
                 $detail['feedback_status'] = $this->getLikes($detail['post_enc_id']) ? $this->getLikes($detail['post_enc_id']) : 0;
                 $rec = $this->__getStudentRecommended($detail['post_enc_id']);
                 $detail['is_recommended'] = (count($rec) > 0) ? true : false;
