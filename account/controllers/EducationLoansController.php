@@ -212,9 +212,9 @@ class EducationLoansController extends Controller
         $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
         $referrer_code = $user->getReferrals0()->one()->code;
         $model = new LoanSanctionedForm();
-        $service_id = Services::findOne(['name' => 'Loans'])['service_enc_id'];
-        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])['is_selected'];
-        if (!$chkPermission) {
+        $service_id = Services::findOne(['name' => 'E-Partners'])['service_enc_id'];
+        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'created_by' => Yii::$app->user->identity->user_enc_id])['is_selected'];
+        if ($chkPermission != 1) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
 
