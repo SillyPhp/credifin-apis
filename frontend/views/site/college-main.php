@@ -462,8 +462,8 @@ body{
 ');
 $script = <<<JS
 var user_id = '$user_id';
-var url = window.location.pathname.split('/');
-var slug = url[1];
+// var url = window.location.pathname.split('/');
+// var slug = url[1];
 
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
@@ -563,8 +563,9 @@ if($(window.location.hash).length){
     },500)
 }
 
-var baseUrl = '';
+var baseUrl = 'https://ravinder.eygb.me';
 function getDetails(){
+    var slug = 'erexxtesting';
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
         method: 'POST',

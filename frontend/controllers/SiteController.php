@@ -1253,7 +1253,10 @@ class SiteController extends Controller
     {
         return $this->render('college-main');
     }
-
+    public function actionDetailedCollege()
+    {
+        return $this->render('detailed-college');
+    }
     public function actionResumeBuilderLandingPage()
     {
         return $this->render('resume-builder-landing-page');
@@ -1312,6 +1315,18 @@ class SiteController extends Controller
 
     function actionEPartners(){
         return $this->render('e-partners');
+    }
+
+    function actionCollegeOver(){
+        $this->layout = 'blank-layout';
+        return $this->render('college-over');
+    }
+    function actionCollegeLoans(){
+        $this->layout = 'blank-layout';
+        $model = new AdmissionForm();
+        return $this->render('college-loans',[
+            'model' => $model,
+        ]);
     }
 
 }
