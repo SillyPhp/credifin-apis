@@ -14,16 +14,19 @@ use yii\helpers\ArrayHelper;
 class UserDataComponent extends Component
 {
 
-    public function checkServicePermission($user_id){
+    public function checkSelectedService($user_id, $name)
+    {
         $chkPermission = SelectedServices::find()
             ->alias('z')
-            ->select(['z.selected_service_enc_id','z.organization_enc_id','z.service_enc_id', 'z.is_selected', 'a.name'])
-            ->joinWith(['serviceEnc a'],false)
-            ->where([ 'z.created_by' => $user_id, 'z.is_selected' => 1])
+            ->select(['z.selected_service_enc_id', 'z.organization_enc_id', 'z.service_enc_id', 'z.is_selected', 'a.name', 'a.link'])
+            ->innerJoinWith(['serviceEnc a'], false)
+            ->where(['z.created_by' => $user_id, 'z.is_selected' => 1])
+            ->andWhere(['a.name' => $name])
             ->asArray()
-            ->all();
-        return ArrayHelper::getColumn($chkPermission, 'name');
+            ->one();
+        return $chkPermission;
     }
+
     public function getPreference($user_id, $type)
     {
         $data = UserPreferences::find()
