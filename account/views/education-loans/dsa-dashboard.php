@@ -80,7 +80,7 @@ if (isset($_GET['filter'])) {
             <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip" title="This is your personalized invite link which is used to add referral leads direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
             <div class="buttons">
                 <?php
-                $link= "https://www.empoweryouth.com/education-loans/apply?ref=" . $referrer_code;
+                $link= "https://www.empoweryouth.com/education-loans/apply?ref_id=" . $referrer_code;
                 ?>
                 <a href="javascript:;" class="facebook-f"
                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">

@@ -110,6 +110,17 @@
                                         <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
+
+
+                                        <!---static leads menu start here--->
+
+                                        <li>
+                                            <a href="/account/internships/dashboard">Leads</a>
+                                        </li>
+
+                                        <!---static leads menu ends here--->
+
+
                                         <?php
                                         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
                                             ?>
@@ -209,6 +220,42 @@
                                                 </ul>
                                             </div>
                                         </li>
+
+                                        <!---multiple leads menu start here--->
+
+
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Education Loan</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+<!--                                                    --><?php
+//                                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College") {
+//                                                        ?>
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="#">
+                                                                <div>
+                                                                    <span class="ey-services-icons loans"></span>
+                                                                </div>
+                                                                <span>Loan Applications</span>
+                                                            </a>
+                                                        </li>
+<!--                                                        --><?php
+//                                                    }
+//                                                    ?>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="#">
+                                                            <div>
+                                                                <span class="ey-services-icons leads"></span>
+                                                            </div>
+                                                            <span>Leads</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+
+                                        <!---multiple leads menu ends here--->
                                         <?php
                                         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
                                             ?>
@@ -487,6 +534,12 @@ $this->registerCss('
 }
 .ey-services-icons.campus {
     background: url(/assets/themes/ey/images/job-profiles/hiring-icon.png);
+}
+.ey-services-icons.loans {
+    background: url(/assets/themes/ey/images/job-profiles/edu-loan-process.png);
+}
+.ey-services-icons.leads {
+    background: url(/assets/themes/ey/images/job-profiles/leads.png);
 }
 .ey-sub-sec .ey-head-sub-menu-icon a>span {
     display: block;
