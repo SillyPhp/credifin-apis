@@ -205,6 +205,9 @@ use yii\helpers\Url;
                             vast
                             personalized solutions that will help you to achieve your dreams of studying abroad.
                         </p>
+                        <div class="abroad-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -228,6 +231,9 @@ use yii\helpers\Url;
                             Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in India</a> will help you to pursue your
                             desired education without getting worried about the money.
                         </p>
+                        <div class="india-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -250,6 +256,9 @@ use yii\helpers\Url;
                             loans
                             provides financial help to the educational insitutes for their growth.
                         </p>
+                        <div class="institution-btn">
+                            <a href="/educational-institution-loan">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -564,6 +573,29 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.abroad-btn a, .india-btn a, .institution-btn a {
+	color: #fff;
+	background-color:#00a0e3;
+	font-size: 14px;
+	font-family: roboto;
+	border: 2px solid #00a0e3;
+	padding: 4px 15px;
+	border-radius: 4px;
+	display: inline-block;
+	transition:ease-in-out .2s;
+}
+.abroad-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.india-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.institution-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
 .edu-hw-description a {
     color: #000;
     text-decoration: none;
