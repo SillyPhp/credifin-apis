@@ -17,14 +17,4 @@ class whatsAppShareForm extends Model {
             [['phone'], 'string', 'max' => 15],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels() {
-        return [
-            'phone' => Yii::t('frontend', 'Phone'),
-        ];
-    }
-
 }

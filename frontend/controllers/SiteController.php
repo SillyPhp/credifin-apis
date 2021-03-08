@@ -1315,4 +1315,8 @@ class SiteController extends Controller
         return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
 
+    function actionEPartners(){
+        return $this->render('e-partners');
+    }
+
 }

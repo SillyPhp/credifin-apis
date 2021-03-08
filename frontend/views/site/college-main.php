@@ -68,7 +68,7 @@ use yii\helpers\Url;
                                     Loans
                                 </a>
                             </li>
-                            <li class="nav-item loans" data-toggle="tab">
+                            <li class="nav-item reviews" data-toggle="tab">
                                 <a class="nav-link" href="#reviews" data-key="getReviews" role="tab"
                                    data-toggle="tab">
                                     Reviews
@@ -249,9 +249,13 @@ use yii\helpers\Url;
         </div>
     </section>
 <?php
+$user_id = '';
+if(!Yii::$app->user->isGuest){
+    $user_id = Yii::$app->user->identity->user_enc_id;
+}
 $this->registerCss('
 .college-header {
-	background-image: url("/assets/themes/ey/images/pages/college-new-module/lpu.jpg");
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -307,6 +311,8 @@ $this->registerCss('
     background-color:#fff;
     padding:0 50px;
     margin-bottom:35px;
+    box-shadow:0 0 10px rgba(139,139,139,.1);
+    box-shadow:0 0 10px rgba(139,139,139,.1);
 }
 #tile-1 .tab-pane
 {
@@ -455,6 +461,10 @@ body{
 }
 ');
 $script = <<<JS
+var user_id = '$user_id';
+var url = window.location.pathname.split('/');
+var slug = url[1];
+
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
   $('.tab-content').css('height',mainHeight);
@@ -495,6 +505,7 @@ $("#tile-1 ul > li > a").on('click', function(event) {
     } 
   });
 var loadedData = [];
+var Hpoints;
 $(document).on('click','.getDataList > li > a', function(e) {
     var key = $(this).attr('data-key');
     var elem = $(this).attr('href');
@@ -511,11 +522,16 @@ $(document).on('click','.getDataList > li > a', function(e) {
             complete: function() {
                 loadedData.push(key);
                 window.history.pushState({},"", window_url);
-                // if(elem != '#gallery'){
-                //     initializePosSticky();
-                // } else {
+                if(elem != '#gallery'){
+                    setTimeout(function (){
+                        if(elem == '#overview' && Hpoints != '' && $('.h-points').children().length < 1) {
+                            $('.h-points').append(Hpoints);
+                        }
+                        initializePosSticky();
+                    },800)
+                } else {
                     $('.tab-content').css('height','auto');
-                // }
+                }
             },
             error: function(xhr, textStatus, errorThrown){
                
@@ -533,7 +549,7 @@ $(document).on('click','.getDataList > li > a', function(e) {
 });
 
 if($(window.location.hash).length){
-    $('#getDataList .nav-item').removeClass('active');
+    $('#hamburgerJobs .nav-item').removeClass('active');
     var nav_item_id = '.' + $(window.location.hash).attr('id');
     $(nav_item_id).addClass('active');
     $(nav_item_id + ' a').trigger('click');
@@ -547,18 +563,18 @@ if($(window.location.hash).length){
     },500)
 }
 
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getDetails(){
-    var slug = 'erexxtesting';
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
         method: 'POST',
+        async:false,
         data: {slug:slug},
         success: function (res){
             if(res.response.status == 200){
                 var response = res.response.data;
                 let collegeDet = collegeInfo(res);
-                let Hpoints = overviewTemp(res);
+                Hpoints = overviewTemp(res);
                 $('.college-main').append(collegeDet);
                 setTimeout(function (){
                     $('.h-points').append(Hpoints);
@@ -569,54 +585,48 @@ function getDetails(){
 }
 getDetails();
 function overviewTemp(res){
+    const {affiliated_to, website, website_link} = res.response.data;
     let mainTemp = '';
     if(res.response.data['affiliated_to']){
-        var overviewTemp = `<div class="h-point1">
+        var affiliatedTemp = `<div class="h-point1">
                                 <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
                                 <div class="fa-text">
                                     <h3>Affiliated to</h3>
-                                    <p>`+res.response.data['affiliated_to']+`</p>
+                                    <p>`+affiliated_to+`</p>
                                 </div>
                             </div>`;
-        mainTemp += overviewTemp;
+        mainTemp += affiliatedTemp;
     }
     
     if(res.response.data['website']){
-        var website = `<div class="h-point1">
+        var websiteTemp= `<div class="h-point1">
                             <div class="fa-icon"><i class="fas fa-link"></i></div>
                             <div class="fa-text">
                                 <h3>Official Website</h3>
-                                <p><a href="`+res.response.data['website_link']+`">
-                                `+res.response.data['website']+`</a></p>
+                                <p><a href="`+website_link+`">
+                                `+website+`</a></p>
                             </div>
                         </div>`;        
-        mainTemp += website;
+        mainTemp += websiteTemp;
     }
     return mainTemp;
 }
 
 function collegeInfo(res) {
-  var collegeInfo = `<div class="college-logo">
-                        <img src="`+res.response.data['logo']+`">
+    const {city_name, logo, name, organization_enc_id} = res.response.data;
+    var collegeInfo = `<div class="college-logo">
+                        <img src="`+logo+`">
                     </div>
                     <div class="college-info">
-                        <h3 data-id="`+res.response.data['organization_enc_id']+`" id="orgDetail">`+res.response.data['name']+`</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+res.response.data['city_name']+`</div>
+                        <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
+                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
                     </div>`;
-            return collegeInfo;
+    return collegeInfo;
 }
-
-
 JS;
 $this->registerJs($script);
 ?>
 <script>
-    window.addEventListener('unload', function (event){
-        var currentUrl = window.location.href;
-        console.log(currentUrl);
-        console.log('1');
-    });
-    console.log('2');
     function showJobsSidebar() {
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');
@@ -627,5 +637,4 @@ $this->registerJs($script);
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
-
 </script>
