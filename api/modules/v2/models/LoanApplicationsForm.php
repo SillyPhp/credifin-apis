@@ -15,6 +15,7 @@ use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
+use common\models\Referral;
 use common\models\Users;
 use Yii;
 use yii\base\Model;
@@ -63,12 +64,10 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
-            if($refferal_id){
-                $lead_by_id = Users::find()
-                    ->where(['user_enc_id' => $refferal_id])
-                    ->asArray()->one();
-                if($lead_by_id){
-                $this->lead_by = $refferal_id;
+            if ($refferal_id) {
+                $referralData = Referral::findOne(['code' => $refferal_id]);
+                if ($referralData) {
+                    $this->lead_by = $referralData->user_enc_id;
                 }
             }
             if (!$this->save()) {
