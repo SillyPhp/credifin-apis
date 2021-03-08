@@ -1194,6 +1194,11 @@ class SiteController extends Controller
         return $this->render('teachers-handbook');
     }
 
+    public function actionAnsileryDetail()
+    {
+        return $this->render('ansilery-detail');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
