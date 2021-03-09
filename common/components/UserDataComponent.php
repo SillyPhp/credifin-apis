@@ -2,14 +2,30 @@
 
 namespace common\components;
 
+use common\models\SelectedServices;
+use common\models\Services;
 use common\models\UserPreferences;
 use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 
 class UserDataComponent extends Component
 {
+
+    public function checkSelectedService($user_id, $name)
+    {
+        $chkPermission = SelectedServices::find()
+            ->alias('z')
+            ->select(['z.selected_service_enc_id', 'z.organization_enc_id', 'z.service_enc_id', 'z.is_selected', 'a.name', 'a.link'])
+            ->innerJoinWith(['serviceEnc a'], false)
+            ->where(['z.created_by' => $user_id, 'z.is_selected' => 1])
+            ->andWhere(['a.name' => $name])
+            ->asArray()
+            ->one();
+        return $chkPermission;
+    }
 
     public function getPreference($user_id, $type)
     {
