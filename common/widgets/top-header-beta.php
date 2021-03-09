@@ -215,7 +215,7 @@
                                         <!---multiple leads menu start here--->
 
                                         <?php
-                                        echo $this->render('/widgets/header/education-loans');
+                                        echo $this->render('education-loans');
                                         ?>
                                         <!---multiple leads menu ends here--->
                                         <?php
@@ -272,7 +272,7 @@
                                             <a href="/account/resume-builder">Resume Builder</a>
                                         </li>
                                         <?php
-                                        echo $this->render('/widgets/header/education-loans');
+                                        echo $this->render('education-loans');
                                         ?>
                                     </ul>
                                 </nav>
