@@ -10,8 +10,8 @@ use yii\helpers\Url;
                     <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil
                         your dream of studying in your desired College/University.</p>
                     <ul>
+                        <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                        <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
                     </ul>
                 </div>
             </div>
@@ -36,7 +36,7 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-loan.png')?>" alt="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-loan.png')?>" alt="quick-loan">
                                 </div>
                                 <div class="opp-txt"> Quick & Simple Loan Process</div>
                             </div>
@@ -44,7 +44,7 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/less-paperwork.png')?>" alt="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/less-paperwork.png')?>" alt="less-paperwork">
                                 </div>
                                 <div class="opp-txt">Minimal Amount Of Paperwork </div>
                             </div>
@@ -52,7 +52,7 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/tracking.png')?>" alt="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/tracking.png')?>" alt="tracking">
                                 </div>
                                 <div class="opp-txt"> Live Tracking of Loan Application</div>
                             </div>
@@ -60,7 +60,7 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free.png')?>" alt="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free.png')?>" alt="interest-free">
                                 </div>
                                 <div class="opp-txt"> Any Semester Interest Free Loan</div>
                             </div>
@@ -88,7 +88,7 @@ use yii\helpers\Url;
                         <h2>Partner With Us</h2>
                         <p>Help your students achieve their dreams by partnering with
                             us in providing interest free education loan to all your students.</p>
-                        <div class="fin-btn">Call Us</div>
+                        <a href="#call" class="fin-btn">Call Us</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
@@ -184,8 +184,127 @@ use yii\helpers\Url;
     'model' => $model
 ]); ?>
 
+    <section class=""  id="call">
+        <div class="container">
+            <div class="heading-style ">Need More Help</div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="l-help-block1">
+                        <div class="l-help-title"><img
+                                    src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>"
+                                    alt="Live Help"/>
+                            Live Help
+                        </div>
+
+                        <div class="l-help-txt">Get an answer on the spot. We're online 8am - 7pm Mon to Fri and
+                            9am - 3pm on Sat and Sun.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="l-help-block1">
+                        <div class="l-help-title"><img
+                                    src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
+                                    alt="Contact Us"/> Contact Us
+                        </div>
+                        <div class="callNumber"><i class="fas fa-phone-square-alt"></i> +91 8727985888</div>
+                        <div class="l-help-txt-btn"><a href="tel:+918727985888">Call Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="l-help-block1">
+                        <div class="l-help-title"><img
+                                    src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
+                                    alt=""/> Chat With Us
+                        </div>
+                        <div class="chat">
+                            <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>
+                            <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i class="fab fa-telegram-plane"></i>  Telegram</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 <?php
 $this->registerCss('
+html {
+  scroll-behavior: smooth;
+}
+.l-help-block1{
+    box-shadow: 0 0 10px rgb(0,0,0,.2);
+    padding: 22px 20px;
+    margin-bottom:20px;
+    background:#fff;
+    min-height: 180px;
+}
+.l-help-title{
+    font-size: 20px !important;
+}
+.l-help-txt-btn{
+    margin-top: 20px;
+    text-align: center;
+}
+.l-help-txt-btn a{
+    border: 1px solid #00a0e3;
+    padding: 10px 20px;
+    color: #fff;
+    background: #00a0e3;
+}
+.l-help-txt-btn a:hover{
+    border: 2px solid #00a0e3;
+    padding: 10px 20px;
+    color: #00a0e3;
+    background: #fff;
+    text-decoration: none;
+    transition: .3s ease-in-out;
+}
+.l-help-txt{
+    font-size: 15px;
+    padding: 20px 30px 0 30px;
+    font-family: roboto;
+}
+.whats-btn {
+    padding: 10px 0px 8px 0px;
+    text-align: center;
+    margin-right: 10px;
+}
+.tele-btn {
+    padding: 10px 0px 8px 0px;
+    text-align: center;
+}
+.whats-btn a{
+    border-radius: 4px;
+    border: 1px solid #43d854;
+    padding: 10px 20px;
+    color: #fff;
+    background: #43d854;
+}
+.whats-btn a:hover{
+    color: #43d854;
+    background-color: #fff;
+    text-decoration: none;
+    transition: .3s ease-in-out;
+}
+.tele-btn a {
+    border-radius: 4px;
+    border: 1px solid #00405d;
+    padding: 10px 22px;
+    color: #fff;
+    background: #00405d;
+}
+.tele-btn a:hover {
+    color: #00405d;
+    background-color: #fff;
+    text-decoration: none;
+    transition: .3s ease-in-out;
+}
+.chat {
+    padding: 30px;
+    display: -webkit-inline-box;
+}
 .partner-bg{
     display: flex;
     justify-content: center;
@@ -338,7 +457,7 @@ $this->registerCss('
     background: rgb(16 15 15 / 50%);
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/eduin.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/ed-loann.png') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;

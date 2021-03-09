@@ -13,7 +13,6 @@ use yii\helpers\ArrayHelper;
 
 class UserDataComponent extends Component
 {
-
     public function checkSelectedService($user_id, $name)
     {
         $chkPermission = SelectedServices::find()
