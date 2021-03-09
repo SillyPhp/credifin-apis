@@ -214,14 +214,14 @@ $this->registerCss('
         padding-right: 30px;
     }
 }
-@media screen and (max-width: 1160px) and (min-width: 992px) {
-    .twitter-typeahead input{
-        max-width:165px;
-    }
-    .twitter-typeahead .tt-menu{
-        max-width:165px;
-    }
-}
+//@media screen and (max-width: 1160px) and (min-width: 992px) {
+//    .twitter-typeahead input{
+//        max-width:165px;
+//    }
+//    .twitter-typeahead .tt-menu{
+//        max-width:165px;
+//    }
+//}
 ');
 $script = <<< JS
 $(document).on('submit','#search_bar_form',function(e) {

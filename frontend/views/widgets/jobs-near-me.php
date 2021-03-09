@@ -586,9 +586,9 @@ body {
     color: #fff !important;
     border-radius: 0px 10px 0px 10px !important;
     float: right !important;
-    position:absolute !important;
-    right: 2px !important;
-    top: -13px !important;
+    position:absolute;
+    right: 2px;
+    top: -13px;
 }
 .clear{
     clear:both;
@@ -656,6 +656,32 @@ body {
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
+}
+@media only screen and (max-width: 1200px) and (min-width:992px){
+.application-card-img{
+    margin-left: 5px;
+    margin-top: 20px;
+    }
+}
+@media only screen and (max-width: 1078px) and (min-width:992px){
+.job-fill{
+    right:20px;
+}
+}
+@media only screen and (max-width: 992px){
+#sticky {
+    height: 20%;
+    // bottom: 0px;
+    width: 96%;
+    left: 2%;
+    top: 90.5% !important;
+    z-index: 999;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.irs{margin-top:20px;}
 }
 @media only screen and (max-width: 360px){
     .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
