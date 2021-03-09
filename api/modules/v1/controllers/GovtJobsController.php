@@ -88,23 +88,14 @@ class GovtJobsController extends ApiBaseController
                 $pos = $desc['PositionRemuneration'][0];
                 $get[$i]['DepartmentName'] = $desc['OrganizationName'];
                 $get[$i]['PositionTitle'] = $desc['PositionTitle'];
-                if ($pos['MinimumRange']) {
-                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
-                }
-                if ($pos['MinimumRange'] && $pos['MaximumRange']) {
-                    $get[$i]['salary'] .= ' - ';
-                }
-                if ($pos['MinimumRange']) {
-                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
-                }
-                if($pos['RateIntervalCode']){
-                    $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
-                }
+                $get[$i]['MinimumRange'] = $pos['MinimumRange'];
+                $get[$i]['MaximumRange'] = $pos['MaximumRange'];
                 $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($desc['ApplicationCloseDate']));
                 $get[$i]['PositionLocation'] = $this->getCityName($desc['PositionLocationDisplay']);
                 $get[$i]['Location'] = $desc['PositionLocationDisplay'];
                 $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
+                $get[$i]['Duration'] = $pos['RateIntervalCode'];
                 $data = UsaDepartments::find()
                     ->select(['image', 'image_location'])
                     ->where(['Value' => $get[$i]['DepartmentName']])
