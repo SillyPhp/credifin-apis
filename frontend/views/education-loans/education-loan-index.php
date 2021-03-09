@@ -193,7 +193,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad.png') ?>"
-                                 alt=""/>
+                                 alt="apply-for-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -205,6 +205,9 @@ use yii\helpers\Url;
                             vast
                             personalized solutions that will help you to achieve your dreams of studying abroad.
                         </p>
+                        <div class="abroad-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,7 +218,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block order2">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-india-1.png') ?>"
-                                 alt=""/>
+                                 alt="online-study-loan-in-India"/>
                         </div>
                     </div>
                     <div class="edu-des order1">
@@ -225,9 +228,12 @@ use yii\helpers\Url;
                             universities
                             are offering a variety of study programs and courses in almost every niche - You Name It And
                             You
-                            Have It. Here, Empoweryouth with their student education loan will help you to pursue your
+                            Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in India</a> will help you to pursue your
                             desired education without getting worried about the money.
                         </p>
+                        <div class="india-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -238,7 +244,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
-                                 alt=""/>
+                                 alt="interest-free-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -250,6 +256,9 @@ use yii\helpers\Url;
                             loans
                             provides financial help to the educational insitutes for their growth.
                         </p>
+                        <div class="institution-btn">
+                            <a href="/educational-institution-loan">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -564,6 +573,34 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.abroad-btn a, .india-btn a, .institution-btn a {
+	color: #fff;
+	background-color:#00a0e3;
+	font-size: 14px;
+	font-family: roboto;
+	border: 2px solid #00a0e3;
+	padding: 4px 15px;
+	border-radius: 4px;
+	display: inline-block;
+	transition:ease-in-out .2s;
+}
+.abroad-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.india-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.institution-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.edu-hw-description a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+}
 .whats-btn {
     padding: 10px 0px 8px 0px;
     text-align: center;
