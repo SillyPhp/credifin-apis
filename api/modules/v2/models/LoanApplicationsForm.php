@@ -1,6 +1,5 @@
 <?php
 
-
 namespace api\modules\v2\models;
 
 use common\models\Countries;

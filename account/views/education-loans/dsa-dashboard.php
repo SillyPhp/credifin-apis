@@ -13,14 +13,14 @@ if (isset($_GET['filter'])) {
 ?>
 <div class="row">
     <?php
-        Pjax::begin([
-            'id' => 'stat-container',
-        ]);
+    Pjax::begin([
+        'id' => 'stat-container',
+    ]);
     ?>
     <div class="col-md-9">
         <div class="widget-row">
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/leads?filter=0" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=0" data-pjax="0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
                         <span class="count"><?= $stats['new_leads'] ?></span>
@@ -29,7 +29,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/leads?filter=all" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=all" data-pjax="0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
                         <span class="count"><?= $stats['all_applications'] ?></span>
@@ -38,7 +38,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/leads?filter=3" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=3" data-pjax="0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
                         <span class="count"><?= $stats['under_process'] ?></span>
@@ -47,7 +47,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="col-md-3 col-sm-6">
-                <a href="/account/education-loans/leads?filter=4" data-pjax = "0">
+                <a href="/account/education-loans/leads?filter=4" data-pjax="0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
                         <span class="count"><?= $stats['sanctioned'] ?></span>
@@ -55,32 +55,36 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-<!--            <div class="col-md-offset-2 col-md-4 col-sm-6">-->
-<!--                <a href="javascript:;" data-pjax = "0">-->
-<!--                    <div class="box-des box6 mt">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?><!--">-->
-<!--                        <span class="count">--><?//= "1,50000.00" ?><!--</span>-->
-<!--                        <span class="box-text">Total Sanctioned Amount</span>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 col-sm-6">-->
-<!--                <a href="javascript:;" data-pjax = "0">-->
-<!--                    <div class="box-des box4 mt box2set">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?><!--">-->
-<!--                        <span class="count">--><?//= "15,000.00" ?><!--</span>-->
-<!--                        <span class="box-text">Total Earning</span>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
+            <!--            <div class="col-md-offset-2 col-md-4 col-sm-6">-->
+            <!--                <a href="javascript:;" data-pjax = "0">-->
+            <!--                    <div class="box-des box6 mt">-->
+            <!--                        <img src="-->
+            <? //= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?><!--">-->
+            <!--                        <span class="count">--><? //= "1,50000.00" ?><!--</span>-->
+            <!--                        <span class="box-text">Total Sanctioned Amount</span>-->
+            <!--                    </div>-->
+            <!--                </a>-->
+            <!--            </div>-->
+            <!--            <div class="col-md-4 col-sm-6">-->
+            <!--                <a href="javascript:;" data-pjax = "0">-->
+            <!--                    <div class="box-des box4 mt box2set">-->
+            <!--                        <img src="-->
+            <? //= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?><!--">-->
+            <!--                        <span class="count">--><? //= "15,000.00" ?><!--</span>-->
+            <!--                        <span class="box-text">Total Earning</span>-->
+            <!--                    </div>-->
+            <!--                </a>-->
+            <!--            </div>-->
         </div>
     </div>
     <div class="col-md-3">
         <div class="effect thurio">
-            <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip" title="This is your personalized invite link which is used to add referral leads direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
+            <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip"
+                                                                title="This is your personalized invite link which is used to add referral leads direct into your account "
+                                                                class="fa fa-question-circle tooltip-text"></i></h3>
             <div class="buttons">
                 <?php
-                $link= "https://www.empoweryouth.com/education-loans/apply?ref_id=" . $referrer_code;
+                $link = "https://www.empoweryouth.com/education-loans/apply?ref_id=" . $referrer_code;
                 ?>
                 <a href="javascript:;" class="facebook-f"
                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
@@ -108,7 +112,7 @@ if (isset($_GET['filter'])) {
                 </a>
             </div>
             <div class="wts-ap">
-<!--                <h3>Invite on Whatsapp via Number</h3>-->
+                <!--                <h3>Invite on Whatsapp via Number</h3>-->
                 <div class="col-md-12 p0 form-whats">
                     <?php
                     $form = ActiveForm::begin([
@@ -135,11 +139,11 @@ if (isset($_GET['filter'])) {
             </div>
             <div class="row m-0">
                 <div class="col-lg-12">
-<!--                    <h4 class="text-white">or</h4>-->
+                    <!--                    <h4 class="text-white">or</h4>-->
                     <div class="pf-field">
                         <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
                                class="form-control hidden" value="<?= $link ?>" readonly>
-<!--                        <i class="far fa-copy"></i>-->
+                        <!--                        <i class="far fa-copy"></i>-->
                     </div>
                 </div>
             </div>
@@ -216,31 +220,31 @@ if (isset($_GET['filter'])) {
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
                                             <th class="loanAmount">Lenders</th>
-<!--                                            <th class="amountReceived">Amount Received</th>-->
-<!--                                            <th class="amountDue">Amount Due</th>-->
-<!--                                            <th class="scholarship">Scholarship</th>-->
+                                            <!--                                            <th class="amountReceived">Amount Received</th>-->
+                                            <!--                                            <th class="amountDue">Amount Due</th>-->
+                                            <!--                                            <th class="scholarship">Scholarship</th>-->
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
-<!--                                            <th class="collegeName">College/University Name</th>-->
-<!--                                            <th class="startDate">Semester</th>-->
-<!--                                            <th class="endDate">Year</th>-->
-<!--                                            <th class="phoneNumber">Phone Number</th>-->
-<!--                                            <th class="applicantEmail">Email Address</th>-->
+                                            <!--                                            <th class="collegeName">College/University Name</th>-->
+                                            <!--                                            <th class="startDate">Semester</th>-->
+                                            <!--                                            <th class="endDate">Year</th>-->
+                                            <!--                                            <th class="phoneNumber">Phone Number</th>-->
+                                            <!--                                            <th class="applicantEmail">Email Address</th>-->
                                             <th class="city">City</th>
                                             <th class="applicantGender">Gender</th>
-<!--                                            <th class="dobwidth">DOB</th>-->
-<!--                                            <th class="coApplicantWidth">Co-Applicant</th>-->
-<!--                                            <th class="coName">Co-Applicant's Name</th>-->
-<!--                                            <th class="coEmployment">Co-Applicant's employment type</th>-->
-<!--                                            <th class="coAnnual">Co-Applicant's Annual Income</th>-->
-<!--                                            <th class="coApplicantWidth">2nd Co-Applicant</th>-->
-<!--                                            <th class="coName">2nd Co-Applicant's Name</th>-->
-<!--                                            <th class="coEmployment">2nd Co-Applicant's employment type</th>-->
-<!--                                            <th class="coAnnual">2nd Co-Applicant's Annual Income</th>-->
-<!--                                            <th class="coApplicantWidth">3rd Co-Applicant</th>-->
-<!--                                            <th class="coName">3rd Co-Applicant's Name</th>-->
-<!--                                            <th class="coEmployment">3rd Co-Applicant's employment type</th>-->
-<!--                                            <th class="coAnnual">3rd Co-Applicant's Annual Income</th>-->
+                                            <!--                                            <th class="dobwidth">DOB</th>-->
+                                            <!--                                            <th class="coApplicantWidth">Co-Applicant</th>-->
+                                            <!--                                            <th class="coName">Co-Applicant's Name</th>-->
+                                            <!--                                            <th class="coEmployment">Co-Applicant's employment type</th>-->
+                                            <!--                                            <th class="coAnnual">Co-Applicant's Annual Income</th>-->
+                                            <!--                                            <th class="coApplicantWidth">2nd Co-Applicant</th>-->
+                                            <!--                                            <th class="coName">2nd Co-Applicant's Name</th>-->
+                                            <!--                                            <th class="coEmployment">2nd Co-Applicant's employment type</th>-->
+                                            <!--                                            <th class="coAnnual">2nd Co-Applicant's Annual Income</th>-->
+                                            <!--                                            <th class="coApplicantWidth">3rd Co-Applicant</th>-->
+                                            <!--                                            <th class="coName">3rd Co-Applicant's Name</th>-->
+                                            <!--                                            <th class="coEmployment">3rd Co-Applicant's employment type</th>-->
+                                            <!--                                            <th class="coAnnual">3rd Co-Applicant's Annual Income</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -275,31 +279,52 @@ if (isset($_GET['filter'])) {
                                                     <td><?= $loan['applicant_name'] ?></td>
                                                     <td><?= $loan['amount'] ?></td>
                                                     <td><?= $loan['assignedLoanProviders'][0]['providerEnc']['name'] ?></td>
-<!--                                                    <td>--><?//= $loan['amount_received'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['amount_due'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['scholarship'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['amount_received'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['amount_due'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['scholarship'] ?><!--</td>-->
                                                     <td><?= $loan['degree'] ?></td>
                                                     <td><?= $loan['course_name'] ?></td>
-<!--                                                    <td>--><?//= $loan['org_name'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['semesters'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['years'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['phone'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['email'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['org_name'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['semesters'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['years'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['phone'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['email'] ?><!--</td>-->
                                                     <td><?= $loan['city'] ?></td>
                                                     <td><?= $loan['gender'] ?></td>
-<!--                                                    <td>--><?//= date('d F Y', strtotime($loan['dob'])) ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['relation'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['name'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['employment_type'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][0]['annual_income'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['relation'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['name'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['employment_type'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][1]['annual_income'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['relation'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['name'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['employment_type'] ?><!--</td>-->
-<!--                                                    <td>--><?//= $loan['loanCoApplicants'][2]['annual_income'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= date('d F Y', strtotime($loan['dob'])) ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][0]['relation'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][0]['name'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][0]['employment_type'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][0]['annual_income'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][1]['relation'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][1]['name'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][1]['employment_type'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][1]['annual_income'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][2]['relation'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][2]['name'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][2]['employment_type'] ?><!--</td>-->
+                                                    <!--                                                    <td>-->
+                                                    <?//= $loan['loanCoApplicants'][2]['annual_income'] ?><!--</td>-->
                                                 </tr>
                                                 <?php
                                             }

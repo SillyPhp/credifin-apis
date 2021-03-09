@@ -270,7 +270,7 @@ class EducationLoansController extends Controller
                     ['not', ['i.provider_enc_id' => null]],
                     ['not', ['i.provider_enc_id' => '']]
                 ]);
-                $i->andWhere(['in','i.status',[0,3,4,10]]);
+                $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
             }])
             ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id]);
         if ($filter != null) {
@@ -297,7 +297,7 @@ class EducationLoansController extends Controller
                     ['not', ['i.provider_enc_id' => null]],
                     ['not', ['i.provider_enc_id' => '']]
                 ]);
-                $i->andWhere(['in','i.status',[0,3,4,10]]);
+                $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
             }], false)
             ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
@@ -359,7 +359,7 @@ class EducationLoansController extends Controller
 
     public function actionCandidateDashboard($id)
     {
-        return $this->render('candidate-dashboard',['loan_app_id' => $id]);
+        return $this->render('candidate-dashboard', ['loan_app_id' => $id]);
     }
 
     public function actionLoanProfileView()
