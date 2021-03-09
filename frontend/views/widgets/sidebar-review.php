@@ -130,7 +130,7 @@ body {
     margin: 0;
     list-style: none;
     width: 100%;
-    padding: 15px 4px !important;
+    padding:15px 8px 15px 4px !important;
 }
 .text-wrap-ellipsis{margin:0px !important;}
 li.draggable-item {
