@@ -124,7 +124,6 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-
 .intl-tel-input, .iti {
     width: 100%;
 }
@@ -132,5 +131,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
-.country-list{z-index:99 !important;}
+.country-list, .iti__country-list{z-index:99 !important;}
 ');

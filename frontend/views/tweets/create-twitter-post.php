@@ -53,7 +53,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                             <?php else: ?>
                                 <div class="row">
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <div class="load-suggestions Typeahead-spinner">
                                             <span></span>
                                             <span></span>
@@ -61,7 +61,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                         </div>
                                         <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company'])->label(false); ?>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <?= Html::a('Add New Company','#',[
                                             'class'=>'btn btn-primary add_new_org',
                                             'url'=>'/jobs/create-company',
@@ -473,6 +473,10 @@ $(".close-m-mo").on("click", function() {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.btn.btn-primary.add_new_org {
+	display: block;
+	margin-bottom: 10px;
+}
 #loadBtn{display:none}
 .control-label{
 font-family: 'Roboto', sans-serif !important;

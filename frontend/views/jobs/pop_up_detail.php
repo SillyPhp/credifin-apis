@@ -246,7 +246,7 @@ if ($type == 'Internships') {
                                 ?>
                             </ul>
                             <h3 class="job-detail">Description</h3>
-                            <div class="j-text">
+                            <div class="j-text row">
                                 <p>
                                     <?= $data['description'] ?>
                                 </p>
@@ -450,7 +450,7 @@ h3.job-detail {
     padding: 15px 15px;
     text-align: center;
     margin: auto;
-    display:block;
+    display: inline-block;
 }
 .apply-job-btn i {
     float: none;
