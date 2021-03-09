@@ -42,6 +42,7 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
+    'slug'=>$slug
 ]);
 ?>
 <section class="rh-header">
@@ -1522,7 +1523,7 @@ $headScript = <<< JS
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
+       url : '/organizations/post-reviews?slug=$slug&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)

@@ -92,8 +92,8 @@ class EducationLoansController extends Controller
     public function actionDashboard($filter = null)
     {
         $model = new LoanSanctionedForm();
-        $permissions = Yii::$app->userData->checkServicePermission(Yii::$app->user->identity->user_enc_id);
-        if (!in_array('Loans', $permissions)) {
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Loans");
+        if (!$permissions) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
@@ -202,8 +202,8 @@ class EducationLoansController extends Controller
         $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
         $referrer_code = $user->getReferrals0()->one()->code;
         $model = new LoanSanctionedForm();
-        $permissions = Yii::$app->userData->checkServicePermission(Yii::$app->user->identity->user_enc_id);
-        if (!in_array('E-Partners', $permissions)) {
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+        if (!$permissions) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
 
