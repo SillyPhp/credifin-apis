@@ -123,7 +123,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label for="annulIncome" class="input-group-text">
                                             Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
-                                        <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
                                                placeholder="Enter Loan Amount">
                                     </div>
                                 </div>
@@ -317,7 +317,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                     <label for="co-anualincome" class="input-group-text">
                                                         Annual Income
                                                     </label>
-                                                    <input type="text" name="co-anualincome[1]" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
                                                 </div>
                                             </div>
                                         </div>
@@ -1122,6 +1122,23 @@ function substringMatcher (strs) {
          source: substringMatcher(_courses)
         }); 
     }
+    $.validator.addMethod("check_date_of_birth", function (value, element) {
+    
+    var dateOfBirth = value;
+    var arr_dateText = dateOfBirth.split("/");
+    day = arr_dateText[1];
+    month = arr_dateText[0];
+    year = arr_dateText[2];
+    var mydate = new Date();
+    mydate.setFullYear(year, month - 1, day);
+    
+    var maxDate = new Date();
+    if ((maxDate.getFullYear()-year) <= 3) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above the age of 3 can be covered";
+        return false;
+    }
+    return true;
+});
     $('#mobile, #loanamount').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
        var form = $("#myForm");  
@@ -1143,6 +1160,7 @@ function substringMatcher (strs) {
 				},
 				'dob':{
 				    required:true,
+				    check_date_of_birth: true
 				},
 				'mobile':{
 				    required:true,
@@ -1167,14 +1185,16 @@ function substringMatcher (strs) {
 				},
 				'loanamount':{ 
 				    required:true,
-				    min:10000
+				    min:10000,
+				    max:5000000
 				},
 				'co-name[1]':{
 				    required:true,
 				},
 				'co-anualincome[1]':{
 				    required:true,
-				    min:500 
+				    min:10000,
+				    max:5000000
 				},
 				'co-relation[1]':{ 
 				    required:true,
@@ -1184,7 +1204,8 @@ function substringMatcher (strs) {
 				},
 				'co-anualincome[2]':{
 				    required:true,
-				    min:500
+				    min:500,
+				    max:5000000
 				},
 				'co-relation[2]':{ 
 				    required:true,
@@ -1294,9 +1315,8 @@ function substringMatcher (strs) {
 		current_fs.hide();
 	});
     
-    $('.datepicker, .datepicker2, .datepicker3').datepicker({
-    format: 'mm/dd/yyyy',
-    startDate: '-3d'
+    $('.datepicker3').datepicker({
+     todayHighlight: true
 });
     
 function ajaxSubmit()
