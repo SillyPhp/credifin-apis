@@ -41,4 +41,9 @@ class TestCacheController extends Controller
             return $exception->getMessage(); //final messege for user
         }
     }
+
+    public function actionSms(){
+        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
+    }
+
 }

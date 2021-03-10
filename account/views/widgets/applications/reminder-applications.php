@@ -294,7 +294,7 @@ $this->registerCss("
 }
  .listing1{
     width:130px;
-    height:25px;
+    height:24px;
     font-size:16px;
     font-famiy:roboto !important;
     padding-left:10px;

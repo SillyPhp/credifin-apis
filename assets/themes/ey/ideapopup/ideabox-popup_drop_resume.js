@@ -374,6 +374,12 @@ function random_fn(t) {
         var el = that.reviewModal.getElementsByClassName('i-review-animated-box');
         el[0].innerHTML = question + answers + desccription;
 
+        setTimeout(function () {
+            if(document.getElementsByClassName("st-h").length) {
+                var ps = new PerfectScrollbar(".st-h");
+            }
+        },1000)
+
         if (that.options.data[qno].hasOwnProperty('inAnimation'))
             addAnimation(that, that.options.data[qno].inAnimation);
         else
@@ -418,7 +424,7 @@ function random_fn(t) {
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
 
-        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + radios + '</div></div>';
+        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + radios + '</div></div>';
         return r;
     }
 
@@ -436,7 +442,7 @@ function random_fn(t) {
         var inlineClass = '';
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
-        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + checks + '</div></div>';
+        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + checks + '</div></div>';
         return c;
     }
 
@@ -454,7 +460,7 @@ function random_fn(t) {
         var inlineClass = '';
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
-        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + checks + '</div></div>';
+        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + checks + '</div></div>';
         return c;
     }
 
@@ -472,7 +478,7 @@ function random_fn(t) {
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
 
-        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + radios + '</div></div>';
+        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + radios + '</div></div>';
         return r;
     }
     //------------------------------------------------------------
