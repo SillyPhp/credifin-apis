@@ -105,13 +105,13 @@
                                         <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
+                                        <?= $this->render('education-loans'); ?>
                                         <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
                                         <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
-
                                         <?php
                                         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
                                             ?>
@@ -211,13 +211,6 @@
                                                 </ul>
                                             </div>
                                         </li>
-
-                                        <!---multiple leads menu start here--->
-
-                                        <?php
-                                        echo $this->render('education-loans');
-                                        ?>
-                                        <!---multiple leads menu ends here--->
                                         <?php
                                         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
                                             ?>
@@ -259,6 +252,7 @@
                                         <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
+                                        <?= $this->render('education-loans'); ?>
                                         <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
@@ -271,9 +265,6 @@
                                         <li>
                                             <a href="/account/resume-builder">Resume Builder</a>
                                         </li>
-                                        <?php
-                                        echo $this->render('education-loans');
-                                        ?>
                                     </ul>
                                 </nav>
                                 <div class="ey-header-sub-menu-container"></div>

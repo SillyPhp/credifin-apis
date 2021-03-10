@@ -3,6 +3,7 @@
 namespace frontend\models\accounts;
 
 use common\models\EmailLogs;
+use frontend\models\referral\EducationLoan;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -28,6 +29,7 @@ class IndividualSignUpForm extends Model
     public $phone;
     public $countryCode;
     public $user_type;
+    public $loan_id_ref;
     public $_flag;
 
     public function behaviors()
@@ -49,6 +51,7 @@ class IndividualSignUpForm extends Model
     {
         return [
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'required'],
+            [['loan_id_ref'],'safe'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['username'], 'string', 'length' => [3, 20]],
@@ -168,7 +171,9 @@ class IndividualSignUpForm extends Model
                     $mail_logs->is_sent = 1;
                     $mail_logs->save();
                 }
-
+                if ($this->loan_id_ref){
+                    EducationLoan::JoinWithLoan($this->loan_id_ref,$usersModel->user_enc_id);
+                }
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
                 $transaction->commit();
                 return true;
