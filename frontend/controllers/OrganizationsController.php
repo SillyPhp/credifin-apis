@@ -10,6 +10,7 @@ use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLabels;
+use frontend\models\AdmissionForm;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -53,9 +54,11 @@ use common\models\EmployeeBenefits;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
 
-class OrganizationsController extends Controller {
+class OrganizationsController extends Controller
+{
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -66,13 +69,15 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $get = new ReviewCardsMod();
@@ -103,7 +108,8 @@ class OrganizationsController extends Controller {
         return $this->render('index');
     }
 
-    public function actionCompanies($q = null) {
+    public function actionCompanies($q = null)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
             $referral = Yii::$app->referral->getReferralCode();
@@ -124,7 +130,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionDetail($slug, $type = null) {
+    public function actionDetail($slug, $type = null)
+    {
         $referral = Yii::$app->referral->getReferralCode();
         $organization = Organizations::find()
             ->alias('a')
@@ -154,30 +161,41 @@ class OrganizationsController extends Controller {
             }
         }
 
-        if (!$type && $organization["business_activity" !== "College"]) {
-            return $this->actionProfile($organization);
-        } else {
-            return $this->actionCollegeProfile($organization);
+        if ($type === null) {
+            if ($organization["business_activity"] !== "College") {
+                return $this->actionProfile($organization);
+            } else {
+                return $this->actionCollegeProfile($organization);
+            }
         }
 
-        if ($type === "reviews" && $organization["business_activity" !== "College"]) {
+        if ($type === "loans" && $organization["business_activity"] === "College") {
+            return $this->actionCollegeLoans($organization);
+        }
+
+        if ($type === "reviews" && $organization["business_activity"] !== "College") {
             return $this->actionReviews($slug, null);
         } else {
             return $this->actionCollegeReviews($organization);
         }
+    }
 
-        if ($type === "loans" && $organization["business_activity" === "College"]) {
-            return $this->actionCollegeLoans($organization);
+    public function actionCollegeProfile($organization)
+    {
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('profile-components/overview', [
+                "isAjax" => 1
+            ]);
         }
 
-        throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        return $this->render('college-profile', [
+            "component" => "overview",
+            "isAjax" => 0
+        ]);
     }
 
-    public function actionCollegeProfile($organization) {
-        //Render College Profile
-    }
-
-    public function actionProfile($organization) {
+    public function actionProfile($organization)
+    {
         $is_claim = 1;
         if ($organization) {
             $labels = OrganizationLabels::find()
@@ -324,7 +342,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionUpdateLogo() {
+    public function actionUpdateLogo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $companyLogoFormModel = new CompanyLogoForm();
         if (Yii::$app->request->post()) {
@@ -346,7 +365,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionUpdateCoverImage() {
+    public function actionUpdateCoverImage()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $companyCoverImageForm = new CompanyCoverImageForm();
         if (Yii::$app->request->post()) {
@@ -367,7 +387,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionUpdateEditedCompanyProfile() {
+    public function actionUpdateEditedCompanyProfile()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
             $organisationData = Yii::$app->request->post();
@@ -401,7 +422,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionUpdateProfile() {
+    public function actionUpdateProfile()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
             $organizationData = Yii::$app->request->post();
@@ -428,7 +450,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionAddProductDescription() {
+    public function actionAddProductDescription()
+    {
         if (Yii::$app->request->post()) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $productdetail = Yii::$app->request->post();
@@ -461,7 +484,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionLocationDelete() {
+    public function actionLocationDelete()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
@@ -482,7 +506,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionRemoveImage() {
+    public function actionRemoveImage()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $type = Yii::$app->request->post('type');
         if ($type == 'logo') {
@@ -509,7 +534,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionRemoveBenefit() {
+    public function actionRemoveBenefit()
+    {
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('type');
@@ -532,7 +558,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionAddGalleryImages() {
+    public function actionAddGalleryImages()
+    {
         if (Yii::$app->request->isAjax) {
             $companyImagesForm = new CompanyImagesForm();
             if (Yii::$app->request->post()) {
@@ -558,7 +585,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionAddProducts() {
+    public function actionAddProducts()
+    {
         if (Yii::$app->request->isAjax) {
             $organizationProductsForm = new OrganizationProductsForm();
             if (Yii::$app->request->post()) {
@@ -584,7 +612,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionDeleteImages() {
+    public function actionDeleteImages()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $id = Yii::$app->request->post('id');
@@ -606,7 +635,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionAddEmployee() {
+    public function actionAddEmployee()
+    {
         if (Yii::$app->request->isAjax) {
             $organizationEmployeesForm = new OrganizationEmployeesForm();
             if ($organizationEmployeesForm->load(Yii::$app->request->post())) {
@@ -632,7 +662,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionDeleteEmployee() {
+    public function actionDeleteEmployee()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $id = Yii::$app->request->post('id');
@@ -654,7 +685,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionRemoveProduct() {
+    public function actionRemoveProduct()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $id = Yii::$app->request->post('id');
@@ -677,7 +709,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFollow() {
+    public function actionFollow()
+    {
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $org_id = Yii::$app->request->post("org_id");
@@ -740,7 +773,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFollowUnclaimedOrganization() {
+    public function actionFollowUnclaimedOrganization()
+    {
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $org_id = Yii::$app->request->post("org_id");
@@ -801,7 +835,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionOrganizationOpportunities($org) {
+    public function actionOrganizationOpportunities($org)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -829,7 +864,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionOrganizationRelatedTitles($title) {
+    public function actionOrganizationRelatedTitles($title)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -857,7 +893,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFeatured() {
+    public function actionFeatured()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $referral = Yii::$app->referral->getReferralCode();
@@ -882,7 +919,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionEditReview($request_type = null) {
+    public function actionEditReview($request_type = null)
+    {
         $editReviewForm = new EditReview;
         if ($editReviewForm->load(Yii::$app->request->post())) {
             if ($editReviewForm->save($request_type)) {
@@ -893,7 +931,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionEditReviewUnclaimed($request_type = null, $type = null) {
+    public function actionEditReviewUnclaimed($request_type = null, $type = null)
+    {
 
         if ($type == 'org') {
             $editReviewForm = new EditReview();
@@ -934,13 +973,15 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionLoadReviews() {
+    public function actionLoadReviews()
+    {
         if (Yii::$app->request->isPost) {
             return true;
         }
     }
 
-    public function actionReviews($slug, $id = null) {
+    public function actionReviews($slug, $id = null)
+    {
         $referral = Yii::$app->referral->getReferralCode();
         $editReviewForm = new EditReview;
         $model = new ApplicationForm();
@@ -1061,15 +1102,51 @@ class OrganizationsController extends Controller {
         ]);
     }
 
-    public function actionCollegeReviews($organization) {
-        //Render College Reviews Page
+    public function actionCollegeReviews($organization)
+    {
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('profile-components/reviews', [
+                "isAjax" => 1
+            ]);
+        }
+        return $this->render('college-profile', [
+            "component" => "reviews",
+            "isAjax" => 0
+        ]);
     }
 
-    public function actionCollegeLoans($organization) {
+    public function actionCollegeLoans($organization)
+    {
         //Render Loans Page
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('profile-components/loans', [
+                "isAjax" => 1,
+                'model' => $model
+            ]);
+        }
+        return $this->render('college-profile', [
+            'model' => $model,
+            "component" => "loans",
+            "isAjax" => 0
+        ]);
     }
 
-    public function actionPostReviews($slug = null, $request_type = null) {
+    public function actionPostReviews($slug = null, $request_type = null)
+    {
         if (Yii::$app->request->isPost) {
             $arr = Yii::$app->request->post('data');
             if ($request_type == 1) {
@@ -1189,7 +1266,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    private function addNewAssignedCategory($category_id, $companyReview, $type) {
+    private function addNewAssignedCategory($category_id, $companyReview, $type)
+    {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1206,7 +1284,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionPostCollegeCompanyReviews() {
+    public function actionPostCollegeCompanyReviews()
+    {
         $model = new RegistrationForm();
         if (Yii::$app->request->isPost) {
             $arr = Yii::$app->request->post('data');
@@ -1236,7 +1315,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGetReviews($slug, $limit = null, $offset = null, $ridk = null) {
+    public function actionGetReviews($slug, $limit = null, $offset = null, $ridk = null)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getReviews($slug, $limit, $offset, $ridk);
@@ -1256,7 +1336,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGetUnclaimedReviews($slug, $limit = null, $offset = null) {
+    public function actionGetUnclaimedReviews($slug, $limit = null, $offset = null)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getUnclaimedReviews($slug, $limit, $offset);
@@ -1276,7 +1357,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGetUnclaimedStudentReviews($slug, $limit = null, $offset = null) {
+    public function actionGetUnclaimedStudentReviews($slug, $limit = null, $offset = null)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getUnclaimedStudentReviews($slug, $limit, $offset);
@@ -1296,7 +1378,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGetUnclaimedInstituteReviews($slug, $limit = null, $offset = null) {
+    public function actionGetUnclaimedInstituteReviews($slug, $limit = null, $offset = null)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getUnclaimedInstituteReviews($slug, $limit, $offset);
@@ -1316,7 +1399,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGetUnclaimedSchoolReviews($slug, $limit = null, $offset = null) {
+    public function actionGetUnclaimedSchoolReviews($slug, $limit = null, $offset = null)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getUnclaimedSchoolReviews($slug, $limit, $offset);
@@ -1336,7 +1420,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    private function getReviews($slug, $limit, $offset, $ridk) {
+    private function getReviews($slug, $limit, $offset, $ridk)
+    {
         $reviews = OrganizationReviews::find()
             ->alias('a')
             ->select(['a.review_enc_id', '(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type', '(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not',
@@ -1372,7 +1457,8 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    private function getUnclaimedReviews($slug, $limit, $offset) {
+    private function getUnclaimedReviews($slug, $limit, $offset)
+    {
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'designation', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color', 'b.name seo_title', 'CONCAT(" ' . Url::to($slug . '/reviews', true) . ' ") seo_link'])
@@ -1394,7 +1480,8 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    private function getUnclaimedStudentReviews($slug, $limit, $offset) {
+    private function getUnclaimedStudentReviews($slug, $limit, $offset)
+    {
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details',
@@ -1422,7 +1509,8 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    private function getUnclaimedInstituteReviews($slug, $limit, $offset) {
+    private function getUnclaimedInstituteReviews($slug, $limit, $offset)
+    {
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details',
@@ -1450,7 +1538,8 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    private function getUnclaimedSchoolReviews($slug, $limit, $offset) {
+    private function getUnclaimedSchoolReviews($slug, $limit, $offset)
+    {
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details',
@@ -1478,7 +1567,8 @@ class OrganizationsController extends Controller {
         ];
     }
 
-    public function actionReviewLikeDislike() {
+    public function actionReviewLikeDislike()
+    {
         if (Yii::$app->request->isPost) {
             if (Yii::$app->user->isGuest) {
                 $this->redirect('/login');
@@ -1526,7 +1616,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionReviewFeedback() {
+    public function actionReviewFeedback()
+    {
         if (Yii::$app->request->isPost) {
             if (Yii::$app->user->isGuest) {
                 $this->redirect('/login');
@@ -1578,7 +1669,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFetchReviewCards() {
+    public function actionFetchReviewCards()
+    {
         $get = new ReviewCards();
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1600,7 +1692,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFetchReviewCardsCompany() {
+    public function actionFetchReviewCardsCompany()
+    {
         $get = new ReviewCards();
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1622,7 +1715,8 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionFetchUnclaimedReviewCards() {
+    public function actionFetchUnclaimedReviewCards()
+    {
         $get = new ReviewCards();
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1644,19 +1738,23 @@ class OrganizationsController extends Controller {
         }
     }
 
-    public function actionGenrateBlog() {
+    public function actionGenrateBlog()
+    {
         return $this->generateblog();
     }
 
-    public function actionTopTenBlogs() {
+    public function actionTopTenBlogs()
+    {
         return $this->generateblog();
     }
 
-    public function actionExplore() {
+    public function actionExplore()
+    {
         return $this->render('explore');
     }
 
-    private function generateblog() {
+    private function generateblog()
+    {
         $this->layout = 'main-secondary';
         $model = new OrgAutoGenrateBlog();
         if (Yii::$app->user->identity->organization):
@@ -1676,7 +1774,8 @@ class OrganizationsController extends Controller {
         return $this->render('genrate-blog', ['model' => $model, 'data' => $data]);
     }
 
-    public function actionSearchOrg($q) {
+    public function actionSearchOrg($q)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $params1 = (new \yii\db\Query())
             ->select(['organization_enc_id as id', 'name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
@@ -1690,7 +1789,8 @@ class OrganizationsController extends Controller {
         return $params1->limit(20)->all();
     }
 
-    public function actionCompanyJobs() {
+    public function actionCompanyJobs()
+    {
 
     }
 }

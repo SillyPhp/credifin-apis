@@ -1,11 +1,11 @@
 <?php
 
 use yii\helpers\Url;
-
 ?>
 
     <div class="container">
-        <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
             <div class="set-sticky">
                 <h3 class="heading-style">Highlights</h3>
                 <div class="h-points">
@@ -213,6 +213,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+        </div>
     </div>
 <?php
 $this->registercss('
@@ -362,6 +363,13 @@ td p{
     object-fit: contain;
     max-height: 40px;
 }
+.noResults{
+    font-size: 20px;
+    color: #333;
+    font-family: lora;
+    text-align: center !important;
+    width: 100%;
+}
 @media only screen and (max-width: 992px) {
 .h-point1 {
     width: 33.3%;
@@ -443,6 +451,8 @@ td p{
 }
 ');
 $script = <<<JS
+var url = window.location.pathname.split('/');
+var slug = url[1];
 function initCourse(){
     var htmlData = $("<div class='maxData'></div>");
     $( ".course-box" ).each(function(index) {
@@ -453,29 +463,72 @@ function initCourse(){
     });
     $('.course-main').append(htmlData);
 }
-// window.setTimeout(function (){
-//     initCourse();
-// }, 700);
-$(document).on('click','.view-btn',function(e) {
-    e.preventDefault();
-    $('.tab-content').css('height','auto');
-  $('.view-btn').toggleClass('show');
-  if ($('.view-btn').hasClass('show')) {
-    $(this).children('a').html("View Less <i class='fas fa-angle-up'></i>");
-    $('.maxData').slideDown('fast');
-  } else {
-    $(this).children('a').html("View All Courses <i class='fas fa-angle-down'></i>");
-    $('.maxData').slideUp('fast');
-  }
-  setTimeout(function() {
-      var mainHeight = $('.tab-pane.active').height();
-      $('.tab-content').css('height',mainHeight);
-  },700);
-});
+function showAllCourses(){
+    $('.view-btn a').on('click',function(e) {
+        e.preventDefault();
+        $('.view-btn').toggleClass('show');
+        if ($('.view-btn').hasClass('show')) {
+            $(this).html("View Less <i class='fas fa-angle-up'></i>");
+            $('.maxData').slideDown('fast');
+        } else {
+            $(this).html("View All Courses <i class='fas fa-angle-down'></i>");
+            $('.maxData').slideUp('slow');
+        }
+    });
+}
+showAllCourses();
 
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
+function getCollegeStats(){
+    $.ajax({
+        url: baseUrl+"/api/v3/ey-college-profile/college-detail",
+        method: 'POST',
+        data: {slug:slug},
+        success: function (res){
+            if(res.response.status == 200){
+                var response = res.response.data;
+                Hpoints = overviewTemp(res);
+                if(Hpoints){
+                    $('.h-points').append(Hpoints);
+                }else{ 
+                    Hpoints = `<p class="noResults">No Highlights Added </p>`;
+                    $('.h-points').append(Hpoints);
+                    $('.view-btn').hide();
+                }
+            }
+        }
+    })
+}
+getCollegeStats();
+function overviewTemp(res){
+    const {affiliated_to, website, website_link} = res.response.data;
+    let mainTemp = '';
+    if(res.response.data['affiliated_to']){
+        var affiliatedTemp = `<div class="h-point1">
+                                <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
+                                <div class="fa-text">
+                                    <h3>Affiliated to</h3>
+                                    <p>`+affiliated_to+`</p>
+                                </div>
+                            </div>`;
+        mainTemp += affiliatedTemp;
+    }
+    
+    if(res.response.data['website']){
+        var websiteTemp= `<div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-link"></i></div>
+                            <div class="fa-text">
+                                <h3>Official Website</h3>
+                                <p><a href="`+website_link+`">
+                                `+website+`</a></p>
+                            </div>
+                        </div>`;        
+        mainTemp += websiteTemp;
+    }
+    return mainTemp;
+}
+
 function getCourses() {
-  var slug = 'erexxtesting';
   $.ajax({
     url: baseUrl+"/api/v3/ey-college-profile/courses",
     method: 'POST',
@@ -502,7 +555,23 @@ function courseCard(res) {
                         </a>
                     </div>`;
     $('.course-main').append(collegeCard);
+    
 }
 
+$('.collegeLink').on('click', function (){
+     var dataKey = $(this).attr('data-key'); 
+     var url = window.location.pathname.split('/');
+     var slugg = url[1];
+     var subUrl = url[2];
+     if(subUrl && subUrl != dataKey){
+         history.replaceState({}, '', dataKey);
+     }else if(dataKey == "overview" || subUrl == "overview"){
+         history.replaceState({}, '', '/'+slugg);
+     }else{
+        history.pushState({}, '', '/'+slugg+"/"+dataKey);
+     }
+     // removeActive();
+     $(this).parent().addClass('cActive');
+ })
 JS;
 $this->registerJS($script);

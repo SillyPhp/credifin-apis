@@ -7,9 +7,11 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use common\models\Usernames;
 
-class ProfileController extends Controller {
+class ProfileController extends Controller
+{
 
-    public function actionIndex($username, $type = null, $slug = null) {
+    public function actionIndex($username, $type = null, $slug = null)
+    {
         $user = Usernames::find()
             ->where(['username' => $username])
             ->andWhere(['!=', 'assigned_to', 0])
@@ -49,10 +51,12 @@ class ProfileController extends Controller {
                     ]);
                 }
 
-                return Yii::$app->runAction('organizations/detail', [
-                    'slug' => $user->username,
-                    'type' => $type
-                ]);
+                if ($type === 'reviews' || $type === 'loans') {
+                    return Yii::$app->runAction('organizations/detail', [
+                        'slug' => $user->username,
+                        'type' => $type
+                    ]);
+                }
             } else {
                 return Yii::$app->runAction('organizations/detail', [
                     'slug' => $user->username
