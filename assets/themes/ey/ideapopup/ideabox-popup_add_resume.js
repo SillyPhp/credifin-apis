@@ -375,7 +375,6 @@ function random_fn(t) {
         el[0].innerHTML = question + answers + desccription;
 
         setTimeout(function () {
-            console.log('init scrollbar');
             if(document.getElementsByClassName("st-h").length) {
                 var ps = new PerfectScrollbar(".st-h");
             }
