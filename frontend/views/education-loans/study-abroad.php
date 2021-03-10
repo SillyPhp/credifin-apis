@@ -242,6 +242,7 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/press-releasee') ?>
 <?php
 $this->registerCss('
 .padd30{

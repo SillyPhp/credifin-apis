@@ -141,6 +141,8 @@ $this->params['header_dark'] = false;
     </svg>
 </div>
 
+<?= $this->render('/widgets/press-releasee') ?>
+
 <?php
 $this->registerCss('
 #app-data{
