@@ -507,7 +507,7 @@ use yii\helpers\Url;
 
 <?= $this->render('/widgets/institutional-loan') ?>
 
-
+<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $script = <<<JS

@@ -230,6 +230,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/press-releasee') ?>
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({

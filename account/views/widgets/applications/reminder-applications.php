@@ -11,13 +11,14 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-social-twitter font-dark hide"></i>
-                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Reminder'); ?></span>
+                <span class="caption-subject font-dark bold uppercase fnsz"><?= Yii::t('account', 'Reminder'); ?></span>
             </div>
             <div class="actions">
                 <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
             </div>
-            <div class="col-md-12">
-                A Gentle Reminder About The Job And Internships Either Applied By You Or Which You Are Willing To Apply.
+            <div class="col-md-12 descrip">
+                A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
+                Keep a track of all your scheduled  job/internships.
             </div>
         </div>
         <div class="portlet-body">
@@ -206,6 +207,15 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
     </div>
 <?php
 $this->registerCss("
+.fnsz {
+    font-size: 18px;
+}
+.descrip {
+    font-size: 16px;
+    font-family: lora;
+    padding: 12px 0px ;
+    color: #000;
+}
  .review-list-toggler{
     position: absolute;
     display: block;
@@ -294,7 +304,7 @@ $this->registerCss("
 }
  .listing1{
     width:130px;
-    height:24px;
+    height:23px;
     font-size:16px;
     font-famiy:roboto !important;
     padding-left:10px;
