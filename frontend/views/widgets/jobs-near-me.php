@@ -44,7 +44,7 @@ if ($type == 'jobs') {
 </div>
 
 <div class="row m-0">
-    <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
+    <div class="col-md-6 near-me-map" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
     </div>
     <div class="col-md-2 near-me-filters pl-0">
@@ -105,13 +105,13 @@ if ($type == 'jobs') {
 
 <script id="cards" type="text/template">
     {{#.}}
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-12 col-sm-6 col-xs-12">
         <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
                 <div class="hidden overlay" onclick="off()"></div>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="application-card-img img-main">
                             <a href="{{organization_link}}" title="{{organization_name}}" id="organization-slug">
                                 {{#logo}}
@@ -126,7 +126,7 @@ if ($type == 'jobs') {
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 col-sm-9 col-xs-9">
                         <div class="comps-name-1 application-card-description">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
@@ -662,6 +662,9 @@ body {
     margin-left: 5px;
     margin-top: 20px;
     }
+#map{
+    height:calc(50vh - 50px)
+}
 }
 @media only screen and (max-width: 1078px) and (min-width:992px){
 .job-fill{
@@ -669,6 +672,16 @@ body {
 }
 }
 @media only screen and (max-width: 992px){
+.near-me-map{
+    display: block;
+    position: relative;
+    width: 100%;
+    float: none !important;
+    height: auto !important;
+    margin-bottom: 40px;
+    padding: 0 10px !important;
+    margin-top: 20px;
+}
 #sticky {
     height: 20%;
     // bottom: 0px;
@@ -690,9 +703,7 @@ body {
     .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
 }
 @media only screen and (max-width: 974px){
-    .salary{ 
-        padding-left: 16px;
-    }
+  
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}

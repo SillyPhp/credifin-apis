@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 if (!empty($data['applicationPlacementLocations'])) {
     $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
@@ -73,7 +73,7 @@ if ($type == 'Internships') {
                     <div class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
                         <a href="javascript:;" title="Close" class="jd-close">✕</a>
                         <div class="row bottom-line">
-                            <div class="com-initials col-md-2 col-sm-2">
+                            <div class="com-initials col-md-12 col-sm-12">
                                 <div class="company-logo center-block">
                                     <?php
                                     if (!empty($application_details['logo'])) {
@@ -85,50 +85,21 @@ if ($type == 'Internships') {
                                         ?>
                                         <canvas class="user-icon" name="<?= $application_details['org_name'] ?>"
                                                 color="<?= $application_details['color'] ?>" width="100" height="100"
+                                                border-radius="70px"
                                                 font="55px"></canvas>
                                         <?php
                                     }
                                     ?>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6">
-                                <div class="com-name"><?= $data['cat_name'] ?></div>
-                                <div class="com-est"><?= $application_details['org_name'] ?></div>
-                            </div>
-                            <div class="col-md-4 pull-right">
-                                <div class="share-bar no-border">
-                                    <h3>Share</h3>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-fb">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-twitter">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-linkedin">
-                                        <i class="fab fa-linkedin-in"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-whatsapp">
-                                        <i class="fab fa-whatsapp"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-google">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
+                                <div class="name-f-c">
+                                    <div class="com-name"><?= $data['cat_name'] ?></div>
+                                    <div class="com-est"><?= $application_details['org_name'] ?></div>
                                 </div>
                             </div>
                         </div>
                         <div class="clearfix"></div>
                         <div class="j-details col-md-4">
-                            <ul class="job-overviews">
+                            <ul class="job-overviews row">
                                 <li>
                                     <i class="far fa-clock"></i>
                                     <h3>Experience</h3>
@@ -223,6 +194,40 @@ if ($type == 'Internships') {
                                     <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
                                 </li>
                             </ul>
+                            <div class="col-md-12 p-0">
+                                <div class="share-bar">
+                                    <h3>Share</h3>
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-fb">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-twitter">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-linkedin">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-whatsapp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-google">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
+                                    <a href="javascript:;" class="tg-tele"
+                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                        <i class="fab fa-telegram-plane"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <div class="j-discription col-md-8">
                             <h3 class="job-detail">Skills Required</h3>
@@ -246,7 +251,7 @@ if ($type == 'Internships') {
                                 ?>
                             </ul>
                             <h3 class="job-detail">Description</h3>
-                            <div class="j-text row">
+                            <div class="j-text j-textt">
                                 <p>
                                     <?= $data['description'] ?>
                                 </p>
@@ -262,8 +267,12 @@ if ($type == 'Internships') {
                                 </ul>
                                 </p>
                             </div>
+                            <div class="read-more col-md-12"><a href="#" class="showmore">Read More</a></div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="b-apply foo">
-                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fas fa-paper-plane"></i>View
+                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i
+                                            class="fas fa-paper-plane"></i>View
                                     Detail</a>
                             </div>
                         </div>
@@ -274,6 +283,13 @@ if ($type == 'Internships') {
     </div>
 <?php
 $this->registerCss('
+.j-textt{
+	max-height: 450px;
+}
+.read-moree{
+    height:auto;
+}
+.showmore{display: block;}
 .modalDialog {
     position: fixed;
     font-family: Arial, Helvetica, sans-serif;
@@ -339,8 +355,6 @@ $this->registerCss('
     padding-top: 20px;
 }
 .job-overviews {
-    float: left;
-    width: 94%;
     border: 2px solid #e8ecec;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -386,7 +400,6 @@ $this->registerCss('
     color: #ef7706;
 }
 h3.job-detail {
-    float: left;
     width: 100%;
     font-family: Open Sans;
     font-size: 15px;
@@ -472,22 +485,19 @@ h3.job-detail {
     text-align:center;
 }
 .share-bar h3 {
-    margin: 0px;
-    margin-top: 15px;
-    font-size: 20px;
+	margin: 0px;
+	margin-top: 10px;
+	font-size: 24px;
+	font-family: lora;
+	margin-bottom: 10px;
 }
 .share-bar a {
-    float: none;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 40px;
-    line-height: 31px;
-    font-size: 14px;
-    margin: 0 5px;
-    margin-top: 0px;
-    text-align: center;
-    color:#fff;
+	display: inline-block;
+	font-size: 18px;
+	margin: 0px 0 4px;
+	color: #fff;
+	padding: 5px 0;
+	min-width: 100px;
 }
 .share-bar a.share-fb {
     background-color: #3b5998;
@@ -507,18 +517,54 @@ h3.job-detail {
     background-color: #EA4335;
 //    border-color: #EA4335;
 }
-.com-name{ font-size:24px; font-weight:600; padding-top:20px;}
+.share-bar a.tg-tele{
+    background-color:#0088cc;
+    border-color:#0088cc;  
+}
+.com-name{ 
+    font-size:24px; 
+    font-weight:600;
+    font-family:roboto;
+}
 .com-est{
     font-size: 16px;
     font-weight: lighter;
     margin-top: 4px;
 }
-.company-logo{max-height:100px; max-width:100px; text-align:center;}
+.com-initials {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.company-logo {
+	max-height: 100px;
+	max-width: 100px;
+	text-align: center;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin:0 10px 0 0;
+}
 .j-details{padding-top:20px;}
 
 .j-discription{ text-align:justify; font-size:14px; padding-top:15px;}
 .j-discription ul{ list-style-image:url(../images/check-circle1.png);}
-.j-text{ padding-top:10px;}
+.j-text {
+	padding-top: 10px;
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+.read-more {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.read-more a {
+	color: #333;
+	font-size: 18px;
+	font-family: roboto;
+}
 .b-apply{  text-align:center;}
 .edu-requirement {
     width: 100%;
@@ -544,7 +590,31 @@ h3.job-detail {
     background: #888888;
     content: "";
 }
+@media only screen and (max-width:670px){
+.com-initials{
+    display:block;
+}
+.company-logo{
+    margin:0 auto;
+}
+}
 ');
+$script = <<<js
+$('.showmore').click(function () {
+    var status = $('.j-text');
+   var chk = status.hasClass('j-textt');
+   var btn = $(this);
+  if(chk){
+      btn.html('Show Less');
+      status.addClass('read-moree');
+      status.removeClass('j-textt');
+  } else {
+      btn.html('Show More');
+      status.removeClass('read-moree');
+      status.addClass('j-textt');
+  }
+});
+js;
 $this->registerJs('
 utilities.initials();
 var load_template = `<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-body"><img src="/assets/themes/dashboard/global/img/loading-spinner-grey.gif" class="loading"><span>Loading... </span></div></div></div>`;
@@ -553,3 +623,4 @@ $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").html(load_template);
 });
 ');
+$this->registerJs($script);
