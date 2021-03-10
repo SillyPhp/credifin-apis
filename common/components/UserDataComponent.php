@@ -20,13 +20,17 @@ class UserDataComponent extends Component
             ->select(['z.selected_service_enc_id', 'z.organization_enc_id', 'z.service_enc_id', 'z.is_selected', 'a.name', 'a.link'])
             ->innerJoinWith(['serviceEnc a' => function ($a) use ($name) {
                 $a->andWhere(['a.name' => $name]);
-            }],false)
+            }], false)
             ->andWhere(['z.is_selected' => 1]);
         if (Yii::$app->user->identity->organization) {
             $chkPermission->andWhere(['z.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
-            } else {
+        } else {
             $chkPermission->andWhere(['z.created_by' => $user_id]);
-            }
+            $chkPermission->andWhere(['or',
+                ['z.organization_enc_id' => NULL],
+                ['z.organization_enc_id' => '']
+            ]);
+        }
         $chkPermission = $chkPermission->asArray()->one();
         return $chkPermission;
     }
