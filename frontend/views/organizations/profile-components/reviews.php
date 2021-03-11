@@ -1,29 +1,30 @@
 <?php
-
+//if(!$isAjax) {
+//    echo $this->render("profile-header");
+//}
 ?>
-<section>
-    <div class="container m0">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="set-sticky">
-                    <h1 class="heading-style">Reviews </h1>
-                    <div id="org-reviews"></div>
-                    <div class="load-more-bttn">
-                        <button type="button" id="load_more_btn">Load More</button>
+    <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="set-sticky">
+                        <h1 class="heading-style">Reviews </h1>
+                        <div id="org-reviews"></div>
+                        <div class="load-more-bttn">
+                            <button type="button" id="load_more_btn">Load More</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="set-sticky">
-                    <div class="review-summary">
-                        <h1 class="heading-style">Overall Ratings</h1>
-                        <div id="reviewSum"></div>
+                <div class="col-md-4">
+                    <div class="set-sticky">
+                        <div class="review-summary">
+                            <h1 class="heading-style">Overall Ratings</h1>
+                            <div id="reviewSum"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+
 <?php
 echo $this->render('/widgets/mustache/college-review-card');
 $user_id = '';
@@ -31,9 +32,7 @@ if(!Yii::$app->user->isGuest){
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
 $this->registerCSS('
-.m0, section > .container, section > .container-fluid{
-    padding-top: 0px !important;
-}
+
 .rev-image {
 	text-align: center;
 	margin: 40px;
@@ -403,7 +402,6 @@ $this->registerCSS('
 $script = <<<JS
 var user_id = '$user_id';
 var baseUrl = '';
-
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
@@ -417,7 +415,6 @@ function getReviews(){
                 $('#reviewSum').append(reviewSideStats);
             }
         }
-        
     })
 }
 getReviews();
@@ -452,13 +449,12 @@ function getUserReviews(limit=3, page=null){
     })
 }
 getUserReviews();
-
 $(document).on('click','#load_more_btn',function(e){
     e.preventDefault();
     page = page + 1;
     getUserReviews(limit=3, page=page)
 });
-function reviewStats(overall_rating){
+function reviewStats(overall_rating{
     let reviewStat = ` <div class="row">
         <div class="col-md-12 col-sm-4">
             <div class="rs-main">
@@ -593,7 +589,25 @@ $(document).on('click','input[name="reporting_radio"]',function() {
 })
 $(document).on('click','#report_btn',function() {
   $('#review_enc_id').val($(this).attr('data-key'));
-})
+});
+
+$('.collegeLink').on('click', function (){
+     var dataKey = $(this).attr('data-key'); 
+     var url = window.location.pathname.split('/');
+     var slugg = url[1];
+     var subUrl = url[2];
+     console.log(dataKey);
+     if(subUrl && subUrl != dataKey){
+         history.replaceState({}, '', dataKey);
+     }else if(dataKey == "overview" || subUrl == "overview"){
+         console.log('oo'); 
+         history.replaceState({}, '', '/'+slugg);
+     }else{
+        history.pushState({}, '', '/'+slugg+"/"+dataKey);
+     }
+     // removeActive();
+     $(this).parent().addClass('cActive');
+ })
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
