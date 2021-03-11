@@ -614,6 +614,9 @@ $('.showmore').click(function () {
       status.addClass('j-textt');
   }
 });
+if(document.getElementsByClassName('j-text')[0].scrollHeight <= 451){
+    document.getElementsByClassName('read-more')[0].classList.add('hidden');
+}
 js;
 $this->registerJs('
 utilities.initials();
