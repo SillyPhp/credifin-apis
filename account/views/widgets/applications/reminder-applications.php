@@ -212,7 +212,7 @@ $this->registerCss("
 }
 .descrip {
     font-size: 17px;
-    font-family: roboto;
+    font-family: robotox;
     color: #000;
     line-height: 22px;
 }
