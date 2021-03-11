@@ -16,10 +16,10 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
             <div class="actions">
                 <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
             </div>
-            <div class="col-md-12 descrip">
-                A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
-                Keep a track of all your scheduled  job/internships.
-            </div>
+        </div>
+        <div class="descrip">
+            A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
+            Keep a track of all your scheduled  job/internships.
         </div>
         <div class="portlet-body">
             <div class="add-reminder">
@@ -211,10 +211,10 @@ $this->registerCss("
     font-size: 18px;
 }
 .descrip {
-    font-size: 16px;
-    font-family: lora;
-    padding: 12px 0px ;
+    font-size: 17px;
+    font-family: roboto;
     color: #000;
+    line-height: 22px;
 }
  .review-list-toggler{
     position: absolute;
