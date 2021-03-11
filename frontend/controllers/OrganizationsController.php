@@ -2,11 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\ApplicationOptions;
-use common\models\ApplicationPlacementCities;
-use common\models\ApplicationPlacementLocations;
-use common\models\ApplicationTypes;
-use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLabels;
@@ -132,10 +127,9 @@ class OrganizationsController extends Controller
 
     public function actionDetail($slug, $type = null)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $organization = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'CONCAT(a.slug, "' . $referral . '") as slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity'])
+            ->select(['a.organization_enc_id', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity'])
             ->joinWith(['businessActivityEnc b'], false)
             ->where([
                 'a.slug' => $slug,
@@ -147,7 +141,7 @@ class OrganizationsController extends Controller
         if (!$organization) {
             $organization = UnclaimedOrganizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', 'b.business_activity'])
+                ->select(['a.organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews") as slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', 'b.business_activity'])
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->where([
                     'slug' => $slug,
@@ -897,9 +891,8 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
             $organizations = \common\models\Organizations::find()
-                ->select(['initials_color color', 'CONCAT("/", slug, "' . $referral . '") link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['initials_color color', 'CONCAT("/", slug) link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->where(['is_sponsored' => 1])
                 ->limit(6)
                 ->asArray()
