@@ -25,13 +25,6 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-            <div class="organization-details">
-                <?php if ($website): ?>
-                    <a href="<?= $website ?>">
-                        <i class="fas fa-unlink"> Visit on Website</i>
-                    </a>
-                <?php endif; ?>
-            </div>
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
