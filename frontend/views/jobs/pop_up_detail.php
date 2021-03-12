@@ -70,7 +70,7 @@ if ($type == 'Internships') {
         <div class="modal-bg">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
+                    <div class="modal-main col-md-offset-2 col-sm-offset-1 col-xs-offset-1  col-md-8 col-sm-10 col-xs-10">
                         <a href="javascript:;" title="Close" class="jd-close">✕</a>
                         <div class="row bottom-line">
                             <div class="com-initials col-md-12 col-sm-12">
@@ -98,7 +98,41 @@ if ($type == 'Internships') {
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                        <div class="j-details col-md-4">
+                        <div class="col-md-12">
+                            <div class="share-bar">
+                                <h3>Share</h3>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-fb">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-linkedin">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-google">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                                <a href="javascript:;" class="tg-tele"
+                                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                    <i class="fab fa-telegram-plane"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="j-details col-md-12">
                             <ul class="job-overviews row">
                                 <li>
                                     <i class="far fa-clock"></i>
@@ -194,42 +228,8 @@ if ($type == 'Internships') {
                                     <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
                                 </li>
                             </ul>
-                            <div class="col-md-12 p-0">
-                                <div class="share-bar">
-                                    <h3>Share</h3>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-fb">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-twitter">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-linkedin">
-                                        <i class="fab fa-linkedin-in"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-whatsapp">
-                                        <i class="fab fa-whatsapp"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-google">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                    <a href="javascript:;" class="tg-tele"
-                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                                        <i class="fab fa-telegram-plane"></i>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
-                        <div class="j-discription col-md-8">
+                        <div class="j-discription col-md-12">
                             <h3 class="job-detail">Skills Required</h3>
                             <div class="tags-bar">
                                 <?php
@@ -292,7 +292,7 @@ $this->registerCss('
 .showmore{display: block;}
 .modalDialog {
     position: fixed;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: roboto;
     top: 0;
     right: 0;
     bottom: 0;
@@ -348,30 +348,33 @@ $this->registerCss('
     color:#ff7803;
     transition:.5s;
 }
-.bottom-line{
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 15px;
-    box-shadow: 0px 2px 5px -1px #ddd;
-    padding-top: 20px;
+.bottom-line {
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 15px;
+	box-shadow: 0px 2px 5px -1px #ddd;
+	padding-top: 20px;
+	display: flex;
 }
 .job-overviews {
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    margin: 0;
-    padding-left: 15px !important;
+	border: 2px solid #e8ecec;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	margin: 0;
+	padding-left: 15px !important;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
 }
 .job-overviews li {
-    float: left;
-    width: 100%;
-    margin: 0;
-    position: relative;
-    padding-left: 50px;
-    margin: 8px 0px;
-    min-height: 45px;
+	width: 192px;
+	position: relative;
+	padding-left: 50px;
+	margin: 8px 2px;
+	min-height: 45px;
 }
 .job-overviews li i {
     position: absolute;
@@ -381,27 +384,29 @@ $this->registerCss('
     color: #4aa1e3;
 }
 .job-overviews li h3 {
-    float: left;
-    width: 100%;
-    font-size: 13px;
-    font-family: Open Sans;
-    margin: 0;
-    color: #1e1e1e;
-    font-weight: 600;
+	width: 100%;
+	font-size: 13px;
+	font-family: roboto;
+	margin: 0;
+	color: #1e1e1e;
+	font-weight: 600;
 }
 .job-overviews li span {
-    float: left;
-    width: 100%;
-    font-size: 13px;
-    color: #545454;
-    margin-top: 4px;
+	width: 100%;
+	font-size: 13px;
+	color: #545454;
+	margin-top: 4px;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .job-overviews li:hover i {
     color: #ef7706;
 }
 h3.job-detail {
     width: 100%;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 15px;
     color: #202020;
     margin-bottom: 15px;
@@ -409,32 +414,31 @@ h3.job-detail {
     font-weight: 600;
 }
 .tags-bar {
-    float: left;
-    width: 100%;
-    margin-bottom: 20px;
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    padding: 10px;
-    position: relative;
+	margin-bottom: 20px;
+	border: 2px solid #e8ecec;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: wrap;
 }
 .tags-bar > span {
-    float: left;
-    background: #f4f5fa;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    font-family: Open Sans;
-    font-size: 13px;
-    padding: 7px 17px;
-    margin-right: 15px;
-    margin-bottom: 5px;
-    position: relative;
+	background: #f4f5fa;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	font-family: roboto;
+	font-size: 13px;
+	padding: 7px 17px;
+	margin-right: 10px;
+	margin-bottom: 5px;
 }
 .job-overviews li *, .apply-job-btn{
     -webkit-transition: all 0.4s ease 0s;
@@ -455,7 +459,7 @@ h3.job-detail {
     -ms-border-radius: 40px;
     -o-border-radius: 40px;
     border-radius: 40px;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 13px;
     color: #ef7706;
     width: 200px;
@@ -497,7 +501,7 @@ h3.job-detail {
 	margin: 0px 0 4px;
 	color: #fff;
 	padding: 5px 0;
-	min-width: 100px;
+	min-width: 130px;
 }
 .share-bar a.share-fb {
     background-color: #3b5998;
@@ -522,7 +526,7 @@ h3.job-detail {
     border-color:#0088cc;  
 }
 .com-name{ 
-    font-size:24px; 
+    font-size:20px; 
     font-weight:600;
     font-family:roboto;
 }
@@ -544,7 +548,7 @@ h3.job-detail {
 	height: 100px;
 	border-radius: 50%;
 	overflow: hidden;
-	margin:0 10px 0 0;
+	margin: 0 10px 0 0;
 }
 .j-details{padding-top:20px;}
 
@@ -591,8 +595,10 @@ h3.job-detail {
     content: "";
 }
 @media only screen and (max-width:670px){
-.com-initials{
-    display:block;
+.com-initials {
+	display: block;
+	margin: auto;
+	text-align: center;
 }
 .company-logo{
     margin:0 auto;
