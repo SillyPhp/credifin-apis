@@ -150,10 +150,10 @@ use yii\helpers\Url;
 <section id="jobs">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="type-1">
                     <div>
                         <a href="javascript:;" class="btn btn-3 search-jobs-link">
@@ -173,10 +173,10 @@ use yii\helpers\Url;
 <section id="internships">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Internships</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="type-1">
                     <div>
                         <a href="javascript:;" class="btn btn-3 search-internships-link">

@@ -19,7 +19,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 <div class="col-md-12 set-overlay">
     <div class="row">
         <h1 class="tweet-job-heading">Create a Tweet <?= (($type=="Jobs")?"Job":"Internship") ?> !!</h1>
-        <h3 class="tweet-job-sub-heading">Tweet a <?= (($type=="Jobs")?"Job":"Internship") ?> vacancy & Find the best candidates</h3>
+        <h2 class="tweet-job-sub-heading">Tweet a <?= (($type=="Jobs")?"Job":"Internship") ?> vacancy & Find the best candidates</h2>
         <div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
@@ -206,7 +206,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h4>
+                    <h3 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h3>
                 </div>
                 <div class="modal-body">
                     <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
