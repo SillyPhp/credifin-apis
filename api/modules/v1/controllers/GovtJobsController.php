@@ -96,6 +96,22 @@ class GovtJobsController extends ApiBaseController
                 $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                 $get[$i]['Duration'] = $pos['RateIntervalCode'];
+                $get[$i]['salary'] = 'View in Details';
+                if ($pos['MinimumRange'] || $pos['MaximumRange']) {
+                    $get[$i]['salary'] = '';
+                    if ($pos['MinimumRange']) {
+                        $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                    }
+                    if ($pos['MinimumRange'] && $pos['MaximumRange']) {
+                        $get[$i]['salary'] .= ' - ';
+                    }
+                    if ($pos['MinimumRange']) {
+                        $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                    }
+                    if($pos['RateIntervalCode']){
+                        $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                    }
+                }
                 $data = UsaDepartments::find()
                     ->select(['image', 'image_location'])
                     ->where(['Value' => $get[$i]['DepartmentName']])
@@ -205,16 +221,34 @@ class GovtJobsController extends ApiBaseController
         $v = json_decode($result, true);
         $i = 0;
         foreach ($v['SearchResult']['SearchResultItems'] as $key => $val) {
-            $get[$i]['DepartmentName'] = $val['MatchedObjectDescriptor']['OrganizationName'];
-            $get[$i]['PositionTitle'] = $val['MatchedObjectDescriptor']['PositionTitle'];
-            $get[$i]['MinimumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MinimumRange'];
-            $get[$i]['MaximumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MaximumRange'];
-            $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($val['MatchedObjectDescriptor']['ApplicationCloseDate']));
-            $get[$i]['PositionLocation'] = $this->getCityName($val['MatchedObjectDescriptor']['PositionLocationDisplay']);
-            $get[$i]['Location'] = $val['MatchedObjectDescriptor']['PositionLocationDisplay'];
-            $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
+            $desc = $val['MatchedObjectDescriptor'];
+            $pos = $desc['PositionRemuneration'][0];
+            $get[$i]['DepartmentName'] = $desc['OrganizationName'];
+            $get[$i]['PositionTitle'] = $desc['PositionTitle'];
+            $get[$i]['MinimumRange'] = $pos['MinimumRange'];
+            $get[$i]['MaximumRange'] = $pos['MaximumRange'];
+            $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($desc['ApplicationCloseDate']));
+            $get[$i]['PositionLocation'] = $this->getCityName($desc['PositionLocationDisplay']);
+            $get[$i]['Location'] = $desc['PositionLocationDisplay'];
+            $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
             $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
-            $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
+            $get[$i]['Duration'] = $pos['RateIntervalCode'];
+            $get[$i]['salary'] = 'View in Details';
+            if ($pos['MinimumRange'] || $pos['MaximumRange']) {
+                $get[$i]['salary'] = '';
+                if ($pos['MinimumRange']) {
+                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                }
+                if ($pos['MinimumRange'] && $pos['MaximumRange']) {
+                    $get[$i]['salary'] .= ' - ';
+                }
+                if ($pos['MinimumRange']) {
+                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                }
+                if($pos['RateIntervalCode']){
+                    $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                }
+            }
             $data = UsaDepartments::find()
                 ->select(['image', 'image_location'])
                 ->where(['Value' => $get[$i]['DepartmentName']])

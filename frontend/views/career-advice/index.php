@@ -99,7 +99,7 @@ $careerAdviceCategories = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                            .trending-heading:before           <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
@@ -423,9 +423,9 @@ $careerAdviceCategories = [
                                                          height="133" alt="<?= $post['featured_image_alt']; ?>"
                                                          title="<?= $post['featured_image_title']; ?>"
                                                          url="<?= Yii::$app->urlManager->createAbsoluteUrl('/blog/' . $post['slug']); ?>">
-                                                    <div class="carousel-content">
-                                                        <a href="<?= Url::to('/blog/' . $post['slug']); ?>"></a>
-                                                    </div>
+                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>" class="carousel-content">
+
+                                                    </a>
                                                 </div>
                                                 <?php
                                             }
@@ -476,6 +476,38 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+#slider1 .owl-stage-outer {
+    overflow: visible !important;
+    z-index:1000;
+}
+.carousel-content{
+    width:100%;
+    height:100%;
+}
+.owl-controls {
+    display: none !important;
+}
+.zoom {
+    transition: transform .4s;
+    width: 253px;
+    height: 320px;
+    margin: 0 auto;
+    padding: 50px 0;
+    top:-10px;
+    left:-10px;
+    transition-timing-function: linear;
+    z-index:300;
+}
+.zoom img{
+    height:200px;
+    z-index:-500;
+}
+.zoom:hover{
+    -ms-transform: scale(1.4); /* IE 9 */
+    -webkit-transform: scale(1.4); /* Safari 3-8 */
+    transform: scale(1.4);
+    z-index: 999;
+}
 .info-head, .articles-head {
     font-size: 20px;
     font-family: \'Lobster\';
@@ -619,7 +651,7 @@ $this->registerCss('
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 107px 0px 0px;
+    border-width: 1px 68px 0px 0px;
     top: 11px;
     left: 5px;
 }
@@ -1088,6 +1120,28 @@ a.button:hover span {
 a.button:hover span:after {
   opacity: 1;
   right: 0;
+}
+@media screen and (max-width: 450px){
+    .zoom img{
+        width:79vw !important;
+    }
+    .zoom{
+        padding-left: 26px;
+    }
+}
+@media screen and (max-width: 768px){
+    .controls {
+        margin-top: 35px;
+    }
+    .owl-stage-outer{
+        overflow: hidden !important;
+    }
+    .zoom:hover{
+        -ms-transform: scale(1.5,1.2);
+        -webkit-transform: scale(1.5,1.2);
+        transform: scale(1.5,1.2);
+        left: 8%;
+   }   
 }
 
 ');
