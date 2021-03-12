@@ -905,13 +905,36 @@ class SiteController extends Controller
             case 'getInfrastructure':
                 return $this->renderAjax('/widgets/college-widgets/college-infrastructure');
                 break;
+            case 'getReviews':
+                return $this->renderAjax('/widgets/college-widgets/college-review');
+                break;
+            case 'getLoans':
+                $model = new AdmissionForm();
+                return $this->renderAjax('/widgets/college-widgets/college-loans',[
+                    'model' => $model,
+                ]);
+                break;
             case 'getGallery':
                 return $this->renderAjax('/widgets/college-widgets/college-gallery');
                 break;
             default :
         }
     }
-
+    public function actionCollegeLoanEnquiry(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+    }
     public function actionLoadData()
     {
         $type = Yii::$app->request->post('type');
@@ -1230,7 +1253,10 @@ class SiteController extends Controller
     {
         return $this->render('college-main');
     }
-
+    public function actionDetailedCollege()
+    {
+        return $this->render('detailed-college');
+    }
     public function actionResumeBuilderLandingPage()
     {
         return $this->render('resume-builder-landing-page');
@@ -1285,6 +1311,22 @@ class SiteController extends Controller
             }
         }
         return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
+    }
+
+    function actionEPartners(){
+        return $this->render('e-partners');
+    }
+
+    function actionCollegeOver(){
+        $this->layout = 'blank-layout';
+        return $this->render('college-over');
+    }
+    function actionCollegeLoans(){
+        $this->layout = 'blank-layout';
+        $model = new AdmissionForm();
+        return $this->render('college-loans',[
+            'model' => $model,
+        ]);
     }
 
 }

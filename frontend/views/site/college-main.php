@@ -9,13 +9,6 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row college-flex">
                 <div class="college-main">
-                    <div class="college-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/jb.png') ?>">
-                    </div>
-                    <div class="college-info">
-                        <h3>Lovely Professional University (LPU)</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> Jalandhar</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -36,45 +29,56 @@ use yii\helpers\Url;
                                     Overview
                                 </a>
                             </li>
-                            <li class="nav-item courses" data-toggle="tab">
-                                <a class="nav-link" href="#courses" data-key="getCourses" data-id="courses" role="tab"
+<!--                            <li class="nav-item courses" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#courses" data-key="getCourses" data-id="courses" role="tab"-->
+<!--                                   data-toggle="tab">-->
+<!--                                    Courses & Fee-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item placements" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#placements" data-key="getPlacements" role="tab"-->
+<!--                                   data-toggle="tab">-->
+<!--                                    Placements-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item scholarship" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#scholarship" data-key="getScholarship" role="tab"-->
+<!--                                   data-toggle="tab">-->
+<!--                                    Scholarships-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item cutoff" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#cutoff" data-key="getCutoff" role="tab" data-toggle="tab">-->
+<!--                                    CutOff-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item faculty" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#faculty" data-key="getFaculty" role="tab" data-toggle="tab">-->
+<!--                                    Faculty-->
+<!--                                </a>-->
+<!--                            </li>-->
+<!--                            <li class="nav-item infrastructure" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#infrastructure" data-key="getInfrastructure" role="tab"-->
+<!--                                   data-toggle="tab">-->
+<!--                                    Infrastructure-->
+<!--                                </a>-->
+<!--                            </li>-->
+                            <li class="nav-item loans" data-toggle="tab">
+                                <a class="nav-link" href="#loans" data-key="getLoans" role="tab" data-toggle="tab">
+                                    Loans
+                                </a>
+                            </li>
+                            <li class="nav-item reviews" data-toggle="tab">
+                                <a class="nav-link" href="#reviews" data-key="getReviews" role="tab"
                                    data-toggle="tab">
-                                    Courses & Fee
+                                    Reviews
                                 </a>
                             </li>
-                            <li class="nav-item placements" data-toggle="tab">
-                                <a class="nav-link" href="#placements" data-key="getPlacements" role="tab"
-                                   data-toggle="tab">
-                                    Placements
-                                </a>
-                            </li>
-                            <li class="nav-item scholarship" data-toggle="tab">
-                                <a class="nav-link" href="#scholarship" data-key="getScholarship" role="tab"
-                                   data-toggle="tab">
-                                    Scholarships
-                                </a>
-                            </li>
-                            <li class="nav-item cutoff" data-toggle="tab">
-                                <a class="nav-link" href="#cutoff" data-key="getCutoff" role="tab" data-toggle="tab">
-                                    CutOff
-                                </a>
-                            </li>
-                            <li class="nav-item faculty" data-toggle="tab">
-                                <a class="nav-link" href="#faculty" data-key="getFaculty" role="tab" data-toggle="tab">
-                                    Faculty
-                                </a>
-                            </li>
-                            <li class="nav-item infrastructure" data-toggle="tab">
-                                <a class="nav-link" href="#infrastructure" data-key="getInfrastructure" role="tab"
-                                   data-toggle="tab">
-                                    Infrastructure
-                                </a>
-                            </li>
-                            <li class="nav-item gallery" data-toggle="tab">
-                                <a class="nav-link" href="#gallery" data-key="getGallery" role="tab" data-toggle="tab">
-                                    Gallery
-                                </a>
-                            </li>
+<!--                            <li class="nav-item gallery" data-toggle="tab">-->
+<!--                                <a class="nav-link" href="#gallery" data-key="getGallery" role="tab" data-toggle="tab">-->
+<!--                                    Gallery-->
+<!--                                </a>-->
+<!--                            </li>-->
                         </ul>
                     </div>
                     <div class="tab-content">
@@ -94,7 +98,103 @@ use yii\helpers\Url;
                                 </svg>
                             </div>
                         </div>
-                        <div id="courses" class="tab-pane fade" role="tabpanel">
+<!--                        <div id="courses" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div id="placements" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div id="scholarship" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div id="cutoff" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div id="faculty" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div id="infrastructure" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div id="loans" class="tab-pane fade" role="tabpanel">
                             <div class="text-center">
                                 <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
                                      class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
@@ -110,7 +210,7 @@ use yii\helpers\Url;
                                 </svg>
                             </div>
                         </div>
-                        <div id="placements" class="tab-pane fade" role="tabpanel">
+                        <div id="reviews" class="tab-pane fade" role="tabpanel">
                             <div class="text-center">
                                 <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
                                      class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
@@ -126,95 +226,36 @@ use yii\helpers\Url;
                                 </svg>
                             </div>
                         </div>
-                        <div id="scholarship" class="tab-pane fade" role="tabpanel">
-                            <div class="text-center">
-                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
-                                     style="max-width: 100px;">
-                                    <g class="fa-group">
-                                        <path fill="#ddd"
-                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"
-                                              class="fa-secondary" style="fill: #ddd;"></path>
-                                        <path fill="#00a0e3"
-                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"
-                                              class="fa-primary" style="color: #000;"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div id="cutoff" class="tab-pane fade" role="tabpanel">
-                            <div class="text-center">
-                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
-                                     style="max-width: 100px;">
-                                    <g class="fa-group">
-                                        <path fill="#ddd"
-                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"
-                                              class="fa-secondary" style="fill: #ddd;"></path>
-                                        <path fill="#00a0e3"
-                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"
-                                              class="fa-primary" style="color: #000;"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div id="faculty" class="tab-pane fade" role="tabpanel">
-                            <div class="text-center">
-                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
-                                     style="max-width: 100px;">
-                                    <g class="fa-group">
-                                        <path fill="#ddd"
-                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"
-                                              class="fa-secondary" style="fill: #ddd;"></path>
-                                        <path fill="#00a0e3"
-                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"
-                                              class="fa-primary" style="color: #000;"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div id="infrastructure" class="tab-pane fade" role="tabpanel">
-                            <div class="text-center">
-                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
-                                     style="max-width: 100px;">
-                                    <g class="fa-group">
-                                        <path fill="#ddd"
-                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"
-                                              class="fa-secondary" style="fill: #ddd;"></path>
-                                        <path fill="#00a0e3"
-                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"
-                                              class="fa-primary" style="color: #000;"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div id="gallery" class="tab-pane fade" role="tabpanel">
-                            <div class="text-center">
-                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
-                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"
-                                     style="max-width: 100px;">
-                                    <g class="fa-group">
-                                        <path fill="#ddd"
-                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"
-                                              class="fa-secondary" style="fill: #ddd;"></path>
-                                        <path fill="#00a0e3"
-                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"
-                                              class="fa-primary" style="color: #000;"></path>
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
+<!--                        <div id="gallery" class="tab-pane fade" role="tabpanel">-->
+<!--                            <div class="text-center">-->
+<!--                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"-->
+<!--                                     class="svg-inline--fa fa-spinner-third fa-w-16 fa-spin" viewBox="0 0 512 512"-->
+<!--                                     style="max-width: 100px;">-->
+<!--                                    <g class="fa-group">-->
+<!--                                        <path fill="#ddd"-->
+<!--                                              d="M478.71 364.58zm-22 6.11l-27.83-15.9a15.92 15.92 0 0 1-6.94-19.2A184 184 0 1 1 256 72c5.89 0 11.71.29 17.46.83-.74-.07-1.48-.15-2.23-.21-8.49-.69-15.23-7.31-15.23-15.83v-32a16 16 0 0 1 15.34-16C266.24 8.46 261.18 8 256 8 119 8 8 119 8 256s111 248 248 248c98 0 182.42-56.95 222.71-139.42-4.13 7.86-14.23 10.55-22 6.11z"-->
+<!--                                              class="fa-secondary" style="fill: #ddd;"></path>-->
+<!--                                        <path fill="#00a0e3"-->
+<!--                                              d="M271.23 72.62c-8.49-.69-15.23-7.31-15.23-15.83V24.73c0-9.11 7.67-16.78 16.77-16.17C401.92 17.18 504 124.67 504 256a246 246 0 0 1-25 108.24c-4 8.17-14.37 11-22.26 6.45l-27.84-15.9c-7.41-4.23-9.83-13.35-6.2-21.07A182.53 182.53 0 0 0 440 256c0-96.49-74.27-175.63-168.77-183.38z"-->
+<!--                                              class="fa-primary" style="color: #000;"></path>-->
+<!--                                    </g>-->
+<!--                                </svg>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
 <?php
+$user_id = '';
+if(!Yii::$app->user->isGuest){
+    $user_id = Yii::$app->user->identity->user_enc_id;
+}
 $this->registerCss('
 .college-header {
-	background-image: url("/assets/themes/ey/images/pages/college-new-module/lpu.jpg");
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -270,6 +311,8 @@ $this->registerCss('
     background-color:#fff;
     padding:0 50px;
     margin-bottom:35px;
+    box-shadow:0 0 10px rgba(139,139,139,.1);
+    box-shadow:0 0 10px rgba(139,139,139,.1);
 }
 #tile-1 .tab-pane
 {
@@ -418,12 +461,16 @@ body{
 }
 ');
 $script = <<<JS
+var user_id = '$user_id';
+// var url = window.location.pathname.split('/');
+// var slug = url[1];
 
 function initializePosSticky() {
   var mainHeight = $('.tab-pane.active').height();
   $('.tab-content').css('height',mainHeight);
 }
 initializePosSticky();
+
 $(document).on('click', '.scroll-to-sec', function(e) {
     e.preventDefault();
     var sectionId = $(this).attr('href');
@@ -458,11 +505,12 @@ $("#tile-1 ul > li > a").on('click', function(event) {
     } 
   });
 var loadedData = [];
+var Hpoints;
 $(document).on('click','.getDataList > li > a', function(e) {
     var key = $(this).attr('data-key');
     var elem = $(this).attr('href');
     var window_url = window.location.pathname + elem;
-    initializePosSticky();
+    // initializePosSticky();
     if($.inArray(key, loadedData) < 0) {
         $.ajax({
             url: "/site/load-college-data",
@@ -475,7 +523,12 @@ $(document).on('click','.getDataList > li > a', function(e) {
                 loadedData.push(key);
                 window.history.pushState({},"", window_url);
                 if(elem != '#gallery'){
-                    initializePosSticky();
+                    setTimeout(function (){
+                        if(elem == '#overview' && Hpoints != '' && $('.h-points').children().length < 1) {
+                            $('.h-points').append(Hpoints);
+                        }
+                        initializePosSticky();
+                    },800)
                 } else {
                     $('.tab-content').css('height','auto');
                 }
@@ -493,10 +546,10 @@ $(document).on('click','.getDataList > li > a', function(e) {
     } else {
         $('.tab-content').css('height','auto');
     }
-})
+});
 
 if($(window.location.hash).length){
-    $('#getDataList .nav-item').removeClass('active');
+    $('#hamburgerJobs .nav-item').removeClass('active');
     var nav_item_id = '.' + $(window.location.hash).attr('id');
     $(nav_item_id).addClass('active');
     $(nav_item_id + ' a').trigger('click');
@@ -508,6 +561,68 @@ if($(window.location.hash).length){
     setTimeout(function() {
         $('.getDataList .active a').trigger('click');
     },500)
+}
+
+var baseUrl = 'https://ravinder.eygb.me';
+function getDetails(){
+    var slug = 'erexxtesting';
+    $.ajax({
+        url: baseUrl+"/api/v3/ey-college-profile/college-detail",
+        method: 'POST',
+        async:false,
+        data: {slug:slug},
+        success: function (res){
+            if(res.response.status == 200){
+                var response = res.response.data;
+                let collegeDet = collegeInfo(res);
+                Hpoints = overviewTemp(res);
+                $('.college-main').append(collegeDet);
+                setTimeout(function (){
+                    $('.h-points').append(Hpoints);
+                },100)
+            }
+        }
+    })
+}
+getDetails();
+function overviewTemp(res){
+    const {affiliated_to, website, website_link} = res.response.data;
+    let mainTemp = '';
+    if(res.response.data['affiliated_to']){
+        var affiliatedTemp = `<div class="h-point1">
+                                <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
+                                <div class="fa-text">
+                                    <h3>Affiliated to</h3>
+                                    <p>`+affiliated_to+`</p>
+                                </div>
+                            </div>`;
+        mainTemp += affiliatedTemp;
+    }
+    
+    if(res.response.data['website']){
+        var websiteTemp= `<div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-link"></i></div>
+                            <div class="fa-text">
+                                <h3>Official Website</h3>
+                                <p><a href="`+website_link+`">
+                                `+website+`</a></p>
+                            </div>
+                        </div>`;        
+        mainTemp += websiteTemp;
+    }
+    return mainTemp;
+}
+
+function collegeInfo(res) {
+    const {city_name, logo, name, organization_enc_id} = res.response.data;
+    var collegeInfo = `<div class="college-logo">
+                        <img src="`+logo+`">
+                    </div>
+                    <div class="college-info">
+                        <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
+                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
+                    </div>`;
+    return collegeInfo;
 }
 JS;
 $this->registerJs($script);

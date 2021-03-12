@@ -36,7 +36,7 @@ switch ([$controller_id, $action_id]) {
                         </div>
                         <div class="comps-name-1 application-card-description">
                             <span class="skill">
-                                <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
+                                <a href="{{link}}" title="{{title}}" class="application-title capitalize">
                                     {{title}}
                                 </a>
                             </span>

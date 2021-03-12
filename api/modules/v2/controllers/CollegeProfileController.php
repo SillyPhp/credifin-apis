@@ -732,7 +732,7 @@ class CollegeProfileController extends ApiBaseController
                     $za->onCondition(['za.is_available' => 1, 'za.is_deleted' => 0]);
                 }])
                 ->joinWith(['appliedApplications zaa' => function ($zaa) use ($college_id) {
-                    $zaa->select(['zaa.application_enc_id', 'zaa.applied_application_enc_id', 'fa.username']);
+                    $zaa->select(['zaa.application_enc_id', 'zaa.applied_application_enc_id', 'fa.username', 'gg.organization_enc_id']);
                     $zaa->joinWith(['createdBy fa' => function ($f) use ($college_id) {
                         $f->joinWith(['userOtherInfo gg' => function ($gg) use ($college_id) {
                             $gg->onCondition(['gg.organization_enc_id' => $college_id, 'gg.is_deleted' => 0]);
@@ -740,7 +740,7 @@ class CollegeProfileController extends ApiBaseController
                         $f->onCondition(['fa.is_deleted' => 0]);
                     }], false);
                     $zaa->onCondition(['zaa.is_deleted' => 0]);
-                }])
+                }], false)
                 ->where([
                     'a.is_deleted' => 0,
 //                    'a.status' => 'Active',
@@ -762,7 +762,7 @@ class CollegeProfileController extends ApiBaseController
             }
             $result = $jobs
 //                ->orderBy(['b.is_college_approved' => SORT_DESC])
-                ->orderBy([new \yii\db\Expression('a.status = "Active" desc'), 'b.is_college_approved' => SORT_DESC, 'zaa.application_enc_id' => SORT_ASC])
+                ->orderBy([new \yii\db\Expression('a.status = "Active" desc'), 'b.is_college_approved' => SORT_DESC, 'gg.organization_enc_id' => SORT_ASC])
                 ->asArray()
                 ->all();
 

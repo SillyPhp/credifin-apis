@@ -77,13 +77,6 @@ color: #2b7cb7;
 .main-content{
     min-height:100vh !important;
 }
-.connected-sortable{
-    padding: 15px 0 0 0 !important;
-}
-.close{
-    right: 12px !important;
-    top: -3px !important;
-}
 ');
 ?>
 

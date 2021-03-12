@@ -405,7 +405,7 @@ button, input, optgroup, select, textarea {
 .application-card-add, .featured-application-card-add{
     background-color: #ed4303;
 }
-.org_name{
+.org_name,.application-title{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

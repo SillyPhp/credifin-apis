@@ -42,6 +42,7 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
+    'slug'=>$slug
 ]);
 ?>
 <section class="rh-header">
@@ -168,7 +169,7 @@ echo $this->render('/widgets/drop_resume', [
                                     <?php } ?>
                                 </div>
                             </div>
-                        </div>
+                        </div>n1
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
@@ -341,7 +342,7 @@ echo $this->render('/widgets/drop_resume', [
                 ?>
                 <div class="row">
                     <div class="col-md-6 col-md-offset-1">
-                        <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => Anonymous, 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
+                        <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => 'Anonymous', 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -1145,6 +1146,7 @@ border: 2px solid #cadfe8 !important;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
+    color:#333;
 }
 #autocomplete-list div,.tt-dataset{
     padding: 3px;
@@ -1521,7 +1523,7 @@ $headScript = <<< JS
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
+       url : '/organizations/post-reviews?slug=$slug&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)

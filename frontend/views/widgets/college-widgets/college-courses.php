@@ -42,6 +42,70 @@ use yii\helpers\Url;
                         <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
                         <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
                         <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
+                        <div class="loanPro">
+                            <h4>Available Loan Options</h4>
+                            <ul>
+                                <li>
+                                    <div class="loanProIcon" onclick="showDetailDiv()">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="loanProIcon" onclick="showDetailDiv()">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>">
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="loanDetails">
+                                <div class="col-md-12 ">
+                                    <div class="disFlex">
+                                        <div>Loan Provider: </div>
+                                        <div class="lp-active">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>">
+                                        </div>
+                                        <div class="loanDetailsHide" onclick="loanDetailsHide()"><i class="fas fa-times"></i></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="ld-card">
+                                        <h5 class="ld-main-title">Fees Details</h5>
+                                        <ul>
+                                            <li>
+                                                <div class="ld-title">Tuition: <span>₹ 2.75 Lacs/yr</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">Hostel Fee: <span>N/A</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">Others: <span>N/A</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">Total Fees: <span>₹ 2.75 Lacs/yr</span></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="ld-card">
+                                        <h5 class="ld-main-title">Loan Details</h5>
+                                        <ul>
+                                            <li>
+                                                <div class="ld-title">Loan Amount: <span>₹ 76300/yr</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">Interest Rate: <span>N/A</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">Repayment Period: <span>N/A</span></div>
+                                            </li>
+                                            <li>
+                                                <div class="ld-title">EMI: <span>₹ 76300/yr</span></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h4>Available Courses</h4>
                     <div class="course-box-details">
@@ -164,6 +228,72 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.lp-active{
+    max-width: 80px;
+    max-height: 80px;
+    margin-left: 10px;
+}
+.lp-active img{
+    width: 100%;
+    height: 100%;
+}
+.disFlex{
+    display: flex;
+    align-items: center;
+    margin-top: 20px !important;
+    position: relative;
+}
+.disFlex div{
+    display: inline-block;
+    flex-basis: auto !important;
+    margin-bottom: 0px !important;
+}
+.loanPro{
+    flex-basis: 100% !important;
+}
+.loanPro ul li{
+    display: inline-block;
+    padding: 0 10px;
+}
+.loanProIcon{
+    max-width: 100px;
+    max-height: 100px;
+    
+}
+.loanProIcon img{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.loanDetails{
+    border-top: 1px solid #eee;
+    margin-top: 5px;
+    padding-top: 5px;
+    display: none;
+}
+.loanDetailsShow{
+    display: block;
+}
+.loanDetailsHide{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+.ld-card h5{
+    font-weight: bold;
+    font-size: 16px;   
+}
+.ld-title{    
+    margin-bottom: 5px !important;
+}
+.ld-title span{
+    font-weight: bold;
+}
+.ld-card ul li{
+    display: block;
+    padding: 0 !important;
+}
 .set-h2 h2 {
 	font-size: 16px;
 	font-weight: 500;
@@ -205,7 +335,7 @@ $this->registerCss('
 .courses-box h4{
     font-family:roboto;
     color:#ff7803;
-    text-align:center;
+    text-align:left;
     font-size: 20px;
     font-weight: 500;
 } 
@@ -259,6 +389,8 @@ $(document).on('click', '.scroll-to-sec', function(e) {
 setTimeout(function() {
   initializePosSticky();
 },700);
+
+  
 JS;
 $this->registerJs($script);
 ?>
@@ -281,4 +413,17 @@ $this->registerJs($script);
             }
         }
     }
+
+    function showDetailDiv(){
+        let loanDetails = document.querySelector('.loanDetails');
+        loanDetails.classList.add('loanDetailsShow');
+    }
+
+    function loanDetailsHide(e){
+        let clickedElem = this.event.currentTarget;
+        let parentElem = clickedElem.closest('.loanDetails');
+        parentElem.classList.remove('loanDetailsShow');
+    }
+
+
 </script>

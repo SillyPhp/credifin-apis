@@ -25,11 +25,6 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-            <div class="organization-details">
-                <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><a href="<?= $website; ?>"><?= $website; ?></a></p>
-                <?php endif; ?>
-            </div>
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -147,6 +142,10 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 <a href="javascript:;" class="enve-e"
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
+                </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
                 </a>
             </div>
             <!--            <div class="qr-code">-->
@@ -275,6 +274,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -338,14 +338,14 @@ $this->registerCss('
     padding-bottom: 50px;
 }
 #logo_img {
-    width: 115px !Important;
-    height: 115px !Important;
+    width: 85px !Important;
+    height: 100px !Important;
 }
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -353,9 +353,9 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px 0;
+    padding:5px;
     width: 42%;
-    font-size: 14px;
+    font-size: 12px;
     font-family: roboto;
     border-radius: 2px;
     color: #333;
@@ -416,47 +416,45 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin: 0 5px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+	text-decoration: none !important;
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 5px;
+	font-size: 17px;
+	overflow: hidden;
+	position: relative;
+	color: #fff;
+	border: 2px solid #fff;
+	line-height: 24px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
-}
-.effect a i {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0px;
-  margin-top: 2px;
+	font-size: 14px;
 }
 .effect a.facebook-f:hover{
     background:#3b5998;
     border-color:#3b5998;
 } 
 .effect a.twitter-t:hover{
-    background:#6699FF;
-    border-color:#6699FF;
+    background:#1DA1F2;
+    border-color:#1DA1F2;
 } 
 .effect a.linked-l:hover{
-    background:#0e76a8;
-    border-color:#0e76a8;
+    background:#3B5998;
+    border-color:#3B5998;
 }
 .effect a.whatsapp-w:hover{
-    background:#25D366;
-    border-color:#25D366;
+    background:#4FCE5D;
+    border-color:#4FCE5D;
 }
 .effect a.enve-e:hover{
-    background:#00a0e3;
-    border-color:#00a0e3;
+    background:#DB4437;
+    border-color:#DB4437;
+}
+.effect a.tg-tele:hover{
+    background-color:#0088cc;
+    border-color:#0088cc;  
 }
 .intl-tel-input, .iti {
     width: 100%;
@@ -533,7 +531,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .btn-parent{
         position: fixed;
-        bottom:0px;
+        bottom:28px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9;

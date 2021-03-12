@@ -844,7 +844,7 @@ $this->registerCss('
         margin-bottom: 30px;
     }
 }
-@media only screen and (max-width: 991px) and (min-width: 375px){
+@media only screen and (max-width:766px) and (min-width: 375px){
 .sett-marg{
 	margin-top: 15px;
 }

@@ -9,6 +9,7 @@ use api\modules\v2\models\ImageScript;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
+use common\models\CandidateConsiderJobs;
 use common\models\CandidateRejection;
 use common\models\EmployerApplications;
 use common\models\ErexxEmployerApplications;
@@ -710,7 +711,7 @@ class JobsController extends ApiBaseController
 
             if ($data) {
                 $per = 0;
-                $total = 4;
+                $total = 5;
                 $t = 100 / $total;
                 if ($data['city_enc_id']) {
                     $per += $t;
@@ -726,7 +727,7 @@ class JobsController extends ApiBaseController
                     }
                 }
                 $profile_completed = false;
-                if ($per == 100) {
+                if ($per >= 100) {
                     $profile_completed = true;
                 }
                 return ['is_completed' => $profile_completed, 'percent' => $per];
@@ -888,11 +889,33 @@ class JobsController extends ApiBaseController
                         ->select(['a.candidate_rejection_enc_id', 'a.rejection_type'])
                         ->joinWith(['candidateRejectionReasons b' => function ($b) {
                             $b->select(['b.candidate_rejection_reasons_enc_id', 'b.candidate_rejection_enc_id', 'b.rejection_reasons_enc_id', 'b1.reason']);
-                            $b->joinWith(['rejectionReasonsEnc b1'],false);
+                            $b->joinWith(['rejectionReasonsEnc b1'], false);
                         }])
                         ->where(['a.is_deleted' => 0, 'a.applied_application_enc_id' => $val['applied_application_enc_id']])
                         ->asArray()
                         ->one();
+
+                    if ($rejections_reasons) {
+                        $consider_jobs = CandidateConsiderJobs::find()
+                            ->alias('a')
+                            ->select(['a.consider_job_enc_id', 'a.application_enc_id', 'e.name parent_category', 'b.slug',
+                                'ee.name title', 'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=true&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                            ])
+                            ->joinWith(['applicationEnc b' => function ($b) {
+                                $b->innerJoinWith(['erexxEmployerApplications b1'], false);
+                                $b->joinWith(['title d' => function ($d) {
+                                    $d->joinWith(['parentEnc e']);
+                                    $d->joinWith(['categoryEnc ee']);
+                                }], false);
+                                $b->joinWith(['organizationEnc bb'], false);
+                            }], false)
+                            ->where(['a.candidate_rejection_enc_id' => $rejections_reasons['candidate_rejection_enc_id'], 'b1.is_college_approved' => 1])
+                            ->groupBy(['a.consider_job_enc_id'])
+                            ->asArray()
+                            ->all();
+
+                        $rejections_reasons['considerJobs'] = $consider_jobs;
+                    }
 
                     $process[$key]['rejection_reasons'] = $rejections_reasons;
                 }

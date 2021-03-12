@@ -6,6 +6,17 @@ use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
+$loan_id = null;
+$cookies_request = Yii::$app->request->cookies;
+$loan_id_ref = $cookies_request->get('loan_id_ref');
+if ($loan_id_ref)
+{
+    $loan_id = $loan_id_ref;
+}else{
+    if ($loan_ref){
+        $loan_id = $loan_id_ref;
+    }
+}
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">
@@ -64,7 +75,7 @@ $form = ActiveForm::begin([
             <?=
             $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
-                    'allowExtensions' => false,
+                    'allowExtensions' => true,
                     'preferredCountries' => ['in'],
                     'nationalMode' => false,
                 ]
@@ -90,6 +101,7 @@ $form = ActiveForm::begin([
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
+<?=$form->field($model,'loan_id_ref',['template'=>'{input}'])->hiddenInput(['id'=>'loan_id_ref','value'=>(($loan_id)?$loan_id:null)]) ?>
 <?php ActiveForm::end(); ?>
 <div class="col-md-12">
     <div class="separator pb-10">
@@ -122,5 +134,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
-.country-list{z-index:99 !important;}
+.country-list, .iti__country-list{z-index:99 !important;}
 ');

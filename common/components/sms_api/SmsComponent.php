@@ -16,7 +16,7 @@ class SmsComponent extends Component
             ->setMethod('POST')
             ->setUrl('https://api.msg91.com/api/sendhttp.php')
             ->setData(['mobiles' => $mobile,
-                'authkey' => '270651Ai9cdZkkd6m5cfdf340',
+                'authkey' => '270651ARpqiW1bldMi5caafdf7',
                 'route' => 4,
                 'sender' => $senderId,
                 'message' => $msg,

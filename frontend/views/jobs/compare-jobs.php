@@ -7,7 +7,7 @@ use yii\helpers\Url;
 
 <section>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-2 col-sm-3">
             <?=
             $this->render('/widgets/sidebar-review', [
                 'type' => 'jobs',
@@ -17,7 +17,7 @@ use yii\helpers\Url;
         </div>
 
 
-            <div class="col-md-10">
+            <div class="col-md-10 col-sm-9">
                 <table>
                     <tr>
                         <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>

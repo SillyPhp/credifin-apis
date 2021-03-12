@@ -65,9 +65,10 @@ $form = ActiveForm::begin([
             <?=
             $form->field($model, 'organization_phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
-                    'allowExtensions' => false,
+                    'allowExtensions' => true,
                     'preferredCountries' => ['in'],
                     'nationalMode' => false,
+//                    'separateDialCode' => true
                 ]
             ]);
             ?>
@@ -124,7 +125,6 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-
 .intl-tel-input, .iti {
     width: 100%;
 }
@@ -132,5 +132,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
-.country-list{z-index:99 !important;}
+.country-list, .iti__country-list{z-index:99 !important;}
 ');

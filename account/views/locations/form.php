@@ -29,9 +29,10 @@ $form = ActiveForm::begin([
         <?=
         $form->field($locationFormModel, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
-                'allowExtensions' => false,
+                'allowExtensions' => true,
                 'preferredCountries' => ['in'],
                 'nationalMode' => false,
+//                'separateDialCode' => true
             ]
         ])->label(false);
         ?>

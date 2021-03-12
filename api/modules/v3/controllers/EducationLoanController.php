@@ -163,6 +163,10 @@ class EducationLoanController extends ApiBaseController
                 $loan_application->updated_by = null;
                 $loan_application->updated_on = date('Y-m-d H:i:s');
                 $loan_application->update();
+                $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
+                $params['name'] = $loan_application->applicant_name;
+                $params['email'] = $loan_application->email;
+                Yii::$app->notificationEmails->educationLoanThankYou($params);
             }
         }
 
@@ -221,7 +225,7 @@ class EducationLoanController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 if ($model->validate()) {
-                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref)) {
+                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref, $params['refferal_id'])) {
                         return $this->response(200, ['status' => 200, 'data' => $data]);
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);

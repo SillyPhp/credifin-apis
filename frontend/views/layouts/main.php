@@ -921,7 +921,7 @@ $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 var hasAccessForSubHeader = true;
-var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare"];
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
 for(var jj = 0;jj<preventHeaderFor.length;jj++){
     if(thispageurl == preventHeaderFor[jj]){
         hasAccessForSubHeader = false;

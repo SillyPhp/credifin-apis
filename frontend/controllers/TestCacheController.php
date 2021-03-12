@@ -42,4 +42,8 @@ class TestCacheController extends Controller
         }
     }
 
+    public function actionSms(){
+        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
+    }
+
 }
