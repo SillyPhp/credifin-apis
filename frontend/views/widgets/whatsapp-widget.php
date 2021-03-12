@@ -9,8 +9,8 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel">
                         <div class="whats-abso">
-                            <h1 class="whats-main-heading">Join Our Social Community</h1>
-                            <div class="whats-sub-heading">Get Latest Job Updates</div>
+                            <h2 class="whats-main-heading">Join Our Social Community</h2>
+                            <h3 class="whats-sub-heading">Get Latest Job Updates</h3>
                             <div class="whats-href">
                                 <a href="<?= Url::to('/social-community') ?>">
                                     View Links
