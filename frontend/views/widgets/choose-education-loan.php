@@ -121,6 +121,9 @@ $this->registerCss('
     font-family: roboto;
     margin-bottom: 20px;
 }
+.detail-div p{
+    text-align: justify;
+}
 .detail-div img{
     max-width: 100px;
     max-height: 100px;

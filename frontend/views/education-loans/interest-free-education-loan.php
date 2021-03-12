@@ -108,7 +108,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2 col-sm-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
@@ -116,16 +116,7 @@ use yii\helpers\Url;
                         <div class="lp-name">Agile Finserv</div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                                 alt="ICICI Bank">
-                        </div>
-                        <div class="lp-name">ICICI Bank</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
@@ -134,7 +125,7 @@ use yii\helpers\Url;
                         <div class="lp-name">Avanse Financial Services</div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
@@ -143,16 +134,7 @@ use yii\helpers\Url;
                         <div class="lp-name">InCred</div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                                 alt="Exclusive Leasing & Finance">
-                        </div>
-                        <div class="lp-name">Exclusive Leasing & Finance</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
@@ -160,20 +142,55 @@ use yii\helpers\Url;
                         <div class="lp-name">EZ Capital</div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
-                        </div>
-                        <div class="lp-name">PHF Leasing</div>
+            </div>
+        </div>
+    </section>
+    <section class="bgeEd">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+                        <a href="/educational-institution-loan" target="_blank">
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
+                            </div>
+                            <p>GNA University</p>
+                        </a>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="Amrit Malwa Private Limtied">
-                        </div>
-                        <div class="lp-name">We Pay India</div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+                        <a href="/educational-institution-loan" target="_blank">
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
+                            </div>
+                            <p>Rayat Bahra University</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+                        <a href="/educational-institution-loan" target="_blank">
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
+                            </div>
+                            <p>Bahra University, Shimla</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+                        <a href="/educational-institution-loan" target="_blank">
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
+                            </div>
+                            <p>Rayat Bahra Hoshiarpur Campus</p>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -227,11 +244,60 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+<?= $this->render('/widgets/press-releasee') ?>
 <?php
 $this->registerCss('
 html {
   scroll-behavior: smooth;
+}
+.bgeEd {
+    background-color: #edf4fc;
+}
+.loan-college {
+    text-align: center;
+    box-shadow: 3px 5px 10px rgba(0,0,0,.1);
+    margin-bottom: 25px;
+    background-color: #fff;
+    padding: 20px 10px;
+}
+.loan-college:hover{
+    box-shadow: 3px 5px 10px rgba(0,0,0,.2);
+    transition:.3s ease;
+}
+
+.loan-college:hover p{
+    color: #00a0e3;
+}
+
+.loan-college p {
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 50px;
+    font-family: roboto;
+    margin: 5px 0 0 0;
+}
+
+.loan-college-img img {
+    max-width: 100px;
+    max-height: 100px;
+    padding: 5px 10px;
+    height: 100px;
+    object-fit: contain;
+}
+.loan-college p {
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 50px;
+    font-family: roboto;
+    margin: 5px 0 0 0;
 }
 .l-help-block1{
     box-shadow: 0 0 10px rgb(0,0,0,.2);
@@ -426,7 +492,7 @@ html {
     text-align: center;
     margin-bottom: 15px;
     border-radius: 5px;
-    padding: 10px;
+    padding: 20px 10px 10px;
 }
 .loan-logo img {
     max-width: 80px;
