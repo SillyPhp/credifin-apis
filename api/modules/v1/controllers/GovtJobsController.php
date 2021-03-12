@@ -376,7 +376,9 @@ class GovtJobsController extends ApiBaseController
         $search_pattern = $this->makeSQL_search_pattern($search);
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_id id', 'c.slug company_slug',
+//                'CASE WHEN a.image IS NOT NULL THEN CONCAT("https://eycdn.ams3.digitaloceanspaces.com/' . Yii::$app->params->upload_directories->indian_jobs->departments->image . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
+                'a.slug','a.image_location','a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -395,20 +397,24 @@ class GovtJobsController extends ApiBaseController
             ->all();
 
         if ($data) {
-            $i = 0;
-            foreach ($data as $d) {
+            foreach ($data as $i => $d) {
                 if (!$d['Eligibility']) {
                     $data[$i]['Eligibility'] = 'View In Details';
                 }
-                $i++;
+                if (!empty($d['image']) && !empty($d['image_location'])) {
+                    $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    if(file_exists($logo)){
+                        $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    } else {
+                        $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                    }
+                } else {
+                    $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                }
             }
-        }
-
-        if ($data) {
             return $this->response(200, $data);
-        } else {
-            return $this->response(404, 'not found');
         }
+        return $this->response(404, 'not found');
     }
 
     public function actionInDeptJobs()
