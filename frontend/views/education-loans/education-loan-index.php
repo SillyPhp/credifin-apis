@@ -257,7 +257,7 @@ use yii\helpers\Url;
                             provides financial help to the educational insitutes for their growth.
                         </p>
                         <div class="institution-btn">
-                            edApply Now </a>
+                            <a href="/educational-institution-loan"> Apply Now </a>
                         </div>
                     </div>
                 </div>
