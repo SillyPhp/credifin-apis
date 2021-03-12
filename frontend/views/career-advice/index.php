@@ -99,7 +99,7 @@ $careerAdviceCategories = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                            .trending-heading:before           <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
@@ -619,7 +619,7 @@ $this->registerCss('
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 107px 0px 0px;
+    border-width: 1px 68px 0px 0px;
     top: 11px;
     left: 5px;
 }
