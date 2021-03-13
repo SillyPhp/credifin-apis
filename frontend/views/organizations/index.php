@@ -118,7 +118,7 @@ use yii\helpers\Url;
                             <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png') ?>">
                         </div>
                         <div class="es-text">
-                            Opps !! We Currently No Result Having For This Keyword
+                            Oops !! No Result Found For This Keyword
                         </div>
                     </div>
                 </div>

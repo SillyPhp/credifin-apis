@@ -1018,6 +1018,7 @@ $this->registerCss('
     font-size: 20px;
     font-family: lora;
     margin-bottom: 20px;
+    display:inline-block;
 }
 .loan-text h3{
     margin: 10px 0 20px;
