@@ -40,7 +40,7 @@ $companies = $companies->all();
             <div class="row">
                 <div class="col-md-6 col-sm-4 col-xs-12">
                     <div class="com-grid">
-                        <h1 class="heading-style">Featured Companies</h1>
+                        <h2 class="heading-style">Featured Companies</h2>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-4 col-xs-12">
