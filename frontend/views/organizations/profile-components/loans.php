@@ -1153,27 +1153,6 @@ $(document).on('click', '.scroll-to-sec', function(e) {
 setTimeout(function() {
   initializePosSticky();
 },700);
-
- $('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     console.log(dataKey);
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         console.log('oo'); 
-          history.replaceState({}, '', '/'+slugg);
-     }else{
-           history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- })
-
-
-
 JS;
 $this->registerJS($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
