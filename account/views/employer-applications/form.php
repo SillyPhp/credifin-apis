@@ -1659,6 +1659,9 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+.md-radio{    
+    z-index: 0;
+}
 #wh_vacancy{display:none}
 #wage_type-error .color_red
 {font-size:13px}
