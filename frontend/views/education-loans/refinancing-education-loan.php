@@ -211,6 +211,7 @@ use borales\extensions\phoneInput\PhoneInput;
     'model' => $model
 ]); ?>
 <?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
 .pb3{

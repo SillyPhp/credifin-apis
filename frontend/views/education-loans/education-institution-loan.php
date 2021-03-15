@@ -128,6 +128,7 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-form-detail',[
         'model' =>$model
 ]); ?>
+<?= $this->render('/widgets/loan-strip') ?>
 
 <?php
 $this->registerCss('
