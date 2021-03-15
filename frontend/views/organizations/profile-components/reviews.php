@@ -454,7 +454,7 @@ $(document).on('click','#load_more_btn',function(e){
     page = page + 1;
     getUserReviews(limit=3, page=page)
 });
-function reviewStats(overall_rating{
+function reviewStats(overall_rating){
     let reviewStat = ` <div class="row">
         <div class="col-md-12 col-sm-4">
             <div class="rs-main">
@@ -607,7 +607,7 @@ $('.collegeLink').on('click', function (){
      }
      // removeActive();
      $(this).parent().addClass('cActive');
- })
+ });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

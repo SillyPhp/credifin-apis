@@ -6,10 +6,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
-//if(!$isAjax) {
-//    echo $this->render("profile-header");
-//}
-//print_r($isAjax);
 ?>
     <div class="container">
         <div class="set-sticky">

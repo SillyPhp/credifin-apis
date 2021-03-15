@@ -68,7 +68,6 @@ $form = ActiveForm::begin([
                     'allowExtensions' => true,
                     'preferredCountries' => ['in'],
                     'nationalMode' => false,
-//                    'separateDialCode' => true
                 ]
             ]);
             ?>
