@@ -442,7 +442,9 @@ class GovtJobsController extends ApiBaseController
 
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_enc_id id', 'a.slug',
+//                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
+                'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                 $b->joinWith(['deptEnc c'], false);
                 $b->andWhere(['b.dept_enc_id' => $dept_id]);
@@ -454,12 +456,20 @@ class GovtJobsController extends ApiBaseController
             ->all();
 
         if ($data) {
-            $i = 0;
-            foreach ($data as $d) {
+            foreach ($data as $i => $d) {
                 if (!$d['Eligibility']) {
                     $data[$i]['Eligibility'] = 'View In Details';
                 }
-                $i++;
+                if (!empty($d['image']) && !empty($d['image_location'])) {
+                    $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    if(file_exists($logo)){
+                        $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    } else {
+                        $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                    }
+                } else {
+                    $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                }
             }
         }
 

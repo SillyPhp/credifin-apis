@@ -557,21 +557,5 @@ function courseCard(res) {
     $('.course-main').append(collegeCard);
     
 }
-
-$('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         history.replaceState({}, '', '/'+slugg);
-     }else{
-        history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- })
 JS;
 $this->registerJS($script);

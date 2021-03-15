@@ -591,23 +591,6 @@ $(document).on('click','#report_btn',function() {
   $('#review_enc_id').val($(this).attr('data-key'));
 });
 
-$('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     console.log(dataKey);
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         console.log('oo'); 
-         history.replaceState({}, '', '/'+slugg);
-     }else{
-        history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
