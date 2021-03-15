@@ -93,6 +93,7 @@ color: #2b7cb7;
                 <?=
                 $this->render('/widgets/search-bar1',['type'=>'jobs']);
                 ?>
+
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>

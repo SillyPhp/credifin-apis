@@ -190,6 +190,11 @@ li.draggable-item.ui-sortable-placeholder {
         display:none;
     }
 }
+@media only screen and (max-width: 768px){
+    #review-internships{
+        width: auto;
+    }
+}
 @media only screen and (max-width: 767px) {
     .sidebar-review-bar{
 //        display:none;
@@ -269,16 +274,6 @@ li.draggable-item.ui-sortable-placeholder {
     #review-internships.drop-on{
         height: 294px !important;
     }
-//    *::-webkit-scrollbar {
-//        width: 2em !important;
-//    }
-//    *::-webkit-scrollbar-track {
-//        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important;
-//    }
-//    *::-webkit-scrollbar-thumb {
-//      background-color: darkgrey !important;
-//      outline: 1px solid slategrey !important;
-//    }
 }
 li.draggable-item {
 	position: relative;
@@ -290,7 +285,7 @@ li.draggable-item {
 	text-align: center;
 	position: absolute;
 	right: 2px !important;
-	top: 2px !important;
+	top: -2px !important;
 	z-index: 99999;
 }
 @media only screen and (max-width: 550px) {
