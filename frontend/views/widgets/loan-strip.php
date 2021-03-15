@@ -23,19 +23,19 @@ $this->registerCss('
     margin: -6px;
 }
 .loan-strip-text p {
-    font-size: 20px;
+    font-size: 22px;
     font-family: roboto;
     color: #fff;
     font-weight: 600;
 }
 @media screen and (max-width:758px) and (min-width:200px) {
     .loan-strip-text p {
-        font-size: 14px;
+        font-size: 16px;
     }
 }
 @media screen and (max-width:1024px) and (min-width:768px) {
     .loan-strip-text p {
-        font-size: 18px;
+        font-size: 20px;
     }
 }
 ');
