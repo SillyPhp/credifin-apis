@@ -61,7 +61,7 @@ use yii\helpers\Url;
                 <div class="col-md-3 col-sm-4 col-xs-12">
                     <div class="finance">
                         <div class="finance-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/100-finance.png'); ?>"/>
                         </div>
                         <div class="finance-text">100% Financing</div>
                         <div class="overlay">
@@ -75,7 +75,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loans.png'); ?>"/>
                     </div>
                     <div class="finance-text">Customized Loans</div>
                     <div class="overlay">
@@ -87,7 +87,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanctions.png'); ?>"/>
                     </div>
                     <div class="finance-text">Quick Sanctions</div>
                     <div class="overlay">
@@ -99,7 +99,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/documentation.png'); ?>"/>
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
@@ -111,7 +111,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/repayment.png'); ?>"/>
                     </div>
                     <div class="finance-text">Flexible Repayment Options</div>
                     <div class="overlay">
@@ -123,7 +123,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroadd.png'); ?>"/>
                     </div>
                     <div class="finance-text">Get Loan To Study Abroad</div>
                     <div class="overlay">
@@ -136,7 +136,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admissin.png'); ?>"/>
                     </div>
                     <div class="finance-text">Pre-Admission Loan</div>
                     <div class="overlay">
@@ -148,7 +148,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa.png'); ?>"/>
                     </div>
                     <div class="finance-text">Pre-Visa Loan</div>
                     <div class="overlay">
@@ -813,7 +813,7 @@ $this->registerCss('
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #00A0E3;
+    background-color: #ed6d1e;
     overflow: hidden;
     width: 100%;
     height: 0;
@@ -835,27 +835,33 @@ $this->registerCss('
     line-height: 20px;
 }
 .finance-text{
+    margin: 10px 0;
     font-size: 15px;
     font-family: roboto;
     font-weight: 700;
     text-align: center;
-    color:#333;
+    color: #333;
 }
 .finance-icon{
     text-align: center;
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 20px;
-    margin-top: 40px;
+    width: 100px;
+    margin: 0px auto;
+    height: 100px;
 }
 .finance{
     width: 100%;
-    height: 200px;
+    height: 185px;
     box-shadow: 0 0 11px -4px #999;
     margin-bottom: 20px;
     background-color: #fff;
     transition: all .2s;
-    position:relative;
+    position: relative;
+    padding: 20px;
+}
+.finance-icon img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
 }
 .rupe-img img{
     width:300px;
