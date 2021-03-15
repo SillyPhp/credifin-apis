@@ -231,6 +231,7 @@ use yii\helpers\Url;
         </div>
     </section>
 <?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/loan-strip') ?>
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({

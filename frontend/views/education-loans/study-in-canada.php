@@ -295,6 +295,7 @@ use borales\extensions\phoneInput\PhoneInput;
     </div>
 </section>
 <?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
 .studyus-head {
