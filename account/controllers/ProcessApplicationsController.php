@@ -155,12 +155,9 @@ class ProcessApplicationsController extends Controller
                         $cr->groupBy(['cr.candidate_rejection_enc_id']);
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
-//                    ->orderBy([])
                     ->orderBy([new \yii\db\Expression("FIELD (a.status, 'Rejected') asc"), 'a.created_on' => SORT_DESC, 'a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
-                print_r($applied_users);
-                exit();
                 $question = ApplicationInterviewQuestionnaire::find()
                     ->alias('a')
                     ->distinct()

@@ -879,7 +879,7 @@ form input[type="text"]:focus{
 {
     display: inline-block;
     vertical-align: middle;
-    max-width: 70%;
+    max-width: 100%;
     font-family:roboto;
 }
 .f-search-loc .twitter-typeahead
@@ -890,7 +890,7 @@ width:90%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
-  height:54px;
+  min-height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
