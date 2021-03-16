@@ -1206,6 +1206,7 @@ if (!Yii::$app->user->isGuest) {
         'getNewsletter',
         'getShortcuts'
     ];
+    
     ");
 }
 $this->registerJs($script);
@@ -1219,6 +1220,11 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
+    window.addEventListener("pageshow", function() {
+    var form = document.getElementsByTagName("form");
+    // let the browser natively reset defaults
+    form[0].reset();
+    });
     var modal = document.getElementById("virusModal");
     // Get the button that opens the modal
     var btn = document.getElementsByClassName("collegeSignupModal");
