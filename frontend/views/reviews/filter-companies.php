@@ -875,8 +875,7 @@ form input[type="text"]:focus{
  {
      margin-top: 3px;
  }   
-.suggestion
-{
+.suggestion{
     display: inline-block;
     vertical-align: middle;
     max-width: 100%;
@@ -1074,7 +1073,7 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.profile_link+'">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="40" height="40" color="'+data.color+'"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="40" height="40" color="'+data.color+'" font="22px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
