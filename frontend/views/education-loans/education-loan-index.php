@@ -61,7 +61,7 @@ use yii\helpers\Url;
                 <div class="col-md-3 col-sm-4 col-xs-12">
                     <div class="finance">
                         <div class="finance-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/100-finance.png'); ?>"/>
                         </div>
                         <div class="finance-text">100% Financing</div>
                         <div class="overlay">
@@ -75,7 +75,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loans.png'); ?>"/>
                     </div>
                     <div class="finance-text">Customized Loans</div>
                     <div class="overlay">
@@ -87,7 +87,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanctions.png'); ?>"/>
                     </div>
                     <div class="finance-text">Quick Sanctions</div>
                     <div class="overlay">
@@ -99,7 +99,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/documentation.png'); ?>"/>
                     </div>
                     <div class="finance-text">Minimal Documentation</div>
                     <div class="overlay">
@@ -111,7 +111,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/repayment.png'); ?>"/>
                     </div>
                     <div class="finance-text">Flexible Repayment Options</div>
                     <div class="overlay">
@@ -123,7 +123,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroadd.png'); ?>"/>
                     </div>
                     <div class="finance-text">Get Loan To Study Abroad</div>
                     <div class="overlay">
@@ -136,7 +136,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admissin.png'); ?>"/>
                     </div>
                     <div class="finance-text">Pre-Admission Loan</div>
                     <div class="overlay">
@@ -148,7 +148,7 @@ use yii\helpers\Url;
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="finance">
                     <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa.png'); ?>"/>
                     </div>
                     <div class="finance-text">Pre-Visa Loan</div>
                     <div class="overlay">
@@ -193,7 +193,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad.png') ?>"
-                                 alt=""/>
+                                 alt="apply-for-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -205,6 +205,9 @@ use yii\helpers\Url;
                             vast
                             personalized solutions that will help you to achieve your dreams of studying abroad.
                         </p>
+                        <div class="abroad-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,7 +218,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block order2">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-india-1.png') ?>"
-                                 alt=""/>
+                                 alt="online-study-loan-in-India"/>
                         </div>
                     </div>
                     <div class="edu-des order1">
@@ -225,9 +228,12 @@ use yii\helpers\Url;
                             universities
                             are offering a variety of study programs and courses in almost every niche - You Name It And
                             You
-                            Have It. Here, Empoweryouth with their student education loan will help you to pursue your
+                            Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in India</a> will help you to pursue your
                             desired education without getting worried about the money.
                         </p>
+                        <div class="india-btn">
+                            <a href="/education-loans/apply">Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -238,7 +244,7 @@ use yii\helpers\Url;
                     <div class="edu-hw-block">
                         <div class="edu-hw-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
-                                 alt=""/>
+                                 alt="interest-free-education-loan"/>
                         </div>
                     </div>
                     <div class="edu-des">
@@ -250,6 +256,9 @@ use yii\helpers\Url;
                             loans
                             provides financial help to the educational insitutes for their growth.
                         </p>
+                        <div class="institution-btn">
+                            <a href="/educational-institution-loan"> Apply Now </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -498,7 +507,9 @@ use yii\helpers\Url;
 
 <?= $this->render('/widgets/institutional-loan') ?>
 
+<?= $this->render('/widgets/press-releasee') ?>
 
+<?= $this->render('/widgets/loan-strip') ?>
 
 <?php
 $script = <<<JS
@@ -564,6 +575,34 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.abroad-btn a, .india-btn a, .institution-btn a {
+	color: #fff;
+	background-color:#00a0e3;
+	font-size: 14px;
+	font-family: roboto;
+	border: 2px solid #00a0e3;
+	padding: 4px 15px;
+	border-radius: 4px;
+	display: inline-block;
+	transition:ease-in-out .2s;
+}
+.abroad-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.india-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.institution-btn a:hover{
+    color:#00a0e3;
+    background-color:#fff;
+}
+.edu-hw-description a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+}
 .whats-btn {
     padding: 10px 0px 8px 0px;
     text-align: center;
@@ -776,7 +815,7 @@ $this->registerCss('
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #00A0E3;
+    background-color: #ed6d1e;
     overflow: hidden;
     width: 100%;
     height: 0;
@@ -798,27 +837,33 @@ $this->registerCss('
     line-height: 20px;
 }
 .finance-text{
+    margin: 10px 0;
     font-size: 15px;
     font-family: roboto;
     font-weight: 700;
     text-align: center;
-    color:#333;
+    color: #333;
 }
 .finance-icon{
     text-align: center;
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 20px;
-    margin-top: 40px;
+    width: 100px;
+    margin: 0px auto;
+    height: 100px;
 }
 .finance{
     width: 100%;
-    height: 200px;
+    height: 185px;
     box-shadow: 0 0 11px -4px #999;
     margin-bottom: 20px;
     background-color: #fff;
     transition: all .2s;
-    position:relative;
+    position: relative;
+    padding: 20px;
+}
+.finance-icon img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
 }
 .rupe-img img{
     width:300px;
@@ -975,6 +1020,7 @@ $this->registerCss('
     font-size: 20px;
     font-family: lora;
     margin-bottom: 20px;
+    display:inline-block;
 }
 .loan-text h3{
     margin: 10px 0 20px;

@@ -362,6 +362,12 @@ $this->registerCSS('
     -moz-transition: .3s all;
     -o-transition: .3s all;
 }
+.noReview{
+    text-align: center !important;
+    font-size: 20px;
+    font-family: roboto;
+    
+}
 @media screen and (max-width: 1200px){
     .rs-main{
         margin: auto;
@@ -436,6 +442,10 @@ function getUserReviews(limit=3, page=null){
             });
             if(res.response.data.reviews.length+count == res.response.data.count){
                 $('#load_more_btn').hide()  
+            }
+            if($("#org-reviews").children().length == 0){
+                $('#load_more_btn').hide(); 
+                $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
             }
             count = count+limit;
         }

@@ -25,13 +25,6 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-            <div class="organization-details">
-                <?php if ($website): ?>
-                    <a href="<?= $website ?>">
-                        <i class="fas fa-unlink"> Visit on Website</i>
-                    </a>
-                <?php endif; ?>
-            </div>
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -150,6 +143,10 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
                 </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
             </div>
             <!--            <div class="qr-code">-->
             <!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
@@ -194,7 +191,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         <div class="down-img">
             <h3>Download Sharing Image</h3>
             <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
-<!--            <a href="--><?//= $Instaimage; ?><!--" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>-->
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
         </div>
     </div>
 <?php
@@ -419,47 +416,45 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin: 0 5px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+	text-decoration: none !important;
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 5px;
+	font-size: 17px;
+	overflow: hidden;
+	position: relative;
+	color: #fff;
+	border: 2px solid #fff;
+	line-height: 24px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
-}
-.effect a i {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0px;
-  margin-top: 2px;
+	font-size: 14px;
 }
 .effect a.facebook-f:hover{
     background:#3b5998;
     border-color:#3b5998;
 } 
 .effect a.twitter-t:hover{
-    background:#6699FF;
-    border-color:#6699FF;
+    background:#1DA1F2;
+    border-color:#1DA1F2;
 } 
 .effect a.linked-l:hover{
-    background:#0e76a8;
-    border-color:#0e76a8;
+    background:#3B5998;
+    border-color:#3B5998;
 }
 .effect a.whatsapp-w:hover{
-    background:#25D366;
-    border-color:#25D366;
+    background:#4FCE5D;
+    border-color:#4FCE5D;
 }
 .effect a.enve-e:hover{
-    background:#00a0e3;
-    border-color:#00a0e3;
+    background:#DB4437;
+    border-color:#DB4437;
+}
+.effect a.tg-tele:hover{
+    background-color:#0088cc;
+    border-color:#0088cc;  
 }
 .intl-tel-input, .iti {
     width: 100%;

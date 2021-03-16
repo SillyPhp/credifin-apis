@@ -352,6 +352,13 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 .ps__rail-x{
     display:none !important;
 }
+@media screen and (max-width: 1200px) and (min-width: 992px) {
+.widget-profile-info .profile-picture {
+    display: inline-table;
+    }
+.widget-profile-info .profile-info{display:block;}
+.edit-btn{float:none !important;}
+}
 ");
 $script = <<< JS
     $(document).on('click', '.edit-org-logo', function() {

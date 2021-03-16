@@ -92,18 +92,8 @@ class EducationLoansController extends Controller
     public function actionDashboard($filter = null)
     {
         $model = new LoanSanctionedForm();
-        $org_id = Yii::$app->user->identity->organization_enc_id;
-        $organization = Organizations::find()
-            ->alias('z')
-            ->joinWith(['selectedServices a' => function($a){
-                $a->joinWith(['serviceEnc b' => function($b){
-                    $b->andwhere(['b.name' => 'Loans']);
-                }],false);
-            }])
-            ->where(['z.organization_enc_id' => $org_id])
-            ->asArray()
-            ->one();
-        if (empty($organization['selectedServices']) && !$organization['selectedServices'][0]['is_selected']) {
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Loans");
+        if (!$permissions) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
@@ -207,14 +197,13 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionDsaDashboard($filter = null)
+    public function actionLeads($filter = null)
     {
         $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
         $referrer_code = $user->getReferrals0()->one()->code;
         $model = new LoanSanctionedForm();
-        $service_id = Services::findOne(['name' => 'E-Partners'])['service_enc_id'];
-        $chkPermission = SelectedServices::findOne(['service_enc_id' => $service_id, 'created_by' => Yii::$app->user->identity->user_enc_id])['is_selected'];
-        if ($chkPermission != 1) {
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+        if (!$permissions) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
 
@@ -277,13 +266,9 @@ class EducationLoansController extends Controller
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) {
                 $i->joinWith(['providerEnc j']);
-                $i->onCondition(['or',
-                    ['not', ['i.provider_enc_id' => null]],
-                    ['not', ['i.provider_enc_id' => '']]
-                ]);
-                $i->andWhere(['in','i.status',[0,3,4,10]]);
+                $i->onCondition(['in', 'i.status', [0, 3, 4, 10]]);
             }])
-            ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id]);
+            ->andWhere(['a.lead_by' => Yii::$app->user->identity->user_enc_id]);
         if ($filter != null) {
             if ($filter != 'all') {
                 $filter = explode(',', $filter);
@@ -308,7 +293,7 @@ class EducationLoansController extends Controller
                     ['not', ['i.provider_enc_id' => null]],
                     ['not', ['i.provider_enc_id' => '']]
                 ]);
-                $i->andWhere(['in','i.status',[0,3,4,10]]);
+                $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
             }], false)
             ->andWhere(['a.status' => 1, 'a.lead_by' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
@@ -370,7 +355,7 @@ class EducationLoansController extends Controller
 
     public function actionCandidateDashboard($id)
     {
-        return $this->render('candidate-dashboard',['loan_app_id' => $id]);
+        return $this->render('candidate-dashboard', ['loan_app_id' => $id]);
     }
 
     public function actionLoanProfileView()

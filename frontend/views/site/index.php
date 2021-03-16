@@ -19,8 +19,8 @@ $this->params['header_dark'] = false;
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>The World's First Integrated Career Platform</h3>
-                                <span>The Easiest Way to Build Your Career</span>
+                                <h1>The World's First Integrated Career Platform</h1>
+                                <h2>The Easiest Way to Build Your Career</h2>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
@@ -141,6 +141,8 @@ $this->params['header_dark'] = false;
     </svg>
 </div>
 
+<?= $this->render('/widgets/press-releasee') ?>
+
 <?php
 $this->registerCss('
 #app-data{
@@ -244,9 +246,7 @@ $this->registerCss('
 .tweet-btn button:hover{
     color:#00a0e3;
 }
-.job-search > span{
-    color:#fff !important;
-}
+
 .feature-links a{
     color: #d5d8f3;
     padding-right: 5px;    

@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 if (!empty($data['applicationPlacementLocations'])) {
     $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
@@ -70,10 +70,10 @@ if ($type == 'Internships') {
         <div class="modal-bg">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
+                    <div class="modal-main col-md-offset-2 col-sm-offset-1 col-xs-offset-1  col-md-8 col-sm-10 col-xs-10">
                         <a href="javascript:;" title="Close" class="jd-close">✕</a>
                         <div class="row bottom-line">
-                            <div class="com-initials col-md-2 col-sm-2">
+                            <div class="com-initials col-md-12 col-sm-12">
                                 <div class="company-logo center-block">
                                     <?php
                                     if (!empty($application_details['logo'])) {
@@ -85,50 +85,55 @@ if ($type == 'Internships') {
                                         ?>
                                         <canvas class="user-icon" name="<?= $application_details['org_name'] ?>"
                                                 color="<?= $application_details['color'] ?>" width="100" height="100"
+                                                border-radius="70px"
                                                 font="55px"></canvas>
                                         <?php
                                     }
                                     ?>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6">
-                                <div class="com-name"><?= $data['cat_name'] ?></div>
-                                <div class="com-est"><?= $application_details['org_name'] ?></div>
-                            </div>
-                            <div class="col-md-4 pull-right">
-                                <div class="share-bar no-border">
-                                    <h3>Share</h3>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-fb">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-twitter">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-linkedin">
-                                        <i class="fab fa-linkedin-in"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-whatsapp">
-                                        <i class="fab fa-whatsapp"></i>
-                                    </a>
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                       class="share-google">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
+                                <div class="name-f-c">
+                                    <div class="com-name"><?= $data['cat_name'] ?></div>
+                                    <div class="com-est"><?= $application_details['org_name'] ?></div>
                                 </div>
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                        <div class="j-details col-md-4">
-                            <ul class="job-overviews">
+                        <div class="col-md-12">
+                            <div class="share-bar">
+                                <h3>Share</h3>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-fb">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-linkedin">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="javascript:;"
+                                   onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="share-google">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                                <a href="javascript:;" class="tg-tele"
+                                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                    <i class="fab fa-telegram-plane"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="j-details col-md-12">
+                            <ul class="job-overviews row">
                                 <li>
                                     <i class="far fa-clock"></i>
                                     <h3>Experience</h3>
@@ -224,7 +229,7 @@ if ($type == 'Internships') {
                                 </li>
                             </ul>
                         </div>
-                        <div class="j-discription col-md-8">
+                        <div class="j-discription col-md-12">
                             <h3 class="job-detail">Skills Required</h3>
                             <div class="tags-bar">
                                 <?php
@@ -246,7 +251,7 @@ if ($type == 'Internships') {
                                 ?>
                             </ul>
                             <h3 class="job-detail">Description</h3>
-                            <div class="j-text">
+                            <div class="j-text j-textt">
                                 <p>
                                     <?= $data['description'] ?>
                                 </p>
@@ -262,8 +267,12 @@ if ($type == 'Internships') {
                                 </ul>
                                 </p>
                             </div>
+                            <div class="read-more col-md-12"><a href="#" class="showmore">Read More</a></div>
+                        </div>
+                        <div class="col-md-12">
                             <div class="b-apply foo">
-                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fas fa-paper-plane"></i>View
+                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i
+                                            class="fas fa-paper-plane"></i>View
                                     Detail</a>
                             </div>
                         </div>
@@ -274,9 +283,16 @@ if ($type == 'Internships') {
     </div>
 <?php
 $this->registerCss('
+.j-textt{
+	max-height: 450px;
+}
+.read-moree{
+    height:auto;
+}
+.showmore{display: block;}
 .modalDialog {
     position: fixed;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: roboto;
     top: 0;
     right: 0;
     bottom: 0;
@@ -332,32 +348,33 @@ $this->registerCss('
     color:#ff7803;
     transition:.5s;
 }
-.bottom-line{
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 15px;
-    box-shadow: 0px 2px 5px -1px #ddd;
-    padding-top: 20px;
+.bottom-line {
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 15px;
+	box-shadow: 0px 2px 5px -1px #ddd;
+	padding-top: 20px;
+	display: flex;
 }
 .job-overviews {
-    float: left;
-    width: 94%;
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    margin: 0;
-    padding-left: 15px !important;
+	border: 2px solid #e8ecec;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	margin: 0;
+	padding-left: 15px !important;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
 }
 .job-overviews li {
-    float: left;
-    width: 100%;
-    margin: 0;
-    position: relative;
-    padding-left: 50px;
-    margin: 8px 0px;
-    min-height: 45px;
+	width: 192px;
+	position: relative;
+	padding-left: 50px;
+	margin: 8px 2px;
+	min-height: 45px;
 }
 .job-overviews li i {
     position: absolute;
@@ -367,28 +384,29 @@ $this->registerCss('
     color: #4aa1e3;
 }
 .job-overviews li h3 {
-    float: left;
-    width: 100%;
-    font-size: 13px;
-    font-family: Open Sans;
-    margin: 0;
-    color: #1e1e1e;
-    font-weight: 600;
+	width: 100%;
+	font-size: 13px;
+	font-family: roboto;
+	margin: 0;
+	color: #1e1e1e;
+	font-weight: 600;
 }
 .job-overviews li span {
-    float: left;
-    width: 100%;
-    font-size: 13px;
-    color: #545454;
-    margin-top: 4px;
+	width: 100%;
+	font-size: 13px;
+	color: #545454;
+	margin-top: 4px;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .job-overviews li:hover i {
     color: #ef7706;
 }
 h3.job-detail {
-    float: left;
     width: 100%;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 15px;
     color: #202020;
     margin-bottom: 15px;
@@ -396,32 +414,31 @@ h3.job-detail {
     font-weight: 600;
 }
 .tags-bar {
-    float: left;
-    width: 100%;
-    margin-bottom: 20px;
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    padding: 10px;
-    position: relative;
+	margin-bottom: 20px;
+	border: 2px solid #e8ecec;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: wrap;
 }
 .tags-bar > span {
-    float: left;
-    background: #f4f5fa;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    font-family: Open Sans;
-    font-size: 13px;
-    padding: 7px 17px;
-    margin-right: 15px;
-    margin-bottom: 5px;
-    position: relative;
+	background: #f4f5fa;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	font-family: roboto;
+	font-size: 13px;
+	padding: 7px 17px;
+	margin-right: 10px;
+	margin-bottom: 5px;
 }
 .job-overviews li *, .apply-job-btn{
     -webkit-transition: all 0.4s ease 0s;
@@ -442,7 +459,7 @@ h3.job-detail {
     -ms-border-radius: 40px;
     -o-border-radius: 40px;
     border-radius: 40px;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 13px;
     color: #ef7706;
     width: 200px;
@@ -450,7 +467,7 @@ h3.job-detail {
     padding: 15px 15px;
     text-align: center;
     margin: auto;
-    display:block;
+    display: inline-block;
 }
 .apply-job-btn i {
     float: none;
@@ -472,22 +489,19 @@ h3.job-detail {
     text-align:center;
 }
 .share-bar h3 {
-    margin: 0px;
-    margin-top: 15px;
-    font-size: 20px;
+	margin: 0px;
+	margin-top: 10px;
+	font-size: 24px;
+	font-family: lora;
+	margin-bottom: 10px;
 }
 .share-bar a {
-    float: none;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 40px;
-    line-height: 31px;
-    font-size: 14px;
-    margin: 0 5px;
-    margin-top: 0px;
-    text-align: center;
-    color:#fff;
+	display: inline-block;
+	font-size: 18px;
+	margin: 0px 0 4px;
+	color: #fff;
+	padding: 5px 0;
+	min-width: 130px;
 }
 .share-bar a.share-fb {
     background-color: #3b5998;
@@ -507,18 +521,54 @@ h3.job-detail {
     background-color: #EA4335;
 //    border-color: #EA4335;
 }
-.com-name{ font-size:24px; font-weight:600; padding-top:20px;}
+.share-bar a.tg-tele{
+    background-color:#0088cc;
+    border-color:#0088cc;  
+}
+.com-name{ 
+    font-size:20px; 
+    font-weight:600;
+    font-family:roboto;
+}
 .com-est{
     font-size: 16px;
     font-weight: lighter;
     margin-top: 4px;
 }
-.company-logo{max-height:100px; max-width:100px; text-align:center;}
+.com-initials {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.company-logo {
+	max-height: 100px;
+	max-width: 100px;
+	text-align: center;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: 0 10px 0 0;
+}
 .j-details{padding-top:20px;}
 
 .j-discription{ text-align:justify; font-size:14px; padding-top:15px;}
 .j-discription ul{ list-style-image:url(../images/check-circle1.png);}
-.j-text{ padding-top:10px;}
+.j-text {
+	padding-top: 10px;
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+.read-more {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.read-more a {
+	color: #333;
+	font-size: 18px;
+	font-family: roboto;
+}
 .b-apply{  text-align:center;}
 .edu-requirement {
     width: 100%;
@@ -544,7 +594,36 @@ h3.job-detail {
     background: #888888;
     content: "";
 }
+@media only screen and (max-width:670px){
+.com-initials {
+	display: block;
+	margin: auto;
+	text-align: center;
+}
+.company-logo{
+    margin:0 auto;
+}
+}
 ');
+$script = <<<js
+$('.showmore').click(function () {
+    var status = $('.j-text');
+   var chk = status.hasClass('j-textt');
+   var btn = $(this);
+  if(chk){
+      btn.html('Show Less');
+      status.addClass('read-moree');
+      status.removeClass('j-textt');
+  } else {
+      btn.html('Show More');
+      status.removeClass('read-moree');
+      status.addClass('j-textt');
+  }
+});
+if(document.getElementsByClassName('j-text')[0].scrollHeight <= 451){
+    document.getElementsByClassName('read-more')[0].classList.add('hidden');
+}
+js;
 $this->registerJs('
 utilities.initials();
 var load_template = `<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-body"><img src="/assets/themes/dashboard/global/img/loading-spinner-grey.gif" class="loading"><span>Loading... </span></div></div></div>`;
@@ -553,3 +632,4 @@ $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").html(load_template);
 });
 ');
+$this->registerJs($script);
