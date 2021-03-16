@@ -20,7 +20,8 @@ class PartnerWithUsForm extends Model {
         return [
             [['name', 'email', 'subject', 'phone', 'message'], 'required'],
             [['email'], 'email'],
-            [['phone'], 'match', 'pattern' => '/[0-9]{10}/'],
+            [['phone'], 'match', 'pattern' => '/^[0-9]{10}$/'],
+            [['phone'],'number', 'min'=>10],
             [['name', 'email', 'subject', 'phone', 'message', 'company_name'], 'trim'],
         ];
     }
