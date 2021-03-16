@@ -39,6 +39,15 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss("
+.caption {
+    display: flex;
+    align-items: center;
+}
+.ch-icon img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+}
 .chats li .body {
     word-wrap: break-word;
     font-family:roboto;
@@ -54,6 +63,7 @@ $this->registerCss("
 }
 .close-btn:hover i{color:red;}
 .caption a {
+    padding-left: 5px;
     font-size: 18px;
     font-family: roboto;
     font-weight: 500 !important;
@@ -100,12 +110,12 @@ $this->registerCss("
     display:block;
     opacity: 1;
 }
-.c-icon img{
+.c-icon img {
     width:40px;
     height:40px;
     border-radius:50%;
 }
-.c-name {
+.c-name{
 	color: #000;
 	padding-left: 10px;
 	font-family: roboto;
@@ -551,10 +561,12 @@ $script = <<<JS
         
         var single_user_id = $(this).attr('id');
         var single_user_name = $(this).find('.c-name').text();
+        var single_user_img = $(this).find('img').attr('src');
         
         var d = {
             user_enc_id: single_user_id,
-            name: single_user_name
+            name: single_user_name,
+            image: single_user_img
         };
     
         var template = $('#message-box').html();
@@ -1052,7 +1064,17 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         <div class="secnd-head">
             <div class="caption">
                 <i class="icon-bubble font-hide hide"></i>
-                <a href="javascript:;" class="goto-profile caption-subject font-hide bold" data-id="{{user_enc_id}}">{{name}}</a>
+                {{#image}}
+                <div class="ch-icon"><img src="{{image}}"></div>
+                {{/image}}
+                {{^image}}
+                <div class="ch-icon"><img
+                            src="https://ui-avatars.com/api/?name={{name}}&background=77a4dd&color=fff&size=30&font-size=0.55">
+                </div>
+                {{/image}}
+                <a href="javascript:;" class="goto-profile caption-subject font-hide bold" data-id="{{user_enc_id}}">
+                    {{name}}
+                </a>
             </div>
             <div class="close-btn"><i class="fa fa-times"></i></div>
         </div>
@@ -1074,15 +1096,23 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                              viewBox="0 0 205 204"
                              xmlns:xlink="http://www.w3.org/1999/xlink">
                             <defs>
-                                 <style type="text/css">
-                                     <! [CDATA[
-                                     .fil0 {fill: #0084FF}
-                                     ]]>
-                                 </style>
+                                <style type="text/css">
+                                    <
+                                    !
+                                    [CDATA[
+                                    .fil0 {
+                                        fill: #0084FF
+                                    }
+
+                                    ]
+                                    ]
+                                    >
+                                </style>
                             </defs>
                             <g id="Layer_x0020_1">
                                 <metadata id="CorelCorpID_0Corel-Layer"/>
-                                <path class="fil0" d="M16 96l-14 -66c-5,-32 8,-39 40,-19l139 69c29,12 33,26 7,41l-135 67c-39,25 -59,24 -51,-19l15 -54 128 -15 -129 -4z"/>
+                                <path class="fil0"
+                                      d="M16 96l-14 -66c-5,-32 8,-39 40,-19l139 69c29,12 33,26 7,41l-135 67c-39,25 -59,24 -51,-19l15 -54 128 -15 -129 -4z"/>
                             </g>
                         </svg>
                     </a>
