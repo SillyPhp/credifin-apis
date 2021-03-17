@@ -46,7 +46,8 @@ class LoansController extends ApiBaseController
                 'loan-purpose',
                 'save-application',
                 'home',
-                'enquiry-form'
+                'enquiry-form',
+                'study-in-india'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -58,7 +59,8 @@ class LoansController extends ApiBaseController
                 'loan-purpose' => ['POST'],
                 'save-application' => ['POST'],
                 'home' => ['POST'],
-                'enquiry-form' => ['POST']
+                'enquiry-form' => ['POST'],
+                'study-in-india' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -1252,6 +1254,21 @@ class LoansController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'app_enc_id' => $model->application_enc_id]);
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+    }
+
+    public function actionStudyInIndia()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_options.json');
+        $loanTable = json_decode($strJsonFileContents, true);
+
+        if ($loanTable) {
+            foreach ($loanTable as $k => $v) {
+                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
+            }
+            return $this->response(200, $loanTable);
+        } else {
+            return $this->response(404, 'not found');
         }
     }
 
