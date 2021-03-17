@@ -23,25 +23,25 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-2 col-sm-4 col-xs-6">
                 <div class="press-release-hd">
-                    <a href="https://www.nyoooz.com/news/chandigarh/1558601/empoweryouth-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
+                    <a href="https://www.thehindu.com/education/news-from-the-world-of-education/article34059121.ece" target="_blank">
                     <div class="press-release">
                         <div class="press-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/nyoooz.jpg'); ?>" alt=""/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/thehindu.jpg'); ?>" alt=""/>
                         </div>
                     </div>
-                    <div class="press-txt-hd">Nyoooz</div>
+                    <div class="press-txt-hd">The Hindu</div>
                     </a>
                 </div>
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6">
                 <div class="press-release-hd">
-                    <a href="https://www.highereducationdigest.com/empoweryouth-com-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
+                    <a href="https://www.msn.com/en-in/news/other/loans-for-students-in-punjab-himachal-pradesh/ar-BB1eAyMv?ocid=BingNewsSearch" target="_blank">
                         <div class="press-release">
                             <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/HED_Trade-marked.png'); ?>" alt=""/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/msn.png'); ?>" alt=""/>
                             </div>
                         </div>
-                        <div class="press-txt-hd">Higher Education Digest</div>
+                        <div class="press-txt-hd">MSN</div>
                     </a>
                 </div>
             </div>
