@@ -1264,7 +1264,11 @@ class LoansController extends ApiBaseController
 
         if ($loanTable) {
             foreach ($loanTable as $k => $v) {
+
                 $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
+                if ($v['bank_financier'] == 'AG-logo.png') {
+                    $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
+                }
             }
             return $this->response(200, $loanTable);
         } else {
