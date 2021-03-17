@@ -1043,6 +1043,7 @@ class InternshipsController extends Controller
         $coaching_category = new WidgetTutorials();
         $userApplied = new UserAppliedApplication();
         $model = new ExtendsJob();
+        $catModel = new ApplicationForm();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_internships_stats "])
             ->asArray()
@@ -1065,7 +1066,7 @@ class InternshipsController extends Controller
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships', 10),
             'total_applied' => $userApplied->total_applied($type = 'Internships'),
-            'primary_fields' => $this->getCategories(),
+            'primary_fields' => $catModel->getPrimaryFields('Internships'),
             'model' => $model,
             'internships' => $this->__getApplications("Internships"),
             'viewed' => $viewed,
