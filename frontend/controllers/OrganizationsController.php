@@ -129,7 +129,7 @@ class OrganizationsController extends Controller
     {
         $organization = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity'])
+            ->select(['a.organization_enc_id','a.industry_enc_id','a.facebook','a.twitter','a.instagram','a.linkedin', 'a.slug', 'a.mission','a.vision','a.establishment_year','a.number_of_employees','a.description','a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity','a.tag_line'])
             ->joinWith(['businessActivityEnc b'], false)
             ->where([
                 'a.slug' => $slug,
@@ -222,7 +222,7 @@ class OrganizationsController extends Controller
                 ->select(['a.product_enc_id', 'a.description'])
                 ->joinWith(['organizationProductImages b' => function ($b) {
                     $b->select(['b.product_enc_id', 'b.image_enc_id', 'b.image', 'b.image_location', 'b.title']);
-                    $b->where(['b.is_deleted' => 0]);
+                    $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])

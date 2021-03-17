@@ -405,6 +405,7 @@ class JobsController extends Controller
     {
         $coaching_category = new WidgetTutorials();
         $model = new ExtendsJob();
+        $catModel = new ApplicationForm();
         $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_jobs_stats"])
@@ -447,7 +448,7 @@ class JobsController extends Controller
             'addedColleges' => $addedColleges,
             'saveCollege' => $saveCollege,
             'jobs' => $this->__getApplications("Jobs"),
-            'primary_fields' => $this->getCategories()
+            'primary_fields' => $catModel->getPrimaryFields()
         ]);
     }
 

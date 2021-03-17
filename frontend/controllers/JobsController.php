@@ -1142,59 +1142,57 @@ class JobsController extends Controller
 
     public function actionGetJobs()
     {
-        $req = Yii::$app->request->post();
-        $query = $req['q'];
-        $id = $req['id'];
-        $applications = $req['applications'];
-        if (!$applications) {
-            $applications = [];
-        }
-        $jobs = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id'])
-            ->distinct()
-            ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
-                $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
-                $x->onCondition([
-//                    'b.status' => 'Active',
-                    'b.is_deleted' => 0
-                ]);
-
-                $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
-
-                $x->joinWith(['title c' => function ($y) use ($query) {
-
-//                    $y->andWhere([
-//                        'c.status' => 'Approved',
-//                        'c.is_deleted' => 0
-//                    ]);
-
-                    $y->andFilterWhere([
-                        'or',
-                        ['like', 'd.name', $query],
-                        ['like', 'e.name', $query],
+        if (Yii::$app->request->isPost){
+            $req = Yii::$app->request->post();
+            $query = $req['q'];
+            $id = $req['id'];
+            $applications = $req['applications'];
+            if (!$applications) {
+                $applications = [];
+            }
+            $jobs = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id'])
+                ->distinct()
+                ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
+                    $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
+                    $x->onCondition([
+                        'b.is_deleted' => 0
                     ]);
 
-                    $y->joinWith(['categoryEnc d']);
-                    $y->joinWith(['parentEnc e']);
-                }], false);
+                    $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
 
-                $x->joinWith(['applicationTypeEnc z' => function ($zz) {
-                    $zz->andWhere(['z.name' => 'Jobs']);
-                }]);
+                    $x->joinWith(['title c' => function ($y) use ($query) {
 
-                $x->groupBy(['b.application_enc_id']);
 
-                $x->limit(10);
-            }])
-            ->where([
-//                'a.status' => 'Active',
-                'a.is_deleted' => 0,
-                'a.organization_enc_id' => $id
-            ])
-            ->asArray()
-            ->all();
-        return json_encode($jobs[0]['employerApplications']);
+                        $y->andFilterWhere([
+                            'or',
+                            ['like', 'd.name', $query],
+                            ['like', 'e.name', $query],
+                        ]);
+
+                        $y->joinWith(['categoryEnc d']);
+                        $y->joinWith(['parentEnc e']);
+                    }], false);
+
+                    $x->joinWith(['applicationTypeEnc z' => function ($zz) {
+                        $zz->andWhere(['z.name' => 'Jobs']);
+                    }]);
+
+                    $x->groupBy(['b.application_enc_id']);
+
+                    $x->limit(10);
+                }])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.organization_enc_id' => $id
+                ])
+                ->asArray()
+                ->all();
+            return json_encode($jobs[0]['employerApplications']);
+        }else{
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
 
     }
 
