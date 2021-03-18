@@ -77,10 +77,16 @@ if ($type == 'Internships') {
                                 <div class="company-logo center-block">
                                     <?php
                                     if (!empty($application_details['logo'])) {
-                                        ?>
-                                        <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
-                                             class="img-responsive"/>
-                                        <?php
+                                        if ($application_details['organization_enc_id']) {
+                                            ?>
+                                            <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
+                                                 class="img-responsive"/>
+                                            <?php
+                                        } else { ?>
+                                            <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
+                                                 class="img-responsive"/>
+                                            <?php
+                                        }
                                     } else {
                                         ?>
                                         <canvas class="user-icon" name="<?= $application_details['org_name'] ?>"
