@@ -1329,4 +1329,9 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionAsSeenInIndex()
+    {
+        return $this->render('as-seen-in-index');
+    }
+
 }

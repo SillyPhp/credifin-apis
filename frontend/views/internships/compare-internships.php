@@ -664,11 +664,12 @@ td{
     z-index:99;
     background-color:#ecececba;
 }
-.remove-compare{
-    float: right;
-    position: relative;
-    margin-top: -10px;
-    margin-bottom: 10px;
+.ui-droppable{position:relative;}
+.remove-compare {
+    position: absolute;
+    right: 4px;
+    top: 0px;
+    cursor: pointer;
 }
 ');
 $script = <<<JS

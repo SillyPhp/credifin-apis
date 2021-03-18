@@ -37,10 +37,11 @@ $this->params['header_dark'] = false;
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
-                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
-                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
-                                            href="/blog">Blogs</a>
+                                <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
+                                    <a href="/jobs">Jobs,</a> <a href="/internships">Internships,</a>
+                                    <a href="/reviews">Reviews,</a> <a href="/learning">Learning Hub,</a> <a
+                                            href="/courses">Courses,</a> <a href="/career-advice">Career Advice,</a>
+                                    <a href="/education-loans">Education Loans</a>
                                 </span>
                             </div>
                         </div>
