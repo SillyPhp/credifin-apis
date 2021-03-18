@@ -1262,18 +1262,22 @@ class LoansController extends ApiBaseController
         $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_options.json');
         $loanTable = json_decode($strJsonFileContents, true);
 
-        if ($loanTable) {
-            foreach ($loanTable as $k => $v) {
+        $chooseEducationLoan = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'choose_education_loan.json');
+        $chooseEducationLoan = json_decode($chooseEducationLoan, true);
 
-                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
-                if ($v['bank_financier'] == 'AG-logo.png') {
-                    $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
-                }
+        foreach ($loanTable as $k => $v) {
+
+            $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
+            if ($v['bank_financier'] == 'AG-logo.png') {
+                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
             }
-            return $this->response(200, $loanTable);
-        } else {
-            return $this->response(404, 'not found');
         }
+
+        foreach ($chooseEducationLoan as $key => $val) {
+            $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
+        }
+
+        return $this->response(200, ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan]);
     }
 
 }
