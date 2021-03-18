@@ -527,7 +527,7 @@ class JobsController extends Controller
                 ])
                 ->joinWith(['collegeEnc b'], false)
                 ->where(['a.employer_application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
-//                ->limit(10)
+                //->limit(10)
                 ->asArray()
                 ->all();
 
