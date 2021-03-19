@@ -24,7 +24,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="how-works-heading">Education Institution Loan</div>
+                    <div class="heading-style edu-ins">Education Institution Loan</div>
                 </div>
                 <div class="loan-data-set">
                     <p>A vision to change the education system is what you need to have in order to collaborate with us!
@@ -74,7 +74,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="how-works-heading">How It Works</div>
+                    <div class="heading-style edu-ins">How It Works</div>
                 </div>
                 <div class="works-set">
                     <div class="col-md-4 col-sm-6 col-xs-12">
@@ -128,10 +128,17 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-form-detail',[
         'model' =>$model
 ]); ?>
+<?= $this->render('/widgets/press-releasee') ?>
 <?= $this->render('/widgets/loan-strip') ?>
 
 <?php
 $this->registerCss('
+.footer {
+    margin-top: 0px !important;
+}
+.edu-ins {
+    text-align: center;
+}
 .study-in-usa-bg {
 	background: url(' . Url::to('@eyAssets/images/pages/education-loans/edu-in.png') . ');
 	min-height: 550px;
@@ -280,7 +287,7 @@ $this->registerCss('
 }
 .why-back {
 	background-color: #00a0e3;
-	padding: 35px;
+	padding: 2px 35px 35px;
 }
 .why-back h1 {
 	font-size: 45px;
