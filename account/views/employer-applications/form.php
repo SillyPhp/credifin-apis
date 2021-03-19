@@ -148,6 +148,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                             $this->render('/widgets/employer-applications/job-description', [
                                 'form' => $form,
                                 'model' => $model,
+                                'type' => $type,
                             ]);
                             ?>
                             <div class="divider"></div>
@@ -170,6 +171,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                 'form' => $form,
                                 'model' => $model,
                                 'benefits' => $benefits,
+                                'type' => $type,
                             ]);
                             ?>
                             <?=
