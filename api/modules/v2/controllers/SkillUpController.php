@@ -6,6 +6,7 @@ namespace api\modules\v2\controllers;
 use common\models\ConversationMessages;
 use common\models\ConversationParticipants;
 use common\models\Conversations;
+use common\models\Industries;
 use common\models\Skills;
 use common\models\SkillsUpLikesDislikes;
 use common\models\SkillsUpPostAssignedVideo;
@@ -15,6 +16,7 @@ use common\models\SkillsUpRecommendedPost;
 use common\models\Teachers;
 use common\models\UserOtherDetails;
 use common\models\UserPreferences;
+use common\models\UserPreferredIndustries;
 use common\models\UserPreferredSkills;
 use common\models\Users;
 use Yii;
@@ -396,6 +398,140 @@ class SkillUpController extends ApiBaseController
                 ->all();
 
             return $this->response(200, ['status' => 200, 'skills' => $skills]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetIndustries()
+    {
+        if ($user = $this->isAuthorized()) {
+            $keyword = Yii::$app->request->post('keyword');
+
+            $industries = Industries::find()
+                ->select(['industry_enc_id', 'industry'])
+                ->andFilterWhere(['like', 'industry', $keyword])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'industry' => $industries]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSavePrefIndustry()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['industries']) && empty($params['industries'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
+
+            if ($prefs) {
+
+                $already_saved_industrry = UserPreferredIndustries::find()
+                    ->select(['industry_enc_id'])
+                    ->where([
+                        'preference_enc_id' => $prefs['preference_enc_id']
+                    ])
+                    ->andWhere(['is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $already_saved_industry = [];
+
+                foreach ($already_saved_industrry as $ind) {
+                    array_push($already_saved_industry, $ind['industry_enc_id']);
+                }
+
+                $industry = [];
+                foreach ($params['industries'] as $i) {
+                    array_push($industry, $i);
+                }
+                $new_industry_to_update = $industry;
+
+                $to_be_added_industry = array_diff($new_industry_to_update, $already_saved_industry);
+                $to_be_deleted_industry = array_diff($already_saved_industry, $new_industry_to_update);
+
+                if (count($to_be_deleted_industry) > 0) {
+                    foreach ($to_be_deleted_industry as $del) {
+                        $to_delete_indus = UserPreferredIndustries::find()
+                            ->where([
+                                'industry_enc_id' => $del,
+                                'preference_enc_id' => $prefs['preference_enc_id']
+                            ])
+                            ->andWhere(['is_deleted' => 0])
+                            ->one();
+
+                        $to_delete_indus->is_deleted = 1;
+                        $to_delete_indus->update();
+                    }
+                }
+
+                if (count($to_be_added_industry) > 0) {
+                    foreach ($to_be_added_industry as $indus) {
+                        $user_industries_model = new UserPreferredIndustries();
+                        $utilities = new Utilities();
+                        $user_industries_model->preference_enc_id = $prefs['preference_enc_id'];
+                        $utilities->variables['string'] = time() . rand(100, 100000);
+                        $user_industries_model->preferred_industry_enc_id = $utilities->encrypt();
+                        $user_industries_model->industry_enc_id = $indus;
+                        $user_industries_model->created_on = date('Y-m-d H:i:s');
+                        $user_industries_model->created_by = $user->user_enc_id;
+                        if (!$user_industries_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+            } else {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $prefs = new UserPreferences();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $prefs->preference_enc_id = $utilitiesModel->encrypt();
+                    $prefs->assigned_to = 'Skills_Up';
+                    $prefs->created_on = date('Y-m-d H:i:s');
+                    $prefs->created_by = $user->user_enc_id;
+                    if (!$prefs->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+
+                    foreach ($params['industries'] as $s) {
+                        $industries = new UserPreferredIndustries();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $industries->preferred_industry_enc_id = $utilitiesModel->encrypt();
+                        $industries->industry_enc_id = $s;
+                        $industries->preference_enc_id = $prefs->preference_enc_id;
+                        $industries->created_on = date('Y-m-d H:i:s');
+                        $industries->created_by = $user->user_enc_id;
+                        if (!$industries->save()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

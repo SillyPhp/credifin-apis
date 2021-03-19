@@ -931,6 +931,7 @@ width:100% !important;
 
 ');
 $script = <<< JS
+var global_r = false;
 $(document).on('click','input[name="college_taken"]',function(e) {
   var val = $(this).val();
   if (val==1){
@@ -1422,23 +1423,6 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     "order_id": ptoken, 
     "handler": function (response){
         updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
-                  swal({
-                        title: "",
-                        text: "Your Application Is Submitted Successfully",
-                        type:'success',
-                        showCancelButton: false,  
-                        showConfirmButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             location.reload(true);
-                         });
-          if (userID==''){
-            window.location.replace('/signup/individual?loan_id_ref='+loan_id);
-          }     
     },
     "prefill": {
         "name": $('#applicant_name').val(),
@@ -1501,8 +1485,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
                      });
     }
 );
-} 
-
+}
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
@@ -1515,11 +1498,49 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
               status:status, 
               signature:signature,
             },
+            beforeSend:function(e){
+                $('#subBtn').hide();     
+                $('#prevBtn').hide();     
+                $('#loadBtn').show();   
+            },
             success:function(e)
             {
-                //console.log(e);
+                if (status=="captured"){
+                    if (e.response.status=='200'){
+                       swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        showConfirmButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         });   
+                     if (userID==''){  
+                        window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                     }  
+                     }else{
+                        swal({
+                         title:"Payment Error",
+                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+                      });
+                     }
+                }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
             }
     })
+}
+
+function ajax_response(e)
+{
+    return e;
 }
 JS;
 $this->registerJs($script);

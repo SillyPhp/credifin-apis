@@ -127,6 +127,7 @@ $this->registercss('
 	margin:10px 0 20px;
 	padding: 30px 0px 10px;
 	transition:all .3s;
+	min-height: 390px !important;
 }
 .company-main:hover{
 //    transform:scale(1.01);

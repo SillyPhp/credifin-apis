@@ -449,7 +449,7 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','l.name profile_name','a.square_image','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
             ->where(['a.unique_source_id' => $eaidk])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
@@ -833,8 +833,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $application_details = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.*', 'b.name org_name', 'b.tag_line', 'b.initials_color color', 'b.slug as org_slug', 'b.email', 'b.website', 'b.logo', 'b.logo_location', 'b.cover_image', 'b.cover_image_location'])
-                ->joinWith(['organizationEnc b'], false)
+                ->select(['a.*'])
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
@@ -845,6 +844,25 @@ class JobsController extends Controller
             if (!$application_details) {
                 return 'Not Found';
             }
+
+            $claimedOrg = Organizations::find()
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            $unclaimedOrg = UnclaimedOrganizations::find()
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            if ($claimedOrg) {
+                $application_details = array_merge($application_details, $claimedOrg);
+            } else {
+                $application_details = array_merge($application_details, $unclaimedOrg);
+            }
+
             $object = new \account\models\applications\ApplicationForm();
 
             return $this->renderAjax('pop_up_detail', [
@@ -1142,7 +1160,7 @@ class JobsController extends Controller
 
     public function actionGetJobs()
     {
-        if (Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             $req = Yii::$app->request->post();
             $query = $req['q'];
             $id = $req['id'];
@@ -1190,7 +1208,7 @@ class JobsController extends Controller
                 ->asArray()
                 ->all();
             return json_encode($jobs[0]['employerApplications']);
-        }else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
 
@@ -1388,8 +1406,9 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTemplate($view){
-        if(Yii::$app->user->identity->organization) {
+    public function actionTemplate($view)
+    {
+        if (Yii::$app->user->identity->organization) {
             $whatsAppmodel = new whatsAppShareForm();
             $application = ApplicationTemplates::find()
                 ->alias('a')
