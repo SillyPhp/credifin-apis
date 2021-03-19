@@ -260,6 +260,9 @@ class EducationLoansController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionSchoolFeeFinance(){
+        return $this->render('school-fee-financing');
+    }
     public function actionInterestFree(){
         $model = new AdmissionForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -275,6 +278,25 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
         return $this->render('interest-free-education-loan',[
+            'model' => $model
+        ]);
+    }
+    public function actionEducationInstitutionLoan()
+    {
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('education-institution-loan', [
             'model' => $model
         ]);
     }
