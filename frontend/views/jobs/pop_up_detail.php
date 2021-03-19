@@ -547,14 +547,20 @@ h3.job-detail {
 	flex-wrap: wrap;
 }
 .company-logo {
-	max-height: 100px;
-	max-width: 100px;
-	text-align: center;
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-	overflow: hidden;
-	margin: 0 10px 0 0;
+    max-height: 100px;
+    max-width: 100px;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    margin: 0 10px 0 0;
+}
+.company-logo img {
+    width: 90px;
+    height: 90px;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 !important;
 }
 .j-details{padding-top:20px;}
 
