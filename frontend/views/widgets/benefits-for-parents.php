@@ -93,9 +93,9 @@ $this->registerCss('
 .bene-img {
     text-align: center;
     border-radius: 50%;
-    background-color: #9db6d6;
+    background-color: #00a0e3;
     padding: 10px;
-    box-shadow: 0 0 11px 0px rgb(0 0 0 / 20%);
+    box-shadow: 0 0 11px 6px rgb(0 0 0 / 20%);
     max-width: 90px;
     margin: 0 auto;
 }
