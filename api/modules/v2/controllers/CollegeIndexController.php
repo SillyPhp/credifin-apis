@@ -1057,12 +1057,14 @@ class CollegeIndexController extends ApiBaseController
     {
         return LoanApplications::find()
             ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.amount', 'a.status'])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->innerJoinWith(['userOtherDetails b1']);
-            }])
-            ->joinWith(['educationLoanPayments c'])
+            }], false)
+            ->joinWith(['educationLoanPayments c'], false)
             ->where(['a.is_deleted' => 0, 'b1.user_enc_id' => $user_id, 'c.payment_status' => ['captured', 'created']])
-            ->exists();
+            ->asArray()
+            ->all();
     }
 
     private function appliedCompanies($user_id)
