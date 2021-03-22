@@ -47,7 +47,8 @@ class LoansController extends ApiBaseController
                 'save-application',
                 'home',
                 'enquiry-form',
-                'study-in-india'
+                'study-in-india',
+                'faqs',
             ],
             'class' => HttpBearerAuth::className()
         ];
