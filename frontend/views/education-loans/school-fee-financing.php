@@ -2,16 +2,17 @@
 use yii\helpers\Url;
 ?>
 <section class="study-in-usa-bg">
+    <div class="headerOverlay"></div>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 text-center">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["School Fee Finance."]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>"A good education is foundation for a better future"<br>
+                <p>A good education is foundation for a better future<br>
                 Lay your child's career path right from school.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
@@ -21,17 +22,19 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section class="padd30">
+<section class="padd30 pt30">
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-
+            <div class="col-md-5 tac">
+                <div class="whystudy">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sf-icon.png')?>" alt="">
+                </div>
             </div>
-            <div class="col-md-8">
-
-                <p>With increasing inflation, gone are the days when school fees was affordable without financial planning. To make your child study in top schools has become a task. Schools' fees are high and most schools need to be paid in annual modes. Today, school fees can have a major impact on a family’s financial plans and require a financial solution as well.
-                To make it easier and less worrisome for the parents, EmpowerYouth has introduced school fee financing which is beneficial for both parents and
-                schools. We believe everyone has a right to a great education and we can help turn aspirations into reality.
+            <div class="col-md-7">
+                <h3 class="heading-style">School Fee Finance</h3>
+                <p class="why-des">With increasing inflation, gone are the days when school fees was affordable without financial planning. To make your child study in top schools has become a task. Schools' fees are high and most schools need to be paid in annual modes. Today, school fees can have a major impact on a family’s financial plans and require a financial solution as well.
+                    To make it easier and less worrisome for the parents, EmpowerYouth has introduced school fee financing which is beneficial for both parents and
+                    schools. We believe everyone has a right to a great education and we can help turn aspirations into reality.
             </div>
         </div>
     </div>
@@ -151,6 +154,22 @@ $this->registerCss('
 .footer{
     margin-top: 0px !important;
 }
+.pt30{
+    padding-top: 30px
+}
+.why-des{
+    font-size: 16px;
+    line-height: 26px;
+    color: #000;
+    font-family: roboto;
+    text-align: justify;
+}
+.whystudy img {
+    height: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0px #797979;
+}
 .displayFlex{
     display: flex; 
     flex-wrap: wrap;
@@ -197,16 +216,24 @@ $this->registerCss('
 
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/finance.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/schoolfee.png') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
 	align-items: center;
+	justify-content: center; 
 	position: relative;
-//	text-align: center;
 	max-height: 700px;
-	background-position:left bottom;
+	background-position:center;
+}
+.headerOverlay{
+    background: rgba(0,0,0, .8);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;
@@ -223,6 +250,7 @@ $this->registerCss('
 	line-height: 30px;
 	max-width: 500px;
 	text-transform: capitalize;
+    margin: 10px auto 20px;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -241,6 +269,7 @@ $this->registerCss('
 	width: 150px;
 	text-align:center;
 }
+
 .btn-orange{
     background: #ff7803 !important;
     border: 1px solid #ff7803 !important;

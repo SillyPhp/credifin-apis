@@ -569,7 +569,7 @@ $(document).on('click','.btn_usefull',function() {
 $(document).on('click','input[name="reporting_radio"]',function() {
   var r_id = $('#review_enc_id').val();
   var id = $(this).val();
-    $.ajax({
+     $.ajax({
         url:baseUrl+'/api/v3/ey-college-profile/report',
         data:{review_enc_id:r_id, value:id, user_enc_id: user_id},                         
         method: 'post',
