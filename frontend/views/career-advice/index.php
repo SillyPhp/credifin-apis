@@ -99,7 +99,7 @@ $careerAdviceCategories = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            .trending-heading:before           <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
