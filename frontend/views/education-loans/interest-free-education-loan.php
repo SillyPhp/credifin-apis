@@ -71,16 +71,9 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/benefits-for-parents') ?>
+
     <section class="head-bg">
-        <div class="img-top-left">
-            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/blue-shp2.png') ?>" alt="">
-        </div>
-        <div class="img-top-right">
-            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/blue-shp1.png') ?>" alt="">
-        </div>
-        <div class="img-bottom-left">
-            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/blue-shp3.png') ?>" alt="">
-        </div>
         <div class="container">
             <div class="row partner-bg">
                 <div class="col-md-6 col-sm-6">
@@ -201,6 +194,8 @@ use yii\helpers\Url;
     'model' => $model
 ]); ?>
 
+<?= $this->render('/widgets/press-releasee') ?>
+
     <section class=""  id="call">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
@@ -244,7 +239,6 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/press-releasee') ?>
 
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
@@ -403,7 +397,7 @@ html {
     margin-right: 0px;
 }
 .head-bg{
-    background-color: #fff;
+    background-color: #d1e3fa;
     position: relative;
     min-height: 350px;
 }

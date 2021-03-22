@@ -340,6 +340,13 @@ border: 1px solid #e73d49;
 box-shadow: 0px 0px 5px 0px #e73d49 !important;
 }
 .form_builder_field.ui-sortable-handle{height:auto !important;}
+
+@media screen and (max-width: 900px) and (min-width:600px) {
+   .q-btns{
+    padding-left: 30px;
+    padding-right: 10px;
+   } 
+} 
 ");
 
 $script = <<<JS
