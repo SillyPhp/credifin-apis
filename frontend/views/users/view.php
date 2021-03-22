@@ -57,6 +57,23 @@ $this->params['header_dark'] = false;
                             </ul>
                             <?php
                         }
+                        if(!Yii::$app->user->identity->organization){
+                        ?>
+                        <div class="pro-bar">
+                            <div class="pro-text"><?= $profileProcess?>% Completed</div>
+                            <div class="progress">
+                                <?php
+                                if($profileProcess < 50){
+                                    $processClr = 'process-clr';
+                                } else{
+                                    $processClr = 'process-clr1';
+                                }
+                                ?>
+                                <div class="progress-bar <?= $processClr?>" style="width:<?= $profileProcess?>%"></div>
+                            </div>
+                        </div>
+                        <?php
+                        }
                         if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                             ?>
                             <a href="<?= Url::to('/' . $user['username'] . '/edit'); ?>" class="edit-profile-btn"
@@ -452,6 +469,43 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.pro-text {
+	text-align: right;
+	font-family: roboto;
+	font-weight: 500;
+}
+.progress {
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.08);
+  margin:0px 0 5px 0;
+}
+.process-clr{
+    background-color:#ff7803;
+}
+.process-clr1{
+    background-color:#00a0e3;
+}
+.progress-bar {
+  height: 16px;
+  border-radius: 20px;
+	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  -webkit-transition: 0.4s linear;
+  -moz-transition: 0.4s linear;
+  -o-transition: 0.4s linear;
+  transition: 0.4s linear;
+  -webkit-transition-property: width, background-color;
+  -moz-transition-property: width, background-color;
+  -o-transition-property: width, background-color;
+  transition-property: width, background-color;
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+}
 .down-res{
     text-align:center;
     margin-top: 5px;
@@ -660,7 +714,7 @@ body{background-color:#f9f9f9;}
 .left-side-container {
 	width: 100%;
 	background-color: #fff;
-	padding: 50px;
+	padding: 50px 50px 25px;
 	position: relative;
 	margin: auto;
 	border-radius: 8px;
@@ -708,7 +762,7 @@ body{background-color:#f9f9f9;}
 .inner-header-page .header-details li {
     display: inline-block;
     margin-right: 20px;
-    margin-bottom: 12px;
+    margin-bottom: 0px;
     font-family:roboto;
     font-size:16px;
 }
