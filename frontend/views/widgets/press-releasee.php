@@ -23,6 +23,18 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-2 col-sm-4 col-xs-6">
                 <div class="press-release-hd">
+                    <a href="https://www.financialexpress.com/education-2/loans-for-students-in-punjab-himachal-pradesh/2212737/" target="_blank">
+                        <div class="press-release">
+                            <div class="press-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/the-financial-express-logo.png'); ?>" alt=""/>
+                            </div>
+                        </div>
+                        <div class="press-txt-hd">The Financial Express</div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-xs-6">
+                <div class="press-release-hd">
                     <a href="https://www.thehindu.com/education/news-from-the-world-of-education/article34059121.ece" target="_blank">
                     <div class="press-release">
                         <div class="press-img">
@@ -54,18 +66,6 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="press-txt-hd">United News Of India</div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://www.newsnasha.com/empoweruth-com-tied-up-with-60-colleges-to-provide-loans/" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/newsnasha.png'); ?>" alt=""/>
-                            </div>
-                        </div>
-                        <div class="press-txt-hd">News Nasha</div>
                     </a>
                 </div>
             </div>
