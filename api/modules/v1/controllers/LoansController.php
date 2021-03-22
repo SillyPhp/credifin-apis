@@ -1280,4 +1280,16 @@ class LoansController extends ApiBaseController
         return $this->response(200, ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan]);
     }
 
+    public function actionFaqs()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_faqs.json');
+        $faqs = json_decode($strJsonFileContents, true);
+
+        if ($faqs) {
+            return $this->response(200, $faqs);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
 }
