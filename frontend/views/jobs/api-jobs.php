@@ -536,11 +536,12 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 }
 .effect a i {
   font-size: 14px;
+  text-align: center;
 }
 .effect a i {
   display: inline-block;
   vertical-align: middle;
-  margin-left: -2px;
+  margin-left: 0px;
   margin-top: 3px;
 }
 /* thurio effect */
