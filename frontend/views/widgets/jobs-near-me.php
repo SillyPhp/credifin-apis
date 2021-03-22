@@ -127,7 +127,7 @@ if ($type == 'jobs') {
                         </div>
                     </div>
                     <div class="col-md-9 col-sm-9 col-xs-9">
-                        <div class="comps-name-1 application-card-description">
+                        <div class="comps-name-1 application-card-description" data-slug="{{application_slug}}">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
                                     {{title}}

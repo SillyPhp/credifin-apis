@@ -34,7 +34,7 @@ switch ([$controller_id, $action_id]) {
                                 {{/logo}}
                             </a>
                         </div>
-                        <div class="comps-name-1 application-card-description">
+                        <div class="comps-name-1 application-card-description" data-slug="{{application_slug}}">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize">
                                     {{title}}
