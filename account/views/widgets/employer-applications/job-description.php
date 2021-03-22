@@ -1,4 +1,13 @@
-<div class="module2-heading">Provide job description</div>
+<?php
+use yii\widgets\Pjax;
+use yii\helpers\Html;
+use yii\helpers\URL;
+
+if($type){
+    $type =  substr_replace($type ,"",-1);
+}
+?>
+<div class="module2-heading">Provide <?= $type ?> description</div>
 <div class="row padd-10">
     <div class="col-md-6">
         <div id="manual_questions">
@@ -10,13 +19,13 @@
                 </div>
                 <input type="text" class="form-control" maxlength="150"
                        id="question_field"
-                       placeholder="Type Custom Job Description And Press Enter.">
+                       placeholder="Type Custom <?= $type ?> Description And Press Enter.">
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="manual_notes">
-            Select from predefined job descriptions list
+            Select from predefined <?= $type ?> descriptions list
         </div>
     </div>
 </div>

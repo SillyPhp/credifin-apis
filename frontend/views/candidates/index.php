@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 echo $this->render('/widgets/mustache/candidates');
+$paramCount = count(Yii::$app->request->get());
 $salary = $_GET['salary'];
 $salary_exp = explode(",", $salary);
 $salary_from = $salary_exp[0];
@@ -92,7 +93,9 @@ $this->params['seo_tags'] = [
                 <div class="filters">
                     <div class="f-ratings">
                         <div class="filter-head-main">Filter Candidates</div>
-                        <div class="overall-box-heading">Salary Range</div>
+                        <div class="overall-box-heading">Salary Range
+                        <a href="#" id="reset-salary">Reset</a>
+                        </div>
                         <div class="form-group form-md-checkboxes">
                             <div class="md-checkbox-list">
                                 <div>
@@ -190,6 +193,16 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 $this->registerCss('
+a#reset-salary {
+    float: right;
+    color: #e43a45;
+    font-size: 13px;
+    padding: 5px 0px 0px 10px;
+}
+a#reset-salary:hover {
+    color: #8e44ad;
+    font-size: 14px;
+}
 .btns-b {
     display: flex;
     justify-content: center;
@@ -918,6 +931,9 @@ var user_id = null;
 var app_id = null;
 $(document).ready(function () {
 	loading = false;
+	if("$paramCount" == 0){
+	    history.pushState('data', 'title', '?salary=');
+	}
 	url = '/candidates' + window.location.search;
 	getUserCards(0, url, 'append');
 	setTimeout(function () {
@@ -979,7 +995,7 @@ $(document).on('change', 'input[type=checkbox]', function() {
     var cls_sk = params.match(/skills=/g);
     var cls_sal = params.match(/salary=/g);
     if(!cls_loc && !cls_jt && !cls_sk){
-        params = params+'locations=&job_titles=&skills=';
+        params +='&locations=&job_titles=&skills=';
     }
     var p = [];
     $.each(params.split("&"),function(index,value) {
@@ -1064,6 +1080,64 @@ $(document).on('mouseup', 'span.irs-handle', function () {
                 str.push(value);
             });
             p[i+1] = str[0]+','+str[1];
+        }
+    });
+    var cur_params = "?";
+    $.each(p,function(i, v) {
+        if(i === 0){
+            cur_params = cur_params + v;
+        } else {
+            if(i % 2 === 0){
+                cur_params = cur_params + '&' + v;
+            } else {
+                cur_params = cur_params + '=' + v;
+            }
+        }
+    });
+	history.pushState('data', 'title', cur_params);
+	var cur_url = '/candidates' + window.location.search;
+	offset = 0;
+	getUserCards(offset, cur_url, 'html');
+});
+    
+$(document).on('click', 'a#reset-salary', function (e) {
+    e.preventDefault();
+    var instance = $('#rangess').data("ionRangeSlider");
+     instance.update({
+       from: 5000,
+       to: 5000,
+     });
+// $(document).ready(function () {
+    var ths = $('#rangess');
+    var thsVal = null;
+    var thsCls = ths.attr('class').split(' ')[0];
+	load_more_cards = true;
+	$('#user_cards').html(" ");
+	$('.loading-main').show();
+	exp_params = [];
+	var params = unescape(window.location.search.substring(1));
+	var cls_loc = params.match(/locations=/g);
+    var cls_jt = params.match(/job_titles=/g);
+    var cls_sk = params.match(/skills=/g);
+    var cls_sal = params.match(/salary=/g);
+    var p = [];
+    $.each(params.split("&"),function(index,value) {
+        exp_params.push(value);
+        $.each(value.split("="),function(i,v) {
+            p.push(v);
+        });
+    });
+    $.each(p, function(i,v) {
+        if(v == thsCls){
+            var str = [];
+            if(thsVal != null){
+                $.each(thsVal.split(";"),function(index,value) {
+                    str.push(value);
+                });
+                p[i+1] = str[0]+','+str[1];
+            } else {
+                p[i+1] = "";
+            }
         }
     });
     var cur_params = "?";

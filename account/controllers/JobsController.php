@@ -523,11 +523,11 @@ class JobsController extends Controller
             $colleges = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->select(['a.application_enc_id', 'a.college_enc_id', 'a.is_college_approved', 'b.name college_name', 'b.slug',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END college_logo'
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END college_logo'
                 ])
                 ->joinWith(['collegeEnc b'], false)
                 ->where(['a.employer_application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
-                ->limit(10)
+                //->limit(10)
                 ->asArray()
                 ->all();
 

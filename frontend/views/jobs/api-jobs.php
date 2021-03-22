@@ -168,25 +168,29 @@ if (!Yii::$app->user->isGuest) {
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="javascript:;" class="tg-tele"
+                               onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                <i class="fab fa-telegram-plane"></i>
                             </a>
                         </div>
                         <div class="wts-ap">
@@ -313,6 +317,7 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.intl-tel-input{width:100%;}
 .form-whats {
 	position: relative;
 }
@@ -339,6 +344,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -432,7 +438,7 @@ border: 1px solid #eee;
 }
 .job-thumb a img{margin:5px;}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -515,26 +521,27 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: 15px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+    text-decoration: none !important;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0 5px;
+    font-size: 17px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    border: 2px solid #fff;
+    line-height: 24px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
+  font-size: 14px;
+  text-align: center;
 }
 .effect a i {
   display: inline-block;
   vertical-align: middle;
-  margin-left: -2px;
+  margin-left: 0px;
   margin-top: 3px;
 }
 /* thurio effect */
