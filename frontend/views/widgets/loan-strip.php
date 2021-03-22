@@ -6,7 +6,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="loan-strip-text">
-                    <p>All loans are from bank and non-bank partners licensed by RBI</p>
+                    <p>All <span class="txt-b">loans</span> are from bank and non-bank partners licensed by RBI</p>
                 </div>
             </div>
         </div>
@@ -15,6 +15,9 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.txt-b {
+    font-weight: bold;
+}
 .lnbg {
     background-color: #00a0e3;
 }
