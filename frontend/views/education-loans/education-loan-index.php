@@ -49,7 +49,7 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
     <div class="clearfix"></div>
-
+<?= $this->render('/widgets/loan-products')?>
     <section class="edu-with-us">
         <div class="container">
             <div class="row mt-20">
