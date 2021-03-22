@@ -16,6 +16,7 @@ use common\models\UserWorkExperience;
 use frontend\models\profile\UserProfileBasicEdit;
 use frontend\models\profile\UserProfilePictureEdit;
 use frontend\models\profile\UserProfileSocialEdit;
+use frontend\models\UserTaskForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
@@ -154,6 +155,8 @@ class UsersController extends Controller
         if (!count($user) > 0) {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
+        $processModel = new UserTaskForm();
+        $profileProcess = $processModel->getProfileCompleted($user['user_enc_id']);
 
         $skills = \common\models\UserSkills::find()
             ->alias('a')
@@ -247,6 +250,7 @@ class UsersController extends Controller
             'hobbies' => $hobbies,
             'interests' => $interests,
             'slug' => $slug,
+            'profileProcess' => $profileProcess
         ];
 
         if (Yii::$app->user->isGuest) {

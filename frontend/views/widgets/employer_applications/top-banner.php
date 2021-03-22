@@ -55,10 +55,10 @@ $(document).on('click','.shortlist_job',function(e){
         },
         success:function(data){
             if(data.message =='Shortlisted'){
-                $('.shortlist_job').html('<i class="far fa-heart"></i> Saved');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlisted');
                 $('.hover-change').addClass('col_pink');
             } else if(data.message =='unshort'){
-                $('.shortlist_job').html('<i class="far fa-heart"></i> Save');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlist');
                 $('.hover-change').removeClass('col_pink');
             }
         }
