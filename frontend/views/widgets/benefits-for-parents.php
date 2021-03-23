@@ -23,7 +23,7 @@ use yii\helpers\Url;
                     <span class="img-fs"><i class="fa fa-file-signature"></i></span>
                 </div>
                 <div class="bene-img-text">
-                    <p>No paper work</p>
+                    <p>Minimal paper work</p>
                 </div>
             </div>
             <div class="col-md-2 col-sm-3 col-xs-12">

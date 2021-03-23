@@ -7,9 +7,10 @@ use yii\helpers\Url;
         <div class="row row-flex">
             <div class="col-md-6">
                 <div class="internshipHeading">
-                    <h5>Worried about how you would pay your <br>education loan while studying?</h5>
-                    <p>Grab the <span>opportunity</span> of <span>interning</span> with us <br>
-                        and pay your <span>education loan</span>.</p>
+                    <h5>Worried About Paying For Your <br>Education While Studying?</h5>
+                    <p>Apply for Our <span>Education Loan</span> + <span>Internship Programme</span>.<br>
+                    Pay For Your Education Loan Yourself By Earning With Our <br>
+                        High Paying <span>Internship Programme</span>.</p>
                 </div>
             </div>
             <div class="col-md-6 text-center">
