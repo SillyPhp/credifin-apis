@@ -43,7 +43,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <?php endif; ?>
                     <a href="#"
                        data-toggle="modal" data-target="#loginModal"
-                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Shortlist</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>

@@ -13,7 +13,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-caller.jpg') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-callerr.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -222,6 +222,15 @@ use borales\extensions\phoneInput\PhoneInput;
 
 <?php
 $this->registerCss('
+.padd30 {
+    padding-bottom: 20px;
+}
+.le-img img{
+   height: 100%;
+    max-height: 370px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0px #797979;
+}
 .form-group{
     width: 100%;
     margin-bottom: 0px ;
