@@ -157,7 +157,6 @@ use yii\helpers\Url;
                 </div>
             </div>
     </section>
-    <?= $this->render('/widgets/education-loan-internship')?>
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
