@@ -419,7 +419,7 @@ $this->registerCss('
     transition: .3s ease;
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/Study-usa-bg.jpg') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
