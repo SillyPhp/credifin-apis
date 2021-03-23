@@ -643,8 +643,8 @@ function collegeInfo(res) {
                     </div>
                     <div class="college-info">
                         <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
-                    </div>`;
+                        `+(city_name ? '`<div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>`' : '')+`    
+                     </div>`;
     return collegeInfo;
 }
 $('.collegeLink').on('click', function (){
