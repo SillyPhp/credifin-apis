@@ -514,7 +514,7 @@ function overviewTemp(res){
         mainTemp += affiliatedTemp;
     }
     
-    if(res.response.data['website']){
+    if(website){
         var websiteTemp= `<div class="h-point1">
                             <div class="fa-icon"><i class="fas fa-link"></i></div>
                             <div class="fa-text">
@@ -539,6 +539,10 @@ function getCourses() {
                courseCard(res.response.courses[i]); 
             }
            initCourse();
+        }else{
+            var collegeCard = `<p class="noResults">No Courses To Display</p>`
+            $('.course-main').append(collegeCard); 
+            $('.view-btn').hide();
         }
     }
   })
