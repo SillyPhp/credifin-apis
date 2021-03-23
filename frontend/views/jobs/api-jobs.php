@@ -548,7 +548,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 .effect.thurio a {
   transition: border-radius 0.2s linear 0s;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+          transform: rotate(45deg);`
 }
 .effect.thurio a i {
   transition: -webkit-transform 0.01s linear 0s;
