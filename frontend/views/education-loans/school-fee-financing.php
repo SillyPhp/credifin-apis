@@ -42,7 +42,6 @@ use yii\helpers\Url;
 
 <?= $this->render('/widgets/loan-products')?>
 <?= $this->render('/widgets/benefits-for-parents')?>
-<?= $this->render('/widgets/education-loan-internship')?>
 <section class="pb3 press-bg">
     <div class="container">
         <div class="row">
@@ -136,6 +135,9 @@ $this->registerCss('
 .footer{
     margin-top: 0px !important;
 }
+.benefit-bg{
+    background: #fff !important;
+}
 .pt30{
     padding-top: 30px
 }
@@ -222,17 +224,18 @@ $this->registerCss('
 	margin-bottom: 10px;
 	color: #ff7803;
 	font-weight: bold;
-	font-family: lora;
+	font-family: roboto;
 }
 .study-in-usa-bg p {
-	font-size: 18px;
+	font-size: 24px;
 	font-family: roboto;
 	color: #fff;
 	padding: 0 0 5px;
-	line-height: 30px;
-	max-width: 500px;
+	line-height: 40px;
+	max-width: 700px;
 	text-transform: capitalize;
     margin: 10px auto 20px;
+ 
 }
 .study-in-usa-bg ul li{
     display: inline;
