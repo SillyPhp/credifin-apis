@@ -47,7 +47,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .ourProducts{
-    padding: 30px 0;
+    padding: 0 0 30px 0;
 }
 .displayFlex{
     display: flex; 

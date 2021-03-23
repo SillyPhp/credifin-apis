@@ -14,7 +14,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-8 col-sm-12 col-xs-12">
                 <div class="row">
-                    <div class="col-md-6 col-sm-6 tc">
+                    <div class="col-md-6 col-sm-6">
                         <div class="nbfc-opt-box">
                             <div class="rpe-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Easy-Documentation.png')?>">
@@ -26,7 +26,7 @@ use yii\helpers\Url;
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 tc">
+                    <div class="col-md-6 col-sm-6">
                         <div class="nbfc-opt-box">
                             <div class="rpe-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Quick-Disbursement.png')?>">
@@ -38,7 +38,7 @@ use yii\helpers\Url;
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 tc">
+                    <div class="col-md-6 col-sm-6">
                         <div class="nbfc-opt-box">
                             <div class="rpe-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Online-Application.png')?>">
@@ -49,7 +49,7 @@ use yii\helpers\Url;
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 tc">
+                    <div class="col-md-6 col-sm-6">
                         <div class="nbfc-opt-box">
                             <div class="rpe-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/live-tracking.png')?>">

@@ -23,12 +23,15 @@ use yii\helpers\Url;
     </div>
 </section>
 <?= $this->render('/widgets/annual-fee-finance-benefits') ?>
-
+<?= $this->render('/widgets/benefits-for-parents')?>
+<section class="bg-blue pb10">
+    <?= $this->render('/widgets/choose-education-loan') ?>
+</section>
 <section class="pb3 press-bg">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
+                <h5 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h5>
             </div>
         </div>
         <div class="row">
@@ -103,9 +106,6 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section class="bg-blue">
-    <?= $this->render('/widgets/choose-education-loan') ?>
-</section>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
@@ -119,6 +119,9 @@ $this->registerCss('
 }
 .padd30{
     padding-bottom: 30px;
+}
+.pb10{
+    padding-bottom: 15px;
 }
 .study-in-usa-bg {
 	background: url(' . Url::to('@eyAssets/images/pages/education-loans/finance.png') . ');

@@ -226,6 +226,12 @@ $this->registerCss('
     width: 100%;
     margin-bottom: 0px ;
 }
+.tc{
+    text-align: center;
+}
+.le-img img{
+    border-radius: 10px;
+}
 .form-group input{
     border: 1px solid #eee;
 }
