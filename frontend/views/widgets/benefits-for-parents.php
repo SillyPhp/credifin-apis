@@ -23,7 +23,7 @@ use yii\helpers\Url;
                     <span class="img-fs"><i class="fa fa-file-signature"></i></span>
                 </div>
                 <div class="bene-img-text">
-                    <p>No paper work</p>
+                    <p>Minimal Paper Work</p>
                 </div>
             </div>
             <div class="col-md-2 col-sm-3 col-xs-12">
@@ -39,7 +39,7 @@ use yii\helpers\Url;
                     <span class="img-fs"><i class="fas fa-thumbs-up"></i></span>
                 </div>
                 <div class="bene-img-text">
-                    <p>Approval in minutes</p>
+                    <p>Approval In Minutes</p>
                 </div>
             </div>
             <div class="col-md-2 col-sm-3 col-xs-12">
@@ -47,7 +47,7 @@ use yii\helpers\Url;
                     <span class="img-fs"><i class="fa fa-hand-holding-usd"></i></span>
                 </div>
                 <div class="bene-img-text">
-                    <p>No prepayment charges</p>
+                    <p>No Prepayment Charges</p>
                 </div>
             </div>
             <div class="col-md-2 col-sm-3 col-xs-12">
@@ -55,7 +55,7 @@ use yii\helpers\Url;
                     <span class="img-fs">EMI</span>
                 </div>
                 <div class="bene-img-text">
-                    <p>Repay in easy monthly installments</p>
+                    <p>Repay In Easy Monthly Installments</p>
                 </div>
             </div>
         </div>
