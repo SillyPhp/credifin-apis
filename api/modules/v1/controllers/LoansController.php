@@ -20,6 +20,8 @@ use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
 use common\models\PathToOpenLeads;
+use common\models\PressReleasePubliser;
+use common\models\ReferralReviewTracking;
 use common\models\Utilities;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
@@ -49,6 +51,7 @@ class LoansController extends ApiBaseController
                 'enquiry-form',
                 'study-in-india',
                 'faqs',
+                'press-release-publisher'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -62,6 +65,7 @@ class LoansController extends ApiBaseController
                 'home' => ['POST'],
                 'enquiry-form' => ['POST'],
                 'study-in-india' => ['POST'],
+                'press-release-publisher' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -1260,11 +1264,17 @@ class LoansController extends ApiBaseController
 
     public function actionStudyInIndia()
     {
+
+        $params = Yii::$app->request->post();
+
         $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_options.json');
         $loanTable = json_decode($strJsonFileContents, true);
 
         $chooseEducationLoan = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'choose_education_loan.json');
         $chooseEducationLoan = json_decode($chooseEducationLoan, true);
+
+        $loanStudyWhy = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_why_study.json');
+        $loanStudyWhy = json_decode($loanStudyWhy, true);
 
         foreach ($loanTable as $k => $v) {
 
@@ -1278,7 +1288,13 @@ class LoansController extends ApiBaseController
             $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
         }
 
-        return $this->response(200, ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan]);
+        $whyData = [];
+        if (isset($params['country']) && !empty($params['country'])) {
+            $whyData = $loanStudyWhy[$params['country']];
+            $whyData['image'] = Url::to('@eyAssets/images/pages/custom/' . $whyData['image'], 'https');
+        }
+
+        return $this->response(200, ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'study_why' => $whyData]);
     }
 
     public function actionFaqs()
@@ -1291,6 +1307,39 @@ class LoansController extends ApiBaseController
         } else {
             return $this->response(404, 'not found');
         }
+    }
+
+    public function actionPressReleasePublisher()
+    {
+        $limit = 3;
+        $page = 1;
+        $params = Yii::$app->request->post();
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = (int)$params['limit'];
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = (int)$params['page'];
+        }
+
+        $press_release = PressReleasePubliser::find()
+            ->select(['name', 'link', 'sequence',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=random&color=ffffff") END logo'
+            ])
+            ->where(['is_deleted' => 0])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->orderBy('sequence')
+            ->asArray()
+            ->all();
+
+        if ($press_release) {
+            return $this->response(200, $press_release);
+        }
+
+        return $this->response(404, 'not found');
+
     }
 
 }
