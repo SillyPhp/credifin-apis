@@ -242,6 +242,42 @@ class EducationLoansController extends Controller
             'model' => $model
         ]);
     }
+    public function actionAnnualFeeFinancing(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('annual-fee-financing',[
+            'model' => $model,
+        ]);
+    }
+    public function actionSchoolFeeFinance(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('school-fee-financing',[
+            'model' => $model
+        ]);
+    }
     public function actionInterestFree(){
         $model = new AdmissionForm();
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {

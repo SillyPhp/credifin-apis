@@ -352,9 +352,10 @@ class UsersController extends Controller
     public function actionUpdateProfilePicture()
     {
         $userProfilePicture = new UserProfilePictureEdit();
-        if ($userProfilePicture->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->post()) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($userProfilePicture->update()) {
+            $image = Yii::$app->request->post('data');
+            if ($userProfilePicture->update($image)) {
                 $response = [
                     'status' => 'success',
                     'title' => 'Success',
