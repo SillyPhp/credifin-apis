@@ -43,7 +43,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <?php endif; ?>
                     <a href="#"
                        data-toggle="modal" data-target="#loginModal"
-                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Shortlist</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
@@ -421,7 +421,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 	height: 32px;
 	display: inline-block;
 	border-radius: 50%;
-	margin: 0 5px;
+	margin: 0 5px 5px;
 	font-size: 17px;
 	overflow: hidden;
 	position: relative;
@@ -495,19 +495,15 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100% !important;
     }
-    .job-single-head.style2 .job-thumb{
-        margin-top:0px;
-        margin-left:10px;
-    }
     .overlay-top{
         padding-bottom:10px;
     }
-    .job-thumb{
-        max-width: 125px;
-    }
+//    .job-thumb{
+//        max-width: 125px;
+//    }
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
+//        max-width: 275px;
+        text-align: center;
     }
     .job-head-info h4{
         margin-left:25px !Important;
@@ -516,7 +512,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }

@@ -7,11 +7,11 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Seen In'); ?></h2>
+                <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-offset-2 col-md-4 col-sm-6 col-xs-12">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="press-release-hd">
                     <div class="press-release">
                     <div class="press-img">
@@ -19,10 +19,11 @@ use yii\helpers\Url;
                     </div>
                     </div>
                     <div class="press-txt-hd">
+                        <a href="https://www.nyoooz.com/news/chandigarh/1558601/empoweryouth-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
                         <h3>
-                            <a href="https://www.nyoooz.com/news/chandigarh/1558601/empoweryouth-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
                                 Empoweryouth offers education loans for undergraduate education across the states of
-                                Punjab and Himachal Pradesh</a></h3>
+                                Punjab and Himachal Pradesh</h3>
+                        </a>
                         <p>Empoweryouth.com, the career-tech platform,now offers Education loans for studies across the
                             states of Punjab and Himachal Pradesh............</p>
                         <div class="press-btn">
@@ -31,7 +32,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="press-release-hd">
                     <div class="press-release">
                         <div class="press-img">
@@ -39,9 +40,9 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <div class="press-txt-hd">
-                        <h3><a href="https://www.highereducationdigest.com/empoweryouth-com-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
-                                Empoweryouth offers education loans for undergraduate education across the states of
-                                Punjab and Himachal Pradesh</a></h3>
+                        <a href="https://www.highereducationdigest.com/empoweryouth-com-offers-education-loans-for-undergraduate-education-across-the-states-of-punjab-and-himachal-pradesh/" target="_blank">
+                        <h3>Empoweryouth offers education loans for undergraduate education across the states of
+                            Punjab and Himachal Pradesh</h3> </a>
                         <p>Empoweryouth.com, the career-tech platform,now offers Education loans for studies across the
                             states of Punjab and Himachal Pradesh............</p>
                         <div class="press-btn">
@@ -60,8 +61,9 @@ $this->registerCss('
     margin-bottom: 20px;
 }
 .press-release-hd {
-    border: 1px solid #f5f5f5;
-    background-color: #f5f5f5;
+    border: 1px solid #272424;
+    background-color: #272424;
+    border-radius: 8px;
 }
 .press-release {
     background-color: #fff;
@@ -82,18 +84,18 @@ $this->registerCss('
 }
 .press-txt-hd h3 {
     font-size: 16px;
-    font-family: lora;
-    text-align: justify;
-    color: #000;
+    font-family: roboto;
+    text-align: left;
+    color: #fff;
     line-height: 20px;
     margin-top: 2px;
-    font-weight: 600;
+    font-weight: 500;
 }
 .press-txt-hd p {
     font-size: 14px;
     font-family: roboto;
     line-height: 18px;
-    color: #000;
+    color: #fff;
 }
 .press-btn a {
 	color: #fff;

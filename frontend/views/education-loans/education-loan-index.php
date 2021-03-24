@@ -46,15 +46,14 @@ use yii\helpers\Url;
 <!--        </div>-->
 <!--    </section>-->
 
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
-
+    <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
-
+    <?= $this->render('/widgets/loan-products')?>
     <section class="edu-with-us">
         <div class="container">
-            <div class="row mt-20">
+            <div class="row">
                 <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
+                    <h2 class="mb-20 pb-10 mt0 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
                 </div>
             </div>
             <div class="row-mt10">
@@ -158,7 +157,6 @@ use yii\helpers\Url;
                 </div>
             </div>
     </section>
-
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -264,13 +262,11 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
-
     <section class="bgeEd">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></div>
+                    <h5 class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></h5>
                 </div>
             </div>
             <div class="row">
@@ -298,7 +294,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
+                    <h5 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h5>
                 </div>
             </div>
             <div class="row">
@@ -373,7 +369,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+    <section class="bg-blue pb10">
+        <?= $this->render('/widgets/choose-education-loan') ?>
+    </section>
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
@@ -504,12 +502,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
-<?= $this->render('/widgets/institutional-loan') ?>
-
-<?= $this->render('/widgets/press-releasee') ?>
-
-<?= $this->render('/widgets/loan-strip') ?>
+    <?= $this->render('/widgets/institutional-loan') ?>
+    <?= $this->render('/widgets/press-releasee') ?>
+    <?= $this->render('/widgets/loan-strip') ?>
 
 <?php
 $script = <<<JS
@@ -1076,6 +1071,10 @@ $this->registerCss('
     padding-top: 100px;
     padding-bottom: 35px;
     background-color: #bae6f8;
+}
+.mt0{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important; 
 }
 @media screen and (max-width:768px){
     .loan-text {

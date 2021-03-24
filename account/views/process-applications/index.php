@@ -12,11 +12,10 @@ switch ($application_name['application_type']) {
         $app_type = 'internship';
         break;
 }
-if ($application_name['application_for']==2){
+if ($application_name['application_for'] == 2) {
     $slug_base = 'https://www.myecampus.in/detail?id=';
-}
-else{
-    $slug_base ='/'.$app_type.'/';
+} else {
+    $slug_base = '/' . $app_type . '/';
 }
 if ($application_name['wage_type'] == 'Fixed') {
     if ($application_name['wage_duration'] == 'Monthly') {
@@ -58,9 +57,9 @@ foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $
     $user_pCount[$p['field_name']] = 0;
     foreach ($fields as $u) {
         if ($p['sequence'] == $u['current_round']) {
-            if($u['status'] != 'Rejected'){
+            if ($u['status'] != 'Rejected') {
                 $user_pCount[$p['field_name']] += 1;
-            }else{
+            } else {
                 $rejected_count += 1;
             }
         }
@@ -75,47 +74,49 @@ foreach ($fields as $f) {
 ?>
 <div class="bg-img"></div>
 <div class="hamburger-jobs">
-<button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
-<div class="pa-sidebar" id="hamburgerJobs">
-    <?php
-    foreach ($similarApps as $app) {
-        $cnt = 0;
-        $arry = [];
-        $more = false;
-        ?>
-        <div class="jobCard <?= ($app['application_enc_id'] == $application_id) ? 'activeJov' : '' ?>">
-            <a href="<?= Url::to('/account/process-applications/') . $app['application_enc_id'] ?>">
-                <div class="jc-icon">
-                    <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
-                </div>
-                <div class="jc-details">
-                    <h3><?= $app['job_title'] ?></h3>
-                    <p>
-                        <?php
-                        if ($app['applicationPlacementLocations']) {
-                            foreach ($app['applicationPlacementLocations'] as $ps) {
-                                $cnt += $ps['positions'];
-                                if (count($arry) >= 3) {
-                                    $more = true;
-                                } else {
-                                    array_push($arry, $ps['name']);
-                                }
-                            }
-                            echo implode(', ', array_unique($arry));
-                            echo $more ? ' and more' : ' ';
-                        } else {
-                            echo 'Work From Home';
-                        }
-                        ?></p>
-                    <p><?= $cnt ?> Openings</p>
-                </div>
-            <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">Active</div>
-            </a>
-        </div>
+    <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="pa-sidebar" id="hamburgerJobs">
         <?php
-    }
-    ?>
-</div>
+        foreach ($similarApps as $app) {
+            $cnt = 0;
+            $arry = [];
+            $more = false;
+            ?>
+            <div class="jobCard <?= ($app['application_enc_id'] == $application_id) ? 'activeJov' : '' ?>">
+                <a href="<?= Url::to('/account/process-applications/') . $app['application_enc_id'] ?>">
+                    <div class="jc-icon">
+                        <img src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>">
+                    </div>
+                    <div class="jc-details">
+                        <h3><?= $app['job_title'] ?></h3>
+                        <p>
+                            <?php
+                            if ($app['applicationPlacementLocations']) {
+                                foreach ($app['applicationPlacementLocations'] as $ps) {
+                                    $cnt += $ps['positions'];
+                                    if (count($arry) >= 3) {
+                                        $more = true;
+                                    } else {
+                                        array_push($arry, $ps['name']);
+                                    }
+                                }
+                                echo implode(', ', array_unique($arry));
+                                echo $more ? ' and more' : ' ';
+                            } else {
+                                echo 'Work From Home';
+                            }
+                            ?></p>
+                        <p><?= $cnt ?> Openings</p>
+                    </div>
+                    <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">
+                        Active
+                    </div>
+                </a>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
 </div>
 <div class="container">
     <div class="row">
@@ -129,7 +130,7 @@ foreach ($fields as $f) {
                     </div>
                     <div class="j-data">
                         <div class="j-title">
-                            <a href="<?= $slug_base. $application_name['slug']?>" target="_blank">
+                            <a href="<?= $slug_base . $application_name['slug'] ?>" target="_blank">
                                 <?= $application_name['job_title'] ?></a>
                         </div>
 
@@ -259,533 +260,534 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-<!--            <div class="col-md-12 use-ff">-->
-<!--                <div class="job-txt">Invite Candidates via:</div>-->
-<!--                <div class="job-mail">-->
-<!--                    <input type="email" class="form-control" id="email" name="email"-->
-<!--                           placeholder="Email">-->
-<!--                    <button class="redd"><i class="fa fa-envelope"></i></button>-->
-<!--                </div>-->
-<!--                <div class="job-whatsapp">-->
-<!--                    <input type="text" class="form-control" id="text" name="text"-->
-<!--                           placeholder="Whatsapp">-->
-<!--                    <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="col-md-12 use-ff">-->
+            <!--                <div class="job-txt">Invite Candidates via:</div>-->
+            <!--                <div class="job-mail">-->
+            <!--                    <input type="email" class="form-control" id="email" name="email"-->
+            <!--                           placeholder="Email">-->
+            <!--                    <button class="redd"><i class="fa fa-envelope"></i></button>-->
+            <!--                </div>-->
+            <!--                <div class="job-whatsapp">-->
+            <!--                    <input type="text" class="form-control" id="text" name="text"-->
+            <!--                           placeholder="Whatsapp">-->
+            <!--                    <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </div>
     </div>
 </div>
 <div class="container">
-<?php
-Pjax::begin(['id' => 'pjax_process']);
-?>
-<div class="set-height">
-    <ul class="nav nav-tabs pr-process-tab" id="myHeader">
-        <li class="active"
-            style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-            <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
-                    foreach ($user_pCount as $v) {
-                        $pcnt += $v;
-                    }
-                    echo $pcnt + $hcount + $rejected_count;
-                    ?></span></a>
-        </li>
-        <?php
-        $k = 0;
-        foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-            ?>
-            <li id="<?= 'nav' . $p['field_enc_id'] ?>"
+    <?php
+    Pjax::begin(['id' => 'pjax_process']);
+    ?>
+    <div class="set-height">
+        <ul class="nav nav-tabs pr-process-tab" id="myHeader">
+            <li class="active"
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-                <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                   title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
-                    <i class="<?= $p['icon'] ?>"
-                       aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
-                </a>
+                <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
+                        foreach ($user_pCount as $v) {
+                            $pcnt += $v;
+                        }
+                        echo $pcnt + $hcount + $rejected_count;
+                        ?></span></a>
             </li>
             <?php
-            $k++;
-        }
-        ?>
-        <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
-            <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
-               href="#" onclick="roundClick()">
-                <i class="fa fa-check-square-o"></i><span>
+            $k = 0;
+            foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                ?>
+                <li id="<?= 'nav' . $p['field_enc_id'] ?>"
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                    <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
+                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
+                        <i class="<?= $p['icon'] ?>"
+                           aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
+                    </a>
+                </li>
+                <?php
+                $k++;
+            }
+            ?>
+            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
+                   href="#" onclick="roundClick()">
+                    <i class="fa fa-check-square-o"></i><span>
                     <?php
                     echo $hcount;
                     ?>
                 </span>
-            </a>
-        </li>
-    </ul>
-</div>
-<ul class="hiring_process_list gallery_zoom content-stick">
-    <?php
-    if (!empty($fields)) {
-        foreach ($fields as $arr) {
-            $j = 0;
-            $fieldMain = "";
-            if ($arr['status'] == 'Hired') {
-                $tempfieldMain = "result";
-                $fieldName = "Hired";
-            } else if ($arr['status'] == 'Rejected') {
-                $fieldName = "Rejected";
-            } else {
-                $fieldName = "Applied";
-                $tempfieldMain = "";
-            }
-            foreach ($arr['appliedApplicationProcesses'] as $p) {
-                if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
-                    $fieldMain = $p['field_enc_id'];
-                    $fieldName = $p['field_name'];
-                    $tempfieldMain = $p['field_enc_id'] . $j;
-                    break;
+                </a>
+            </li>
+        </ul>
+    </div>
+    <ul class="hiring_process_list gallery_zoom content-stick">
+        <?php
+        if (!empty($fields)) {
+            foreach ($fields as $arr) {
+                $j = 0;
+                $fieldMain = "";
+                if ($arr['status'] == 'Hired') {
+                    $tempfieldMain = "result";
+                    $fieldName = "Hired";
+                } else if ($arr['status'] == 'Rejected') {
+                    $fieldName = "Rejected";
+                } else {
+                    $fieldName = "Applied";
+                    $tempfieldMain = "";
                 }
-                $j++;
-            }
-            $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
-            ?>
-            <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
-                data-id="<?= $p['applied_application_enc_id'] ?>">
+                foreach ($arr['appliedApplicationProcesses'] as $p) {
+                    if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
+                        $fieldMain = $p['field_enc_id'];
+                        $fieldName = $p['field_name'];
+                        $tempfieldMain = $p['field_enc_id'] . $j;
+                        break;
+                    }
+                    $j++;
+                }
+                $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
+                ?>
+                <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
+                    data-id="<?= $p['applied_application_enc_id'] ?>">
 
-                <div class="row pr-user-main">
-                    <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
-                        <div class="pr-top-actions text-right">
-                            <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
-                               target="_blank">View
-                                Profile</a>
-                            <?php
-                            $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
-                            ?>
+                    <div class="row pr-user-main">
+                        <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
+                            <div class="pr-top-actions text-right">
+                                <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                   target="_blank">View
+                                    Profile</a>
+                                <?php
+                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                ?>
 
-                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
-                            <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
-                            <!--                                            <a href="#">Request to Complete Profile</a>-->
-                        </div>
-                        <a class="pr-user-n url-forward" href="#"
-                           data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                                <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+                                <!--                                            <a href="#">Request to Complete Profile</a>-->
+                            </div>
+                            <a class="pr-user-n url-forward" href="#"
+                               data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
 
-                        <div class="rejectReason rejectRea"
-                             id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                            <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
-                                <p>Reason for rejection</p>
-                                <ul class="rejectReasonsList">
-                                    <?php
-                                    foreach ($reasons as $reason) {
+                            <div class="rejectReason rejectRea"
+                                 id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
+                                <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
+                                    <p>Reason for rejection</p>
+                                    <ul class="rejectReasonsList">
+                                        <?php
+                                        foreach ($reasons as $reason) {
+                                            ?>
+                                            <li>
+                                                <div class="reasonsReject">
+                                                    <input type="checkbox"
+                                                           value="<?= $reason['rejection_reason_enc_id'] ?>"
+                                                           name="<?= $p['applied_application_enc_id'] . 'reasons' ?>"
+                                                           id="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"
+                                                           class="">
+                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
+                                                </div>
+                                            </li>
+                                            <?php
+                                        }
                                         ?>
+                                    </ul>
+                                </form>
+                                <form>
+                                    <div class="addReasonBox">
+                                        <input type="text" name="addReason" placeholder="Add Reason">
+                                        <button type="button" class="addReasonBtn">Add</button>
+                                    </div>
+                                </form>
+                                <button type="button" class="doneBtn getReasonsId">Done</button>
+                                <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
+                                        class="doneBtn reconBtn reconsiderBtn">Reconsider
+                                </button>
+                            </div>
+                            <div class="rejectReason rejectType"
+                                 id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
+                                <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
+                                    <p>Rejection Type</p>
+                                    <ul>
                                         <li>
                                             <div class="reasonsReject">
-                                                <input type="checkbox"
-                                                       value="<?= $reason['rejection_reason_enc_id'] ?>"
-                                                       name="<?= $p['applied_application_enc_id'] . 'reasons' ?>"
-                                                       id="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"
+                                                <input type="radio" value="1"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
+                                                <label for="<?= $p['applied_application_enc_id'] . 'permanent' ?>">Permanent
+                                                    Reject</label>
                                             </div>
                                         </li>
-                                        <?php
+                                        <li>
+                                            <div class="reasonsReject">
+                                                <input type="radio" value="2"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
+                                                       onclick="showJobsModal()" class="">
+                                                <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
+                                                    For Other Job</label>
+                                                <!--                                                <button type="button" class="showJobs" >-->
+                                                <!--                                                    Consider For Other Job-->
+                                                <!--                                                </button>-->
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="reasonsReject">
+                                                <input type="radio" value="3"
+                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
+                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
+                                                    Later</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+                                <button type="button" onclick="showRejectReason(this)" class="doneBtn reconBtn">Back
+                                </button>
+                                <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
+                                        class="doneBtn sendReasons">Done
+                                </button>
+                            </div>
+
+                            <div class="rejectReason showRejection" <?= $rejectionType ? 'style="display: flex"' : '' ?>>
+                                <div class="sr-box">
+                                    <?php
+                                    switch ($rejectionType) {
+                                        case 1:
+                                            $msg = 'This candidate has been rejected';
+                                            break;
+                                        case 2:
+                                            $msg = 'The candidate has been considered for following jobs';
+                                            break;
+                                        case 3:
+                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
+                                                    drop resume";
+                                            break;
                                     }
                                     ?>
-                                </ul>
-                            </form>
-                            <form>
-                                <div class="addReasonBox">
-                                    <input type="text" name="addReason" placeholder="Add Reason">
-                                    <button type="button" class="addReasonBtn">Add</button>
-                                </div>
-                            </form>
-                            <button type="button" class="doneBtn getReasonsId">Done</button>
-                            <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
-                                    class="doneBtn reconBtn reconsiderBtn">Reconsider
-                            </button>
-                        </div>
-                        <div class="rejectReason rejectType"
-                             id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                            <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
-                                <p>Rejection Type</p>
-                                <ul>
-                                    <li>
-                                        <div class="reasonsReject">
-                                            <input type="radio" value="1"
-                                                   name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                   id="<?= $p['applied_application_enc_id'] . 'permanent' ?>"
-                                                   class="">
-                                            <label for="<?= $p['applied_application_enc_id'] . 'permanent' ?>">Permanent
-                                                Reject</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="reasonsReject">
-                                            <input type="radio" value="2"
-                                                   name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                   id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
-                                                   onclick="showJobsModal()" class="">
-                                            <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
-                                                For Other Job</label>
-                                            <!--                                                <button type="button" class="showJobs" >-->
-                                            <!--                                                    Consider For Other Job-->
-                                            <!--                                                </button>-->
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="reasonsReject">
-                                            <input type="radio" value="3"
-                                                   name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                   id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                            <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
-                                                Later</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </form>
-                            <button type="button" onclick="showRejectReason(this)" class="doneBtn reconBtn">Back
-                            </button>
-                            <button type="button" value="<?= $arr['applied_application_enc_id']; ?>"
-                                    class="doneBtn sendReasons">Done
-                            </button>
-                        </div>
-
-                        <div class="rejectReason showRejection" <?= $rejectionType ? 'style="display: flex"' : '' ?>>
-                            <div class="sr-box">
-                                <?php
-                                switch ($rejectionType) {
-                                    case 1:
-                                        $msg = 'This candidate has been rejected';
-                                        break;
-                                    case 2:
-                                        $msg = 'The candidate has been considered for following jobs';
-                                        break;
-                                    case 3:
-                                        $msg = "Candidate's CV has been saved for later. Please check CV in 
-                                                    drop resume";
-                                        break;
-                                }
-                                ?>
-                                <p><?= $msg ?></p>
-                                <?php
-                                if ($arr['candidateRejections'][0]['candidateConsiderJobs']) {
-                                    ?>
-                                    <div class="sr-jobs">
-                                        <?php
-                                        $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
-                                        $cCount -= 2;
-                                        $i = 0;
-                                        foreach ($arr['candidateRejections'][0]['candidateConsiderJobs'] as $crj) {
-                                            if ($i == 2) {
-                                                break;
+                                    <p><?= $msg ?></p>
+                                    <?php
+                                    if ($arr['candidateRejections'][0]['candidateConsiderJobs']) {
+                                        ?>
+                                        <div class="sr-jobs">
+                                            <?php
+                                            $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
+                                            $cCount -= 2;
+                                            $i = 0;
+                                            foreach ($arr['candidateRejections'][0]['candidateConsiderJobs'] as $crj) {
+                                                if ($i == 2) {
+                                                    break;
+                                                }
+                                                ?>
+                                                <a href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
+                                                   target="_blank">
+                                                    <div class="customJobBox">
+                                                        <div class="jc-icon">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
+                                                        </div>
+                                                        <p><?= $crj['applicationEnc']['job_title'] ?></p>
+                                                    </div>
+                                                </a>
+                                                <?php
+                                                $i++;
                                             }
                                             ?>
-                                            <a href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
-                                               target="_blank">
-                                                <div class="customJobBox">
-                                                    <div class="jc-icon">
-                                                        <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
-                                                    </div>
-                                                    <p><?= $crj['applicationEnc']['job_title'] ?></p>
-                                                </div>
-                                            </a>
-                                            <?php
-                                            $i++;
-                                        }
-                                        ?>
-                                        <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>"
-                                           class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?>
-                                            More</p>
-                                    </div>
-                                    <?php
-                                }
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 pr-user-inner-main">
-                        <div class="col-md-4">
-                            <div class="pr-user-detail">
-                                <a class="pr-user-icon url-forward" href="#"
-                                   data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
-                                    <?php if ($arr['image']): ?>
-                                        <img src="<?= $arr['image'] ?>"/>
-                                    <?php else: ?>
-                                        <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
-                                                color="<?= $arr['initials_color']; ?>" height="80"
-                                                font="35px"></canvas>
-                                    <?php endif; ?>
-                                </a>
-                                <a class="pr-user-n url-forward" href="#"
-                                   data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
-                                <?php
-                                if ($arr['createdBy']['userWorkExperiences']) {
-                                    foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                        if ($exp['is_current'] == 1) {
-                                            echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
-                                        }
-                                    }
-                                }
-                                ?>
-                            </div>
-                            <div class="pr-user-past">
-                                <?php
-                                $experience = [];
-                                if ($arr['createdBy']['userWorkExperiences']) {
-                                    foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                        if ($exp['is_current'] == 0) {
-                                            array_push($experience, $exp["company"]);
-                                        }
-                                    }
-                                    $str = implode(", ", array_unique($experience));
-                                    if ($str) {
-                                        ?>
-                                        <span class="past-title">Past</span>
-                                        <h5>
-                                            <?= rtrim($str, ','); ?>
-                                        </h5>
+                                            <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>"
+                                               class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?>
+                                                More</p>
+                                        </div>
                                         <?php
                                     }
-                                }
-                                ?>
-                                <!--                                    <span>+2 more</span>-->
+                                    ?>
+                                </div>
                             </div>
-                            <?php
-                            if ($arr['createdBy']['userEducations']) {
-                                ?>
+                        </div>
+                        <div class="col-md-12 col-sm-12 pr-user-inner-main">
+                            <div class="col-md-4">
+                                <div class="pr-user-detail">
+                                    <a class="pr-user-icon url-forward" href="#"
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
+                                        <?php if ($arr['image']): ?>
+                                            <img src="<?= $arr['image'] ?>"
+                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
+                                        <?php else: ?>
+                                            <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
+                                                    color="<?= $arr['initials_color']; ?>" height="80"
+                                                    font="35px"></canvas>
+                                        <?php endif; ?>
+                                    </a>
+                                    <a class="pr-user-n url-forward" href="#"
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                                    <?php
+                                    if ($arr['createdBy']['userWorkExperiences']) {
+                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                            if ($exp['is_current'] == 1) {
+                                                echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </div>
                                 <div class="pr-user-past">
+                                    <?php
+                                    $experience = [];
+                                    if ($arr['createdBy']['userWorkExperiences']) {
+                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                            if ($exp['is_current'] == 0) {
+                                                array_push($experience, $exp["company"]);
+                                            }
+                                        }
+                                        $str = implode(", ", array_unique($experience));
+                                        if ($str) {
+                                            ?>
+                                            <span class="past-title">Past</span>
+                                            <h5>
+                                                <?= rtrim($str, ','); ?>
+                                            </h5>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                    <!--                                    <span>+2 more</span>-->
+                                </div>
+                                <?php
+                                if ($arr['createdBy']['userEducations']) {
+                                    ?>
+                                    <div class="pr-user-past">
                                   <span class="past-title">
                                     Edu
                                   </span>
-                                    <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
-                                    <?php
-                                    if (COUNT($arr['createdBy']['userEducations']) > 1) {
-                                        ?>
-                                        <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
                                         <?php
-                                    }
-                                    ?>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                            <div class="pr-user-past">
-                                <span class="past-title">Applied Date</span>
-                                <h5><?= date('d M Y', strtotime($arr['created_on'])) ?></h5>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="pr-user-skills">
-                                <ul class="s-skill">
-                                    <?php
-                                    if ($arr['createdBy']['userSkills']) {
-                                        foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                        if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
-                                            <li><?= $skill['skill']; ?></li>
+                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
-                                    }
-                                    ?>
-                                </ul>
-                                <ul class="h-skill">
-                                    <?php
-                                    if ($arr['createdBy']['userSkills']) {
-                                        foreach ($arr['createdBy']['userSkills'] as $skill) {
-                                            ?>
-                                            <li><?= $skill['skill']; ?></li>
-                                            <?php
-                                        }
-                                    }
-                                    ?>
-                                </ul>
-                                <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
-                            </div>
-                            <div class="pref-indus">
-                                <?php
-                                $industry = [];
-                                if ($arr['createdBy']['userPreferredIndustries']) {
-                                    foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                        array_push($industry, $ind["industry"]);
-                                    }
-                                    $str2 = implode(", ", array_unique($industry));
-                                    if ($str2) {
                                         ?>
-                                        <h4>
-                                            <span>Industry: </span>
-                                            <?= rtrim($str2, ','); ?>
-                                        </h4>
-                                        <?php
-                                    }
+                                    </div>
+                                    <?php
                                 }
                                 ?>
-                            </div>
-                        </div>
-                        <div class="col-md-3 pl-0">
-                            <div class="pr-user-actions">
-                                <div class="pr-top-actions text-right">
-                                    <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
-                                       target="_blank">View
-                                        Profile</a>
-                                    <?php
-                                    if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
-                                        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                        $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                        ?>
-                                        <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
-                                    <?php } ?>
-                                    <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
-                                    <!--                                            <a href="#">Request to Complete Profile</a>-->
-                                </div>
-                                <ul>
-                                    <!--                                            <li>-->
-                                    <!--                                                <a href="#">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-                                    <!--                                            <li>-->
-                                    <!--                                                <a href="#" class="tt" title="Schedule Interview -->
-                                    <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-                                    <?php
-                                    if ($arr['hiringProcessNotes']) {
-                                        $notes = $arr['hiringProcessNotes'][0]['notes'];
-                                    } else {
-                                        $notes = '';
-                                    }
-                                    ?>
-                                    <li class="notes" data-toggle="tooltip" title="Notes">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
-                                             class="noteImg" data-val="<?= $notes; ?>">
-                                    </li>
-                                    <li>
-                                        <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                           data-key="<?= $arr['name']; ?>" title="Chat Now"
-                                           data-toggle="tooltip">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
-                                        </a>
-                                    </li>
-                                    <!--                        <li>-->
-                                    <!--                            <i class="fa fa-phone-square"></i>-->
-                                    <!--                        </li>-->
-                                </ul>
-                                <div class="round-detail">
-                                    <h5>Current Round:</h5>
-                                    <h4><?= $fieldName; ?></h4>
+                                <div class="pr-user-past">
+                                    <span class="past-title">Applied Date</span>
+                                    <h5><?= date('d M Y', strtotime($arr['created_on'])) ?></h5>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="pr-user-action-main">
-                        <?php if ($arr['status'] == 'Hired') { ?>
-                            <div class="pr-full-height">
-                                <a href="javascript:;">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
-                                </a>
-                            </div>
-                        <?php } elseif ($arr['status'] == 'Rejected') { ?>
-                            <div class="pr-full-height">
-                                <a href="javascript:;">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
-                                </a>
-                            </div>
-                        <?php } elseif ($arr['status'] == 'Cancelled') { ?>
-                            <div class="pr-full-height">
-                                <a href="javascript:;">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/cbc.png'); ?>"/>
-                                </a>
-                            </div>
-                        <?php } else { ?>
-                            <div class="pr-half-height">
-                                <a href="javascript:;" class="approve"
-                                   value="<?= $arr['applied_application_enc_id']; ?>"
-                                   data-total="<?= $arr['total']; ?>">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
-                                </a>
-                                <div class="dropdown">
-                                    <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
-                                    <div class="dropdown-content">
+                            <div class="col-md-5">
+                                <div class="pr-user-skills">
+                                    <ul class="s-skill">
                                         <?php
-                                        $isHighlight = true;
-                                        foreach ($arr['appliedApplicationProcesses'] as $p) {
-                                            ?>
-                                            <div data-id="<?= $p['field_enc_id'] ?>">
-                                                <a href="#"
-                                                   class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : '' ?> <?php if ($isHighlight) {
-                                                       if ($p['is_completed'] == 0) {
-                                                           echo 'showBlue';
-                                                           $isHighlight = false;
-                                                       }
-                                                   } ?>" value="<?= $p['applied_application_enc_id']; ?>">
-                                                    <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                    <?= $p['field_name'] ?>
-                                                </a>
-                                            </div>
-                                            <?php
+                                        if ($arr['createdBy']['userSkills']) {
+                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                                ?>
+                                                <li><?= $skill['skill']; ?></li>
+                                                <?php
+                                            }
                                         }
                                         ?>
-                                        <div data-id="<?= $p['field_enc_id'] ?>">
-                                            <a href="#" class="multipleRound"
-                                               value="<?= $arr['applied_application_enc_id']; ?>">
-                                                <i class="fa fa-check-square-o"></i> Hired
+                                    </ul>
+                                    <ul class="h-skill">
+                                        <?php
+                                        if ($arr['createdBy']['userSkills']) {
+                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                                ?>
+                                                <li><?= $skill['skill']; ?></li>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </ul>
+                                    <!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
+                                </div>
+                                <div class="pref-indus">
+                                    <?php
+                                    $industry = [];
+                                    if ($arr['createdBy']['userPreferredIndustries']) {
+                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
+                                            array_push($industry, $ind["industry"]);
+                                        }
+                                        $str2 = implode(", ", array_unique($industry));
+                                        if ($str2) {
+                                            ?>
+                                            <h4>
+                                                <span>Industry: </span>
+                                                <?= rtrim($str2, ','); ?>
+                                            </h4>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="col-md-3 pl-0">
+                                <div class="pr-user-actions">
+                                    <div class="pr-top-actions text-right">
+                                        <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                           target="_blank">View
+                                            Profile</a>
+                                        <?php
+                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
+                                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                            $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
+                                            ?>
+                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        <?php } ?>
+                                        <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
+                                        <!--                                            <a href="#">Request to Complete Profile</a>-->
+                                    </div>
+                                    <ul>
+                                        <!--                                            <li>-->
+                                        <!--                                                <a href="#">-->
+                                        <!--                                                    <img src="-->
+                                        <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+                                        <!--                                                </a>-->
+                                        <!--                                            </li>-->
+                                        <!--                                            <li>-->
+                                        <!--                                                <a href="#" class="tt" title="Schedule Interview -->
+                                        <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
+                                        <!--                                                    <img src="-->
+                                        <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
+                                        <!--                                                </a>-->
+                                        <!--                                            </li>-->
+                                        <?php
+                                        if ($arr['hiringProcessNotes']) {
+                                            $notes = $arr['hiringProcessNotes'][0]['notes'];
+                                        } else {
+                                            $notes = '';
+                                        }
+                                        ?>
+                                        <li class="notes" data-toggle="tooltip" title="Notes">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
+                                                 class="noteImg" data-val="<?= $notes; ?>">
+                                        </li>
+                                        <li>
+                                            <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
+                                               data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                               data-toggle="tooltip">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
-                                        </div>
+                                        </li>
+                                        <!--                        <li>-->
+                                        <!--                            <i class="fa fa-phone-square"></i>-->
+                                        <!--                        </li>-->
+                                    </ul>
+                                    <div class="round-detail">
+                                        <h5>Current Round:</h5>
+                                        <h4><?= $fieldName; ?></h4>
                                     </div>
                                 </div>
                             </div>
-                            <div class="pr-half-height">
-                                <a href="javascript:;" class="reject"
-                                   value="<?= $arr['applied_application_enc_id']; ?>">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
-                                </a>
+                        </div>
+                        <div class="pr-user-action-main">
+                            <?php if ($arr['status'] == 'Hired') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } elseif ($arr['status'] == 'Rejected') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } elseif ($arr['status'] == 'Cancelled') { ?>
+                                <div class="pr-full-height">
+                                    <a href="javascript:;">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/cbc.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } else { ?>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="approve"
+                                       value="<?= $arr['applied_application_enc_id']; ?>"
+                                       data-total="<?= $arr['total']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
+                                    </a>
+                                    <div class="dropdown">
+                                        <button class="dropbtn"><i class="fa fa-chevron-down"></i></button>
+                                        <div class="dropdown-content">
+                                            <?php
+                                            $isHighlight = true;
+                                            foreach ($arr['appliedApplicationProcesses'] as $p) {
+                                                ?>
+                                                <div data-id="<?= $p['field_enc_id'] ?>">
+                                                    <a href="#"
+                                                       class="multipleRound <?= $p['is_completed'] == 1 ? 'disable-step' : '' ?> <?php if ($isHighlight) {
+                                                           if ($p['is_completed'] == 0) {
+                                                               echo 'showBlue';
+                                                               $isHighlight = false;
+                                                           }
+                                                       } ?>" value="<?= $p['applied_application_enc_id']; ?>">
+                                                        <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                                                        <?= $p['field_name'] ?>
+                                                    </a>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                            <div data-id="<?= $p['field_enc_id'] ?>">
+                                                <a href="#" class="multipleRound"
+                                                   value="<?= $arr['applied_application_enc_id']; ?>">
+                                                    <i class="fa fa-check-square-o"></i> Hired
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="reject"
+                                       value="<?= $arr['applied_application_enc_id']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
+                                    </a>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="slide-btn">
+                            <button class="slide-bttn" type="button">
+                                <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                   title="View Questionnaire"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="cd-box-border-hide">
+                        <?php if (!empty($que)) { ?>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Process Name</th>
+                                </tr>
+                                </thead>
+                                <tbody class="qu_data">
+                                <?php foreach ($que as $list_que) { ?>
+                                    <tr>
+                                        <td><a class="blue question_list"
+                                               href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
+                                               data-questionId="<?= $list_que['qid']; ?>"
+                                               data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
+                                               target="_blank"><?= $list_que['name']; ?></a>
+                                        </td>
+                                        <td><?= $list_que['field_label']; ?></td>
+
+                                    </tr>
+                                <?php } ?>
+                                </tbody>
+                            </table>
+                        <?php } else { ?>
+                            <div class="without-q">
+                                <h3>No Questionnaire To Display</h3>
+                                <!--                                    <a href="#">Set Questionnaire</a>-->
                             </div>
                         <?php } ?>
                     </div>
-                    <div class="slide-btn">
-                        <button class="slide-bttn" type="button">
-                            <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                               title="View Questionnaire"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="cd-box-border-hide">
-                    <?php if (!empty($que)) { ?>
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>Question</th>
-                                <th>Process Name</th>
-                            </tr>
-                            </thead>
-                            <tbody class="qu_data">
-                            <?php foreach ($que as $list_que) { ?>
-                                <tr>
-                                    <td><a class="blue question_list"
-                                           href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
-                                           data-questionId="<?= $list_que['qid']; ?>"
-                                           data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
-                                           target="_blank"><?= $list_que['name']; ?></a>
-                                    </td>
-                                    <td><?= $list_que['field_label']; ?></td>
-
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                    <?php } else { ?>
-                        <div class="without-q">
-                            <h3>No Questionnaire To Display</h3>
-                            <!--                                    <a href="#">Set Questionnaire</a>-->
-                        </div>
-                    <?php } ?>
-                </div>
-            </li>
-            <?php
+                </li>
+                <?php
+            }
         }
-    }
+        ?>
+    </ul>
+    <?php
+    Pjax::end();
     ?>
-</ul>
-<?php
-Pjax::end();
-?>
 </div>
 
 <div id="myModal" class="modal">
@@ -1855,6 +1857,7 @@ overflow: hidden;
 }
 .hiring_process_list{
     padding-left:0px;
+    position:relative;
 }
 /* Tabs css ends*/
 .slide-btn{

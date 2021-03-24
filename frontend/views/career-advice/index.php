@@ -99,7 +99,7 @@ $careerAdviceCategories = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            .trending-heading:before           <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
@@ -190,10 +190,10 @@ $careerAdviceCategories = [
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="col-md-12 row">
+                <div>
                     <div class="trending-posts">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 col-sm-12">
                                 <?= $this->render('/widgets/follow-widget') ?>
                             </div>
                         </div>
@@ -273,7 +273,7 @@ $careerAdviceCategories = [
 <!--                        </div>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <div class="col-md-12 row">
+                <div>
                     <div class="articles">
                         <div class="row">
                             <div class="col-md-12">
@@ -566,7 +566,7 @@ $this->registerCss('
     position: relative;
     }
 .wn-box-icon img {
-    height: 200px !important;
+    height: 150px !important;
     object-fit: fill;
 }
 .wn-box-icon img {
@@ -584,23 +584,35 @@ $this->registerCss('
 }
 .wn-box-details {
     min-height: 100px !important;
+    text-align:left;
 }
 .wn-box-details {
     border-top: none;
-    padding: 5px 10px 10px 8px;
+    padding: 10px 10px 10px 15px;
     border: 1px solid rgba(230, 230, 230, .3);
     border-radius: 0 0 5px 5px;
+}
+.wn-box-title {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-family: roboto;
+	font-size: 16px;
+	text-align: left;
+	font-weight: 500 !important;
 }
 .blog-mirror {
     background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
 }
-.whats-block-heading, .popular-heading, .trending-heading{
+.whats-block-heading, .whats-popular-heading, .trending-heading{
     position:relative;
     text-align:right;
     font-size:14px;
     text-transform: uppercase;
     padding: 0px 25px 2px 0px;
     font-weight: bold;
+    margin-bottom:20px;
 }
 .whats-block-heading:before{
     content: "";
@@ -611,7 +623,7 @@ $this->registerCss('
     top: 11px;
     left: 5px;
 }
-.whats-block-heading:after, .popular-heading:after, .trending-heading:after{
+.whats-block-heading:after, .whats-popular-heading:after, .trending-heading:after{
     content: "";
     position: absolute;
     border-color: #000;
@@ -619,14 +631,6 @@ $this->registerCss('
     border-width: 1px 18px 0px 0px;
     top: 11px;
     right: 5px;
-}
-.whats-popular-heading{
-   position:relative;
-   font-size:14px;
-    text-align:right;
-    text-transform: uppercase;
-    padding: 0px 25px 2px 0px;
-    font-weight: bold; 
 }
 .whats-popular-heading:before{
     content: "";
@@ -637,30 +641,12 @@ $this->registerCss('
     top: 11px;
     left: 5px;
 }
-.whats-popular-heading:after{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 18px 0px 0px;
-    top: 12px;
-    right: 5px;
-}
 .trending-heading:before{
     content: "";
     position: absolute;
     border-color: #000;
     border-style: solid;
     border-width: 1px 68px 0px 0px;
-    top: 11px;
-    left: 5px;
-}
-.popular-heading:before{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 73px 0px 0px;
     top: 11px;
     left: 5px;
 }
