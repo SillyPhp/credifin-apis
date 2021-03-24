@@ -30,6 +30,7 @@ class ApplicationCards
                 '(CASE 
                     WHEN j.name = "Jobs" THEN CONCAT("/job/", a.slug)
                     WHEN j.name = "Internships" THEN CONCAT("/internship/", a.slug) END) as link',
+                'a.slug application_slug',
                 'a.experience',
                 'h.name as title',
                 'a.last_date',

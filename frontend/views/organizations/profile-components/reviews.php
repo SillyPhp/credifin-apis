@@ -425,7 +425,7 @@ function getUserReviews(limit=3, page=null){
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:employee},
         success: function (res){
             var reviews_data = $('#organization-reviews').html();
             $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
@@ -569,7 +569,7 @@ $(document).on('click','.btn_usefull',function() {
 $(document).on('click','input[name="reporting_radio"]',function() {
   var r_id = $('#review_enc_id').val();
   var id = $(this).val();
-    $.ajax({
+     $.ajax({
         url:baseUrl+'/api/v3/ey-college-profile/report',
         data:{review_enc_id:r_id, value:id, user_enc_id: user_id},                         
         method: 'post',

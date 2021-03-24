@@ -356,13 +356,13 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
-    var slug = $.trim(selector.find('.application-card-description a').attr('href'));
+    var slug = $.trim(selector.find('.application-card-description').attr('data-slug'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));
     var dataId = $.trim(selector.attr("data-id"));
     var dataKey = $.trim(selector.attr("data-key"));
-    slug = slug.split('/')[2];
+    // slug = slug.split('/')[2];
     if(!logo){
        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
     }else{

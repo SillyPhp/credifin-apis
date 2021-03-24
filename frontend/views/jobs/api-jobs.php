@@ -521,34 +521,34 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right:8px;
-  margin-bottom: 10px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+    text-decoration: none !important;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0 5px;
+    font-size: 17px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    border: 2px solid #fff;
+    line-height: 24px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
+  font-size: 14px;
+  text-align: center;
 }
 .effect a i {
   display: inline-block;
   vertical-align: middle;
-  margin-left: -2px;
+  margin-left: 0px;
   margin-top: 3px;
 }
 /* thurio effect */
 .effect.thurio a {
   transition: border-radius 0.2s linear 0s;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+          transform: rotate(45deg);`
 }
 .effect.thurio a i {
   transition: -webkit-transform 0.01s linear 0s;
