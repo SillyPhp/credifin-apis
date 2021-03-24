@@ -6,7 +6,8 @@ use yii\helpers\Url;
 <section class="seen-bg">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-6 p-0">
+            <div class="col-md-6p  9999
+             col-sm-6 p-0">
                 <div class="seen">
                 <div class="seen-txt">
                     <h1>Know what top <span class="white-txt">News Platforms</span> have to say about our Education Loan Scheme.</h1>

@@ -151,8 +151,7 @@ $this->registerJS($script)
             let clickedElem = e.currentTarget;
             clickedElem.classList.add('ciActive');
             let clickedContent = clickedElem.getAttribute('data-value')
-            let clickedImg = clickedElem.getAttribute('data-img')
-            console.log(clickedImg);
+            let clickedImg = clickedElem.getAttribute('data-img');
             let detailDiv = document.querySelector('.detail-div');
             detailDiv.querySelector('p').innerHTML = clickedContent;
             let detailImg = detailDiv.querySelector('img');

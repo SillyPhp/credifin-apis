@@ -615,7 +615,7 @@ function removeActive(){
         $('.nav-item').removeClass('cActive');
     }
 }
-var baseUrl = '';
+var baseUrl = 'https://ravinder.eygb.me';
 function getDetails(){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
@@ -643,8 +643,8 @@ function collegeInfo(res) {
                     </div>
                     <div class="college-info">
                         <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
-                    </div>`;
+                        `+(city_name ? '`<div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>`' : '')+`    
+                     </div>`;
     return collegeInfo;
 }
 $('.collegeLink').on('click', function (){
