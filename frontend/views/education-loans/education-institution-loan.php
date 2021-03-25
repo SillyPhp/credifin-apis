@@ -10,7 +10,8 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-12">
                     <h1>Education Institution Loan</h1>
-                    <p>To Lead the Way to A Brighter Future.</p>
+<!--                    <p>To Lead the Way to A Brighter Future.</p>-->
+                    <p>To Support Your Vision of A Better Tomorrow.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                         <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
