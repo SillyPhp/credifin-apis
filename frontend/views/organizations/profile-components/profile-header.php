@@ -41,7 +41,7 @@ if(!Yii::$app->user->isGuest){
 }
 $this->registerCss('
 .college-header {
-	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/colg-campus.png") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
