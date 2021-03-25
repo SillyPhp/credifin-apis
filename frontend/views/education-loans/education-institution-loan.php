@@ -122,8 +122,51 @@ use yii\helpers\Url;
         </div>
     </section>
 
-
-<?= $this->render('/widgets/loan-table') ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
+                        </div>
+                        <div class="lp-name">Agile Finserv</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="Avanse Financial Services">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
+                                 alt="InCred">
+                        </div>
+                        <div class="lp-name">InCred</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
+                        </div>
+                        <div class="lp-name">EZ Capital</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 <?= $this->render('/widgets/education-loan-faqs'); ?>
 <?= $this->render('/widgets/loan-form-detail',[
         'model' =>$model
@@ -202,6 +245,33 @@ $this->registerCss('
 	font-size: 16px;
 	font-family: roboto;
 	margin-bottom: 40px;
+}
+.lp-box {
+    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    text-align: center;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    padding: 20px 10px 10px;
+}
+.loan-logo img {
+    max-width: 80px;
+    max-height: 80px;
+    height: 65px;
+    object-fit: contain;
+}
+.lp-name {
+    text-transform: capitalize;
+    font-weight: 500;
+    font-family: roboto;
+    padding: 5px 0 0 0;
+    color: #333;
+    line-height: 20px;
+    min-height: 45px;
+    max-height: 45px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .works-sec, .edu-sec{
     margin:30px 0;

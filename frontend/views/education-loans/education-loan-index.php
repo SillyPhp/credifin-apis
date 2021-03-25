@@ -849,7 +849,7 @@ $this->registerCss('
     width: 100%;
     height: 185px;
     box-shadow: 0 0 11px -4px #999;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     background-color: #fff;
     transition: all .2s;
     position: relative;
@@ -1051,9 +1051,9 @@ $this->registerCss('
     overflow: hidden;
 }
 .lp-box {
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     border-radius: 5px;
     padding: 10px;
 }
