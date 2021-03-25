@@ -189,8 +189,8 @@ $careerAdviceCategories = [
             </div>
             <div class="col-md-3">
                 <div>
-                    <div class="trending-posts">
-                        <div class="row">
+                    <div class="">
+                        <div cltrending-postsass="row">
                             <div class="col-md-12 col-sm-12">
                                 <?= $this->render('/widgets/follow-widget') ?>
                             </div>
@@ -341,6 +341,7 @@ $careerAdviceCategories = [
         </div>
     </section>
 
+<div class="pdbm10">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -375,6 +376,7 @@ $careerAdviceCategories = [
             </div>
         </div>
     </div>
+</div>
 <?= $this->render('/widgets/news-update') ?>
     <!--    <section class="ca-coming-soon-sec">-->
     <!--        <div class="row">-->
@@ -400,7 +402,17 @@ $careerAdviceCategories = [
     <!--        </div>-->
     <!--    </section>-->
     <section>
-
+        <div class="myfade1"></div>
+        <div class="imgmain-div"><img class="imgmain"/></div>
+        <ul class="styled-icon icon-bordered icon-md mb-5 lightbox-ul">
+            <li><a link='https://www.facebook.com/sharer/sharer.php?u=' target="_blank" class="overfb"><i
+                            class="fab fa-facebook-f"></i></a></li>
+            <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fab fa-twitter"></i></a>
+            </li>
+            <li><a href link="https://www.pinterest.com/pin/create/button/?url={link}&media={image}&description={title}"
+                   target="_blank" class="overpt"><i class="fab fa-pinterest"></i></a></li>
+            <li><a target="_blank" class="overdw" download><i class="fas fa-download"></i></a></li>
+        </ul>
         <section class="blog-mirror">
             <div class="my-container">
                 <div class="container pt-20 pb-5">
@@ -421,9 +433,8 @@ $careerAdviceCategories = [
                                                          height="133" alt="<?= $post['featured_image_alt']; ?>"
                                                          title="<?= $post['featured_image_title']; ?>"
                                                          url="<?= Yii::$app->urlManager->createAbsoluteUrl('/blog/' . $post['slug']); ?>">
-                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>" class="carousel-content">
-
-                                                    </a>
+<!--                                                    <a
+-->
                                                 </div>
                                                 <?php
                                             }
@@ -447,7 +458,7 @@ $careerAdviceCategories = [
                                 We are launching a detailed space for you to understand the in and out of each
                                 profession.
                             </div>
-                            <div class="ca-coming-text">Be excited</div>
+                            <div class="ca-coming-text">Be excited!!</div>
                         </div>
                     </div>
                 </div>
@@ -474,6 +485,12 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.pdbm10 {
+    padding-bottom: 20px;
+}
+.heading-style {
+    color: #000;
+}
 #slider1 .owl-stage-outer {
     overflow: visible !important;
     z-index:1000;
@@ -484,6 +501,89 @@ $this->registerCss('
 }
 .owl-controls {
     display: none !important;
+}
+.myfade1{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:#000;
+    top:0;
+    left:0;
+    opacity:0.8;
+    display:none;
+    z-index: 2000;
+}
+
+.styled-icon.icon-md a {
+    font-size: 24px;
+    height: 50px;
+    line-height: 50px;
+    width: 50px;
+    color:#fff;
+    border: 1px solid #777777;
+    float: left;
+    margin: 5px 7px 5px 0;
+    text-align: center;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.imgmain{
+    width:100%;
+    height:100%;
+    display:none;
+    object-fit:contain;
+}
+.imgmain-div{
+    width:60%;
+    height:80%;
+    top:10%;
+    left:20%;
+    display: none;
+    position: fixed;
+    z-index: 2000;
+}
+@media(min-width : 1500px) {
+    .imgmain-div{
+        width: 50%;
+        height: 70%;
+        top:15%;
+        left:25%;
+    }
+}
+.lightbox-ul{
+    display: none;
+    float:right;
+    position: fixed;
+    right:10%;
+    width:50px !important;
+    top:20%;
+    z-index: 2000;
+}
+.lightbox-ul li a{
+    border-radius: 25px !important;
+}
+.lightbox-ul li a{
+    clear: both !important;
+    color:white;
+}
+@media only screen and (min-width:2000px){
+    .lightbox-ul{
+        right:18%;
+        width:64px !important;
+    }
+    .lightbox-ul li a{
+        border-radius: 35px !important;
+    }
+    .styled-icon.icon-md a {
+        font-size: 34px;
+        height: 60px;
+        line-height: 60px;
+        width: 60px;
+    }
+}
+.imgsdds{
+    cursor:pointer !important;
 }
 .zoom {
     transition: transform .4s;
@@ -644,7 +744,7 @@ $this->registerCss('
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 68px 0px 0px;
+    border-width: 1px 95px 0px 0px;
     top: 11px;
     left: 5px;
 }
@@ -721,14 +821,17 @@ body {
     width: 100%;
 }
 .ca-soon-text{
-    font-size:25px;
-    font-family:lora;
-    color:#000;
+    font-size: 22px;
+    font-family: lora;
+    color: #000;
+    margin-bottom: 15px;
 }
 .ca-coming-text{
-    font-size:30px;
-    font-family:lora;
-    color:#000;
+    font-size: 30px;
+    font-family: lora;
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 .ca-coming-soon-sec{
     background-repeat: no-repeat;
@@ -1127,7 +1230,50 @@ a.button:hover span:after {
         left: 8%;
    }   
 }
+@media screen and (max-width: 950px) and (min-width: 700px) {
+    .trending-heading:before {
+            border-width: 1px 500px 0px 0px;
+        }
+}
 
+@media only screen and (max-width: 1200px){
+#slider1 .owl-stage-outer{
+    overflow: hidden !important;
+}
+}
+
+.lightbox-ul-show{
+    display:block;
+}
+@media screen and (max-width: 768px){
+    .imgmain-div{
+        width: 70%;
+        height: 275px;
+        top: calc(47vh - 137px);
+        left: 15%;
+    }
+    .lightbox-ul-show{
+        display: inline;
+    }
+    .lightbox-ul{
+        width: 90% !important;
+        bottom: 5%;
+        top: auto;
+        left: 5%;
+        text-align: center;
+    }
+    .lightbox-ul li{
+        display: inline;
+    }
+    .styled-icon.icon-md a{
+        font-size: 18px;
+        height: 40px;
+        display: inline-block;
+        line-height: 40px;
+        width: 40px;
+        float: none;
+    }
+}
 ');
 $script = <<<JS
 $.ajax({
@@ -1143,6 +1289,86 @@ $.ajax({
         $("#popular-blog").html(Mustache.render(tb_data, response.popular_posts));
     }
 }
+});
+$(document).on('click', '.imgsdds', function () {
+    var u = $(this).attr('url');
+    var t = $(this).attr('alt');
+    var image = $(location).attr('protocol') + '//' + $(location).attr('hostname') + $(this).attr('src');
+    $('.lightbox-ul li a').each(function () {
+        if ($(this).attr('class') != 'overpt' || $(this).attr('class') != 'overdw') {
+            $(this).attr('href', $(this).attr('link') + u);
+        }
+    });
+
+    $(function () {
+        var link = $('.overpt').attr('link');
+        $('.overdw').attr('href', image);
+        $('.overpt').each(function () {
+            this.href = this.href.replace('{link}', u);
+            this.href = this.href.replace('{image}', image);
+            this.href = this.href.replace('{title}', t);
+        });
+    });
+});
+
+$(function () {
+    $('.imgsdds').click(function () {
+        var c = $(this).attr('src');
+        $('.imgmain').attr('src', c);
+        $('.myfade1').fadeIn(500);
+        $('.imgmain').fadeIn(1000);
+        $('.imgmain-div').fadeIn(1000);
+        $('.lightbox-ul').addClass('lightbox-ul-show');
+
+    });
+    $('.myfade1').click(function () {
+        var d = $(this).attr('src');
+        $('.main').attr('src', d);
+        $('.imgmain').fadeOut(1000);
+        $('.myfade1').fadeOut(1000);
+        $('.imgmain-div').fadeOut(1000);
+        $('.lightbox-ul').removeClass('lightbox-ul-show');
+    });
+
+    $(document).bind('keydown', function (e) {
+        if (e.which == 27) {
+            var d = $(this).attr('src');
+            $('.main').attr('src', d);
+            $('.imgmain').fadeOut(1000);
+            $('.myfade1').fadeOut(1000);
+            $('.imgmain-div').fadeOut(1000);
+            $('.lightbox-ul').removeClass('lightbox-ul-show');
+        }
+    });
+});
+
+$('.owl-carousel-4col').owlCarousel({
+    loop: true,
+    nav: true,
+    pauseControls: true,
+    margin: 20,
+    autoplay: true,
+    autoplayTimeout: 2000,
+    autoplayHoverPause: true,
+    responsiveClass: true,
+    navText: [
+        '<i class="fas fa-chevron-left"></i>',
+        '<i class="fas fa-chevron-right"></i>'
+    ],
+    responsive: {
+        0: {
+            items: 1
+        },
+        568: {
+            items: 1
+        },
+        600: {
+            items: 2
+        },
+        1000: {
+            items: 4
+        }
+    }
 });
 JS;
 $this->registerJs($script);
