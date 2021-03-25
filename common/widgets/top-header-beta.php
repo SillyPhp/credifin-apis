@@ -348,7 +348,7 @@ $this->registerCss('
 
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
-//    margin: auto;
+    margin: 0;
     padding: 0;
 }
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
@@ -1050,6 +1050,8 @@ $this->registerCss('
 .ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
     color:#00a0e3 !important;
 }
-
+.ey-menu-login {
+    margin: 0px !important;
+}
 ');
 ?>

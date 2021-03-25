@@ -3,11 +3,16 @@ use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\URL;
 
-if($type){
-    $type =  substr_replace($type ,"",-1);
-}
+//if($type){
+//    $type =  substr_replace($type ,"",-1);
+//}
 ?>
-<div class="module2-heading">Provide <?= $type ?> description</div>
+<?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'):
+    $label= "Job";
+elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
+    $label= 'Internship';
+ endif; ?>
+<div class="module2-heading">Provide <?= $label ?> description</div>
 <div class="row padd-10">
     <div class="col-md-6">
         <div id="manual_questions">
@@ -19,13 +24,13 @@ if($type){
                 </div>
                 <input type="text" class="form-control" maxlength="150"
                        id="question_field"
-                       placeholder="Type Custom <?= $type ?> Description And Press Enter.">
+                       placeholder="Type Custom <?= $label ?> Description And Press Enter.">
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="manual_notes">
-            Select from predefined <?= $type ?> descriptions list
+            Select from predefined <?= $label ?> descriptions list
         </div>
     </div>
 </div>

@@ -464,6 +464,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.heading-style {
+    color: #000;
+}
 .abroad-btn a, .india-btn a, .institution-btn a {
 	color: #fff;
 	background-color:#00a0e3;

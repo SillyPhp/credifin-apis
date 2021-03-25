@@ -81,7 +81,8 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/australia-course')?>
-<?= $this->render('/widgets/loan-table')?>
+<?php $is_show = 0; ?>
+<?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
 
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
@@ -92,7 +93,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-callerr.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -421,7 +422,7 @@ $this->registerCss('
     transition: .3s ease;
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/australia-hdr.png') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;

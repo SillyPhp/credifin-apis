@@ -450,7 +450,7 @@ class JobsController extends Controller
         $app = EmployerApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
-            ->where(['a.unique_source_id' => $eaidk])
+            ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -505,7 +505,8 @@ class JobsController extends Controller
             ->where([
                 'slug' => $eaidk,
                 'is_deleted' => 0,
-                'application_for' => 1
+                'application_for' => 1,
+                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
@@ -1063,7 +1064,7 @@ class JobsController extends Controller
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
