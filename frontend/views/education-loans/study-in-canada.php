@@ -80,7 +80,8 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
 <section class="bg-blue">
-    <?= $this->render('/widgets/choose-education-loan') ?>
+    <?php $is_show = 0; ?>
+    <?= $this->render('/widgets/choose-education-loan',['is_show'=>$is_show]) ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <section class="bg-caller padd30" id="contact">

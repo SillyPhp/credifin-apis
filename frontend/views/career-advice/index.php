@@ -91,7 +91,6 @@ $careerAdviceCategories = [
     </section>
     <section class="background-mirror blog-section-0">
         <div class="container">
-            <div class="row">
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
@@ -156,7 +155,6 @@ $careerAdviceCategories = [
                         ?>
                     </div>
                 </div>
-            </div>
             <div class="row">
                 <div class="view-all-articles">
                     <a href="<?= Url::to('/blog/category/articles'); ?>" class="artic">view all</a>
