@@ -262,10 +262,15 @@ $this->registerCss('
 }
 .apply-now{
     padding: 10px 15px;
-    background: #00a0e3;
-    color: #fff;
-    border: 1px solid #00a0e3;
-    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
 }
 .btn-orange{
     background: #ff7803 !important;
