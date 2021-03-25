@@ -47,9 +47,9 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                 <div class="row">
                     <div class="col-md-12">
                         <div class="set-pos">
-                            <div class="pull-right btn-next" id="btnNext">
-                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-                            </div>
+<!--                            <div class="pull-right btn-next" id="btnNext">-->
+<!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
+<!--                            </div>-->
                             <div class="pull-right margin_right" id="btnContinue">
                                 <button class="btn btn-primary tab_key_continue" id="tab_key_continue">Continue</button>
                             </div>
@@ -375,7 +375,11 @@ $script = <<< JS
     }
   })
  }
- 
+ $(document).on('click','input[name="pRadio"]',function(e) {
+   var p = $('input[name="pRadio"]:checked').val();
+        $('#hidden_profile').val(p);
+        goNext(p);
+ })
  function goNext(id) {
          tabs1.hide();
          ajaxFunction(id);

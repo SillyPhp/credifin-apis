@@ -27,7 +27,7 @@ use yii\helpers\Url;
                         <div class="edu-loan-products">
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/school-fee-financing.png') ?>">
                             <p>School Fee Financing Loans</p>
-                            <a href="/education-loans/school-fee-financing">Learn More</a>
+                            <a href="/education-loans/school-fee-finance">Learn More</a>
                         </div>
                         <div class="edu-loan-products">
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?>">
