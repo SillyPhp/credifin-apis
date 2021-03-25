@@ -505,9 +505,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 //        max-width: 275px;
         text-align: center;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
