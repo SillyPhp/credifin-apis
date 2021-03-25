@@ -36,7 +36,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-callerr.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -342,11 +342,11 @@ $this->registerCss('
 	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
-    font-size: 23px;
-    font-family: roboto;
-    color: #000;
-    padding: 0 0 18px;
-    line-height: 30px;
+    font-size: 24px;
+	font-family: roboto;
+	color: #fff;
+	padding: 0 0 18px;
+	line-height: 30px;
 }
 .study-in-usa-bg h1{
     font-size: 45px;
