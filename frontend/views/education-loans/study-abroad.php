@@ -322,22 +322,24 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 500px;
-       background-repeat: no-repeat;
-       background-size: cover;
-       display: flex;
-       align-items: center;
-       position: relative;
-        text-align: center;
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+    min-height: 500px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	align-items: center;
+	position: relative;
+	text-align: center;
+	height: 100vh;
+	max-height: 700px;
 }
 .opacity-div{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,.85);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
     font-size: 23px;
@@ -347,9 +349,11 @@ $this->registerCss('
     line-height: 30px;
 }
 .study-in-usa-bg h1{
-    font-size: 50px;
-    margin-bottom: 20px;
-    color: #ff7803;
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;
