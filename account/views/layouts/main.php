@@ -36,7 +36,6 @@ $this->beginPage();
                 <div class="container-fluid">
                     <div class="clearfix navbar-fixed-top">
                         <div class="ey-head-main">
-                            <div class="container-fluid">
                                 <div class="large-container container">
                                     <div class="ey-header-main">
                                         <div class="ey-header-logo">
@@ -84,7 +83,6 @@ $this->beginPage();
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                         <div class="ey-mobile-menu">
                             <div class="ey-mob-nav-main">
@@ -269,7 +267,7 @@ $this->beginPage();
             @media (min-width: 992px){
                 .wrapper{margin:0px;}
                 .page-header .navbar-fixed-top{
-                    padding: 2px 25px !important;
+                    padding: 2px 15px !important;
                     background: #fff;
                     border-bottom: 1px solid #ddd;
                 }

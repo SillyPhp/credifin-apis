@@ -41,7 +41,7 @@ if(!Yii::$app->user->isGuest){
 }
 $this->registerCss('
 .college-header {
-	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/colg-campus.png") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -615,7 +615,7 @@ function removeActive(){
         $('.nav-item').removeClass('cActive');
     }
 }
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getDetails(){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
