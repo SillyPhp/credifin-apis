@@ -5,13 +5,13 @@ use yii\helpers\Url;
 ?>
     <section class="press-bg">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-4 col-xs-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
-                </div>
-                <?php
-                if ($viewBtn) {
-                    ?>
+            <?php
+            if ($viewBtn) {
+                ?>
+                <div class="row">
+                    <div class="col-md-6 col-sm-4 col-xs-12">
+                        <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
+                    </div>
 
                     <div class="col-md-6 col-sm-4 col-xs-12">
                         <div class="type-1">
@@ -23,10 +23,10 @@ use yii\helpers\Url;
                             </div>
                         </div>
                     </div>
-                    <?php
-                }
-                ?>
-            </div>
+                </div>
+                <?php
+            }
+            ?>
             <div class="row">
                 <?php
                 if (!empty($data) && is_array($data)) {
