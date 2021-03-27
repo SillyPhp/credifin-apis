@@ -93,7 +93,7 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section>
+    <section class="pdbtm">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -138,7 +138,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section class="bgeEd">
+    <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -243,6 +243,12 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.heading-style {
+    color: #000;
+}
+.pdbtm {
+    padding-bottom: 20px;
+}
 .footer{
     margin-top: 0px !important;
 }
@@ -491,7 +497,7 @@ html {
     text-align: center;
     margin-bottom: 15px;
     border-radius: 5px;
-    padding: 20px 10px 10px;
+    padding: 20px 10px 20px;
 }
 .loan-logo img {
     max-width: 80px;

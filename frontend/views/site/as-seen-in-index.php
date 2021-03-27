@@ -10,8 +10,7 @@ use yii\helpers\Url;
             <div class="col-md-12 col-sm-12">
                 <div class="seen">
                 <div class="seen-txt">
-                    <h1>Know what top News Platforms have to say about our Education Loan Scheme.</h1>
-                </div>
+                    <h1>Know what top News Platforms have to say about our Education Loan Scheme.</h1></div>
                 </div>
             </div>
         </div>
