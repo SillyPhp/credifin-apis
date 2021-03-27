@@ -131,6 +131,7 @@ class EducationLoansController extends Controller
 
     public function actionStudyInUsa(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -145,11 +146,13 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-in-usa',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionStudyInAustralia(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -164,12 +167,14 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-in-australia',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
 
     public function actionStudyInCanada(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -184,11 +189,13 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-in-canada',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionStudyInIndia(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -203,11 +210,13 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-in-india',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionStudyInEurope(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -222,11 +231,13 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-in-europe',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionStudyAbroad(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -241,7 +252,8 @@ class EducationLoansController extends Controller
         }
 
         return $this->render('study-abroad',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionRefinance(){
@@ -300,6 +312,7 @@ class EducationLoansController extends Controller
     }
     public function actionInterestFree(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -313,7 +326,8 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
         return $this->render('interest-free-education-loan',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionEducationInstitutionLoan()
