@@ -440,9 +440,9 @@ class EyCollegeProfileController extends ApiBaseController
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
             if (!empty($data)) {
-                return $this->response(200, $data);
+                return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
-                return $this->response(404, 'Not Found');
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -652,7 +652,7 @@ class EyCollegeProfileController extends ApiBaseController
                 $data['count'] = $count;
 
                 if (!empty($emp_reviews)) {
-                    return $this->response(200, $data);
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
                 } else {
                     return $this->response(404, 'Not Found');
                 }
@@ -889,7 +889,7 @@ class EyCollegeProfileController extends ApiBaseController
             $data['count'] = $count;
 
             if (!empty($reviews_students)) {
-                return $this->response(200, $data);
+                return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
                 return $this->response(404, 'Not Found');
             }
