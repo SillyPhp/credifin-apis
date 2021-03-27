@@ -20,6 +20,9 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.footer {
+    margin-top: 0px !important;
+}
 .seen-bg {
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/as-seen-in-news.png') . ');
 	min-height: 500px;
