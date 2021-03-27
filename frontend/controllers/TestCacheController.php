@@ -20,8 +20,6 @@ use common\models\UserOtherDetails;
 use common\models\UserResume;
 use common\models\Users;
 use common\models\Utilities;
-use yii\grid\GridView;
-use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
@@ -44,38 +42,30 @@ class TestCacheController extends Controller
         }
     }
 
-    public function actionCourses(){
-        // your client's IP Address
-        $url = "https://ipinfo.io/".Yii::$app->request->remoteIP;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $header = [
-            'Accept: application/json, text/plain, */*',
-            'Content-Type: application/json;charset=utf-8',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        $result = json_decode($result);
-        $url = "https://www.udemy.com/api-2.0/courses/?page=1&page_size=6&fields[course]=title,price,is_paid,visible_instructors,discount";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_COOKIE, '__udmy_2_v57r=; ud_cache_price_country='.$result->country.';');
-        $header = [
-            'Accept: application/json, text/plain, */*',
-            'Content-Type: application/json;charset=utf-8',
-            'Authorization: Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ=='
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        $result = json_decode($result);
-        print_r($result);
-    }
+//    public function actionSms(){
+//        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
+//    }
 
-    public function actionCatching(){
-        return 12;
-    }
+     public function actionImages(){
+         $canvas = null;
+         $profile = 'others.png';
+         $company_logo = null;
+         $application_enc_id = 'test';
+         $job_title = 'Shift Supervisor Management Trainee';
+         $company_name = 'CVS Health';
+         $locations = 'Ludhiana, Jalandhar';
+         $content = [
+             'job_title' => $job_title,
+             'company_name' => $company_name,
+             'canvas' => (($canvas) ? false : true),
+             'bg_icon' => $profile,
+             'logo' => (($company_logo) ? $company_logo : null),
+             'initial_color' => RandomColors::one(),
+             'location' => $locations,
+             'app_id' => $application_enc_id,
+             'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+         ];
+         $Instaimage = \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+         echo $Instaimage;
+     }
 }

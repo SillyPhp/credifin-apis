@@ -8,6 +8,7 @@ use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\Organizations;
+use common\models\PressReleasePubliser;
 use common\models\UnclaimedOrganizations;
 use frontend\models\AdmissionForm;
 use frontend\models\applications\LeadsForm;
@@ -21,6 +22,23 @@ use yii\web\Response;
 class EducationLoansController extends Controller
 {
 
+    public function actionPressReleases()
+    {
+        $data = self::getPressReleasData();
+        return $this->render('press-releases', [
+            'data' => $data
+        ]);
+    }
+
+    private function getPressReleasData($option = []){
+        $data = PressReleasePubliser::find()
+            ->andWhere(['is_deleted' => 0])
+            ->orderBy(['sequence' => SORT_ASC]);
+            if($option['limit']){
+                $data->limit($option['limit']);
+            }
+        return $data->asArray()->all();
+    }
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
@@ -34,12 +52,14 @@ class EducationLoansController extends Controller
 
     public function actionIndex()
     {
+        $data = self::getPressReleasData(['limit' => 6]);
         $loan_org = Organizations::find()
             ->select(['organization_enc_id', 'name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
             ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
             ->asArray()
             ->all();
         return $this->render("education-loan-index", [
+            'data' => $data,
             'loan_org' => $loan_org,
         ]);
     }
@@ -224,7 +244,100 @@ class EducationLoansController extends Controller
             'model' => $model
         ]);
     }
-    public function actionRefinanceLoan(){
-        return $this->render('refinance-loan');
+    public function actionRefinance(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('refinancing-education-loan',[
+            'model' => $model
+        ]);
+    }
+    public function actionAnnualFeeFinancing(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('annual-fee-financing',[
+            'model' => $model,
+        ]);
+    }
+    public function actionSchoolFeeFinance(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('school-fee-financing',[
+            'model' => $model
+        ]);
+    }
+    public function actionInterestFree(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('interest-free-education-loan',[
+            'model' => $model
+        ]);
+    }
+    public function actionEducationInstitutionLoan()
+    {
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('education-institution-loan', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionLoanCalculator(){
+        $this->layout = 'widget-layout';
+        return $this->render('calc');
     }
 }

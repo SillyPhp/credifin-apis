@@ -19,7 +19,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 <div class="col-md-12 set-overlay">
     <div class="row">
         <h1 class="tweet-job-heading">Create a Tweet <?= (($type=="Jobs")?"Job":"Internship") ?> !!</h1>
-        <h3 class="tweet-job-sub-heading">Tweet a <?= (($type=="Jobs")?"Job":"Internship") ?> vacancy & Find the best candidates</h3>
+        <h2 class="tweet-job-sub-heading">Tweet a <?= (($type=="Jobs")?"Job":"Internship") ?> vacancy & Find the best candidates</h2>
         <div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
@@ -53,7 +53,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                             <?php else: ?>
                                 <div class="row">
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <div class="load-suggestions Typeahead-spinner">
                                             <span></span>
                                             <span></span>
@@ -61,7 +61,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                         </div>
                                         <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company'])->label(false); ?>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <?= Html::a('Add New Company','#',[
                                             'class'=>'btn btn-primary add_new_org',
                                             'url'=>'/jobs/create-company',
@@ -206,7 +206,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h4>
+                    <h3 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h3>
                 </div>
                 <div class="modal-body">
                     <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
@@ -473,6 +473,10 @@ $(".close-m-mo").on("click", function() {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.btn.btn-primary.add_new_org {
+	display: block;
+	margin-bottom: 10px;
+}
 #loadBtn{display:none}
 .control-label{
 font-family: 'Roboto', sans-serif !important;

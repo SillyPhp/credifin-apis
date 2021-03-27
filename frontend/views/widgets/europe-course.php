@@ -18,6 +18,7 @@ use yii\helpers\Url;
                                     <li>Maximum LoanTenure of 10 Years</li>
                                 </ul>
                             </div>
+                            <div class="applyBtn applyBlue">Apply</div>
                         </a>
                     </div>
                 </div>
@@ -35,6 +36,7 @@ use yii\helpers\Url;
                                     <li>Maximum LoanTenure of 10 Years</li>
                                 </ul>
                             </div>
+                            <div class="applyBtn">Apply</div>
                         </a>
                     </div>
                 </div>
@@ -43,7 +45,22 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-
+.applyBtn{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    color: #ff7803;
+    font-size: 22px;
+    font-family: lora;
+    text-transform: capitalize;
+    font-weight: 500;
+    background: #fff;
+    padding: 5px 15px;
+    border-radius: 16px 0;
+}
+.applyBlue{
+    color: #00a0e3;
+}
 .egoven-jobs-sec{
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;

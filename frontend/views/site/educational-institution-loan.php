@@ -255,7 +255,6 @@ body{
 }
 .admission-form{
     background: url(' . Url::to('@eyAssets/images/pages/custom/form-bg1.png') . ');
-    background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
 }

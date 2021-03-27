@@ -6,6 +6,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+$link = Url::to( 'blog/'.$post->slug, true);
+
 $keywords = $post->meta_keywords;
 $description = $post->excerpt;
 $image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post->featured_image_location . DIRECTORY_SEPARATOR . $post->featured_image);
@@ -69,7 +71,9 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div>
-                        <?= $this->render('/widgets/sharing-widget-new'); ?>
+                        <?= $this->render('/widgets/sharing-widget-new',[
+                            'link' => $link,
+                        ]); ?>
                     </div>
                     <?=
                     $this->render('/widgets/mustache/discussion/discussion-box', [
@@ -532,10 +536,10 @@ textarea::placeholder{
     margin-bottom: 10px;
     padding-left: 40px;
 }
-div#blog-description * {
-    font-size: 20px !important;
-    line-height: 29px !important;
-}
+//div#blog-description * {
+//    font-size: 20px !important;
+//    line-height: 29px !important;
+//}
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -1,9 +1,9 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
@@ -12,7 +12,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <?php
             if (!empty($org_logo)) {
                 ?>
-                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                <a href="javascript:;">
+                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                </a>
                 <?php
             } else {
                 ?>
@@ -24,12 +26,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <h4><?= $org_name; ?></h4>
-            <div class="organization-details">
-                <!--            <h4>Company Detail</h4>-->
-                <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
-                <?php endif; ?>
-            </div>
+<!--            <div class="organization-details">-->
+<!--                           <h4>Company Detail</h4>-->
+<!--                --><?php //if ($website): ?>
+<!--                    <a href="--><?//= $website ?><!--">-->
+<!--                        <i class="fas fa-unlink"> Visit on website</i>-->
+<!--                    </a>-->
+<!--                --><?php //endif; ?>
+<!--            </div>-->
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -123,25 +127,29 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     $link = Url::to('job/' . $application_slug, 'https');
                 }
                 ?>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#"
-                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                <a href="javascript:;"
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="#"
-                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                <a href="javascript:;"
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
+                </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
                 </a>
             </div>
             <div class="wts-ap">
@@ -158,7 +166,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
@@ -189,6 +197,16 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $this->registerCss('
+.iti{width:100%;}
+.intl-tel-input{width:100%;}
+#logo_img {
+	max-width: 85px !Important;
+	max-height: 100px !Important;
+	/* background-color: #fff; */
+	object-fit: contain;
+	width: 85px;
+	height: 85px;
+}
 .form-whats {
 	position: relative;
 }
@@ -215,6 +233,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -245,7 +264,7 @@ $this->registerCss('
 }
 .job-thumb a img{margin:5px;}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -256,9 +275,9 @@ $this->registerCss('
 }
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -266,7 +285,7 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px;
+    padding:5px;
     width: 42%;
     font-size: 12px;
     border-radius: 2px;
@@ -333,7 +352,8 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   height: 40px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 8px;
+  margin-bottom: 10px;
   font-size: 17px;
   overflow: hidden;
   position: relative;
@@ -376,19 +396,19 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
+    .job-thumb{max-width: auto;}
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
+//        max-width: 275px;
+        text-align: center;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+//    .job-head-info h4{
+//        margin-left:25px !Important;
+//    }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+        float: none;
         display: inline-block;
         width: 42%;
     }

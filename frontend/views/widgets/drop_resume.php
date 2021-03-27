@@ -190,11 +190,16 @@ $result = json_encode($r);
 
 \Yii::$app->view->registerJs('var result = ' . $result, \yii\web\View::POS_HEAD);
 
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_drop_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs('
+//var ps = new PerfectScrollbar(".st-h");
+');
 
 
 

@@ -66,35 +66,41 @@ if (!empty($total_applications)) {
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                               class="fb-book tt" type="button" data-toggle="tooltip"
                                title="Share on Facebook">
                                 <i class="fa fa-facebook-f"></i>
                             </a>
                             <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
+                               class="tw-twitter tt" type="button" data-toggle="tooltip"
                                title="Share on Twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-email share_btn tt" type="button" data-toggle="tooltip"
+                               class="ml-mail tt" type="button" data-toggle="tooltip"
                                title="Share via E-mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
+                               class="wa-whats tt" type="button" data-toggle="tooltip"
                                title="Share on Whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                               class="li-linked tt" type="button" data-toggle="tooltip"
                                title="Share on LinkedIn">
                                 <i class="fa fa-linkedin"></i>
                             </a>
-                            <a href="javascript:;" class="j-clipboard share_btn tt" type="button" data-toggle="tooltip"
+                            <a href="javascript:;"
+                               onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="tg-tele tt" type="button" data-toggle="tooltip"
+                               title="Share on Telegram">
+                                <i class="fa fa-telegram"></i>
+                            </a>
+                            <a href="javascript:;" class="clipb tt" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
@@ -204,7 +210,39 @@ Pjax::end();
 ?>
 
 <?php
-$this->registerCss("
+$this->registerCss(" 
+.lf-bttn{
+    transition:all .3s;
+    opacity:0;
+    left:0;
+}
+.hr-company-box:hover > .lf-bttn{
+    left:13px;
+    opacity:1;
+}
+.lf-bttn a{
+    display:block;
+    padding:5px 7px;
+    border-radius: 0 0 8px 0;
+}
+.fb-book{color:#3b5998;}
+.fb-book:hover{background-color:#3b5998;color:#fff;}
+.tw-twitter{color:#1DA1F2;}
+.tw-twitter:hover{background-color:#1DA1F2;color:#fff;}
+.ml-mail{color:#DB4437;}
+.ml-mail:hover{background-color:#DB4437;color:#fff;}
+.wa-whats{color:#4FCE5D;}
+.wa-whats:hover{background-color:#4FCE5D;color:#fff;}
+.li-linked{color:#3B5998;}
+.li-linked:hover{background-color:#3B5998;color:#fff;}
+.tg-tele{color:#0088cc;}
+.tg-tele:hover{background-color:#0088cc;color:#fff;}
+.clipb{color:#797777;}
+.clipb:hover{background-color:#797777;color:#fff;}
+
+.hr-com-name{
+    padding:10px 15px 0 15px;
+}
 .detail-clg{flex-basis:10%;}
 .appl a span {
     background-color: #ff7803;
@@ -272,8 +310,8 @@ $this->registerCss("
     text-decoration:none;
 }
 .tt + .tooltip > .tooltip-inner {
-    min-width:70px;
-    max-width:110px;
+    min-width:80px;
+    max-width:150px;
 }
 .exp-soon-msg{
      box-shadow: 0 0 10px rgba(0,0,0,.2);
@@ -328,27 +366,6 @@ $this->registerCss("
     from{transform: scale(1)}
     to{transform: scale(1.1)}
 }
-.j-twitter{
-    left: 54px !important;
-}
-.j-email {
-    left: 78px !important;
-}
-.j-whatsapp {
-    left: 30px !important;
-}
-.j-linkedin{
-    left: 103px !important;
-}
-.j-clipboard{
-    left: 125px !important;
-    color:#797777;
-}
-.j-facebook {
-    left: 10px !important;
-    color:#3b5998;
-}
-.j-facebook:hover{color:#fff;}
 .expring-btn{
     position:absolute;
     top:35px;

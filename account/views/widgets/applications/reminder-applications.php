@@ -11,14 +11,15 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-social-twitter font-dark hide"></i>
-                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Reminder'); ?></span>
+                <span class="caption-subject font-dark bold uppercase fnsz"><?= Yii::t('account', 'Reminder'); ?></span>
             </div>
             <div class="actions">
                 <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
             </div>
-            <div class="col-md-12">
-                A Gentle Reminder About The Job And Internships Either Applied By You Or Which You Are Willing To Apply.
-            </div>
+        </div>
+        <div class="descrip">
+            A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
+            Keep a track of all your scheduled  job/internships.
         </div>
         <div class="portlet-body">
             <div class="add-reminder">
@@ -130,7 +131,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                                     </div>
                                 </div>
                                 <div class="cross">
-                                    <span id="remove-reminder" class="close" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
+                                    <span id="remove-reminder" class="closed" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
                                 </div>
                             </div>
                             <div class="userdata">
@@ -206,16 +207,35 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
     </div>
 <?php
 $this->registerCss("
- .review-list-toggler{
-    position: absolute;
-    display: block;
-    top: 4px;
-    left: 43px;
-    pointer-events: all;
-    line-height:36px;
-    transform: rotate(-0deg);
+.innerpart {
+    flex-basis: 60%;
 }
-.innerpart1{margin-left:auto;}
+.closed{font-size:22px;flex-basis: 3%;}
+.fnsz {
+    font-size: 18px;
+}
+.descrip {
+    font-size: 17px;
+    font-family: robotox;
+    color: #000;
+    line-height: 22px;
+}
+.review-list-toggler {
+	position: absolute;
+	display: block;
+	top: 4px;
+	left: 20px;
+	pointer-events: all;
+	line-height: 36px;
+	transform: rotate(-0deg);
+}
+.innerpart1 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	flex-basis: 35%;
+}
 .innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
 .review-list-toggler i{
     display: block;
@@ -237,10 +257,6 @@ $this->registerCss("
     font-size: 20px;
     margin:15px;
 }
-.cross{
-    padding-top:10px;
-    padding-left:10px;
-}
 .e{
     color: black;
     padding-left: 10px;
@@ -248,11 +264,12 @@ $this->registerCss("
     font-weight:300;
 }
 .reminderbox {
-    width: 90%;
-    padding: 10px 5px;
-    margin:0 auto;
-    display:flex;
-    border-bottom:1px solid #adadad;
+	width: 95%;
+	padding: 10px 5px;
+	margin: 0 auto;
+	display: flex;
+	border-bottom: 1px solid #adadad;
+	align-items: center;
 }
 .reminderbox a{
     color:black;
@@ -280,27 +297,26 @@ $this->registerCss("
     display:inline-block;
 }
 .salarybox, .listing{
-    display:inline-block;
-    width:49%;
+    flex-basis: 50%;
+    text-align: center;
 }
- .salarybox1{
-    width:130px;
-    height:25px;
-    font-size:18px;
-    font-famiy:roboto;
-    padding-left:10px;
-    border-style:none;
-    border-bottom:1px solid;
+.salarybox1 {
+	width: 130px;
+	height: auto;
+	font-size: 16px;
+	font-famiy: roboto;
+	/* padding-left: 10px; */
+	border-style: none;
+	border-bottom: 1px solid;
 }
- .listing1{
-    width:130px;
-    height:25px;
-    font-size:16px;
-    font-famiy:roboto !important;
-    padding-left:10px;
-    border-style:none;
-    border-bottom:1px solid;
-}     
+.listing1 {
+	width: 130px;
+	height: auto;
+	font-size: 16px;
+	font-famiy: roboto !important;
+	border-style: none;
+	border-bottom: 1px solid #ddd;
+} 
  .userdata {
     width: 90%;
     padding: 15px 90px;
@@ -333,6 +349,12 @@ $this->registerCss("
 }
 .datepicker > div {
     display: block;
+}
+@media only screen and (max-width:1200px){
+.innerpart {
+    flex-basis: 50%;
+}
+.innerpart1{flex-basis:45%;}
 }
 ");
 $script = <<<JS

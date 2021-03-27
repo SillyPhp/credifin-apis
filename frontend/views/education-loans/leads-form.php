@@ -73,7 +73,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)','maxLength'=>15])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)','pattern'=>'[0-9]*', 'type'=>'tel','maxLength'=>10,'minLength'=>10])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -136,7 +136,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                         <div class="form-group"><input type="text" name="parent_mobile_number[]"
                                                        class="form-control parent_mobile_number"
                                                        placeholder="Mobile Number" id="parent_mobile_number[]"
-                                                       maxlength="15" minlength="10"></div>
+                                                       maxlength="10" minlength="10"></div>
                         <div class="form-group"><input type="text" name="parent_annual_income[]"
                                                        class="form-control parent_annual_income"
                                                        placeholder="Annual Income" id="parent_annual_income[]"></div>

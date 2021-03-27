@@ -72,8 +72,8 @@ use yii\helpers\Url;
                     </div>
                     {{/rating}}
                     <div class="comp-jobs-intern">
-                        <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{#employerApplications.0.total_application}} {{employerApplications.0.total_application}} {{/employerApplications.0.total_application}} {{^employerApplications.0.total_application}} 0 {{/employerApplications.0.total_application}}Jobs</span></a>
-                        <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{#employerApplications.1.total_application}} {{employerApplications.1.total_application}} {{/employerApplications.1.total_application}} {{^employerApplications.1.total_application}} 0 {{/employerApplications.1.total_application}} Internships</span></a>
+                        <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{jobs_cnt}} Jobs</span></a>
+                        <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{internships_cnt}} Internships</span></a>
                     </div>
                     <div class="flw-rvw">
                         {{#login}}
@@ -127,6 +127,7 @@ $this->registercss('
 	margin:10px 0 20px;
 	padding: 30px 0px 10px;
 	transition:all .3s;
+	min-height: 390px !important;
 }
 .company-main:hover{
 //    transform:scale(1.01);

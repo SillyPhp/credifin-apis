@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\LoanApplications;
 use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
@@ -113,7 +114,7 @@ class AccountsController extends Controller
         return $this->redirect('/login');
     }
 
-    public function actionSignup($type)
+    public function actionSignup($type,$loan_id_ref=null)
     {
 
         if (!Yii::$app->user->isGuest) {
@@ -126,6 +127,16 @@ class AccountsController extends Controller
 
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
+            $loan_ref = LoanApplications::find()->where(['loan_app_enc_id'=>$loan_id_ref,'created_by'=>null])->exists();
+            if (!empty($loan_id_ref)) {
+                if ($loan_ref){
+                    $cookies = Yii::$app->response->cookies;
+                    $cookies->add(new \yii\web\Cookie([
+                        'name' => 'loan_id_ref',
+                        'value' => $loan_id_ref,
+                    ]));
+                }
+            }
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->load(Yii::$app->request->post());
@@ -147,6 +158,8 @@ class AccountsController extends Controller
             }
             return $this->render('signup/individual', [
                 'model' => $model,
+                'loan_ref' => $loan_ref,
+                'loan_id_ref' => $loan_id_ref
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();

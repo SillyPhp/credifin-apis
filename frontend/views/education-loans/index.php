@@ -248,6 +248,7 @@ use yii\helpers\Url;
         </div>
     </section>
     <div class="clearfix"></div>
+<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $script = <<<JS

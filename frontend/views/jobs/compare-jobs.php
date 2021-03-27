@@ -7,7 +7,7 @@ use yii\helpers\Url;
 
 <section>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-2 col-sm-3">
             <?=
             $this->render('/widgets/sidebar-review', [
                 'type' => 'jobs',
@@ -17,7 +17,7 @@ use yii\helpers\Url;
         </div>
 
 
-            <div class="col-md-10">
+            <div class="col-md-10 col-sm-9">
                 <table>
                     <tr>
                         <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>
@@ -316,6 +316,12 @@ echo $this->render('/widgets/mustache/application-card', [
 ]);
 
 $this->registerCss('
+.profile-sidebar{
+    margin-top: 0px;
+}
+#review-internships{
+    height: calc(100vh - 85px) !important;
+}
 .slt-jobs{
     box-shadow: 0px 0px 0px 0px #fefefe;
 }
@@ -399,7 +405,7 @@ th{
    position: -webkit-sticky; /* Safari */
    top:64px; 
    background:#fff;
-   box-shadow: 0 10px 10px rgba(0,0,0,.1);
+   box-shadow: 0 5px 4px rgba(0,0,0,.1);
 }
 td{
     border:1px solid #e2e1e1;
@@ -683,11 +689,12 @@ td{
     z-index:99;
     background-color:#ecececba;
 }
-.remove-compare{
-    float: right;
-    position: relative;
-    margin-top: -10px;
-    margin-bottom: 10px;
+.ui-droppable{position:relative;}
+.remove-compare {
+    position: absolute;
+    right: 4px;
+    top: 0px;
+    cursor: pointer;
 }
 ');
 $script = <<<JS

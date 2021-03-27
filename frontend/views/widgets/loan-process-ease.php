@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row disFlex">
             <div class="col-md-4 col-sm-12 col-xs-12">
-                <h3 class="loan-style">We are here<br> to make your<br> <span class="cOrange">loan</span> process <span class="cBlue">ease</span></h3>
+                <h3 class="loan-style">We are here<br> to <span class="cBlue">ease</span> your<br> <span class="cOrange">loan</span> process </h3>
                 <hr>
                 <div class="applyLink">
                     <a href="/education-loans/apply" class="apply-btn">Apply Now <i class="fas fa-arrow-right"></i></a>

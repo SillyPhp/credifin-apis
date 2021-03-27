@@ -1034,8 +1034,8 @@ button.lc-item-video-menu {
         display:none;
     }
     #logo_img{
-        width: 115px;
-        height: 115px;
+        max-width: 85px !Important;
+        max-height: 100px !Important;
         background-color:#fff;
         object-fit: contain;
     }
@@ -1466,8 +1466,8 @@ button.lc-item-video-menu {
         border: none;
     }
     .job-single-head.style2 .job-thumb {
-        float: left;
-        width: 100%;
+//        float: left;
+//        width: 100%;
         text-align: center;
         margin-top:20px;
     }
@@ -1483,12 +1483,12 @@ button.lc-item-video-menu {
         border-radius: 50%;
     }
     .job-single-head.style2 .job-head-info {
-        float: left;
-        width: 100%;
-        display: inherit;
-        padding: 0;
-        margin-top: 10px;
-        margin-bottom: 18px;
+//        float: left;
+//        width: 100%;
+//        display: inherit;
+//        padding: 0;
+        margin-top: 15px;
+//        margin-bottom: 18px;
     }
     .job-single-head.style2 .job-head-info p {
         float: left;
@@ -1520,9 +1520,9 @@ button.lc-item-video-menu {
         color: #ffffff;
     }
     .job-thumb {
-        display: table-cell;
-        vertical-align: top;
-        width: 107px;
+//        display: table-cell;
+//        vertical-align: top;
+//        width: 107px;
     }
     .job-thumb img {
         float: left;
@@ -1534,15 +1534,15 @@ button.lc-item-video-menu {
         -o-border-radius: 8px;
         border-radius: 8px;
     }
-    .job-head-info {
-        display: table-cell;
-        vertical-align: middle;
-        padding-left: 25px;
-    }
+//    .job-head-info {
+//        display: table-cell;
+//        vertical-align: middle;
+//        padding-left: 25px;
+//    }
     .job-head-info h4 {
-        float: left;
-        width: 100%;
-        font-family: Open Sans;
+//        float: left;
+//        width: 100%;
+        font-family: roboto;
         font-size: 17px;
         font-weight: 600;
         color: #fff;
@@ -1590,7 +1590,7 @@ button.lc-item-video-menu {
     -o-border-radius: 2px;
     border-radius: 2px;
     font-family: roboto;
-    font-size: 18px;
+    font-size: 16px;
     color: #fff;
     width: 175px;
     height: auto;
@@ -1608,7 +1608,7 @@ button.lc-item-video-menu {
     }
     .apply-job-btn i {
         float: none;
-        font-size: 18px;
+        font-size: 16px;
         margin-right: 6px;
         line-height: 8px;
         position: relative;

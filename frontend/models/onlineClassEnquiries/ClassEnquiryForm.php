@@ -36,9 +36,8 @@ class ClassEnquiryForm extends Model
             [['email'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
             [['phone'], PhoneInputValidator::className()],
-        ];
+       ];
     }
-
     public function save()
     {
         $transaction = Yii::$app->db->beginTransaction();

@@ -19,8 +19,8 @@ $this->params['header_dark'] = false;
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>The World's First Integrated Career Platform</h3>
-                                <span>The Easiest Way to Build Your Career</span>
+                                <h1>The World's First Integrated Career Platform</h1>
+                                <h2>The Easiest Way to Build Your Career</h2>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
@@ -37,10 +37,11 @@ $this->params['header_dark'] = false;
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
-                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
-                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
-                                            href="/blog">Blogs</a>
+                                <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
+                                    <a href="/jobs">Jobs,</a> <a href="/internships">Internships,</a>
+                                    <a href="/reviews">Reviews,</a> <a href="/learning">Learning Hub,</a> <a
+                                            href="/courses">Courses,</a> <a href="/career-advice">Career Advice,</a>
+                                    <a href="/education-loans">Education Loans</a>
                                 </span>
                             </div>
                         </div>
@@ -140,6 +141,8 @@ $this->params['header_dark'] = false;
         </circle>
     </svg>
 </div>
+
+<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $this->registerCss('
@@ -244,9 +247,7 @@ $this->registerCss('
 .tweet-btn button:hover{
     color:#00a0e3;
 }
-.job-search > span{
-    color:#fff !important;
-}
+
 .feature-links a{
     color: #d5d8f3;
     padding-right: 5px;    
@@ -1204,6 +1205,7 @@ if (!Yii::$app->user->isGuest) {
         'getNewsletter',
         'getShortcuts'
     ];
+    
     ");
 }
 $this->registerJs($script);
@@ -1217,6 +1219,11 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
+    window.addEventListener("pageshow", function() {
+    var form = document.getElementsByTagName("form");
+    // let the browser natively reset defaults
+    form[0].reset();
+    });
     var modal = document.getElementById("virusModal");
     // Get the button that opens the modal
     var btn = document.getElementsByClassName("collegeSignupModal");

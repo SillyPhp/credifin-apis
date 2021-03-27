@@ -449,8 +449,8 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','l.name profile_name','a.square_image','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
-            ->where(['a.unique_source_id' => $eaidk])
+            ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -505,7 +505,8 @@ class JobsController extends Controller
             ->where([
                 'slug' => $eaidk,
                 'is_deleted' => 0,
-                'application_for' => 1
+                'application_for' => 1,
+                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
@@ -841,8 +842,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $application_details = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.*', 'b.name org_name', 'b.tag_line', 'b.initials_color color', 'b.slug as org_slug', 'b.email', 'b.website', 'b.logo', 'b.logo_location', 'b.cover_image', 'b.cover_image_location'])
-                ->joinWith(['organizationEnc b'], false)
+                ->select(['a.*'])
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
@@ -853,6 +853,25 @@ class JobsController extends Controller
             if (!$application_details) {
                 return 'Not Found';
             }
+
+            $claimedOrg = Organizations::find()
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            $unclaimedOrg = UnclaimedOrganizations::find()
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            if ($claimedOrg) {
+                $application_details = array_merge($application_details, $claimedOrg);
+            } else {
+                $application_details = array_merge($application_details, $unclaimedOrg);
+            }
+
             $object = new \account\models\applications\ApplicationForm();
 
             return $this->renderAjax('pop_up_detail', [
@@ -1053,7 +1072,7 @@ class JobsController extends Controller
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
@@ -1150,59 +1169,57 @@ class JobsController extends Controller
 
     public function actionGetJobs()
     {
-        $req = Yii::$app->request->post();
-        $query = $req['q'];
-        $id = $req['id'];
-        $applications = $req['applications'];
-        if (!$applications) {
-            $applications = [];
-        }
-        $jobs = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id'])
-            ->distinct()
-            ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
-                $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
-                $x->onCondition([
-//                    'b.status' => 'Active',
-                    'b.is_deleted' => 0
-                ]);
-
-                $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
-
-                $x->joinWith(['title c' => function ($y) use ($query) {
-
-//                    $y->andWhere([
-//                        'c.status' => 'Approved',
-//                        'c.is_deleted' => 0
-//                    ]);
-
-                    $y->andFilterWhere([
-                        'or',
-                        ['like', 'd.name', $query],
-                        ['like', 'e.name', $query],
+        if (Yii::$app->request->isPost) {
+            $req = Yii::$app->request->post();
+            $query = $req['q'];
+            $id = $req['id'];
+            $applications = $req['applications'];
+            if (!$applications) {
+                $applications = [];
+            }
+            $jobs = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id'])
+                ->distinct()
+                ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
+                    $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
+                    $x->onCondition([
+                        'b.is_deleted' => 0
                     ]);
 
-                    $y->joinWith(['categoryEnc d']);
-                    $y->joinWith(['parentEnc e']);
-                }], false);
+                    $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
 
-                $x->joinWith(['applicationTypeEnc z' => function ($zz) {
-                    $zz->andWhere(['z.name' => 'Jobs']);
-                }]);
+                    $x->joinWith(['title c' => function ($y) use ($query) {
 
-                $x->groupBy(['b.application_enc_id']);
 
-                $x->limit(10);
-            }])
-            ->where([
-//                'a.status' => 'Active',
-                'a.is_deleted' => 0,
-                'a.organization_enc_id' => $id
-            ])
-            ->asArray()
-            ->all();
-        return json_encode($jobs[0]['employerApplications']);
+                        $y->andFilterWhere([
+                            'or',
+                            ['like', 'd.name', $query],
+                            ['like', 'e.name', $query],
+                        ]);
+
+                        $y->joinWith(['categoryEnc d']);
+                        $y->joinWith(['parentEnc e']);
+                    }], false);
+
+                    $x->joinWith(['applicationTypeEnc z' => function ($zz) {
+                        $zz->andWhere(['z.name' => 'Jobs']);
+                    }]);
+
+                    $x->groupBy(['b.application_enc_id']);
+
+                    $x->limit(10);
+                }])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.organization_enc_id' => $id
+                ])
+                ->asArray()
+                ->all();
+            return json_encode($jobs[0]['employerApplications']);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
 
     }
 
@@ -1398,8 +1415,9 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTemplate($view){
-        if(Yii::$app->user->identity->organization) {
+    public function actionTemplate($view)
+    {
+        if (Yii::$app->user->identity->organization) {
             $whatsAppmodel = new whatsAppShareForm();
             $application = ApplicationTemplates::find()
                 ->alias('a')
