@@ -430,8 +430,10 @@ class EyCollegeProfileController extends ApiBaseController
             $org = $unclaimed_org;
 
             $data['overall_rating'] = $emp_stats;
+            $data['overall_rating']['average_count'] = $round_avg;
             if ($org['business_activity'] != 'Others' && $stats_students != null) {
                 $data['student_overall_rating'] = $stats_students;
+                $data['student_overall_rating']['average_count'] = $round_students_avg;
             }
             $data['org_detail'] = $org;
             $data['total_reviewers'] = $overall['reviews_cnt'];
@@ -654,7 +656,7 @@ class EyCollegeProfileController extends ApiBaseController
                 if (!empty($emp_reviews)) {
                     return $this->response(200, ['status' => 200, 'data' => $data]);
                 } else {
-                    return $this->response(404, 'Not Found');
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
                 }
             }
 
@@ -891,7 +893,7 @@ class EyCollegeProfileController extends ApiBaseController
             if (!empty($reviews_students)) {
                 return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
-                return $this->response(404, 'Not Found');
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
         } else {
