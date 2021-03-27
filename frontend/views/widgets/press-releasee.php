@@ -134,7 +134,7 @@ $this->registerCss('
     color: #FFF;
 }
 .press-bg {
-    background-color: #f5f5f5;
+    background-color: #edf4fc;
     padding-bottom: 30px;
 }
 .press-release-hd {
