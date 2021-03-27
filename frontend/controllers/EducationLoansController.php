@@ -335,4 +335,9 @@ class EducationLoansController extends Controller
             'model' => $model
         ]);
     }
+
+    public function actionLoanCalculator(){
+        $this->layout = 'widget-layout';
+        return $this->render('calc');
+    }
 }

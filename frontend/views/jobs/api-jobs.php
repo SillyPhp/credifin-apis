@@ -317,6 +317,7 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.iti{width:100%;}
 .intl-tel-input{width:100%;}
 .form-whats {
 	position: relative;

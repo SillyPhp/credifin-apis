@@ -197,6 +197,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $this->registerCss('
+.iti{width:100%;}
 .intl-tel-input{width:100%;}
 #logo_img {
 	max-width: 85px !Important;
