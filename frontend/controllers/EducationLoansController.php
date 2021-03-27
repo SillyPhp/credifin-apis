@@ -131,7 +131,7 @@ class EducationLoansController extends Controller
 
     public function actionStudyInUsa(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -152,7 +152,7 @@ class EducationLoansController extends Controller
     }
     public function actionStudyInAustralia(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -174,7 +174,7 @@ class EducationLoansController extends Controller
 
     public function actionStudyInCanada(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -195,7 +195,7 @@ class EducationLoansController extends Controller
     }
     public function actionStudyInIndia(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -216,7 +216,7 @@ class EducationLoansController extends Controller
     }
     public function actionStudyInEurope(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -237,7 +237,7 @@ class EducationLoansController extends Controller
     }
     public function actionStudyAbroad(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -312,7 +312,7 @@ class EducationLoansController extends Controller
     }
     public function actionInterestFree(){
         $model = new AdmissionForm();
-        $data = self::getPressReleasData();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
