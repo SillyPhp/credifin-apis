@@ -7,6 +7,7 @@ use yii\helpers\Url;
         <div class="container">
             <?php
             if ($viewBtn) {
+
                 ?>
                 <div class="row">
                     <div class="col-md-6 col-sm-4 col-xs-12">
