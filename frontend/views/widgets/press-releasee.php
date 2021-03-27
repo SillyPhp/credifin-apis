@@ -3,99 +3,56 @@
 use yii\helpers\Url;
 
 ?>
-<section class="press-bg">
-    <div class="container">
-        <div class="row">
-                <div class="col-md-6 col-sm-4 col-xs-12">
-                <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
-                </div>
-            <div class="col-md-6 col-sm-4 col-xs-12">
-<!--                <div class="type-1">-->
-<!--                    <div>-->
-<!--                        <a href="--><?//= Url::to('/jobs/international'); ?><!--" class="btn btn-3">-->
-<!--                            <span class="txting">--><?//= Yii::t('frontend', 'View all'); ?><!--</span>-->
-<!--                            <span class="round"><i class="fas fa-chevron-right"></i></span>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://www.financialexpress.com/education-2/loans-for-students-in-punjab-himachal-pradesh/2212737/" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/the-financial-express-logo.png'); ?>" alt=""/>
+    <section class="press-bg">
+        <div class="container">
+            <?php
+            if ($viewBtn) {
+
+                ?>
+                <div class="row">
+                    <div class="col-md-6 col-sm-4 col-xs-12">
+                        <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
+                    </div>
+
+                    <div class="col-md-6 col-sm-4 col-xs-12">
+                        <div class="type-1">
+                            <div>
+                                <a href="<?= Url::to('/education-loans/press-releases'); ?>" class="btn btn-3">
+                                    <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
+                                    <span class="round"><i class="fas fa-chevron-right"></i></span>
+                                </a>
                             </div>
-                        </div>
-                        <div class="press-txt-hd">The Financial Express</div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://www.thehindu.com/education/news-from-the-world-of-education/article34059121.ece" target="_blank">
-                    <div class="press-release">
-                        <div class="press-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/thehindu.jpg'); ?>" alt=""/>
                         </div>
                     </div>
-                    <div class="press-txt-hd">The Hindu</div>
-                    </a>
                 </div>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://www.msn.com/en-in/news/other/loans-for-students-in-punjab-himachal-pradesh/ar-BB1eAyMv?ocid=BingNewsSearch" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/msn.png'); ?>" alt=""/>
+                <?php
+            }
+            ?>
+            <div class="row">
+                <?php
+                if (!empty($data) && is_array($data)) {
+                    foreach ($data as $d) {
+                        ?>
+                        <div class="col-md-2 col-sm-4 col-xs-6">
+                            <div class="press-release-hd">
+                                <a href="<?= $d['link'] ?>" target="_blank">
+                                    <div class="press-release">
+                                        <div class="press-img">
+                                            <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo . $d['logo_location'] . DIRECTORY_SEPARATOR . $d['logo'], 'https'); ?>"
+                                                 alt=""/>
+                                        </div>
+                                    </div>
+                                    <div class="press-txt-hd"><?= $d['name'] ?></div>
+                                </a>
                             </div>
                         </div>
-                        <div class="press-txt-hd">MSN</div>
-                    </a>
-                </div>
+                        <?php
+                    }
+                }
+                ?>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="http://www.univarta.com/news/punjab-haryana-himachal/story/2338208.html" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/unitednews.jpg'); ?>" alt=""/>
-                            </div>
-                        </div>
-                        <div class="press-txt-hd">United News Of India</div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://aavaj.com/national-news/12185/" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/aawaz.png'); ?>" alt=""/>
-                            </div>
-                        </div>
-                        <div class="press-txt-hd">Aawaz News</div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="press-release-hd">
-                    <a href="https://www.outlookhindi.com/newsscroll/%E0%A4%B8%E0%A5%8D%E0%A4%A8%E0%A4%BE%E0%A4%A4%E0%A4%95-%E0%A4%B6%E0%A4%BF%E0%A4%95%E0%A5%8D%E0%A4%B7%E0%A4%BE-%E0%A4%95%E0%A5%87-%E0%A4%B2%E0%A4%BF%E0%A4%8F-%E0%A4%8B%E0%A4%A3-%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%A6%E0%A4%BE%E0%A4%A8-%E0%A4%95%E0%A4%B0%E0%A4%A8%E0%A5%87-%E0%A4%95%E0%A5%87-%E0%A4%B2%E0%A4%BF%E0%A4%8F-%E0%A4%87%E0%A4%AE%E0%A5%8D%E0%A4%AA%E0%A4%BE%E0%A4%B5%E0%A4%B0%E0%A4%AF%E0%A5%82%E0%A4%A5-%E0%A4%A1%E0%A5%89%E0%A4%9F%E0%A4%95%E0%A5%89%E0%A4%AE-%E0%A4%95%E0%A4%BE-60-%E0%A4%95%E0%A5%89%E0%A4%B2%E0%A5%87%E0%A4%9C%E0%A5%8B%E0%A4%82-%E0%A4%B8%E0%A5%87-%E0%A4%95%E0%A4%B0%E0%A4%BE%E0%A4%B0/45982?scroll" target="_blank">
-                        <div class="press-release">
-                            <div class="press-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/outlookhindi-logo.png'); ?>" alt=""/>
-                            </div>
-                        </div>
-                        <div class="press-txt-hd">Outlook Hindi</div>
-                    </a>
-                </div>
-            </div>
-          </div>
         </div>
-</section>
+    </section>
 <?php
 $this->registerCss('
 .btn-3 {

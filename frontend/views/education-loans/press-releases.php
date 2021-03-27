@@ -17,10 +17,18 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<div class="pdtop"></div>
+
+<?= $this->render('/widgets/press-releasee', [
+    'data' => $data
+]) ?>
 
 <?php
 $this->registerCss('
+.pdtop{
+    padding-top: 25px;
+    background-color: #f5f5f5;
+}
 .seen-bg {
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/as-seen-in-news.png') . ');
 	min-height: 500px;
