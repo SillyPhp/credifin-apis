@@ -17,7 +17,9 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee', [
+    'data' => $data
+]) ?>
 
 <?php
 $this->registerCss('

@@ -523,14 +523,16 @@ html {
 }
 .study-in-usa-bg {
 	background: url(' . Url::to('@eyAssets/images/pages/education-loans/ed-loann.png') . ');
-	min-height: 500px;
+    min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: top left;
 	display: flex;
 	align-items: center;
 	position: relative;
+	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position: right top;
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;
@@ -540,6 +542,7 @@ html {
 	font-family: lora;
 }
 .study-in-usa-bg p {
+    text-align: left;
 	font-size: 20px;
 	font-family: roboto;
 	color: #fff;
