@@ -142,11 +142,6 @@ $this->params['header_dark'] = false;
     </svg>
 </div>
 
-<?= $this->render('/widgets/press-releasee', [
-    'data' => $data,
-    'viewBtn' => true,
-]) ?>
-
 <?php
 $this->registerCss('
 #app-data{
@@ -1181,6 +1176,7 @@ if (!Yii::$app->user->isGuest) {
 //        'getNewsUpdate',
 //        'getTweets',
         'getStudentLoan',
+        'getPressRelease',
         'getShortcuts'
     ];
     ");
@@ -1205,6 +1201,7 @@ if (!Yii::$app->user->isGuest) {
 //        'getNewsUpdate',
 //        'getTweets',
         'getStudentLoan',
+        'getPressRelease',
         'getNewsletter',
         'getShortcuts'
     ];

@@ -202,7 +202,6 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $model = new ClassEnquiryForm();
-        $data = self::getPressReleasData();
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
@@ -212,7 +211,6 @@ class SiteController extends Controller
         }
         return $this->render('index', [
             'model' => $model,
-            'data' => $data,
         ]);
     }
 
@@ -1027,6 +1025,13 @@ class SiteController extends Controller
                 break;
             case 'getSafetySigns':
                 return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getPressRelease':
+                $data = self::getPressReleasData();
+                return $this->renderAjax('/widgets/press-releasee', [
+                    'data' => $data,
+                    'viewBtn' => true,
+                ]);
                 break;
             case 'getOnlineClasses':
                 $model = new ClassEnquiryForm();
