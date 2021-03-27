@@ -63,7 +63,7 @@ class EyCollegeProfileController extends ApiBaseController
             $unclaimed = UnclaimedOrganizations::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.name city_name', 'a.phone',
-                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
                 ->joinWith(['cityEnc b'], false)
                 ->where(['a.slug' => $params['slug'], 'a.status' => 1, 'a.is_deleted' => 0,])
                 ->asArray()
@@ -220,7 +220,7 @@ class EyCollegeProfileController extends ApiBaseController
         //if parameter not empty then find data of organization un_claimed
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'a.organization_enc_id' => $org_enc_id,
@@ -440,9 +440,9 @@ class EyCollegeProfileController extends ApiBaseController
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
             if (!empty($data)) {
-                return $this->response(200, $data);
+                return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
-                return $this->response(404, 'Not Found');
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -483,7 +483,7 @@ class EyCollegeProfileController extends ApiBaseController
         //if parameter not empty then find data of organization un_claimed
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'a.organization_enc_id' => $org_enc_id,
@@ -652,7 +652,7 @@ class EyCollegeProfileController extends ApiBaseController
                 $data['count'] = $count;
 
                 if (!empty($emp_reviews)) {
-                    return $this->response(200, $data);
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
                 } else {
                     return $this->response(404, 'Not Found');
                 }
@@ -889,7 +889,7 @@ class EyCollegeProfileController extends ApiBaseController
             $data['count'] = $count;
 
             if (!empty($reviews_students)) {
-                return $this->response(200, $data);
+                return $this->response(200, ['status' => 200, 'data' => $data]);
             } else {
                 return $this->response(404, 'Not Found');
             }

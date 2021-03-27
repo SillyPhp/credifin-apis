@@ -142,7 +142,10 @@ $this->params['header_dark'] = false;
     </svg>
 </div>
 
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee', [
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 
 <?php
 $this->registerCss('
