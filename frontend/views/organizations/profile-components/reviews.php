@@ -401,7 +401,7 @@ $this->registerCSS('
 ');
 $script = <<<JS
 var user_id = '$user_id';
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
@@ -429,24 +429,30 @@ function getUserReviews(limit=3, page=null){
         method: 'POST',
         data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee'},
         success: function (res){
-            var reviews_data = $('#organization-reviews').html();
-            $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-            $('.average-star').raty({
-                readOnly: true,
-                hints:['','','','',''],
-                score: function() {
-                    return $(this).attr('data-score');
+            if(res.response.status == 200){
+                var reviews_data = $('#organization-reviews').html();
+                $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
+                $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+                $('.average-star').raty({
+                    readOnly: true,
+                    hints:['','','','',''],
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                if(res.response.data.reviews.length+count == res.response.data.count){
+                    $('#load_more_btn').hide()  
                 }
-            });
-            if(res.response.data.reviews.length+count == res.response.data.count){
-                $('#load_more_btn').hide()  
+                if($("#org-reviews").children().length == 0){
+                    $('#load_more_btn').hide(); 
+                    $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
+                }
+                console.log($("#org-reviews").children().length)
+                count = count+limit;
+            }else if(res.response.status == 404){
+                   $('#load_more_btn').hide(); 
+                   $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
             }
-            if($("#org-reviews").children().length == 0){
-                $('#load_more_btn').hide(); 
-                $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
-            }
-            count = count+limit;
         }
     })
 }
