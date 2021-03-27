@@ -1027,7 +1027,7 @@ class SiteController extends Controller
                 return $this->renderAjax('/widgets/safety-signs');
                 break;
             case 'getPressRelease':
-                $data = self::getPressReleasData();
+                $data = self::getPressReleasData(['limit' => 6]);
                 return $this->renderAjax('/widgets/press-releasee', [
                     'data' => $data,
                     'viewBtn' => true,
