@@ -194,7 +194,10 @@ use yii\helpers\Url;
     'model' => $model
 ]); ?>
 
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 
     <section class=""  id="call">
         <div class="container">

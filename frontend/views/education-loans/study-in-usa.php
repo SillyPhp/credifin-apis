@@ -297,7 +297,10 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
