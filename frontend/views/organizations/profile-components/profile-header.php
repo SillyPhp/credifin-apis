@@ -83,11 +83,15 @@ $this->registerCss('
 	color: #fff;
 	font-family: roboto;
 	font-weight: 600;
+	margin-bottom: 5px;
 }
 .c-location {
 	color: #fff;
 	font-size: 18px;
 	font-family: roboto;
+}
+.c-location i{
+    padding-right: 5px;
 }
 .tile {
     width: 100%;
@@ -643,7 +647,7 @@ function collegeInfo(res) {
                     </div>
                     <div class="college-info">
                         <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
-                        `+(city_name ? '`<div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>`' : '')+`    
+                        `+(city_name ? `<div class="c-location"><i class="fas fa-map-marker-alt"></i>` +city_name+`</div>` : '')+`    
                      </div>`;
     return collegeInfo;
 }
