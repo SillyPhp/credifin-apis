@@ -401,7 +401,7 @@ $this->registerCSS('
 ');
 $script = <<<JS
 var user_id = '$user_id';
-var baseUrl = '';
+var baseUrl = 'https://ravinder.eygb.me';
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
@@ -425,7 +425,7 @@ function getUserReviews(limit=3, page=null){
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:employee},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee'},
         success: function (res){
             var reviews_data = $('#organization-reviews').html();
             $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
