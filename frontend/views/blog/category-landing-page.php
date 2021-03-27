@@ -99,10 +99,6 @@ $this->registerCss('
     position: relative;
     }
 .wn-box-icon img {
-    height: 200px !important;
-    object-fit: fill;
-}
-.wn-box-icon img {
     border-radius: 5px 5px 0 0;
     -webkit-transform: scale(1);
     transform: scale(1);
