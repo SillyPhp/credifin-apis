@@ -145,6 +145,7 @@ $this->registerCss('
     margin-bottom: 15px;
     border-radius: 5px;
     padding: 10px;
+    background: #fff;
 }
 .loan-logo img {
     max-width: 80px;
