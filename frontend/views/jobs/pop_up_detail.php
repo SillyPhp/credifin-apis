@@ -63,7 +63,7 @@ if ($type == 'Internships') {
             $amount = 'Negotiable';
         }
     }
-    $link = Url::to('job/' . $application_details['slug'], true);
+//    $link = Url::to('job/' . $application_details['slug'], true);
 }
 ?>
     <div id="openModal" class="modalDialog">
@@ -291,7 +291,7 @@ if ($type == 'Internships') {
                         </div>
                         <div class="col-md-12">
                             <div class="b-apply foo">
-                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i
+                                <a href="<?= $application_details['link'] ?>" class="apply-job-btn apply-btn"><i
                                             class="fas fa-paper-plane"></i>View
                                     Detail</a>
                             </div>
