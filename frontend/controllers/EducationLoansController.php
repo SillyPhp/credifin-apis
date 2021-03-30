@@ -258,6 +258,7 @@ class EducationLoansController extends Controller
     }
     public function actionRefinance(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -271,11 +272,13 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
         return $this->render('refinancing-education-loan',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionAnnualFeeFinancing(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -290,10 +293,12 @@ class EducationLoansController extends Controller
         }
         return $this->render('annual-fee-financing',[
             'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionSchoolFeeFinance(){
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -307,7 +312,8 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
         return $this->render('school-fee-financing',[
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
     public function actionInterestFree(){
@@ -333,6 +339,7 @@ class EducationLoansController extends Controller
     public function actionEducationInstitutionLoan()
     {
         $model = new AdmissionForm();
+        $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -346,7 +353,8 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
         return $this->render('education-institution-loan', [
-            'model' => $model
+            'model' => $model,
+            'data' => $data,
         ]);
     }
 
