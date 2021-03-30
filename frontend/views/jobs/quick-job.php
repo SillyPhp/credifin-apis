@@ -10,6 +10,7 @@ $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
 function cities_url(){

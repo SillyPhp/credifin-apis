@@ -412,7 +412,9 @@ function getReviews(){
             if(res.response.status == 200){
                 let overall_rating = res.response.data.overall_rating;
                 let reviewSideStats = reviewStats(overall_rating);
-                $('#reviewSum').append(reviewSideStats);
+                if(reviewSideStats){
+                    $('#reviewSum').append(reviewSideStats);
+                }
             }
         }
     })
@@ -425,26 +427,32 @@ function getUserReviews(limit=3, page=null){
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:employee},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee'},
         success: function (res){
-            var reviews_data = $('#organization-reviews').html();
-            $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-            $('.average-star').raty({
-                readOnly: true,
-                hints:['','','','',''],
-                score: function() {
-                    return $(this).attr('data-score');
+            if(res.response.status == 200){
+                var reviews_data = $('#organization-reviews').html();
+                $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
+                $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+                $('.average-star').raty({
+                    readOnly: true,
+                    hints:['','','','',''],
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                if(res.response.data.reviews.length+count == res.response.data.count){
+                    $('#load_more_btn').hide()  
                 }
-            });
-            if(res.response.data.reviews.length+count == res.response.data.count){
-                $('#load_more_btn').hide()  
+                if($("#org-reviews").children().length == 0){
+                    $('#load_more_btn').hide(); 
+                    $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
+                }
+                console.log($("#org-reviews").children().length)
+                count = count+limit;
+            }else if(res.response.status == 404){
+                   $('#load_more_btn').hide(); 
+                   $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
             }
-            if($("#org-reviews").children().length == 0){
-                $('#load_more_btn').hide(); 
-                $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
-            }
-            count = count+limit;
         }
     })
 }
@@ -455,11 +463,14 @@ $(document).on('click','#load_more_btn',function(e){
     getUserReviews(limit=3, page=page)
 });
 function reviewStats(overall_rating){
+    const {average_count, Job_Security, Career_Growth, Company_Culture, Salary_And_Benefits, 
+      Work_Satisfaction, Work_Life_Balance, Skill_Development} = overall_rating;
+    
     let reviewStat = ` <div class="row">
         <div class="col-md-12 col-sm-4">
             <div class="rs-main">
-                <div class="rating-large">`+overall_rating['average_count']+`/5</div>
-                <div class="com-rating-1">`+ showStars(overall_rating['average_count']) +`</div>
+                <div class="rating-large">`+showRatingNum(average_count)+`/5</div>
+                <div class="com-rating-1">`+ showStars(average_count) +`</div>
             </div>
         </div>
     </div>
@@ -468,8 +479,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Job Security</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Job_Security']+`</div>
-                    <div class="fourstar-box com-rating-2">`+  showStars(overall_rating['Job_Security']) +`</div>
+                    <div class="sr-rating">`+showRatingNum(Job_Security)+`</div>
+                    <div class="fourstar-box com-rating-2">`+  showStars(Job_Security) +`</div>
                 </div>
             </div>
         </div>
@@ -477,8 +488,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Career Growth</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Career_Growth']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Career_Growth'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Career_Growth)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Career_Growth)+`</div>
                 </div>
             </div>
         </div>
@@ -486,8 +497,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Company Culture</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Company_Culture']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Company_Culture'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Company_Culture)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Company_Culture)+`</div>
                 </div>
             </div>
         </div>
@@ -495,8 +506,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Salary & Benefits</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Salary_And_Benefits']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Salary_And_Benefits'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Salary_And_Benefits)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Salary_And_Benefits)+`</div>
                 </div>
             </div>
         </div>
@@ -504,8 +515,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Work Satisfaction</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Work_Satisfaction']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Work_Satisfaction'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Work_Satisfaction)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Work_Satisfaction)+`</div>
                 </div>
             </div>
         </div>
@@ -513,8 +524,8 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Work Life Balance</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Work_Life_Balance']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Work_Life_Balance'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Work_Life_Balance)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Work_Life_Balance)+`</div>
                 </div>
             </div>
         </div>
@@ -522,14 +533,17 @@ function reviewStats(overall_rating){
             <div class="rs1">
                 <div class="re-heading">Skill Development</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Skill_Development']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Skill_Development'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Skill_Development)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Skill_Development)+`</div>
                 </div>
             </div>
         </div>
     </div>`;
     return reviewStat;
 }
+function showRatingNum(count){
+    return (count == null ? 0 : count)
+} 
 function showStars(count){
     let stars = '';
     for (var i = 1; i <= 5; i++) {

@@ -157,6 +157,7 @@ use yii\helpers\Url;
                 </div>
             </div>
     </section>
+    <?= $this->render('/widgets/education-loan-internship')?>
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -503,7 +504,10 @@ use yii\helpers\Url;
         </div>
     </section>
     <?= $this->render('/widgets/institutional-loan') ?>
-    <?= $this->render('/widgets/press-releasee') ?>
+    <?= $this->render('/widgets/press-releasee', [
+        'data' => $data,
+        'viewBtn' => true
+    ]) ?>
     <?= $this->render('/widgets/loan-strip') ?>
 
 <?php
@@ -570,6 +574,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.heading-style {
+    color: #000;
+}
 .abroad-btn a, .india-btn a, .institution-btn a {
 	color: #fff;
 	background-color:#00a0e3;

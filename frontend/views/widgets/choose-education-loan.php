@@ -113,7 +113,7 @@ $this->registerCss('
 }
 .detail-div{
     text-align: center;
-    padding: 0px 30px;
+    padding-right: 30px;
     font-size: 17px;
     line-height: 24px;
     color: #000;

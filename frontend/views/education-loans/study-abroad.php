@@ -36,7 +36,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-callerr.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -242,7 +242,10 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
@@ -262,10 +265,15 @@ $this->registerCss('
 }
 .apply-now{
     padding: 10px 15px;
-    background: #00a0e3;
-    color: #fff;
-    border: 1px solid #00a0e3;
-    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -322,34 +330,38 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 500px;
-       background-repeat: no-repeat;
-       background-size: cover;
-       display: flex;
-       align-items: center;
-       position: relative;
-        text-align: center;
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+    min-height: 500px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	align-items: center;
+	position: relative;
+	text-align: center;
+	height: 100vh;
+	max-height: 700px;
 }
 .opacity-div{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,.85);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
-    font-size: 23px;
-    font-family: roboto;
-    color: #000;
-    padding: 0 0 18px;
-    line-height: 30px;
+    font-size: 24px;
+	font-family: roboto;
+	color: #fff;
+	padding: 0 0 18px;
+	line-height: 30px;
 }
 .study-in-usa-bg h1{
-    font-size: 50px;
-    margin-bottom: 20px;
-    color: #ff7803;
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;

@@ -93,7 +93,7 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section>
+    <section class="pdbtm">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -138,7 +138,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section class="bgeEd">
+    <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -194,7 +194,10 @@ use yii\helpers\Url;
     'model' => $model
 ]); ?>
 
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 
     <section class=""  id="call">
         <div class="container">
@@ -243,6 +246,12 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.heading-style {
+    color: #000;
+}
+.pdbtm {
+    padding-bottom: 20px;
+}
 .footer{
     margin-top: 0px !important;
 }
@@ -491,7 +500,7 @@ html {
     text-align: center;
     margin-bottom: 15px;
     border-radius: 5px;
-    padding: 20px 10px 10px;
+    padding: 20px 10px 20px;
 }
 .loan-logo img {
     max-width: 80px;
@@ -523,14 +532,16 @@ html {
 }
 .study-in-usa-bg {
 	background: url(' . Url::to('@eyAssets/images/pages/education-loans/ed-loann.png') . ');
-	min-height: 500px;
+    min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: top left;
 	display: flex;
 	align-items: center;
 	position: relative;
+	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position: right top;
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;
@@ -540,6 +551,7 @@ html {
 	font-family: lora;
 }
 .study-in-usa-bg p {
+    text-align: left;
 	font-size: 20px;
 	font-family: roboto;
 	color: #fff;

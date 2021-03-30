@@ -80,7 +80,8 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
 <section class="bg-blue">
-    <?= $this->render('/widgets/choose-education-loan') ?>
+    <?php $is_show = 0; ?>
+    <?= $this->render('/widgets/choose-education-loan',['is_show'=>$is_show]) ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <section class="bg-caller padd30" id="contact">
@@ -88,7 +89,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-callerr.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -294,7 +295,10 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('

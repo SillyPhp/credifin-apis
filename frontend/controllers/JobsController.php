@@ -450,7 +450,7 @@ class JobsController extends Controller
         $app = EmployerApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
-            ->where(['a.unique_source_id' => $eaidk])
+            ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -505,13 +505,23 @@ class JobsController extends Controller
             ->where([
                 'slug' => $eaidk,
                 'is_deleted' => 0,
-                'application_for' => 1
+                'application_for' => 1,
+                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
+        $whatsAppForm = new whatsAppShareForm();
+        if ($application_details->source==2||$application_details->source==3){
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk, 'app' => $application_details,
+                    'whatsAppmodel' => $whatsAppForm,
+                ]);
+        }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
@@ -590,7 +600,6 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -1063,7 +1072,7 @@ class JobsController extends Controller
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
@@ -1565,18 +1574,6 @@ class JobsController extends Controller
                     }
                 }
             }
-        }
-    }
-
-    public function actionClearMyCache()
-    {
-        $cache = Yii::$app->cache->flush();
-
-        if ($cache) {
-            $this->redirect(Yii::$app->request->referrer);
-        } else {
-            $this->redirect('/jobs/clear-my-cache');
-            return 'something went wrong...! please try again later';
         }
     }
 }

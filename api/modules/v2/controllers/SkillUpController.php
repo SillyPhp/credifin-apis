@@ -453,7 +453,7 @@ class SkillUpController extends ApiBaseController
 
                 $industry = [];
                 foreach ($params['industries'] as $i) {
-                    array_push($industry, $i);
+                    array_push($industry, $i['key']);
                 }
                 $new_industry_to_update = $industry;
 
@@ -513,7 +513,7 @@ class SkillUpController extends ApiBaseController
                         $utilitiesModel = new \common\models\Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $industries->preferred_industry_enc_id = $utilitiesModel->encrypt();
-                        $industries->industry_enc_id = $s;
+                        $industries->industry_enc_id = $s['key'];
                         $industries->preference_enc_id = $prefs->preference_enc_id;
                         $industries->created_on = date('Y-m-d H:i:s');
                         $industries->created_by = $user->user_enc_id;

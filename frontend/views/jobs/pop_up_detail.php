@@ -236,44 +236,58 @@ if ($type == 'Internships') {
                             </ul>
                         </div>
                         <div class="j-discription col-md-12">
-                            <h3 class="job-detail">Skills Required</h3>
-                            <div class="tags-bar">
-                                <?php
-                                foreach ($data['applicationSkills'] as $skill) {
-                                    ?>
-                                    <span><?= $skill['skill'] ?></span>
-                                    <?php
-                                }
+                            <?php
+                            if ($data['applicationSkills']) {
                                 ?>
-                            </div>
-                            <h3 class="job-detail">Education/Qualification</h3>
-                            <ul class="edu-requirement">
-                                <?php
-                                foreach ($data['applicationEducationalRequirements'] as $qualifications) {
-                                    ?>
-                                    <li><?= $qualifications['educational_requirement']; ?></li>
+                                <h3 class="job-detail">Skills Required</h3>
+                                <div class="tags-bar">
                                     <?php
-                                }
-                                ?>
-                            </ul>
-                            <h3 class="job-detail">Description</h3>
-                            <div class="j-text j-textt">
-                                <p>
-                                    <?= $data['description'] ?>
-                                </p>
-                                <p>
-                                <ul>
-                                    <?php
-                                    foreach ($data['applicationJobDescriptions'] as $jd) {
+                                    foreach ($data['applicationSkills'] as $skill) {
                                         ?>
-                                        <li><?= $jd['job_description'] ?></li>
+                                        <span><?= $skill['skill'] ?></span>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            }
+                            if ($data['applicationSkills']) {
+                                ?>
+                                <h3 class="job-detail">Education/Qualification</h3>
+                                <ul class="edu-requirement">
+                                    <?php
+                                    foreach ($data['applicationEducationalRequirements'] as $qualifications) {
+                                        ?>
+                                        <li><?= $qualifications['educational_requirement']; ?></li>
                                         <?php
                                     }
                                     ?>
                                 </ul>
-                                </p>
-                            </div>
-                            <div class="read-more col-md-12"><a href="#" class="showmore">Read More</a></div>
+                                <?php
+                            }
+                            if ($data['description']) {
+                                ?>
+                                <h3 class="job-detail">Description</h3>
+                                <div class="j-text j-textt">
+                                    <p>
+                                        <?= $data['description'] ?>
+                                    </p>
+                                    <p>
+                                    <ul>
+                                        <?php
+                                        foreach ($data['applicationJobDescriptions'] as $jd) {
+                                            ?>
+                                            <li><?= $jd['job_description'] ?></li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                    </p>
+                                </div>
+                                <div class="read-more col-md-12"><a href="#" class="showmore">Read More</a></div>
+                                <?php
+                            }
+                            ?>
                         </div>
                         <div class="col-md-12">
                             <div class="b-apply foo">

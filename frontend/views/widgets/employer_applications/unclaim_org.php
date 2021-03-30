@@ -26,14 +26,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <h4><?= $org_name; ?></h4>
-            <div class="organization-details">
-                <!--            <h4>Company Detail</h4>-->
-                <?php if ($website): ?>
-                    <a href="<?= $website ?>">
-                        <i class="fas fa-unlink"> Visit on website</i>
-                    </a>
-                <?php endif; ?>
-            </div>
+<!--            <div class="organization-details">-->
+<!--                           <h4>Company Detail</h4>-->
+<!--                --><?php //if ($website): ?>
+<!--                    <a href="--><?//= $website ?><!--">-->
+<!--                        <i class="fas fa-unlink"> Visit on website</i>-->
+<!--                    </a>-->
+<!--                --><?php //endif; ?>
+<!--            </div>-->
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -197,6 +197,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $this->registerCss('
+.iti{width:100%;}
 .intl-tel-input{width:100%;}
 #logo_img {
 	max-width: 85px !Important;
@@ -395,19 +396,19 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
+    .job-thumb{max-width: auto;}
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
+//        max-width: 275px;
+        text-align: center;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+//    .job-head-info h4{
+//        margin-left:25px !Important;
+//    }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+        float: none;
         display: inline-block;
         width: 42%;
     }
