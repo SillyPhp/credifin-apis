@@ -50,7 +50,10 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data'=>$data,
+    'viewBtn' => true,
+]) ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
@@ -223,7 +226,7 @@ $this->registerCss('
 .padd30, .pb3{
     padding-bottom: 30px;
 }
-')
+');
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {

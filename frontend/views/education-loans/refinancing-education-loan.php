@@ -132,7 +132,10 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
-<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
