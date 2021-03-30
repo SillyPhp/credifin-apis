@@ -9,19 +9,19 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-12">
                     <div class="displayFlex">
-                        <div class="edu-loan-products">
-                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Annual-Fee-Financing-Loans.png') ?>">
-                            <p>Institution Loan</p>
-                            <a href="/education-loans/education-institution-loan">Learn More</a>
-                        </div>
 <!--                        <div class="edu-loan-products">-->
 <!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/Annual-Fee-Financing-Loans.png') ?><!--">-->
-<!--                            <p>Annual Fee Financing Loans</p>-->
-<!--                            <a href="/education-loans/annual-fee-financing">Learn More</a>-->
+<!--                            <p>Institution Loan</p>-->
+<!--                            <a href="/education-loans/education-institution-loan">Learn More</a>-->
 <!--                        </div>-->
                         <div class="edu-loan-products">
+                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Annual-Fee-Financing-Loans.png') ?>">
+                            <p>Annual Fee Finance</p>
+                            <a href="/education-loans/annual-fee-financing">Learn More</a>
+                        </div>
+                        <div class="edu-loan-products">
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/General-Edu-Loans.png') ?>">
-                            <p>Moratorium Loan </p>
+                            <p>Education Loan With Moratorium</p>
                             <a href="/education-loans/study-in-india">Learn More</a>
                         </div>
 <!--                        <div class="edu-loan-products">-->
@@ -29,26 +29,26 @@ use yii\helpers\Url;
 <!--                            <p>Pathway Education Loans</p>-->
 <!--                            <a href="/annual-fee-financing">Learn More</a>-->
 <!--                        </div>-->
-<!--                        <div class="edu-loan-products">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/school-fee-financing.png') ?><!--">-->
-<!--                            <p>School Fee Financing Loans</p>-->
-<!--                            <a href="/education-loans/school-fee-finance">Learn More</a>-->
-<!--                        </div> -->
                         <div class="edu-loan-products">
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/school-fee-financing.png') ?>">
-                            <p>Interest Free Loan</p>
-                            <a href="/education-loans/interest-free">Learn More</a>
-                        </div>
-                        <div class="edu-loan-products">
-                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?>">
-                            <p>EdTech Loans</p>
-                            <a href="/education-loans/annual-fee-financing">Learn More</a>
+                            <p>School Fee Finance</p>
+                            <a href="/education-loans/school-fee-finance">Learn More</a>
                         </div>
 <!--                        <div class="edu-loan-products">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?><!--">-->
-<!--                            <p>Abroad Education Loans</p>-->
-<!--                            <a href="/education-loans/study-abroad">Learn More</a>-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/school-fee-financing.png') ?><!--">-->
+<!--                            <p>Interest Free Loan</p>-->
+<!--                            <a href="/education-loans/interest-free">Learn More</a>-->
 <!--                        </div>-->
+<!--                        <div class="edu-loan-products">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?><!--">-->
+<!--                            <p>EdTech Loans</p>-->
+<!--                            <a href="/education-loans/annual-fee-financing">Learn More</a>-->
+<!--                        </div>-->
+                        <div class="edu-loan-products">
+                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?>">
+                            <p>Abroad Education Loans</p>
+                            <a href="/education-loans/study-abroad">Learn More</a>
+                        </div>
                         <div class="edu-loan-products">
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Refinancing-Edu-Loans.png') ?>">
                             <p>Education Loan Refinance </p>
