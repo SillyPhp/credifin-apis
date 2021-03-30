@@ -226,7 +226,7 @@ $this->registerCss('
 .padd30, .pb3{
     padding-bottom: 30px;
 }
-')
+');
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {
