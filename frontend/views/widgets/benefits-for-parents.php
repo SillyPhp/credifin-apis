@@ -6,7 +6,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="heading-style bene-head">Benefits For Parents</div>
+                <h3 class="heading-style bene-head">Benefits For Parents</h3>
             </div>
         </div>
         <div class="row">
@@ -72,7 +72,6 @@ $this->registerCss('
 }
 .bene-head {
     margin: 20px 20px 60px;
-    text-align: center;
 }
 .bene-head h2 {
     font-size: 28pt;
