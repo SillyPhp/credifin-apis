@@ -1288,13 +1288,20 @@ class LoansController extends ApiBaseController
             $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
         }
 
-        $whyData = [];
+        $whyData = null;
         if (isset($params['country']) && !empty($params['country'])) {
             $whyData = $loanStudyWhy[$params['country']];
             $whyData['image'] = Url::to('@eyAssets/images/pages/custom/' . $whyData['image'], 'https');
         }
 
-        return $this->response(200, ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'study_why' => $whyData]);
+        if ($whyData) {
+            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'study_why' => $whyData];
+        } else {
+            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan];
+        }
+
+
+        return $this->response(200, $data);
     }
 
     public function actionFaqs()
