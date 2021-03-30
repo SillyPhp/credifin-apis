@@ -10,18 +10,24 @@ use yii\helpers\Url;
             <div class="col-md-12 col-sm-12">
                 <div class="seen">
                 <div class="seen-txt">
-                    <h1>Know what top News Platforms have to say about our Education Loan Scheme.</h1></div>
+                    <h1>Know what top News Platforms have to say about our Education Loan Scheme.</h1>
+                </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/press-releasee') ?>
+<div class="pdtop"></div>
+
+<?= $this->render('/widgets/press-releasee', [
+    'data' => $data
+]) ?>
 
 <?php
 $this->registerCss('
-.footer {
-    margin-top: 0px !important;
+.pdtop{
+    padding-top: 25px;
+    background-color: #f5f5f5;
 }
 .seen-bg {
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/as-seen-in-news.png') . ');

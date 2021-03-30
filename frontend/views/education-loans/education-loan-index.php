@@ -397,7 +397,10 @@ use yii\helpers\Url;
         </div>
     </section>
     <?= $this->render('/widgets/institutional-loan') ?>
-    <?= $this->render('/widgets/press-releasee') ?>
+    <?= $this->render('/widgets/press-releasee', [
+        'data' => $data,
+        'viewBtn' => true
+    ]) ?>
     <?= $this->render('/widgets/loan-strip') ?>
 
 <?php

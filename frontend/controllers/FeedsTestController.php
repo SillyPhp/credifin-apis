@@ -43,6 +43,7 @@ class FeedsTestController extends Controller {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $results = curl_exec($ch);
             $results = json_decode($results, true);
+            //git
             if (isset($results)&&count($results)>0){
                 foreach ($results as $result)
                 {
@@ -59,6 +60,7 @@ class FeedsTestController extends Controller {
                         $employerApplication->application_number = rand(1000, 10000) . time();
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s');
+                        $employerApplication->description = $result['description'];
                         $employerApplication->image = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
@@ -93,7 +95,7 @@ class FeedsTestController extends Controller {
                                 $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company'],$result['title'],null,null,$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
-                                $utilitiesModel->variables['name'] = $result['company'] . '-' . $chk_assigned['name'];
+                                $utilitiesModel->variables['name'] = $result['company'] . '-' . $chk_assigned['name'].'-' . $employerApplication->application_number;
                                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
                                 $utilitiesModel->variables['field_name'] = 'slug';
                                 $employerApplication->slug = $utilitiesModel->create_slug();
@@ -205,7 +207,8 @@ class FeedsTestController extends Controller {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $result = curl_exec($ch);
             $result = json_decode($result, true);
-            if (isset($result['results'])&&count($result['results']>0)){
+            //muse
+            if (isset($result['results'])&&count($result['results'])>0){
                 foreach ($result['results'] as $result)
                 {
                     $r = EmployerApplications::find()
@@ -221,6 +224,7 @@ class FeedsTestController extends Controller {
                         $employerApplication->application_number = rand(1000, 10000) . time();
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s',strtotime($result['publication_date']));
+                        $employerApplication->description = $result['contents'];
                         $employerApplication->image = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
@@ -239,7 +243,7 @@ class FeedsTestController extends Controller {
                             $categoriesModel->slug = $utilitiesModel->create_slug();
                             $categoriesModel->created_by = null;
                             if ($categoriesModel->save()) {
-                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
+                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['short_name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 print_r($categoriesModel->getErrors());
                             }
@@ -252,10 +256,13 @@ class FeedsTestController extends Controller {
                                 ->asArray()
                                 ->one();
                             if (empty($chk_assigned)) {
-                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
+                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['short_name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
-                                $employerApplication->slug = $result['short_name'].'-'.rand(1000,100000);
+                                $utilitiesModel->variables['name'] = $result['company']['name'] . '-' . $result['short_name'].'-' . $employerApplication->application_number;
+                                $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+                                $utilitiesModel->variables['field_name'] = 'slug';
+                                $employerApplication->slug = $utilitiesModel->create_slug();
                             }
                         }
                         $employerApplication->type = 'Full Time';
@@ -359,17 +366,11 @@ class FeedsTestController extends Controller {
         $assignedCategoryModel->parent_enc_id = $cid;
         $assignedCategoryModel->status = 'Pending';
         if ($assignedCategoryModel->save()) {
-            if ($source==3){
-                $employerApplication->slug = $short_name.'-'.rand(1000, 100000);
-            }
-            else
-            {
-                $utilitiesModel->variables['name'] =  $company. '-' . $title;
+                $utilitiesModel->variables['name'] =  $company. '-' . $title.'-'.$employerApplication->application_number;
                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
                 $utilitiesModel->variables['field_name'] = 'slug';
                 $employerApplication->slug = $utilitiesModel->create_slug();
-            }
-            $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
+                $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
         } else {
             print_r($assignedCategoryModel->getErrors());
         }

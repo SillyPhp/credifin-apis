@@ -190,11 +190,6 @@ $careerAdviceCategories = [
             <div class="col-md-3">
                 <div>
                     <div class="">
-                        <div cltrending-postsass="row">
-                            <div class="col-md-12 col-sm-12">
-                                <?= $this->render('/widgets/follow-widget') ?>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="trending-heading">Trending Posts</div>
@@ -606,7 +601,7 @@ $this->registerCss('
     transform: scale(1.4);
     z-index: 999;
 }
-.info-head, .articles-head {
+.info-head{
     font-size: 20px;
     font-family: \'Lobster\';
     color: #000;
@@ -615,20 +610,23 @@ $this->registerCss('
 }
 .info-btn, .articles-btn {
     text-align: center;
-    margin-top: -15px;
+//    margin-top: -15px;
 }
-.info-btn a, .articles-btn a{
+.info-btn a, .articles-btn a {
     background-color: #00a0e3;
-    border-radius: 5px;
-    border: none;
+    border: 1px solid #00a0e3;
+    border-radius: 4px;
+    box-shadow: 0px 2px 10px 0px rgb(0,0,0,0.2);
     color: #FFFFFF;
     text-align: center;
-    font-size: 13px;
+    font-size: 16px;
     padding: 8px 15px;
     transition: all 0.3s;
     cursor: pointer;
-    margin-top: 15px;
+    width: 150px;
+    margin: 5px 0 10px;
     display: inline-block;
+    font-family: \'Roboto\';
 }
 .info-btn a:hover, .articles-btn a:hover{
     background-color: #fff;
@@ -664,7 +662,7 @@ $this->registerCss('
     position: relative;
     }
 .wn-box-icon img {
-    height: 150px !important;
+    height: 150px;
     object-fit: fill;
 }
 .wn-box-icon img {
@@ -703,50 +701,16 @@ $this->registerCss('
 .blog-mirror {
     background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
 }
-.whats-block-heading, .whats-popular-heading, .trending-heading{
-    position:relative;
-    text-align:right;
-    font-size:14px;
+.whats-block-heading, .whats-popular-heading, .trending-heading, .articles-head{
+    position: relative;
+    text-align: left;
+    border-bottom: 2px solid #8888;
+    font-size: 16px;
     text-transform: uppercase;
-    padding: 0px 25px 2px 0px;
     font-weight: bold;
-    margin-bottom:20px;
-}
-.whats-block-heading:before{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 130px 0px 0px;
-    top: 11px;
-    left: 5px;
-}
-.whats-block-heading:after, .whats-popular-heading:after, .trending-heading:after{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 18px 0px 0px;
-    top: 11px;
-    right: 5px;
-}
-.whats-popular-heading:before{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 380px 0px 0px;
-    top: 11px;
-    left: 5px;
-}
-.trending-heading:before{
-    content: "";
-    position: absolute;
-    border-color: #000;
-    border-style: solid;
-    border-width: 1px 95px 0px 0px;
-    top: 11px;
-    left: 5px;
+    margin-bottom: 20px;
+    font-family: \'Lora\';
+    padding-left: 5px;
 }
 .view-all-articles {
 	text-align: center;
@@ -1076,24 +1040,6 @@ body {
         height:220px;
         object-fit:cover;
     }
-    .whats-block-heading:before{
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 87px 0px 0px;
-        top: 11px;
-        left: 5px;
-    }
-    .whats-popular-heading:before {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 290px 0px 0px;
-        top: 11px;
-        left: 5px
-    }
 }
 @media only screen and (max-width: 991px){
     .blog-box{
@@ -1106,65 +1052,6 @@ body {
     .blog-img img{
         height:210px;
         object-fit:cover;
-    }
-    .whats-block-heading:before {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 521px 0px 0px;
-        top: 11px;
-        left: 5px;
-    }
-    .whats-block-heading {
-        position: relative;
-        text-align: right;
-        text-transform: uppercase;
-        padding: 0px 70px 2px 0px;
-        font-weight: bold;
-    }
-    .whats-block-heading:after {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 58px 0px 0px;
-        top: 11px;
-        right: 5px;
-    }
-    .whats-popular-heading {
-        position: relative;
-        text-align: right;
-        text-transform: uppercase;
-        padding: 0px 70px 2px 0px;
-        font-weight: bold;  
-    }
-     .whats-popular-heading:before {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 290px 0px 0px;
-        top: 11px;
-        left: 5px
-    }
-    .whats-popular-heading:before {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 490px 0px 0px;
-        top: 11px;
-        left: 5px;
-    }
-    .whats-popular-heading:after {
-        content: "";
-        position: absolute;
-        border-color: #000;
-        border-style: solid;
-        border-width: 1px 58px 0px 0px;
-        top: 12px;
-        right: 5px;
     }
     .section-1-shadow {
         box-shadow: none;
@@ -1217,6 +1104,11 @@ a.button:hover span:after {
     }
 }
 @media screen and (max-width: 768px){
+.wn-box-icon img{height:auto !important;}
+.tp-heading{
+    margin: 10px 0;
+    font-size: 16px;
+}
     .controls {
         margin-top: 35px;
     }
