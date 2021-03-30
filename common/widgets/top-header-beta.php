@@ -328,6 +328,7 @@ $this->registerCss('
     -ms-flex: 16;
     flex: 16;
     margin: 0 30px;
+    margin-right:0px;
 }
 
 .ey-head-main .ey-main-menu-nav,
@@ -519,9 +520,9 @@ $this->registerCss('
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 1.2;
-    -ms-flex: 1.2;
-    flex: 1.2;
+    -webkit-box-flex: 0.9;
+    -ms-flex: 0.9;
+    flex: 0.9;
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;

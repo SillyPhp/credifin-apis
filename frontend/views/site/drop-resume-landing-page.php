@@ -4,7 +4,8 @@ use yii\helpers\Url;
 
 ?>
     <section class="drop-resume-head">
-        <div class="container-fluid">
+        <div class="drop-layer"></div>
+        <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
                     <div class="drop-resume-txt">
@@ -16,11 +17,11 @@ use yii\helpers\Url;
                         <p>To get noticed by the best companies as soon as any vacancy arises.</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="drop-resume-head-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/drop-resume-hdrimgg.png') ?>"/>
-                    </div>
-                </div>
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <div class="drop-resume-head-img">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/custom/drop-resume-hdrimgg.png') ?><!--"/>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
     </section>
@@ -216,6 +217,7 @@ use yii\helpers\Url;
                             <div class="drop-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/university.png') ?>">
                             </div>
+                            <p class="name-drop">COLLEGE</p>
                         </div>
                     </a>
                 </div>
@@ -225,6 +227,7 @@ use yii\helpers\Url;
                             <div class="drop-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/health-care.png') ?>">
                             </div>
+                            <p class="name-drop">HOSPITAL</p>
                         </div>
                     </a>
                 </div>
@@ -234,6 +237,7 @@ use yii\helpers\Url;
                             <div class="drop-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/IT.png') ?>">
                             </div>
+                            <p class="name-drop">INFORMATION TECHNOLOGY</p>
                         </div>
                     </a>
                 </div>
@@ -243,6 +247,7 @@ use yii\helpers\Url;
                             <div class="drop-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/finance.png') ?>">
                             </div>
+                            <p class="name-drop">FINANCE</p>
                         </div>
                     </a>
                 </div>
@@ -252,14 +257,30 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+p.name-drop {
+    text-align: center;
+    font-family: \'Roboto\';
+    font-weight: 500;
+    margin: 10px 0 0;
+}
+.drop-layer {
+    width: 100%;
+    height: 100%;
+    background-color: #00000040;
+    position: absolute;
+}
 .footer {
-    margin-top: 0px;
+    margin-top: 0px !important;
 }
 .og{
   color: #ff7803;
 }
-.drop-resume-head {
-    background-color: #F5F5F5;
+.drop-resume-head{
+    background:url(' . Url::to('@eyAssets/images/pages/education-loans/resume1.png') . ');
+    min-height:500px;
+    background-size:cover;
+    background-position: left;
+    background-repeat: no-repeat;
 }
 .drop-resume-head-img img {
     height: 100%;
@@ -270,28 +291,28 @@ $this->registerCss('
     padding-top: 90px;
 }
 .drop-resume-txt h1 {
-    font-size: 40px;
+    font-size: 34px;
     font-family: lobster;
-    text-align: center;
-    color: #3461d4;
-    line-height: 60px;
-    margin: 0px 10px 20px 10px;
+    text-align: left;
+    color: #fff;
+    line-height: 50px;
+    margin: 0px 0px 20px 15px;
 }
 .txt-strip {
-    margin: 20px 0px 20px 0px;
-    text-align: center;
+    margin: 0px 0px 20px 10px;
+    text-align: left;
 }
 .txt-strip img {
     height: 100%;
-    max-height: 52px;
+    max-height: 40px;
 }
 .drop-resume-txt p {
     line-height: 36px;
-    margin: 30px 35px 20px 35px;
-    font-size: 26px;
-    text-align: center;
+    margin: 0px 0px 20px 15px;
+    font-size: 20px;
+    text-align: left;
     font-family: roboto;
-    color: #3461d4;
+    color: #fff;
     font-weight: 600;
 }
 .blue-strip img {
