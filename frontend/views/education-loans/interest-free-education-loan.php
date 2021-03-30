@@ -13,7 +13,7 @@ use yii\helpers\Url;
                         <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                     </ul>
-                </div>
+                </div>loan
             </div>
         </div>
     </section>
@@ -441,7 +441,7 @@ html {
     margin-top: 50px;
 }
 .partner-text {
-    padding: 30px;
+    padding-top: 30px;
 }
 .partner-text h2 {
     font-family: Lobster;

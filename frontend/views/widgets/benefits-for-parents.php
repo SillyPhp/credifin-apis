@@ -72,7 +72,6 @@ $this->registerCss('
 }
 .bene-head {
     margin: 20px 20px 60px;
-    text-align: center;
 }
 .bene-head h2 {
     font-size: 28pt;
