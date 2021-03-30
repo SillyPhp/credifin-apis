@@ -6,7 +6,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="set-sticky">
+            <div class="set-sticky mt-sm-30">
                 <h3 class="heading-style">Highlights</h3>
                 <div class="h-points">
 
@@ -381,6 +381,11 @@ td p{
     margin-right:1%;
 }
 }
+@media only screen and (max-width: 768px){
+    .mt-sm-30{
+        margin-top: 30px;
+    }
+}
 @media only screen and (max-width: 767px) {
 .h-point1 {
     width: 50%;
@@ -392,7 +397,7 @@ td p{
     margin-right:1%;
 }
  .loanProviderIcon{
-        float: right;
+        float: unset;
         margin: unset;
     }
     table, thead, tbody, th, td, tr { 
