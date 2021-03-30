@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
 use borales\extensions\phoneInput\PhoneInput;
-use yii\bootstrap\ActiveForm;
 use common\models\RandomColors;
 use frontend\models\script\ImageScript;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -145,21 +145,27 @@ if (!Yii::$app->user->isGuest) {
                     </div>
                     <div class="job-head-info">
                         <h4><?= $get['company'] ?></h4>
-<!--                        <div class="organization-details">-->
-<!--                            --><?php //if ($get['company_url']): ?>
-<!--                                <p><i class="fas fa-unlink"></i><a href="--><?//= $get['company_url'] ?><!--"-->
-<!--                                                                   target="_blank">--><?//= $get['company_url'] ?><!--</a></p>-->
-<!--                            --><?php //endif; ?>
-<!--                        </div>-->
+                        <!--                        <div class="organization-details">-->
+                        <!--                            --><?php //if ($get['company_url']): ?>
+                        <!--                                <p><i class="fas fa-unlink"></i><a href="-->
+                        <? //= $get['company_url'] ?><!--"-->
+                        <!--                                                                   target="_blank">-->
+                        <? //= $get['company_url'] ?><!--</a></p>-->
+                        <!--                            --><?php //endif; ?>
+                        <!--                        </div>-->
                     </div>
                     <div class="actions-main">
                         <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                               class="apply-job-btn single-btn"><i
-                                        class="fas fa-paper-plane"></i>Login to apply</a>
+                            <div class="btn-parent">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                   class="apply-job-btn single-btn"><i
+                                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            </div>
                         <?php else: ?>
-                            <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
-                                        class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            <div class="btn-parent">
+                                <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
+                                            class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            </div>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
@@ -302,6 +308,7 @@ if (Yii::$app->params->options->showSchema) {
                 }
             }
         }
+
     </script>
     <?php
 }
@@ -1454,6 +1461,33 @@ $this->registerCss("
         color: #848484;
         line-height: 56px;
         cursor: pointer;
+    }
+    
+    @media screen and (max-width: 991px) {
+      .btn-parent{
+        position: fixed;
+        bottom:28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+    }
+    @media only screen and (max-width: 649px) {
+      .btn-parent{
+            left: 0px;
+            bottom: 28px;
+            transform: unset;
+            border-radius: 0px 10px 0 0;
+      }
+    }
+    @media only screen and (max-width: 430px) {
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
+        }
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{
