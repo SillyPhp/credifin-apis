@@ -10,6 +10,7 @@ $url2 = \yii\helpers\Url::to(['/jobs/fetch-skills']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/twitterbg.png';
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 ?>
     <div class="col-md-12 set-overlay">
         <div class="row">
