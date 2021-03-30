@@ -39,8 +39,6 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
-<?= $this->render('/widgets/loan-products')?>
 <?= $this->render('/widgets/benefits-for-parents')?>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <section class="bg-blue">
