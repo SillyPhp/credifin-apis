@@ -28,8 +28,11 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
-                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Apply</a>
+                <div class="btn-parent">
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                       class="apply-job-btn single-btn"><i
+                                class="fas fa-paper-plane"></i>Apply</a>
+                </div>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -47,8 +50,10 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
-                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
-                                class="fas fa-check"></i>Applied</a>
+                    <div class="btn-parent">
+                        <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
+                                    class="fas fa-check"></i>Applied</a>
+                    </div>
                     <div class="sub-actions">
                         <?php
                         if ($type == 'Internship'): ?>
