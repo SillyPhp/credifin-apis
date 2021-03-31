@@ -364,13 +364,6 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <li>
                                         <div class="lender-icon">
                                             <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
                                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
                                             </span>
                                         </div>

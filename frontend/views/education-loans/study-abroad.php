@@ -25,6 +25,36 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
+<section class="study-maps-sec">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mapsFlex">
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/America-flag-map.png') ?>">
+                        <h3>Study In USA</h3>
+                        <a href="/education-loans/study-in-usa">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Australia-flag-map.png') ?>">
+                        <h3>Study In Australia</h3>
+                        <a href="/education-loans/study-in-australia">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/canada-map-flag.png') ?>">
+                        <h3>Study In Canada</h3>
+                        <a href="/education-loans/study-in-canada">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/europe-flag-map.png') ?>">
+                        <h3>Study In Europe</h3>
+                        <a href="/education-loans/study-in-europe">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
 <section class="bg-blue">
@@ -252,12 +282,55 @@ $this->registerCss('
 .padd30{
     padding-bottom: 30px;
 }
+.study-maps-sec{
+//    border-top: 1px solid #eee;
+//    border-bottom: 1px solid #eee; 
+    margin-top: -130px;
+    min-height: 130px;
+    background: rgba(255,255,255,.6);
+}
+.study-maps-sec .container{
+    padding-top: 0px !important
+}
+.mapsFlex{
+    display: flex;
+    flex-wrap: wrap;
+}
+.study-map-box{
+    width: 25%; 
+    padding: 10px 15px;
+    text-align: center;
+    min-height: 130px;
+    border-left: 1px solid #eee;  
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.study-map-box:first-child{
+    border-left: none;
+}
+.study-map-box img{
+    max-width: 100px;
+}
+.study-map-box h3{
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    color:#ff7803;
+}
+.study-map-box a{
+    color: #000
+}
 .le-img img{
     border-radius: 15px;
 }
 #typed{
     font-size: 25px;
     color: #fff;
+}
+.study-in-usa-bg{
+    padding-top: 100px;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -335,11 +408,11 @@ $this->registerCss('
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-	align-items: center;
+//	align-items: center;
 	position: relative;
 	text-align: center;
 	height: 100vh;
-	max-height: 700px;
+//	max-height: 700px;
 }
 .opacity-div{
     position: absolute;
