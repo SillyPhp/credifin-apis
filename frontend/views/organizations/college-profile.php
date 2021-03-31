@@ -180,70 +180,6 @@ td p{
     margin-right:1%;
 }
 }
-@media only screen and (max-width: 767px) {
-.h-point1 {
-    width: 50%;
-}
-.course-box{
-    width:100%;
-}
-.course-box:nth-child(3n+0){
-    margin-right:1%;
-}
- .loanProviderIcon{
-        float: right;
-        margin: unset;
-    }
-    table, thead, tbody, th, td, tr { 
-        display: block; 
-    }
-        
-    /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    tr {
-        border: 1px solid #ccc; 
-        margin-bottom: 10px;
-    }
-    td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50% !important;
-        min-height: 70px;
-        height: auto; 
-    }
-    td:last-child{
-        border-bottom: none;
-    }
-    td:before { 
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 3px;
-        width: 45%; 
-        padding-right: 10px;
-    }
-    td:nth-of-type(1):before { 
-        content: "Bank/Financier"; 
-    }
-    td:nth-of-type(2):before { 
-        content: "ROI"; 
-    }
-    td:nth-of-type(3):before { 
-        content: "Loan Amount Available"; 
-    }
-    td:nth-of-type(4):before { 
-        content: "Collateral"; 
-    }
-    td:nth-of-type(5):before { 
-        content: "Processing Fees"; 
-    }
-}
 @media only screen and (max-width: 550px) {
 .h-point1 {
     width: 100%;
@@ -254,15 +190,4 @@ $script = <<<JS
 JS;
 $this->registerJS($script);
 ?>
-<script>
-    function showJobsSidebar() {
-        let paSidebar = document.getElementsByClassName('hamburger-jobs');
-        paSidebar[0].classList.toggle('pa-sidebar-show');
-        let clickedBtn = this.event.currentTarget;
-        if (paSidebar[0].classList.contains('pa-sidebar-show')) {
-            clickedBtn.innerHTML = "<i class='fa fa-times'></i>";
-        } else {
-            clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
-        }
-    }
-</script>
+

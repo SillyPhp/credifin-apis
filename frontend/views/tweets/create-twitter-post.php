@@ -9,6 +9,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/twitte
 $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var typ = "'. $type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 $Initscript = <<< JS
 function cities_url(){
     return "/cities/career-city-list?cid="+cid;

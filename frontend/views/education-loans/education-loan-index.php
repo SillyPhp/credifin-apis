@@ -49,114 +49,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products')?>
-    <section class="edu-with-us">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 mt0 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
-                </div>
-            </div>
-            <div class="row-mt10">
-                <div class="col-md-3 col-sm-4 col-xs-12">
-                    <div class="finance">
-                        <div class="finance-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/100-finance.png'); ?>"/>
-                        </div>
-                        <div class="finance-text">100% Financing</div>
-                        <div class="overlay">
-                            <div class="overlay-txt">Loans covering all the student expenses like tution fees, hostel
-                                fees, transportation expenses etc.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loans.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Customized Loans</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Personalized loans as per the students needs and requirements.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanctions.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Quick Sanctions</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Easy and fast loan approvals for your dream education.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/documentation.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Minimal Documentation</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/repayment.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Flexible Repayment Options</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Student can select a repayment option that best suits his/her needs.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroadd.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Get Loan To Study Abroad</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Providing easy and interest free education loan for study abroad
-                            programs.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admissin.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Pre-Admission Loan</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Get your loan approved before your admission in college or university.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Pre-Visa Loan</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Now you can get your loan sanctioned before your visa gets approved.
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </section>
+    <?= $this->render('/widgets/loan-why-empower-youth')?>
     <?= $this->render('/widgets/education-loan-internship')?>
     <section class="edu-with-sec">
         <div class="container">
@@ -856,7 +749,7 @@ $this->registerCss('
     width: 100%;
     height: 185px;
     box-shadow: 0 0 11px -4px #999;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     background-color: #fff;
     transition: all .2s;
     position: relative;
@@ -1058,9 +951,9 @@ $this->registerCss('
     overflow: hidden;
 }
 .lp-box {
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     border-radius: 5px;
     padding: 10px;
 }

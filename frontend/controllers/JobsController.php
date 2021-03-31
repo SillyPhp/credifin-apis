@@ -514,7 +514,7 @@ class JobsController extends Controller
         }
         $type = 'Job';
         $whatsAppForm = new whatsAppShareForm();
-        if ($application_details->source==2||$application_details->source==3){
+        if ($application_details->source == 2 || $application_details->source == 3) {
             return $this->render('api-jobs',
                 [
                     'get' => $get, 'slugparams' => $slugparams,
@@ -842,7 +842,12 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $application_details = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.*'])
+                ->select(['a.*',
+                    '(CASE
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("/job/", a.slug)
+                END) as link'])
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
