@@ -860,13 +860,13 @@ class JobsController extends Controller
             }
 
             $claimedOrg = Organizations::find()
-                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug','CONCAT("/",slug) as org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['organization_enc_id']])
                 ->asArray()
                 ->one();
 
             $unclaimedOrg = UnclaimedOrganizations::find()
-                ->select(['name org_name', 'initials_color color', 'slug as org_slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug','CONCAT("/",slug,"/reviews") org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
                 ->asArray()
                 ->one();
