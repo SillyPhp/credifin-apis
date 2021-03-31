@@ -1103,8 +1103,7 @@ a.button:hover span:after {
         padding-left: 26px;
     }
 }
-@media screen and (max-width: 768px){
-.wn-box-icon img{height:auto !important;}
+@media screen and (max-width: 768px){   
 .tp-heading{
     margin: 10px 0;
     font-size: 16px;
