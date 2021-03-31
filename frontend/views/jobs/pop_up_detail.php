@@ -381,7 +381,7 @@ $this->registerCss('
 	display: flex;
 }
 .job-overviews {
-	border: 2px solid #e8ecec;
+	box-shadow:0 0 10px 0px #e8ecec;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-ms-border-radius: 8px;
@@ -440,7 +440,7 @@ h3.job-detail {
 }
 .tags-bar {
 	margin-bottom: 20px;
-	border: 2px solid #e8ecec;
+	box-shadow:0 0 10px 0px #e8ecec;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-ms-border-radius: 8px;
@@ -567,8 +567,8 @@ h3.job-detail {
     padding: 20px;
     display: flex;
     align-items: center;
-    border-bottom:2px solid #e8ecec;
     flex-wrap: wrap;
+    box-shadow:0 0 10px 0px #e8ecec;
 }
 .company-logo {
     text-align: center;
