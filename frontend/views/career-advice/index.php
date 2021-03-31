@@ -187,7 +187,7 @@ $careerAdviceCategories = [
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-12">
                 <div>
                     <div class="">
                         <div class="row">
@@ -339,7 +339,7 @@ $careerAdviceCategories = [
 <div class="pdbm10">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 col-sm-12">
                 <div class="mar-top-20">
                     <h1 class="heading-style">Career Advice</h1>
                 </div>
@@ -662,10 +662,6 @@ $this->registerCss('
     position: relative;
     }
 .wn-box-icon img {
-    height: 150px;
-    object-fit: fill;
-}
-.wn-box-icon img {
     border-radius: 5px 5px 0 0;
     -webkit-transform: scale(1);
     transform: scale(1);
@@ -674,9 +670,10 @@ $this->registerCss('
     opacity: 1;
     display: block;
     width: 100%;
-    height: auto;
+    height: 150px;
     transition: .5s ease;
     backface-visibility: hidden;
+    object-fit: fill;
 }
 .wn-box-details {
     min-height: 100px !important;
