@@ -573,7 +573,7 @@ function removeActive(){
         $('.nav-item').removeClass('cActive');
     }
 }
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getDetails(){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",

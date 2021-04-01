@@ -401,7 +401,7 @@ $this->registerCSS('
 ');
 $script = <<<JS
 var user_id = '$user_id';
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 function getReviews(){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({

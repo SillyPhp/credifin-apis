@@ -209,7 +209,8 @@ $base_url = 'https://empoweryouth.com';
                                     <a class="pr-user-icon url-forward" href="#"
                                        data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
                                         <?php if ($arr['image']): ?>
-                                            <img src="<?= $arr['image'] ?>"/>
+                                            <img src="<?= $arr['image'] ?>"
+                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
                                                     color="<?= $arr['initials_color']; ?>" height="80"
