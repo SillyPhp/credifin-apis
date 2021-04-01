@@ -34,18 +34,6 @@ use yii\helpers\Url;
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
-                                </div>
-                            </td>
-                            <td>8% To 12% p.a.</td>
-                            <td>Rs.1 crore (With Collateral)<br>
-                                Rs. 40 Lakhs (Without Collateral)</td>
-                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
-                            <td>1 % of Loan Amount + GST</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="loanProviderIcon">
                                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>">
                                 </div>
                             </td>

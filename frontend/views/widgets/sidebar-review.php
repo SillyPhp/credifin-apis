@@ -26,7 +26,7 @@ if ($type == "internships"){
             </div>
             <div id="review-internships" style="background-color: #fff;" class="font-georgia">
                 <span class="review-list-hint">Drop here to add to review list</span>
-                <a href="#" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
+                <a href="javascript:;" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
                 <ul id="ilist" class="drop-options connected-sortable droppable-area">
                     <div class="loader-inner-main pt-0">
                         <div class="col-md-3 col-xs-3 pt-10 p-0">
