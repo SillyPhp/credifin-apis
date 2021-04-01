@@ -640,6 +640,7 @@ h3.job-detail {
     .job-overviews li{flex-basis:49%;}
 }
 @media only screen and (max-width:670px){
+.company-logo {margin:20px auto;}
 .job-overviews li{flex-basis:100%;}
 .com-initials {
 	text-align: center;
