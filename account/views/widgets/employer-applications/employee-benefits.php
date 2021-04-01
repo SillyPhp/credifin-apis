@@ -2,23 +2,29 @@
 use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\URL;
-if($type){
-    $type =  substr_replace($type ,"",-1);
-}
+//if($type){
+//    $type =  substr_replace($type ,"",-1);
+//}
 ?>
+<?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'):
+    $label= "Job";
+elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
+    $label= 'Internship';
+endif; ?>
+
 <div class="row">
     <div id="select_benefit_err"></div>
     <div class="col-lg-6">
         <div class="module2-heading">
             Employee Benefits
         </div>
-        (Selected Benefits Will Be Applicable To This <?= $type ?> Only)
+        (Selected Benefits Will Be Applicable To This <?= $label ?> Only)
     </div>
     <div class="col-lg-6">
         <div class="md-radio-inline text-right clearfix">
             <?=
             $form->field($model, 'benefit_selection')->inline()->radioList([
-                1 => 'Add ' . $type . ' Benefits',
+                1 => 'Add ' . $label . ' Benefits',
                 0 => 'Skip Benefits',
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {

@@ -316,6 +316,12 @@ echo $this->render('/widgets/mustache/application-card', [
 ]);
 
 $this->registerCss('
+.profile-sidebar{
+    margin-top: 0px;
+}
+#review-internships{
+    height: calc(100vh - 85px) !important;
+}
 .slt-jobs{
     box-shadow: 0px 0px 0px 0px #fefefe;
 }
@@ -399,7 +405,7 @@ th{
    position: -webkit-sticky; /* Safari */
    top:64px; 
    background:#fff;
-   box-shadow: 0 10px 10px rgba(0,0,0,.1);
+   box-shadow: 0 5px 4px rgba(0,0,0,.1);
 }
 td{
     border:1px solid #e2e1e1;

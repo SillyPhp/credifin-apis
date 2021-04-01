@@ -15,6 +15,7 @@ use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\OrganizationTypes;
+use common\models\PressReleasePubliser;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
@@ -188,6 +189,16 @@ class SiteController extends Controller
         return parent::beforeAction($action);
     }
 
+    private function getPressReleasData($option = []){
+        $data = PressReleasePubliser::find()
+            ->andWhere(['is_deleted' => 0])
+            ->orderBy(['sequence' => SORT_ASC]);
+        if($option['limit']){
+            $data->limit($option['limit']);
+        }
+        return $data->asArray()->all();
+    }
+
     public function actionIndex()
     {
         $model = new ClassEnquiryForm();
@@ -198,7 +209,9 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', ['model' => $model]);
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -1012,6 +1025,13 @@ class SiteController extends Controller
                 break;
             case 'getSafetySigns':
                 return $this->renderAjax('/widgets/safety-signs');
+                break;
+            case 'getPressRelease':
+                $data = self::getPressReleasData(['limit' => 6]);
+                return $this->renderAjax('/widgets/press-releasee', [
+                    'data' => $data,
+                    'viewBtn' => true,
+                ]);
                 break;
             case 'getOnlineClasses':
                 $model = new ClassEnquiryForm();

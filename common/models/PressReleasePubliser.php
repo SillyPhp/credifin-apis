@@ -50,6 +50,27 @@ class PressReleasePubliser extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'publiser_enc_id' => 'Publiser Enc ID',
+            'name' => 'Name',
+            'logo' => 'Logo',
+            'logo_location' => 'Logo Location',
+            'link' => 'Link',
+            'sequence' => 'Sequence',
+            'created_by' => 'Created By',
+            'last_updated_by' => 'Last Updated By',
+            'created_on' => 'Created On',
+            'last_updated_on' => 'Last Updated On',
+            'is_deleted' => 'Is Deleted',
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getCreatedBy()

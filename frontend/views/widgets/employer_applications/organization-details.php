@@ -28,8 +28,11 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
-                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Apply</a>
+                <div class="btn-parent">
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                       class="apply-job-btn single-btn"><i
+                                class="fas fa-paper-plane"></i>Apply</a>
+                </div>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -47,8 +50,10 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
-                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
-                                class="fas fa-check"></i>Applied</a>
+                    <div class="btn-parent">
+                        <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
+                                    class="fas fa-check"></i>Applied</a>
+                    </div>
                     <div class="sub-actions">
                         <?php
                         if ($type == 'Internship'): ?>
@@ -504,9 +509,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .job-head-info{
 //        max-width: 275px;
         text-align: center;
-    }
-    .job-head-info h4{
-        margin-left:25px !Important;
     }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;

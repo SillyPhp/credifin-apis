@@ -38,6 +38,7 @@ $this->registerCss('
     border-radius:5px;
     position:relative;
     overflow:hidden;
+    margin-bottom:20px;
 }
 .imm1 {
 	position: absolute;

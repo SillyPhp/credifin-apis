@@ -1,9 +1,9 @@
 <?php
 
 use frontend\models\applications\CandidateApply;
+use frontend\models\script\ImageScript;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use frontend\models\script\ImageScript;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
@@ -395,8 +395,8 @@ $this->render('/widgets/employer_applications/top-banner', [
 
                 <div class="new-row col-md-10 col-md-offset-1">
                     <?=
-                    $this->render('/widgets/new-position',[
-                        'company' => $org['org_name'], ]);
+                    $this->render('/widgets/new-position', [
+                        'company' => $org['org_name'],]);
                     ?>
                 </div>
 
@@ -439,10 +439,8 @@ if ($settings["showNewPositionsWidget"]):
             <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="blogbox"></div>
-        </div>
+    <div class="col-md-12">
+        <div class="blogbox"></div>
     </div>
     <div class="row">
         <div class="col-md-8 col-sm-8 col-xs-12">
@@ -459,7 +457,7 @@ if ($settings["showNewPositionsWidget"]):
             </div>
         </div>
     </div>
-    <div class="row" id="list-main"></div>
+    <div id="list-main"></div>
 </div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
@@ -475,7 +473,8 @@ if ($settings["showNewPositionsWidget"]):
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>" target="_blank"
+                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>"
+                           target="_blank"
                            class="btn btn-3">
                             <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
@@ -493,7 +492,8 @@ if ($settings["showNewPositionsWidget"]):
                     <?php foreach ($popular_videos as $p) { ?>
                         <div class="item lc-single-item-main">
                             <div class="lc-item-img">
-                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link" target="_blank">
+                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link"
+                                   target="_blank">
                                 </a>
                                 <div class="lc-item-video-img"
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
@@ -501,7 +501,8 @@ if ($settings["showNewPositionsWidget"]):
                             <div class="lc-item-desciption">
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank" class="ml-20">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
+                                           class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
@@ -539,44 +540,45 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </div>
 <?php }
-if (!empty($data2) && Yii::$app->params->options->showSchema){
+if (!empty($data2) && Yii::$app->params->options->showSchema) {
     $onlyJd = [];
-    foreach ($data2['applicationJobDescriptions'] as $jd){
-        array_push($onlyJd,$jd['job_description']);
+    foreach ($data2['applicationJobDescriptions'] as $jd) {
+        array_push($onlyJd, $jd['job_description']);
     }
-    $finalJobDescription = implode("<br/>",$onlyJd);
-?>
+    $finalJobDescription = implode("<br/>", $onlyJd);
+    ?>
     <script type="application/ld+json">
         {
             "@context" : "https://schema.org/",
             "@type" : "JobPosting",
-            "title" : "<?=$data2['cat_name']?>",
-            "description" : "<?=$finalJobDescription;?>",
-            "datePosted" : "<?=$data2['created_on']?>",
-            "validThrough" : "<?= $data1['last_date']?>",
-            "employmentType" : "<?=$data2['type']?>",
+            "title" : "<?= $data2['cat_name'] ?>",
+            "description" : "<?= $finalJobDescription; ?>",
+            "datePosted" : "<?= $data2['created_on'] ?>",
+            "validThrough" : "<?= $data1['last_date'] ?>",
+            "employmentType" : "<?= $data2['type'] ?>",
             "hiringOrganization" : {
                 "@type" : "Organization",
-                "name" : "<?=$org['org_name']?>",
-                "sameAs" : "<?=$org['website']?>",
-                "logo" : "<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], true)?>"
+                "name" : "<?= $org['org_name'] ?>",
+                "sameAs" : "<?= $org['website'] ?>",
+                "logo" : "<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], true) ?>"
             },
             "jobLocation": {
                 "@type": "Place",
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "<?=$lc?>",
+                    "addressLocality": "<?= $lc ?>",
                     "addressCountry": "IN"
                 }
             },
             "baseSalary": {
                 "@type": "MonetaryAmount",
                 "currency": "INR",
-                "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
+                "value": "<?= (($data2['fixed_wage']) ? $data2['fixed_wage'] : $data2['max_wage']) ?>"
             }
         }
+
     </script>
-<?php
+    <?php
 }
 ?>
 <script>
@@ -1147,7 +1149,6 @@ button.lc-item-video-menu {
     }
     .container.fluid{ max-width: 100%; width: 100%; }
     .block .container{padding:0}
-    .container{padding:0}
     .inner-header .container {
         position: relative;
         z-index: 1;

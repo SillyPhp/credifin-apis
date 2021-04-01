@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
 use borales\extensions\phoneInput\PhoneInput;
-use yii\bootstrap\ActiveForm;
 use common\models\RandomColors;
 use frontend\models\script\ImageScript;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -145,21 +145,27 @@ if (!Yii::$app->user->isGuest) {
                     </div>
                     <div class="job-head-info">
                         <h4><?= $get['company'] ?></h4>
-                        <div class="organization-details">
-                            <?php if ($get['company_url']): ?>
-                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
-                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
-                            <?php endif; ?>
-                        </div>
+                        <!--                        <div class="organization-details">-->
+                        <!--                            --><?php //if ($get['company_url']): ?>
+                        <!--                                <p><i class="fas fa-unlink"></i><a href="-->
+                        <? //= $get['company_url'] ?><!--"-->
+                        <!--                                                                   target="_blank">-->
+                        <? //= $get['company_url'] ?><!--</a></p>-->
+                        <!--                            --><?php //endif; ?>
+                        <!--                        </div>-->
                     </div>
                     <div class="actions-main">
                         <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                               class="apply-job-btn single-btn"><i
-                                        class="fas fa-paper-plane"></i>Login to apply</a>
+                            <div class="btn-parent">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                   class="apply-job-btn single-btn"><i
+                                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            </div>
                         <?php else: ?>
-                            <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
-                                        class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            <div class="btn-parent">
+                                <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
+                                            class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            </div>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
@@ -302,6 +308,7 @@ if (Yii::$app->params->options->showSchema) {
                 }
             }
         }
+
     </script>
     <?php
 }
@@ -317,6 +324,7 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.iti{width:100%;}
 .intl-tel-input{width:100%;}
 .form-whats {
 	position: relative;
@@ -575,14 +583,12 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         max-width: 275px;
         text-align: left;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+    
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }
@@ -1186,10 +1192,11 @@ $this->registerCss("
         border: none;
     }
     .job-single-head.style2 .job-thumb {
-        float: left;
+//        float: left;
         width: 100%;
         text-align: center;
-        margin-top:20px;
+        margin-top:20px !important;
+        margin:0 auto;
     }
     .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
         float: none;
@@ -1203,12 +1210,13 @@ $this->registerCss("
         border-radius: 50%;
     }
     .job-single-head.style2 .job-head-info {
-        float: left;
         width: 100%;
         display: inherit;
         padding: 0;
-        margin-top: 10px;
-        margin-bottom: 18px;
+        margin-top: 15px !important;
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 15px;
     }
     .job-single-head.style2 .job-head-info p {
         float: left;
@@ -1240,9 +1248,9 @@ $this->registerCss("
         color: #ffffff;
     }
     .job-thumb {
-        display: table-cell;
-        vertical-align: top;
-        width: 107px;
+//        display: table-cell;
+//        vertical-align: top;
+//        width: 107px;
     }
     .job-thumb img {
         float: left;
@@ -1260,14 +1268,12 @@ $this->registerCss("
         padding-left: 25px;
     }
     .job-head-info h4 {
-        float: left;
         width: 100%;
-        font-family: Open Sans;
+        font-family: 'Roboto';
         font-size: 17px;
         font-weight: 600;
         color: #fff;
         margin: 0;
-        margin-bottom: 0px;
         margin-bottom: 10px;
     }
     .job-head-info span {
@@ -1455,6 +1461,33 @@ $this->registerCss("
         color: #848484;
         line-height: 56px;
         cursor: pointer;
+    }
+    
+    @media screen and (max-width: 991px) {
+      .btn-parent{
+        position: fixed;
+        bottom:28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+    }
+    @media only screen and (max-width: 649px) {
+      .btn-parent{
+            left: 0px;
+            bottom: 28px;
+            transform: unset;
+            border-radius: 0px 10px 0 0;
+      }
+    }
+    @media only screen and (max-width: 430px) {
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
+        }
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{
