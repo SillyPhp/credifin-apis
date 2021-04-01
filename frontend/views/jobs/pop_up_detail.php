@@ -63,7 +63,7 @@ if ($type == 'Internships') {
             $amount = 'Negotiable';
         }
     }
-//    $link = Url::to('job/' . $application_details['slug'], true);
+    $link = Url::to($application_details['link'], true);
 }
 ?>
     <div id="openModal" class="modalDialog">
@@ -640,6 +640,10 @@ h3.job-detail {
     .job-overviews li{flex-basis:49%;}
 }
 @media only screen and (max-width:670px){
+.name-f-c {
+    margin-left: 0px;
+    width: 100%;
+}
 .company-logo {margin:20px auto;}
 .job-overviews li{flex-basis:100%;}
 .com-initials {
