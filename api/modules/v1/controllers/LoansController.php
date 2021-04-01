@@ -1276,6 +1276,20 @@ class LoansController extends ApiBaseController
         $loanStudyWhy = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_why_study.json');
         $loanStudyWhy = json_decode($loanStudyWhy, true);
 
+        $whyIcons = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'why_icons.json');
+        $whyIcons = json_decode($whyIcons, true);
+
+        $loanEase = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'loan_ease.json');
+        $loanEase = json_decode($loanEase, true);
+
+        foreach ($whyIcons as $k => $v) {
+            $whyIcons[$k]['icon'] = Url::to('@eyAssets/images/pages/custom/' . $v['icon'], 'https');
+        }
+
+        foreach ($loanEase as $k => $v) {
+            $loanEase[$k]['icon'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['icon'], 'https');
+        }
+
         foreach ($loanTable as $k => $v) {
 
             $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
@@ -1289,15 +1303,17 @@ class LoansController extends ApiBaseController
         }
 
         $whyData = null;
+        $bg_image = Url::to('@eyAssets/images/pages/education-loans/study-u.png', 'https');
         if (isset($params['country']) && !empty($params['country'])) {
             $whyData = $loanStudyWhy[$params['country']];
             $whyData['image'] = Url::to('@eyAssets/images/pages/custom/' . $whyData['image'], 'https');
+            $bg_image = Url::to('@eyAssets/images/pages/education-loans/' . $whyData['bg_image'], 'https');
         }
 
         if ($whyData) {
-            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'study_why' => $whyData];
+            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'study_why' => $whyData, 'bg_image' => $bg_image, 'why_icons' => $whyIcons, 'loan_ease_process' => $loanEase, 'loan_ease_process_header' => 'We Are Here To Ease Your Loan Process'];
         } else {
-            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan];
+            $data = ['loanTable' => $loanTable, 'chooseEducationLoan' => $chooseEducationLoan, 'bg_image' => $bg_image, 'why_icons' => $whyIcons, 'loan_ease_process' => $loanEase, 'loan_ease_process_header' => 'We Are Here To Ease Your Loan Process'];
         }
 
 
