@@ -63,7 +63,7 @@ if ($type == 'Internships') {
             $amount = 'Negotiable';
         }
     }
-//    $link = Url::to('job/' . $application_details['slug'], true);
+    $link = Url::to($application_details['link'], true);
 }
 ?>
     <div id="openModal" class="modalDialog">
@@ -381,7 +381,7 @@ $this->registerCss('
 	display: flex;
 }
 .job-overviews {
-	border: 2px solid #e8ecec;
+	box-shadow:0 0 10px 0px #e8ecec;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-ms-border-radius: 8px;
@@ -440,7 +440,7 @@ h3.job-detail {
 }
 .tags-bar {
 	margin-bottom: 20px;
-	border: 2px solid #e8ecec;
+	box-shadow:0 0 10px 0px #e8ecec;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-ms-border-radius: 8px;
@@ -567,8 +567,8 @@ h3.job-detail {
     padding: 20px;
     display: flex;
     align-items: center;
-    border-bottom:2px solid #e8ecec;
     flex-wrap: wrap;
+    box-shadow:0 0 10px 0px #e8ecec;
 }
 .company-logo {
     text-align: center;
@@ -640,6 +640,11 @@ h3.job-detail {
     .job-overviews li{flex-basis:49%;}
 }
 @media only screen and (max-width:670px){
+.name-f-c {
+    margin-left: 0px;
+    width: 100%;
+}
+.company-logo {margin:20px auto;}
 .job-overviews li{flex-basis:100%;}
 .com-initials {
 	text-align: center;
