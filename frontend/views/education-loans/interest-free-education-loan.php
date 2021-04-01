@@ -9,11 +9,13 @@ use yii\helpers\Url;
                     <h1>Interest Free Education Loan</h1>
                     <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil
                         your dream of studying in your desired College/University.</p>
+                    <div class="apply-btn">
                     <ul>
                         <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                     </ul>
-                </div>loan
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -288,6 +290,9 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.apply-btn {
+    text-align: left;
+}
 .heading-style {
     color: #000;
 }
@@ -605,8 +610,8 @@ html {
     display: inline;
     margin-right: 10px;
 }
-.apply-now {
-	padding: 10px 15px;
+.apply-now{
+    padding: 10px 15px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -616,7 +621,7 @@ html {
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
-	text-align:center;
+	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
