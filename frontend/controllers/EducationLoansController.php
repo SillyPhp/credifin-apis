@@ -103,7 +103,9 @@ class EducationLoansController extends Controller
     {
         return $this->render('loan-college-index');
     }
-
+    public function actionSchoolFeeLoan(){
+        return $this->render('school-fee-loan-form');
+    }
     public function actionLeads()
     {
         $this->layout = 'main-secondary';

@@ -8,9 +8,9 @@ use yii\helpers\Url;
                     <div class="form-start">
                         <form action="" id="myForm">
                             <div class="row">
-                                    <div class="col-md-12">
-                                        <h1 class="heading-style">Education Loan</h1>
-                                    </div>
+                                <div class="col-md-12">
+                                    <h1 class="heading-style">Education Loan</h1>
+                                </div>
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="form-group">
@@ -132,9 +132,9 @@ use yii\helpers\Url;
                         <div class="max-300">
                             <div class="cl-heading">Personal Loan For Teachers</div>
                             <ul class="loan-benefits">
-                                <li>- <span>Get considerable loan amount</span> with our loan for teachers, you can get a loan upto
-                                    50% of your salary amount to help you meet your urgent <span>financial</span> needs.</li>
-                                <li>- Loan amount can for any number of reasons </li>
+                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
+                                    the students in a particular <span>academic year</span>.</li>
+                                <li>- Loan will be <span>repaid</span> with in the semester</li>
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
@@ -202,10 +202,6 @@ $this->registerCss('
 
 .padd-20{
     padding-bottom: 20px;
-}
-.loan-benefits {
-    max-width: 450px;
-    margin: 15px auto 0;
 }
 .loan-benefits li{
     color:#f3f3f2;
@@ -382,7 +378,7 @@ border: 1px solid #ddd !important;
 .cl-heading{
     color:#fff;
     font-size:20px;
-    margin-top:30px;
+//    padding-top:30px;
     font-weight:bold;
 }
 .footer{
