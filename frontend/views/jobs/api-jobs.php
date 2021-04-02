@@ -767,11 +767,6 @@ $this->registerCss("
         background-color:#fff;
         object-fit: contain;
     }
-    .block .container{padding:0}
-    .block.remove-top{padding-top:0}
-    .block.no-padding{padding-top:0; padding-bottom:0; }
-    .block.dark{background:#111111}
-    .block.remove-bottom{padding-bottom:0}
     .block.overlape {
         z-index: 2;
     }
@@ -873,7 +868,6 @@ $this->registerCss("
     }
     .container.fluid{ max-width: 100%; width: 100%; }
     .block .container{padding:0}
-    .container{padding:0}
     .inner-header .container {
         position: relative;
         z-index: 1;
