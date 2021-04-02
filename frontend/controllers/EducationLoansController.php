@@ -86,7 +86,9 @@ class EducationLoansController extends Controller
             return 'Unauthorized';
         }
     }
-
+    public function actionLoanForTeachers(){
+        return $this->render('teachers-loan-form');
+    }
     public function actionEducationLoanView()
     {
         return $this->render('education-loan-view');

@@ -196,7 +196,7 @@ class ApplicationCards
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-
+        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -562,6 +562,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -571,6 +572,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
@@ -642,11 +644,13 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
+        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select([
-                'a.created_on as created_date',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
                 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -691,7 +695,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select([
-                'a.created_on as created_date',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
                 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -841,6 +846,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -850,7 +856,8 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_date' => SORT_DESC])
+                ->having(['>=', 'created', $from_date_app])
+                ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
         $i = 0;

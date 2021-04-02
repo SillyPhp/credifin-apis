@@ -1870,8 +1870,6 @@ class JobsController extends Controller
                 ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
                 ->asArray()
                 ->all();
-//            print_r($applied_users);
-//            exit();
             return $this->render('all-applied-applications', [
                 'fields' => $applied_users,
                 'reasons'=>$reasons,
@@ -1887,7 +1885,7 @@ class JobsController extends Controller
             ->alias('z')
             ->select(['y1.name job_title','z.organization_enc_id','z.application_enc_id','z.slug','x2.name type'])
             ->joinWith(['appliedApplications a'=>function($a)use($type){
-                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
+                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
                 $a->andWhere(['a.is_deleted'=>0]);
                 $a->orderBy(['a.created_on'=>SORT_DESC]);
                 $a->groupBy(['a.applied_application_enc_id']);
