@@ -23,7 +23,8 @@ use Yii;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class PressReleasePubliser extends \yii\db\ActiveRecord
+class
+PressReleasePubliser extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
