@@ -168,9 +168,8 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                         <div class="max-300">
                             <div class="cl-heading">Personal Loan For Teachers</div>
                             <ul class="loan-benefits">
-                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
-                                    the students in a particular <span>academic year</span>.</li>
-                                <li>- Loan will be <span>repaid</span> with in the semester</li>
+                                <li>- <span>Get considerable loan amount</span> with our loan for teachers, you can get a loan upto
+                                    50% of your salary amount to help you meet your urgent <span>financial</span> needs.</li>
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
