@@ -197,17 +197,16 @@ class ReviewCardsMod
         $count = $q2->count() + $q1->count();
 
         $q1 = $q1->groupBy(['a.organization_enc_id'])->limit($limit)
-            ->offset($offset);
+            ->offset($offset)->asArray()->all();
 
         $q2 = $q2->groupBy(['a.organization_enc_id'])->limit($limit)
-            ->offset($offset);
-        $q = $q1->union($q2)
-            ->distinct()
-            ->asArray()
-            ->all();
+            ->offset($offset)->asArray()->all();
+        $data = [];
+        $data = array_merge($data, $q1);
+        $data = array_merge($data, $q2);
         return [
             'total' => $count,
-            'cards' => $q
+            'cards' => $data
         ];
     }
 
