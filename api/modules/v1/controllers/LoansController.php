@@ -1292,14 +1292,17 @@ class LoansController extends ApiBaseController
 
         foreach ($loanTable as $k => $v) {
 
-            $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
+//            $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
+            $loanTable[$k]['bank_financier'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['bank_financier'], 'https');
             if ($v['bank_financier'] == 'AG-logo.png') {
-                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
+//                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
+                $loanTable[$k]['bank_financier'] = Url::to('@eyAssets/images/pages/index2/' . $v['bank_financier'], 'https');
             }
         }
 
         foreach ($chooseEducationLoan as $key => $val) {
-            $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
+//            $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
+            $chooseEducationLoan[$key]['icon'] = Url::to('@eyAssets/images/pages/education-loans/' . $val['icon'], 'https');
         }
 
         $whyData = null;
