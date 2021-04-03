@@ -91,7 +91,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-in-touch.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -344,10 +344,17 @@ $this->registerCss('
     font-weight: 600;
 }
 .padd30{
+    padding-top: 30px;
     padding-bottom: 30px;
 }
 .le-img img{
-    border-radius: 15px;
+    height: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    padding: 15px;
+}
+.le-img {
+    box-shadow: 0 1px 11px 0px #d4cdcd;
 }
 #typed{
     font-size: 25px;
