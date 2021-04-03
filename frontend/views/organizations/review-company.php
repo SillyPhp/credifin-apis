@@ -347,6 +347,32 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
                 <div class="row">
                     <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Job Security</label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="star-rating1">
+                            <fieldset>
+                                <?=
+                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
+                                    5 => '5 stars',
+                                    4 => '4 stars',
+                                    3 => '3 stars',
+                                    2 => '2 stars',
+                                    1 => '1 stars',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
                         <label class="control-label padding_top">Career Growth</label>
                     </div>
                     <div class="col-md-8">
@@ -502,32 +528,6 @@ echo $this->render('/widgets/drop_resume', [
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Job Security</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-md-12">
                         <?= $form->field($editReviewForm, 'likes')->textArea(['rows' => 4])->label('Likes'); ?>
                     </div>
@@ -644,7 +644,7 @@ display:none;
   white-space: nowrap;
   cursor: pointer;
   font-size: 200%;
-  color: #36c6d3;
+  color:#fa8f01;
   font-family: "FontAwesome";
 }
 .star-rating1 fieldset:not(:checked) label:before {
@@ -652,8 +652,8 @@ display:none;
 }
 .star-rating1 fieldset:not(:checked) label:hover,
 .star-rating1 fieldset:not(:checked) label:hover ~ label {
-  color:#36c6d3;
-  text-shadow: 0 0 3px #36c6d3;
+  color:#fa8f01;
+  text-shadow: 0 0 3px #fa8f01;
 }
 .star-rating1 fieldset:not(:checked) label:hover:before,
 .star-rating1 fieldset:not(:checked) label:hover ~ label:before {
@@ -1560,6 +1560,7 @@ $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerCssFile('https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
