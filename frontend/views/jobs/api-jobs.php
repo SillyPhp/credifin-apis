@@ -436,15 +436,22 @@ border: 1px solid #eee;
     font-size: 13px;
     font-family: roboto;
 }
-.job-thumb a{
-    width: 100px;
-    height: 100px;
+.job-thumb{
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{margin:5px;}
+.job-thumb img{
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
+}
 .overlay-top{
     width: 80%;
     margin: auto;
@@ -540,7 +547,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     position: relative;
     color: #fff;
     border: 2px solid #fff;
-    line-height: 24px;
+    line-height: 26px;
 }
 .effect a i {
   font-size: 14px;
@@ -578,7 +585,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
     .job-head-info{
         max-width: 275px;
         text-align: left;
@@ -617,9 +623,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;
@@ -760,12 +763,6 @@ $this->registerCss("
     }
     #new_resume,#use_existing{
         display:none;
-    }
-    #logo_img{
-        width: 115px;
-        height: 115px;
-        background-color:#fff;
-        object-fit: contain;
     }
     .block.overlape {
         z-index: 2;
@@ -1185,24 +1182,6 @@ $this->registerCss("
         text-align: center;
         border: none;
     }
-    .job-single-head.style2 .job-thumb {
-//        float: left;
-        width: 100%;
-        text-align: center;
-        margin-top:20px !important;
-        margin:0 auto;
-    }
-    .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
-        float: none;
-        display: inline-block;
-        width: auto;
-        border: none;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        -ms-border-radius: 50%;
-        -o-border-radius: 50%;
-        border-radius: 50%;
-    }
     .job-single-head.style2 .job-head-info {
         width: 100%;
         display: inherit;
@@ -1240,21 +1219,6 @@ $this->registerCss("
         -o-border-radius: 8px;
         border-radius: 8px;
         color: #ffffff;
-    }
-    .job-thumb {
-//        display: table-cell;
-//        vertical-align: top;
-//        width: 107px;
-    }
-    .job-thumb img {
-        float: left;
-        width: 100%;
-        border: 2px solid #e8ecec;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        -ms-border-radius: 8px;
-        -o-border-radius: 8px;
-        border-radius: 8px;
     }
     .job-head-info {
         display: table-cell;

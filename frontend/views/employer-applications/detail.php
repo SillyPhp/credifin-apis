@@ -1035,12 +1035,6 @@ button.lc-item-video-menu {
     #new_resume,#use_existing{
         display:none;
     }
-    #logo_img{
-        max-width: 85px !Important;
-        max-height: 100px !Important;
-        background-color:#fff;
-        object-fit: contain;
-    }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
     .block.no-padding{padding-top:0; padding-bottom:0; }
@@ -1466,30 +1460,8 @@ button.lc-item-video-menu {
         text-align: center;
         border: none;
     }
-    .job-single-head.style2 .job-thumb {
-//        float: left;
-//        width: 100%;
-        text-align: center;
-        margin-top:20px;
-    }
-    .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
-        float: none;
-        display: inline-block;
-        width: auto;
-        border: none;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        -ms-border-radius: 50%;
-        -o-border-radius: 50%;
-        border-radius: 50%;
-    }
     .job-single-head.style2 .job-head-info {
-//        float: left;
-//        width: 100%;
-//        display: inherit;
-//        padding: 0;
         margin-top: 15px;
-//        margin-bottom: 18px;
     }
     .job-single-head.style2 .job-head-info p {
         float: left;
@@ -1520,29 +1492,7 @@ button.lc-item-video-menu {
         border-radius: 8px;
         color: #ffffff;
     }
-    .job-thumb {
-//        display: table-cell;
-//        vertical-align: top;
-//        width: 107px;
-    }
-    .job-thumb img {
-        float: left;
-        width: 100%;
-        border: 2px solid #e8ecec;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        -ms-border-radius: 8px;
-        -o-border-radius: 8px;
-        border-radius: 8px;
-    }
-//    .job-head-info {
-//        display: table-cell;
-//        vertical-align: middle;
-//        padding-left: 25px;
-//    }
     .job-head-info h4 {
-//        float: left;
-//        width: 100%;
         font-family: roboto;
         font-size: 17px;
         font-weight: 600;
