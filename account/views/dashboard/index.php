@@ -29,6 +29,7 @@ endif;
                 'services' => $services,
             ]);
             ?>
+            <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -357,7 +358,7 @@ endif;
                         ?>
                     </div>
                 </div>
-                <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
+
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
             <!--                <div class="portlet-title" style="border-bottom:none;">-->
