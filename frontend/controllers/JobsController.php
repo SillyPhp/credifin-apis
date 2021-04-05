@@ -834,7 +834,12 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $application_details = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.*'])
+                ->select(['a.*',
+                    '(CASE
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("/job/", a.slug)
+                END) as link'])
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
