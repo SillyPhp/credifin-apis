@@ -791,4 +791,46 @@ width:100% !important;
             parentElem.querySelector('.errorMsg').style.display = "none";
         }
     }
+
+    childrenInfoForm = () => {
+        let count = 1;
+        let childInfoForm = `<div class="row">
+            <div class="col-md-12">
+                <h3 class="heading-style">Children Information</h3>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="applicant_name_${count}" class="input-group-text">
+                        Name
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="applicant_name_${count}"
+                     name="applicant_name_${count}" placeholder="Enter Full Name">
+                </div>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="school_name_${count}" class="input-group-text">
+                        School Name
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="school_name_${count}"
+                        name="school_name_${count}" placeholder="Enter Full Name">
+                </div>
+                <div class="form-group" id="schoolAttend" >
+                    <input type="checkbox" class="make-switch os-email"
+                           onchange="showSchoolField()"
+                           data-size="small">
+                        <label class="control-label">Both Attend The Same School</label>
+                </div>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="class_name_${count}" class="input-group-text">
+                        Class
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="class_name_${count}"
+                        name="class_name_${count}" placeholder="Enter Full Name">
+                </div>
+            </div>
+        </div>`
+    }
 </script>
