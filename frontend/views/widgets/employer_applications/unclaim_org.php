@@ -18,7 +18,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 <?php
             } else {
                 ?>
-                <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
+                <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
                         color="<?= $initial_color; ?>" font="48px"></canvas>
                 <?php
             }
@@ -197,6 +197,11 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $this->registerCss('
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
 .iti{width:100%;}
 .intl-tel-input{width:100%;}
 .form-whats {
