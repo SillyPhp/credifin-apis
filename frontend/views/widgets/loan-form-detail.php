@@ -223,6 +223,7 @@ use borales\extensions\phoneInput\PhoneInput;
 <?php
 $this->registerCss('
 .padd30 {
+    padding-top: 20px;
     padding-bottom: 20px;
 }
 .le-img img{

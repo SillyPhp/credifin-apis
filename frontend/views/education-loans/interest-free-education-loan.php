@@ -651,11 +651,10 @@ html {
 }
 .benefit-bg {
     background-color: #edf4fc;
-    padding: 20px 0px 30px;
+    padding: 20px 0px 20px;
 }
 .bene-head {
-    margin: 20px 20px 60px;
-    text-align: center;
+    margin: 0px 20px 60px;
 }
 .bene-head h2 {
     font-size: 28pt;
