@@ -9,9 +9,10 @@ use yii\helpers\Url;
                         <form action="" id="myForm">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h1 class="heading-style">Education Loan</h1>
+                                    <h3 class="heading-style">School Fee Loan</h3>
                                 </div>
                             </div>
+                            <div class="row">
                             <div class="col-md-12 padd-20">
                                 <div class="form-group">
                                     <label for="number" class="input-group-text">
@@ -21,25 +22,21 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Date Of Birth (mm/dd/yyyy)
-                                    </label>
-                                    <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                        <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
-                                        <div class="input-group-addon">
-                                            <span class=""><i class="fas fa-calendar-alt"></i></span>
-                                        </div>
+                                    <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect02">
+                                            Current City Where You Live
+                                        </label>
+                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                               autocomplete="off" placeholder="City"/>
                                     </div>
-                                </div>
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="form-group">
-                                    <label class="input-group-text" for="inputGroupSelect02">
-                                        Current City Where You Live
+                                    <label for="annulIncome" class="input-group-text">
+                                        Salary(Income)
                                     </label>
-                                    <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                           autocomplete="off" placeholder="City"/>
+                                    <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                           placeholder="Enter Loan Amount">
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
@@ -62,52 +59,104 @@ use yii\helpers\Url;
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="form-group">
-                                    <label for="annulIncome" class="input-group-text">
-                                        Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
-                                    </label>
-                                    <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
-                                           placeholder="Enter Loan Amount">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
                                     <div class="radio-heading input-group-text">
-                                        Employment Type
+                                        Number Of Children (Applying Loan For)
                                     </div>
+                                    <input type="text" class="form-control" id="">
                                     <ul class="displayInline">
                                         <li>
-                                            <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
-                                            <label for="sal-1">Teacher</label>
+                                            <input type="radio" value="1" id="sal-1" name="childNum" onchange="showChildInfo(event)"
+                                                   class="checkbox-input services">
+                                            <label for="sal-1">One</label>
                                         </li>
                                         <li>
-                                            <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                            <label for="self-1">Admin Staff</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                            <label for="non-1">Other</label>
+                                            <input type="radio" value="2" id="self-1" name="childNum" onchange="showChildInfo(event)"
+                                                   class="checkbox-input services">
+                                            <label for="self-1">Two</label>
                                         </li>
                                     </ul>
                                 </div>
+
                             </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="radio-heading input-group-text">
-                                    History With Intitution
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="input-group-text" for="inputGroupSelect02">
+                                       Number Of Children (Applying Loan For)
+                                    </label>
+                                    <input type="text" class="form-control" id="noChild" name="noChild"
+                                        onblur="checkChildInfo(event)"   placeholder="Enter Email Address">
+                                    <p class="errorMsg"></p>
+                               </div>
+                                <div class="form-group">
+                                    <input type="checkbox" class="make-switch os-email" id="job-application"
+                                           data-size="small">
+                                    <label class="control-label">Attend The Same School</label>
                                 </div>
+                            </div>
+                            </div>
+                            <div class="child-info-div">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="annulIncome" class="input-group-text">
-                                            Years
-                                        </label>
-                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
-                                               placeholder="Years">
+                                    <div class="col-md-12">
+                                        <h3 class="heading-style">Children Information</h3>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="annulIncome" class="input-group-text">
-                                            Months
-                                        </label>
-                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
-                                               placeholder="Months">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Name
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                School Name
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
+                                        <div class="form-group" id="schoolAttend" >
+                                            <input type="checkbox" class="make-switch os-email"
+                                                   onchange="showSchoolField()"
+                                                   data-size="small">
+                                            <label class="control-label">Both Attend The Same School</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Class
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="childTwo">
+                                    <div class="col-md-12">
+                                        <h3 class="heading-style">2nd Child Information</h3>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Name
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20" id="schoolField">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                School Name
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Class
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -130,11 +179,13 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="el-pos-rel">
                         <div class="max-300">
-                            <div class="cl-heading">Personal Loan For Teachers</div>
+                            <div class="cl-heading">School Fee Loan</div>
                             <ul class="loan-benefits">
-                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
-                                    the students in a particular <span>academic year</span>.</li>
-                                <li>- Loan will be <span>repaid</span> with in the semester</li>
+                                <li>Being a parent, you would like to provide the best education facilities to your children.
+                                    With the rise in school tuition expenses and overall cost of learning, we’re left seeking
+                                    quality education without soaring education fees. Now, with our <span>School Fee Loan</span>
+                                    you can conveniently pay your child’s school fees without any worry.</li>
+<!--                                <li>- Loan will be <span>repaid</span> with in the Year</li>-->
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
@@ -201,7 +252,7 @@ $this->registerCss('
 }
 
 .padd-20{
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 .loan-benefits li{
     color:#f3f3f2;
@@ -213,7 +264,10 @@ $this->registerCss('
     color:#fff;
 }
 button{
-border: 1px solid #ddd !important;
+    border: 1px solid #ddd !important;
+}
+#childTwo{
+    diaplay: none;
 }
 #countryName{
     display: none;
@@ -342,6 +396,9 @@ border: 1px solid #ddd !important;
     position:fixed;
     background:#00a0e3;
 }
+.child-info-div{
+    display: none; 
+}
 @media only screen and (max-width: 500px){
     .sign-up-details{
         width:70vw;
@@ -378,7 +435,8 @@ border: 1px solid #ddd !important;
 .cl-heading{
     color:#fff;
     font-size:20px;
-//    padding-top:30px;
+    padding-top:30px;
+    padding-bottom: 10px;
     font-weight:bold;
 }
 .footer{
@@ -656,6 +714,9 @@ top:6px !important;
 {
 width:100% !important;
 }
+.errorMsg{
+    display: none;
+}
 @media screen and (max-width: 500px){
     .select2{
         width: 100% !important;
@@ -698,4 +759,36 @@ width:100% !important;
 }
 
 ');
+?>
+<script>
+    showChildInfo = (event) =>{
+        let eventValue  = event.currentTarget.value;
+        if(eventValue == 1){
+            document.querySelector('.child-info-div').style.display = 'block';
+            document.querySelector('#childTwo').style.display = 'none';
+            document.querySelector('#schoolAttend').style.display = 'none';
+        }else if(eventValue == 2){
+            document.querySelector('.child-info-div').style.display = 'block';
+            document.querySelector('#childTwo').style.display = 'block';
+            document.querySelector('#schoolAttend').style.display = 'block';
+        }
+    }
+    showSchoolField = () => {
+        if(event.target.checked){
+            document.querySelector('#schoolField').style.display = 'none'
+        }else {
+            document.querySelector('#schoolField').style.display = 'block'
+        };
+    }
+    checkChildInfo = (event) => {
+        let num = event.target.value;
+        let parentElem = event.target.parentElement;
+        if(!/^[0-9]+$/.test(num)){
+            parentElem.querySelector('.errorMsg').style.display = "block";
+            parentElem.querySelector('.errorMsg').innerHTML = "Please Enter Digit";
 
+        }else{
+            parentElem.querySelector('.errorMsg').style.display = "none";
+        }
+    }
+</script>

@@ -134,7 +134,7 @@ use yii\helpers\Url;
                             <ul class="loan-benefits">
                                 <li>- <span>Get considerable loan amount</span> with our loan for teachers, you can get a loan upto
                                     50% of your salary amount to help you meet your urgent <span>financial</span> needs.</li>
-                                <li>- Loan amount can for any number of reasons </li>
+
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
