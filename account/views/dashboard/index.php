@@ -29,7 +29,9 @@ endif;
                 'services' => $services,
             ]);
             ?>
+            <?php if (Yii::$app->user->identity->organization->organization_enc_id){ ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
