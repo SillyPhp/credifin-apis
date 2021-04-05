@@ -364,7 +364,7 @@ AppAssets::register($this);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="f-logo">
                         <a href="<?= "/"; ?>" title='Empower Youth'>
                             <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
@@ -373,7 +373,7 @@ AppAssets::register($this);
                     </div>
                     <div class="ftxt">Empowering youth and going beyond</div>
                 </div>
-                <div class="col-md-3 col-sm-12">
+                <div class="col-md-3 col-sm-12 col-xs-12">
                     <div class="app-btn">
                         <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
                            title='Download Empower Youth App on Google Play' target="_blank">
@@ -921,7 +921,7 @@ $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 var hasAccessForSubHeader = true;
-var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare"];
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
 for(var jj = 0;jj<preventHeaderFor.length;jj++){
     if(thispageurl == preventHeaderFor[jj]){
         hasAccessForSubHeader = false;

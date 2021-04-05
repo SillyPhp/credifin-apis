@@ -42,6 +42,7 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
+    'slug'=>$slug
 ]);
 ?>
 <section class="rh-header">
@@ -159,7 +160,7 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="review-summary">
                     <h1 class="heading-style" style="text-align: center !important;">Overall Ratings</h1>
                     <div class="row">
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
                                 <div class="rating-large"><?= $round_avg ?>/5</div>
                                 <div class="com-rating-1">
@@ -168,10 +169,10 @@ echo $this->render('/widgets/drop_resume', [
                                     <?php } ?>
                                 </div>
                             </div>
-                        </div>n1
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Job Security</div>
                                 <div class="summary-box">
@@ -184,7 +185,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Career growth</div>
                                 <div class="summary-box">
@@ -197,7 +198,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Company culture</div>
                                 <div class="summary-box">
@@ -210,7 +211,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Salary & Benefits</div>
                                 <div class="summary-box">
@@ -223,7 +224,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Work Satisfaction</div>
                                 <div class="summary-box">
@@ -236,7 +237,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Work-Life Balance</div>
                                 <div class="summary-box">
@@ -249,7 +250,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Skill development</div>
                                 <div class="summary-box">
@@ -1243,6 +1244,21 @@ border: 2px solid #cadfe8 !important;
     .oa-review{
         padding-bottom:20px;
     }
+        .user-rating{
+        display: block !important;
+        justify-content: normal !important;
+    }
+    .ur-bg{
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+    .refirst {
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px !important;
+    }
+    .user-review-main {
+        border-left: 0px;
+    }
 }
 
 @media only screen and (max-width: 767px){
@@ -1522,7 +1538,7 @@ $headScript = <<< JS
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
+       url : '/organizations/post-reviews?slug=$slug&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)

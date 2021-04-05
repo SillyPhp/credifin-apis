@@ -25,6 +25,36 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
+<section class="study-maps-sec">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mapsFlex">
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/America-flag-map.png') ?>">
+                        <h3>Study In USA</h3>
+                        <a href="/education-loans/study-in-usa">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Australia-flag-map.png') ?>">
+                        <h3>Study In Australia</h3>
+                        <a href="/education-loans/study-in-australia">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/canada-map-flag.png') ?>">
+                        <h3>Study In Canada</h3>
+                        <a href="/education-loans/study-in-canada">Learn More</a>
+                    </div>
+                    <div class="study-map-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/europe-flag-map.png') ?>">
+                        <h3>Study In Europe</h3>
+                        <a href="/education-loans/study-in-europe">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
 <section class="bg-blue">
@@ -36,7 +66,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tc">
                 <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/call-us1.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -242,10 +272,55 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
+<?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
 .padd30{
     padding-bottom: 30px;
+}
+.study-maps-sec{
+//    border-top: 1px solid #eee;
+//    border-bottom: 1px solid #eee; 
+    margin-top: -130px;
+    min-height: 130px;
+    background: rgba(255,255,255,.6);
+}
+.study-maps-sec .container{
+    padding-top: 0px !important
+}
+.mapsFlex{
+    display: flex;
+    flex-wrap: wrap;
+}
+.study-map-box{
+    width: 25%; 
+    padding: 10px 15px;
+    text-align: center;
+    min-height: 130px;
+    border-left: 1px solid #eee;  
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.study-map-box:first-child{
+    border-left: none;
+}
+.study-map-box img{
+    max-width: 100px;
+}
+.study-map-box h3{
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    color:#ff7803;
+}
+.study-map-box a{
+    color: #000
 }
 .le-img img{
     border-radius: 15px;
@@ -254,16 +329,24 @@ $this->registerCss('
     font-size: 25px;
     color: #fff;
 }
+.study-in-usa-bg{
+    padding-top: 100px;
+}
 .study-in-usa-bg ul li{
     display: inline;
     margin-right: 10px;
 }
 .apply-now{
     padding: 10px 15px;
-    background: #00a0e3;
-    color: #fff;
-    border: 1px solid #00a0e3;
-    box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -320,34 +403,38 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 500px;
-       background-repeat: no-repeat;
-       background-size: cover;
-       display: flex;
-       align-items: center;
-       position: relative;
-        text-align: center;
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
+    min-height: 500px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+//	align-items: center;
+	position: relative;
+	text-align: center;
+	height: 100vh;
+//	max-height: 700px;
 }
 .opacity-div{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,.85);
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
-    font-size: 23px;
-    font-family: roboto;
-    color: #000;
-    padding: 0 0 18px;
-    line-height: 30px;
+    font-size: 24px;
+	font-family: roboto;
+	color: #fff;
+	padding: 0 0 18px;
+	line-height: 30px;
 }
 .study-in-usa-bg h1{
-    font-size: 50px;
-    margin-bottom: 20px;
-    color: #ff7803;
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;

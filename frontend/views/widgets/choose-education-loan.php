@@ -113,13 +113,16 @@ $this->registerCss('
 }
 .detail-div{
     text-align: center;
-    padding: 0px 30px;
+    padding-right: 30px;
     font-size: 17px;
     line-height: 24px;
     color: #000;
     margin-top: 15px;
     font-family: roboto;
     margin-bottom: 20px;
+}
+.detail-div p{
+    text-align: justify;
 }
 .detail-div img{
     max-width: 100px;
@@ -148,8 +151,7 @@ $this->registerJS($script)
             let clickedElem = e.currentTarget;
             clickedElem.classList.add('ciActive');
             let clickedContent = clickedElem.getAttribute('data-value')
-            let clickedImg = clickedElem.getAttribute('data-img')
-            console.log(clickedImg);
+            let clickedImg = clickedElem.getAttribute('data-img');
             let detailDiv = document.querySelector('.detail-div');
             detailDiv.querySelector('p').innerHTML = clickedContent;
             let detailImg = detailDiv.querySelector('img');

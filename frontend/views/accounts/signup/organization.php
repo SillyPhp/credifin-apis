@@ -51,21 +51,21 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
+            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
+            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Email')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
+            <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Website')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
             $form->field($model, 'organization_phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
-                    'allowExtensions' => false,
+                    'allowExtensions' => true,
                     'preferredCountries' => ['in'],
                     'nationalMode' => false,
                 ]
@@ -80,10 +80,10 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'new_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('password')]); ?>
+            <?= $form->field($model, 'new_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Password')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('confirm_password')]); ?>
+            <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Confirm_Password')]); ?>
         </div>
     </div>
     <div class="row">
@@ -93,15 +93,15 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
+            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('First_Name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
+            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Last_Name')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Email')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
@@ -124,7 +124,6 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-
 .intl-tel-input, .iti {
     width: 100%;
 }
@@ -132,5 +131,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
-.country-list{z-index:99 !important;}
+.country-list, .iti__country-list{z-index:99 !important;}
 ');

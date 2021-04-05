@@ -26,14 +26,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <h4><?= $org_name; ?></h4>
-            <div class="organization-details">
-                <!--            <h4>Company Detail</h4>-->
-                <?php if ($website): ?>
-                    <a href="<?= $website ?>">
-                        <i class="fas fa-unlink"> Visit on website</i>
-                    </a>
-                <?php endif; ?>
-            </div>
+<!--            <div class="organization-details">-->
+<!--                           <h4>Company Detail</h4>-->
+<!--                --><?php //if ($website): ?>
+<!--                    <a href="--><?//= $website ?><!--">-->
+<!--                        <i class="fas fa-unlink"> Visit on website</i>-->
+<!--                    </a>-->
+<!--                --><?php //endif; ?>
+<!--            </div>-->
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -127,25 +127,29 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     $link = Url::to('job/' . $application_slug, 'https');
                 }
                 ?>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
+                </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
                 </a>
             </div>
             <div class="wts-ap">
@@ -188,11 +192,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         <div class="down-img">
             <h3>Download Sharing Image</h3>
             <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
-<!--            <a href="--><?//= $Instaimage; ?><!--" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>-->
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
         </div>
     </div>
 <?php
 $this->registerCss('
+.iti{width:100%;}
+.intl-tel-input{width:100%;}
 #logo_img {
 	max-width: 85px !Important;
 	max-height: 100px !Important;
@@ -258,7 +264,7 @@ $this->registerCss('
 }
 .job-thumb a img{margin:5px;}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -346,7 +352,8 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   height: 40px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 8px;
+  margin-bottom: 10px;
   font-size: 17px;
   overflow: hidden;
   position: relative;
@@ -389,19 +396,19 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
+    .job-thumb{max-width: auto;}
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
+//        max-width: 275px;
+        text-align: center;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+//    .job-head-info h4{
+//        margin-left:25px !Important;
+//    }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+        float: none;
         display: inline-block;
         width: 42%;
     }

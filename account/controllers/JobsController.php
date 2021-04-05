@@ -405,6 +405,7 @@ class JobsController extends Controller
     {
         $coaching_category = new WidgetTutorials();
         $model = new ExtendsJob();
+        $catModel = new ApplicationForm();
         $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_jobs_stats"])
@@ -447,7 +448,7 @@ class JobsController extends Controller
             'addedColleges' => $addedColleges,
             'saveCollege' => $saveCollege,
             'jobs' => $this->__getApplications("Jobs"),
-            'primary_fields' => $this->getCategories()
+            'primary_fields' => $catModel->getPrimaryFields()
         ]);
     }
 
@@ -522,11 +523,11 @@ class JobsController extends Controller
             $colleges = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->select(['a.application_enc_id', 'a.college_enc_id', 'a.is_college_approved', 'b.name college_name', 'b.slug',
-                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END college_logo'
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END college_logo'
                 ])
                 ->joinWith(['collegeEnc b'], false)
                 ->where(['a.employer_application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
-                ->limit(10)
+                //->limit(10)
                 ->asArray()
                 ->all();
 
@@ -1869,8 +1870,6 @@ class JobsController extends Controller
                 ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
                 ->asArray()
                 ->all();
-//            print_r($applied_users);
-//            exit();
             return $this->render('all-applied-applications', [
                 'fields' => $applied_users,
                 'reasons'=>$reasons,
@@ -1886,7 +1885,7 @@ class JobsController extends Controller
             ->alias('z')
             ->select(['y1.name job_title','z.organization_enc_id','z.application_enc_id','z.slug','x2.name type'])
             ->joinWith(['appliedApplications a'=>function($a)use($type){
-                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
+                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
                 $a->andWhere(['a.is_deleted'=>0]);
                 $a->orderBy(['a.created_on'=>SORT_DESC]);
                 $a->groupBy(['a.applied_application_enc_id']);

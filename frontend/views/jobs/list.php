@@ -77,13 +77,6 @@ color: #2b7cb7;
 .main-content{
     min-height:100vh !important;
 }
-.connected-sortable{
-    padding: 15px 0 0 0 !important;
-}
-.close{
-    right: 12px !important;
-    top: -3px !important;
-}
 ');
 ?>
 
@@ -100,6 +93,7 @@ color: #2b7cb7;
                 <?=
                 $this->render('/widgets/search-bar1',['type'=>'jobs']);
                 ?>
+
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>

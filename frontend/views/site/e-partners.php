@@ -25,7 +25,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Tech-driven-platform.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Tech-Driven-Platform.png') ?>">
                     </div>
                     <h3>Tech Driven Platform</h3>
                     <p>We embrace change and innovation for developing creative solutions for all your needs.</p>
@@ -34,7 +34,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/dashboard1.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Personalized-Dashboard.png') ?>">
                     </div>
                     <h3>Personalized Dashboard</h3>
                     <p>With a personalized dashboard, you will be be able to customized it as per your needs and requirements.</p>
@@ -43,7 +43,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/transparency.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Transparent-Process.png') ?>">
                     </div>
                     <h3>Transparent Process </h3>
                     <p>Our operations are open, honest and straight forward.</p>
@@ -52,7 +52,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Attractive-incentives.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Attractive-Incentives.png') ?>">
                     </div>
                     <h3>Attractive Incentives</h3>
                     <p>Attractive incentives will be given on your every sale.</p>
@@ -155,85 +155,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section class="ptb30 bg-gray">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                             alt="ICICI Bank">
-                    </div>
-                    <div class="lp-name">ICICI Bank</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                             alt="Avanse Financial Services">
-                    </div>
-                    <div class="lp-name">Avanse Financial Services</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
-                             alt="InCred">
-                    </div>
-                    <div class="lp-name">InCred</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                             alt="Exclusive Leasing & Finance">
-                    </div>
-                    <div class="lp-name">Exclusive Leasing & Finance</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
-                    </div>
-                    <div class="lp-name">Agile Finserv</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png') ?>" alt="EZ Capital">
-                    </div>
-                    <div class="lp-name">EZ Capital</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
-                    </div>
-                    <div class="lp-name">PHF Leasing</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="Amrit Malwa Private Limtied">
-                    </div>
-                    <div class="lp-name">We Pay India</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/Our-lending-partners') ?>
 <section class="ptb30">
     <div class="container">
         <h2 class="heading-style ">Need More Help</h2>
@@ -318,7 +240,7 @@ $this->registerCss('
 }
 .eP-benefit{
     text-align: center;
-    box-shadow: 17px 17px 0px -11px #00a0e4;
+    box-shadow: 17px 17px 0px -11px #eee;
     min-height: 240px;
     margin-bottom: 30px;
     display: flex;

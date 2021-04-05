@@ -7,10 +7,13 @@ namespace api\modules\v3\controllers;
 use common\models\AssignedCollegeCourses;
 use common\models\ClaimServiceableLocations;
 use common\models\FollowedOrganizations;
+use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
 use common\models\OrganizationReviewLikeDislike;
 use common\models\OrganizationReviews;
 use common\models\Organizations;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\web\Response;
 use yii\helpers\Url;
@@ -49,12 +52,28 @@ class EyCollegeProfileController extends ApiBaseController
             ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.affiliated_to', 'b1.name city_name', 'a.phone',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
             ])
-            ->innerJoinWith(['organizationOtherDetails b' => function ($b) {
+            ->joinWith(['organizationOtherDetails b' => function ($b) {
                 $b->joinWith(['locationEnc b1']);
             }], false)
-            ->where(['a.slug' => $params['slug'], 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.is_erexx_registered' => 1])
+            ->where(['a.slug' => $params['slug'], 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->asArray()
             ->one();
+
+        if (!$college_detail) {
+            $unclaimed = UnclaimedOrganizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.name city_name', 'a.phone',
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+                ->joinWith(['cityEnc b'], false)
+                ->where(['a.slug' => $params['slug'], 'a.status' => 1, 'a.is_deleted' => 0,])
+                ->asArray()
+                ->one();
+
+            if ($unclaimed) {
+                $unclaimed['website'] = $this->get_domain($unclaimed['website_link']);
+                return $this->response(200, ['status' => 200, 'data' => $unclaimed]);
+            }
+        }
 
         if ($college_detail) {
             $college_detail['website'] = $this->get_domain($college_detail['website_link']);
@@ -124,6 +143,59 @@ class EyCollegeProfileController extends ApiBaseController
 
     }
 
+    //Global query to get unclaimed org data
+    private function __unclaimedReviews($options)
+    {
+        $primary_result = NewOrganizationReviews::find();
+
+        if ($options['main']['alias']) {
+            $primary_result->alias($options['main']['alias'])
+                ->select($options['main']['selections']);
+        } else {
+            $primary_result->alias($options['main']['selections']);
+        }
+
+        if (count($options['joins']['created_by']) > 0) {
+            $primary_result->joinWith(['createdBy ' . $options['joins']['created_by']['alias']], false);
+        }
+
+        if ($options['joins']['educational_stream']) {
+            $primary_result->joinWith(['educationalStreamEnc ' . $options['joins']['educational_stream']['alias']], false);
+        }
+
+        if ($options['joins']['category']) {
+            $primary_result->joinWith(['categoryEnc ' . $options['joins']['category']['alias']], false);
+        }
+
+        if ($options['joins']['designation']) {
+            $primary_result->joinWith(['designationEnc ' . $options['joins']['designation']['alias']], false);
+        }
+
+        $primary_result->where($options['condition'][0]);
+
+        if (count($options['condition']) > 1) {
+            for ($i = 1; $i < count($options['condition']); $i++) {
+                $primary_result->andWhere($options['condition'][$i]);
+            }
+        }
+
+        $result = null;
+
+        if ($options['quant'] == 'one') {
+            $result = $primary_result->asArray()->one();
+        } elseif ($options['count'] == true) {
+            $result = $primary_result->count();
+        } else {
+            $result = $primary_result
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $options['user_id'] . '") DESC, a.created_on DESC')])
+                ->limit($options['limit'])
+                ->offset(($options['page'] - 1) * $options['limit'])
+                ->asArray()->all();
+        }
+
+        return $result;
+    }
+
     public function actionReviews()
     {
         $parameters = \Yii::$app->request->post();
@@ -142,6 +214,18 @@ class EyCollegeProfileController extends ApiBaseController
         $org = Organizations::find()
             ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        //if parameter not empty then find data of organization un_claimed
+        $unclaimed_org = UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->joinWith(['organizationTypeEnc b'], false)
+            ->where([
+                'a.organization_enc_id' => $org_enc_id,
+                'a.status' => 1
+            ])
             ->asArray()
             ->one();
 
@@ -203,6 +287,165 @@ class EyCollegeProfileController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+        } elseif (!empty($unclaimed_org)) {
+            $options = [];
+            $options['main'] = [
+                'alias' => 'a',
+                'selections' => [
+                    'ROUND(AVG(a.job_security)) Job_Security',
+                    'ROUND(AVG(a.growth)) Career_Growth',
+                    'ROUND(AVG(a.organization_culture)) Company_Culture',
+                    'ROUND(AVG(a.compensation)) Salary_And_Benefits',
+                    'ROUND(AVG(a.work)) Work_Satisfaction',
+                    'ROUND(AVG(a.work_life)) Work_Life_Balance',
+                    'ROUND(AVG(a.skill_development)) Skill_Development'
+                ]
+            ];
+
+            $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+            $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
+
+            $options['quant'] = 'one';
+
+            $emp_stats = $this->__unclaimedReviews($options);
+
+            if ($unclaimed_org['business_activity'] == 'College') {
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'ROUND(AVG(academics)) Academics',
+                        'ROUND(AVG(faculty_teaching_quality)) Faculty_Teaching_Quality',
+                        'ROUND(AVG(infrastructure)) Infrastructure',
+                        'ROUND(AVG(accomodation_food)) Accomodation_Food',
+                        'ROUND(AVG(placements_internships)) Placements_Internships',
+                        'ROUND(AVG(social_life_extracurriculars)) Social_Life_Extracurriculars',
+                        'ROUND(AVG(culture_diversity)) Culture_Diversity'
+                    ]
+                ];
+
+                $options['condition'][] = ['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1];
+                $options['condition'][] = ['in', 'reviewer_type', [2, 3]];
+
+
+                $options['quant'] = 'one';
+
+                $stats_students = $this->__unclaimedReviews($options);
+            } elseif ($unclaimed_org['business_activity'] == 'School') {
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'ROUND(AVG(student_engagement)) Student_Engagement',
+                        'ROUND(AVG(school_infrastructure)) School_Infrastructure',
+                        'ROUND(AVG(faculty)) Faculty',
+                        'ROUND(AVG(accessibility_of_faculty)) Accessibility_Of_Faculty',
+                        'ROUND(AVG(co_curricular_activities)) Co_Curricular_Activities',
+                        'ROUND(AVG(leadership_development)) Leadership_Development',
+                        'ROUND(AVG(sports)) Sports'
+                    ]
+                ];
+
+                $options['condition'][] = ['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1];
+                $options['condition'][] = ['in', 'reviewer_type', [4, 5]];
+
+                $options['quant'] = 'one';
+
+                $stats_students = $this->__unclaimedReviews($options);
+            } elseif ($unclaimed_org['business_activity'] == 'Educational Institute') {
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'ROUND(AVG(student_engagement)) Student_Engagement',
+                        'ROUND(AVG(school_infrastructure)) School_Infrastructure',
+                        'ROUND(AVG(faculty)) Faculty',
+                        'ROUND(AVG(value_for_money)) Value_For_Money',
+                        'ROUND(AVG(teaching_style)) Teaching_Style',
+                        'ROUND(AVG(coverage_of_subject_matter)) Coverage_Of_Subject_Matter',
+                        'ROUND(AVG(accessibility_of_faculty)) Accessibility_Of_Faculty'
+                    ]
+                ];
+
+                $options['condition'][] = ['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1];
+                $options['condition'][] = ['in', 'reviewer_type', [6, 7]];
+
+                $options['quant'] = 'one';
+
+                $stats_students = $this->__unclaimedReviews($options);
+
+            }
+
+            if (isset($parameters['user_enc_id']) && !empty($parameters['user_enc_id'])) {
+                $follow = UnclaimedFollowedOrganizations::find()
+                    ->select('followed')
+                    ->where(['created_by' => $parameters['user_enc_id'], 'organization_enc_id' => $unclaimed_org['organization_enc_id']])
+                    ->one();
+
+                $hasReviewed = NewOrganizationReviews::find()
+                    ->select(['organization_enc_id'])
+                    ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'created_by' => $parameters['user_enc_id']])
+                    ->exists();
+
+                if ($hasReviewed) {
+
+                    $type = NewOrganizationReviews::find()
+                        ->select(['reviewer_type'])
+                        ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'created_by' => $parameters['user_enc_id']])
+                        ->asArray()
+                        ->one();
+
+                    $type = $type['reviewer_type'];
+
+                    if ($type == 0 || $type == 1) {
+                        $reviewed_in = 'company';
+                    } elseif ($type == 2 || $type == 3) {
+                        $reviewed_in = 'college';
+                    } elseif ($type == 4 || $type == 5) {
+                        $reviewed_in = 'school';
+                    } elseif ($type == 6 || $type == 7) {
+                        $reviewed_in = 'institute';
+                    }
+                }
+            }
+
+
+            $overall = NewOrganizationReviews::find()
+                ->select(['ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
+                ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1, 'is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if (!empty($emp_stats)) {
+                $overall_avg = array_sum($emp_stats) / count($emp_stats);
+                $round_avg = round($overall_avg);
+            }
+            if (!empty($stats_students)) {
+                $student_overall_avg = array_sum($stats_students) / count($stats_students);
+                $round_students_avg = round($student_overall_avg);
+            }
+
+            $overall['average_rating'] = (string)(($round_avg) ? $round_avg : $round_students_avg);
+
+            $org = $unclaimed_org;
+
+            $data['overall_rating'] = $emp_stats;
+            $data['overall_rating']['average_count'] = $round_avg;
+            if ($org['business_activity'] != 'Others' && $stats_students != null) {
+                $data['student_overall_rating'] = $stats_students;
+                $data['student_overall_rating']['average_count'] = $round_students_avg;
+            }
+            $data['org_detail'] = $org;
+            $data['total_reviewers'] = $overall['reviews_cnt'];
+            $data['reviews_count'] = $overall['average_rating'];
+            $data['follow'] = $follow->followed == 1 ? true : false;
+            $data['hasReviewed'] = $hasReviewed;
+            $data['review_type'] = $reviewed_in;
+            if (!empty($data)) {
+                return $this->response(200, ['status' => 200, 'data' => $data]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
@@ -227,7 +470,7 @@ class EyCollegeProfileController extends ApiBaseController
         if (isset($parameters['org_enc_id']) && !empty($parameters['org_enc_id'])) {
             $org_enc_id = $parameters['org_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422, 'Missing Information 1');
         }
 
         $user_id = $parameters['user_enc_id'];
@@ -236,6 +479,18 @@ class EyCollegeProfileController extends ApiBaseController
         $org = Organizations::find()
             ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        //if parameter not empty then find data of organization un_claimed
+        $unclaimed_org = UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->joinWith(['organizationTypeEnc b'], false)
+            ->where([
+                'a.organization_enc_id' => $org_enc_id,
+                'a.status' => 1
+            ])
             ->asArray()
             ->one();
 
@@ -307,6 +562,340 @@ class EyCollegeProfileController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+        } elseif (!empty($unclaimed_org)) {
+
+            if (isset($parameters['type']) && !empty($parameters['type'])) {
+                $type = $parameters['type'];
+            } else {
+                return $this->response(422, 'Missing Information');
+            }
+
+            if ($type == 'employee') {
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.review_enc_id',
+                        'a.average_rating',
+                        '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type',
+                        'a.likes',
+                        'a.dislikes',
+                        'c.name profile',
+                        'd.designation',
+                        'a.created_on',
+                        'a.created_by',
+                        'a.reviewer_type',
+                        'a.show_user_details',
+                        'a.from_date',
+                        'a.to_date',
+                        'b.first_name',
+                        'b.last_name',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'b.initials_color'
+                    ]
+                ];
+
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['joins']['category'] = [
+                    'alias' => 'c'
+                ];
+
+                $options['joins']['designation'] = [
+                    'alias' => 'd'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+                $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
+
+                $options['user_id'] = $user_id;
+
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
+
+                $options['quant'] = 'all';
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $emp_reviews = $this->__unclaimedReviews($options);
+
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.job_security Job_Security',
+                        'a.growth Career_Growth',
+                        'a.organization_culture Company_Culture',
+                        'a.compensation Salary_And_Benefits',
+                        'a.work Work_Satisfaction',
+                        'a.work_life Work_Life_Balance',
+                        'a.skill_development Skill_Development',
+                    ]
+                ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $emp_rating = $this->__unclaimedReviews($options);
+
+                for ($i = 0; $i < count($emp_reviews); $i++) {
+                    if ($emp_reviews[$i]['created_by'] == $user_id) {
+                        $emp_reviews[$i]['user_review'] = true;
+                    } else {
+                        $emp_reviews[$i]['user_review'] = false;
+                    }
+                    $emp_reviews[$i]['link'] = Url::to($unclaimed_org['slug'] . '/reviews', 'https');
+                    $emp_reviews[$i]['rating'] = $emp_rating[$i];
+                }
+
+                $data['reviews'] = $emp_reviews;
+                $data['count'] = $count;
+
+                if (!empty($emp_reviews)) {
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+            }
+
+
+            if ($unclaimed_org['business_activity'] == 'College' && $type == 'student') {
+
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.review_enc_id',
+                        'a.average_rating',
+                        '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type',
+                        'a.likes',
+                        'a.dislikes',
+                        'a.created_on',
+                        'a.created_by',
+                        'a.show_user_details',
+                        'a.reviewer_type',
+                        'a.from_date',
+                        'a.to_date',
+                        'b.first_name',
+                        'b.last_name',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'b.initials_color',
+                        'c.name profile'
+                    ]
+                ];
+
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['joins']['educational_stream'] = [
+                    'alias' => 'c'
+                ];
+
+
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+                $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
+                $options['user_id'] = $user_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
+                $options['quant'] = 'all';
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $reviews_students = $this->__unclaimedReviews($options);
+
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.academics Academics',
+                        'a.faculty_teaching_quality Faculty_Teaching_Quality',
+                        'a.infrastructure Infrastructure',
+                        'a.accomodation_food Accomodation_Food',
+                        'a.placements_internships Placements_Internships',
+                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
+                        'a.culture_diversity Culture_Diversity',
+                    ]
+                ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for ($i = 0; $i < count($reviews_students); $i++) {
+                    if ($reviews_students[$i]['created_by'] == $user_id) {
+                        $reviews_students[$i]['user_review'] = true;
+                    } else {
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'] . '/reviews', 'https');
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
+
+            } elseif ($unclaimed_org['business_activity'] == 'School' && $type == 'student') {
+
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.review_enc_id',
+                        'a.average_rating',
+                        '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type',
+                        'a.likes',
+                        'a.dislikes',
+                        'a.created_on',
+                        'a.created_by',
+                        'a.show_user_details',
+                        'a.reviewer_type',
+                        'a.from_date',
+                        'a.to_date',
+                        'b.first_name',
+                        'b.last_name',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'b.initials_color',
+                        'c.name profile'
+                    ]
+                ];
+
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['joins']['educational_stream'] = [
+                    'alias' => 'c'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+                $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
+                $options['user_id'] = $user_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
+                $options['quant'] = 'all';
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $reviews_students = $this->__unclaimedReviews($options);
+
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure Infrastructure',
+                        'a.faculty Faculty',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                        'a.co_curricular_activities Co_Curricular_Activities',
+                        'a.leadership_development Leadership_Development',
+                        'a.sports Sports',
+                    ]
+                ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for ($i = 0; $i < count($reviews_students); $i++) {
+                    if ($reviews_students[$i]['created_by'] == $user_id) {
+                        $reviews_students[$i]['user_review'] = true;
+                    } else {
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'] . '/reviews', 'https');
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
+
+            } elseif ($unclaimed_org['business_activity'] == 'Educational Institute' && $type == 'student') {
+
+                $options = [];
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.review_enc_id',
+                        'a.average_rating',
+                        '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type',
+                        'a.likes',
+                        'a.dislikes',
+                        'a.created_on',
+                        'a.created_by',
+                        'a.show_user_details',
+                        'a.reviewer_type',
+                        'a.from_date',
+                        'a.to_date',
+                        'b.first_name',
+                        'b.last_name',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
+                        'b.initials_color',
+                        'c.name profile'
+                    ]
+                ];
+
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['joins']['educational_stream'] = [
+                    'alias' => 'c'
+                ];
+
+
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+                $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
+                $options['user_id'] = $user_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
+                $options['quant'] = 'all';
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $reviews_students = $this->__unclaimedReviews($options);
+
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.value_for_money Value_For_Money',
+                        'a.teaching_style Teaching_Style',
+                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                    ]
+                ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for ($i = 0; $i < count($reviews_students); $i++) {
+                    if ($reviews_students[$i]['created_by'] == $user_id) {
+                        $reviews_students[$i]['user_review'] = true;
+                    } else {
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'] . '/reviews', 'https');
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
+
+            }
+
+            $data['reviews'] = $reviews_students;
+            $data['count'] = $count;
+
+            if (!empty($reviews_students)) {
+                return $this->response(200, ['status' => 200, 'data' => $data]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }

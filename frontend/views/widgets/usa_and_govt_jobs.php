@@ -8,9 +8,9 @@ use yii\helpers\Url;
                 <div class="gov-job">
                     <a href="/usa-jobs">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
-                        <h1 class="link-none">
+                        <h3 class="link-none">
                             USA Government Jobs
-                        </h1>
+                        </h3>
                     </a>
                 </div>
             </div>
@@ -18,9 +18,9 @@ use yii\helpers\Url;
                 <div class="gov-job">
                     <a href="/govt-jobs">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
-                        <h1 class="link-none">
+                        <h3 class="link-none">
                             Indian Government Jobs
-                        </h1>
+                        </h3>
                     </a>
                 </div>
             </div>

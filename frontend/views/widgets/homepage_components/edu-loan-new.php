@@ -25,7 +25,7 @@ use yii\helpers\Url;
                             <div class="col-md-12 col-sm-12 p0">
                                 <div class="image-topics">
                                     <div class="icon-loan">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/low-interest-rate.png') ?>" alt="online-education=loan-in-India">
                                         <p>Low Rate Of Interest</p>
                                     </div>
                                     <div class="icon-loan">
@@ -85,7 +85,7 @@ $this->registerCss('
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 30px 0px 0px 0px;
+    padding: 65px 0px 0px 0px;
     overflow: hidden;
 }
 .heading-data-set {

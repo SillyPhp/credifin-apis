@@ -19,6 +19,7 @@ $form->field($model, 'formbuilderdata', [
         <div class="inner-main">
 
         </div>
+        <button type="button" class="cl-btn" id="close-b">X</button>
     </div>
     <div class="row">
         <div class="col-md-12 col-sm-12">
@@ -276,6 +277,16 @@ $this->registerCss("
     border-radius:10px;
     padding:20px 15px;
     overflow-y:scroll;
+    position:relative;
+}
+.cl-btn{
+    border: none;
+    background-color: #fff;
+    position: absolute;
+    top: 5px;
+    right: 22px;
+    font-weight: 700;
+    font-size: 18px;
 }
 .outer-main{
     width:60%;
@@ -329,6 +340,13 @@ border: 1px solid #e73d49;
 box-shadow: 0px 0px 5px 0px #e73d49 !important;
 }
 .form_builder_field.ui-sortable-handle{height:auto !important;}
+
+@media screen and (max-width: 900px) and (min-width:600px) {
+   .q-btns{
+    padding-left: 30px;
+    padding-right: 10px;
+   } 
+} 
 ");
 
 $script = <<<JS
@@ -1004,6 +1022,11 @@ if (doc_type=='clone')
                 $('.outer-main').fadeOut(1000);
             }
         });
+        $(document).on('click','.cl-btn',function(e) {
+          $('.inner-main').fadeOut(1000);
+          $('.outer-main').fadeOut(1000);
+          $('.fade').fadeOut(1000);
+        })
     });
 
     function sticky_relocate() {

@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
 use borales\extensions\phoneInput\PhoneInput;
-use yii\bootstrap\ActiveForm;
 use common\models\RandomColors;
 use frontend\models\script\ImageScript;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -50,11 +50,11 @@ if (empty($app['image']) || $app['image'] == 1) {
     $image = Yii::$app->params->digitalOcean->sharingImageUrl . $app['image'];
 }
 
-//if (empty($app['square_image']) || $app['square_image'] == 1) {
-//    $Instaimage = \frontend\models\script\InstaImageScript::widget(['content' => $content]);
-//} else {
-//    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
-//}
+if (empty($app['square_image']) || $app['square_image'] == 1) {
+    $Instaimage = \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+} else {
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -145,21 +145,27 @@ if (!Yii::$app->user->isGuest) {
                     </div>
                     <div class="job-head-info">
                         <h4><?= $get['company'] ?></h4>
-                        <div class="organization-details">
-                            <?php if ($get['company_url']): ?>
-                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
-                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
-                            <?php endif; ?>
-                        </div>
+                        <!--                        <div class="organization-details">-->
+                        <!--                            --><?php //if ($get['company_url']): ?>
+                        <!--                                <p><i class="fas fa-unlink"></i><a href="-->
+                        <? //= $get['company_url'] ?><!--"-->
+                        <!--                                                                   target="_blank">-->
+                        <? //= $get['company_url'] ?><!--</a></p>-->
+                        <!--                            --><?php //endif; ?>
+                        <!--                        </div>-->
                     </div>
                     <div class="actions-main">
                         <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                               class="apply-job-btn single-btn"><i
-                                        class="fas fa-paper-plane"></i>Login to apply</a>
+                            <div class="btn-parent">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                   class="apply-job-btn single-btn"><i
+                                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            </div>
                         <?php else: ?>
-                            <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
-                                        class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            <div class="btn-parent">
+                                <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
+                                            class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            </div>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
@@ -168,25 +174,29 @@ if (!Yii::$app->user->isGuest) {
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="javascript:;" class="tg-tele"
+                               onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                <i class="fab fa-telegram-plane"></i>
                             </a>
                         </div>
                         <div class="wts-ap">
@@ -231,8 +241,8 @@ if (!Yii::$app->user->isGuest) {
                         <h3>Download Sharing Image</h3>
                         <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size
                             (1250*650)</a>
-<!--                        <a href="--><?//= $Instaimage; ?><!--" download target="_blank"><i class="fa fa-download"></i> Square-->
-<!--                            Size (800*800)</a>-->
+                        <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
+                            Size (800*800)</a>
                     </div>
                 </div>
                 <!--  org details-->
@@ -298,6 +308,7 @@ if (Yii::$app->params->options->showSchema) {
                 }
             }
         }
+
     </script>
     <?php
 }
@@ -313,6 +324,8 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.iti{width:100%;}
+.intl-tel-input{width:100%;}
 .form-whats {
 	position: relative;
 }
@@ -339,6 +352,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -432,7 +446,7 @@ border: 1px solid #eee;
 }
 .job-thumb a img{margin:5px;}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -515,33 +529,34 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: 15px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+    text-decoration: none !important;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0 5px;
+    font-size: 17px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    border: 2px solid #fff;
+    line-height: 24px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
+  font-size: 14px;
+  text-align: center;
 }
 .effect a i {
   display: inline-block;
   vertical-align: middle;
-  margin-left: -2px;
+  margin-left: 0px;
   margin-top: 3px;
 }
 /* thurio effect */
 .effect.thurio a {
   transition: border-radius 0.2s linear 0s;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+          transform: rotate(45deg);`
 }
 .effect.thurio a i {
   transition: -webkit-transform 0.01s linear 0s;
@@ -568,14 +583,12 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         max-width: 275px;
         text-align: left;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+    
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }
@@ -1179,10 +1192,11 @@ $this->registerCss("
         border: none;
     }
     .job-single-head.style2 .job-thumb {
-        float: left;
+//        float: left;
         width: 100%;
         text-align: center;
-        margin-top:20px;
+        margin-top:20px !important;
+        margin:0 auto;
     }
     .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
         float: none;
@@ -1196,12 +1210,13 @@ $this->registerCss("
         border-radius: 50%;
     }
     .job-single-head.style2 .job-head-info {
-        float: left;
         width: 100%;
         display: inherit;
         padding: 0;
-        margin-top: 10px;
-        margin-bottom: 18px;
+        margin-top: 15px !important;
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 15px;
     }
     .job-single-head.style2 .job-head-info p {
         float: left;
@@ -1233,9 +1248,9 @@ $this->registerCss("
         color: #ffffff;
     }
     .job-thumb {
-        display: table-cell;
-        vertical-align: top;
-        width: 107px;
+//        display: table-cell;
+//        vertical-align: top;
+//        width: 107px;
     }
     .job-thumb img {
         float: left;
@@ -1253,14 +1268,12 @@ $this->registerCss("
         padding-left: 25px;
     }
     .job-head-info h4 {
-        float: left;
         width: 100%;
-        font-family: Open Sans;
+        font-family: 'Roboto';
         font-size: 17px;
         font-weight: 600;
         color: #fff;
         margin: 0;
-        margin-bottom: 0px;
         margin-bottom: 10px;
     }
     .job-head-info span {
@@ -1448,6 +1461,33 @@ $this->registerCss("
         color: #848484;
         line-height: 56px;
         cursor: pointer;
+    }
+    
+    @media screen and (max-width: 991px) {
+      .btn-parent{
+        position: fixed;
+        bottom:28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+    }
+    @media only screen and (max-width: 649px) {
+      .btn-parent{
+            left: 0px;
+            bottom: 28px;
+            transform: unset;
+            border-radius: 0px 10px 0 0;
+      }
+    }
+    @media only screen and (max-width: 430px) {
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
+        }
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{

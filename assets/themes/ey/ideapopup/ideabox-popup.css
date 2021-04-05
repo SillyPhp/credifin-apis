@@ -35,7 +35,12 @@ Primary use : Web & Mobile
 .i-next-hide{
   display: none;
 }
-
+.st-h{
+  position:relative;
+  overflow-y: hidden;
+  max-height: 40vh;
+  min-height: 20vh;
+}
 .i-review-box{
   position: fixed;
   left: 0;

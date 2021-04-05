@@ -3,8 +3,11 @@
 namespace frontend\controllers;
 
 use common\models\CareerAdvicePostComments;
+use common\models\Categories;
+use common\models\PostCategories;
 use common\models\PostComments;
 use common\models\Posts;
+use common\models\Users;
 use frontend\models\SubscribeNewsletterForm;
 use yii\web\Response;
 use Yii;
@@ -27,6 +30,26 @@ class CareerAdviceController extends Controller
     public function actionIndex()
     {
         $postsModel = new Posts();
+        $infographicsPosts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => 'infographics', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->limit(2)
+            ->asArray()
+            ->all();
+        $articalsPosts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name', 'a.featured_image_location', 'a.featured_image'])
+            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => 'articles', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->limit(2)
+            ->asArray()
+            ->all();
         $posts = $postsModel->find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
@@ -56,6 +79,8 @@ class CareerAdviceController extends Controller
         return $this->render('index', [
             'posts' => $posts,
             'quotes' => $quotes,
+            'infographicsPosts' => $infographicsPosts,
+            'articalsPosts' => $articalsPosts,
         ]);
     }
 
