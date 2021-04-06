@@ -260,19 +260,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-            <!--            <div class="col-md-12 use-ff">-->
-            <!--                <div class="job-txt">Invite Candidates via:</div>-->
-            <!--                <div class="job-mail">-->
-            <!--                    <input type="email" class="form-control" id="email" name="email"-->
-            <!--                           placeholder="Email">-->
-            <!--                    <button class="redd"><i class="fa fa-envelope"></i></button>-->
-            <!--                </div>-->
-            <!--                <div class="job-whatsapp">-->
-            <!--                    <input type="text" class="form-control" id="text" name="text"-->
-            <!--                           placeholder="Whatsapp">-->
-            <!--                    <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-            <!--                </div>-->
-            <!--            </div>-->
+                        <div class="col-md-12 use-ff">
+                            <div class="job-txt">Invite Candidates via:</div>
+                            <div class="job-mail">
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="Email">
+                                <button class="redd"><i class="fa fa-envelope"></i></button>
+                            </div>
+                            <div class="job-whatsapp">
+                                <input type="text" class="form-control" id="text" name="text"
+                                       placeholder="Whatsapp">
+                                <button class="grn"><i class="fa fa-whatsapp"></i></button>
+                            </div>
+                        </div>
         </div>
     </div>
 </div>
@@ -908,7 +908,8 @@ $this->registerCss('
 .job-mail input, .job-whatsapp input {
     height: 36px;
     padding-right: 45px;
-}.job-whatsapp button {
+}
+.job-whatsapp button, .job-mail button {
     position: absolute;
     top: 1px;
     right: 1px;

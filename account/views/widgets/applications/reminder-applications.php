@@ -194,7 +194,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                         <div class="userdata">
                             <div id="demo" class="collapse">
                                 <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
-                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Desscription here.</textarea>
+                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Description here.</textarea>
                             </div>
                         </div>
                     </div>
