@@ -1177,23 +1177,25 @@ class LoansController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $loan_partners = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id', 'REPLACE(a.name, "&amp;", "&") as name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END org_logo', 'a.initials_color'])
-            ->innerJoinWith(['selectedServices b' => function ($b) {
-                $b->innerJoinWith(['serviceEnc c']);
-            }], false)
-            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'c.name' => 'Loans', 'b.is_selected' => 1])
-            ->asArray()
-            ->all();
+        $lendingPartners = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'lending_partners.json');
+        $lendingPartners = json_decode($lendingPartners, true);
+
+        foreach ($lendingPartners as $k => $v) {
+            if ($v['image'] == 'AG-logo.png' || $v['image'] == 'ezcapital.png' || $v['image'] == 'phf-leasing.png') {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/index2/' . $v['image'], 'https');
+            } else {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+            }
+            $lendingPartners[$k]['organization_enc_id'] = 'empoweryouth';
+            $lendingPartners[$k]['initials_color'] = '#ea52ce';
+        }
 
         $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'faqs.json');
         $faqs = json_decode($strJsonFileContents);
 
-
         $data = [];
         $data['partner_college'] = $partner_colleges;
-        $data['loan_partners'] = $loan_partners;
+        $data['loan_partners'] = $lendingPartners;
         $data['faqs'] = $faqs;
         if ($data) {
             return $this->response(200, $data);
@@ -1292,16 +1294,13 @@ class LoansController extends ApiBaseController
 
         foreach ($loanTable as $k => $v) {
 
-//            $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $v['bank_financier'];
             $loanTable[$k]['bank_financier'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['bank_financier'], 'https');
             if ($v['bank_financier'] == 'AG-logo.png') {
-//                $loanTable[$k]['bank_financier'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/index2/' . $v['bank_financier'];
                 $loanTable[$k]['bank_financier'] = Url::to('@eyAssets/images/pages/index2/' . $v['bank_financier'], 'https');
             }
         }
 
         foreach ($chooseEducationLoan as $key => $val) {
-//            $chooseEducationLoan[$key]['icon'] = 'https://www.empoweryouth.com/assets/themes/ey/images/pages/education-loans/' . $val['icon'];
             $chooseEducationLoan[$key]['icon'] = Url::to('@eyAssets/images/pages/education-loans/' . $val['icon'], 'https');
         }
 
