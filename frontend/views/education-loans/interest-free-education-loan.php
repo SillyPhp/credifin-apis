@@ -243,7 +243,7 @@ use yii\helpers\Url;
     'viewBtn' => true,
 ]) ?>
 
-    <section class=""  id="call">
+    <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
@@ -384,8 +384,18 @@ html {
 }
 .l-help-txt{
     font-size: 15px;
-    padding: 20px 30px 0 30px;
+    padding: 20px 20px 0 30px;
     font-family: roboto;
+}
+.callNumber{
+    color: #666;
+    font-size: 18px;
+    margin-top: 10px;
+    font-family: roboto;
+    text-align: center;
+}
+.callNumber i{
+    color: #1b4145;
 }
 .whats-btn {
     padding: 10px 0px 8px 0px;
