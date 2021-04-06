@@ -84,7 +84,7 @@ use yii\helpers\Url;
                                        Number Of Children (Applying Loan For)
                                     </label>
                                     <input type="text" class="form-control" id="noChild" name="noChild"
-                                        onblur="checkChildInfo(event)"   placeholder="Enter Email Address">
+                                        onkeyup="checkChildInfo(this)" placeholder="Enter Email Address">
                                     <p class="errorMsg"></p>
                                </div>
                                 <div class="form-group">
@@ -95,70 +95,6 @@ use yii\helpers\Url;
                             </div>
                             </div>
                             <div class="child-info-div">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3 class="heading-style">Children Information</h3>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                Name
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                School Name
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                        <div class="form-group" id="schoolAttend" >
-                                            <input type="checkbox" class="make-switch os-email"
-                                                   onchange="showSchoolField()"
-                                                   data-size="small">
-                                            <label class="control-label">Both Attend The Same School</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                Class
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" id="childTwo">
-                                    <div class="col-md-12">
-                                        <h3 class="heading-style">2nd Child Information</h3>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                Name
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20" id="schoolField">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                School Name
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="number" class="input-group-text">
-                                                Class
-                                            </label>
-                                            <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
@@ -396,9 +332,9 @@ button{
     position:fixed;
     background:#00a0e3;
 }
-.child-info-div{
-    display: none; 
-}
+//.child-info-div{
+//    display: none; 
+//}
 @media only screen and (max-width: 500px){
     .sign-up-details{
         width:70vw;
@@ -781,20 +717,44 @@ width:100% !important;
         };
     }
     checkChildInfo = (event) => {
-        let num = event.target.value;
-        let parentElem = event.target.parentElement;
-        if(!/^[0-9]+$/.test(num)){
+        let num = event.value;
+        let parentElem = event.parentElement;
+        let childFormBox = document.querySelectorAll('.childFormBox');
+        // if(num == ""){
+        //     removeChildFormBox(num, childFormBox)
+        // }
+        if (!/^[0-9]+$/.test(num) || num > 9 || num == '') {
+            console.log(num)
             parentElem.querySelector('.errorMsg').style.display = "block";
-            parentElem.querySelector('.errorMsg').innerHTML = "Please Enter Digit";
-
-        }else{
+            parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
+            removeChildFormBox(num, childFormBox)
+        } else  {
             parentElem.querySelector('.errorMsg').style.display = "none";
+            let childDiv = document.querySelector('.child-info-div');
+            let count = 1;
+            for (let i = 1; i <= num; i++) {
+                let childForm = childrenInfoForm(count);
+                childDiv.innerHTML += childForm;
+                count++
+             }
         }
     }
-
-    childrenInfoForm = () => {
-        let count = 1;
-        let childInfoForm = `<div class="row">
+    errorMsgText = (num) => {
+        switch (num){
+            case 1:
+                num > 9;
+                return
+        }
+    }
+    removeChildFormBox = (num, childFormBox) => {
+        if(childFormBox.length > 0){
+            for(let i=0; i<=childFormBox.length; i++){
+                childFormBox[i].remove()
+            }
+        }
+    }
+    childrenInfoForm = (count) => {
+        let childInfoForm = `<div class="row childFormBox">
             <div class="col-md-12">
                 <h3 class="heading-style">Children Information</h3>
             </div>
@@ -832,5 +792,6 @@ width:100% !important;
                 </div>
             </div>
         </div>`
+        return childInfoForm;
     }
 </script>
