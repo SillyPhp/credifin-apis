@@ -553,6 +553,8 @@ class EyCollegeProfileController extends ApiBaseController
                 }
                 $result[$i]['link'] = Url::to($org['slug'] . '/reviews', 'https');
                 $result[$i]['rating'] = $rating[$i];
+                $result[$i]['useful'] = OrganizationReviewLikeDislike::find()->where(['review_enc_id' => $result[$i]['review_enc_id'], 'feedback_type' => 1])->count();
+                $result[$i]['not_useful'] = OrganizationReviewLikeDislike::find()->where(['review_enc_id' => $result[$i]['review_enc_id'], 'feedback_type' => 0])->count();
             }
             $data['reviews'] = $result;
             $data['count'] = $count;
