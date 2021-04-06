@@ -3,6 +3,8 @@
 
 namespace api\modules\v2\controllers;
 
+use common\models\AssignedCategories;
+use common\models\Categories;
 use common\models\ConversationMessages;
 use common\models\ConversationParticipants;
 use common\models\Conversations;
@@ -17,6 +19,7 @@ use common\models\Teachers;
 use common\models\UserOtherDetails;
 use common\models\UserPreferences;
 use common\models\UserPreferredIndustries;
+use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredSkills;
 use common\models\Users;
 use Yii;
@@ -1051,6 +1054,143 @@ class SkillUpController extends ApiBaseController
                 $transaction->rollback();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetJobTitle($q)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $profiles = Categories::find()
+                ->alias('a')
+                ->select(['a.name value', 'a.category_enc_id key'])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved', 'b.is_deleted' => 0])
+                ->andFilterWhere(['like', 'a.name', $q])
+                ->limit(20)
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'titles' => $profiles]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSavePrefTitle()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['titles']) && empty($params['titles'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $prefs = UserPreferences::findOne(['is_deleted' => 0, 'assigned_to' => 'Skills_Up', 'created_by' => $user->user_enc_id]);
+
+            if ($prefs) {
+
+                $already_saved_titles = UserPreferredJobProfile::find()
+                    ->select(['job_profile_enc_id'])
+                    ->where([
+                        'preference_enc_id' => $prefs->preference_enc_id
+                    ])
+                    ->andWhere(['is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $already_saved_title = [];
+
+                foreach ($already_saved_titles as $t) {
+                    array_push($already_saved_title, $t['job_profile_enc_id']);
+                }
+
+                $title = [];
+                foreach ($params['titles'] as $i) {
+                    array_push($title, $i['key']);
+                }
+                $new_title_to_update = $title;
+
+                $to_be_added_title = array_diff($new_title_to_update, $already_saved_title);
+                $to_be_deleted_title = array_diff($already_saved_title, $new_title_to_update);
+
+                if (count($to_be_deleted_title) > 0) {
+                    foreach ($to_be_deleted_title as $title) {
+                        $to_delete_title = UserPreferredJobProfile::find()
+                            ->where([
+                                'job_profile_enc_id' => $title,
+                                'preference_enc_id' => $prefs->preference_enc_id
+                            ])
+                            ->andWhere(['is_deleted' => 0])
+                            ->one();
+
+                        $to_delete_title->is_deleted = 1;
+                        $to_delete_title->update();
+                    }
+                }
+
+                if (count($to_be_added_title) > 0) {
+                    foreach ($to_be_added_title as $title) {
+                        $user_title_model = new UserPreferredJobProfile();
+                        $utilities = new Utilities();
+                        $user_title_model->preference_enc_id = $prefs->preference_enc_id;
+                        $utilities->variables['string'] = time() . rand(100, 100000);
+                        $user_title_model->preferred_job_profile_enc_id = $utilities->encrypt();
+                        $user_title_model->job_profile_enc_id = $title;
+                        $user_title_model->created_on = date('Y-m-d H:i:s');
+                        $user_title_model->created_by = $user->user_enc_id;
+                        if (!$user_title_model->save()) {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+            } else {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    $prefs = new UserPreferences();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $prefs->preference_enc_id = $utilitiesModel->encrypt();
+                    $prefs->assigned_to = 'Skills_Up';
+                    $prefs->created_on = date('Y-m-d H:i:s');
+                    $prefs->created_by = $user->user_enc_id;
+                    if (!$prefs->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+
+                    foreach ($params['titles'] as $s) {
+                        $title = new UserPreferredJobProfile();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $title->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
+                        $title->job_profile_enc_id = $s['key'];
+                        $title->preference_enc_id = $prefs->preference_enc_id;
+                        $title->created_on = date('Y-m-d H:i:s');
+                        $title->created_by = $user->user_enc_id;
+                        if (!$title->save()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                        }
+                    }
+
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
