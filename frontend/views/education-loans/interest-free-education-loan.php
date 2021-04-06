@@ -192,7 +192,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
                             </div>
@@ -202,7 +202,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
                             </div>
@@ -212,7 +212,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
                             </div>
@@ -222,7 +222,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
                             </div>
