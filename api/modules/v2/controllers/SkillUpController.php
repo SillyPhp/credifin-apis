@@ -46,6 +46,7 @@ class SkillUpController extends ApiBaseController
                 'feed' => ['POST', 'OPTIONS'],
                 'post-like-dislike' => ['POST', 'OPTIONS'],
                 'post-comments' => ['POST', 'OPTIONS'],
+                'save-pref-title' => ['POST', 'OPTIONS'],
             ]
         ];
 
