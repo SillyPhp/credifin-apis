@@ -48,6 +48,7 @@ class LoansController extends ApiBaseController
                 'loan-purpose',
                 'save-application',
                 'home',
+                'interest-free',
                 'enquiry-form',
                 'study-in-india',
                 'faqs',
@@ -1197,6 +1198,23 @@ class LoansController extends ApiBaseController
         $data['partner_college'] = $partner_colleges;
         $data['loan_partners'] = $lendingPartners;
         $data['faqs'] = $faqs;
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionInterestFree()
+    {
+        $partner_colleges = Organizations::find()
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+            ->asArray()
+            ->all();
+
+        $data = [];
+        $data['partner_college'] = $partner_colleges;
         if ($data) {
             return $this->response(200, $data);
         } else {
