@@ -527,6 +527,7 @@ h3.job-detail {
 	color: #fff;
 	padding: 5px 0;
 	min-width: 50px;
+	border-radius:4px;
 }
 .share-bar a.share-fb {
     background-color: #3b5998;

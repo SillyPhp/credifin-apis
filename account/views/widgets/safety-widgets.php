@@ -151,7 +151,6 @@ $this->registerCss('
 }
 .safety-links-share{
     text-align: center;
-    padding:20px 0 20px 0;
     margin: 0 0 10px 0; 
     display: flex;
     flex-wrap: wrap;
@@ -168,7 +167,7 @@ $this->registerCss('
 .safety-links-share a{
     color:#000;
     font-size: 22px;
-    margin: 0 10px 
+    margin: 5px 10px 65px;
 }
 .safety-links-share a:hover{
     color: #fff;

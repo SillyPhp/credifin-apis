@@ -61,217 +61,9 @@ use borales\extensions\phoneInput\PhoneInput;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
-<section class="bg-caller padd30" id="contact">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 tc">
-                <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/tele-cal.png') ?>">
-                </div>
-            </div>
-            <div class="col-md-7">
-                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
-                <div class="right-sec">
-                    <div class="ls-box-shadow">
-                        <?php $form = ActiveForm::begin([
-                            'id' => 'application_form',
-                            'options' => [
-                                'class' => 'clearfix',
-                            ],
-                            'fieldConfig' => [
-                                'template' => '',
-                                'labelOptions' => ['class' => ''],
-                            ],
-                        ]); ?>
-                        <div class="form-group tab" data-id="step1">
-                            <div class="form-flex">
-                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'First Name', 'data-field' => 'first_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Last Name', 'data-field' => 'last_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                            </div>
-
-                            <div class="form-flex">
-                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Email', 'data-field' => 'student_email', 'data-type' => 'leadApplication'])->label(false); ?>
-                                <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput()->widget(PhoneInput::className(), [
-                                    'jsOptions' => [
-                                        'allowExtensions' => true,
-                                        'preferredCountries' => ['in'],
-                                        'nationalMode' => true,
-                                    ],
-                                    'options' => [
-                                        'class' => 'form-control req_field blurInput phoneInput',
-                                        'data-field' => 'student_mobile_number',
-                                        'data-type' => 'leadApplication'
-                                    ]
-                                ])->label(false); ?>
-                            </div>
-
-                            <div class="form-flex">
-                                <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize blurInput', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name', 'data-field' => 'course_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                            </div>
-                        </div>
-
-                        <section data-for="step2">
-                            <div class="form-group tab" data-id="step2">
-                                <section data-type="loan_interest">
-                                    <div class="form-flex-2">
-                                        <div class="font14">Would you like to take education loan for :</div>
-                                        <div class="radio-container">
-                                            <input type="radio" name="interestLoanFor" id="uni_college" data-field="loan_for" value="1">
-                                            <label for="uni_college">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                University/College
-                                            </label>
-                                            <input type="radio" name="interestLoanFor" id="school" data-field="loan_for" value="2">
-                                            <label for="school">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                School
-                                            </label>
-                                            <input type="radio" name="interestLoanFor" id="otherInstitute" data-field="loan_for" value="3">
-                                            <label for="otherInstitute">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                Other Institute
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <section data-type="collegeApplied" class="hideRow">
-                                        <div class="form-flex-2">
-                                            <div class="font14">Have You Already Taken Admission?</div>
-                                            <div class="radio-container">
-                                                <input type="radio" name="appliedCollege" id="yes" data-field="admission_taken" value="1">
-                                                <label for="yes">
-                                                    <svg class="check" viewbox="0 0 40 40">
-                                                        <defs>
-                                                            <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                                <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                                <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                        <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                    </svg>
-                                                    Yes
-                                                </label>
-                                                <input type="radio" name="appliedCollege" id="no" data-field="admission_taken" value="0">
-                                                <label for="no">
-                                                    <svg class="check" viewbox="0 0 40 40">
-                                                        <defs>
-                                                            <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                                <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                                <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                        <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                    </svg>
-                                                    No
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group hideRow" id="appliedYes">
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name', 'data-field' => 'college_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group hideRow" id="appliedNo">
-                                            <p>Please Mention Your Three Preferred Colleges</p>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'first'])->label(false); ?>
-                                            </div>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'second'])->label(false); ?>
-                                            </div>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'third'])->label(false); ?>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </section>
-
-
-                                <div class="form-group">
-                                    <div class="form-flex-2">
-                                        <div class="font14">Do You want to apply for Education Loan Now?</div>
-                                        <div class="radio-container">
-                                            <input type="radio" name="loan" id="LoanYes" value="Loanyes">
-                                            <label for="LoanYes">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                Yes
-                                            </label>
-                                            <input type="radio" name="loan" id="LoanNo" value="LoanNo">
-                                            <label for="LoanNo">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                No, I am Just Inquiring.
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div id="loanFields" class="hideRow">
-                                        <div class="form-flex">
-                                            <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control blurInput', 'placeholder' => 'Loan Amount', 'type' => 'text', 'autocomplete' => 'off', 'id' => 'amount', 'data-field' => 'loan_amount', 'data-type' => 'leadApplication'])->label(false); ?>
-                                            <input type="text" name="amountValidation" style="display:none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                        <div class="button-form">
-                            <button type="button" id="prevBtn" class="btn-frm">Previous</button>
-                            <button type="button" id="nextBtn" class="btn-frm">Next</button>
-                            <?= Html::button('Submit', ['class' => 'btn-frm', 'id' => 'submitBtn']) ?>
-                        </div>
-
-                        <?php ActiveForm::end(); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/loan-form-detail',[
+    'model' => $model
+]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
     'viewBtn' => true,
@@ -323,7 +115,13 @@ $this->registerCss('
     color: #000
 }
 .le-img img{
-    border-radius: 15px;
+    height: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    padding: 15px;
+}
+.le-img {
+    box-shadow: 0 1px 11px 0px #d4cdcd;
 }
 #typed{
     font-size: 25px;
