@@ -260,19 +260,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-            <!--            <div class="col-md-12 use-ff">-->
-            <!--                <div class="job-txt">Invite Candidates via:</div>-->
-            <!--                <div class="job-mail">-->
-            <!--                    <input type="email" class="form-control" id="email" name="email"-->
-            <!--                           placeholder="Email">-->
-            <!--                    <button class="redd"><i class="fa fa-envelope"></i></button>-->
-            <!--                </div>-->
-            <!--                <div class="job-whatsapp">-->
-            <!--                    <input type="text" class="form-control" id="text" name="text"-->
-            <!--                           placeholder="Whatsapp">-->
-            <!--                    <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-            <!--                </div>-->
-            <!--            </div>-->
+                        <div class="col-md-12 use-ff">
+                            <div class="job-txt">Invite Candidates via:</div>
+                            <div class="job-mail">
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="Email">
+                                <button class="redd"><i class="fa fa-envelope"></i></button>
+                            </div>
+                            <div class="job-whatsapp">
+                                <input type="text" class="form-control" id="text" name="text"
+                                       placeholder="Whatsapp">
+                                <button class="grn"><i class="fa fa-whatsapp"></i></button>
+                            </div>
+                        </div>
         </div>
     </div>
 </div>
@@ -575,18 +575,7 @@ foreach ($fields as $f) {
                             </div>
                             <div class="col-md-5">
                                 <div class="pr-user-skills">
-                                    <ul class="s-skill">
-                                        <?php
-                                        if ($arr['createdBy']['userSkills']) {
-                                            foreach ($arr['createdBy']['userSkills'] as $skill) {
-                                                ?>
-                                                <li><?= $skill['skill']; ?></li>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-                                    </ul>
-                                    <ul class="h-skill">
+                                    <ul class="s-skill" id="skill-sett">
                                         <?php
                                         if ($arr['createdBy']['userSkills']) {
                                             foreach ($arr['createdBy']['userSkills'] as $skill) {
@@ -919,7 +908,8 @@ $this->registerCss('
 .job-mail input, .job-whatsapp input {
     height: 36px;
     padding-right: 45px;
-}.job-whatsapp button {
+}
+.job-whatsapp button, .job-mail button {
     position: absolute;
     top: 1px;
     right: 1px;
@@ -1075,9 +1065,8 @@ $this->registerCss('
 }
 .rejectReason p{
     text-align: center;
-    font-family: lora;
+    font-family: roboto;
     font-size: 20px;
-    font-weight: bold;
     margin-top: 0px;
     margin-bottom: 5px;
     color: #333;
@@ -1325,23 +1314,6 @@ $this->registerCss('
     font-size: 15px;
     padding: 5px 10px;
 }
-.h-skill{
-    display:none;
-    z-index:1;
-}
-.pr-user-skills:hover .h-skill {
-    display: block;
-    position: absolute;
-    background-color: #fdfdfd;
-    top: 15px;
-    border-radius: 6px;
-    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.1);
-    padding: 5px;
-    left:10px;
-    min-height:105px;
-    max-height:135px;
-    overflow-y:scroll;
-}
 .dropbtn {
 	background-color: #4CAF50;
 	color: white;
@@ -1351,7 +1323,7 @@ $this->registerCss('
 	cursor: pointer;
 	font-weight: 600;
 	text-align: center;
-	border-radius: 0 8px 0 5px;
+	border-radius: 0 4px 0;
 }
 .dropdown {
 	position: absolute;
@@ -1495,10 +1467,12 @@ $this->registerCss('
 	line-height: 22px;
 }
 .e-detail p {
-	margin: 0;
-//	margin-bottom: 11px !important;
-	font-size:11px;
-	height:15px;
+    margin: 0;
+    font-size: 11px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .e-logo i {
     font-size: 22px;
@@ -1580,7 +1554,7 @@ li{
 .pr-user-main{
     margin:60px 0px;
     margin-bottom: 0px;
-    border-radius:8px;
+    border-radius:4px;
     box-shadow:0px 3px 10px 2px #ddd;
     background-color: #fdfdfd;
     width:100%;
@@ -1600,7 +1574,7 @@ li{
     left: 0;
     width: 100%;
     height:102%;
-    background: rgba(255,255,255, .96);
+    background: rgba(255,255,255,255);
     z-index: 9;
     border-radius: 8px;
     padding: 10px 15px;
@@ -1612,6 +1586,7 @@ li{
 .pr-user-n{
   font-size:19px;
   font-weight:500;
+  font-family:roboto;
   margin: 0px;
   display: inline-block;
   text-transform:capitalize;
@@ -1674,12 +1649,17 @@ li{
 -webkit-box-orient: vertical;
 overflow: hidden;
 }
-.pr-user-skills{
-    padding-top:20px;
+.pr-user-skills {
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.s-skill {
+    max-height: 62px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow:hidden;
+    position:relative;
 }
 .pr-user-skills ul, .pr-user-actions ul{list-style:none;padding:0px;}
 .pr-user-skills ul li{
@@ -1892,7 +1872,7 @@ overflow: hidden;
     border-top:none;
     padding:10px 20px 0 10px; 
     background:#fff; 
-    border-radius:0 0 10px 10px !important; 
+    border-radius:0 0 4px 4px !important; 
     color:#999999;
     margin:0 20px; 
     display:none; 
@@ -2467,6 +2447,7 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
+var pb = new PerfectScrollbar('#skill-sett');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -2496,9 +2477,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         setTimeout(function () {
             hp.style.height = "auto";
             for (let i = 0; i < hpChild.length; i++) {
-                hpChild[i].style.position = "relative";
-                hpChild[i].style.top = "unset";
-                hpChild[i].style.left = "unset";
+                setTimeout(function () {
+                    hpChild[i].style.position = "relative";
+                    hpChild[i].style.top = "unset";
+                    hpChild[i].style.left = "unset";
+                }, 300)
             }
         }, 500);
     }

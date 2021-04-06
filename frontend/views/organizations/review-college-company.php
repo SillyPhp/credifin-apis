@@ -439,7 +439,7 @@ $this->registerCss('
   white-space: nowrap;
   cursor: pointer;
   font-size: 200%;
-  color: #36c6d3;
+  color: #fa8f01;
   font-family: "FontAwesome";
 }
 .star-rating1 fieldset:not(:checked) label:before {
@@ -447,8 +447,8 @@ $this->registerCss('
 }
 .star-rating1 fieldset:not(:checked) label:hover,
 .star-rating1 fieldset:not(:checked) label:hover ~ label {
-  color:#36c6d3;
-  text-shadow: 0 0 3px #36c6d3;
+  color:#fa8f01;
+  text-shadow: 0 0 3px #fa8f01;
 }
 .star-rating1 fieldset:not(:checked) label:hover:before,
 .star-rating1 fieldset:not(:checked) label:hover ~ label:before {
@@ -2014,6 +2014,7 @@ $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends'
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
+$this->registerCssFile('https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');
