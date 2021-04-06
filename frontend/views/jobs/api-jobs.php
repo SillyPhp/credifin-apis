@@ -139,7 +139,7 @@ if (!Yii::$app->user->isGuest) {
                         <?php if ($get['company_logo']) { ?>
                             <img src="<?= $get['company_logo']; ?>" id="logo_img" alt=""/>
                         <?php } else { ?>
-                            <canvas class="user-icon" name="<?= $get['company'] ?>" width="100" height="100"
+                            <canvas class="user-icon" name="<?= $get['company'] ?>" width="125" height="125"
                                     color="#73ef9c" font="48px"></canvas>
                         <?php } ?>
                     </div>
@@ -324,6 +324,11 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
 .iti{width:100%;}
 .intl-tel-input{width:100%;}
 .form-whats {
@@ -552,12 +557,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 .effect a i {
   font-size: 14px;
   text-align: center;
-}
-.effect a i {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0px;
-  margin-top: 3px;
 }
 /* thurio effect */
 .effect.thurio a {
