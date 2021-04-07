@@ -324,6 +324,7 @@ $this->registerCss("
   .boxx{     
     display: inline-block;
     color: #888;
+    width: 100%;
     font-size: 16px;
     line-height: 1.2;
     margin-top: 10px;
