@@ -141,7 +141,7 @@ $this->registerCss('
     border: 1px solid #fff;
     background-color: #fff;
     box-shadow: 0 0 11px -4px rgba(0,0,0,0.2);
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 .press-release-hd:hover {
     box-shadow: 0 0 15px 2px rgba(0,0,0,0.2);

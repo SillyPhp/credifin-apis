@@ -253,7 +253,73 @@ class LoanApplicationsForm extends LoanApplications
             return $exception->getMessage();
         }
     }
-
+    public function saveTeachersLoan($userId,$source){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $this->loan_app_enc_id = $utilitiesModel->encrypt();
+            $this->source = $source;
+            $this->had_taken_addmission = 0;
+            $this->created_by = (($userId) ? $userId : null);
+            $this->created_on = date('Y-m-d H:i:s');
+            if (!$this->save()) {
+                $transaction->rollback();
+                $this->_flag = false;
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false)));
+            } else {
+                $this->_flag = true;
+            }
+            $total_amount = 500;
+            $gst = 0;
+            $amount = 500;
+            $args = [];
+            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['currency'] = "INR";
+            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+            $response = PaymentsModule::_authPayToken($args);
+            if (isset($response['status']) && $response['status'] == 'created') {
+                $token = $response['id'];
+                $loan_payment = new EducationLoanPayments();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+                $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
+                $loan_payment->payment_token = $token;
+                $loan_payment->payment_amount = $amount;
+                $loan_payment->payment_gst = $gst;
+                $loan_payment->created_by = (($userId) ? $userId : null);
+                $loan_payment->created_on = date('Y-m-d H:i:s');
+                if (!$loan_payment->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                } else{
+                    $this->_flag = true;
+                }
+            }
+            if ($this->_flag) {
+                $transaction->commit();
+                $data = [];
+                $data['loan_app_enc_id'] = $this->loan_app_enc_id;
+                $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
+                $data['payment_id'] = $loan_payment->payment_token;
+                $data['status'] = true;
+                return $data;
+            } else {
+                $transaction->rollBack();
+                return [
+                    'message'=>'Unable to Save',
+                    'status'=>false
+                ];
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return [
+                    'message'=>$exception->getMessage(),
+                    'status'=>false
+                ];
+        }
+    }
     public function GetToken($args)
     {
         //Generation of REQUEST_SIGNATURE for a POST Request

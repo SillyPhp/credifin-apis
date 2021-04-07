@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-if(!$column_size){
+if (!$column_size) {
     $column_size = 'col-md-3';
 }
 
@@ -12,7 +12,7 @@ if ($organization_data) {
     foreach ($organization_data as $shortlist) {
         $logo = $shortlist['logo'];
         ?>
-        <div class="<?= $column_size;?> hr-j-box">
+        <div class="<?= $column_size; ?> hr-j-box">
             <div class="topic-con">
                 <div class="hr-company-box">
                     <a href="/<?= $shortlist['slug']; ?>">
@@ -20,7 +20,8 @@ if ($organization_data) {
                             <?php
                             if (empty($shortlist['logo_location'])) {
                                 ?>
-                                <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="100" height="100" font="35px" color="<?= $shortlist['initials_color']; ?>"></canvas>
+                                <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="100" height="100"
+                                        font="35px" color="<?= $shortlist['initials_color']; ?>"></canvas>
                                 <?php
                             } else {
                                 $logo_location = $shortlist['logo_location'];
@@ -42,17 +43,10 @@ if ($organization_data) {
                             <?= $shortlist['industry']; ?>
                         </div>
                     </a>
-                    <div class="hr-com-jobs">
-                        <div class="row">
-                            <div class="col-md-1 j-cross">
-                                <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid">
-                                <a  href="/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
-                            </div>
-                        </div>
+                    <div class="hr-com-jobs hr-unfollow j-grid">
+                        <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">UNFOLLOW</button>
+                        <a href="/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
+
                     </div>
                 </div>
             </div>
@@ -61,19 +55,45 @@ if ($organization_data) {
     }
 } else {
     ?>
-        <div class="tab-empty">
-            <div class="tab-empty-icon">
-                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/followedcompanies.png'); ?>" class="img-responsive" alt=""/>
-            </div>
-            <div class="tab-empty-text">
-                <div class="">You haven't Followed any Company.</div>
-            </div>
+    <div class="tab-empty">
+        <div class="tab-empty-icon">
+            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/followedcompanies.png'); ?>" class="img-responsive"
+                 alt=""/>
         </div>
+        <div class="tab-empty-text">
+            <div class="">You haven't Followed any Company.</div>
+        </div>
+    </div>
     <?php
 }
 Pjax::end();
 
 $this->registerCss('
+.j-grid > button {
+    font-family: roboto;
+    font-size: 11px;
+    color: #00a0e3;
+    border: 1px solid #00a0e3;
+    -webkit-border-radius: 20px !important;
+    -moz-border-radius: 20px !important;
+    -ms-border-radius: 20px !important;
+    -o-border-radius: 20px !important;
+    border-radius: 4px !important;
+    padding: 6px 12px;
+    display: inline-block;
+    margin-top: -4px;
+    background-color: #fff;
+}
+.j-grid > button:hover {
+    background-color: #00a0e3;
+    color: #fff;
+}
+.hr-unfollow {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
 .tab-empty{
     padding:20px;
 }

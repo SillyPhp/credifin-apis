@@ -17,7 +17,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 } else {
                     ?>
                     <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                            color="<?= $initial_color; ?>" font="60px"></canvas>
+                            color="<?= $initial_color; ?>" font="48px"></canvas>
                     <?php
                 }
                 ?>
@@ -238,6 +238,11 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
 .organization-details p{
     display: flex;
     align-items: center;
@@ -321,16 +326,21 @@ $this->registerCss('
     text-align: center;
 }
 .follow-btn:hover{color:#fff;}
-.job-thumb a{
+.job-thumb{
     width: 125px !Important;
     height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{
-    margin:5px;
+#logo_img {
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
 }
 .overlay-top{
     width: 80% !Important;
@@ -341,10 +351,6 @@ $this->registerCss('
     z-index: 9;
     padding-top: 20px;
     padding-bottom: 50px;
-}
-#logo_img {
-    width: 85px !Important;
-    height: 100px !Important;
 }
 .organization-details{
     display: block;
@@ -432,7 +438,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 	position: relative;
 	color: #fff;
 	border: 2px solid #fff;
-	line-height: 24px;
+	line-height: 26px;
 }
 .effect a i {
 	font-size: 14px;
@@ -503,9 +509,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .overlay-top{
         padding-bottom:10px;
     }
-//    .job-thumb{
-//        max-width: 125px;
-//    }
     .job-head-info{
 //        max-width: 275px;
         text-align: center;
@@ -559,9 +562,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;

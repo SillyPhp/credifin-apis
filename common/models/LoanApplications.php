@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
@@ -13,12 +15,14 @@ namespace common\models;
  * @property string $college_course_enc_id organization_enc_id
  * @property string $loan_type_enc_id
  * @property string $applicant_name Course Name
+ * @property string $employement_type
  * @property string $image
  * @property string $image_location
  * @property string $applicant_dob
  * @property string $applicant_current_city
  * @property string $degree
  * @property int $years Course Years
+ * @property int $months Course Months
  * @property int $semesters course semesters
  * @property string $phone
  * @property string $email
@@ -44,10 +48,12 @@ namespace common\models;
  * @property string $loan_type
  * @property string $loan_purpose
  * @property int $is_deleted 0 as False, 1 as True
+ * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
+ * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
@@ -71,7 +77,7 @@ namespace common\models;
 class LoanApplications extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -79,15 +85,15 @@ class LoanApplications extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['loan_app_enc_id', 'applicant_name', 'applicant_current_city', 'phone', 'email', 'amount', 'source'], 'required'],
-            [['had_taken_addmission', 'years', 'semesters', 'cibil_score', 'gender', 'status', 'loan_status', 'is_deleted'], 'integer'],
+            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
+            [['employement_type', 'degree', 'candidate_status', 'source', 'loan_type'], 'string'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['degree', 'candidate_status', 'source', 'loan_type'], 'string'],
             [['amount', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
@@ -104,6 +110,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -127,6 +134,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplicantResidentialInfos()
     {
         return $this->hasMany(LoanApplicantResidentialInfo::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationComments()
+    {
+        return $this->hasMany(LoanApplicationComments::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

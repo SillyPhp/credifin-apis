@@ -9,10 +9,12 @@ use yii\helpers\Url;
                     <h1>Interest Free Education Loan</h1>
                     <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil
                         your dream of studying in your desired College/University.</p>
+                    <div class="apply-btn">
                     <ul>
                         <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                     </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -190,7 +192,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
                             </div>
@@ -200,7 +202,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
                             </div>
@@ -210,7 +212,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
                             </div>
@@ -220,7 +222,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <div class="loan-college">
-                        <a href="/educational-institution-loan" target="_blank">
+                        <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
                             <div class="loan-college-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
                             </div>
@@ -241,7 +243,7 @@ use yii\helpers\Url;
     'viewBtn' => true,
 ]) ?>
 
-    <section class=""  id="call">
+    <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
@@ -288,6 +290,9 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.apply-btn {
+    text-align: left;
+}
 .heading-style {
     color: #000;
 }
@@ -379,8 +384,18 @@ html {
 }
 .l-help-txt{
     font-size: 15px;
-    padding: 20px 30px 0 30px;
+    padding: 20px 20px 0 30px;
     font-family: roboto;
+}
+.callNumber{
+    color: #666;
+    font-size: 18px;
+    margin-top: 10px;
+    font-family: roboto;
+    text-align: center;
+}
+.callNumber i{
+    color: #1b4145;
 }
 .whats-btn {
     padding: 10px 0px 8px 0px;
@@ -483,7 +498,7 @@ html {
     margin-top: 50px;
 }
 .partner-text {
-    padding: 30px;
+    padding-top: 30px;
 }
 .partner-text h2 {
     font-family: Lobster;
@@ -605,8 +620,8 @@ html {
     display: inline;
     margin-right: 10px;
 }
-.apply-now {
-	padding: 10px 15px;
+.apply-now{
+    padding: 10px 15px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -616,7 +631,7 @@ html {
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
-	text-align:center;
+	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -646,11 +661,10 @@ html {
 }
 .benefit-bg {
     background-color: #edf4fc;
-    padding: 20px 0px 30px;
+    padding: 20px 0px 20px;
 }
 .bene-head {
-    margin: 20px 20px 60px;
-    text-align: center;
+    margin: 0px 20px 60px;
 }
 .bene-head h2 {
     font-size: 28pt;
