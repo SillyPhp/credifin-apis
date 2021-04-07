@@ -13,90 +13,64 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <div class="row">
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Name
-                                    </label>
-                                    <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Name
+                                        </label>
+                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
+                                <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Current City Where You Live
+                                            </label>
+                                            <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                                   autocomplete="off" placeholder="City"/>
+                                        </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="annulIncome" class="input-group-text">
+                                            Salary (Income)
+                                        </label>
+                                        <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                               placeholder="Enter Loan Amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Phone Number (WhatsApp & Call)
+                                        </label>
+                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                               placeholder="Enter Phone Number">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="email" class="input-group-text">
+                                            Email Address
+                                        </label>
+                                        <input type="text" class="form-control" id="email" name="email"
+                                               placeholder="Enter Email Address">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect02">
-                                            Current City Where You Live
+                                           Number Of Children (Applying Loan For)
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                               autocomplete="off" placeholder="City"/>
-                                    </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="annulIncome" class="input-group-text">
-                                        Salary(Income)
-                                    </label>
-                                    <input type="text" class="form-control" id="loanamount" name="loanamount"
-                                           placeholder="Enter Loan Amount">
+                                        <input type="text" class="form-control" id="noChild" name="noChild"
+                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Email Address">
+                                        <p class="errorMsg"></p>
+                                   </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Phone Number (WhatsApp & Call)
-                                    </label>
-                                    <input type="text" class="form-control" id="mobile" name="mobile"
-                                           placeholder="Enter Phone Number">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="email" class="input-group-text">
-                                        Email Address
-                                    </label>
-                                    <input type="text" class="form-control" id="email" name="email"
-                                           placeholder="Enter Email Address">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <div class="radio-heading input-group-text">
-                                        Number Of Children (Applying Loan For)
-                                    </div>
-                                    <input type="text" class="form-control" id="">
-                                    <ul class="displayInline">
-                                        <li>
-                                            <input type="radio" value="1" id="sal-1" name="childNum" onchange="showChildInfo(event)"
-                                                   class="checkbox-input services">
-                                            <label for="sal-1">One</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" value="2" id="self-1" name="childNum" onchange="showChildInfo(event)"
-                                                   class="checkbox-input services">
-                                            <label for="self-1">Two</label>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="input-group-text" for="inputGroupSelect02">
-                                       Number Of Children (Applying Loan For)
-                                    </label>
-                                    <input type="text" class="form-control" id="noChild" name="noChild"
-                                        onkeyup="checkChildInfo(this)" placeholder="Enter Email Address">
-                                    <p class="errorMsg"></p>
-                               </div>
-                                <div class="form-group">
-                                    <input type="checkbox" class="make-switch os-email" id="job-application"
-                                           data-size="small">
-                                    <label class="control-label">Attend The Same School</label>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="child-info-div">
-                            </div>
-                            <div class="col-md-12 padd-20">
+                            <div class="child-info-div"></div>
+                            <div class="row">
+                                <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
                                     <div class="btn-center">
                                         <button type="button" class="button-slide" id="subBtn">
@@ -104,6 +78,7 @@ use yii\helpers\Url;
                                         </button>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </form>
                     </div>
@@ -332,9 +307,9 @@ button{
     position:fixed;
     background:#00a0e3;
 }
-//.child-info-div{
-//    display: none; 
-//}
+.displayNone{
+    display: none;
+}
 @media only screen and (max-width: 500px){
     .sign-up-details{
         width:70vw;
@@ -414,56 +389,6 @@ form label {
     border-bottom:1px solid #eee;
     font-size:14px;
     color:#999;
-}
-.container-radio {
-  display: block;
-  position: relative;
-  padding-left: 29px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.container-radio input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-.checkmark {
-    position: absolute;
-    top: 3px;
-    left: 0;
-    height: 22px;
-    width: 22px;
-    background-color: #eee;
-    border-radius: 50%;
-}
-.container-radio:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-.container-radio input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;    
-}
-/* Show the indicator (dot/circle) when checked */
-.container-radio input:checked ~ .checkmark:after {
-  display: block;
-}
-/* Style the indicator (dot/circle) */
-.container-radio .checkmark:after {
- 	top: 6px;
-    left: 6px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: white;
 }
 .service-list{
      display: inline-block;
@@ -646,12 +571,76 @@ top:6px !important;
    border-radius: 0px !important;
    border-color: #aaa !important;
 }
-.select2-container--default
-{
-width:100% !important;
+.select2-container--default{
+    width:100% !important;
 }
 .errorMsg{
     display: none;
+    color: #CA0B00;
+}
+.form-group{
+    margin-bottom: 10px;
+}
+.check-container {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+//  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.check-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 23px;
+  width: 23px;
+  background-color: #fff;
+  border: 1px solid #c2cad8;
+}
+
+.check-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.check-container input:checked ~ .checkmark {
+  background-color: #2196F3;
+  border: 1px solid #2196F3;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.check-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.check-container .checkmark:after {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 @media screen and (max-width: 500px){
     .select2{
@@ -710,21 +699,23 @@ width:100% !important;
         }
     }
     showSchoolField = () => {
+        let schoolNameField = document.querySelectorAll('.schoolNameField')
         if(event.target.checked){
-            document.querySelector('#schoolField').style.display = 'none'
+            for(let i = 0; i <= schoolNameField.length; i++){
+                schoolNameField[i+1].classList.add('displayNone');
+            }
         }else {
-            document.querySelector('#schoolField').style.display = 'block'
+            for(let i = 0; i <= schoolNameField.length; i++){
+                schoolNameField[i+1].classList.remove('displayNone');
+            }
         };
     }
     checkChildInfo = (event) => {
-        let num = event.value;
+        let num = parseInt(event.value);
+        console.log(typeof num);
         let parentElem = event.parentElement;
         let childFormBox = document.querySelectorAll('.childFormBox');
-        // if(num == ""){
-        //     removeChildFormBox(num, childFormBox)
-        // }
-        if (!/^[0-9]+$/.test(num) || num > 9 || num == '') {
-            console.log(num)
+        if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
             parentElem.querySelector('.errorMsg').style.display = "block";
             parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
             removeChildFormBox(num, childFormBox)
@@ -733,7 +724,7 @@ width:100% !important;
             let childDiv = document.querySelector('.child-info-div');
             let count = 1;
             for (let i = 1; i <= num; i++) {
-                let childForm = childrenInfoForm(count);
+                let childForm = childrenInfoForm(count, num);
                 childDiv.innerHTML += childForm;
                 count++
              }
@@ -741,9 +732,17 @@ width:100% !important;
     }
     errorMsgText = (num) => {
         switch (num){
-            case 1:
-                num > 9;
-                return
+            case (num > 9):
+                return 'Number Should Be Less Than 9';
+                break;
+            case 0:
+                return 'Number Should Be Greater Than 0';
+                break;
+            case NaN:
+                return 'This Field Can Not Be Empty';
+                break;
+            default:
+                return 'Please Enter A Number';
         }
     }
     removeChildFormBox = (num, childFormBox) => {
@@ -753,10 +752,10 @@ width:100% !important;
             }
         }
     }
-    childrenInfoForm = (count) => {
+    childrenInfoForm = (count, num) => {
         let childInfoForm = `<div class="row childFormBox">
             <div class="col-md-12">
-                <h3 class="heading-style">Children Information</h3>
+                <h6 class="heading-style">${count}${count == 1 ? 'st' : count == 2 ? 'nd' : count == 3 ? 'rd' : 'th'} Child's Information</h6>
             </div>
             <div class="col-md-12 padd-20">
                 <div class="form-group">
@@ -767,7 +766,7 @@ width:100% !important;
                      name="applicant_name_${count}" placeholder="Enter Full Name">
                 </div>
             </div>
-            <div class="col-md-12 padd-20">
+            <div class="col-md-12 padd-20 schoolNameField">
                 <div class="form-group">
                     <label for="school_name_${count}" class="input-group-text">
                         School Name
@@ -775,12 +774,14 @@ width:100% !important;
                     <input type="text" class="form-control text-capitalize" id="school_name_${count}"
                         name="school_name_${count}" placeholder="Enter Full Name">
                 </div>
+                ${num > 1 && count == 1 ? `
                 <div class="form-group" id="schoolAttend" >
-                    <input type="checkbox" class="make-switch os-email"
-                           onchange="showSchoolField()"
-                           data-size="small">
-                        <label class="control-label">Both Attend The Same School</label>
+                    <label class="check-container">All Attend The Same School
+                      <input type="checkbox" onchange="showSchoolField()">
+                      <span class="checkmark"></span>
+                    </label>
                 </div>
+                `: ''}
             </div>
             <div class="col-md-12 padd-20">
                 <div class="form-group">
