@@ -9,70 +9,70 @@ $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
 ?>
-<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
-            <div class="modal-header">
-                <h4 class="modal-title">Fill Out The Details</h4>
-            </div>
-            <div class="modal-body">
-                <?php if (!empty($location)) {
-                    echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
-                } ?>
-                <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $application_enc_id]); ?>
-                <?= $form->field($model, 'org_id', ['template' => '{input}'])->hiddenInput(['id' => 'organization_id', 'value' => $organization_enc_id]); ?>
-                <?php
-                if ($que) {
-                    $ques = 1;
-                } else {
-                    $ques = 0;
-                }
-                ?>
-                <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                <?php
-                if (!empty($resumes)) {
-                    $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
-                } else {
-                    $checkList = [1 => 'Upload New'];
-                }
-                ?>
-                <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
-
-                <div id="new_resume">
-                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Out The Details</h4>
                 </div>
-                <?php if ($resumes) { ?>
-                    <div id="use_existing">
-                        <div class="row">
-                            <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                            <?php foreach ($resumes as $res) {
-                                ?>
-                                <div class="col-md-offset-1 col-md-10">
-                                    <div class="radio_questions">
-                                        <div class="inputGroup">
-                                            <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
-                                                   type="radio" value="<?= $res['resume_enc_id']; ?>"/>
-                                            <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
+                <div class="modal-body">
+                    <?php if (!empty($location)) {
+                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                    } ?>
+                    <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $application_enc_id]); ?>
+                    <?= $form->field($model, 'org_id', ['template' => '{input}'])->hiddenInput(['id' => 'organization_id', 'value' => $organization_enc_id]); ?>
+                    <?php
+                    if ($que) {
+                        $ques = 1;
+                    } else {
+                        $ques = 0;
+                    }
+                    ?>
+                    <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
+                    <?php
+                    if (!empty($resumes)) {
+                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                    } else {
+                        $checkList = [1 => 'Upload New'];
+                    }
+                    ?>
+                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
+
+                    <div id="new_resume">
+                        <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
+                    </div>
+                    <?php if ($resumes) { ?>
+                        <div id="use_existing">
+                            <div class="row">
+                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
+                                <?php foreach ($resumes as $res) {
+                                    ?>
+                                    <div class="col-md-offset-1 col-md-10">
+                                        <div class="radio_questions">
+                                            <div class="inputGroup">
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
+                                                <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php }
-                            ?>
+                                <?php }
+                                ?>
+                            </div>
                         </div>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
             </div>
-            <div class="modal-footer">
-                <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
-                <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
-            </div>
-            <?php ActiveForm::end(); ?>
         </div>
     </div>
-</div>
 <?php
-echo $this->render('/widgets/employer_applications/applied-modal');
+echo $this->render('/widgets/employer_applications/applied-modal', ['applicationType' => $applicationType]);
 $this->registerCss("
     .inputGroup {
       background-color: #fff;
