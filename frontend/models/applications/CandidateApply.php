@@ -2,6 +2,7 @@
 
 namespace frontend\models\applications;
 
+use common\models\EmployerApplications;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -65,10 +66,22 @@ class CandidateApply extends Widget
                 ->limit(3)
                 ->all();
         }
+
+        $applicationType = EmployerApplications::find()
+            ->alias('a')
+            ->select(['b.name'])
+            ->joinWith(['applicationTypeEnc b'], false)
+            ->where(['application_enc_id' => $this->application_enc_id])
+            ->asArray()
+            ->one();
+
+        $applicationType = $applicationType['name'];
+
         return $this->render('@frontend/views/widgets/employer_applications/job-applied', ['model' => $model,
             'btn_class' => $this->btn_class,
             'application_enc_id' => $this->application_enc_id,
             'organization_enc_id' => $this->organization_enc_id,
+            'applicationType' => $applicationType,
             'locations' => $locations,
             'que' => $app_que,
             'resumes' => $resumes]);
