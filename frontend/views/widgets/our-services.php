@@ -11,7 +11,7 @@ use yii\helpers\Url;
 <!--                </div>-->
 <!--            </div>-->
             <div class="row">
-                <h2 class="heading-style">What We Deal With</h2>
+                <h2 class="heading-style">To Whom We Serve</h2>
                 <div class="col-md-2 col-sm-4 col-xs-6 u-p">
                     <a href="<?= Url::to('/employers'); ?>">
                         <div class="service-main">

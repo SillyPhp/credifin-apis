@@ -107,7 +107,7 @@ $this->registerCss('
     opacity: 1;
     display: block;
     width: 100%;
-    height: auto;
+    height: 150px;
     transition: .5s ease;
     backface-visibility: hidden;
 }
