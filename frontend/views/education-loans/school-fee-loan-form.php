@@ -1,5 +1,36 @@
 <?php
 use yii\helpers\Url;
+$this->params['header_dark'] = true;
+$this->title = 'Easy Loan Process | Loans For Schools';
+$keywords = '';
+$description = '';
+$image = Url::to('@eyAssets/images/pages/education-loans/teacher-edu-p.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 ?>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
@@ -16,7 +47,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name
+                                            Name (Name Of The Parent)
                                         </label>
                                         <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
@@ -33,9 +64,18 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Salary (Income)
+                                            Salary (Yearly Income)
                                         </label>
-                                        <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                        <input type="text" class="form-control" minlength="4" maxlength="8" id="salary" name="salary"
+                                               placeholder="Enter Salary">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="annulIncome" class="input-group-text">
+                                           Loan Amount
+                                        </label>
+                                        <input type="text" class="form-control" minlength="4" maxlength="8" id="loanamount" name="loanamount"
                                                placeholder="Enter Loan Amount">
                                     </div>
                                 </div>
@@ -44,7 +84,7 @@ use yii\helpers\Url;
                                         <label for="number" class="input-group-text">
                                             Phone Number (WhatsApp & Call)
                                         </label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                        <input type="text" class="form-control" minlength="10" maxlength="10" id="mobile" name="mobile"
                                                placeholder="Enter Phone Number">
                                     </div>
                                 </div>
@@ -53,7 +93,7 @@ use yii\helpers\Url;
                                         <label for="email" class="input-group-text">
                                             Email Address
                                         </label>
-                                        <input type="text" class="form-control" id="email" name="email"
+                                        <input type="text" class="form-control" maxlength="50" id="email" name="email"
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
@@ -63,7 +103,7 @@ use yii\helpers\Url;
                                            Number Of Children (Applying Loan For)
                                         </label>
                                         <input type="text" class="form-control" id="noChild" name="noChild"
-                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Email Address">
+                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
                                         <p class="errorMsg"></p>
                                    </div>
                                 </div>
@@ -96,7 +136,6 @@ use yii\helpers\Url;
                                     With the rise in school tuition expenses and overall cost of learning, we’re left seeking
                                     quality education without soaring education fees. Now, with our <span>School Fee Loan</span>
                                     you can conveniently pay your child’s school fees without any worry.</li>
-<!--                                <li>- Loan will be <span>repaid</span> with in the Year</li>-->
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
@@ -685,6 +724,111 @@ top:6px !important;
 
 ');
 ?>
+<?php
+$script = <<< JS
+       $("#subBtn").click(function(){
+       var form = $("#myForm");  
+       var error = $('.alert-danger', form);
+       var success = $('.alert-success', form);
+       form.validate({ 
+       errorElement: 'span', //default input error message container
+       errorClass: 'help-block help-block-error', // default input error message class
+       focusInvalid: true, // do not focus the last invalid input 
+			rules: {
+				'applicant_name': {
+					required: true,
+					maxlength: 100
+				},
+				'dob':{
+				    required:true,
+				    check_date_of_birth: true
+				},
+				'mobile':{
+				    required:true,
+				    minlength: 10,
+				    maxlength: 10,
+				},
+				'email':{
+				    required:true,
+				    email:true
+				},
+				'location':{
+				    required:true,
+				}, 
+				'loanamount':{ 
+				    required:true,
+				    min:5000,
+				    max:5000000
+				},
+				'noChild':{ 
+				    required:true,
+				    min:1,
+				    max:9
+				},
+				'salary':{ 
+				    required:true,
+				    min:5000,
+				    max:5000000
+				},
+			},
+			messages: {
+				'applicant_name': {
+					required: "Parent Name Required",
+				},
+				'dob': {
+					required: "Enter Date Of Birth",
+				},
+				'mobile':{
+				    required:'Mobile Number Cannot Be Blank',
+				},
+				'email':{
+				    required:'Email Cannot Be Blank',
+				},
+				'location':{
+				    required:'Current City Cannot Be Blank',
+				},
+				'loanamount':{
+				    required:'Laon Amount Cannot Be Blank',
+				},
+				'salary':{
+				    required:'Salary Amount Cannot Be Blank',
+				},
+				'noChild':{
+				    required:'No. Of Child Cannot Be Blank',
+				    min:'',
+				    max:'',
+				},
+			}, 
+			 invalidHandler: function (event, validator) { //display error alert on form submit   
+                   $('html,body').animate({
+                    scrollTop: 0
+                    }, 'slow');
+                },
+           errorPlacement: function (error, element) {
+           if (element.attr("name") == "dob"){
+               error.appendTo($("#dob-error"));
+           }
+           else if (element.attr("name") == element.attr("name"))
+                    { 
+                         error.insertAfter(element);   
+                    }
+                    },
+      }); 
+       if (form.valid() == true){
+           ajaxSubmit();
+       }
+   })
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
+$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
 <script>
     showChildInfo = (event) =>{
         let eventValue  = event.currentTarget.value;
@@ -712,7 +856,6 @@ top:6px !important;
     }
     checkChildInfo = (event) => {
         let num = parseInt(event.value);
-        console.log(typeof num);
         let parentElem = event.parentElement;
         let childFormBox = document.querySelectorAll('.childFormBox');
         if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
@@ -729,6 +872,9 @@ top:6px !important;
                 count++
              }
         }
+        $('.datepicker3').datepicker({
+            todayHighlight: true
+        });
     }
     errorMsgText = (num) => {
         switch (num){
@@ -747,8 +893,8 @@ top:6px !important;
     }
     removeChildFormBox = (num, childFormBox) => {
         if(childFormBox.length > 0){
-            for(let i=0; i<=childFormBox.length; i++){
-                childFormBox[i].remove()
+            for(let i=0; i<childFormBox.length; i++){
+                childFormBox[i].remove();
             }
         }
     }
@@ -763,7 +909,16 @@ top:6px !important;
                         Name
                     </label>
                     <input type="text" class="form-control text-capitalize" id="applicant_name_${count}"
-                     name="applicant_name_${count}" placeholder="Enter Full Name">
+                     name="applicant_name_${count}" placeholder="Full Name">
+                </div>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="class_name_${count}" class="input-group-text">
+                        Date Of Birth
+                    </label>
+                    <input type="text" class="form-control text-capitalize datepicker3" id="dob_name_${count}"
+                        name="dob_name_${count}" placeholder="Date Of Birth">
                 </div>
             </div>
             <div class="col-md-12 padd-20 schoolNameField">
@@ -772,7 +927,7 @@ top:6px !important;
                         School Name
                     </label>
                     <input type="text" class="form-control text-capitalize" id="school_name_${count}"
-                        name="school_name_${count}" placeholder="Enter Full Name">
+                        name="school_name_${count}" placeholder="School Name">
                 </div>
                 ${num > 1 && count == 1 ? `
                 <div class="form-group" id="schoolAttend" >
@@ -789,7 +944,7 @@ top:6px !important;
                         Class
                     </label>
                     <input type="text" class="form-control text-capitalize" id="class_name_${count}"
-                        name="class_name_${count}" placeholder="Enter Full Name">
+                        name="class_name_${count}" placeholder="Class Name">
                 </div>
             </div>
         </div>`
