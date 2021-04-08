@@ -107,6 +107,7 @@ foreach ($fields as $f) {
                             }
                             ?></p>
                         <p><?= $cnt ?> Openings</p>
+                        <p><?= count($app['appliedApplications']) ?> Applications</p>
                     </div>
                     <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">
                         Active
@@ -260,19 +261,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-                        <div class="col-md-12 use-ff">
-                            <div class="job-txt">Invite Candidates via:</div>
-                            <div class="job-mail">
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="Email">
-                                <button class="redd"><i class="fa fa-envelope"></i></button>
-                            </div>
-                            <div class="job-whatsapp">
-                                <input type="text" class="form-control" id="text" name="text"
-                                       placeholder="Whatsapp">
-                                <button class="grn"><i class="fa fa-whatsapp"></i></button>
-                            </div>
-                        </div>
+<!--                        <div class="col-md-12 use-ff">-->
+<!--                            <div class="job-txt">Invite Candidates via:</div>-->
+<!--                            <div class="job-mail">-->
+<!--                                <input type="email" class="form-control" id="email" name="email"-->
+<!--                                       placeholder="Email">-->
+<!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
+<!--                            </div>-->
+<!--                            <div class="job-whatsapp">-->
+<!--                                <input type="text" class="form-control" id="text" name="text"-->
+<!--                                       placeholder="Whatsapp">-->
+<!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
         </div>
     </div>
 </div>
@@ -508,7 +509,7 @@ foreach ($fields as $f) {
                                        data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"
-                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
+                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>//&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>//&color=ffffff'"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
                                                     color="<?= $arr['initials_color']; ?>" height="80"
@@ -2447,7 +2448,10 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
-var pb = new PerfectScrollbar('#skill-sett');
+var skillSet = $('#skill-sett')
+if(skillSet.length > 0){
+   var pb = new PerfectScrollbar('#skill-sett');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

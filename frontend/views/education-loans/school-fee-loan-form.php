@@ -1,9 +1,9 @@
 <?php
 use yii\helpers\Url;
 $this->params['header_dark'] = true;
-$this->title = 'Easy Loan Process | Personal Loans For Teachers';
-$keywords = 'Personal Loan for Teachers, Loan for Teachers, Employ Loan , Education Loan, Low Interest Rate Loan';
-$description = 'Are you a teacher and struggling to find trustable personal loan providers? EmpwerYouth helps to provide loans up to 50% of the salary amount.';
+$this->title = 'Easy Loan Process | Loans For Schools';
+$keywords = '';
+$description = '';
 $image = Url::to('@eyAssets/images/pages/education-loans/teacher-edu-p.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
@@ -32,7 +32,6 @@ $this->params['seo_tags'] = [
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 ?>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -40,121 +39,86 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                     <div class="form-start">
                         <form action="" id="myForm">
                             <div class="row">
-                                    <div class="col-md-12">
-                                        <h1 class="heading-style">Loan For Teachers</h1>
-                                    </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Name
-                                    </label>
-                                    <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                <div class="col-md-12">
+                                    <h3 class="heading-style">School Fee Loan</h3>
                                 </div>
                             </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Date Of Birth (mm/dd/yyyy)
-                                    </label>
-                                    <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                        <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
-                                        <div class="input-group-addon">
-                                            <span class=""><i class="fas fa-calendar-alt"></i></span>
+                            <div class="row">
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Name (Name Of The Parent)
+                                        </label>
+                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Current City Where You Live
+                                            </label>
+                                            <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                                   autocomplete="off" placeholder="City"/>
                                         </div>
-                                    </div>
-                                    <span id="dob-error"></span>
                                 </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label class="input-group-text" for="inputGroupSelect02">
-                                        Current City Where You Live
-                                    </label>
-                                    <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                           autocomplete="off" placeholder="City"/>
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Phone Number (WhatsApp & Call)
-                                    </label>
-                                    <input type="tel" pattern="[0-9]*" class="form-control" id="mobile" name="mobile"
-                                           placeholder="Enter Phone Number">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="email" class="input-group-text">
-                                        Email Address
-                                    </label>
-                                    <input type="text" class="form-control" id="email" name="email"
-                                           placeholder="Enter Email Address">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <label for="annulIncome" class="input-group-text">
-                                        Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
-                                    </label>
-                                    <input type="text" class="form-control" minlength="4" maxlength="7" id="loanamount" name="loanamount"
-                                           placeholder="Enter Loan Amount">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="form-group">
-                                    <div class="radio-heading input-group-text">
-                                        Employment Type
-                                    </div>
-                                    <ul class="displayInline">
-                                        <li>
-                                            <input type="radio" value="Teacher" checked="checked" id="sal-1" name="emptype" class="checkbox-input services">
-                                            <label for="sal-1">Teacher</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" value="Admin Staff" id="self-1" name="emptype" class="checkbox-input services">
-                                            <label for="self-1">Admin Staff</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" value="Others" id="non-1" name="emptype" class="checkbox-input services">
-                                            <label for="non-1">Other</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="radio-heading input-group-text">
-                                    History With Intitution
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Years
+                                            Salary (Yearly Income)
                                         </label>
-                                        <input type="tel" class="form-control"  maxlength="2" id="years" name="years"
-                                               placeholder="Years">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="annulIncome" class="input-group-text">
-                                            Months
-                                        </label>
-                                        <input type="tel" class="form-control" minlength="1" maxlength="2" id="months" name="months"
-                                               placeholder="Months">
+                                        <input type="text" class="form-control" minlength="4" maxlength="8" id="salary" name="salary"
+                                               placeholder="Enter Salary">
                                     </div>
                                 </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="annulIncome" class="input-group-text">
+                                           Loan Amount
+                                        </label>
+                                        <input type="text" class="form-control" minlength="4" maxlength="8" id="loanamount" name="loanamount"
+                                               placeholder="Enter Loan Amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Phone Number (WhatsApp & Call)
+                                        </label>
+                                        <input type="text" class="form-control" minlength="10" maxlength="10" id="mobile" name="mobile"
+                                               placeholder="Enter Phone Number">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="email" class="input-group-text">
+                                            Email Address
+                                        </label>
+                                        <input type="text" class="form-control" maxlength="50" id="email" name="email"
+                                               placeholder="Enter Email Address">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect02">
+                                           Number Of Children (Applying Loan For)
+                                        </label>
+                                        <input type="text" class="form-control" id="noChild" name="noChild"
+                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
+                                        <p class="errorMsg"></p>
+                                   </div>
+                                </div>
                             </div>
-                            <div class="col-md-12 padd-20">
+                            <div class="child-info-div"></div>
+                            <div class="row">
+                                <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
                                     <div class="btn-center">
                                         <button type="button" class="button-slide" id="subBtn">
                                             Submit
                                         </button>
-                                        <button type="button" class="button-slide btn btn-block" id="loadBtn">
-                                            Processing <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        </button>
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </form>
                     </div>
@@ -166,10 +130,12 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                 <div class="col-md-12">
                     <div class="el-pos-rel">
                         <div class="max-300">
-                            <div class="cl-heading">Personal Loan For Teachers</div>
+                            <div class="cl-heading">School Fee Loan</div>
                             <ul class="loan-benefits">
-                                <li>- <span>Get considerable loan amount</span> with our loan for teachers, you can get a loan upto
-                                    50% of your salary amount to help you meet your urgent <span>financial</span> needs.</li>
+                                <li>Being a parent, you would like to provide the best education facilities to your children.
+                                    With the rise in school tuition expenses and overall cost of learning, we’re left seeking
+                                    quality education without soaring education fees. Now, with our <span>School Fee Loan</span>
+                                    you can conveniently pay your child’s school fees without any worry.</li>
                             </ul>
                             <div class="cl-icon">
                                 <p>Our Lenders</p>
@@ -236,7 +202,7 @@ $this->registerCss('
 }
 
 .padd-20{
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 .loan-benefits li{
     color:#f3f3f2;
@@ -248,7 +214,10 @@ $this->registerCss('
     color:#fff;
 }
 button{
-border: 1px solid #ddd !important;
+    border: 1px solid #ddd !important;
+}
+#childTwo{
+    diaplay: none;
 }
 #countryName{
     display: none;
@@ -377,6 +346,9 @@ border: 1px solid #ddd !important;
     position:fixed;
     background:#00a0e3;
 }
+.displayNone{
+    display: none;
+}
 @media only screen and (max-width: 500px){
     .sign-up-details{
         width:70vw;
@@ -413,7 +385,8 @@ border: 1px solid #ddd !important;
 .cl-heading{
     color:#fff;
     font-size:20px;
-//    padding-top:30px;
+    padding-top:30px;
+    padding-bottom: 10px;
     font-weight:bold;
 }
 .footer{
@@ -455,56 +428,6 @@ form label {
     border-bottom:1px solid #eee;
     font-size:14px;
     color:#999;
-}
-.container-radio {
-  display: block;
-  position: relative;
-  padding-left: 29px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.container-radio input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-.checkmark {
-    position: absolute;
-    top: 3px;
-    left: 0;
-    height: 22px;
-    width: 22px;
-    background-color: #eee;
-    border-radius: 50%;
-}
-.container-radio:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-.container-radio input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;    
-}
-/* Show the indicator (dot/circle) when checked */
-.container-radio input:checked ~ .checkmark:after {
-  display: block;
-}
-/* Style the indicator (dot/circle) */
-.container-radio .checkmark:after {
- 	top: 6px;
-    left: 6px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: white;
 }
 .service-list{
      display: inline-block;
@@ -579,10 +502,10 @@ form label {
 {
 color:#e65332;
 }
-//#dob-error{
-//    position:absolute;
-//    bottom: -30px;
-//}
+#dob-error{
+    position:absolute;
+    bottom: -30px;
+}
 #loan_purpose_checkbox-error{
     position: absolute;
     bottom: 0px   
@@ -687,9 +610,76 @@ top:6px !important;
    border-radius: 0px !important;
    border-color: #aaa !important;
 }
-.select2-container--default
-{
-width:100% !important;
+.select2-container--default{
+    width:100% !important;
+}
+.errorMsg{
+    display: none;
+    color: #CA0B00;
+}
+.form-group{
+    margin-bottom: 10px;
+}
+.check-container {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+//  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.check-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 23px;
+  width: 23px;
+  background-color: #fff;
+  border: 1px solid #c2cad8;
+}
+
+.check-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.check-container input:checked ~ .checkmark {
+  background-color: #2196F3;
+  border: 1px solid #2196F3;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.check-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.check-container .checkmark:after {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 @media screen and (max-width: 500px){
     .select2{
@@ -731,15 +721,12 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-');
-$script = <<< JS
-   $('.datepicker3').datepicker({
-     todayHighlight: true
-    });
 
-$('#mobile, #loanamount').mask("#", {reverse: true});
-$('#years, #months').mask("#", {reverse: true});
-    $("#subBtn").click(function(){
+');
+?>
+<?php
+$script = <<< JS
+       $("#subBtn").click(function(){
        var form = $("#myForm");  
        var error = $('.alert-danger', form);
        var success = $('.alert-success', form);
@@ -765,14 +752,6 @@ $('#years, #months').mask("#", {reverse: true});
 				    required:true,
 				    email:true
 				},
-				'years':{
-				    required:true
-				},
-				'months':{
-				    required:false,
-				    min:0,
-				    max:12
-				},
 				'location':{
 				    required:true,
 				}, 
@@ -781,10 +760,20 @@ $('#years, #months').mask("#", {reverse: true});
 				    min:5000,
 				    max:5000000
 				},
+				'noChild':{ 
+				    required:true,
+				    min:1,
+				    max:9
+				},
+				'salary':{ 
+				    required:true,
+				    min:5000,
+				    max:5000000
+				},
 			},
 			messages: {
 				'applicant_name': {
-					required: "Applicant Name Required",
+					required: "Parent Name Required",
 				},
 				'dob': {
 					required: "Enter Date Of Birth",
@@ -795,17 +784,19 @@ $('#years, #months').mask("#", {reverse: true});
 				'email':{
 				    required:'Email Cannot Be Blank',
 				},
-				'years':{
-				    required:'Year Cannot Be Blank',
-				},
-				'months':{
-				    required:'Month Cannot Be Blank',
-				},
 				'location':{
 				    required:'Current City Cannot Be Blank',
 				},
 				'loanamount':{
 				    required:'Laon Amount Cannot Be Blank',
+				},
+				'salary':{
+				    required:'Salary Amount Cannot Be Blank',
+				},
+				'noChild':{
+				    required:'No. Of Child Cannot Be Blank',
+				    min:'',
+				    max:'',
 				},
 			}, 
 			 invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -827,156 +818,6 @@ $('#years, #months').mask("#", {reverse: true});
            ajaxSubmit();
        }
    })
-   function ajaxSubmit()
-        {
-            $.ajax({
-            url : '/api/v3/education-loan/save-teachers-loan',
-            method : 'POST', 
-            data : {
-                applicant_name:$('#applicant_name').val(),
-                applicant_dob:$('#dob').val(),
-                applicant_current_city:$('#location').val(),
-                years:$('#years').val(),
-                months:$('#months').val(),
-                phone:$('#mobile').val(),
-                email:$('#email').val(),
-                amount:$('#loanamount').val(),   
-                employement_type:$('input[name="emptype"]:checked').val(),  
-                userID:userID, 
-                country_enc_id:$('#country_name').val()
-                },  
-            beforeSend:function(e)
-            {  
-                $('#subBtn').hide();
-                $('#loadBtn').show();  
-            },
-            success : function(res) {
-                if (res.response.status=='200')
-                {
-                    let ptoken = res.response.data.payment_id; 
-                    let loan_id = res.response.data.loan_app_enc_id;
-                    let education_loan_id = res.response.data.education_loan_payment_enc_id;
-                    if (ptoken!=null || ptoken !=""){
-                        _razoPay(ptoken,loan_id,education_loan_id);
-                    } else{
-                        swal({
-                            title:"Error",
-                            text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
-                            });
-                    }
-                } 
-                else if (res.response.status=='401'||res.response.status=='422'||res.response.status=='500')
-                {
-                      swal({
-                            title:"Error",
-                            text: res.response.message,
-                            });
-                } 
-                else if(res.response.status=='409')
-                    {
-                        swal({ 
-                            title:"Error",
-                            text: "Some Internal Server Error, Please Try After Some Time",
-                            });
-                    }
-                $('#subBtn').show(); 
-                $('#loadBtn').hide();
-            }
-        });
-        }
-        
-  function _razoPay(ptoken,loan_id,education_loan_id){
-    var options = {
-    "key": access_key, 
-    "name": "Empower Youth",
-    "description": "Application Processing Fee",
-    "image": "/assets/common/logos/logo.svg",
-    "order_id": ptoken, 
-    "handler": function (response){
-        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
-    },
-    "prefill": {
-        "name": $('#applicant_name').val(),
-        "email": $('#email').val(),
-        "contact": $('#mobile').val()
-    },
-    "theme": {
-        "color": "#ff7803"
-    }
-};
-     var rzp1 = new Razorpay(options);
-     rzp1.open();
-     rzp1.on('payment.failed', function (response){
-         updateStatus(education_loan_id,loan_id,null,"failed");
-      swal({
-      title:"Error",
-      text: response.error.description,
-      });
-});
-}       
-
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
-{
-    $.ajax({
-            url : '/api/v3/education-loan/update-widget-loan-application',
-            method : 'POST', 
-            data : {
-              loan_payment_id:education_loan_id,
-              loan_app_id:loan_app_enc_id,
-              payment_id:payment_id, 
-              status:status, 
-              signature:signature,
-            },
-            beforeSend:function(e){
-                $('#subBtn').hide();
-                $('#loadBtn').show();   
-            },
-            success:function(e)
-            {
-                if (status=="captured"){
-                    if (e.response.status=='200'){
-                       swal({
-                        title: "",
-                        text: "Your Application Is Submitted Successfully",
-                        type:'success',
-                        showCancelButton: false,  
-                        showConfirmButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             location.reload(true);
-                         });
-                     }else{
-                        swal({
-                         title:"Payment Error",
-                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
-                      });
-                     }
-                }
-                $('#subBtn').show(); 
-                $('#loadBtn').hide();
-            }
-    })
-}
-   $.validator.addMethod("check_date_of_birth", function (value, element) {
-   var dateOfBirth = value;
-    var arr_dateText = dateOfBirth.split("/");
-    day = arr_dateText[1];
-    month = arr_dateText[0];
-    year = arr_dateText[2];
-    var mydate = new Date();
-    mydate.setFullYear(year, month - 1, day);
-    
-    var maxDate = new Date();
-    if ((maxDate.getFullYear()-year) <= 18) {
-        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 18 can be covered";
-        return false;
-    }
-    return true;
-});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -987,4 +828,126 @@ $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-
+?>
+<script>
+    showChildInfo = (event) =>{
+        let eventValue  = event.currentTarget.value;
+        if(eventValue == 1){
+            document.querySelector('.child-info-div').style.display = 'block';
+            document.querySelector('#childTwo').style.display = 'none';
+            document.querySelector('#schoolAttend').style.display = 'none';
+        }else if(eventValue == 2){
+            document.querySelector('.child-info-div').style.display = 'block';
+            document.querySelector('#childTwo').style.display = 'block';
+            document.querySelector('#schoolAttend').style.display = 'block';
+        }
+    }
+    showSchoolField = () => {
+        let schoolNameField = document.querySelectorAll('.schoolNameField')
+        if(event.target.checked){
+            for(let i = 0; i <= schoolNameField.length; i++){
+                schoolNameField[i+1].classList.add('displayNone');
+            }
+        }else {
+            for(let i = 0; i <= schoolNameField.length; i++){
+                schoolNameField[i+1].classList.remove('displayNone');
+            }
+        };
+    }
+    checkChildInfo = (event) => {
+        let num = parseInt(event.value);
+        let parentElem = event.parentElement;
+        let childFormBox = document.querySelectorAll('.childFormBox');
+        if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
+            parentElem.querySelector('.errorMsg').style.display = "block";
+            parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
+            removeChildFormBox(num, childFormBox)
+        } else  {
+            parentElem.querySelector('.errorMsg').style.display = "none";
+            let childDiv = document.querySelector('.child-info-div');
+            let count = 1;
+            for (let i = 1; i <= num; i++) {
+                let childForm = childrenInfoForm(count, num);
+                childDiv.innerHTML += childForm;
+                count++
+             }
+        }
+        $('.datepicker3').datepicker({
+            todayHighlight: true
+        });
+    }
+    errorMsgText = (num) => {
+        switch (num){
+            case (num > 9):
+                return 'Number Should Be Less Than 9';
+                break;
+            case 0:
+                return 'Number Should Be Greater Than 0';
+                break;
+            case NaN:
+                return 'This Field Can Not Be Empty';
+                break;
+            default:
+                return 'Please Enter A Number';
+        }
+    }
+    removeChildFormBox = (num, childFormBox) => {
+        if(childFormBox.length > 0){
+            for(let i=0; i<childFormBox.length; i++){
+                childFormBox[i].remove();
+            }
+        }
+    }
+    childrenInfoForm = (count, num) => {
+        let childInfoForm = `<div class="row childFormBox">
+            <div class="col-md-12">
+                <h6 class="heading-style">${count}${count == 1 ? 'st' : count == 2 ? 'nd' : count == 3 ? 'rd' : 'th'} Child's Information</h6>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="applicant_name_${count}" class="input-group-text">
+                        Name
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="applicant_name_${count}"
+                     name="applicant_name_${count}" placeholder="Full Name">
+                </div>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="class_name_${count}" class="input-group-text">
+                        Date Of Birth
+                    </label>
+                    <input type="text" class="form-control text-capitalize datepicker3" id="dob_name_${count}"
+                        name="dob_name_${count}" placeholder="Date Of Birth">
+                </div>
+            </div>
+            <div class="col-md-12 padd-20 schoolNameField">
+                <div class="form-group">
+                    <label for="school_name_${count}" class="input-group-text">
+                        School Name
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="school_name_${count}"
+                        name="school_name_${count}" placeholder="School Name">
+                </div>
+                ${num > 1 && count == 1 ? `
+                <div class="form-group" id="schoolAttend" >
+                    <label class="check-container">All Attend The Same School
+                      <input type="checkbox" onchange="showSchoolField()">
+                      <span class="checkmark"></span>
+                    </label>
+                </div>
+                `: ''}
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="class_name_${count}" class="input-group-text">
+                        Class
+                    </label>
+                    <input type="text" class="form-control text-capitalize" id="class_name_${count}"
+                        name="class_name_${count}" placeholder="Class Name">
+                </div>
+            </div>
+        </div>`
+        return childInfoForm;
+    }
+</script>
