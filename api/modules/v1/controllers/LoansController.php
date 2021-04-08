@@ -1207,14 +1207,41 @@ class LoansController extends ApiBaseController
 
     public function actionInterestFree()
     {
-        $partner_colleges = Organizations::find()
-            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
-            ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
-            ->asArray()
-            ->all();
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'interest_free.json');
+        $interest_free = json_decode($strJsonFileContents, true);
+
+        $header = $interest_free['header'];
+        $header['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $header['image'], 'https');
+
+        $why_interest = $interest_free['why_interest_free'];
+        $why_interest['image'] = Url::to('@eyAssets/images/pages/custom/' . $why_interest['image'], 'https');
+        foreach ($why_interest['icons'] as $k => $v) {
+            $why_interest['icons'][$k]['icon'] = Url::to('@eyAssets/images/pages/custom/' . $v['icon'], 'https');
+        }
+
+        $benefits = $interest_free['benefits'];
+
+        $lending_partners = $interest_free['lending_partners'];
+        foreach ($lending_partners as $k => $v) {
+            if ($v['image'] == 'AG-logo.png' || $v['image'] == 'ezcapital.png') {
+                $lending_partners[$k]['image'] = Url::to('@eyAssets/images/pages/index2/' . $v['image'], 'https');
+            } else {
+                $lending_partners[$k]['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+            }
+        }
+
+        $partner_colleges = $interest_free['partner_colleges'];
+        foreach ($partner_colleges as $k => $v) {
+            $partner_colleges[$k]['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+        }
 
         $data = [];
-        $data['partner_college'] = $partner_colleges;
+        $data['header'] = $header;
+        $data['why_interest'] = $why_interest;
+        $data['benefits'] = $benefits;
+        $data['lending_partners'] = $lending_partners;
+        $data['partner_colleges'] = $partner_colleges;
+
         if ($data) {
             return $this->response(200, $data);
         } else {
