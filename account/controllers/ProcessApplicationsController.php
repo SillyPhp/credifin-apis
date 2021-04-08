@@ -43,6 +43,9 @@ class ProcessApplicationsController extends Controller
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                 $b->distinct();
             }])
+            ->joinWith(['appliedApplications aa' => function($aa){
+                $aa->select(['aa.application_enc_id']);
+            }])
             ->joinWith(['applicationOptions ao'], false)
             ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'ate.name' => $appType, 'a.status' => 'Active'])
             ->andWhere(['a.application_for' => $appFor])

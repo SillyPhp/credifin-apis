@@ -754,16 +754,6 @@ $this->registerCss('
 .rupe-img img{
     width:300px;
 }
-.callNumber{
-    color: #666;
-    font-size: 18px;
-    margin-top: 10px;
-    font-family: roboto;
-    text-align: center;
-}
-.callNumber i{
-    color: #1b4145;
-}
 .edu-flex{
     display: flex;
     align-items: center;

@@ -136,7 +136,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                             </div>
                             <div class="userdata">
                                 <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
-                                    <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
+                                    <a href="javascript:;" data-href="<?= $app['link']; ?>" target="_blank"class="open-link-new-tab"><?= $app['link']; ?> </a><span class="g"></span>
                                     <textarea class="boxx" id="descriptionField" data-key="description"
                                               data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
                                               placeholder="Write notes here"><?= $app['description']; ?></textarea>
@@ -324,6 +324,7 @@ $this->registerCss("
   .boxx{     
     display: inline-block;
     color: #888;
+    width: 100%;
     font-size: 16px;
     line-height: 1.2;
     margin-top: 10px;
@@ -358,6 +359,10 @@ $this->registerCss("
 }
 ");
 $script = <<<JS
+$(document).on('click','.open-link-new-tab', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 $(document).on('change','#salaryField, #descriptionField, #statusField', function() {
     var type = $(this).attr('data-key');
     var r_id = $(this).attr("data-id");
