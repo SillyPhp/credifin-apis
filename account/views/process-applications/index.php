@@ -107,6 +107,7 @@ foreach ($fields as $f) {
                             }
                             ?></p>
                         <p><?= $cnt ?> Openings</p>
+                        <p><?= count($app['appliedApplications']) ?> Applications</p>
                     </div>
                     <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">
                         Active
@@ -2447,7 +2448,10 @@ function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled")
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
-var pb = new PerfectScrollbar('#skill-sett');
+var skillSet = $('#skill-sett')
+if(skillSet.length > 0){
+   var pb = new PerfectScrollbar('#skill-sett');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
