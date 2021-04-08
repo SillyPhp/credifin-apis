@@ -18,8 +18,8 @@ use yii\helpers\Url;
                         <h2>Build a <span class="neela">PARTNERSHIP</span> With US</h2>
                         <p>so that together we can help students across the
                             globe fulfill their dreams and lay their career path.</p>
-                        <div class="fin-btn">Financial Institutes</div>
-                        <div class="agent-btn">Agents</div>
+                        <a href="/educational-institution-loan" class="fin-btn" target="_blank">Financial Institutes</a>
+                        <a href="/e-partners" class="agent-btn" target="_blank">Agents</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
@@ -34,6 +34,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .fin-btn {
+    text-decoration: none;
     color: #fff;
     background-color: #ed6d1e;
     font-size: 16px;
@@ -50,6 +51,7 @@ $this->registerCss('
     background-color:#fff;
 }
 .agent-btn {
+    text-decoration: none;
     color: #fff;
     background-color: #2a478a;
     font-size: 16px;
