@@ -755,7 +755,7 @@ $this->registerCss('
 .rupe-img img{
     width:300px;
 }
-loan.edu-flex{
+.edu-flex{
     display: flex;
     align-items: center;
     justify-content: space-even;
