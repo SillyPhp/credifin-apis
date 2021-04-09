@@ -260,19 +260,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-                        <div class="col-md-12 use-ff">
-                            <div class="job-txt">Invite Candidates via:</div>
-                            <div class="job-mail">
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="Email">
-                                <button class="redd"><i class="fa fa-envelope"></i></button>
-                            </div>
-                            <div class="job-whatsapp">
-                                <input type="text" class="form-control" id="text" name="text"
-                                       placeholder="Whatsapp">
-                                <button class="grn"><i class="fa fa-whatsapp"></i></button>
-                            </div>
-                        </div>
+            <div class="col-md-12 use-ff">
+                <div class="job-txt">Invite Candidates via:</div>
+                <div class="job-mail">
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="Email">
+                    <button class="redd"><i class="fa fa-envelope"></i></button>
+                </div>
+                <div class="job-whatsapp">
+                    <input type="text" class="form-control" id="text" name="text"
+                           placeholder="Whatsapp">
+                    <button class="grn"><i class="fa fa-whatsapp"></i></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -354,13 +354,12 @@ foreach ($fields as $f) {
                                 <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
                                    target="_blank">View
                                     Profile</a>
-                                <?php
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                ?>
 
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
+                                    <a href="javascript:;" class="download-resume" target="_blank"
+                                       data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                        Resume</a>
+                                <?php } ?>
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
@@ -615,12 +614,11 @@ foreach ($fields as $f) {
                                            target="_blank">View
                                             Profile</a>
                                         <?php
-                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
-                                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                            $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                            ?>
-                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
+                                            <a href="javascript:;" class="download-resume"
+                                               target="_blank"
+                                               data-key="<?= $arr['resume_location'] ?>"
+                                               data-id="<?= $arr['resume'] ?>">Download Resume</a>
                                         <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -2073,6 +2071,10 @@ overflow: hidden;
         border-radius: 0px;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
 $script = <<<JS
 window.onscroll = function() {myFunction()};
@@ -2444,6 +2446,34 @@ $(document).on('click','.url-forward',function (e){
     window.open(url, "_blank"); 
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
+
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
+})
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
