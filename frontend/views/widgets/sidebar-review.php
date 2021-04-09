@@ -285,8 +285,9 @@ li.draggable-item {
 	text-align: center;
 	position: absolute;
 	right: 2px !important;
-	top: -2px !important;
+	top: 2px !important;
 	z-index: 99999;
+	line-height:13px;
 }
 @media only screen and (max-width: 550px) {
   .application-card-main {

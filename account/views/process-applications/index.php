@@ -107,6 +107,7 @@ foreach ($fields as $f) {
                             }
                             ?></p>
                         <p><?= $cnt ?> Openings</p>
+                        <p><?= count($app['appliedApplications']) ?> Applications</p>
                     </div>
                     <div class="activeIcon <?= ($app['application_enc_id'] == $application_id) ? 'activeIconNone' : '' ?>">
                         Active
@@ -260,19 +261,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 use-ff">
-                <div class="job-txt">Invite Candidates via:</div>
-                <div class="job-mail">
-                    <input type="email" class="form-control" id="email" name="email"
-                           placeholder="Email">
-                    <button class="redd"><i class="fa fa-envelope"></i></button>
-                </div>
-                <div class="job-whatsapp">
-                    <input type="text" class="form-control" id="text" name="text"
-                           placeholder="Whatsapp">
-                    <button class="grn"><i class="fa fa-whatsapp"></i></button>
-                </div>
-            </div>
+<!--                        <div class="col-md-12 use-ff">-->
+<!--                            <div class="job-txt">Invite Candidates via:</div>-->
+<!--                            <div class="job-mail">-->
+<!--                                <input type="email" class="form-control" id="email" name="email"-->
+<!--                                       placeholder="Email">-->
+<!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
+<!--                            </div>-->
+<!--                            <div class="job-whatsapp">-->
+<!--                                <input type="text" class="form-control" id="text" name="text"-->
+<!--                                       placeholder="Whatsapp">-->
+<!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
         </div>
     </div>
 </div>
@@ -2477,7 +2478,10 @@ $(document).on('click','.download-resume',function (e){
 
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
-var pb = new PerfectScrollbar('#skill-sett');
+var skillSet = $('#skill-sett')
+if(skillSet.length > 0){
+   var pb = new PerfectScrollbar('#skill-sett');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

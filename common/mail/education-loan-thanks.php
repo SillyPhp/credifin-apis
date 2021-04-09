@@ -187,12 +187,6 @@
                 </div>
                 <div class="lending">
                     <div class="l-logo">
-                        <img src="https://www.empoweryouth.com/assets/themes/email/images/BnE3860mWdnBMG7yMX9Odjw9A2K5DJ.png">
-                    </div>
-                    <div class="l-txt">ICICI Bank</div>
-                </div>
-                <div class="lending">
-                    <div class="l-logo">
                         <img src="https://www.empoweryouth.com/assets/themes/email/images/ZNnVA4XWJ6oArkmAXpa8dOz8e2MyGq.png">
                     </div>
                     <div class="l-txt">InCred</div>

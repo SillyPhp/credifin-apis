@@ -30,10 +30,12 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .teacher-head-bg{
-    background-image: url(' . Url::to('@eyAssets/images/pages/jobs/drop-cv-teacher-bg.png') . ');
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 400px;
+//    background-image: url(' . Url::to('@eyAssets/images/pages/jobs/drop-cv-teacher-bg.png') . ');
+//    background-repeat: no-repeat;
+//    background-size: cover;
+//    min-height: 400px;
+    background-color: #fbfbff;
+        padding: 10px 0 40px;
 }
 .teacher-img {
     margin-top: 25px;
