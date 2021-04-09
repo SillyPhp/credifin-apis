@@ -61,7 +61,7 @@ use yii\helpers\Url;
     <section class="drop-resume-in">
         <div class="container">
             <div class="row">
-                <div class="heading-style">Drop Your Resume In</div>
+                <h3 class="heading-style">Drop Your Resume In</h3>
             </div>
             <div class="row">
                 <div class="us-hover">
@@ -114,7 +114,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h2>
+                    <h3 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'How It Works'); ?></h3>
                 </div>
             </div>
             <div class="dis-flex">
@@ -187,7 +187,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-10 col-xs-12">
                     <div class="com-grid">
-                        <h1 class="mb-20 pb-10 heading-style">Top Banks To Drop Your Resume In</h1>
+                        <h3 class="mb-20 pb-10 heading-style">Top Banks To Drop Your Resume In</h3>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-2 col-xs-12">
