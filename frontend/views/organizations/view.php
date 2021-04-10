@@ -62,7 +62,11 @@ $round_avg = round($overall_avg);
                                         <?php
                                         if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="100px" alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image"
+                                                 data-name="<?= $organization['name'] ?>" data-width="200"
+                                                 data-height="200" data-color="<?= $organization['initials_color'] ?>"
+                                                 data-font="100px"
+                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -90,35 +94,35 @@ $round_avg = round($overall_avg);
                                     ?>
                                     <div class="status-icon">
                                         <?php
-                                        if($labels['is_new'] == 1){
+                                        if ($labels['is_new'] == 1) {
                                             ?>
                                             <span class="new-j" data-toggle="tooltip" title="New">
                                         <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
                                     </span>
                                             <?php
                                         }
-                                        if($labels['is_featured'] == 1){
+                                        if ($labels['is_featured'] == 1) {
                                             ?>
                                             <span class="fIcons" data-toggle="tooltip" title="Featured">
                                         <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
                                     </span>
                                             <?php
                                         }
-                                        if($labels['is_promoted'] == 1){
+                                        if ($labels['is_promoted'] == 1) {
                                             ?>
                                             <span class="fIcons" data-toggle="tooltip" title="Promoted">
                                         <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
                                     </span>
                                             <?php
                                         }
-                                        if($labels['is_hot'] == 1){
+                                        if ($labels['is_hot'] == 1) {
                                             ?>
                                             <span class="fIcons" data-toggle="tooltip" title="Hot">
                                         <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
                                     </span>
                                             <?php
                                         }
-                                        if($labels['is_trending'] == 1){
+                                        if ($labels['is_trending'] == 1) {
                                             ?>
                                             <span class="fIcons" data-toggle="tooltip" title="Trending">
                                         <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
@@ -186,38 +190,50 @@ $round_avg = round($overall_avg);
                         </div>
                         <div class="divider"></div>
                         <div class="col-md-7 col-xs-12">
-                            <div class="com-description more">
-                                <?= htmlspecialchars_decode($organization['description']) ?>
-                            </div>
-                            <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
-                                <div class="row">
-                                    <div class="heading-style">Mission & Vision</div>
-                                    <div class="divider"></div>
-                                    <div class="mv-box">
-                                        <div class="col-md-12">
-                                            <?php if (!empty($organization['mission'])) { ?>
-                                                <div class="mv-heading">
-                                                    Mission
-                                                </div>
-                                                <div class="mv-text">
-                                                    <?= htmlspecialchars_decode($organization['mission']) ?>
-                                                </div>
-                                            <?php }
-                                            if (!empty($organization['vision'])) {
-                                                ?>
-                                                <div class="vission-box">
+                            <?php if (!empty($organization['mission']) || !empty($organization['vision']) || !empty($organization['description'])) { ?>
+                                <?php if (!empty($organization['description'])) { ?>
+                                    <div class="com-description more">
+                                        <?= htmlspecialchars_decode($organization['description']) ?>
+                                    </div>
+                                <?php } ?>
+                                <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
+                                    <div class="row">
+                                        <div class="heading-style">Mission & Vision</div>
+                                        <div class="divider"></div>
+                                        <div class="mv-box">
+                                            <div class="col-md-12">
+                                                <?php if (!empty($organization['mission'])) { ?>
                                                     <div class="mv-heading">
-                                                        Vision
+                                                        Mission
                                                     </div>
                                                     <div class="mv-text">
-                                                        <?= htmlspecialchars_decode($organization['vision']) ?>
+                                                        <?= htmlspecialchars_decode($organization['mission']) ?>
                                                     </div>
-                                                </div>
-                                            <?php } ?>
+                                                <?php }
+                                                if (!empty($organization['vision'])) {
+                                                    ?>
+                                                    <div class="vission-box">
+                                                        <div class="mv-heading">
+                                                            Vision
+                                                        </div>
+                                                        <div class="mv-text">
+                                                            <?= htmlspecialchars_decode($organization['vision']) ?>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
                                         </div>
                                     </div>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <div>
+                                    <div class="desc-image">
+                                        <img src="/assets/themes/ey/images/pages/dashboard/active-internships.png">
+                                    </div>
+                                    <p class="heading_style_1">There is No Description for This Company</p>
                                 </div>
                             <?php } ?>
+
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
@@ -331,8 +347,8 @@ $round_avg = round($overall_avg);
                             </div>
                             <div class="set-mar">
                                 <?=
-                                $this->render('/widgets/new-position',[
-                                    'company' => $organization['name'], ]);
+                                $this->render('/widgets/new-position', [
+                                    'company' => $organization['name'],]);
                                 ?>
                             </div>
                         </div>
@@ -548,7 +564,7 @@ $round_avg = round($overall_avg);
                 <div class="row">
                     <div class="address-division">
                         <div class="heading-style">Reviews
-<!--                            --><?//= htmlspecialchars_decode($organization['name']) ?>
+                            <!--                            --><? //= htmlspecialchars_decode($organization['name']) ?>
                             <div class="pull-right">
                                 <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
                                     Review</a>
@@ -615,6 +631,11 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.desc-image {
+    text-align: center;
+    margin-bottom:20px;
+    margin-top: 30px;
+}
 .fIcons img{
     max-width: 25px;
 }
