@@ -506,7 +506,7 @@ foreach ($fields as $f) {
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"
                                                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
@@ -517,7 +517,7 @@ foreach ($fields as $f) {
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank"><?= $arr['name'] ?></a>
                                     <?php
                                     if ($arr['createdBy']['userWorkExperiences']) {
                                         foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -2600,6 +2600,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             openConJob.style.display = "none";
         }
     }
+    $(document).on('click','.customJobBox', function(e) {
+        e.preventDefault();
+        window.open($(this).attr('data-href'));
+    });
 </script>
 <script id="modalJobCards" type="text/template">
     {{#.}}

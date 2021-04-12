@@ -16,7 +16,7 @@ use yii\helpers\Url;
                 Lay your child's career path right from school.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                    <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
+                                        <li><a href="/education-loans/school-fee-finance/apply" class="apply-now">Apply Now</a></li>
                 </ul>
             </div>
         </div>
@@ -62,7 +62,8 @@ $this->registerCss('
     background: #fff !important;
 }
 .pt30{
-    padding-top: 30px
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 .why-des{
     font-size: 16px;

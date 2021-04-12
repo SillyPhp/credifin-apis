@@ -32,6 +32,10 @@ endif;
             <?php if (Yii::$app->user->identity->organization->organization_enc_id){ ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
             <?php } ?>
+
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'){ ?>
+                <?= $this->render('/widgets/download-app', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -361,10 +365,12 @@ endif;
                     </div>
                 </div>
 
+
+
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
-            <!--                <div class="portlet-title" style="border-bottom:none;">-->
-            <!--                    <div class="car-main row">-->
+            <!--   <!--               <div class="portlet-title" style="border-bottom:none;">-->
+                              <div class="car-main row">-->
             <!--                        <div class="c-head">Careers</div>-->
             <!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
             <!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->

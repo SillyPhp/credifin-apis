@@ -1287,7 +1287,7 @@ class LoansController extends ApiBaseController
         $data['header'] = $header;
         $data['student_loans'] = $student_loan;
         $data['process_ease'] = $process_ease;
-        $data['process_ease_header'] = 'How To Refinance Education Loan';
+        $data['process_ease_header'] = 'How To Refinance Your Education Loan';
         $data['when_to_refinance'] = $when_to_refinance;
         $data['benefits'] = $benefits;
         $data['benefits_image'] = Url::to('@eyAssets/images/pages/education-loans/fin-img.png', 'https');

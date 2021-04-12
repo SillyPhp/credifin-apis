@@ -184,7 +184,7 @@ $this->params['header_dark'] = false;
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
                                        data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
-                                        <i class="fa fa-comment-alt"></i>
+                                        <i class="fa fa-comments"></i>
                                     </a>
                                 </li>
                             <?php }
@@ -856,7 +856,7 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail ul.social-info li{
 	display:inline-block;
-	margin:5px;
+	margin:5px 2px;
 }
 .right-side-detail ul.social-info li a {
     width: 30px;
