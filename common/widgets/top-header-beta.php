@@ -353,8 +353,8 @@ $this->registerCss('
     padding: 0;
 }
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
-    font: 500 14px/16px Roboto, Arial, sans-serif;
-    margin: 0 20px 0 0;
+    font: 500 13px/15px Roboto, Arial, sans-serif;
+    margin: 0 15px 0 0;
     padding: 7px 0px;
 }
 
@@ -364,7 +364,7 @@ $this->registerCss('
 .ey-head-main .ey-header-item i {
     font-size: 12px;
     line-height: 1em;
-    padding-left: 4px;
+    padding-left: 0px;
     -webkit-transform: rotate(0);
     -ms-transform: rotate(0);
     transform: rotate(0);
@@ -520,9 +520,9 @@ $this->registerCss('
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 0.9;
-    -ms-flex: 0.9;
-    flex: 0.9;
+    -webkit-box-flex: 0.75;
+    -ms-flex: 0.75;
+    flex: 0.75;
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;
@@ -1030,8 +1030,8 @@ $this->registerCss('
 }
 @media screen and (max-width: 1400px) and (min-width: 1080px){
     .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
-        font: 500 13px/16px Roboto, Arial, sans-serif;
-        margin: 0 15px 0 0;
+        font: 500 12px/14px Roboto, Arial, sans-serif;
+        margin: 0 12px 0 0;
     }    
     .ey-menu-main {
         margin: 0 15px 0 30px;

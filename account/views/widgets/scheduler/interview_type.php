@@ -16,7 +16,7 @@
                 <div class="choice" title="Flexible Interviews are for choosing candidates">
                     <input type="radio" id="interview_type_flexible" name="interview_type" value="flexible">
                     <label for="interview_type_flexible" class="icon">
-                        <i class="fa fa-link"></i>
+                        <i class="fa fa-unlink"></i>
                     </label>
                     <h6>Flexible</h6>
                 </div>
