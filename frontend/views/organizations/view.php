@@ -227,10 +227,10 @@ $round_avg = round($overall_avg);
                                 <?php } ?>
                             <?php } else { ?>
                                 <div>
-                                    <div class="desc-image">
-                                        <img src="/assets/themes/ey/images/pages/dashboard/active-internships.png">
+                                    <div class="desc-image mt-40">
+                                        <img src="/assets/themes/ey/images/pages/dashboard/no-description.png">
                                     </div>
-                                    <p class="heading_style_1">There is No Description for This Company</p>
+                                    <p class="heading_style_1">No Business details have been provided by the Organization.</p>
                                 </div>
                             <?php } ?>
 
@@ -633,8 +633,11 @@ echo $this->render('/widgets/mustache/organization-reviews', [
 $this->registerCss('
 .desc-image {
     text-align: center;
-    margin-bottom:20px;
-    margin-top: 30px;
+}
+.desc-image img{
+    width: 350px;
+    height: auto;
+    margin: 20px 0;
 }
 .fIcons img{
     max-width: 25px;
