@@ -234,7 +234,7 @@ $this->registerCss("
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
-	flex-basis: 35%;
+	flex-basis: 42%;
 }
 .innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
 .review-list-toggler i{
@@ -297,25 +297,25 @@ $this->registerCss("
     display:inline-block;
 }
 .salarybox, .listing{
-    flex-basis: 50%;
+    flex-basis: 40%;
     text-align: center;
 }
 .salarybox1 {
-	width: 130px;
+	width: 75px;
 	height: auto;
 	font-size: 16px;
 	font-famiy: roboto;
 	/* padding-left: 10px; */
 	border-style: none;
-	border-bottom: 1px solid;
+	border-bottom: 1px solid #333;
 }
 .listing1 {
-	width: 130px;
+	width: 190px;
 	height: auto;
 	font-size: 16px;
 	font-famiy: roboto !important;
 	border-style: none;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #333;
 } 
  .userdata {
     width: 90%;
