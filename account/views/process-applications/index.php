@@ -257,23 +257,24 @@ foreach ($fields as $f) {
                             </span>
                     </div>
                     <div class="scd-btn">
-                        <a href="/account/schedular/interview">Schedule Interview</a>
+                        <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
+                            Interview</a>
                     </div>
                 </div>
             </div>
-<!--                        <div class="col-md-12 use-ff">-->
-<!--                            <div class="job-txt">Invite Candidates via:</div>-->
-<!--                            <div class="job-mail">-->
-<!--                                <input type="email" class="form-control" id="email" name="email"-->
-<!--                                       placeholder="Email">-->
-<!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
-<!--                            </div>-->
-<!--                            <div class="job-whatsapp">-->
-<!--                                <input type="text" class="form-control" id="text" name="text"-->
-<!--                                       placeholder="Whatsapp">-->
-<!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
+            <!--                        <div class="col-md-12 use-ff">-->
+            <!--                            <div class="job-txt">Invite Candidates via:</div>-->
+            <!--                            <div class="job-mail">-->
+            <!--                                <input type="email" class="form-control" id="email" name="email"-->
+            <!--                                       placeholder="Email">-->
+            <!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
+            <!--                            </div>-->
+            <!--                            <div class="job-whatsapp">-->
+            <!--                                <input type="text" class="form-control" id="text" name="text"-->
+            <!--                                       placeholder="Whatsapp">-->
+            <!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
         </div>
     </div>
 </div>
@@ -645,6 +646,12 @@ foreach ($fields as $f) {
                                             $notes = '';
                                         }
                                         ?>
+                                        <li>
+                                            <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
+                                               title="Schedule Interview" data-toggle="tooltip">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
+                                            </a>
+                                        </li>
                                         <li class="notes" data-toggle="tooltip" title="Notes">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
                                                  class="noteImg" data-val="<?= $notes; ?>">

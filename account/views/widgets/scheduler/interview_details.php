@@ -4,7 +4,7 @@
             <div class="panel-heading" id="headingOne">
                 <h3>
                     <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">
-                        Basic infomation <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
+                        Basic information <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
                     </a>
                 </h3>
             </div>
