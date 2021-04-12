@@ -14,9 +14,13 @@ use yii\helpers\Url;
                     <div class="feeds-data row">
                         <div class="col-md-6 mb-30 mt-20">
                             <div class="content-t mb-20">Cover Image</div>
-                            <img src="#" alt="your image" class="target set-w" />
-<!--                            <label for="file">Choose image</label>-->
-                            <input type="file" id="file" />
+                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
+                                 alt="your image" class="target set-w"/>
+                            <div class="custom-file">
+                                <input type="file" id="file" class="imgInp custom-file-input"
+                                       aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" for="file">Choose Image</label>
+                            </div>
                         </div>
                         <div class="col-md-12">
                             <div class="content-t">Content Type</div>
@@ -118,7 +122,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 mt-20">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <input type="text" class="form-control" name="application_title">
                                 <label class="control-label" for="application_title">Full Description</label>
@@ -133,35 +137,37 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="form-view-main nd-shadow feed-main">
+                <div class="form-view-main nd-shadow feed-main-2">
                     <div class="form-data">
                         <div class="view-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>" alt="your image" class="target">
                         </div>
-                        <div class="view-heading marg-se bold">
-                            <p>FARAAR - GURINDER GILL | SHINDA KAHLON | AP DHILLON</p>
+                        <div class="inner-data-skill">
+                            <div class="view-heading marg-se bold">
+                                <p>FARAAR - GURINDER GILL | SHINDA KAHLON | AP DHILLON</p>
+                            </div>
+                            <div class="form-url marg-se">
+                                <a href="https://kulwinder.eygb.me/site/feeds-form" target="_blank">https://kulwinder.eygb.me/site/feeds-form</a>
+                            </div>
+                            <div class="view-source marg-se">
+                                <p>Type: <span class="bold">Blog</span></p>
+                                <p>Source: <span class="bold">youtube</span></p>
+                                <p>Author: <span class="bold">sohal</span></p>
+                            </div>
+                            <div class="view-desc marg-se">
+                                <p>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing
+                                    industries for previewing layouts and visual mockups.</p>
+                            </div>
+                            <div class="view-skil marg-se">
+                                <div class="content-t class=" bold
+                                "">Skills
+                            </div>
+                            <ul class="skills-show">
+                                <li>test</li>
+                                <li>test2</li>
+                                <li>test3</li>
+                            </ul>
                         </div>
-                        <div class="form-url marg-se">
-                            <a href="https://kulwinder.eygb.me/site/feeds-form" target="_blank">https://kulwinder.eygb.me/site/feeds-form</a>
-                        </div>
-                        <div class="view-source marg-se">
-                            <p>Type: <span class="bold">Blog</span></p>
-                            <p>Source: <span class="bold">youtube</span></p>
-                            <p>Author: <span class="bold">sohal</span></p>
-                        </div>
-                        <div class="view-desc marg-se">
-                            <p>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing
-                                industries for previewing layouts and visual mockups.</p>
-                        </div>
-                        <div class="view-skil marg-se">
-                            <div class="content-t class=" bold
-                            "">Skills
-                        </div>
-                        <ul class="skills-show">
-                            <li>test</li>
-                            <li>test2</li>
-                            <li>test3</li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -171,8 +177,44 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.custom-file {
+    position: relative;
+    width: 130px;
+    cursor: pointer;
+}
+.custom-file-input {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+    width: 100%;
+    height: calc(2.25rem + 2px);
+    margin: 0;
+    opacity: 0;
+}
+.custom-file-label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    padding: 8px 10px;
+    line-height: 1.5;
+    cursor: pointer;
+    color: #fff;
+    background-color: #00a0e3;
+    border-radius: .25rem;
+    font-family: Roboto;
+    text-align: center;
+    font-size: 15px;
+}
 .set-w {
-    width: 100px;
+    width: 130px;
     height: 100px;
     object-fit: cover;
     padding: 5px;
@@ -183,7 +225,13 @@ $this->registerCss('
 body{font-family:roboto;}
 .height-s{height:45px !important;}
 .feed-main {
+    background-color:#fffffffa;
     padding: 20px;
+    margin-bottom: 30px;
+}
+.feed-main-2 {
+    background-color:#fffffffa;
+    margin-bottom: 30px;
 }
 .nd-shadow {
     box-shadow: 0px 1px 10px 2px #eee !important;
@@ -322,6 +370,9 @@ ul.skills-list li {
     object-fit: cover;
     width: 100%;
 }
+.inner-data-skill{
+    padding:5px 20px 20px;
+}
 .marg-se p {
     font-size: 15px;
 }
@@ -353,6 +404,26 @@ ul.skills-show {
     display: inline-block;
     font-family: Roboto;
     font-weight: 500;
+}
+.ui.multiple.dropdown>.label{
+    background-color: #00a0e3;
+    color: #fff;
+    font-weight: 400;
+    font-family: Roboto;
+    box-shadow:none;
+    padding: 7px 10px;
+}
+a.ui.active.label:hover, a.ui.labels .active.label:hover{
+    background-color: #00a0e3;
+    color: #fff;
+}
+.ui.dropdown .menu>.item{
+    font-size: 14px;
+    font-family: Roboto;
+}
+.ui.dropdown .menu .selected.item, .ui.dropdown.selected, .ui.dropdown .menu>.item:hover {
+    background: #00a0e3;
+    color: #fff;
 }
 ');
 $script = <<<JS
