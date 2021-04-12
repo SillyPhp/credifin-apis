@@ -34,12 +34,14 @@ class SchedularController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionInterview($id = null)
+    public function actionInterview($app_id = null, $applied_id = null, $current_round = null)
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('test',
                 [
-                    'application_id' => $id,
+                    'application_id' => $app_id,
+                    'applied_id' => $applied_id,
+                    'current_round' => $current_round
                 ]);
         } else {
             return $this->render('candidate-detail');
@@ -120,7 +122,7 @@ class SchedularController extends Controller
             ->asArray()
             ->one();
         return InterviewProcessFields::find()
-            ->select(['field_enc_id', 'field_name', 'field_label'])
+            ->select(['field_enc_id', 'field_name', 'field_label', 'sequence'])
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
             ])
@@ -134,7 +136,11 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findAppliedCandidates($req['application_id'], $req['process_id']);
+            if (isset($req['applied_id']) && !empty($req['applied_id'])) {
+                $res = $this->findAppliedCandidates($req['application_id'], $req['process_id'], $req['applied_id']);
+            } else {
+                $res = $this->findAppliedCandidates($req['application_id'], $req['process_id']);
+            }
 
             return [
                 'results' => $res
@@ -142,7 +148,7 @@ class SchedularController extends Controller
         }
     }
 
-    public function findAppliedCandidates($app_id, $process_id)
+    public function findAppliedCandidates($app_id, $process_id, $applied_id = null)
     {
         $applied_candidates = AppliedApplications::find()
             ->alias('a')
@@ -154,10 +160,13 @@ class SchedularController extends Controller
             ->joinWith(['appliedApplicationProcesses d' => function ($d) use ($process_id) {
                 $d->joinWith(['fieldEnc e']);
                 $d->where(['d.field_enc_id' => $process_id]);
-            }], false)
-            ->where([
-                'application_enc_id' => $app_id
-            ])
+            }], false);
+        if ($applied_id != null) {
+            $applied_candidates->andWhere(['a.applied_application_enc_id' => $applied_id]);
+        }
+        $applied_candidates = $applied_candidates->andWhere([
+            'application_enc_id' => $app_id
+        ])
             ->andWhere(new \yii\db\Expression('`a`.`current_round` = `e`.`sequence`'))
             ->groupBy(['b.user_enc_id'])
             ->asArray()

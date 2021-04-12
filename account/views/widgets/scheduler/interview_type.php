@@ -24,3 +24,18 @@
         </div>
     </form>
 </div>
+<?php
+$script = <<<JS
+var url = new URL(window.location.href);
+if (url.searchParams.get('applied_id')) {
+    // setTimeout(function (){
+        $('.choice, .choice *').trigger('click');
+        $('#collapseOne_1').addClass('in');
+        // $('#interview_type_flexible, .choice').trigger('click');
+        // $('#captain').removeClass('active');
+        // $('#description').addClass('active');
+        // $('#interview_type_flexible').prop('checked',true);
+    // },1000)
+}
+JS;
+$this->registerJs($script);

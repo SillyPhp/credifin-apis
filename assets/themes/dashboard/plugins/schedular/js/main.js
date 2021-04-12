@@ -210,6 +210,9 @@
     function load_script(es) {
 
         if (es) {
+            if ($('#select-application-sch').find('.error-msg').length > 0) {
+                $('#select-application-sch').find('.error-msg').remove();
+            }
             $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
             $('#rounds option').each(function () {
                 var background = $(this).data('url');

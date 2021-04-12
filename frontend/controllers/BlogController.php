@@ -161,6 +161,15 @@ class BlogController extends Controller
         $post = Posts::findOne(['is_deleted' => 0, 'slug' => $slug, 'status' => 'Active', 'is_crawled' => $is_crawled]);
         $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
         if ($post) {
+            $post_categories = PostCategories::find()
+                ->select(['category_enc_id'])
+                ->where(['post_enc_id' => $post->post_enc_id])
+                ->asArray()
+                ->all();
+            $categories = [];
+            foreach ($post_categories as $c) {
+                $categories[] = $c['category_enc_id'];
+            }
             $similar_posts = Posts::find()
                 ->alias('z')
                 ->joinWith(['postTags a' => function ($a) use ($tags) {
@@ -168,9 +177,11 @@ class BlogController extends Controller
                         $a1->where(['in', 'a1.name', $tags]);
                     }]);
                 }])
+                ->joinWith(['postCategories b'], false)
                 ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
                 ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
-                ->orderBy(['z.created_on' => SORT_DESC])
+                ->andWhere(['b.category_enc_id' => $categories])
+                ->orderBy(new Expression('rand()'))
                 ->limit(3)
                 ->all();
 
