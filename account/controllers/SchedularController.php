@@ -103,14 +103,14 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findApplicationFields($req['application_id']);
+            $res = $this->findApplicationFields($req['application_id'],$req['current_round']);
             return [
                 'results' => $res
             ];
         }
     }
 
-    public function findApplicationFields($id)
+    public function findApplicationFields($id,$round=null)
     {
         $interview_process = EmployerApplications::find()
             ->alias('a')
@@ -121,14 +121,18 @@ class SchedularController extends Controller
             ])
             ->asArray()
             ->one();
-        return InterviewProcessFields::find()
+        $rounds = InterviewProcessFields::find()
             ->select(['field_enc_id', 'field_name', 'field_label', 'sequence'])
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
             ])
-            ->andWhere(['<>', 'field_name', 'Get Applications'])
-            ->asArray()
+            ->andWhere(['<>', 'field_name', 'Get Applications']);
+        if($round != null){
+            $rounds->andWhere(['sequence'=>$round]);
+        }
+        $rounds = $rounds->asArray()
             ->all();
+        return $rounds;
     }
 
     public function actionFindCandidates()

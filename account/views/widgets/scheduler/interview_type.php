@@ -2,7 +2,7 @@
 <div class="row">
     <form>
         <div class="col-sm-10 col-sm-offset-1">
-            <div class="col-sm-4 col-sm-offset-2">
+            <div class="col-sm-4 col-sm-offset-2 fixedType">
                 <div class="choice" title="Fixed Interviews are for inviting candidates">
                     <input type="radio" id="interview_type_fixed" name="interview_type"
                            value="fixed">
@@ -12,7 +12,7 @@
                     <h6>Fixed</h6>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 flexibleType">
                 <div class="choice" title="Flexible Interviews are for choosing candidates">
                     <input type="radio" id="interview_type_flexible" name="interview_type" value="flexible">
                     <label for="interview_type_flexible" class="icon">
@@ -29,12 +29,12 @@ $script = <<<JS
 var url = new URL(window.location.href);
 if (url.searchParams.get('applied_id')) {
     // setTimeout(function (){
-        $('.choice, .choice *').trigger('click');
-        $('#collapseOne_1').addClass('in');
+    //     $('#interview_type_flexible').prop('checked',true);
+        $('.flexibleType .choice *:not(input)').trigger('click');
+        // $('#collapseOne_1').addClass('in');
         // $('#interview_type_flexible, .choice').trigger('click');
         // $('#captain').removeClass('active');
         // $('#description').addClass('active');
-        // $('#interview_type_flexible').prop('checked',true);
     // },1000)
 }
 JS;

@@ -10,7 +10,7 @@
             </div>
             <input type="hidden" id="selected_application_id" value="">
             <input type="hidden" id="selected_round_id" value="">
-            <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
+            <div id="collapseOne" class="panel-collapse collapse in" aria-expa`nded="true">
                 <div class="panel-body">
                     <form method="POST">
                         <fieldset>
