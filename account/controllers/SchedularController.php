@@ -103,14 +103,14 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findApplicationFields($req['application_id'],$req['current_round']);
+            $res = $this->findApplicationFields($req['application_id'], $req['current_round']);
             return [
                 'results' => $res
             ];
         }
     }
 
-    public function findApplicationFields($id,$round=null)
+    public function findApplicationFields($id, $round = null)
     {
         $interview_process = EmployerApplications::find()
             ->alias('a')
@@ -127,8 +127,8 @@ class SchedularController extends Controller
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
             ])
             ->andWhere(['<>', 'field_name', 'Get Applications']);
-        if($round != null){
-            $rounds->andWhere(['sequence'=>$round]);
+        if ($round != null) {
+            $rounds->andWhere(['sequence' => $round]);
         }
         $rounds = $rounds->asArray()
             ->all();
@@ -156,11 +156,12 @@ class SchedularController extends Controller
     {
         $applied_candidates = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
-            ->joinWith(['resumeEnc b' => function ($x) {
-                $x->joinWith(['userEnc c']);
-//                    $x->groupBy(['b.user_enc_id']);
-            }], false)
+            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'a.created_by user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
+//            ->joinWith(['resumeEnc b' => function ($x) {
+//                $x->joinWith(['userEnc c']);
+////                    $x->groupBy(['b.user_enc_id']);
+//            }], false)
+            ->joinWith(['createdBy c'], false)
             ->joinWith(['appliedApplicationProcesses d' => function ($d) use ($process_id) {
                 $d->joinWith(['fieldEnc e']);
                 $d->where(['d.field_enc_id' => $process_id]);
@@ -172,7 +173,7 @@ class SchedularController extends Controller
             'application_enc_id' => $app_id
         ])
             ->andWhere(new \yii\db\Expression('`a`.`current_round` = `e`.`sequence`'))
-            ->groupBy(['b.user_enc_id'])
+            ->groupBy(['c.user_enc_id'])
             ->asArray()
             ->all();
 
