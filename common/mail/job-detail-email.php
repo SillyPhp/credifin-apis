@@ -2,12 +2,19 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 $this->registerCss('
     body{
 	margin:0 auto; 
 	padding:0;
 	font-family: \'Open Sans\', sans-serif;
+}
+.in-img img {
+    width: 15px;
+}
+.in-img {
+    padding: 0px 10px;
 }
 .responsive{
 	width:100%;	
@@ -26,35 +33,30 @@ img + div {
 	text-align:center;
 }
 .job-title{
-	color:#fff;
 	padding:10px 0 0 0;
 	font-size:25px;
 	font-weight:bold;
 	text-transform:capitalize;
 }
 .job-icon img{
-	max-width:250px;
+	max-width:120px;
 }
 
-.logo-box{
-    height:125px;
-    width:125px;
-    padding:0 10px;
-    background:#fff;
-	border-radius:50%;
-    display:table; 
-    text-align:center;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
-    position:relative;
-	float:left;
-} 
-.logo{
-    display:table-cell;
-    vertical-align: middle;
-	width:100%;     
+.logo-box {
+    height: 125px;
+    width: 125px;
+    border-radius: 50%;
+    background: #fff;
+    overflow: hidden;
+    margin: 10px 20px 0;
+    text-align: center;
+    border: 2px solid #eee;
+    position: relative;
 }
-.logo img{
-	max-width:100px;	
+.logo-box img {
+    width: 125px;
+    height: 125px;
+    object-fit: contain;
 }
 .width-60{
 	float:left;
@@ -64,13 +66,12 @@ img + div {
 	width:30%;
 	float:left;	
 }
-.com-name{
-	font-size:20px;
-	font-weight:bold;
+.com-name {
+    font-size: 18px;
+    padding: 10px 0 0 20px;
+    text-align: left;
 }
-.com-details{
-	padding-top:20px;
-}
+
 .com-establish span{
 	font-weight:bold;	
 }
@@ -81,7 +82,7 @@ img + div {
 .job-overview ul li{
 	list-style-type:none;
 	text-align:center;
-	box-shadow:0 0 10px rgba(0,0,0,.1);
+    border: 1px solid #eee;
 	margin:5px 10px;
 }
 .job-overview ul > li, .interview ul > li{
@@ -109,12 +110,14 @@ img + div {
 	color: #1e1e1e;
 	font-weight: 600;
 }
-.job-overview ul > li span, .interview ul > li span  {
-	float: left;
-	width: 100%;
-	font-size: 13px;
-	color: #545454;
-	margin-top: 4px;
+.job-overview ul > li span, .interview ul > li span {
+    float: left;
+    word-break: break-all;
+    width: 100%;
+    font-size: 13px;
+    color: #545454;
+    margin-top: 4px;
+    min-height: 38px;
 }
 .job-overview ul {
 	float: left;
@@ -127,9 +130,11 @@ img + div {
 	margin: 0;
 	padding-inline-start: 10px;
 }
-.jo-heading{
-	padding:20px 10px 5px 10px;
-	font-size:20px;
+.jo-heading {
+    padding: 20px 10px 0px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom:15px;
 }
 /*-----job-description-----*/
 .job-description{
@@ -159,7 +164,7 @@ img + div {
 	margin-bottom: 0px;
 	line-height: 21px;
 	margin-bottom: 10px;
-	font-size: 13px;
+	font-size: 14px;
 	color: #000;
 }
 
@@ -189,23 +194,25 @@ img + div {
 	float:left;
 	width:100%;	
 }
-.skills ul{
-	padding-inline-start: 10px;	
-	border:2px solid #eee;
-	margin:0 10px;
-	padding:10px 15px;
-	border-radius:8px
+.skills ul {
+    padding-inline-start: 10px;
+    border: 2px solid #eee;
+    margin: 0 20px;
+    padding: 5px;
+    border-radius: 8px;
 }
 .skills ul li{
 	list-style-type:none;
 	background:#EEEEEE;
 	display:inline-block;
-	padding:8px 15px;
-	border-radius:8px;
-	margin:5px 5px; 
+	padding:5px 10px;
+	border-radius:4px;
+	margin:5px; 
 }
 .week-days{
-	float:left;	
+    float: left;
+    width: 100%;
+    text-align: center;	
 }
 .week-days ul{
 	padding-inline-start: 10px;	
@@ -214,9 +221,9 @@ img + div {
   position:relative;
   list-style:none;
   display:inline-block;
-  width:100px;
-  height:100px;
-  line-height:100px;
+  width:80px;
+  height:80px;
+  line-height:80px;
   text-align:center;
   margin-right:8px;
   margin-bottom:10px;
@@ -230,20 +237,7 @@ img + div {
   background-color: #35394F; 
   background-image: linear-gradient(-40deg, #35394F 25%, #787D90);
   border:1px solid #ddd;
-}
-.week-days ul li span{
-  position:absolute;
-  top:0px;
-  line-height:25px;
-  left:0;
-  width:100%;
-  background-color:#fff;
-  box-shadow: 0 1px 5px -2px #393d52;
-  
-}
-.week-days ul li.active span{
-  background-color:#787E91;
-  box-shadow: 0 5px 5px -5px #393d52;
+  font-size: 14px;
 }
 .week-days ul li h2{
   line-height:100px;
@@ -268,6 +262,7 @@ img + div {
 	color: #fff;
 	font-weight: 600;
 	font-size: 20px;
+	margin:0 10px;
 }
 .working-time-from{
 	width: 15%;
@@ -325,15 +320,17 @@ img + div {
 	text-align:center;
 	margin:0 auto;		
 }
-.applyBtn a{
-	text-align:center;
-	color:#fff;
-	font-size:13px;
-	background:#00a0e3;
-	padding:10px 25px;
-	text-decoration:none;
-	text-transform:uppercase;
-	border-radius:5px;
+.applyBtn a {
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    display: inline-block;
+    background: #00a0e3;
+    padding: 10px 25px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 5px;
+    width: 80px;
 }
 @media screen and (max-width:500px ){
 	.job-overview ul > li {
@@ -410,6 +407,58 @@ img + div {
 	}
 	
 }
+.logo-cmp {
+    text-align: left;
+    padding: 20px;
+    background-color: #E2ECFD;
+    width: 100%;
+}
+.logo-cmp img {
+    width: 155px;
+}
+.footer {
+    background-color: #E2ECFD;
+    padding: 20px;
+    width: 100%;
+    float: left;
+}
+	.web-social a {
+		margin: 0 5px;
+		display: inline-block;
+		width: 30px;
+		height: 30px;
+	}
+	.web-social {
+	    text-align: center;
+	}
+	.web-social a img {
+		width: 29px;
+	}
+	.emal-contact {
+		text-align: center;
+		padding: 20px 0;
+	}
+	.emal-contact a {
+	    color: #000;
+	    text-decoration: none;
+	    font-weight: bold;
+	    display: inline-block;
+	    margin: 0 20px;
+	    font-size: 16px;
+	}
+	.ey-team img {
+	    width: 160px;
+	}
+	.ey-team {
+	    margin: 0 20px;
+	    text-align: center;
+	    padding: 0px 0px 5px;
+	}
+	.ey-team p {
+	    color: #000;
+	    font-weight: bold;
+	    margin: 6px 0;
+	}
 ');
 ?>
 
@@ -433,26 +482,23 @@ if (!empty($data['applicationPlacementLocations'])) {
 ?>
 
 <div class="wrapper">
+    <div class="logo-cmp">
+        <img src="https://www.empoweryouth.com/assets/themes/email/images/zpBn4vYx2RmKpNExaDvPdJg3Aq9Vyl.png">
+    </div>
     <div class="wrapper-header">
         <div class="job-icon">
-            <img src="<?= Url::to('@commonAssets/categories/profile/' . $data['icon_png']); ?>"
+            <img src="https://www.empoweryouth.com/assets/common/categories/png/<?= $data['profile_icon'] ?>"
                  class="responsive">
         </div>
-        <div class="job-title"><?= $data['cat_name']; ?></div>
+        <div class="job-title"><?= ucwords($data['name']); ?></div>
     </div>
     <div class="com-heading">
         <div class="jo-heading">Employer Details</div>
-        <div class="width-40">
-            <div class="logo-box">
-                <div class="logo">
-                    <img src="<?= Url::to($data['organization_logo']); ?>">
-                </div>
-            </div>
+        <div class="logo-box">
+            <img src="<?= Url::to($data['organization_logo']); ?>">
         </div>
-        <div class="width-60">
-            <div class="com-details">
-                <div class="com-name"><?= $data['organization_name']; ?></div>
-            </div>
+        <div class="com-details">
+            <div class="com-name"><?= $data['org_name']; ?></div>
         </div>
     </div>
 
@@ -461,41 +507,41 @@ if (!empty($data['applicationPlacementLocations'])) {
         <ul>
             <?php if ($data['name']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/puzzle_piece.png'); ?>">
+                    <img src="https://www.empoweryouth.com/assets/common/email_service/puzzle_piece.png">
                     <h3>Profile</h3>
-                    <span><?= $data['name']; ?></span>
+                    <span><?= ucwords($data['name']); ?></span>
                 </li>
             <?php endif; ?>
             <?php if ($data['industry']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/puzzle_piece.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/puzzle_piece.png'); ?>">
                     <h3>Preferred Industry</h3>
                     <span><?= $data['industry']; ?></span>
                 </li>
             <?php endif; ?>
             <?php if ($data['designation']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/pin.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/pin.png'); ?>">
                     <h3>Designation</h3>
                     <span><?= $data['designation']; ?></span>
                 </li>
             <?php endif; ?>
             <?php if ($data['type']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/suitcase.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/suitcase.png'); ?>">
                     <h3>Job Type</h3>
                     <span><?= $data['type']; ?></span>
                 </li>
             <?php endif; ?>
             <?php if ($data['amount']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/money.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/money.png'); ?>">
                     <h3><?= ($data['application_type'] == 'Job') ? 'Offered Salary' : 'Offered Stipend'; ?></h3>
                     <span><?= $data['amount']; ?></span>
                 </li>
             <?php endif; ?>
             <li>
-                <img src="<?= Url::to('@commonAssets/email_service/gender.png'); ?>">
+                <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/gender.png'); ?>">
                 <h3>Gender</h3>
                 <span>
                         <?php
@@ -520,20 +566,20 @@ if (!empty($data['applicationPlacementLocations'])) {
             </li>
             <?php if ($data['experience']): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/watch.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/watch.png'); ?>">
                     <h3>Experience</h3>
                     <span><?= $data['experience']; ?></span>
                 </li>
             <?php endif; ?>
             <?php if ($total_vac): ?>
                 <li>
-                    <img src="<?= Url::to('@commonAssets/email_service/line-chart.png'); ?>">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/line-chart.png'); ?>">
                     <h3>Total Vacancies</h3>
                     <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
                 </li>
             <?php endif; ?>
             <li>
-                <img src="<?= Url::to('@commonAssets/email_service/location.png'); ?>">
+                <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/location.png'); ?>">
                 <h3>Locations</h3>
                 <span>
                         <?php
@@ -560,7 +606,7 @@ if (!empty($data['applicationPlacementLocations'])) {
                             ?>
                             <div class="benefit-box">
                                 <div class="bb-icon">
-                                    <img src="<?= Url::to('@commonAssets/email_service/location.png/flexible_hour.svg'); ?>">
+                                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/location.png/flexible_hour.svg'); ?>">
                                 </div>
                                 <div class="bb-text">
                                     <?= $benefits[$next]['benefit']; ?>
@@ -674,8 +720,8 @@ if (!empty($data['applicationPlacementLocations'])) {
         <div class="jo-heading">Interview Details</div>
         <ul>
             <li>
-                <div>
-                    <img src="<?= Url::to('@commonAssets/email_service/location.png/location.png'); ?>">
+                <div class="in-img">
+                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/themes/email/images/6mMpL8zN9QqGOyOeAlMKoAxKOrBbnw.png'); ?>">
                 </div>
                 <div><h3>Interview Locations</h3>
                     <span>
@@ -700,8 +746,26 @@ if (!empty($data['applicationPlacementLocations'])) {
     </div>
     <div class="applyBtn">
         <div class="btn-center">
-            <?= Html::a(Yii::t('app', 'Apply'), Url::to(Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug'],'https')); ?>
-            <?= Html::a(Yii::t('app', 'View '), Url::to(Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug'],'https')); ?>
+            <?= Html::a(Yii::t('app', 'Apply'), Url::to(Yii::$app->textTransformation->toLower(rtrim($data['application_type'], 's')) . '/' . $data['slug'],'https')); ?>
+            <?= Html::a(Yii::t('app', 'View '), Url::to(Yii::$app->textTransformation->toLower(rtrim($data['application_type'], 's')) . '/' . $data['slug'],'https')); ?>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="web-social">
+            <a href="https://www.facebook.com/empower/" target="_blank"><img src="https://www.empoweryouth.com/assets/themes/email/images/Nxj6lKYbJdDjEJYOMWeBRvg5VrAZ3y.png"></a>
+            <a href="https://www.linkedin.com/company/empoweryouth/" target="_blank"><img src="https://www.empoweryouth.com/assets/themes/email/images/MXOy576jYoKjLAZ4Gr3lRKlw1eWDnG.png"></a>
+            <a href="https://twitter.com/EmpowerYouthin" target="_blank"><img src="https://www.empoweryouth.com/assets/themes/email/images/v8rXbWDwJoBk4wAkOWObdKkl25YEpO.png"></a>
+            <a href="https://www.instagram.com/empoweryouth.in/" target="_blank"><img src="https://www.empoweryouth.com/assets/themes/email/images/yVgawN7rxoLj40DqPn94QYOM5kelbv.png"></a>
+        </div>
+        <div class="emal-contact">
+            <a href="mailto:info@empoweryouth.com" class="mail">Email: info@empoweryouth.com</a>
+            <a href="tel:7814871632">Contact Us: +91 7814871632</a>
+        </div>
+        <div class="ey-team">
+            <a href="https://www.empoweryouth.com/">
+                <img src="https://www.empoweryouth.com/assets/themes/email/images/DeBxPEjOGdjymqkD7DqBopqANyVYw9.png">
+            </a>
+            <p>Copyright © <?= date('Y') ?> Empower Youth</p>
         </div>
     </div>
 </div>

@@ -2,6 +2,8 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
 
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
@@ -265,12 +267,32 @@ foreach ($fields as $f) {
                             <div class="job-mail">
                                 <input type="email" class="form-control" id="email" name="email"
                                        placeholder="Email">
-                                <button class="redd"><i class="fa fa-envelope"></i></button>
+                                <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
                             </div>
                             <div class="job-whatsapp">
-                                <input type="text" class="form-control" id="text" name="text"
-                                       placeholder="Whatsapp">
-                                <button class="grn"><i class="fa fa-whatsapp"></i></button>
+                                <?php
+                                $form = ActiveForm::begin([
+                                    'id' => 'whatsapp-form',
+                                    'fieldConfig' => [
+                                        'template' => '<div class="form-group">{input}{error}</div>',
+                                        'labelOptions' => ['class' => ''],
+                                    ],
+                                ]);
+                                ?>
+                                <?=
+                                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                                    'options' => ['id' => 'whatsappNumber','class' => 'form-control', 'placeholder' => '+91 98 XXXX XXXX'],
+                                    'jsOptions' => [
+                                        'allowExtensions' => false,
+                                        'preferredCountries' => ['in'],
+                                        'nationalMode' => false,
+                                    ]
+                                ]);
+                                ?>
+                                <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
+                                <?php ActiveForm::end(); ?>
+<!--                                <input type="text" class="form-control" id="whatsappNumber" name="whatsappNumber"-->
+<!--                                       placeholder="+9199XXXXX122" autocomplete="off">-->
                             </div>
                         </div>
         </div>
@@ -862,6 +884,13 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+
+#whatsappNumber{
+    width: 280px;
+}
+.job-whatsapp {
+    margin-top: 10px !important;
+}
 .activeJov{
     background: #fbfbfb;
     border: 1px solid #eee;
@@ -2075,10 +2104,52 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
+var application_id = "$application_id";
 window.onscroll = function() {myFunction()};
 
 var header = document.getElementById("myHeader");
 var sticky = header.offsetTop - 55;
+$(document).on('keyup','input#email', function (e){
+    if (e.keyCode === 13) {
+        $('#email-invitation').click();
+    }
+})
+$(document).on('click', '#email-invitation', function(){
+    var email_id = $(this).parent().find('input#email').val();
+    if(email_id != "" && typeof email_id !== "undefined"){
+        $.ajax({
+            method: "POST",
+            data: {"email":email_id, application_id:application_id},
+            beforeSend: function()
+            {
+                $("#email-invitation").html('<i class="fa fa-spinner fa-spin"></i>');
+            },
+            success: function (res){
+                $("#email-invitation").html('<i class="fa fa-envelope"></i>');
+                if (res.status == 200) {
+                    toastr.success(res.title, res.message);
+                    $('#email').val("");
+                } else {
+                    toastr.error(res.title, res.message);
+                }
+            }
+        });
+    } else {
+        alert("no email found");
+    }
+})
+
+$(document).on('click', '#whatsapp-invitation', function(e){
+    e.preventDefault();
+    var num = $(this).parent().find('input#whatsappNumber').val();
+    var number = num.replace(/[^a-zA-Z0-9]/g, '');
+    var msg = 'https://www.empoweryouth.com/' + $('.j-title > a').attr("href");
+    if(number != "" && typeof number !== "undefined" && number.length > 10){
+        window.open("https://wa.me/" + number +'?text=' + msg , '_blank'); 
+    } else {
+        alert("no phone found");
+    }
+})
 
 function myFunction() {
   if (window.pageYOffset > sticky) {
