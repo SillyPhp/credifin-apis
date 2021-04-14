@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 $this->params['header_dark'] = true;
-$this->title = 'Easy Loan Process | Loans For Schools';
+$this->title = '';
 $keywords = '';
 $description = '';
 $image = Url::to('@eyAssets/images/pages/education-loans/teacher-edu-p.png', 'https');
@@ -32,6 +32,7 @@ $this->params['seo_tags'] = [
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 ?>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
@@ -40,16 +41,30 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                         <form action="" id="myForm">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h3 class="heading-style">School Fee Loan</h3>
+                                    <h3 class="heading-style">School Fee Finance</h3>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name (Name Of The Parent)
+                                            Name (Parent Name)
                                         </label>
                                         <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Date Of Birth (mm/dd/yyyy)
+                                        </label>
+                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
+                                            <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
+                                            <div class="input-group-addon">
+                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                            </div>
+                                        </div>
+                                        <span id="dob-error"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -57,14 +72,16 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                             <label class="input-group-text" for="inputGroupSelect02">
                                                 Current City Where You Live
                                             </label>
-                                            <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                            <div id="the-basics">
+                                            <input type="text" name="location" id="location" class="typeahead form-control text-capitalize"
                                                    autocomplete="off" placeholder="City"/>
+                                            </div>
                                         </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Salary (Yearly Income)
+                                            Annual Income (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
                                         <input type="text" class="form-control" minlength="4" maxlength="8" id="salary" name="salary"
                                                placeholder="Enter Salary">
@@ -73,7 +90,7 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                           Loan Amount
+                                           Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
                                         <input type="text" class="form-control" minlength="4" maxlength="8" id="loanamount" name="loanamount"
                                                placeholder="Enter Loan Amount">
@@ -115,6 +132,9 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     <div class="btn-center">
                                         <button type="button" class="button-slide" id="subBtn">
                                             Submit
+                                        </button>
+                                        <button type="button" class="button-slide btn btn-block" id="loadBtn">
+                                            Processing <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -502,10 +522,7 @@ form label {
 {
 color:#e65332;
 }
-#dob-error{
-    position:absolute;
-    bottom: -30px;
-}
+
 #loan_purpose_checkbox-error{
     position: absolute;
     bottom: 0px   
@@ -726,6 +743,228 @@ top:6px !important;
 ?>
 <?php
 $script = <<< JS
+function getCities()
+    {
+        var _cities = [];
+         $.ajax({     
+            url : '/api/v3/countries-list/get-cities', 
+            method : 'GET',
+            data:{'country':'India'},
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.cities;
+                $.each(res,function(index,value) 
+                  {   
+                   _cities.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('cities could not fetch');
+                }
+            } 
+        });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_cities',
+         source: substringMatcher(_cities)
+        }); 
+    }
+getCities();  
+function substringMatcher (strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+jQuery.validator.addClassRules('child_name', {
+        required: true
+    });
+jQuery.validator.addClassRules('child_class', {
+        required: true 
+    });
+jQuery.validator.addClassRules('child_school', {
+        required: true 
+    });
+$.validator.addMethod("check_date_of_birth", function (value, element) {
+   var dateOfBirth = value;
+    var arr_dateText = dateOfBirth.split("/");
+    day = arr_dateText[1];
+    month = arr_dateText[0];
+    year = arr_dateText[2];
+    var mydate = new Date();
+    mydate.setFullYear(year, month - 1, day);
+    
+    var maxDate = new Date();
+    if ((maxDate.getFullYear()-year) <= 18) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 18 can be covered";
+        return false;
+    }
+    return true;
+});
+function _razoPay(ptoken,loan_id,education_loan_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+    },
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
+    }
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(education_loan_id,loan_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
+{
+    $.ajax({
+            url : '/api/v3/education-loan/update-widget-loan-application',
+            method : 'POST', 
+            data : {
+              loan_payment_id:education_loan_id,
+              loan_app_id:loan_app_enc_id,
+              payment_id:payment_id, 
+              status:status, 
+              signature:signature,
+            },
+            beforeSend:function(e){
+                $('#subBtn').hide();
+                $('#loadBtn').show();   
+            },
+            success:function(e)
+            {
+                if (status=="captured"){
+                    if (e.response.status=='200'){
+                       swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        showConfirmButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         });
+                     }else{
+                        swal({
+                         title:"Payment Error",
+                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+                      });
+                     }
+                }
+                $('#subBtn').show();     
+                $('#loadBtn').hide();
+            }
+    })
+}
+function ajaxSubmit()
+{
+    let child_information = [];
+    var obj = {};
+    for (var i= 0; i<$('#noChild').val();i++){
+        obj['child_name'] = $('.child_name:eq('+i+')').val();
+        obj['child_class'] = $('.child_class:eq('+i+')').val();
+        if (document.getElementById("checkmark")){
+            if (document.getElementById("checkmark").checked===true){
+                obj['child_school'] = $('.child_school:eq(0)').val();
+            }else{
+                obj['child_school'] = $('.child_school:eq('+i+')').val();
+            }
+        }else{
+            obj['child_school'] = $('.child_school:eq('+i+')').val();
+        }
+        child_information.push(obj);
+        obj = {};
+    }
+    $.ajax({
+            url : '/api/v3/education-loan/save-school-fee-loan',
+            method : 'POST', 
+            data : {
+                applicant_name:$('#applicant_name').val(),
+                applicant_dob:$('#dob').val(),
+                applicant_current_city:$('#location').val(),
+                phone:$('#mobile').val(),
+                email:$('#email').val(),
+                amount:$('#loanamount').val(),   
+                child_information:child_information,
+                userID:userID
+                },  
+            beforeSend:function(e)
+            {  
+                $('#subBtn').hide();   
+                $('#loadBtn').show();  
+            },
+            success : function(res) {
+                if (res.response.status=='200')
+                {
+                    let ptoken = res.response.data.payment_id; 
+                    let loan_id = res.response.data.loan_app_enc_id;
+                    let education_loan_id = res.response.data.education_loan_payment_enc_id;
+                    if (ptoken!=null || ptoken !=""){
+                        _razoPay(ptoken,loan_id,education_loan_id);
+                    } else{
+                        swal({
+                            title:"Error",
+                            text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                            });
+                    }
+                } 
+                else if (res.response.status=='401'||res.response.status=='422'||res.response.status=='500')
+                {
+                      swal({
+                            title:"Error",
+                            text: res.response.message,
+                            });
+                } 
+                else if(res.response.status=='409')
+                    {
+                        swal({ 
+                            title:"Error",
+                            text: "Some Internal Server Error, Please Try After Some Time",
+                            });
+                    }
+                $('#subBtn').show();     
+                $('#loadBtn').hide();
+            }
+        });
+}
        $("#subBtn").click(function(){
        var form = $("#myForm");  
        var error = $('.alert-danger', form);
@@ -740,8 +979,8 @@ $script = <<< JS
 					maxlength: 100
 				},
 				'dob':{
-				    required:true,
-				    check_date_of_birth: true
+				     required: true,
+                     check_date_of_birth: true
 				},
 				'mobile':{
 				    required:true,
@@ -775,8 +1014,8 @@ $script = <<< JS
 				'applicant_name': {
 					required: "Parent Name Required",
 				},
-				'dob': {
-					required: "Enter Date Of Birth",
+				'dob':{
+				    required:'Date Of Birth Cannot Be Blank',
 				},
 				'mobile':{
 				    required:'Mobile Number Cannot Be Blank',
@@ -818,8 +1057,14 @@ $script = <<< JS
            ajaxSubmit();
        }
    })
+   $('.datepicker3').datepicker({
+            todayHighlight: true
+        });
+       $('#mobile, #loanamount').mask("#", {reverse: true});
+       $('#salary').mask("#", {reverse: true});
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
@@ -845,12 +1090,13 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
     showSchoolField = () => {
         let schoolNameField = document.querySelectorAll('.schoolNameField')
         if(event.target.checked){
-            for(let i = 0; i <= schoolNameField.length; i++){
-                schoolNameField[i+1].classList.add('displayNone');
+            for(let i = 0; i < schoolNameField.length; i++){
+                schoolNameField[i].classList.add('displayNone');
             }
+            schoolNameField[0].classList.remove('displayNone');
         }else {
-            for(let i = 0; i <= schoolNameField.length; i++){
-                schoolNameField[i+1].classList.remove('displayNone');
+            for(let i = 0; i < schoolNameField.length; i++){
+                schoolNameField[i].classList.remove('displayNone');
             }
         };
     }
@@ -872,9 +1118,6 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
                 count++
              }
         }
-        $('.datepicker3').datepicker({
-            todayHighlight: true
-        });
     }
     errorMsgText = (num) => {
         switch (num){
@@ -908,17 +1151,8 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
                     <label for="applicant_name_${count}" class="input-group-text">
                         Name
                     </label>
-                    <input type="text" class="form-control text-capitalize" id="applicant_name_${count}"
+                    <input type="text" minlength="3" minlength="50" class="form-control text-capitalize child_name" id="applicant_name_${count}"
                      name="applicant_name_${count}" placeholder="Full Name">
-                </div>
-            </div>
-            <div class="col-md-12 padd-20">
-                <div class="form-group">
-                    <label for="class_name_${count}" class="input-group-text">
-                        Date Of Birth
-                    </label>
-                    <input type="text" class="form-control text-capitalize datepicker3" id="dob_name_${count}"
-                        name="dob_name_${count}" placeholder="Date Of Birth">
                 </div>
             </div>
             <div class="col-md-12 padd-20 schoolNameField">
@@ -926,13 +1160,13 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
                     <label for="school_name_${count}" class="input-group-text">
                         School Name
                     </label>
-                    <input type="text" class="form-control text-capitalize" id="school_name_${count}"
+                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_school" id="school_name_${count}"
                         name="school_name_${count}" placeholder="School Name">
                 </div>
                 ${num > 1 && count == 1 ? `
                 <div class="form-group" id="schoolAttend" >
                     <label class="check-container">All Attend The Same School
-                      <input type="checkbox" onchange="showSchoolField()">
+                      <input id="checkmark" name="checkmark" type="checkbox" onchange="showSchoolField()">
                       <span class="checkmark"></span>
                     </label>
                 </div>
@@ -943,7 +1177,7 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
                     <label for="class_name_${count}" class="input-group-text">
                         Class
                     </label>
-                    <input type="text" class="form-control text-capitalize" id="class_name_${count}"
+                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
                         name="class_name_${count}" placeholder="Class Name">
                 </div>
             </div>
