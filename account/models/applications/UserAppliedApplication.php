@@ -83,7 +83,7 @@ class UserAppliedApplication
             ->all();
         foreach ($db as $key => $value) {
             $a = AppliedApplications::find()->alias('aa')
-                ->select(['aa.applied_application_enc_id', 'aa.application_enc_id', 'aa.created_on', 'aa.status', 'aa.rejection_window', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'aa.created_by', 'aa.resume_enc_id', 'e.resume', 'e.resume_location', 'b.user_enc_id', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image' ])
+                ->select(['aa.applied_application_enc_id', 'aa.application_enc_id', 'aa.created_on', 'aa.status', 'aa.rejection_window', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'aa.created_by', 'aa.resume_enc_id', 'e.resume', 'e.resume_location', 'b.user_enc_id', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'b.initials_color'])
                 ->orderBy(['aa.created_on' => SORT_DESC])
                 ->groupBy(['aa.applied_application_enc_id'])
                 ->joinWith(['resumeEnc e'], false)

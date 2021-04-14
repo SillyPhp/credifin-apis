@@ -257,23 +257,24 @@ foreach ($fields as $f) {
                             </span>
                     </div>
                     <div class="scd-btn">
-                        <a href="/account/schedular/interview">Schedule Interview</a>
+                        <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
+                            Interview</a>
                     </div>
                 </div>
             </div>
-<!--                        <div class="col-md-12 use-ff">-->
-<!--                            <div class="job-txt">Invite Candidates via:</div>-->
-<!--                            <div class="job-mail">-->
-<!--                                <input type="email" class="form-control" id="email" name="email"-->
-<!--                                       placeholder="Email">-->
-<!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
-<!--                            </div>-->
-<!--                            <div class="job-whatsapp">-->
-<!--                                <input type="text" class="form-control" id="text" name="text"-->
-<!--                                       placeholder="Whatsapp">-->
-<!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
+            <!--                        <div class="col-md-12 use-ff">-->
+            <!--                            <div class="job-txt">Invite Candidates via:</div>-->
+            <!--                            <div class="job-mail">-->
+            <!--                                <input type="email" class="form-control" id="email" name="email"-->
+            <!--                                       placeholder="Email">-->
+            <!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
+            <!--                            </div>-->
+            <!--                            <div class="job-whatsapp">-->
+            <!--                                <input type="text" class="form-control" id="text" name="text"-->
+            <!--                                       placeholder="Whatsapp">-->
+            <!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
         </div>
     </div>
 </div>
@@ -355,13 +356,12 @@ foreach ($fields as $f) {
                                 <a href="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
                                    target="_blank">View
                                     Profile</a>
-                                <?php
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                ?>
 
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
+                                    <a href="javascript:;" class="download-resume" target="_blank"
+                                       data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                        Resume</a>
+                                <?php } ?>
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
@@ -506,10 +506,10 @@ foreach ($fields as $f) {
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>">
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"
-                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>//&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>//&color=ffffff'"/>
+                                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
                                                     color="<?= $arr['initials_color']; ?>" height="80"
@@ -517,7 +517,7 @@ foreach ($fields as $f) {
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank"><?= $arr['name'] ?></a>
                                     <?php
                                     if ($arr['createdBy']['userWorkExperiences']) {
                                         foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
@@ -616,12 +616,11 @@ foreach ($fields as $f) {
                                            target="_blank">View
                                             Profile</a>
                                         <?php
-                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
-                                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                            $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
-                                            ?>
-                                            <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                        if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
+                                            <a href="javascript:;" class="download-resume"
+                                               target="_blank"
+                                               data-key="<?= $arr['resume_location'] ?>"
+                                               data-id="<?= $arr['resume'] ?>">Download Resume</a>
                                         <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -647,6 +646,12 @@ foreach ($fields as $f) {
                                             $notes = '';
                                         }
                                         ?>
+                                        <li>
+                                            <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
+                                               title="Schedule Interview" data-toggle="tooltip">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
+                                            </a>
+                                        </li>
                                         <li class="notes" data-toggle="tooltip" title="Notes">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
                                                  class="noteImg" data-val="<?= $notes; ?>">
@@ -2074,6 +2079,10 @@ overflow: hidden;
         border-radius: 0px;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
 $script = <<<JS
 window.onscroll = function() {myFunction()};
@@ -2447,6 +2456,34 @@ $(document).on('click','.url-forward',function (e){
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
 
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
+})
+
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
 var skillSet = $('#skill-sett')
@@ -2564,6 +2601,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             openConJob.style.display = "none";
         }
     }
+    $(document).on('click','.customJobBox', function(e) {
+        e.preventDefault();
+        window.open($(this).attr('data-href'));
+    });
 </script>
 <script id="modalJobCards" type="text/template">
     {{#.}}

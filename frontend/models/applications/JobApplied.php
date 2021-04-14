@@ -81,8 +81,6 @@ class JobApplied extends Model
                                 $locModel->city_enc_id = $location;
                                 $locModel->created_on = date('Y-m-d H:i:s');
                                 $locModel->created_by = Yii::$app->user->identity->user_enc_id;
-                                $app_id = $appliedModel->applied_application_enc_id;
-                                $id = $this->id;
                                 if (!$locModel->save()) {
                                     $transaction->rollBack();
                                     return false;
@@ -93,7 +91,12 @@ class JobApplied extends Model
                             'status' => true,
                             'aid' => $appliedModel->applied_application_enc_id,
                         ];
-                        $this->save_process($id, $app_id);
+                        $id = $this->id;
+                        $app_id = $appliedModel->applied_application_enc_id;
+                        if (!$this->save_process($id, $app_id)) {
+                            $transaction->rollBack();
+                            return false;
+                        }
                         $transaction->commit();
                         RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
                         return $status;
@@ -154,7 +157,10 @@ class JobApplied extends Model
                 ];
                 $app_id = $appliedModel->applied_application_enc_id;
                 $id = $this->id;
-                $this->save_process($id, $app_id);
+                if (!$this->save_process($id, $app_id)) {
+                    $transaction->rollBack();
+                    return false;
+                }
                 $transaction->commit();
                 RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
                 return $status;
@@ -178,7 +184,7 @@ class JobApplied extends Model
             ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
             ->asArray()
             ->all();
-        if (!empty($process_list)):
+        if (!empty($process_list)) {
             foreach ($process_list as $process) {
                 $processModel = new AppliedApplicationProcess;
                 $utilitiesModel = new Utilities();
@@ -192,6 +198,8 @@ class JobApplied extends Model
                     return false;
                 }
             }
-        endif;
+        }
+
+        return true;
     }
 }

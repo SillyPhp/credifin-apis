@@ -48,6 +48,8 @@ class LoansController extends ApiBaseController
                 'loan-purpose',
                 'save-application',
                 'home',
+                'interest-free',
+                'refinance',
                 'enquiry-form',
                 'study-in-india',
                 'faqs',
@@ -1202,6 +1204,101 @@ class LoansController extends ApiBaseController
         } else {
             return $this->response(404, 'not found');
         }
+    }
+
+    public function actionInterestFree()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'interest_free.json');
+        $interest_free = json_decode($strJsonFileContents, true);
+
+        $header = $interest_free['header'];
+        $header['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $header['image'], 'https');
+
+        $why_interest = $interest_free['why_interest_free'];
+        $why_interest['image'] = Url::to('@eyAssets/images/pages/custom/' . $why_interest['image'], 'https');
+        foreach ($why_interest['icons'] as $k => $v) {
+            $why_interest['icons'][$k]['icon'] = Url::to('@eyAssets/images/pages/custom/' . $v['icon'], 'https');
+        }
+
+        $benefits = $interest_free['benefits'];
+
+        $lending_partners = $interest_free['lending_partners'];
+        foreach ($lending_partners as $k => $v) {
+            if ($v['image'] == 'AG-logo.png' || $v['image'] == 'ezcapital.png') {
+                $lending_partners[$k]['image'] = Url::to('@eyAssets/images/pages/index2/' . $v['image'], 'https');
+            } else {
+                $lending_partners[$k]['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+            }
+        }
+
+        $partner_colleges = $interest_free['partner_colleges'];
+        foreach ($partner_colleges as $k => $v) {
+            $partner_colleges[$k]['image'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+        }
+
+        $data = [];
+        $data['header'] = $header;
+        $data['why_interest'] = $why_interest;
+        $data['benefits'] = $benefits;
+        $data['lending_partners'] = $lending_partners;
+        $data['partner_colleges'] = $partner_colleges;
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionRefinance()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'refinance.json');
+        $refinance = json_decode($strJsonFileContents, true);
+
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'lending_partners.json');
+        $lendingPartners = json_decode($strJsonFileContents, true);
+
+        $header = $refinance['header'];
+        $header['image'] = Url::to('@eyAssets/images/pages/education-loans/finance.png', 'https');
+
+        $student_loan = $refinance['student_loan'];
+        $student_loan['image'] = Url::to('@eyAssets/images/pages/education-loans/loan-application-form.png', 'https');
+
+        $process_ease = $refinance['process_ease'];
+        foreach ($process_ease as $k => $v) {
+            $process_ease[$k]['icon'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['icon'], 'https');
+        }
+
+        $when_to_refinance = $refinance['when_to_refinance'];
+
+        $benefits = $refinance['benefits'];
+
+        foreach ($lendingPartners as $k => $v) {
+            if ($v['image'] == 'AG-logo.png' || $v['image'] == 'ezcapital.png' || $v['image'] == 'phf-leasing.png') {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/index2/' . $v['image'], 'https');
+            } else {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+            }
+            $lendingPartners[$k]['organization_enc_id'] = 'empoweryouth';
+            $lendingPartners[$k]['initials_color'] = '#ea52ce';
+        }
+
+        $data = [];
+        $data['header'] = $header;
+        $data['student_loans'] = $student_loan;
+        $data['process_ease'] = $process_ease;
+        $data['process_ease_header'] = 'How To Refinance Your Education Loan';
+        $data['when_to_refinance'] = $when_to_refinance;
+        $data['benefits'] = $benefits;
+        $data['benefits_image'] = Url::to('@eyAssets/images/pages/education-loans/fin-img.png', 'https');
+        $data['lending_partners'] = $lendingPartners;
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
     }
 
     public function actionEnquiryForm()

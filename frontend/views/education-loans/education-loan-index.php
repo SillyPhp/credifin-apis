@@ -394,6 +394,7 @@ use yii\helpers\Url;
     ]) ?>
     <?= $this->render('/widgets/loan-strip') ?>
 
+
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({

@@ -103,7 +103,7 @@ class EducationLoansController extends Controller
     {
         return $this->render('loan-college-index');
     }
-    public function actionSchoolFeeLoan(){
+    public function actionSchoolFeeLoanApply(){
         return $this->render('school-fee-loan-form');
     }
     public function actionLeads()
