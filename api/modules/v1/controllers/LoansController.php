@@ -1502,7 +1502,7 @@ class LoansController extends ApiBaseController
         $data['header'] = $header;
         $data['schoolFeeFinance'] = $schoolFeeFinance;
         $data['benefits'] = $benefits;
-        $data['lendingPartners'] = $lendingPartners;
+        $data['lending_partners'] = $lendingPartners;
         $data['chooseEducationLoan'] = $chooseEducationLoan;
         if ($data) {
             return $this->response(200, $data);
