@@ -262,6 +262,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
             $this->source = $source;
             $this->had_taken_addmission = 0;
+            $this->loan_type = 'School Fee Loan';
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
@@ -348,6 +349,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
             $this->source = $source;
             $this->had_taken_addmission = 0;
+            $this->loan_type = 'Teacher Loan';
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
