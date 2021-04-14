@@ -57,34 +57,33 @@ $this->params['header_dark'] = false;
                             </ul>
                             <?php
                         }
-                        if(!Yii::$app->user->identity->organization){
-                        ?>
-                        <div class="pro-bar">
-                            <div class="pro-text"><?= $profileProcess?>% Completed</div>
-                            <div class="progress">
-                                <?php
-                                if($profileProcess < 50){
-                                    $processClr = 'process-clr';
-                                } else{
-                                    $processClr = 'process-clr1';
-                                }
-                                ?>
-                                <div class="progress-bar <?= $processClr?>" style="width:<?= $profileProcess?>%"></div>
+                        if (!Yii::$app->user->identity->organization) {
+                            ?>
+                            <div class="pro-bar">
+                                <div class="pro-text"><?= $profileProcess ?>% Completed</div>
+                                <div class="progress">
+                                    <?php
+                                    if ($profileProcess < 50) {
+                                        $processClr = 'process-clr';
+                                    } else {
+                                        $processClr = 'process-clr1';
+                                    }
+                                    ?>
+                                    <div class="progress-bar <?= $processClr ?>"
+                                         style="width:<?= $profileProcess ?>%"></div>
+                                </div>
                             </div>
-                        </div>
-                        <?php
+                            <?php
                         }
                         if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                             ?>
                             <a href="<?= Url::to('/' . $user['username'] . '/edit'); ?>" class="edit-profile-btn"
                                target="_blank">Edit Profile</a>
                             <?php
-                            if (!empty($userCv)) {
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
-                                ?>
-                                <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
+                            if (!empty($userCv)) { ?>
+                                <a href="javascript:;" class="edit-profile-btn download-resume" target="_blank"
+                                   data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
+                                    CV</a>
                             <?php }
                         }
                         ?>
@@ -166,14 +165,15 @@ $this->params['header_dark'] = false;
                             </li>
                         <?php }
 
-                        if (Yii::$app->user->identity->organization->organization_enc_id&&!empty($user['phone'])&&!empty($userApplied)) { ?>
+                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone']) && !empty($userApplied)) { ?>
                             <li class="whatsapp">
-                                <a href="<?= "https://api.whatsapp.com/send?phone=".$user['phone'] ?>" target="_blank">
+                                <a href="<?= "https://api.whatsapp.com/send?phone=" . $user['phone'] ?>"
+                                   target="_blank">
                                     <i class="fab fa-whatsapp"></i>
                                 </a>
                             </li>
                             <li class="skpe">
-                                <a href="<?= "tel:".$user['phone'] ?>" id="phone-val" value="<?=$user['phone']?>">
+                                <a href="<?= "tel:" . $user['phone'] ?>" id="phone-val" value="<?= $user['phone'] ?>">
                                     <i class="fa fa-phone"></i>
                                 </a>
                             </li>
@@ -184,7 +184,7 @@ $this->params['header_dark'] = false;
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
                                        data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
-                                        <i class="fa fa-comment-alt"></i>
+                                        <i class="fa fa-comments"></i>
                                     </a>
                                 </li>
                             <?php }
@@ -195,19 +195,16 @@ $this->params['header_dark'] = false;
                     </ul>
                     <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                         if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
-                            if (!empty($userCv['resume_location'])&&!empty($userCv['resume'])){
-                            ?>
-                            <div class="down-res">
-                                <?php
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
+                            if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
                                 ?>
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download
-                                    Resume<i
-                                            class="fas fa-download"></i></a>
-                            </div>
-                        <?php } }
+                                <div class="down-res">
+                                    <a href="javascript:;" target="_blank" title="Download Resume" class="download-resume"
+                                       data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
+                                        Resume<i
+                                                class="fas fa-download"></i></a>
+                                </div>
+                            <?php }
+                        }
                     } ?>
                 </div>
             </div>
@@ -859,7 +856,7 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail ul.social-info li{
 	display:inline-block;
-	margin:5px;
+	margin:5px 2px;
 }
 .right-side-detail ul.social-info li a {
     width: 30px;
@@ -1183,6 +1180,10 @@ ul.status-detail li>strong {
         margin: 5px 0 0 0;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
 $script = <<< JS
 $(document).on('click','#phone-val',function(e) {
@@ -1205,6 +1206,34 @@ $(document).on('click','#phone-val',function(e) {
                              }
                          }
                         );
+})
+
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fas fa-circle-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
 })
 JS;
 $this->registerJs($script);

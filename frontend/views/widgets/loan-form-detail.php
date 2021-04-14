@@ -239,9 +239,6 @@ $this->registerCss('
 .tc{
     text-align: center;
 }
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 .form-group input{
     border: 1px solid #eee;
 }
