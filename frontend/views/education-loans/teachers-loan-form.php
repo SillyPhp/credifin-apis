@@ -71,8 +71,10 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     <label class="input-group-text" for="inputGroupSelect02">
                                         Current City Where You Live
                                     </label>
-                                    <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                           autocomplete="off" placeholder="City"/>
+                                    <div id="the-basics">
+                                        <input type="text" name="location" id="location" class="typeahead form-control text-capitalize"
+                                               autocomplete="off" placeholder="City"/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
@@ -733,6 +735,58 @@ width:100% !important;
 }
 ');
 $script = <<< JS
+function getCities()
+    {
+        var _cities = [];
+         $.ajax({     
+            url : '/api/v3/countries-list/get-cities', 
+            method : 'GET',
+            data:{'country':'India'},
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.cities;
+                $.each(res,function(index,value) 
+                  {   
+                   _cities.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('cities could not fetch');
+                }
+            } 
+        });
+        $('#the-basics .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_cities',
+         source: substringMatcher(_cities)
+        }); 
+    }
+getCities();  
+function substringMatcher (strs) {
+            return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+             substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+             // contains the substring `q`, add it to the `matches` array
+             $.each(strs, function(i, str) {
+             if (substrRegex.test(str)) {
+              matches.push(str);
+             }
+            });
+             cb(matches);
+            };
+        };
+
    $('.datepicker3').datepicker({
      todayHighlight: true
     });
@@ -979,6 +1033,7 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
 });
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
