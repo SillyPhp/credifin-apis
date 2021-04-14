@@ -126,6 +126,15 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
+                                <div class="form-group">
+                                    <label for="intitution" class="input-group-text">
+                                        Name of The Intitution
+                                    </label>
+                                    <input type="text" class="form-control" id="intitution" name="intitution"
+                                           placeholder="Enter Name of The Intitution">
+                                </div>
+                            </div>
+                            <div class="col-md-12 padd-20">
                                 <div class="radio-heading input-group-text">
                                     History With Intitution
                                 </div>
@@ -806,6 +815,10 @@ $('#years, #months').mask("#", {reverse: true});
 					required: true,
 					maxlength: 100
 				},
+				'intitution': {
+					required: true,
+					maxlength: 200
+				},
 				'dob':{
 				    required:true,
 				    check_date_of_birth: true
@@ -839,6 +852,9 @@ $('#years, #months').mask("#", {reverse: true});
 			messages: {
 				'applicant_name': {
 					required: "Applicant Name Required",
+				},
+				'intitution': {
+					required: "Intitution Name Required",
 				},
 				'dob': {
 					required: "Enter Date Of Birth",
@@ -895,6 +911,7 @@ $('#years, #months').mask("#", {reverse: true});
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
                 amount:$('#loanamount').val(),   
+                intitution:$('#intitution').val(),   
                 employement_type:$('input[name="emptype"]:checked').val(),  
                 userID:userID, 
                 country_enc_id:$('#country_name').val()
