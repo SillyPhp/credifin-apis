@@ -923,6 +923,7 @@ function ajaxSubmit()
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
                 amount:$('#loanamount').val(),   
+                yearly_income:$('#salary').val(),   
                 child_information:child_information,
                 userID:userID
                 },  

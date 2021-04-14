@@ -276,6 +276,7 @@ class EducationLoanController extends ApiBaseController
             $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->yearly_income = $params['yearly_income'];
                 if ($model->validate()) {
                     if ($data = $model->saveSchoolFeeLoan( $userId,'Ey',$params)) {
                         if ($data['status']){
