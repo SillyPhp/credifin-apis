@@ -62,8 +62,8 @@ use yii\helpers\Url;
                         <div>
                             <a href="/education-loans/loan-for-teachers/apply" class="edu-loan-products">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/teacher-loan-icon.png') ?>">
-                                <p>Teacher's Loans</p>
-                                <span>Learn More</span>
+                                <p>Teacher Loan</p>
+                                <span>Apply Now</span>
                             </a>
                         </div>
                         <div>

@@ -64,10 +64,12 @@ if ($type == "internships"){
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .sidebar-logo-main{
+    padding:0 !important;
     box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
     margin:auto;
+    overflow:hidden;
 }
-.product{padding:5px 0 !important;}
+.product{padding:5px 0 5px 2px !important;}
 #header > div{width:100% !important;}
 .highlight{
     background-color: #CCC !important;
@@ -101,6 +103,11 @@ $this->registerCss('
         width:175px; 
     }
 }
+@media screen and (max-width: 991px){
+    #review-internships{
+        width:100%; 
+    }
+}
 .paid {
     border-bottom: 2px solid #FF4500 !important;
 }
@@ -122,6 +129,7 @@ body {
 }
 .side-menu {
     position: fixed;
+    width:25%;
     height: 100%;
 //    background-color: #f8f8f8;
 //    border-right: 1px solid #e7e7e7;
@@ -174,8 +182,8 @@ li.draggable-item.ui-sortable-placeholder {
 }
 .sidebar-logo-main{margin-top:0;}
 .sidebar-logo-main > canvas{
-    margin-left: -5px;
-    margin-top: -5px;
+    margin-left: 0px;
+    margin-top: 0px;
     border-radius: 50%;
 }
 .secondary-top-header{display:none !important;}
@@ -188,11 +196,6 @@ li.draggable-item.ui-sortable-placeholder {
 @media only screen and (max-width: 991px) {
     .stickyheader{
         display:none;
-    }
-}
-@media only screen and (max-width: 768px){
-    #review-internships{
-        width: auto;
     }
 }
 @media only screen and (max-width: 767px) {
@@ -285,8 +288,9 @@ li.draggable-item {
 	text-align: center;
 	position: absolute;
 	right: 2px !important;
-	top: -2px !important;
+	top: 2px !important;
 	z-index: 99999;
+	line-height:13px;
 }
 @media only screen and (max-width: 550px) {
   .application-card-main {

@@ -6,6 +6,7 @@ use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
 use common\models\LoanApplications;
+use common\models\LoanApplicationSchoolFee;
 use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
@@ -253,6 +254,93 @@ class LoanApplicationsForm extends LoanApplications
             return $exception->getMessage();
         }
     }
+    public function saveSchoolFeeLoan($userId,$source,$params){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $utilitiesModel = new \common\models\Utilities();
+            $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
+            $this->source = $source;
+            $this->had_taken_addmission = 0;
+            $this->created_by = (($userId) ? $userId : null);
+            $this->created_on = date('Y-m-d H:i:s');
+            if (!$this->save()) {
+                $transaction->rollback();
+                $this->_flag = false;
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false)));
+            } else {
+                $this->_flag = true;
+            }
+            $total_amount = PaymentsModule::_defaultPayment();
+            $gst = PaymentsModule::_defaultGst();
+            $percentage = ($total_amount * $gst) / 100;
+            $total_amount = $total_amount + $percentage;
+            $args = [];
+            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['currency'] = "INR";
+            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+            $response = PaymentsModule::_authPayToken($args);
+            if (isset($response['status']) && $response['status'] == 'created') {
+                $token = $response['id'];
+                $loan_payment = new EducationLoanPayments();
+                $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);
+                $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
+                $loan_payment->payment_token = $token;
+                $loan_payment->payment_amount = $total_amount;
+                $loan_payment->payment_gst = $gst;
+                $loan_payment->created_by = (($userId) ? $userId : null);
+                $loan_payment->created_on = date('Y-m-d H:i:s');
+                if (!$loan_payment->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false)));
+                } else{
+                    $this->_flag = true;
+                }
+            }
+
+            if ($this->_flag){
+                foreach ($params['child_information'] as $information){
+                    $loanSchool = new LoanApplicationSchoolFee();
+                    $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
+                    $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
+                    $loanSchool->student_name = $information['child_name'];
+                    $loanSchool->school_name = $information['child_school'];
+                    $loanSchool->class = $information['child_class'];
+                    $loanSchool->created_by = (($userId) ? $userId : null);
+                    $loanSchool->created_on = date('Y-m-d H:i:s');
+                    if (!$loanSchool->save()) {
+                        $transaction->rollBack();
+                        $this->_flag = false;
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false)));
+                    } else{
+                        $this->_flag = true;
+                    }
+                }
+            }
+
+            if ($this->_flag) {
+                $transaction->commit();
+                $data = [];
+                $data['loan_app_enc_id'] = $this->loan_app_enc_id;
+                $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
+                $data['payment_id'] = $loan_payment->payment_token;
+                $data['status'] = true;
+                return $data;
+            } else {
+                $transaction->rollBack();
+                return [
+                    'message'=>'Unable to Save',
+                    'status'=>false
+                ];
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return [
+                'message'=>$exception->getMessage(),
+                'status'=>false
+            ];
+        }
+    }
     public function saveTeachersLoan($userId,$source){
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -270,9 +358,10 @@ class LoanApplicationsForm extends LoanApplications
             } else {
                 $this->_flag = true;
             }
-            $total_amount = 500;
-            $gst = 0;
-            $amount = 500;
+            $total_amount = PaymentsModule::_defaultPayment();
+            $gst = PaymentsModule::_defaultGst();
+            $percentage = ($total_amount * $gst) / 100;
+            $total_amount = $total_amount + $percentage;
             $args = [];
             $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
@@ -285,7 +374,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
                 $loan_payment->payment_token = $token;
-                $loan_payment->payment_amount = $amount;
+                $loan_payment->payment_amount = $total_amount;
                 $loan_payment->payment_gst = $gst;
                 $loan_payment->created_by = (($userId) ? $userId : null);
                 $loan_payment->created_on = date('Y-m-d H:i:s');

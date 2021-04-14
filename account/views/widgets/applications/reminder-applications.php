@@ -136,7 +136,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                             </div>
                             <div class="userdata">
                                 <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
-                                    <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
+                                    <a href="javascript:;" data-href="<?= $app['link']; ?>" target="_blank"class="open-link-new-tab"><?= $app['link']; ?> </a><span class="g"></span>
                                     <textarea class="boxx" id="descriptionField" data-key="description"
                                               data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
                                               placeholder="Write notes here"><?= $app['description']; ?></textarea>
@@ -234,7 +234,7 @@ $this->registerCss("
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
-	flex-basis: 35%;
+	flex-basis: 42%;
 }
 .innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
 .review-list-toggler i{
@@ -297,25 +297,25 @@ $this->registerCss("
     display:inline-block;
 }
 .salarybox, .listing{
-    flex-basis: 50%;
+    flex-basis: 40%;
     text-align: center;
 }
 .salarybox1 {
-	width: 130px;
+	width: 75px;
 	height: auto;
 	font-size: 16px;
 	font-famiy: roboto;
 	/* padding-left: 10px; */
 	border-style: none;
-	border-bottom: 1px solid;
+	border-bottom: 1px solid #333;
 }
 .listing1 {
-	width: 130px;
+	width: 190px;
 	height: auto;
 	font-size: 16px;
 	font-famiy: roboto !important;
 	border-style: none;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #333;
 } 
  .userdata {
     width: 90%;
@@ -324,6 +324,7 @@ $this->registerCss("
   .boxx{     
     display: inline-block;
     color: #888;
+    width: 100%;
     font-size: 16px;
     line-height: 1.2;
     margin-top: 10px;
@@ -358,6 +359,10 @@ $this->registerCss("
 }
 ");
 $script = <<<JS
+$(document).on('click','.open-link-new-tab', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 $(document).on('change','#salaryField, #descriptionField, #statusField', function() {
     var type = $(this).attr('data-key');
     var r_id = $(this).attr("data-id");
