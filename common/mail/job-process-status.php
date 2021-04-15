@@ -1,5 +1,11 @@
 <?php
 $this->registerCss("
+img + div{
+    display: none;
+}
+.darktext {
+    font-weight: bold;
+}
 .job-status-main {
 			max-width: 650px;
 		    margin: auto;
@@ -35,6 +41,7 @@ $this->registerCss("
 		.content p {
 	       line-height: 22px;
 	       text-align: justify;
+	       color: #000;
 	    }
 		.job-img {
 		    text-align: center;
@@ -44,19 +51,39 @@ $this->registerCss("
 		    width: 100%;
 		    max-width: 200px;
 		}
-		.track {
+		.track, .fill {
     		text-align: center;
     		padding-bottom: 20px;
 		}
 		.track-btn {
 	   		border: 1px solid #00a0e3;
 	    	background-color: #00a0e3;
-	        color: #fff;
+	        color: #fff !important;
 	        text-decoration: none;
 	        padding: 8px 20px;
 	        display: inline-block;
 	        border-radius: 4px;
 	        text-decoration: none;
+	        transition: 0.3s ease-in-out;
+	    }
+	    .track-btn:hover {
+	        color: #00a0e3 !important;
+	        background-color: #fff;
+	    }
+		.fill-btn {
+	   		border: 1px solid #f9bd21;
+	    	background-color: #f9bd21;
+	        color: #fff !important;
+	        text-decoration: none;
+	        padding: 8px 32px;
+	        display: inline-block;
+	        border-radius: 4px;
+	        text-decoration: none;
+	        transition: 0.3s ease-in-out;
+	    }
+	    .fill-btn:hover {
+	        color: #f9bd21 !important;
+	        background-color: #fff;
 	    }
 		.footer {
 	    background-color: #e2ecfd;;
@@ -127,7 +154,7 @@ $this->registerCss("
     </div>
     <div class="content">
         <p>Dear <?= $data['name'] ?>,</p>
-        <p>We are happy to inform you that you have been selected for the next round Personal Interview for Business Development Manager in DSBEduTech. Please give your consent regarding the same as soon as possible as we are eagerly waiting for your response.</p>
+        <p>We are happy to inform you that you have been selected for the<span class="darktext"> Personal Interview</span> round for <span class="darktext">Business Development Manager</span> in <span class="darktext">DSBEduTech</span>. Please give your consent regarding the same as soon as possible as we are eagerly waiting for your response.</p>
         <p>Track your application by clicking the button below</p>
     </div>
     <div class="track">
@@ -136,8 +163,8 @@ $this->registerCss("
     <div class="content">
         <p>Also Note That You Have Some Pending Questionnaire Please Fill Up Before Apearing To Personal Interview</p>
     </div>
-        <div class="track">
-        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/qEeByK16PolWN4n7nGe5RzZn49J0YL/<?= $data['applied_id'] ?>" class="track-btn">Fill Questionnaire</a>
+        <div class="fill">
+        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/qEeByK16PolWN4n7nGe5RzZn49J0YL/<?= $data['applied_id'] ?>" class="fill-btn">Fill Questionnaire</a>
     </div>
     <div class="footer">
         <div class="web-social">
