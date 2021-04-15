@@ -126,16 +126,18 @@ $this->registerCss("
         <img src="https://www.empoweryouth.com/assets/themes/email/images/Nxj6lKYbJdDjmXZwmb1BRvg5VrAZ3y.png">
     </div>
     <div class="content">
-        <p>Dear <?= $params['name'] ?>,</p>
+        <p>Dear <?= $data['name'] ?>,</p>
         <p>We are happy to inform you that you have been selected for the next round Personal Interview for Business Development Manager in DSBEduTech. Please give your consent regarding the same as soon as possible as we are eagerly waiting for your response.</p>
         <p>Track your application by clicking the button below</p>
     </div>
     <div class="track">
         <a href="https://www.empoweryouth.com/account/process-applications/2DeBxPEjOGdjkjgnV3beQpqANyVYw9" class="track-btn">Track Your Application</a>
     </div>
-    Also Note That You Have Some Pending Questionnaire Please Fill Up Before Apearing To Personal Interview
-    <div class="track">
-        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/qEeByK16PolWN4n7nGe5RzZn49J0YL/"<?= $params['applied_id'] ?> class="track-btn">Fill Questionnaire</a>
+    <div class="content">
+        <p>Also Note That You Have Some Pending Questionnaire Please Fill Up Before Apearing To Personal Interview</p>
+    </div>
+        <div class="track">
+        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/qEeByK16PolWN4n7nGe5RzZn49J0YL/<?= $data['applied_id'] ?>" class="track-btn">Fill Questionnaire</a>
     </div>
     <div class="footer">
         <div class="web-social">

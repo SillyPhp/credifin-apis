@@ -70,27 +70,26 @@ class TestCacheController extends Controller
         echo $Instaimage;
     }
     public function actionEmail(){
-     $data = AppliedApplications::find()
+        $params = AppliedApplications::find()
          ->alias('a')
          ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
          ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
          ->innerJoin(Users::tableName().'as b','user_enc_id = created_by')
          ->asArray()
          ->all();
-         print_r($data);
-     //die();
-        $params['email'] = 'snehkant93@gmail.com';
-        $params['name'] = 'Sneh Kant';
-        $params['applied_id'] = 'sds';
-        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $k = 0;
+        foreach ($params as $param){
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
             $mail = Yii::$app->mailer->compose(
-            ['html' => 'job-process-status'],['data'=>$params]
+                ['html' => 'job-process-status'],['data'=>$param]
             )
-            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-            ->setTo([$params['email'] => $params['name']])
-            ->setSubject('Your Application Has Been Received');
-        if ($mail->send()) {
-            return true;
+                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                ->setTo([$params['email'] => $params['name']])
+                ->setSubject('Your Job Application Has Been Accepted');
+            if ($mail->send()) {
+               $k++;
+            }
         }
+        echo $k;
     }
 }
