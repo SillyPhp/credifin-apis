@@ -74,7 +74,7 @@ class TestCacheController extends Controller
          ->alias('a')
          ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
          ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
-         ->innerJoin(Users::tableName().'as b','user_enc_id = created_by')
+         ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
          ->asArray()
          ->all();
         $k = 0;
