@@ -84,7 +84,7 @@ class TestCacheController extends Controller
                 ['html' => 'job-process-status'],['data'=>$param]
             )
                 ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                ->setTo([$params['email'] => $params['name']])
+                ->setTo([$param['email'] => $param['name']])
                 ->setSubject('Your Job Application Has Been Accepted');
             if ($mail->send()) {
                $k++;
