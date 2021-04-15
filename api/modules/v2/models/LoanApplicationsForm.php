@@ -393,7 +393,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loanTeacherForm->years = $params['years'];
                 $loanTeacherForm->months = (($params['months'])?$params['months']:0);
                 $loanTeacherForm->employement_type = $params['employement_type'];
-                $loanTeacherForm->intitution_name = $params['intitution'];
+                $loanTeacherForm->institution_name = $params['institution'];
                 $loanTeacherForm->created_by = (($userId) ? $userId : null);
                 $loanTeacherForm->created_on = date('Y-m-d H:i:s');
                 if (!$loanTeacherForm->save()) {

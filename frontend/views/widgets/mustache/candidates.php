@@ -27,10 +27,7 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
-                        <li class="skills-h">Location :</li>
-                        {{#city_name}}
-                        {{{.}}}
-                        {{/city_name}}
+                        <li class="skills-h">Location :<span style="font-weight: 400;">{{#city_name}} {{{.}}}{{/city_name}}</span></li>
                     </ul>
 <!--                    <div class="desination"><i class="fa fa-map-marker-alt"></i> {{city_name}}</div>-->
                 </div>

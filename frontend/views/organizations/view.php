@@ -639,6 +639,9 @@ $this->registerCss('
     height: auto;
     margin: 20px 0;
 }
+.new-j img{
+    max-width:50px;
+}
 .fIcons img{
     max-width: 25px;
 }
