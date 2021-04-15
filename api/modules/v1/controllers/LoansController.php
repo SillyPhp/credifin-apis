@@ -656,6 +656,101 @@ class LoansController extends ApiBaseController
 
     }
 
+    public function actionSaveSecondForm()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+        if (!isset($params['step']) && empty($params['step'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        if ($params['step'] === 1) {
+            // updating loan applications data
+            $this->updateLoanApplications($params);
+
+            // saving or updating id proofs
+            if ($params['id_proofs']) {
+                foreach ($params['id_proofs'] as $proof) {
+                    $proof['loan_app_id'] = $params['loan_app_id'];
+                    if ($proof['id']) {
+                        $this->saveIdProof($proof, $proof['id']);
+                    } else {
+                        $this->saveIdProof($proof);
+                    }
+                }
+            }
+
+            // saving or updating address
+            if ($params['addresses']) {
+                foreach ($params['addresses'] as $address) {
+                    $address['loan_app_id'] = $params['loan_app_id'];
+                    if ($address['id']) {
+                        $this->saveAddress($address, $address['id']);
+                    } else {
+                        $this->saveAddress($address);
+                    }
+                }
+            }
+
+            // saving or updating qualifications
+            if ($params['qualifications']) {
+                foreach ($params['qualifications'] as $qualification) {
+                    $qualification['loan_app_id'] = $params['loan_app_id'];
+                    if ($qualification['id']) {
+                        $this->saveQualification($qualification, $qualification['id']);
+                    } else {
+                        $this->saveQualification($qualification);
+                    }
+                }
+            }
+
+            return $this->response(200, 'success');
+
+        } elseif ($params['step'] === 2) {
+            // saving or updating co applicant
+            if ($params['co_applicants']) {
+                foreach ($params['co_applicants'] as $coApplicant) {
+                    if ($coApplicant['id']) {
+                        $coAppId = $this->saveCoApplicant($coApplicant, $coApplicant['id']);
+                    } else {
+                        $coAppId = $this->saveCoApplicant($coApplicant);
+                    }
+
+                    $coApplicant['loan_co_app_id'] = $coAppId;
+
+                    // saving or updating id proofs
+                    if ($coApplicant['id_proofs']) {
+                        foreach ($coApplicant['id_proofs'] as $proof) {
+                            $proof['loan_co_app_id'] = $coAppId;
+                            if ($proof['id']) {
+                                $this->saveIdProof($proof, $proof['id']);
+                            } else {
+                                $this->saveIdProof($proof);
+                            }
+                        }
+                    }
+
+                    // saving or updating address
+                    if ($coApplicant['addresses']) {
+                        foreach ($coApplicant['addresses'] as $address) {
+                            $address['loan_co_app_id'] = $coAppId;
+                            if ($address['id']) {
+                                $this->saveAddress($address, $address['id']);
+                            } else {
+                                $this->saveAddress($address);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $this->response(200, 'success');
+        }
+
+    }
+
     private function updateLoanApplications($params)
     {
         $loan = LoanApplications::find()
@@ -757,7 +852,7 @@ class LoansController extends ApiBaseController
                 $certificate->name = $params['proof_name'];
                 if (!$certificate->save()) {
                     print_r($certificate->getErrors());
-                    return false;
+                    die();
                 }
             }
 
@@ -781,7 +876,7 @@ class LoansController extends ApiBaseController
 
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $encrypted_string = $utilitiesModel->encrypt();
-                if (substr($encrypted_string, -1) == '.') {
+                if (substr($encrypted_string, -1) == ' . ') {
                     $encrypted_string = substr($encrypted_string, 0, -1);
                 }
 
@@ -809,7 +904,7 @@ class LoansController extends ApiBaseController
                 }
             } else {
                 print_r($loan_certificates->getErrors());
-                return false;
+                die();
             }
         }
     }
@@ -837,7 +932,7 @@ class LoansController extends ApiBaseController
                 return $res_info->loan_app_res_info_enc_id;
             } else {
                 print_r($res_info->getErrors());
-                return false;
+                die();
             }
         } else {
             $update_res_info = LoanApplicantResidentialInfo::find()
@@ -856,7 +951,7 @@ class LoansController extends ApiBaseController
                     return $update_res_info->loan_app_res_info_enc_id;
                 } else {
                     print_r($update_res_info->getErrors());
-                    return false;
+                    die();
                 }
             }
         }
@@ -880,7 +975,7 @@ class LoansController extends ApiBaseController
                     $qualification_type->name = $params['name'];
                     if (!$qualification_type->save()) {
                         print_r($qualification_type->getErrors());
-                        return false;
+                        die();
                     }
                 }
             }
@@ -901,7 +996,7 @@ class LoansController extends ApiBaseController
                 return $education->loan_candidate_edu_enc_id;
             } else {
                 print_r($education->getErrors());
-                return false;
+                die();
             }
 
         } else {
@@ -1175,7 +1270,7 @@ class LoansController extends ApiBaseController
     public function actionHome()
     {
         $partner_colleges = Organizations::find()
-            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'case WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) else NULL END org_logo', 'initials_color'])
             ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
             ->asArray()
             ->all();
