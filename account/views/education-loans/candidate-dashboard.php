@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use kartik\date\DatePicker;
+use yii\helpers\Url;
 
 $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
@@ -132,19 +132,22 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <ul class="displayInline applicantGender" id="applicant_gender">
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Male
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="1">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="1">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Female
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="2">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="2">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Other
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="3">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="3">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -1418,8 +1421,59 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="amount-main">
+            <div class="loan-one flex-w col-md-3 col-sm-6">
+                <div class="loan-h">loan Type</div>
+                <p>Student</p>
+            </div>
+            <div class="loan-two flex-w col-md-3 col-sm-6">
+                <div class="loan-h">Loan Amount</div>
+                <p>10,000,00/RS</p>
+            </div>
+            <div class="loan-three flex-w col-md-3 col-sm-6">
+                <div class="loan-h">Tenure</div>
+                <p>12 months
+                    <span>upto l lakh</span>
+                </p>
+            </div>
+            <div class="loan-four flex-w col-md-3 col-sm-6">
+                <div class="loan-h">Interest</div>
+                <p>10,000/RS</p>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss('
+.amount-main {
+    padding: 40px;
+    background-color: #e2f2fe;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.flex-w {
+    border-right: 2px solid #f6fbff;
+    font-family: Roboto;
+    text-align:center;
+}
+.flex-w:last-child{
+    border:none;
+}
+.loan-h {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #848484;
+}
+.flex-w p {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 5px 0;
+}
 .posRel{
     position:relative;
 }
@@ -1752,6 +1806,30 @@ $this->registerCss('
 }
 #Father-other-info, #Mother-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
     display:none;
+}
+@media Only screen and (max-width:992px){
+    .flex-w {
+        border-right: 0px solid #f6fbff;
+        border-bottom: 2px solid #f6fbff;
+        margin-bottom:25px;
+        width:48%;
+    }
+    .flex-w:nth-child(3),.flex-w:nth-child(4){
+        margin:0;
+        border:none;
+    }
+}
+@media Only screen and (max-width:550px){
+    .flex-w {
+        border-right: 0px solid #f6fbff;
+        border-bottom: 2px solid #f6fbff;
+        margin-bottom:25px;
+        width:100%;
+    }
+    .flex-w:nth-child(3){
+        border-bottom: 2px solid #f6fbff;
+        margin-bottom:25px;
+    }
 }
 ');
 $script = <<<JS
