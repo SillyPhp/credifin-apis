@@ -236,17 +236,20 @@ class OrganizationsController extends Controller
             $count_opportunities = \common\models\EmployerApplications::find()
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
                 ->count();
+            $from_date_app = date("Y-m-d", strtotime("-180 day"));
             $jobs_count = EmployerApplications::find()
                 ->alias('a')
                 ->joinWith(['applicationTypeEnc b'])
                 ->where(['b.name' => 'Jobs', 'a.status' => 'Active', 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->andWhere(['a.application_for' => 1])
+                ->having(['>=', 'a.created_on', $from_date_app])
                 ->count();
             $internships_count = EmployerApplications::find()
                 ->alias('a')
                 ->joinWith(['applicationTypeEnc b'])
                 ->where(['b.name' => 'Internships', 'a.status' => 'Active', 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->andWhere(['a.application_for' => 1])
+                ->having(['>=', 'a.created_on', $from_date_app])
                 ->count();
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;

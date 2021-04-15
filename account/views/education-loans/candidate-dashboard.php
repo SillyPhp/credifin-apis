@@ -1430,17 +1430,15 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
             </div>
             <div class="loan-two flex-w col-md-3 col-sm-6">
                 <div class="loan-h">Loan Amount</div>
-                <p>10,000,00/RS</p>
+                <p>RS/10,000,00</p>
             </div>
             <div class="loan-three flex-w col-md-3 col-sm-6">
                 <div class="loan-h">Tenure</div>
-                <p>12 months
-                    <span>upto l lakh</span>
-                </p>
+                <p>12 months</p>
             </div>
             <div class="loan-four flex-w col-md-3 col-sm-6">
                 <div class="loan-h">Interest</div>
-                <p>10,000/RS</p>
+                <p>10%</p>
             </div>
         </div>
     </div>
@@ -1471,7 +1469,7 @@ $this->registerCss('
 }
 .flex-w p {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     margin: 5px 0;
 }
 .posRel{
