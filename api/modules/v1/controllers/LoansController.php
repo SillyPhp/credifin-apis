@@ -50,6 +50,7 @@ class LoansController extends ApiBaseController
                 'home',
                 'interest-free',
                 'refinance',
+                'school-fee-finance',
                 'enquiry-form',
                 'study-in-india',
                 'faqs',
@@ -1462,6 +1463,52 @@ class LoansController extends ApiBaseController
 
         return $this->response(404, 'not found');
 
+    }
+
+    public function actionSchoolFeeFinance()
+    {
+        $schoolFee = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'school_fee.json');
+        $schoolFee = json_decode($schoolFee, true);
+
+        $header = $schoolFee['header'];
+        $header['image'] = Url::to('@eyAssets/images/pages/education-loans/schoolfee.png', 'https');
+
+        $schoolFeeFinance = $schoolFee['school_fee'];
+        $schoolFeeFinance['image'] = Url::to('@eyAssets/images/pages/education-loans/sf-icon.png', 'https');
+
+        $benefits = $schoolFee['benefits'];
+
+        $lendingPartners = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'lending_partners.json');
+        $lendingPartners = json_decode($lendingPartners, true);
+
+        foreach ($lendingPartners as $k => $v) {
+            if ($v['image'] == 'AG-logo.png' || $v['image'] == 'ezcapital.png' || $v['image'] == 'phf-leasing.png') {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/index2/' . $v['image'], 'https');
+            } else {
+                $lendingPartners[$k]['org_logo'] = Url::to('@eyAssets/images/pages/education-loans/' . $v['image'], 'https');
+            }
+            $lendingPartners[$k]['organization_enc_id'] = 'empoweryouth';
+            $lendingPartners[$k]['initials_color'] = '#ea52ce';
+        }
+
+        $chooseEducationLoan = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'choose_education_loan.json');
+        $chooseEducationLoan = json_decode($chooseEducationLoan, true);
+
+        foreach ($chooseEducationLoan as $key => $val) {
+            $chooseEducationLoan[$key]['icon'] = Url::to('@eyAssets/images/pages/education-loans/' . $val['icon'], 'https');
+        }
+
+        $data = [];
+        $data['header'] = $header;
+        $data['schoolFeeFinance'] = $schoolFeeFinance;
+        $data['benefits'] = $benefits;
+        $data['lending_partners'] = $lendingPartners;
+        $data['chooseEducationLoan'] = $chooseEducationLoan;
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
     }
 
 }

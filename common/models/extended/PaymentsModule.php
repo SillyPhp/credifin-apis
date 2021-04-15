@@ -71,4 +71,12 @@ class PaymentsModule
             return false;
         }
     }
+
+    public static function _defaultPayment(){
+        return 500;
+    }
+
+    public static function _defaultGst(){
+        return 0;
+    }
 }
