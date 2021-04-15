@@ -1471,7 +1471,11 @@ class LoansController extends ApiBaseController
         $schoolFee = json_decode($schoolFee, true);
 
         $header = $schoolFee['header'];
+        $header['image'] = Url::to('@eyAssets/images/pages/education-loans/schoolfee.png', 'https');
+
         $schoolFeeFinance = $schoolFee['school_fee'];
+        $schoolFeeFinance['image'] = Url::to('@eyAssets/images/pages/education-loans/sf-icon.png', 'https');
+
         $benefits = $schoolFee['benefits'];
 
         $lendingPartners = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'lending_partners.json');
@@ -1498,7 +1502,7 @@ class LoansController extends ApiBaseController
         $data['header'] = $header;
         $data['schoolFeeFinance'] = $schoolFeeFinance;
         $data['benefits'] = $benefits;
-        $data['lendingPartners'] = $lendingPartners;
+        $data['lending_partners'] = $lendingPartners;
         $data['chooseEducationLoan'] = $chooseEducationLoan;
         if ($data) {
             return $this->response(200, $data);
