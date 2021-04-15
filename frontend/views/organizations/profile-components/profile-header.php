@@ -560,7 +560,6 @@ $('.nav-link').on('click', function (){
         })     
     }
 });
-console.log(subUrl);
 function changeActive(){
     if(subUrl){
         $('.cActive').removeClass('cActive');
@@ -584,7 +583,6 @@ function getDetails(){
                 var response = res.response.data;
                 let collegeDet = collegeInfo(res);
                 $('.college-main').append(collegeDet);
-                
             }
         },
         complete: function (){

@@ -42,6 +42,7 @@ use Yii;
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_by
+ * @property double $yearly_income
  * @property string $updated_on
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
@@ -94,7 +95,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'source', 'loan_type'], 'string'],
             [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['amount', 'amount_received', 'amount_due', 'scholarship'], 'number'],
+            [['amount','yearly_income','amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],

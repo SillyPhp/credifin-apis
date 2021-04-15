@@ -427,11 +427,19 @@ function getUserReviews(limit=3, page=null){
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee'},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee', user_enc_id:user_id},
         success: function (res){
             if(res.response.status == 200){
                 var reviews_data = $('#organization-reviews').html();
-                $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
+                let dataRev = res.response.data.reviews
+                for(var i = 0; i < dataRev.length; i++){
+                    if(dataRev[i]['feedback_type'] == 1){
+                        dataRev[i].feedback_type_in = true;
+                    }else if(dataRev[i]['feedback_type'] == 0){
+                        dataRev[i].feedback_type_not = true;
+                    }
+                }
+                $("#org-reviews").append(Mustache.render(reviews_data, dataRev));
                 $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
                     readOnly: true,
@@ -554,19 +562,40 @@ function showStars(count){
 $(document).on('click','.btn_usefull',function() {
   var id = $(this).attr('value');
   var r_id = $(this).attr('data-key');
+  let newUsefulNum;
   if (id=='one'){
       if ($(this).hasClass('usefull_btn_color'))
           {
               return false;
           }
+      let notusefull_btn_color = $(this).closest('.usefull-bttn').find('.notusefull_btn_color');
+      if(notusefull_btn_color.length > 0){
+          let useNum = parseInt(notusefull_btn_color.find('.notUsefulNum').html());
+          newUsefulNum = useNum - 1;
+          notusefull_btn_color.find('.notUsefulNum').html(newUsefulNum);
+      }
+      let useFulBtn = $(this).find('.usefulNum')
+      let useFulNum = parseInt(useFulBtn.html());
+      newUsefulNum =  useFulNum + 1;
+      useFulBtn.html(newUsefulNum);
       $(this).addClass('usefull_btn_color');
       $(this).closest('.usefull-bttn').find('.notuse-bttn button').removeClass('notusefull_btn_color');
   }
   else if(id=='zero'){
       if ($(this).hasClass('notusefull_btn_color'))
-          {
-              return false;
-          }
+        {
+          return false;
+        }
+      let usefull_btn_color = $(this).closest('.usefull-bttn').find('.usefull_btn_color');
+      if(usefull_btn_color.length > 0){  
+         let useNum = parseInt(usefull_btn_color.find('.usefulNum').html());
+         newUsefulNum = useNum - 1;
+         usefull_btn_color.find('.usefulNum').html(newUsefulNum);
+      }
+        let notUseBtn = $(this).find('.notUsefulNum')
+        let notUseNum = parseInt(notUseBtn.html())
+        newUsefulNum = notUseNum + 1
+        notUseBtn.html(newUsefulNum)
       $(this).addClass('notusefull_btn_color');
       $(this).closest('.usefull-bttn').find('.use-bttn button').removeClass('usefull_btn_color');
   }
