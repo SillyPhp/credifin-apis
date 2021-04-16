@@ -624,7 +624,7 @@ class DashboardController extends Controller
     public function actionCalendar()
     {
         if (!Yii::$app->user->identity->organization->organization_enc_id) {
-            return $this->render('test');
+            return $this->render('scheduled-interviews');
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
