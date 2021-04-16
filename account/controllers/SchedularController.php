@@ -125,10 +125,11 @@ class SchedularController extends Controller
             ->select(['field_enc_id', 'field_name', 'field_label', 'sequence'])
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
-            ])
-            ->andWhere(['<>', 'field_name', 'Get Applications']);
+            ]);
         if ($round != null) {
             $rounds->andWhere(['sequence' => $round]);
+        } else{
+            $rounds->andWhere(['<>', 'field_name', 'Get Applications']);
         }
         $rounds = $rounds->asArray()
             ->all();

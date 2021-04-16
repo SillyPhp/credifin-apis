@@ -127,16 +127,16 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="form-group">
-                                    <label for="intitution" class="input-group-text">
-                                        Name of The Intitution
+                                    <label for="institution" class="input-group-text">
+                                        Name of The Institution
                                     </label>
-                                    <input type="text" class="form-control" id="intitution" name="intitution"
-                                           placeholder="Enter Name of The Intitution">
+                                    <input type="text" class="form-control" id="institution" name="institution"
+                                           placeholder="Enter Name of The Institution">
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
                                 <div class="radio-heading input-group-text">
-                                    History With Intitution
+                                    History With Institution
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -815,7 +815,7 @@ $('#years, #months').mask("#", {reverse: true});
 					required: true,
 					maxlength: 100
 				},
-				'intitution': {
+				'institution': {
 					required: true,
 					maxlength: 200
 				},
@@ -853,8 +853,8 @@ $('#years, #months').mask("#", {reverse: true});
 				'applicant_name': {
 					required: "Applicant Name Required",
 				},
-				'intitution': {
-					required: "Intitution Name Required",
+				'institution': {
+					required: "Institution Name Required",
 				},
 				'dob': {
 					required: "Enter Date Of Birth",
@@ -910,8 +910,8 @@ $('#years, #months').mask("#", {reverse: true});
                 months:$('#months').val(),
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
-                amount:$('#loanamount').val(),   
-                intitution:$('#intitution').val(),   
+                amount:$('#loanamount').val(), 
+                institution:$('#institution').val(),   
                 employement_type:$('input[name="emptype"]:checked').val(),  
                 userID:userID, 
                 country_enc_id:$('#country_name').val()
