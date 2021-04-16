@@ -1421,28 +1421,28 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="amount-main">
-            <div class="loan-one flex-w col-md-3 col-sm-6">
-                <div class="loan-h">loan Type</div>
-                <p>Student</p>
-            </div>
-            <div class="loan-two flex-w col-md-3 col-sm-6">
-                <div class="loan-h">Loan Amount</div>
-                <p>RS/10,000,00</p>
-            </div>
-            <div class="loan-three flex-w col-md-3 col-sm-6">
-                <div class="loan-h">Tenure</div>
-                <p>12 months</p>
-            </div>
-            <div class="loan-four flex-w col-md-3 col-sm-6">
-                <div class="loan-h">Interest</div>
-                <p>10%</p>
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div class="row">-->
+<!--    <div class="col-md-12">-->
+<!--        <div class="amount-main">-->
+<!--            <div class="loan-one flex-w col-md-3 col-sm-6">-->
+<!--                <div class="loan-h">loan Type</div>-->
+<!--                <p>Student</p>-->
+<!--            </div>-->
+<!--            <div class="loan-two flex-w col-md-3 col-sm-6">-->
+<!--                <div class="loan-h">Loan Amount</div>-->
+<!--                <p>RS/10,000,00</p>-->
+<!--            </div>-->
+<!--            <div class="loan-three flex-w col-md-3 col-sm-6">-->
+<!--                <div class="loan-h">Tenure</div>-->
+<!--                <p>12 months</p>-->
+<!--            </div>-->
+<!--            <div class="loan-four flex-w col-md-3 col-sm-6">-->
+<!--                <div class="loan-h">Interest</div>-->
+<!--                <p>10%</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <?php
 $this->registerCss('
 .amount-main {
