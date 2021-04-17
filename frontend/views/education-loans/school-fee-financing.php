@@ -130,10 +130,10 @@ $this->registerCss('
 	background-size: cover;
 	display: flex;
 	align-items: center;
-	justify-content: center; 
 	position: relative;
+	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position:center;
 }
 .headerOverlay{
     background: rgba(0,0,0, .8);
