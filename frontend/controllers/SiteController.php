@@ -1219,6 +1219,11 @@ class SiteController extends Controller
         return $this->render('ansilery-detail');
     }
 
+    public function actionFeedsForm()
+    {
+        return $this->render('feeds-form');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
