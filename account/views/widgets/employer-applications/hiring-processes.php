@@ -65,6 +65,12 @@ use yii\helpers\URL;
 <input type="text" name="process_calc" id="process_calc" readonly>
 <?php
 $script = <<< JS
+let process_radio = document.querySelectorAll('.process_radio');
+if(process_radio.length){
+    process_radio[0].querySelector('input[type=radio]').checked = true
+}
+
+$('.process_radio')
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
