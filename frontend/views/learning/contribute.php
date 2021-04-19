@@ -479,7 +479,6 @@ textarea:focus{
 }
 .img-circle{
     text-align: center;
-    margin: 41px 35px 0px 0;
 }
 .img-circle img{    
     max-width: 100%;
@@ -491,15 +490,17 @@ textarea:focus{
     font-family: roboto;
  }
 .img-blog{
-    margin-top: 87px;
+    text-align: center;
+    margin-top: 35px;
     margin-left: 25px;
 }
 .img-blog img{ 
-    max-width:80%;
+    width: 100%;
+    max-width: 150px;
 }
 .img-blog h4{ 
     text-align: center;
-    font-size: 30px;
+    font-size: 20px;
     padding-right:35px;
     font-family: roboto;
 }
