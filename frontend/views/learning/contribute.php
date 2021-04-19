@@ -501,7 +501,6 @@ textarea:focus{
 .img-blog h4{ 
     text-align: center;
     font-size: 20px;
-    padding-right:35px;
     font-family: roboto;
 }
 .section4{
