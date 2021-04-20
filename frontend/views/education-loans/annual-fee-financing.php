@@ -103,12 +103,13 @@ $this->registerCss('
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: right bottom;
 	display: flex;
 	align-items: center;
 	position: relative;
 //	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position:left bottom;
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;

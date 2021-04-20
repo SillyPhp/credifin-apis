@@ -52,6 +52,7 @@ class EducationLoanController extends ApiBaseController
                 'course-pool-list' => ['GET'],
                 'save-application' => ['POST', 'OPTIONS'],
                 'save-teachers-loan' => ['POST', 'OPTIONS'],
+                'save-school-fee-loan' => ['POST', 'OPTIONS'],
                 'get-loan' => ['POST', 'OPTIONS'],
                 'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
@@ -265,6 +266,33 @@ class EducationLoanController extends ApiBaseController
              } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
             }
+    }
+
+    public function actionSaveSchoolFeeLoan(){
+        $params = Yii::$app->request->post();
+        if ($params){
+            $model = new LoanApplicationsForm();
+            $orgDate = $params['applicant_dob'];
+            $userId = (($params['userID']) ? $params['userID'] : null);
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->yearly_income = $params['yearly_income'];
+                if ($model->validate()) {
+                    if ($data = $model->saveSchoolFeeLoan( $userId,'Ey',$params)) {
+                        if ($data['status']){
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        }else{
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
     }
 
     public function actionGetLoan()

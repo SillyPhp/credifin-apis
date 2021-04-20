@@ -756,10 +756,12 @@ foreach ($fields as $f) {
                                 </tr>
                                 </thead>
                                 <tbody class="qu_data">
-                                <?php foreach ($que as $list_que) { ?>
+                                <?php foreach ($que as $list_que) {
+                                    $linkQ = "/account/questionnaire/display-answers/".$list_que["qid"]."/".$arr["applied_application_enc_id"];
+                                    ?>
                                     <tr>
                                         <td><a class="blue question_list"
-                                               href="/account/questionnaire/display-answers/<?= $list_que['qid']; ?>/<?= $arr['applied_application_enc_id']; ?>"
+                                               href="<?= Url::to($linkQ,'https') ?>"
                                                data-questionId="<?= $list_que['qid']; ?>"
                                                data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
                                                target="_blank"><?= $list_que['name']; ?></a>

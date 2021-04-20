@@ -366,7 +366,7 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-<section>
+<section id="blogs-main-section">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -386,6 +386,7 @@ use yii\helpers\Html;
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
     'is_ajax' => true,
+    'category'=>$parentId['name']
 ]);
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 $c_user = Yii::$app->user->identity->user_enc_id;
