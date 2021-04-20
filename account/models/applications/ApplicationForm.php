@@ -881,10 +881,18 @@ class ApplicationForm extends Model
     public function getInterviewProcess()
     {
         $interview_process = OrganizationInterviewProcess::find()
-            ->select(['interview_process_enc_id', 'process_name'])
-            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->orderBy(['id' => SORT_DESC])
+            ->alias('a')
+            ->select([
+                'a.interview_process_enc_id',
+                'CONCAT(a.process_name,"<span class=\'proCount\' data-tooltip=\'tooltip\' data-placement=\'top\' title=\'Total Rounds\'>", COUNT(b.field_enc_id),"</span>") as process_name',
+            ])
+            ->joinWith(['interviewProcessFields b' => function($b){
+                $b->select(['b.field_enc_id', 'b.field_name','b.interview_process_enc_id']);
+            }], true)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->groupBy(['a.interview_process_enc_id'])
             ->asArray()
             ->all();
         $process = ArrayHelper::map($interview_process, 'interview_process_enc_id', 'process_name');
