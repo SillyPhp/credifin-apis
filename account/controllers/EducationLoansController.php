@@ -469,11 +469,15 @@ class EducationLoansController extends Controller
 
     public function actionCandidateDashboard($id)
     {
-        $loanApplication = LoanApplications::findOne(['loan_app_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id]);
-        if (!$loanApplication) {
+        $data = Yii::$app->userData->loanApplication($id, Yii::$app->user->identity->user_enc_id);;
+//        print_r($data);exit();
+        if (!$data) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
-        return $this->render('candidate-dashboard', ['loan_app_id' => $id]);
+        return $this->render('candidate-dashboard', [
+            'loan_app_id' => $id,
+            'data' => $data,
+        ]);
     }
 
     public function actionLoanProfileView()

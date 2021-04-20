@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\models\LoanApplications;
 use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserPreferences;
@@ -155,5 +156,86 @@ class UserDataComponent extends Component
             ->one();
 
         return $data;
+    }
+
+    public function loanApplication($app_id, $user_id){
+        return LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.loan_app_enc_id',
+                'a.applicant_name',
+                '(CASE
+                    WHEN a.gender = "1" THEN "Male"
+                    WHEN a.gender = "2" THEN "Female"
+                    ELSE "N/A"
+                END) as gender',
+                'DATE_FORMAT(a.applicant_dob, \'%d-%b-%Y\') applicant_dob',
+                'a.degree',
+                'a.phone',
+                'a.image',
+                'a.image_location',
+                'a.email',
+                'c1.course_name',
+            ])
+            ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                $c->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userOtherInfo b1']);
+                }], false);
+                $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }]);
+            }], false)
+            ->joinWith(['loanCoApplicants d' => function ($d) {
+                $d->select([
+                    'd.loan_co_app_enc_id',
+                    'd.loan_app_enc_id',
+                    'd.name',
+                    'd.relation',
+                    'd.email',
+                    'd.phone',
+                    'd.image',
+                    'd.image_location',
+                    'DATE_FORMAT(d.co_applicant_dob, \'%d-%b-%Y\') co_applicant_dob',
+                    'd.employment_type',
+                    'd.annual_income',
+                    'd.address',
+                    'd.years_in_current_house',
+                    'd.occupation'
+                ]);
+                $d->joinWith(['loanCertificates de' => function ($e) {
+                    $e->select(['de.certificate_enc_id', 'de.loan_co_app_enc_id', 'de.certificate_type_enc_id', 'de1.name', 'de.number', 'de.proof_image image', 'de.proof_image_location image_location']);
+                    $e->joinWith(['certificateTypeEnc de1'], false);
+                    $e->onCondition(['de.is_deleted' => 0]);
+                }]);
+                $d->joinWith(['loanApplicantResidentialInfos dg' => function ($g) {
+                    $g->select(['dg.loan_app_res_info_enc_id', 'dg.loan_app_enc_id', 'dg.loan_co_app_enc_id', 'dg.residential_type', 'dg.type', 'dg.address', 'dg.city_enc_id', 'dg2.name city_name', 'dg.state_enc_id', 'dg1.name state_name']);
+                    $g->joinWith(['stateEnc dg1'], false);
+                    $g->joinWith(['cityEnc dg2'], false);
+                    $g->onCondition(['dg.is_deleted' => 0]);
+                }]);
+            }])
+            ->joinWith(['loanCertificates e' => function ($e) {
+                $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image image', 'e.proof_image_location image_location']);
+                $e->joinWith(['certificateTypeEnc e1'], false);
+                $e->onCondition(['e.is_deleted' => 0]);
+                $e->orderBy(['e.created_on' => SORT_ASC]);
+            }])
+            ->joinWith(['loanCandidateEducations f' => function ($f) {
+                $f->select(['f.loan_candidate_edu_enc_id', 'f.loan_app_enc_id', 'f.qualification_enc_id', 'f.institution', 'f.obtained_marks', 'f1.name']);
+                $f->joinWith(['qualificationEnc f1'], false);
+                $f->onCondition(['f.is_deleted' => 0]);
+                $f->orderBy(['f.created_on' => SORT_ASC]);
+            }])
+            ->joinWith(['loanApplicantResidentialInfos g' => function ($g) {
+                $g->select(['g.loan_app_res_info_enc_id', 'g.loan_app_enc_id', 'g.loan_co_app_enc_id', 'g.residential_type', 'g.type', 'g.address', 'g.city_enc_id', 'g.state_enc_id', 'g1.name state_name', 'g2.name city_name']);
+                $g->joinWith(['stateEnc g1'], false);
+                $g->joinWith(['cityEnc g2'], false);
+                $g->onCondition(['g.is_deleted' => 0]);
+                $g->orderBy(['g.created_on' => SORT_ASC]);
+            }])
+            ->andWhere(['a.loan_app_enc_id' => $app_id, 'a.created_by' => $user_id])
+            ->asArray()
+            ->one();
     }
 }

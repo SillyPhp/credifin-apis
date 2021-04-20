@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use kartik\date\DatePicker;
-
 $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
@@ -67,7 +66,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantName" class="input-group-text">
                                                 Name of Applicant
                                             </label>
-                                            <input type="text" class="form-control" id="applicantName"
+                                            <input value="<?= $data['applicant_name'] ?>" type="text" class="form-control" id="applicantName"
                                                    placeholder="Enter Full Name" disabled>
                                         </div>
                                     </div>
@@ -76,7 +75,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantEmail" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input type="text" class="form-control" id="applicantEmail"
+                                            <input value="<?= $data['email'] ?>" type="text" class="form-control" id="applicantEmail"
                                                    placeholder="" disabled>
                                         </div>
                                     </div>
@@ -85,7 +84,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantDob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input type="text" class="form-control" id="applicantDob"
+                                            <input value="<?= date('d/m/Y', strtotime($data['applicant_dob'])) ?>" type="text" class="form-control" id="applicantDob"
                                                    placeholder="--/--/----" disabled>
                                         </div>
                                     </div>
@@ -94,27 +93,27 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantNumber" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="applicantNumber"
+                                            <input value="<?= $data['phone'] ?>" type="text" class="form-control" id="applicantNumber"
                                                    placeholder="" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label class="radio-heading input-group-text" for="degreeApplied">
-                                                Degree Applied
-                                            </label>
-                                            <select class="form-control field-req" name="years" id="degreeApplied"
-                                                    disabled>
-                                                <option>Diploma</option>
-                                                <option>Graduation</option>
-                                                <option>Post Graduation</option>
-                                                <option>Professional Course</option>
-                                                <option>Others</option>
-                                            </select>
-                                        </div>
-                                    </div>
+<!--                                    <div class="col-md-4 padd-20">-->
+<!--                                        <div class="form-group">-->
+<!--                                            <label class="radio-heading input-group-text" for="degreeApplied">-->
+<!--                                                Degree Applied-->
+<!--                                            </label>-->
+<!--                                            <select class="form-control field-req" name="years" id="degreeApplied">-->
+<!--                                                <option value="">Select One</option>-->
+<!--                                                <option>Diploma</option>-->
+<!--                                                <option>Graduation</option>-->
+<!--                                                <option>Post Graduation</option>-->
+<!--                                                <option>Professional Course</option>-->
+<!--                                                <option>Others</option>-->
+<!--                                            </select>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
                                             <label for="courseApplied" class="input-group-text">
@@ -787,10 +786,11 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                    data-field="occupation">
                                                 Occupation
                                             </label>
-                                            <select class="form-control field-req" name="mOccupation">
-                                                <option>Home-maker</option>
-                                                <option>Salaried</option>
-                                                <option>Self-employed</option>
+                                            <select class="form-control field-req" name="mOccupation" id="mOccupation">
+                                                <option>Select One</option>
+                                                <option value="Home-maker">Home-maker</option>
+                                                <option value="Salaried">Salaried</option>
+                                                <option value="Self-employed">Self-employed</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1418,8 +1418,26 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
         </div>
     </div>
 </div>
+<div id="fadder" style="display: none">
+    <i class="fa fa-spinner fa-spin"></i>
+</div>
 <?php
 $this->registerCss('
+#fadder{
+    background: #0000001c;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index:999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#fadder i{
+    font-size: 50px;
+}
 .posRel{
     position:relative;
 }
@@ -1757,7 +1775,7 @@ $this->registerCss('
 $script = <<<JS
 var apiUrl = '/';
 if(document.domain != 'empoweryouth.com'){
-    apiUrl = 'https://ricky.eygb.me/';
+    apiUrl = 'https://sneh.eygb.me/';
 }
 function showImage(input, inp_id) {
     if (input.files && input.files[0]) {
@@ -1788,6 +1806,12 @@ $(document).on('click','.search-names', function() {
     ul.remove();
     updateValue(input, value);
 })
+
+$(document).on('change','#mOccupation', function() {
+    var elem = $(this);
+    var value = elem.val();
+    updateValue(elem, value);
+});
 
 $(document).on('change','.same_address', function() {
     var elem = $(this);
@@ -1910,6 +1934,7 @@ function updateValue(elem, value){
     if(key != ""){
         data['id'] = key;
     }
+    // riccy
     var address_type = "";
     if(type == 'address'){
         data['res_type'] = elem.parent().parent().prev().find('input:checked').val();
@@ -1932,7 +1957,11 @@ function updateValue(elem, value){
             data: data,
             beforeSend:function(){
                 removeIcons();
-                $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                if(data['id'] == "" || typeof data['id'] === "undefined" ){
+                    $('#fadder').fadeIn();
+                } else {
+                    $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                }
             },
             success: function(res) {
                 removeIcons();
@@ -1959,6 +1988,7 @@ function updateValue(elem, value){
                     cityElem.attr('data-state-id',value);
                     cityElem.val("");
                 }
+                $('#fadder').fadeOut();
             }
         });
     }
@@ -1972,11 +2002,15 @@ $(document).ready(function() {
         data:{loan_app_enc_id:loan_app_id},
         success: function(res) {
             res = res.response;
+            console.log(res);
             if(res.status == 200){
                 data = res.data;
                 $('#applicantBasicInformation').attr('data-key',data.loan_app_enc_id);
                 $('#applicantImage').html('<img height="50px" width="50px" src="'+ data.image +'" />');
                 $('#applicantName').val(data.applicant_name);
+                if(data.gender && data.gender < 4){
+                    $('#applicant_gender').find("input[value='"+data.gender+"']").prop('checked',true);
+                }
                 $('#applicantEmail').val(data.email);
                 $('#applicantDob').val(data.applicant_dob);
                 $('#applicantNumber').val(data.phone);
@@ -2107,7 +2141,7 @@ $(document).ready(function() {
                             if(v.image){
                                 $('#motherImage').children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
                             }
-                            $('#ME.mail').val(v.email);
+                            $('#MEmail').val(v.email);
                             $('#M-mobile').val(v.phone);
                             $('#MDob').val(v.co_applicant_dob);
                             $('#mOccupation').val(v.occupation);
@@ -2190,29 +2224,47 @@ $(document).ready(function() {
     });
 });
 
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    
+    reader.onload = function(e) {
+      $('#blah').attr('src', e.target.result);
+    }
+    
+    reader.readAsDataURL(input.files[0]); // convert to base64 string
+  }
+}
+
  $(document).on('change','input:file', function(e) {
      var elem = $(this);
      var files = e.target.files;
      if(files.length){
          var formData = new FormData();
+         // console.log(readURL(this));
          formData.append("image", files[0]);
          // for(var i=0; i<files.length; i++){
              // console.log(files[i]);
              // formData.append("files[" + i + "]", files[i]);   
          // }
          var section = elem.closest('section');
+         var relation = section.attr('data-relation');
          var key = section.attr('data-key');
          var type = section.attr('data-type');
          formData.append("upload_file", 'test');
          formData.append("user_enc_id", user_enc_id);
          formData.append("loan_app_id", loan_app_id);
+         formData.append("image_name", files[0].name);
+         if(typeof relation !== "undefined"){
+            formData.append("relation", relation);
+         }
         
          var co_app_other_info = elem.attr('data-id');
          var mainSection = section;
          if(typeof co_app_other_info !== "undefined"){
              var articalTag = elem.closest('article');
              type = articalTag.attr('data-type');
-             formData.append("loan_co_app_id", key);
+             // formData.append("id", key);
              key = articalTag.attr('data-key');
              mainSection = articalTag;
          }
@@ -2237,17 +2289,23 @@ $(document).ready(function() {
              contentType: false,
              beforeSend:function(){
                 removeIcons();
-                $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                if(key == "" || typeof key === "undefined" ){
+                    $('#fadder').fadeIn();
+                } else {
+                    $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(readURL(this));
+                }
             },
              success: function(res) {
                 removeIcons();
                  if(res.response.status == 200){
+                     mainSection.attr('data-key', res.response.id);
                      var inp_id = elem.prev().attr('id');
                      showImage(elem[0], inp_id);
                      $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
                  } else {
                      $('<i class="fa fa-exclamation-triangle error_icon"></i>').insertAfter(elem);
                  }
+                 $('#fadder').fadeOut();
              }
          });
      }
