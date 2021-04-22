@@ -6,21 +6,21 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>
-                    <span class="typewrite" data-period="2000"
-                          data-type='["Teacher Loan", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
-                        <span class="wrap"></span>
-                    </span>
-                </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
-                <ul>
-                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
-                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
-                </ul>
+        <div class="row teacher">
+            <div class="col-md-6 col-sm-6">
+                <div class="teacher-txt">
+                    <h1>QUICK LOANS FOR<br><span class="org-colr"> TEACHERS</span></h1>
+                    <ul>
+                        <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
+                        <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now">Apply Now</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="teacher-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan-img.png')?>" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -28,13 +28,16 @@ use borales\extensions\phoneInput\PhoneInput;
 <section class="studyus-head">
     <div class="container">
         <div class="row">
+            <div class="col-md-12">
+            <h3 class="heading-style">Why Teacher's Loan</h3>
+            </div>
+        <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/usastd.jpg')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/happy-teacher-bg.jpg')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">
-                <h3 class="heading-style">Why Teacher's Loan</h3>
                 <p class="why-des">There is nothing to hide about the fact that "The Teachers Are The Most Important Members Of Our Society". They are doing
                     the most important job of the the world i.e. shaping the lives of the children of the society. But because of some circumstances
                     they are paid very less as compared to other industry standards. As a result, they are unable to meet their daily needs. Many banks
@@ -44,48 +47,48 @@ use borales\extensions\phoneInput\PhoneInput;
                     <div class="col-md-3 col-sm-3">
                         <div class="opportunity">
                             <div class="opp-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/opportunities.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/medical-expenses.png')?>" alt="">
                             </div>
-                            <div class="opp-txt">Medical expenses</div>
+                            <div class="opp-txt">Medical<br> expenses</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">
                         <div class="opportunity">
                             <div class="opp-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/High-Acceptance-Rate.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Unexpected-Expenses.png')?>" alt="">
                             </div>
-                            <div class="opp-txt">Unexpected Expenses</div>
+                            <div class="opp-txt">Unexpected<br> Expenses</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">
                         <div class="opportunity">
                             <div class="opp-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/Technology.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/financee.png')?>" alt="">
                             </div>
-                            <div class="opp-txt"> Go On Holiday</div>
+                            <div class="opp-txt">Finance Your New Business</div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3">
                         <div class="opportunity">
                             <div class="opp-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/Cultural-Diversity.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/holiday.png')?>" alt="">
                             </div>
-                            <div class="opp-txt">Many More</div>
+                            <div class="opp-txt">Go On<br> A Holiday</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+ </div>
 </section>
-<?= $this->render('/widgets/loan-process-ease') ?>
-<?= $this->render('/widgets/usa-course')?>
-<?php $is_show = 0; ?>
-<?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
+<?= $this->render('/widgets/benefits-of-teacher-loan') ?>
 <section class="bg-blue">
-    <?= $this->render('/widgets/choose-education-loan') ?>
+    <?= $this->render('/widgets/why-empoweryouth') ?>
 </section>
-<?= $this->render('/widgets/education-loan-faqs');?>
+<?= $this->render('/widgets/faqs-teacher-loan');?>
+<?php $is_show = 0; ?>
+<?= $this->render('/widgets/Our-lending-partners',['is_show'=>$is_show])?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -93,9 +96,32 @@ use borales\extensions\phoneInput\PhoneInput;
     'data' => $data,
     'viewBtn' => true,
 ]) ?>
+<?= $this->render('/widgets/need-more-help') ?>+
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+html {
+  scroll-behavior: smooth;
+}
+.teacher {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.teacher-img {
+    text-align: center;
+}
+.org-colr {
+    color: #ff7803;
+    font-size: 60px;
+    font-family: lora;
+}
+.teacher-txt{
+    text-align: center;
+}
+.bg-white{
+    background-color: #fff;
+}
 .studyus-head {
     padding: 30px;
 }
@@ -114,14 +140,13 @@ $this->registerCss('
 }
 .whystudy img {
     height: 100%;
-    max-height: 370px;
+    max-height: 320px;
     border-radius: 8px;
     box-shadow: 0 1px 3px 0px #797979;
 }
 .opp-img img {
-    height: 100%;
-    max-width: 70px;
-    max-height: 60px;
+    max-width: 50px;
+    height: 50px;
     margin: 20px;
 }
 .opp-img {
@@ -139,15 +164,6 @@ $this->registerCss('
     padding-top: 30px;
     padding-bottom: 30px;
 }
-.le-img img{
-    height: 100%;
-    max-height: 300px;
-    border-radius: 10px;
-    padding: 15px;
-}
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 #typed{
     font-size: 25px;
     color: #fff;
@@ -155,6 +171,7 @@ $this->registerCss('
 .study-in-usa-bg ul li{
     display: inline;
     margin-right: 10px;
+    text-align: center;
 }
 .apply-now {
 	padding: 10px 15px;
@@ -222,37 +239,24 @@ $this->registerCss('
     transition: .3s ease;
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/Study-usa-bg.jpg') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/teacher-loan-hdr-bg.png') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: right bottom;
 	display: flex;
 	align-items: center;
 	position: relative;
-	text-align: center;
+//	text-align: center;
 	height: 100vh;
 	max-height: 700px;
 }
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
-}
-.study-in-usa-bg p{
-    font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-}
-.study-in-usa-bg h1{
-    font-size: 45px;
-	margin-bottom: 20px;
-	color: #FF7803;
-	font-weight: 700;
+.study-in-usa-bg h1 {
+    line-height: 60px;
+	font-size: 42px;
+	margin-bottom: 10px;
+	color: #000;
+	font-weight: bold;
 	font-family: roboto;
 }
 .footer{
@@ -548,7 +552,23 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
+}
 
+@media only screen and (max-width: 990px) and (min-width:760px){
+.teacher-img img {
+    width: 100%;
+    max-width: 300px
+}
+.study-in-usa-bg h1 {
+    font-size: 38px;
+}
+}
+
+@media only screen and (max-width: 600px) and (min-width:320px){
+.teacher-img {
+    display: none;
+}
+}
 ');
 $script = <<<JS
 setTimeout(function (){
