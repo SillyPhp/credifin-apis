@@ -921,8 +921,8 @@ class LoansController extends ApiBaseController
             } else {
                 $res_info->loan_app_enc_id = $params['loan_app_id'];
             }
-            $res_info->residential_type = $params['address_type'];
-            $res_info->type = $params['res_type'];
+            $res_info->residential_type = $params['residential_type'];
+            $res_info->type = $params['type'];
             $res_info->address = $params['address'];
             $res_info->city_enc_id = $params['city_id'];
             $res_info->state_enc_id = $params['state_id'];
@@ -940,8 +940,8 @@ class LoansController extends ApiBaseController
                 ->one();
 
             if ($update_res_info) {
-                $update_res_info->residential_type = $params['address_type'] ? $params['address_type'] : $update_res_info->residential_type;
-                $update_res_info->type = $params['res_type'] ? $params['res_type'] : $update_res_info->type;
+                $update_res_info->residential_type = ($params['residential_type'] == 1) ? 1 : 0;
+                $update_res_info->type = ($params['type'] == 1) ? 1 : 0;
                 $update_res_info->address = $params['address'] ? $params['address'] : $update_res_info->address;
                 $update_res_info->city_enc_id = $params['city_id'] ? $params['city_id'] : $update_res_info->city_enc_id;
                 $update_res_info->state_enc_id = $params['state_id'] ? $params['state_id'] : $update_res_info->state_enc_id;
