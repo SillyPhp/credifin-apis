@@ -8,6 +8,7 @@ use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
+use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\InterviewCandidates;
 use common\models\InterviewDates;
@@ -51,7 +52,7 @@ class DashboardController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -1149,7 +1150,8 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-    public function actionSafetyPosters(){
+    public function actionSafetyPosters()
+    {
         return $this->render('safety-posters');
     }
 //    public function actionError(){
@@ -1158,5 +1160,24 @@ class DashboardController extends Controller
 //            'error' => $error
 //        ]);
 //    }
+
+    public function actionShortlistedApplicants()
+    {
+        $shortlistedApplicants = ShortlistedApplicants::find()
+            ->alias('a')
+            ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
+                'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
+                'b3.name city'
+            ])
+            ->joinWith(['candidateEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b3'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        print_r($shortlistedApplicants);
+        die();
+    }
 
 }
