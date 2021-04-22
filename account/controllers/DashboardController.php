@@ -16,6 +16,7 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use common\models\UserSkills;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -1173,11 +1174,41 @@ class DashboardController extends Controller
                 $b->joinWith(['cityEnc b3'], false);
             }], false)
             ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->groupBy(['a.candidate_enc_id'])
             ->asArray()
             ->all();
 
-        print_r($shortlistedApplicants);
-        die();
+        foreach ($shortlistedApplicants as $key => $val) {
+            $skills = UserSkills::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->joinWith(['skillEnc b'], false)
+                ->where(['a.created_by' => $val['candidate_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $applications = ShortlistedApplicants::find()
+                ->alias('a')
+                ->select(['ee.name title','a.application_enc_id'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                }], false)
+                ->where([
+                    'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                    'a.candidate_enc_id' => $val['candidate_enc_id'],
+                    'a.is_deleted' => 0
+                ])
+                ->asArray()
+                ->all();
+
+            $shortlistedApplicants[$key]['skills'] = $skills;
+            $shortlistedApplicants[$key]['applications'] = $applications;
+        }
+
+        return $shortlistedApplicants;
     }
 
 }
