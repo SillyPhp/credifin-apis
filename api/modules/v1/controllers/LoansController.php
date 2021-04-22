@@ -1100,10 +1100,11 @@ class LoansController extends ApiBaseController
         if (!isset($params['loan_app_id']) && empty($params['loan_app_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
-        if (!isset($params['type']) && empty($params['type'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-        }
+//        if (!isset($params['type']) && empty($params['type'])) {
+//            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+//        }
 
+        $params['type'] = 'applicant';
         $image_ext = $params['image_ext'];
         $image = base64_decode($params['image']);
 
