@@ -1062,7 +1062,35 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->address = $params['address'];
             $loan_co_applicants->created_by = $this->userId();
             $loan_co_applicants->created_on = date('Y-m-d H:i:s');
+            if (!empty($params['image'])) {
+                $image_ext = $params['image_ext'];
+                $image = base64_decode($params['image']);
+
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == ' . ') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $loan_co_applicants->image = $encrypted_string . '.' . $image_ext;
+                $loan_co_applicants->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->image . $loan_co_applicants->image_location . '/';
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_co_applicants->image;
+            }
             if ($loan_co_applicants->save()) {
+                if (!empty($params['image'])) {
+                    if (file_put_contents($file, $image)) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_co_applicants->image, "public");
+                        if (file_exists($file)) {
+                            unlink($file);
+                        }
+                        return $loan_co_applicants->loan_co_app_enc_id;
+                    } else {
+                        return false;
+                    }
+                }
                 return $loan_co_applicants->loan_co_app_enc_id;
             } else {
                 print_r($loan_co_applicants->getErrors());
@@ -1084,7 +1112,36 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->address = $params['address'] ? $params['address'] : $loan_co_applicants->address;
             $loan_co_applicants->updated_by = $this->userId();
             $loan_co_applicants->updated_on = date('Y-m-d H:i:s');
+            if (!empty($params['image'])) {
+                $image_ext = $params['image_ext'];
+                $image = base64_decode($params['image']);
+
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == ' . ') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $loan_co_applicants->image = $encrypted_string . '.' . $image_ext;
+                $loan_co_applicants->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->image . $loan_co_applicants->image_location . '/';
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $loan_co_applicants->image;
+            }
             if ($loan_co_applicants->update()) {
+                if (!empty($params['image'])) {
+                    if (file_put_contents($file, $image)) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_co_applicants->image, "public");
+                        if (file_exists($file)) {
+                            unlink($file);
+                        }
+                        return $loan_co_applicants->loan_co_app_enc_id;
+                    } else {
+                        return false;
+                    }
+                }
                 return $loan_co_applicants->loan_co_app_enc_id;
             } else {
                 print_r($loan_co_applicants->getErrors());
