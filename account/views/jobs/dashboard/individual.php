@@ -491,7 +491,7 @@ $this->registerCss('
   top: 0px;
   left: 0;
   right: 0;
-  background: rgba(208, 208, 208, 0.5);
+  background: rgb(64 63 63 / 50%);;
   overflow: hidden;
   width: 100%;
   height: 0;
@@ -513,14 +513,15 @@ $this->registerCss('
     height:80%;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
-    background:#00a0e3 !important; 
-    border:2px solid #00a0e3; 
-    border-radius:5px !important;
+    background:#00a0e3; 
+    border:1px solid #00a0e3; 
+    border-radius:4px !important;
     padding:6px 12px;
     color:#fff;
 }
 button.over-bttn, .ob2{
     background:#ff7803 !important; 
+    border: 1px solid #ff7803;
 }                  
 .ob1:hover{
     background:#fff !important;
