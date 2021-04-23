@@ -1224,6 +1224,11 @@ class SiteController extends Controller
         return $this->render('feeds-form');
     }
 
+    public function actionFeedPreview()
+    {
+        return $this->render('feed-preview');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
