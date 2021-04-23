@@ -3,59 +3,7 @@ use yii\helpers\Url;
 ?>
 <section>
     <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                <div class="dashboard-stat dashboard-stat-v2 pink">
-                    <div class="visual">
-                        <i class="fa fa-bar-chart-o"></i>
-                    </div>
-                    <div class="details">
-                        <div class="number">
-                            <span>2</span>
-                        </div>
-                        <div class="desc">Loan Applied</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                <div class="dashboard-stat dashboard-stat-v2 green">
-                    <div class="visual">
-                        <i class="fa fa-shopping-cart"></i>
-                    </div>
-                    <div class="details">
-                        <div class="number">
-                            <span>1</span>
-                        </div>
-                        <div class="desc">Loan Approved</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                <div class="dashboard-stat dashboard-stat-v2 yellow">
-                    <div class="visual">
-                        <i class="fa fa-globe"></i>
-                    </div>
-                    <div class="details">
-                        <div class="number">
-                            <span>1</span></div>
-                        <div class="desc">Loan Under Process</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                <div class="dashboard-stat dashboard-stat-v2 red">
-                    <div class="visual">
-                        <i class="fa fa-building"></i>
-                    </div>
-                    <div class="details">
-                        <div class="number">
-                            <span>0</span></div>
-                        <div class="desc">Loan Rejected</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
+        <div class="row mt20">
             <div class="col-md-7">
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title tabbable-line">
@@ -73,99 +21,145 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 text-center borderRight">
-                                <div class="statsBox">
-                                    <p class="mb0">Principle Amount</p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 27,349</h3>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center borderRight">
-                                <div class="statsBox">
-                                    <p class="mb0">Interest Payable</p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 8,394 <span>14%</span></h3>
-                                </div>
-                            </div>
-                            <div class="col-md-4 text-center borderRight">
+                            <div class="col-md-4 col-sm-4 text-center text-sm-left borderRight">
                                 <div class="statsBox">
                                     <p class="mb0">Total Payment</p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 68,394</h3>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 77,000</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6 text-center text-sm-left borderRight">
+                                <div class="statsBox">
+                                    <p class="mb0">Interest Payable</p>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 10,780 <span>14%</span></h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6 text-center text-sm-left borderRight">
+                                <div class="statsBox">
+                                    <p class="mb0">Principle Amount</p>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 66,220</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                    <div class="col-md-12">
-                        <table class="emiTable">
-                            <thead>
-                            <tr>
-                                <th class="w10">Month</th>
-                                <th class="w20">Installment</th>
-                                <th class="w20">Principle</th>
-                                <th class="w20">Interest</th>
-                                <th class="w20">Total</th>
-                                <th class="w10">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Jan</td>
-                                <td>01-01-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Paid</td>
-                            </tr>
-                            <tr>
-                                <td>Feb</td>
-                                <td>01-02-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Paid</td>
-                            </tr>
-                            <tr>
-                                <td>Mar</td>
-                                <td>01-03-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Due</td>
-                            </tr>
-                            <tr>
-                                <td>Apr</td>
-                                <td>01-04-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Due</td>
-                            </tr>
-                            <tr>
-                                <td>May</td>
-                                <td>01-05-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Due</td>
-                            </tr>
-                            <tr>
-                                <td>Jun</td>
-                                <td>01-06-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Due</td>
-                            </tr>
-                            <tr>
-                                <td>Jul</td>
-                                <td>01-07-2021</td>
-                                <td><i class="fa fa-inr"></i> 27,345</td>
-                                <td><i class="fa fa-inr"></i> 8,394</td>
-                                <td><i class="fa fa-inr"></i> 59,144</td>
-                                <td>Due</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                            <div class="col-md-12">
+                                <div class="scroll-table">
+                                    <table class="emiTable">
+                                    <thead>
+                                    <tr>
+                                        <th class="w30">Installment Date</th>
+                                        <th class="w30">Installment Amount</th>
+                                        <th class="w30">Loan Amount</th>
+                                        <th class="w10">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="overdue">
+                                        <td>01 Mar 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td><i class="fa fa-inr"></i> 59,000</td>
+                                        <td>Overdue</td>
+                                    </tr>
+                                    <tr class="overdue">
+                                        <td>01 Apr 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td><i class="fa fa-inr"></i> 50,000</td>
+                                        <td>Overdue</td>
+                                    </tr>
+                                    <tr>
+                                        <td>01 May 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td><i class="fa fa-inr"></i> 41,000</td>
+                                        <td>Due</td>
+                                    </tr>
+                                    <tr>
+                                        <td>01 Jun 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td><i class="fa fa-inr"></i> 32,000</td>
+                                        <td>Due</td>
+                                    </tr>
+                                    <tr>
+                                        <td>01 Jul 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td><i class="fa fa-inr"></i> 23,000</td>
+                                        <td>Due</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title tabbable-line">
+                        <div class="caption">
+                            <i class="icon-microphone font-dark hide"></i>
+                            <span class="caption-subject bold font-dark uppercase">
+                                Paid Installments
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="emiTable">
+                                    <thead>
+                                    <tr>
+                                        <th class="w30">Installment Date</th>
+                                        <th class="w30">Installment Amount</th>
+                                        <th class="w30">Mode</th>
+                                        <th class="w10">Default</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>01 Jan 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td>ENACH</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>01 Feb 2021</td>
+                                        <td><i class="fa fa-inr"></i> 9,000</td>
+                                        <td>ENACH</td>
+                                        <td>Yes 7 Days</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title tabbable-line">
+                        <div class="caption">
+                            <i class="icon-microphone font-dark hide"></i>
+                            <span class="caption-subject bold font-dark uppercase">
+                                Remaining Not Yet
+                            </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 text-center text-sm-left borderRight">
+                                <div class="statsBox align-start">
+                                    <p class="mb0">Surplus</p>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 77,000</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6 text-center text-sm-left borderRight">
+                                <div class="statsBox align-start">
+                                    <p class="mb0">Installments</p>
+                                    <h3 class="mt10"> <span class="colorBlue">2</span>/7</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6 text-center text-sm-left borderRight">
+                                <div class="statsBox align-start">
+                                    <p class="mb0">Installments Missed</p>
+                                    <h3 class="mt10"> <span class="colorRed">2</span>/7</h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,56 +178,58 @@ use yii\helpers\Url;
                             <div class="col-md-12">
                                 <div class="reStats mb20">
                                     <p class="mb0">Current Amount Due: </p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 99,999</h3>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 99,000</h3>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="reStats">
-                                    <p class="mb0">Upcoming<br> Repayment Date</p>
-                                    <h3 class="mt10"><span><i class="fa fa-calendar"></i></span>  30-03-2021</h3>
+                                <div class="reStats mb20">
+                                    <p class="mb0">Upcoming Repayment Date</p>
+                                    <h3 class="mt10"><span><i class="fa fa-calendar"></i></span>  30 MAR 2021</h3>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="reStats">
-                                    <p class="mb0">Upcoming<br> Repayment Amount</p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 9,999</h3>
+                                <div class="reStats mb20">
+                                    <p class="mb0">Upcoming Repayment Amount</p>
+                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 9,000</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt20">
                             <div class="col-md-12">
-                                <p>Mode Of Payment <button type="button" class="enachBtn">ENACH</button></p>
+                                <p>Mode Of Payment ENACH</p>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title tabbable-line mt10">
                         <div class="caption">
-                            <span class="caption-subject bold uppercase colorRed">
-                               Overdue Installments
-                            </span>
+                                <span class="caption-subject bold uppercase colorRed">
+                                   Overdue Installments
+                                </span>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="repayStats">
-                                    <p class="mb0">Overdue EMI's</p>
-                                    <h3 class="mt10"><span><i class="fa fa-calendar"></i></span> Mar, Apr</h3>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="repayStats">
-                                    <p class="mb0">Overdue Amount</p>
-                                    <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 9,999</h3>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="repayStats">
+                                <p class="mb0">Overdue EMI's</p>
+                                <h3 class="mt10"><span><i class="fa fa-calendar"></i></span> Mar, Apr</h3>
                             </div>
                         </div>
-                        <div class="row mt10">
-                            <div class="col-md-12">
-                                <p>Repay Now <button type="button" class="enachBtn overdueBtn">ENACH</button></p>
+                        <div class="col-md-6">
+                            <div class="repayStats">
+                                <p class="mb0">Overdue Amount</p>
+                                <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 18,000</h3>
                             </div>
                         </div>
                     </div>
+                    <div class="row mt10">
+                        <div class="col-md-12">
+                            <p><button type="button" class="enachBtn overdueBtn">Repay Now</button></p>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -281,6 +277,10 @@ $this->registerCSS('
 .mt20{
     margin-top: 20px;
 }
+.scroll-table{
+    width: 100%;
+    overflow-x: auto;
+}
 .statsBox{
     width: 100%;
     height: 60px;
@@ -294,7 +294,7 @@ $this->registerCSS('
 .statsBox h3,
 .reStats p, 
 .reStats h3 {
-    margin: 0px;
+    margin: 5px 0 0 0;
 }
 .statsBox h3{
     margin-top: 3px;
@@ -333,11 +333,13 @@ $this->registerCSS('
     border-collapse: collapse; 
     margin-bottom: 0px !important;
     margin-top: 5px;
-    background: linear-gradient(213.55deg,#00a0e3 0%,#048dc7 100%); 
-    color: #fff;
+    color: #333;
 }
-.w20{
-    width: 20%;
+.w30{
+    width: 28%;
+}
+.w16{
+    width: 16%;
 }
 .loanName{
     font-weight: 600;
@@ -349,15 +351,6 @@ $this->registerCSS('
 tr{
     padding: 5px 0; 
 }
-tr:first-child{
-    border-radius: 5px 5px 0 0
-}
-tr:last-child{
-    border-radius: 0 0 5px 5px
-}
-//tr:nth-child(odd) { 
-//    background: #fbfbfb; 
-//}
 th { 
     background: #00a0e3; 
     color: #fff; 
@@ -367,61 +360,66 @@ th {
 td, th { 
     padding: 10px 6px; 
     text-align: center;
-    font-family:roboto;
-    border-bottom: 1px solid rgba(255,255,255,.3);
+    border-bottom: 1px solid #eee;
+    font-family: roboto;
+    letter-spacing: .5px;
+    font-size: 13px;
 }
-//td{
-//    color: #333
-//}
+tr:nth-child(odd){
+    background: #f9f9f9; 
+}
+.paidBg td{
+    border-bottom: 1px solid rgba(255,255,255,.3) ;
+}
+.paidBg{
+    background: linear-gradient(213.55deg,#00a0e3 0%,#048dc7 100%) !important; 
+    color: #fff;
+}
+.overdue{
+    color: #CA0B00 !important;
+}
 td:first-child, th:first-child{
     border-left:none;
 }
+.align-start{
+    align-items: flex-start;
+}
+.colorBlue{
+    font-size: 24px !important;
+}
+.colorRed{
+    font-size: 24px !important;
+    color: #CA0B00 !important;
+}
 @media only screen and (max-width: 767px) {
-    table, thead, tbody, th, td, tr { 
-        display: block; 
+     .statsBox{
+        align-items: flex-start;
     }
-        
-    /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
+    .borderRight:first-child{
+        border:none;
     }
-    tr {
-        border: 1px solid #ccc; 
-        margin-bottom: 10px;
+}
+@media only screen and (max-width: 500px){
+    .page-content{
+        padding: 30px 0 !important;
     }
-    td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50% !important;
-        min-height: 70px;
-        height: auto; 
+    .statsBox p, .reStats p{
+        font-size: 12px;
     }
-    td:last-child{
-        border-bottom: none;
+    .statsBox h3, .reStats h3{
+        font-size: 18px;
     }
-    td:before { 
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 3px;
-        width: 45%; 
-        padding-right: 10px;
+    .text-sm-left{
+        text-align: left !important
     }
-    td:nth-of-type(1):before { 
-        content: "Month"; 
-    }
-    td:nth-of-type(2):before { 
-        content: "Principle"; 
-    }
-    td:nth-of-type(3):before { 
-        content: "Interest"; 
-    }
-    td:nth-of-type(4):before { 
-        content: "Total"; 
+   .emiTable{
+        width: 500px;
+   }
+   .w30{
+        width: 120px;
+   }
+    td, th { 
+        padding: 5px 6px; 
     }
 }
 ');
