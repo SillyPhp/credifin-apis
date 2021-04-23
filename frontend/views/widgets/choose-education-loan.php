@@ -7,14 +7,14 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-12">
                 <div class="detail-div">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/transparency.png')?>">
-                    <p>We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side every step of the way.</p>
+                    <p>We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side at every step of the whole process.</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <ul>
                     <li>
                         <div class="clickedItem ciActive"
-                             data-value="We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side every step of the way."
+                             data-value="We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side at every step of the whole process."
                              data-img="<?= Url::to('@eyAssets/images/pages/education-loans/transparency.png')?>">
                             <i class="fas fa-search"></i>
                             Transparency
