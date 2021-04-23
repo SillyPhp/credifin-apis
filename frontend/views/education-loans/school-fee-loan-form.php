@@ -1105,13 +1105,16 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
         let num = parseInt(event.value);
         let parentElem = event.parentElement;
         let childFormBox = document.querySelectorAll('.childFormBox');
+        console.log(childFormBox);
         if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
             parentElem.querySelector('.errorMsg').style.display = "block";
             parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
+            console.log('removing');
             removeChildFormBox(num, childFormBox)
         } else  {
             parentElem.querySelector('.errorMsg').style.display = "none";
             let childDiv = document.querySelector('.child-info-div');
+            childDiv.innerHTML = '';
             let count = 1;
             for (let i = 1; i <= num; i++) {
                 let childForm = childrenInfoForm(count, num);
