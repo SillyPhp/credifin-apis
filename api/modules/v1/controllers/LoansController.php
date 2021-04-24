@@ -467,6 +467,18 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
 
+        $application = $this->getLoanData($params);
+
+        if ($application) {
+            return $this->response(200, $application);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+    }
+
+    private function getLoanData($params)
+    {
         $application = LoanApplications::find()
             ->distinct()
             ->alias('a')
@@ -482,7 +494,7 @@ class LoansController extends ApiBaseController
                 'a.gender'
 //                'c1.course_name',
             ])
-            ->joinWith(['loanCoApplicants d' => function ($d) {
+            ->joinWith(['loanCoApplicants d' => function ($d) use ($params) {
                 $d->select([
                     'd.loan_co_app_enc_id',
                     'd.loan_app_enc_id',
@@ -510,6 +522,9 @@ class LoansController extends ApiBaseController
                     $g->joinWith(['cityEnc dg2'], false);
                     $g->onCondition(['dg.is_deleted' => 0]);
                 }]);
+                if (isset($params['relations']) && !empty($params['relations'])) {
+                    $d->onCondition(['d.relation' => $params['relations']]);
+                }
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image_name', 'e.proof_image image', 'e.proof_image_location image_location']);
@@ -606,12 +621,7 @@ class LoansController extends ApiBaseController
             }
         }
 
-        if ($application) {
-            return $this->response(200, $application);
-        } else {
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-        }
-
+        return $application;
     }
 
     public function actionLoanSecondForm()
@@ -706,12 +716,20 @@ class LoansController extends ApiBaseController
                 }
             }
 
-            return $this->response(200, 'success');
+            $data['loan_app_enc_id'] = $params['loan_app_id'];
+            $data = $this->getLoanData($data);
+
+            unset($data['loanCoApplicants']);
+
+            return $this->response(200, $data);
 
         } elseif ($params['step'] === 2) {
             // saving or updating co applicant
+            $relations = [];
             if ($params['co_applicants']) {
                 foreach ($params['co_applicants'] as $coApplicant) {
+                    array_push($relations, $coApplicant['relation']);
+                    $coApplicant['loan_app_id'] = $params['loan_app_id'];
                     if ($coApplicant['id']) {
                         $coAppId = $this->saveCoApplicant($coApplicant, $coApplicant['id']);
                     } else {
@@ -746,7 +764,11 @@ class LoansController extends ApiBaseController
                 }
             }
 
-            return $this->response(200, 'success');
+            $data['loan_app_enc_id'] = $params['loan_app_id'];
+            $data['relations'] = $relations;
+            $data = $this->getLoanData($data);
+
+            return $this->response(200, ['co_applicants' => $data['loanCoApplicants']]);
         }
 
     }
@@ -1055,11 +1077,11 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->email = $params['email'];
             $loan_co_applicants->phone = $params['phone'];
             $loan_co_applicants->relation = $params['relation'];
-            $loan_co_applicants->annual_income = $params['annual_income'];
+            $loan_co_applicants->annual_income = (int)$params['annual_income'];
             $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob']));
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
             $loan_co_applicants->occupation = $params['occupation'];
-            $loan_co_applicants->address = $params['address'];
+            $loan_co_applicants->address = ($params['address'] == 1) ? 1 : 0;
             $loan_co_applicants->created_by = $this->userId();
             $loan_co_applicants->created_on = date('Y-m-d H:i:s');
             if (!empty($params['image'])) {
@@ -1105,11 +1127,11 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->email = $params['email'] ? $params['email'] : $loan_co_applicants->email;
             $loan_co_applicants->phone = $params['phone'] ? $params['phone'] : $loan_co_applicants->phone;
             $loan_co_applicants->employment_type = $params['employment_type'] ? $params['employment_type'] : $loan_co_applicants->employment_type;
-            $loan_co_applicants->annual_income = $params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
+            $loan_co_applicants->annual_income = (int)$params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
             $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob'])) ? date('Y-m-d', strtotime($params['applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'] ? $params['years_in_current_house'] : $loan_co_applicants->years_in_current_house;
             $loan_co_applicants->occupation = $params['occupation'] ? $params['occupation'] : $loan_co_applicants->occupation;
-            $loan_co_applicants->address = $params['address'] ? $params['address'] : $loan_co_applicants->address;
+            $loan_co_applicants->address = ($params['address'] == 1) ? 1 : 0;
             $loan_co_applicants->updated_by = $this->userId();
             $loan_co_applicants->updated_on = date('Y-m-d H:i:s');
             if (!empty($params['image'])) {
