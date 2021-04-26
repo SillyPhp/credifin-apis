@@ -8,6 +8,7 @@ use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
+use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\InterviewCandidates;
 use common\models\InterviewDates;
@@ -15,6 +16,7 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use common\models\UserSkills;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -51,7 +53,7 @@ class DashboardController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -1149,7 +1151,8 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-    public function actionSafetyPosters(){
+    public function actionSafetyPosters()
+    {
         return $this->render('safety-posters');
     }
 //    public function actionError(){
@@ -1158,5 +1161,56 @@ class DashboardController extends Controller
 //            'error' => $error
 //        ]);
 //    }
+
+    public function actionShortlistedApplicants($type = 'Jobs')
+    {
+        $shortlistedApplicants = ShortlistedApplicants::find()
+            ->alias('a')
+            ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
+                'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
+                'b3.name city'
+            ])
+            ->joinWith(['candidateEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b3'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->groupBy(['a.candidate_enc_id'])
+            ->asArray()
+            ->all();
+
+        foreach ($shortlistedApplicants as $key => $val) {
+            $skills = UserSkills::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->joinWith(['skillEnc b'], false)
+                ->where(['a.created_by' => $val['candidate_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $applications = ShortlistedApplicants::find()
+                ->alias('a')
+                ->select(['ee.name title', 'a.application_enc_id', 'f.name'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc f'], false);
+                }], false)
+                ->where([
+                    'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                    'a.candidate_enc_id' => $val['candidate_enc_id'],
+                    'a.is_deleted' => 0,
+                    'f.name' => $type
+                ])
+                ->asArray()
+                ->all();
+
+            $shortlistedApplicants[$key]['skills'] = $skills;
+            $shortlistedApplicants[$key]['applications'] = $applications;
+        }
+
+        return $shortlistedApplicants;
+    }
 
 }
