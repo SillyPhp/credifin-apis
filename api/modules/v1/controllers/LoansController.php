@@ -525,6 +525,7 @@ class LoansController extends ApiBaseController
                 if (isset($params['relations']) && !empty($params['relations'])) {
                     $d->onCondition(['d.relation' => $params['relations']]);
                 }
+                $d->groupBy(['d.loan_co_app_enc_id']);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image_name', 'e.proof_image image', 'e.proof_image_location image_location']);
