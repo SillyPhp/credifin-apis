@@ -167,7 +167,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="applicantID0">
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>PAN</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
@@ -214,7 +214,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="applicantID1">
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>PAN</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
@@ -293,20 +293,21 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group posRel">
-                                            <label for="PA-state" class="input-group-text" data-field="state_id">
+                                            <label for="paState" class="input-group-text" data-field="state_id">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control typeInput" id="PA-state"
+                                            <input type="text" class="form-control typeInput" id="paState"
                                                    placeholder="" data-url="states" autocomplete="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="PA-city" class="input-group-text" data-field="city_id">
+                                            <label for="paCity" class="input-group-text" data-field="city_id">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control typeInput" id="PA-city"
+                                            <input type="text" class="form-control typeInput" id="paCity"
                                                    placeholder="" data-url="cities"
+                                                   autocomplete="off"
                                                    disabled>
                                         </div>
                                     </div>
@@ -340,27 +341,27 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label class="input-group-text" for="CA-houseNo" data-field="address">
+                                            <label class="input-group-text" for="caHouseNo" data-field="address">
                                                 Address
                                             </label>
-                                            <input type="text" class="form-control" id="CA-houseNo" placeholder="">
+                                            <input type="text" class="form-control" id="caHouseNo" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="CA-state" class="input-group-text" data-field="state_id">
+                                            <label for="caState" class="input-group-text" data-field="state_id">
                                                 State
                                             </label>
-                                            <input type="text" class="form-control typeInput" id="CA-state"
+                                            <input type="text" class="form-control typeInput" id="caState"
                                                    placeholder="" data-url="states">
                                         </div>
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label for="CA-city" class="input-group-text" data-field="city_id">
+                                            <label for="caCity" class="input-group-text" data-field="city_id">
                                                 City
                                             </label>
-                                            <input type="text" class="form-control typeInput" id="CA-city"
+                                            <input type="text" class="form-control typeInput" id="caCity"
                                                    placeholder="" data-url="cities"
                                                    disabled>
                                         </div>
@@ -588,7 +589,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                     </div>
                                 </div>
                                 <div id="Father-other-info">
-                                    <article id="Father-address-info" data-key="" data-type="address">
+                                    <article id="fatherAddressInfo" data-key="" data-type="address">
                                         <div class="row mt10" id="fAddress">
                                             <div class="col-md-3 padd-20">
                                                 <div class="form-group ">
@@ -649,7 +650,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             </div>
                                         </div>
                                     </article>
-                                    <article id="Father-identity-info" data-key="" data-type="id_proof">
+                                    <article id="fatherCertificationEncId" data-key="" data-type="id_proof">
                                         <div class="row mt10">
                                             <div class="col-md-4 padd-20">
                                                 <div class="form-group">
@@ -660,7 +661,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     <select class="form-control field-req" name="years"
                                                             id="fIDproof" data-id="coProofInfo">
                                                         <option>PAN</option>
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
                                                         <option>Driving License</option>
@@ -772,10 +773,10 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                     </div>
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
-                                            <label class="input-group-text" for="M-mobile" data-field="phone">
+                                            <label class="input-group-text" for="mMobile" data-field="phone">
                                                 Mobile Number
                                             </label>
-                                            <input type="text" class="form-control" id="M-mobile" placeholder="">
+                                            <input type="text" class="form-control" id="mMobile" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -826,7 +827,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                     </div>
                                 </div>
                                 <div id="Mother-other-info">
-                                    <article id="Mother-address-info" data-key="" data-type="address">
+                                    <article id="motherAddressInfo" data-key="" data-type="address">
                                         <div class="row mt10" id="mAddress">
                                             <div class="col-md-3 padd-20">
                                                 <div class="form-group ">
@@ -887,7 +888,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             </div>
                                         </div>
                                     </article>
-                                    <article id="Mother-identity-info" data-key="" data-type="id_proof">
+                                    <article id="motherCertificateEncId" data-key="" data-type="id_proof">
                                         <div class="row mt10">
                                             <div class="col-md-4 padd-20">
                                                 <div class="form-group">
@@ -898,7 +899,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     <select class="form-control field-req" name="years"
                                                             id="MIdProof" data-id="coProofInfo">
                                                         <option>PAN</option>
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
                                                         <option>Driving License</option>
@@ -1178,7 +1179,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     <select class="form-control field-req" name="" id="G1ID"
                                                             data-id="coProofInfo">
                                                         <option>PAN</option>
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
                                                         <option>Driving License</option>
@@ -1369,7 +1370,7 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     <select class="form-control field-req" name="years" id="G2ID"
                                                             data-id="coProofInfo">
                                                         <option>PAN</option>
-                                                        <option>Adhaar Card</option>
+                                                        <option>Aadhaar Card</option>
                                                         <option>Passport</option>
                                                         <option>Voter ID</option>
                                                         <option>Driving License</option>
@@ -1891,6 +1892,12 @@ $(document).on('keyup','.typeInput', function() {
     });
 });
 
+function aadhaarValidation(x) {
+    var regexp=/^[2-9]{1}[0-9]{3}\s{0}[0-9]{4}\s{0}[0-9]{4}$/;
+    if(regexp.test(x)) {
+        return x;
+    }
+}
 $(document).on('blur','input:text', function() {
     var elem = $(this);
     var value = elem.val();
@@ -1901,98 +1908,114 @@ $(document).on('blur','input:text', function() {
 });
 
 function updateValue(elem, value){
-    var data = {};
-    var label_name = "";
-    if(elem.hasClass('same_address') || elem.hasClass('acnt_gender')){
-        label_name = elem.closest('label').attr('data-field');
-    } else {
-        label_name = elem.prev('label').attr('data-field');
-    }
-    if(label_name == "number"){
-        var docChilds = elem.closest('.row').children().children();
-        var docFieldName = docChilds.children('label').attr('data-field');
-        var docName = docChilds.children('select').val();
-        data[docFieldName]= docName;
-    }
-    var section = elem.closest('section');
-    var key = section.attr('data-key');
-    var sequence = section.attr('data-sequence');
-    var type = section.attr('data-type');
-    var relation = section.attr('data-relation');
-    var co_app_other_info = elem.attr('data-id');
-    var mainSection = section;
-    if(typeof co_app_other_info !== "undefined" && !elem.hasClass('same_address')){
-        var articalTag = elem.closest('article');
-        type = articalTag.attr('data-type');
-        data['loan_co_app_id'] = key;
-        key = articalTag.attr('data-key');
-        mainSection = articalTag;
-    }
-    if(typeof relation !== "undefined"){
-        data['relation'] = relation;
-    }
-    if(key != ""){
-        data['id'] = key;
-    }
-    // riccy
-    var address_type = "";
-    if(type == 'address'){
-        data['res_type'] = elem.parent().parent().prev().find('input:checked').val();
-        address_type = section.attr('data-address-type');
-    }
-    if(type != ""){
-        data['type'] = type;
-    }
-    if(address_type != ""){
-        data['address_type'] = address_type;
-    }
-    data[label_name] = value;
-    data['user_enc_id'] = user_enc_id;
-    data['loan_app_id'] = loan_app_id;
-    // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + address_type);
-    if(value != "" || key != ""){
-        $.ajax({
-            url: apiUrl+'api/v3/education-loan/loan-second-form',
-            method: 'POST',
-            data: data,
-            beforeSend:function(){
-                removeIcons();
-                if(data['id'] == "" || typeof data['id'] === "undefined" ){
-                    $('#fadder').fadeIn();
-                } else {
-                    $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+    var inptId = elem.attr("id");
+    console.log(value);
+    console.log(objData[inptId]);
+    if(value != objData[inptId] && value != ""){
+        var data = {};
+        var label_name = "";
+        if(elem.hasClass('same_address') || elem.hasClass('acnt_gender')){
+            label_name = elem.closest('label').attr('data-field');
+        } else {
+            label_name = elem.prev('label').attr('data-field');
+        }
+        if(label_name == "number"){
+            var docChilds = elem.closest('.row').children().children();
+            var docFieldName = docChilds.children('label').attr('data-field');
+            var docName = docChilds.children('select').val();
+            if (docName == "Aadhaar Card" && docFieldName == "proof_name"){
+                var chkAadhaar = aadhaarValidation(value);
+                if (chkAadhaar == "" || typeof chkAadhaar === "undefined"){
+                    toastr.error("Please enter a valid id", "Aadhaar Card");
+                    elem.focus();
+                    return false;
                 }
-            },
-            success: function(res) {
-                removeIcons();
-                if(res.response.status == 200){
-                    $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
-                    mainSection.attr('data-key', res.response.id);
-                    if(data['type'] == 'co_applicant'){
-                        if(data['relation'] == 'Father'){
-                            $('#Father-other-info').show();
-                        }
-                        if(data['relation'] == 'Mother'){
-                            $('#Mother-other-info').show();
-                        }
-                        if(data['relation'] == 'Guarantor'){
-                            $('#Guarantor'+sequence+'-other-info').show();
-                        }
-                    }
-                } else {
-                    $('<i class="fa fa-exclamation-triangle error_icon"></i>').insertAfter(elem);
-                }
-                if(elem.hasClass('typeInput') && elem.attr('data-url') == 'states'){
-                    var cityElem = elem.parent().parent().next().find('input');
-                    cityElem.attr('disabled',false);
-                    cityElem.attr('data-state-id',value);
-                    cityElem.val("");
-                }
-                $('#fadder').fadeOut();
             }
-        });
+            data[docFieldName]= docName;
+        }
+        
+        var section = elem.closest('section');
+        var key = section.attr('data-key');
+        var sequence = section.attr('data-sequence');
+        var type = section.attr('data-type');
+        var relation = section.attr('data-relation');
+        var co_app_other_info = elem.attr('data-id');
+        var mainSection = section;
+        if(typeof co_app_other_info !== "undefined" && !elem.hasClass('same_address')){
+            var articalTag = elem.closest('article');
+            type = articalTag.attr('data-type');
+            data['loan_co_app_id'] = key;
+            key = articalTag.attr('data-key');
+            mainSection = articalTag;
+        }
+        if(typeof relation !== "undefined"){
+            data['relation'] = relation;
+        }
+        if(key != ""){
+            data['id'] = key;
+        }
+        // riccy
+        var address_type = "";
+        if(type == 'address'){
+            data['res_type'] = elem.parent().parent().prev().find('input:checked').val();
+            address_type = section.attr('data-address-type');
+        }
+        if(type != ""){
+            data['type'] = type;
+        }
+        if(address_type != ""){
+            data['address_type'] = address_type;
+        }
+        data[label_name] = value;
+        data['user_enc_id'] = user_enc_id;
+        data['loan_app_id'] = loan_app_id;
+        // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + address_type);
+        if(value != "" || key != ""){
+            $.ajax({
+                url: apiUrl+'api/v3/education-loan/loan-second-form',
+                method: 'POST',
+                data: data,
+                beforeSend:function(){
+                    removeIcons();
+                    if(data['id'] == "" || typeof data['id'] === "undefined" ){
+                        $('#fadder').fadeIn();
+                    } else {
+                        $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                    }
+                },
+                success: function(res) {
+                    removeIcons();
+                    if(res.response.status == 200){
+                        $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
+                        objData[inptId] = value;
+                        mainSection.attr('data-key', res.response.id);
+                        if(data['type'] == 'co_applicant'){
+                            if(data['relation'] == 'Father'){
+                                $('#Father-other-info').show();
+                            }
+                            if(data['relation'] == 'Mother'){
+                                $('#Mother-other-info').show();
+                            }
+                            if(data['relation'] == 'Guarantor'){
+                                $('#Guarantor'+sequence+'-other-info').show();
+                            }
+                        }
+                    } else {
+                        $('<i class="fa fa-exclamation-triangle error_icon"></i>').insertAfter(elem);
+                    }
+                    if(elem.hasClass('typeInput') && elem.attr('data-url') == 'states'){
+                        var cityElem = elem.parent().parent().next().find('input');
+                        cityElem.attr('disabled',false);
+                        cityElem.attr('data-state-id',value);
+                        cityElem.val("");
+                    }
+                    $('#fadder').fadeOut();
+                }
+            });
+        }
     }
 }
+var objData = {};
 $(document).ready(function() {
     var data = "";
     var guarantorCount = 0;
@@ -2002,20 +2025,26 @@ $(document).ready(function() {
         data:{loan_app_enc_id:loan_app_id},
         success: function(res) {
             res = res.response;
-            console.log(res);
             if(res.status == 200){
                 data = res.data;
                 $('#applicantBasicInformation').attr('data-key',data.loan_app_enc_id);
                 $('#applicantImage').html('<img height="50px" width="50px" src="'+ data.image +'" />');
                 $('#applicantName').val(data.applicant_name);
+                objData.applicantName = data.applicant_name;
                 if(data.gender && data.gender < 4){
                     $('#applicant_gender').find("input[value='"+data.gender+"']").prop('checked',true);
+                    objData.applicant_gender = data.gender;
                 }
                 $('#applicantEmail').val(data.email);
+                objData.applicantEmail = data.email;
                 $('#applicantDob').val(data.applicant_dob);
+                objData.applicantDob = data.applicant_dob;
                 $('#applicantNumber').val(data.phone);
+                objData.applicantNumber = data.phone;
                 $('#degreeApplied').val(data.degree);
+                objData.degreeApplied = data.degree;
                 $('#courseApplied').val(data.course_name);
+                objData.courseApplied = data.course_name;
                 var residentials = data.loanApplicantResidentialInfos;
                 var cur_addr = "";
                 var per_addr = "";
@@ -2035,12 +2064,15 @@ $(document).ready(function() {
                 if(per_addr != ""){
                     $('#permanentAddressInformation').attr('data-key',per_addr.loan_app_res_info_enc_id);
                     $('#houseNo').val(per_addr.address);
+                    objData.houseNo = per_addr.address;
                     if(per_addr.state_name){
-                        $('#PA-state').val(per_addr.state_name);
-                        $('#PA-city').attr('data-state-id',per_addr.state_enc_id);
-                        $('#PA-city').attr('disabled',false);
+                        $('#paState').val(per_addr.state_name);
+                        objData.paState = per_addr.state_enc_id;
+                        $('#paCity').attr('data-state-id',per_addr.state_enc_id);
+                        $('#paCity').attr('disabled',false);
                     }
-                    $('#PA-city').val(per_addr.city_name);
+                    $('#paCity').val(per_addr.city_name);
+                    objData.paCity = per_addr.city_enc_id;
                     if(per_addr.type){
                         $('#per_res_type').find('input:radio').each(function(){
                             if($(this).val() == per_addr.type){
@@ -2051,13 +2083,16 @@ $(document).ready(function() {
                 }
                 if(cur_addr != ""){
                     $('#currentAddressInformation').attr('data-key',cur_addr.loan_app_res_info_enc_id);
-                    $('#CA-houseNo').val(cur_addr.address);
+                    $('#caHouseNo').val(cur_addr.address);
+                    objData.caHouseNo = cur_addr.address;
                     if(cur_addr.state_name){
-                        $('#CA-state').val(cur_addr.state_name);
-                        $('#CA-city').attr('data-state-id',cur_addr.state_enc_id);
-                        $('#CA-city').attr('disabled',false);
+                        $('#caState').val(cur_addr.state_name);
+                        objData.caState = cur_addr.state_enc_id;
+                        $('#caCity').attr('data-state-id',cur_addr.state_enc_id);
+                        $('#caCity').attr('disabled',false);
                     }
-                    $('#CA-city').val(cur_addr.city_name);
+                    $('#caCity').val(cur_addr.city_name);
+                    objData.caCity = cur_addr.city_enc_id;
                     if(cur_addr.type){
                         $('#cur_res_type').find('input:radio').each(function(){
                             if($(this).val() == cur_addr.type){
@@ -2067,23 +2102,41 @@ $(document).ready(function() {
                     }
                 }
                 var loanCertificates = data.loanCertificates;
+                var acntIdName = "";
+                var acntIDNum = "";
+                var acntIDImg = "";
                 $.each(loanCertificates,function(i, v) {
                     $('#idProofInformation' + i).attr('data-key',v.certificate_enc_id);
-                    $('#applicantID' + i).val(v.name);
-                    $('#applicantIDnumber' + i).val(v.number);
+                    acntIdName =  "applicantID" + i;
+                    $('#' + acntIdName).val(v.name);
+                    objData[acntIdName] = v.name;
+                    acntIDNum =  "applicantIDnumber" + i;
+                    $('#' + acntIDNum).val(v.number);
+                    objData[acntIDNum] = v.number;
                     if(v.image){
-                        $('#applicantIDimage' + i).children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');;
+                        acntIDImg =  "applicantIDimage" + i;
+                        $('#' + acntIDImg).children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');;
+                        objData[acntIDImg] = v.image;
                     }
                 });
                 var qualifications = data.loanCandidateEducations;
+                var acntEduName = "";
+                var acntInsName = "";
+                var acntMarksObt = "";
                 $.each(qualifications, function(i, v) {
                     if(i > 1){
                         $('#addEduBtn').click();
                     }
                     $('#qualificationInformation' + i).attr('data-key',v.loan_candidate_edu_enc_id);
-                    $('#eduName' + i).val(v.name);
-                    $('#instituteName' + i).val(v.institution);
-                    $('#marksObtained' + i).val(v.obtained_marks);
+                    acntEduName =  "eduName" + i;
+                    $('#' + acntEduName).val(v.name);
+                    objData[acntEduName] = v.name;
+                    acntInsName =  "instituteName" + i;
+                    $('#' + acntInsName).val(v.institution);
+                    objData[acntInsName] = v.institution;
+                    acntMarksObt =  "marksObtained" + i;
+                    $('#' + acntMarksObt).val(v.obtained_marks);
+                    objData[acntMarksObt] = v.obtained_marks;
                 });
                 $.each(data.loanCoApplicants, function(k,v) {
                     var residenceInfo = v.loanApplicantResidentialInfos[0];
@@ -2100,25 +2153,39 @@ $(document).ready(function() {
                             $('#'+ v.relation +'-other-info').show();
                             if(v.image){
                                 $('#fatherImage').children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
+                                objData.fatherImage = v.image;
                             }
                             $('#fatherName').val(v.name);
+                            objData.fatherName = v.name;
                             $('#fatherEmail').val(v.email);
+                            objData.fatherEmail = v.email;
                             $('#fatherNumber').val(v.phone);
+                            objData.fatherNumber = v.phone;
                             $('#dob').val(v.co_applicant_dob);
+                            objData.dob = v.co_applicant_dob;
                             $('#yearsOFoccu').val(v.years_in_current_house);
+                            objData.yearsOFoccu = v.years_in_current_house;
                             $('#fOccupation').val(v.occupation);
+                            objData.fOccupation = v.occupation;
                             $('#fIncome').val(v.annual_income);
+                            objData.fIncome = v.annual_income;
                             if(v.address == 1){
                                 $('#fSame').prop('checked',true);
                                 $('#fAddress').hide();
                             }
-                            $('#Father-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            $('#fatherAddressInfo').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            objData.fatherAddressInfo = residenceInfo.loan_app_res_info_enc_id;
                             $('#fHouseNo').val(residenceInfo.address);
-                            $('#Father-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            objData.fHouseNo = residenceInfo.address;
+                            $('#fatherCertificationEncId').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            objData.fatherCertificationEncId = coAppLoanCertificate.certificate_enc_id;
                             $('#fIDproof').val(coAppLoanCertificate.name);
+                            objData.fIDproof = coAppLoanCertificate.name;
                             $('#fIDproofnumber').val(coAppLoanCertificate.number);
+                            objData.fIDproofnumber = coAppLoanCertificate.number;
                             if(coAppLoanCertificate.image){
                                 $('#fIDproofimage').children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
+                                objData.fIDproofimage = coAppLoanCertificate.image;
                             }
                             if(residenceInfo.type){
                                 $('#Father_Resident_Info').find('input:radio').each(function(){
@@ -2129,34 +2196,49 @@ $(document).ready(function() {
                             }
                             if(residenceInfo.state_name){
                                 $('#fState').val(residenceInfo.state_name);
+                                objData.fState = residenceInfo.state_enc_id;
                                 $('#fCity').attr('data-state-id',residenceInfo.state_enc_id);
                                 $('#fCity').attr('disabled',false);
                             }
                             $('#fCity').val(residenceInfo.city_name);
+                            objData.fCity = residenceInfo.city_enc_id;
                             break;
                         case 'Mother' :
                             $('#motherInformation').attr('data-key',v.loan_co_app_enc_id);
                             $('#'+ v.relation +'-other-info').show();
                             $('#MName').val(v.name);
+                            objData.MName = v.name;
                             if(v.image){
                                 $('#motherImage').children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
+                                objData.motherImage = v.image;
                             }
                             $('#MEmail').val(v.email);
-                            $('#M-mobile').val(v.phone);
+                            objData.MEmail = v.email;
+                            $('#mMobile').val(v.phone);
+                            objData.mMobile = v.phone;
                             $('#MDob').val(v.co_applicant_dob);
+                            objData.MDob = v.co_applicant_dob;
                             $('#mOccupation').val(v.occupation);
+                            objData.mOccupation = v.occupation;
                             $('#familyIncome').val(v.annual_income);
+                            objData.familyIncome = v.annual_income;
                             if(v.address == 1){
                                 $('#mSame').prop('checked',true);
                                 $('#mAddress').hide();
                             }
-                            $('#Mother-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            $('#motherAddressInfo').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            objData.motherAddressInfo = residenceInfo.loan_app_res_info_enc_id;
                             $('#MHouseNo').val(residenceInfo.address);
-                            $('#Mother-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            objData.MHouseNo = residenceInfo.address;
+                            $('#motherCertificateEncId').attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            objData.motherCertificateEncId = coAppLoanCertificate.certificate_enc_id;
                             $('#MIdProof').val(coAppLoanCertificate.name);
+                            objData.MIdProof = coAppLoanCertificate.name;
                             $('#MIdProofNo').val(coAppLoanCertificate.number);
+                            objData.MIdProofNo = coAppLoanCertificate.number;
                             if(coAppLoanCertificate.image){
                                 $('#MIdProofimage').children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
+                                objData.MIdProofimage = coAppLoanCertificate.image;
                             }
                             if(residenceInfo.type){
                                 $('#Mother_Resident_Info').find('input:radio').each(function(){
@@ -2167,39 +2249,71 @@ $(document).ready(function() {
                             }
                             if(residenceInfo.state_name){
                                 $('#MState').val(residenceInfo.state_name);
+                                objData.MState = residenceInfo.state_enc_id;
                                 $('#MCity').attr('data-state-id',residenceInfo.state_enc_id);
                                 $('#MCity').attr('disabled',false);
                             }
                             $('#MCity').val(residenceInfo.city_name);
+                            objData.MCity = residenceInfo.city_enc_id;
                             break;
                         case 'Sibling' :
                             $('#sibling-avail').prop('checked',true);
                             $('#siblingInfo').show();
                             $('#siblingInformation').attr('data-key',v.loan_co_app_enc_id);
                             $('#siblingName').val(v.name);
+                            objData.siblingName = v.name;
                             $('#siblingDob').val(v.co_applicant_dob);
-                            $('#siblingOccupation').val();
+                            objData.siblingDob = v.co_applicant_dob;
+                            $('#siblingOccupation').val(v.occupation);
+                            objData.siblingOccupation = v.occupation;
                             break;
                         case 'Guarantor' :
                             guarantorCount++;
                             if(guarantorCount <= 2){
+                                var gName = "";
+                                var gEmail = "";
+                                var gDob = "";
+                                var gPhone = "";
+                                var gAddress = "";
+                                var gCertName = "";
+                                var gCertNum = "";
+                                var gCertImg = "";
+                                var gState = "";
+                                var gStateEncId = "";
+                                var gCity = "";
                                 $('#guarantor'+guarantorCount+'Information').attr('data-key',v.loan_co_app_enc_id);
                                 $('#'+ v.relation + guarantorCount +'-other-info').show();
-                                $('#G'+guarantorCount+'Name').val(v.name);
-                                $('#G'+guarantorCount+'Email').val(v.email);
-                                $('#G'+guarantorCount+'Dob').val(v.co_applicant_dob);
-                                $('#G'+guarantorCount+'number').val(v.phone);
+                                gName = "G"+ guarantorCount + "Name";
+                                $('#' + gName).val(v.name);
+                                objData[gName] = v.name;
+                                gEmail = "G"+ guarantorCount + "Email";
+                                $('#'+ gEmail).val(v.email);
+                                objData[gEmail] = v.email;
+                                gDob = "G"+ guarantorCount + "Dob";
+                                $('#'+ gDob).val(v.co_applicant_dob);
+                                objData[gDob] = v.co_applicant_dob;
+                                gPhone = "G"+ guarantorCount + "number";
+                                $('#'+gPhone).val(v.phone);
+                                objData[gPhone] = v.phone;
                                 if(v.address == 1){
                                     $('#g'+guarantorCount+'Same').prop('checked',true);
                                     $('#gAddress'+guarantorCount).hide();
                                 }
                                 $('#Guarantor'+guarantorCount+'-address-info').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
-                                $('#G'+guarantorCount+'Address').val(residenceInfo.address);
+                                gAddress = "G"+ guarantorCount + "Address";
+                                $('#'+gAddress).val(residenceInfo.address);
+                                objData[gAddress] = residenceInfo.address;
                                 $('#Guarantor'+guarantorCount+'-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
-                                $('#G'+guarantorCount+'ID').val(coAppLoanCertificate.name);
-                                $('#G'+guarantorCount+'IDnumber').val(coAppLoanCertificate.number);
+                                gCertName = "G"+ guarantorCount + "ID";
+                                $('#'+gCertName).val(coAppLoanCertificate.name);
+                                objData[gCertName] = coAppLoanCertificate.name;
+                                gCertNum = "G"+ guarantorCount + "IDnumber";
+                                $('#'+gCertNum).val(coAppLoanCertificate.number);
+                                objData[gCertNum] = coAppLoanCertificate.number;
                                 if(coAppLoanCertificate.image){
-                                    $('#G'+guarantorCount+'IDimage').children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');
+                                    gCertImg = "G"+ guarantorCount + "IDimage";
+                                    $('#'+gCertImg).children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');
+                                    objData[gCertImg] = coAppLoanCertificate.image;
                                 }
                                 if(residenceInfo.type){
                                     $('#Guarantor'+guarantorCount+'_Resident_Info').find('input:radio').each(function(){
@@ -2209,16 +2323,23 @@ $(document).ready(function() {
                                     });
                                 }
                                 if(residenceInfo.state_name){
-                                    $('#g'+guarantorCount+'state').val(residenceInfo.state_name);
-                                    $('#g'+guarantorCount+'city').attr('data-state-id',residenceInfo.state_enc_id);
-                                    $('#g'+guarantorCount+'city').attr('disabled',false);
+                                    gState = "g"+ guarantorCount + "state";
+                                    $('#'+gState).val(residenceInfo.state_name);
+                                    objData[gState] = residenceInfo.state_enc_id;
+                                    gCity = "g"+ guarantorCount + "city";
+                                    gStateEncId = "g"+ guarantorCount + "stateEncId";
+                                    $('#'+gCity).attr('data-state-id',residenceInfo.state_enc_id);
+                                    $('#'+gCity).attr('disabled',false);
                                 }
-                                $('#g'+guarantorCount+'city').val(residenceInfo.city_name);
+                                gCity = "g"+ guarantorCount + "city";
+                                $('#'+gCity).val(residenceInfo.city_name);
+                                objData[gCity] = residenceInfo.city_enc_id;
                             }
                             break;
                         default:
                     }
                 });
+    console.log(objData);
             }
         }
     });

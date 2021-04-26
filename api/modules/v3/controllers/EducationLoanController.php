@@ -357,6 +357,7 @@ class EducationLoanController extends ApiBaseController
                     $g->joinWith(['cityEnc dg2'], false);
                     $g->onCondition(['dg.is_deleted' => 0]);
                 }]);
+                $d->groupBy(['d.loan_co_app_enc_id']);
             }])
             ->joinWith(['loanCertificates e' => function ($e) {
                 $e->select(['e.certificate_enc_id', 'e.loan_app_enc_id', 'e.certificate_type_enc_id', 'e1.name', 'e.number', 'e.proof_image image', 'e.proof_image_location image_location']);
@@ -378,6 +379,7 @@ class EducationLoanController extends ApiBaseController
                 $g->orderBy(['g.created_on' => SORT_ASC]);
             }])
             ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
+            ->groupBy(['a.loan_app_enc_id'])
             ->asArray()
             ->one();
 
