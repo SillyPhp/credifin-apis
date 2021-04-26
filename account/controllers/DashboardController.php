@@ -1162,7 +1162,7 @@ class DashboardController extends Controller
 //        ]);
 //    }
 
-    public function actionShortlistedApplicants()
+    public function actionShortlistedApplicants($type = 'Jobs')
     {
         $shortlistedApplicants = ShortlistedApplicants::find()
             ->alias('a')
@@ -1189,17 +1189,19 @@ class DashboardController extends Controller
 
             $applications = ShortlistedApplicants::find()
                 ->alias('a')
-                ->select(['ee.name title','a.application_enc_id'])
+                ->select(['ee.name title', 'a.application_enc_id', 'f.name'])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->joinWith(['title d' => function ($d) {
                         $d->joinWith(['parentEnc e']);
                         $d->joinWith(['categoryEnc ee']);
                     }], false);
+                    $b->joinWith(['applicationTypeEnc f'], false);
                 }], false)
                 ->where([
                     'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                     'a.candidate_enc_id' => $val['candidate_enc_id'],
-                    'a.is_deleted' => 0
+                    'a.is_deleted' => 0,
+                    'f.name' => $type
                 ])
                 ->asArray()
                 ->all();
