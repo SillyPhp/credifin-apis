@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-
+<?php foreach ($shortlistedApplicants as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="short-main">
             <div class="remove-btn">
@@ -14,28 +14,37 @@ use yii\helpers\Url;
             </div>
             <div class="flex-short">
                 <div class="short-logo">
-                    <img src="/assets/common/categories/accounts_and_finance.svg"
-                         class="img-responsive">
+                    <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
+                        <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
+                        <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
+                        <?php
+                    } else {
+                        ?>
+                        <canvas class="user-icon img-circle" name="<?= $s['name'] ?>" color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
+                    <?php }
+                    ?>
                 </div>
                 <div class="short-details">
-                    <p class="short-job">Kulwinder Singh Sohal</p>
-                    <p class="short-name"><i class="fa fa-map-marker"></i> Ludhiana</p>
+                    <p class="short-job"><?= $s['name'] ?></p>
+                    <p class="short-name"><i class="fa fa-map-marker"></i> <?= $s['city'] ?></p>
                 </div>
             </div>
             <ul class="short-skills">
-                <li>html</li>
-                <li>css</li>
-                <li>javascript</li>
-                <li>bootstrap</li>
+                <?php if ($s['skills']) {
+                    foreach ($s['skills'] as $skill) {
+                        ?>
+                        <li> <?= $skill['skill'] ?></li>
+                    <?php }
+                } ?>
             </ul>
             <div class="slide-btn">
-                <button class="slide-bttn" type="button" data-toggle="collapse" data-target="#apps">
+                <button class="slide-bttn" type="button" data-toggle="collapse" data-target="#<?= $s['candidate_enc_id']?>">
                     <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
                        title="" data-original-title="View Applications"></i>
                 </button>
             </div>
         </div>
-        <div class="cd-box-border collapse" id="apps">
+        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id']?>">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -43,13 +52,20 @@ use yii\helpers\Url;
                 </tr>
                 </thead>
                 <tbody class="qu_data">
-                <tr>
-                    <td><a href="" class="blue question_list" target="_blank">web developer</a></td>
-                </tr>
+                <?php if ($s['applications']) {
+                    foreach ($s['applications'] as $application) {
+                        ?>
+                        <tr>
+                            <td><a href="<?= Url::to('/'.$type.'/'.$application['slug'])  ?>" class="blue question_list" target="_blank"><?= $application['title'] ?></a>
+                            </td>
+                        </tr>
+                    <?php }
+                } ?>
                 </tbody>
             </table>
         </div>
     </div>
+<?php } ?>
 
 <?php
 $this->registerCss('

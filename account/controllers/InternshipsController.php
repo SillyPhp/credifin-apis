@@ -3,41 +3,42 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
+use account\models\applications\ApplicationForm;
 use account\models\applications\ApplicationTemplateDataProvider;
 use account\models\applications\ExtendsJob;
 use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
+use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTemplates;
+use common\models\ApplicationTypes;
+use common\models\AppliedApplicationProcess;
+use common\models\AppliedApplications;
+use common\models\AssignedCategories;
+use common\models\Categories;
 use common\models\DropResumeApplications;
+use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
+use common\models\Industries;
+use common\models\InterviewProcessFields;
+use common\models\Organizations;
 use common\models\RejectionReasons;
+use common\models\ReviewedApplications;
+use common\models\ShortlistedApplicants;
+use common\models\ShortlistedApplications;
+use common\models\UserCoachingTutorials;
+use common\models\Users;
+use common\models\UserSkills;
+use common\models\Utilities;
+use common\models\WidgetTutorials;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
-use yii\web\Response;
 use yii\helpers\Url;
+use yii\web\Controller;
 use yii\web\HttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
-use common\models\Industries;
-use common\models\Organizations;
-use common\models\EmployerApplications;
-use common\models\AssignedCategories;
-use common\models\Categories;
-use common\models\Users;
-use common\models\AppliedApplications;
-use common\models\ShortlistedApplications;
-use common\models\ApplicationPlacementLocations;
-use common\models\ApplicationTypes;
-use common\models\ShortlistedOrganizations;
-use common\models\ReviewedApplications;
-use common\models\AppliedApplicationProcess;
-use common\models\Utilities;
-use common\models\UserCoachingTutorials;
-use common\models\WidgetTutorials;
-use common\models\InterviewProcessFields;
-use account\models\applications\ApplicationForm;
 
 class InternshipsController extends Controller
 {
@@ -47,6 +48,7 @@ class InternshipsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
+
     public function actionQuickInternship()
     {
         if (Yii::$app->user->identity->organization->organization_enc_id):
@@ -65,11 +67,12 @@ class InternshipsController extends Controller
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('/employer-applications/one-click-job', ['type' => $type, 'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -106,23 +109,25 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreate($aidk=NULL)
+    public function actionCreate($aidk = NULL)
     {
         if (Yii::$app->user->identity->organization) {
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields('Internships');
-            $array = ArrayHelper::getColumn($primary_cat,'category_enc_id');
-            if (in_array($aidk,$array)){
+            $array = ArrayHelper::getColumn($primary_cat, 'category_enc_id');
+            if (in_array($aidk, $array)) {
                 return $this->_renderCreateInternships($aidk);
-            }else{
-                return $this->_renderProfileTemplates($primary_cat,'internships');
+            } else {
+                return $this->_renderProfileTemplates($primary_cat, 'internships');
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
-    private function _renderProfileTemplates($primary_cat,$type='jobs'){
-        return $this->render('/widgets/employer-applications/temProfiles',['primary_cat'=>$primary_cat,'type'=>$type]);
+
+    private function _renderProfileTemplates($primary_cat, $type = 'jobs')
+    {
+        return $this->render('/widgets/employer-applications/temProfiles', ['primary_cat' => $primary_cat, 'type' => $type]);
     }
 
 
@@ -131,7 +136,7 @@ class InternshipsController extends Controller
         $type = 'Internships';
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields('Internships');
-        $model->primaryfield = (($pidk)?$pidk:null);
+        $model->primaryfield = (($pidk) ? $pidk : null);
         $questionnaire = $model->getQuestionnnaireList(2);
         $benefits = $model->getBenefits();
         $process = $model->getInterviewProcess();
@@ -165,6 +170,7 @@ class InternshipsController extends Controller
             ]);
         }
     }
+
     public function actionPreview()
     {
         if (Yii::$app->user->identity->organization) {
@@ -252,14 +258,15 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCloneTemplate($aidk){
+    public function actionCloneTemplate($aidk)
+    {
         $application = ApplicationTemplates::find()
             ->alias('a')
             ->joinWith(['applicationTypeEnc f'], false)
             ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Internships'])
             ->asArray()
             ->one();
-        if(Yii::$app->user->identity->organization && $application){
+        if (Yii::$app->user->identity->organization && $application) {
             $model = new ApplicationForm();
             $type = 'Clone_Internships';
             $primary_cat = $model->getPrimaryFields();
@@ -300,7 +307,7 @@ class InternshipsController extends Controller
                     'type' => $type,
                 ]);
             }
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('account', 'Page not found'));
         }
     }
@@ -1070,13 +1077,15 @@ class InternshipsController extends Controller
             'model' => $model,
             'internships' => $this->__getApplications("Internships"),
             'viewed' => $viewed,
+            'shortlistedApplicants' => $this->shortlistedApplicants()
         ]);
     }
+
     private function __getApplications($type)
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
                 $z->joinWith(['parentEnc z1']);
@@ -1090,11 +1099,12 @@ class InternshipsController extends Controller
 
         return $application;
     }
+
     private function getCategories()
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
+            ->select(['a.name', 'a.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => 'Internships', 'b.parent_enc_id' => NULL])
             ->asArray()
@@ -1192,7 +1202,7 @@ class InternshipsController extends Controller
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
-            'errex'=>true,
+            'errex' => true,
             'limit' => $limit,
         ];
 
@@ -1301,7 +1311,7 @@ class InternshipsController extends Controller
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.organization_enc_id','a.organization_enc_id college_enc_id','a.name', 'a.initials_color color','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','e.name city'])
+                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
                 ->innerJoinWith(['businessActivityEnc b' => function ($b) {
                     $b->onCondition(["b.business_activity" => "College"]);
                 }], false)
@@ -1327,11 +1337,12 @@ class InternshipsController extends Controller
     }
 
 
-    public function actionViewTemplates(){
+    public function actionViewTemplates()
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
                     $z->joinWith(['parentEnc z1']);
@@ -1447,11 +1458,11 @@ class InternshipsController extends Controller
 
     private function __updateApplicationFor($app, $for)
     {
-        if($for) {
+        if ($for) {
             $update = Yii::$app->db->createCommand()
                 ->update(EmployerApplications::tableName(), ['application_for' => 0, 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
                 ->execute();
-        } else{
+        } else {
             $update = Yii::$app->db->createCommand()
                 ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
                 ->execute();
@@ -1484,7 +1495,9 @@ class InternshipsController extends Controller
             }
         }
     }
-    public function actionAppliedApplications(){
+
+    public function actionAppliedApplications()
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
             $userApplied = new UserAppliedApplication();
             $applied_users = $userApplied->getUserOtherDetails('Internships');
@@ -1495,16 +1508,17 @@ class InternshipsController extends Controller
                 ->all();
             return $this->render('applied-applications', [
                 'applied_user' => $applied_users,
-                'reasons'=>$reasons,
+                'reasons' => $reasons,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
-    public function actionAllAppliedApplications($aidk){
+    public function actionAllAppliedApplications($aidk)
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
-            $applied_users = $this->getAllAppliedApplications($aidk,'Internships');
+            $applied_users = $this->getAllAppliedApplications($aidk, 'Internships');
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
                 ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
@@ -1512,51 +1526,53 @@ class InternshipsController extends Controller
                 ->all();
             return $this->render('all-applied-applications', [
                 'fields' => $applied_users,
-                'reasons'=>$reasons,
+                'reasons' => $reasons,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
-    private function getAllAppliedApplications($aidk,$type){
+
+    private function getAllAppliedApplications($aidk, $type)
+    {
         $application_id = $aidk;
         $applied_users = EmployerApplications::find()
             ->distinct()
             ->alias('z')
-            ->select(['y1.name job_title','z.organization_enc_id','z.application_enc_id','z.slug','x2.name type'])
-            ->joinWith(['appliedApplications a'=>function($a)use($type){
-                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
-                $a->andWhere(['a.is_deleted'=>0]);
-                $a->orderBy(['a.created_on'=>SORT_DESC]);
+            ->select(['y1.name job_title', 'z.organization_enc_id', 'z.application_enc_id', 'z.slug', 'x2.name type'])
+            ->joinWith(['appliedApplications a' => function ($a) use ($type) {
+                $a->select(['a.applied_application_enc_id', 'a.rejection_window', 'a.created_on', 'a.application_enc_id', 'a.status', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'a.created_by', 'a.resume_enc_id', 'e.resume', 'e.resume_location', 'b.user_enc_id', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
+                $a->andWhere(['a.is_deleted' => 0]);
+                $a->orderBy(['a.created_on' => SORT_DESC]);
                 $a->groupBy(['a.applied_application_enc_id']);
-                $a->joinWith(['resumeEnc e'],false);
+                $a->joinWith(['resumeEnc e'], false);
                 $a->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
                 }]);
                 $a->joinWith(['createdBy b' => function ($b) {
-                    $b->joinWith(['userSkills b1' =>function($b1){
-                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id','b2.skill', 'b1.created_by']);
+                    $b->joinWith(['userSkills b1' => function ($b1) {
+                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id', 'b2.skill', 'b1.created_by']);
                         $b1->joinWith(['skillEnc b2'], false);
                         $b1->onCondition(['b1.is_deleted' => 0]);
                     }]);
-                    $b->joinWith(['userWorkExperiences b11' => function($b11){
+                    $b->joinWith(['userWorkExperiences b11' => function ($b11) {
                         $b11->select(['b11.created_by', 'b11.company', 'b11.is_current', 'b11.title']);
                     }]);
-                    $b->joinWith(['userEducations b21' => function($b21){
+                    $b->joinWith(['userEducations b21' => function ($b21) {
                         $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
                     }]);
-                    $b->joinWith(['userPreferredIndustries b31' => function($b31){
+                    $b->joinWith(['userPreferredIndustries b31' => function ($b31) {
                         $b31->select(['b31.industry_enc_id', 'b32.industry', 'b31.created_by']);
                         $b31->joinWith(['industryEnc b32'], false);
                         $b31->onCondition(['b31.is_deleted' => 0]);
                     }]);
                 }]);
-                $a->joinWith(['candidateRejections cr' => function($cr){
-                    $cr->select(['cr.rejection_type','cr.applied_application_enc_id', 'cr.candidate_rejection_enc_id']);
-                    $cr->joinWith(['candidateConsiderJobs ccj' => function($ccj){
-                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
-                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                $a->joinWith(['candidateRejections cr' => function ($cr) {
+                    $cr->select(['cr.rejection_type', 'cr.applied_application_enc_id', 'cr.candidate_rejection_enc_id']);
+                    $cr->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function ($ae) {
                             $ae->select(['ae.application_enc_id', 'ae.slug', 'cc.name job_title', 'pe.icon']);
                             $ae->joinWith(['title bae' => function ($bae) {
                                 $bae->joinWith(['categoryEnc cc'], false);
@@ -1567,19 +1583,19 @@ class InternshipsController extends Controller
                     $cr->groupBy(['cr.candidate_rejection_enc_id']);
                 }]);
             }])
-            ->joinWith(['applicationInterviewQuestionnaires aiq'=>function($a1){
+            ->joinWith(['applicationInterviewQuestionnaires aiq' => function ($a1) {
                 $a1->groupBy(['aiq.interview_questionnaire_enc_id']);
-                $a1->select(['aiq.application_enc_id','aiq.field_enc_id','aiq.interview_questionnaire_enc_id as id', 'aiq.questionnaire_enc_id as qid', 'aiq1.questionnaire_name as name', 'aiq2.field_label']);
+                $a1->select(['aiq.application_enc_id', 'aiq.field_enc_id', 'aiq.interview_questionnaire_enc_id as id', 'aiq.questionnaire_enc_id as qid', 'aiq1.questionnaire_name as name', 'aiq2.field_label']);
                 $a1->joinWith(['questionnaireEnc aiq1'], false);
                 $a1->joinWith(['fieldEnc aiq2'], false);
             }])
-            ->joinWith(['applicationTypeEnc x2' =>function($x2)use($type){
-                $x2->andWhere(['x2.name'=>$type],false);
-            }],false)
-            ->joinWith(['title0 y' => function($y){
-                $y->joinWith(['categoryEnc y1'],false);
-            }],false)
-            ->andWhere(['z.application_enc_id' => $application_id,'z.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id,'z.is_deleted' => 0])
+            ->joinWith(['applicationTypeEnc x2' => function ($x2) use ($type) {
+                $x2->andWhere(['x2.name' => $type], false);
+            }], false)
+            ->joinWith(['title0 y' => function ($y) {
+                $y->joinWith(['categoryEnc y1'], false);
+            }], false)
+            ->andWhere(['z.application_enc_id' => $application_id, 'z.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'z.is_deleted' => 0])
             ->groupBy(['z.application_enc_id'])
             ->asArray()
             ->one();
@@ -1588,4 +1604,58 @@ class InternshipsController extends Controller
         return $applied_users;
     }
 
+    private function shortlistedApplicants()
+    {
+        $shortlistedApplicants = ShortlistedApplicants::find()
+            ->alias('a')
+            ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
+                'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
+                'b3.name city'
+            ])
+            ->joinWith(['candidateEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b3'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->groupBy(['a.candidate_enc_id'])
+            ->asArray()
+            ->all();
+
+        $data = [];
+        foreach ($shortlistedApplicants as $key => $val) {
+            $skills = UserSkills::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->joinWith(['skillEnc b'], false)
+                ->where(['a.created_by' => $val['candidate_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $applications = ShortlistedApplicants::find()
+                ->alias('a')
+                ->select(['ee.name title', 'a.application_enc_id', 'b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc f'], false);
+                }], false)
+                ->where([
+                    'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                    'a.candidate_enc_id' => $val['candidate_enc_id'],
+                    'a.is_deleted' => 0,
+                    'f.name' => 'Internships'
+                ])
+                ->asArray()
+                ->all();
+
+            if($applications){
+                $shortlistedApplicants[$key]['skills'] = $skills;
+                $shortlistedApplicants[$key]['applications'] = $applications;
+                $data[] = $shortlistedApplicants[$key];
+            }
+        }
+
+        return $data;
+    }
 }
