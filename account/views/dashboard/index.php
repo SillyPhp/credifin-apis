@@ -20,424 +20,357 @@ endif;
 ?>
 
     <div class="row">
-    <div class="col-md-3">
-        <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
-
-        <?=
-        $this->render('/widgets/services-selection/edit-services', [
-            'model' => $model,
-            'services' => $services,
-        ]);
-        ?>
-        <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
-            <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
-        <?php } ?>
-
-        <?php if (Yii::$app->user->identity->type->user_type == 'Individual') { ?>
-            <?= $this->render('/widgets/download-app', ['scriptModel' => $scriptModel]) ?>
-        <?php } ?>
-    </div>
-    <div class="col-md-9">
-        <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
-            <div class="widget-row">
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 blue" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-comments"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_reviews ?></span>
-                                </div>
-                                <div class="desc">Applications Reviewed</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 red" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-bar-chart-o"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_shortlist ?></span>
-                                </div>
-                                <div class="desc">Applications Saved</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 green" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-shopping-cart"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_applied ?></span>
-                                </div>
-                                <div class="desc"> Applications Applied</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 purple" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-globe"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_accepted ?></span></div>
-                                <div class="desc"> Applications Accepted</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 yellow" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-globe"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_pending ?></span></div>
-                                <div class="desc">Applications Pending</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 pink" href="javascript:;">
-                            <div class="visual">
-                                <i class="fa fa-building"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span><?= $total_shortlist_org ?></span></div>
-                                <div class="desc">Followed Companies</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-3">
+            <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
 
             <?=
-            $this->render('/widgets/applications/dashboard-applied-applications', [
-                'applied' => $applied,
-                'question_list' => $question_list,
-                'shortlist_org' => $shortlist_org,
-                'viewed' => $viewed
-            ]); ?>
-            <?= $this->render('/widgets/applications/reminder-applications', [
-                'app_reminder' => $app_reminder,
-                'app_reminder_form' => $app_reminder_form,
-            ]); ?>
+            $this->render('/widgets/services-selection/edit-services', [
+                'model' => $model,
+                'services' => $services,
+            ]);
+            ?>
+            <?php if (Yii::$app->user->identity->organization->organization_enc_id){ ?>
+            <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
 
-        <?php elseif (Yii::$app->user->identity->organization): ?>
-            <div class="row marg">
-                <div class="col-md-4 col-sm-6">
-                    <a href="javascript:;">
-                        <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-app">
-                            <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Applications'); ?></h4>
-                            <div class="widget-thumb-wrap">
-                                <i class="widget-thumb-icon fa fa-building-o"></i>
-                                <div class="widget-thumb-body">
-                                    <span class="widget-thumb-body-stat"><?= $org_applications['total'] ?></span>
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'){ ?>
+                <?= $this->render('/widgets/download-app', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
+        </div>
+        <div class="col-md-9">
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
+                <div class="widget-row">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 blue" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-comments"></i>
                                 </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <a href="javascript:;">
-                        <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-resume">
-                            <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
-                            <div class="widget-thumb-wrap">
-                                <i class="widget-thumb-icon fa fa-users"></i>
-                                <div class="widget-thumb-body">
-                                    <span class="widget-thumb-body-stat"><?= $dropResume; ?></span>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_reviews ?></span>
+                                    </div>
+                                    <div class="desc">Applications Reviewed</div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <a href="javascript:;">
-                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow actv-applicants">
-                            <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
-                            <div class="widget-thumb-wrap">
-                                <i class="widget-thumb-icon icon-bar-chart"></i>
-                                <div class="widget-thumb-body">
-                                    <span class="widget-thumb-subtitle"></span>
-                                    <span class="widget-thumb-body-stat"><?= $total_org_applied ?></span>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 red" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-bar-chart-o"></i>
                                 </div>
-                            </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_shortlist ?></span>
+                                    </div>
+                                    <div class="desc">Applications Saved</div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-            </div>
-            <?php
-            if ($viewed == 0) {
-                ?>
-                <div class="portlet light portlet-fit nd-shadow">
-                    <div class="portlet-title" style="border-bottom:none;">
-                        <div class="check-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 green" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_applied ?></span>
+                                    </div>
+                                    <div class="desc"> Applications Applied</div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="caption-1" style="">
-                            <i class="icon-microphone font-dark hide"></i>
-                            <span class="caption-subject bold font-dark uppercase" style="font-size:16px;"> Welcome Aboard</span><br>
-                            <span class="caption-helper">Empower Youth makes it easy to post jobs and manage your candidates</span>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 purple" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_accepted ?></span></div>
+                                    <div class="desc"> Applications Accepted</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 yellow" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_pending ?></span></div>
+                                    <div class="desc">Applications Pending</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 pink" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-building"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_shortlist_org ?></span></div>
+                                    <div class="desc">Followed Companies</div>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="portlet-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="how-box">
-                                    <div class="how-icon"><img
-                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/create.svg') ?>">
-                                    </div>
-                                    <div class="how-heading">Create a Job</div>
-                                    <div class="how-text"><p>Create a Job, get applications, let candidates fill
-                                            Questionnaire.</p>
-                                        <p class="pera">Ask them what's relevant to your organization.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="how-box">
-                                    <div class="how-icon"><img
-                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/invite.svg') ?>">
-                                    </div>
-                                    <div class="how-heading">Invite Candidates</div>
-                                    <div class="how-text"><p>Share application with candidates that you have found
-                                            by
-                                            any other means.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="how-box">
-                                    <div class="how-icon"><img
-                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/share.svg') ?>">
-                                    </div>
-                                    <div class="how-heading">Compare Applicants</div>
-                                    <div class="how-text">
-                                        <p>Compare different applicants on the basis of their skills, suitability,
-                                            location, experience, expected salary, etc.</p>
+                </div>
+
+                <?=
+                $this->render('/widgets/applications/dashboard-applied-applications', [
+                    'applied' => $applied,
+                    'question_list' => $question_list,
+                    'shortlist_org' => $shortlist_org,
+                    'viewed' => $viewed
+                ]); ?>
+                <?= $this->render('/widgets/applications/reminder-applications', [
+                    'app_reminder' => $app_reminder,
+                    'app_reminder_form' => $app_reminder_form,
+                ]); ?>
+
+            <?php elseif (Yii::$app->user->identity->organization): ?>
+                <div class="row marg">
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-app">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Applications'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon fa fa-building-o"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat"><?= $org_applications['total'] ?></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="how-box">
-                                    <div class="how-icon"><img
-                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/process.svg') ?>">
-                                    </div>
-                                    <div class="how-heading">Process Applications</div>
-                                    <div class="how-text">Finalize the candidates that you would like to interview
-                                        and
-                                        schedule seamlessly.
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-resume">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon fa fa-users"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat"><?= $dropResume; ?></span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow actv-applicants">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon icon-bar-chart"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-subtitle"></span>
+                                        <span class="widget-thumb-body-stat"><?= $total_org_applied ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 <?php
-            }
-            ?>
-
-            <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
-                                    data-toggle="tooltip" title="Here you will find all your active jobs"><i
-                                        class="fa fa-info-circle"></i></span></span>
-                    </div>
-                    <div class="actions">
-                        <div class="set-im">
-                            <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
-                               title="Create AI Job" class="ai">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
-                            <?php
-                            if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-                                ?>
-                                <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
-                                   title="Campus Hiring" class="ai">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
-                                <?php
-                            }
-                            ?>
-                            <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
-                               title="Post Job Tweet" class="tweet">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
-                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
-                               title="Create Quick Job" class="quick">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
-                            <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
-                               class="view">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_active_jobs']);
-                    if ($applications['jobs']['total'] > 0) {
-                        echo $this->render('/widgets/applications/card', [
-                            'applications' => $applications['jobs']['data'],
-                            'per_row' => 3,
-                            'col_width' => 'col-lg-4 col-md-4 col-sm-6',
-                        ]);
-                    } else {
-                        ?>
-                        <div class="tab-empty">
-                            <div class="tab-empty-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobinterview.png'); ?>"
-                                     class="img-responsive" alt=""/>
-                            </div>
-                            <div class="tab-empty-text">
-                                <div class="">There Are No Active Jobs In This Company</div>
-                            </div>
-                        </div>
-                    <?php }
-                    Pjax::end();
+                if ($viewed == 0) {
                     ?>
-                </div>
-            </div>
-
-            <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
-                                    data-toggle="tooltip" title="Here you will find all your active internships"><i
-                                        class="fa fa-info-circle"></i></span></span>
-                    </div>
-                    <div class="actions">
-                        <div class="set-im">
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                               title="Create AI Internship">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
-                            </a>
-                            <?php
-                            if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-                                ?>
-                                <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
-                                   data-toggle="tooltip"
-                                   title="Campus Hiring" class="ai">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
-                                <?php
-                            }
-                            ?>
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                               title="Post Internship Tweet">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
-                            </a>
-                            <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
-                               title="View All">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_active_internships']);
-                    if ($applications['internships']['total'] > 0) {
-                        echo $this->render('/widgets/applications/card', [
-                            'applications' => $applications['internships']['data'],
-                            'per_row' => 3,
-                            'col_width' => 'col-lg-4 col-md-4 col-sm-6',
-                        ]);
-                    } else {
-                        ?>
-                        <div class="tab-empty">
-                            <div class="tab-empty-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/active-internships.png'); ?>"
-                                     class="img-responsive" alt=""/>
+                    <div class="portlet light portlet-fit nd-shadow">
+                        <div class="portlet-title" style="border-bottom:none;">
+                            <div class="check-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
                             </div>
-                            <div class="tab-empty-text">
-                                <div class="">There Are No Internships Open Right Now</div>
+                            <div class="caption-1" style="">
+                                <i class="icon-microphone font-dark hide"></i>
+                                <span class="caption-subject bold font-dark uppercase" style="font-size:16px;"> Welcome Aboard</span><br>
+                                <span class="caption-helper">Empower Youth makes it easy to post jobs and manage your candidates</span>
                             </div>
                         </div>
-                    <?php }
-                    Pjax::end();
-                    ?>
-                </div>
-            </div>
-
-            <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Shortlisted Candidates'); ?><span
-                                    data-toggle="tooltip" title="shortlisted candidates"><i
-                                        class="fa fa-info-circle"></i></span></span>
-                    </div>
-                    <div class="actions">
-                        <div class="set-im">
-                            <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
-                               title="View All">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="short-main">
-                                <div class="remove-btn">
-                                    <button type="button" class="j-closedd tt" data-toggle="tooltip"
-                                            data-original-title="Remove Candidate">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div class="flex-short">
-                                    <div class="short-logo">
-                                        <img src="/assets/common/categories/accounts_and_finance.svg"
-                                             class="img-responsive ">
-                                    </div>
-                                    <div class="short-details">
-                                        <p class="short-job">Kulwinder Singh Sohal</p>
-                                        <p class="short-name"><i class="fa fa-map-marker"></i> Ludhiana</p>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="how-box">
+                                        <div class="how-icon"><img
+                                                    src="<?= Url::to('@eyAssets/images/pages/dashboard/create.svg') ?>">
+                                        </div>
+                                        <div class="how-heading">Create a Job</div>
+                                        <div class="how-text"><p>Create a Job, get applications, let candidates fill
+                                                Questionnaire.</p>
+                                            <p class="pera">Ask them what's relevant to your organization.</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <ul class="short-skills">
-                                    <li>html</li>
-                                    <li>css</li>
-                                    <li>javascript</li>
-                                    <li>bootstrap</li>
-                                </ul>
-                                <div class="slide-btn">
-                                    <button class="slide-bttn" type="button" data-toggle="collapse" data-target="#apps">
-                                        <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                                           title="" data-original-title="View Applications"></i>
-                                    </button>
+                                <div class="col-md-3">
+                                    <div class="how-box">
+                                        <div class="how-icon"><img
+                                                    src="<?= Url::to('@eyAssets/images/pages/dashboard/invite.svg') ?>">
+                                        </div>
+                                        <div class="how-heading">Invite Candidates</div>
+                                        <div class="how-text"><p>Share application with candidates that you have found
+                                                by
+                                                any other means.</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="cd-box-border collapse" id="apps">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Application Name</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="qu_data">
-                                    <tr>
-                                        <td><a href="" class="blue question_list" target="_blank">web developer</a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-md-3">
+                                    <div class="how-box">
+                                        <div class="how-icon"><img
+                                                    src="<?= Url::to('@eyAssets/images/pages/dashboard/share.svg') ?>">
+                                        </div>
+                                        <div class="how-heading">Compare Applicants</div>
+                                        <div class="how-text">
+                                            <p>Compare different applicants on the basis of their skills, suitability,
+                                                location, experience, expected salary, etc.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="how-box">
+                                        <div class="how-icon"><img
+                                                    src="<?= Url::to('@eyAssets/images/pages/dashboard/process.svg') ?>">
+                                        </div>
+                                        <div class="how-heading">Process Applications</div>
+                                        <div class="how-text">Finalize the candidates that you would like to interview
+                                            and
+                                            schedule seamlessly.
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <?php
+                }
+                ?>
 
-        <?php endif; ?>
-        <!--            <div class="portlet light portlet-fit nd-shadow">-->
-        <!--                 <div class="portlet-title" style="border-bottom:none;">-->
-        <div class="car-main row">
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
+                                        data-toggle="tooltip" title="Here you will find all your active jobs"><i
+                                            class="fa fa-info-circle"></i></span></span>
+                        </div>
+                        <div class="actions">
+                            <div class="set-im">
+                                <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                   title="Create AI Job" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                                <?php
+                                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                    ?>
+                                    <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
+                                       title="Campus Hiring" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
+                                    <?php
+                                }
+                                ?>
+                                <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
+                                   title="Post Job Tweet" class="tweet">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
+                                   title="Create Quick Job" class="quick">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
+                                   class="view">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_active_jobs']);
+                        if ($applications['jobs']['total'] > 0) {
+                            echo $this->render('/widgets/applications/card', [
+                                'applications' => $applications['jobs']['data'],
+                                'per_row' => 3,
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobinterview.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">There Are No Active Jobs In This Company</div>
+                                </div>
+                            </div>
+                        <?php }
+                        Pjax::end();
+                        ?>
+                    </div>
+                </div>
+
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
+                                        data-toggle="tooltip" title="Here you will find all your active internships"><i
+                                            class="fa fa-info-circle"></i></span></span>
+                        </div>
+                        <div class="actions">
+                            <div class="set-im">
+                                <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                   title="Create AI Internship">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                </a>
+                                <?php
+                                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                    ?>
+                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
+                                       data-toggle="tooltip"
+                                       title="Campus Hiring" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
+                                    <?php
+                                }
+                                ?>
+                                <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                   title="Post Internship Tweet">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
+                                </a>
+                                <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_active_internships']);
+                        if ($applications['internships']['total'] > 0) {
+                            echo $this->render('/widgets/applications/card', [
+                                'applications' => $applications['internships']['data'],
+                                'per_row' => 3,
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/active-internships.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">There Are No Internships Open Right Now</div>
+                                </div>
+                            </div>
+                        <?php }
+                        Pjax::end();
+                        ?>
+                    </div>
+                </div>
+
+
+
+            <?php endif; ?>
+            <!--            <div class="portlet light portlet-fit nd-shadow">-->
+            <!--                 <div class="portlet-title" style="border-bottom:none;">-->
+                              <div class="car-main row">
             <!--                        <div class="c-head">Careers</div>-->
             <!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
             <!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->
@@ -502,126 +435,6 @@ endif;
     </script>
 <?php
 $this->registerCss("
-.short-main {
-    border: 2px solid #eef1f5;
-    padding: 20px 10px;
-    position: relative;
-    transition: all .3s;
-    border-radius: 6px;
-}
-.short-main:hover .remove-btn{opacity:1;}
-.short-main:hover{
-    box-shadow:0 0 20px rgb(0 0 0 / 30%);
-    border-color:transparent;
-}
-.flex-short {
-    display: flex;
-    align-items: center;
-}
-.short-logo img {
-    width: 60px;
-    height: 60px;
-    object-fit: fill;
-}
-.short-details {
-    flex-basis: 80%;
-    padding-left: 15px;
-}
-.short-job {
-    color: #00a0e3;
-    font-size: 16px;
-    font-family: 'Roboto';
-    text-transform: capitalize;
-    margin: 5px 0 !important;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.short-name {
-    color: #999;
-    font-family: 'Roboto';
-    display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;  
-  overflow: hidden;
-}
-.remove-btn {
-    position: absolute;
-    right: 0px;
-    top: 2px;
-    opacity:0;
-    transition:all .3s;
-}
-.remove-btn button {
-    border: none;
-    background: none !important;
-    color: #d75946;
-    line-height: 0;
-}
-.short-skills {
-    border-radius: 8px;
-    margin: 10px 0;
-    display: flex;
-    padding: 6px 6px 0;
-    flex-wrap: wrap;
-    align-items: center;
-    height: 38px;
-    overflow: hidden;
-}
-.short-skills li {
-    list-style: none;
-    background-color: #eee;
-    padding: 4px 10px;
-    font-family: 'Roboto';
-    margin-bottom: 5px !important;
-    border-radius: 4px;
-    margin: 0 5px 0 0;
-}
-.slide-btn {
-    margin-bottom: -1px;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 0px);
-}
-.slide-bttn{
-    background:#00a0e3;
-    border:none;
-    color:#fff;
-    border-radius:10px 10px 0 0 !important;
-    padding:1px 15px;
-}
-.slide-bttn:hover{
-    box-shadow:0px -2px 8px rgba(0, 0, 0, .3);
-    transition:.3s all;     
-    -webkit-transition:.3s all;     
-    -moz-transition:.3s all;     
-    -o-transition:.3s all; 
-}
-.rotate180{
-    animation: rotate180 1s 1;
-    transform: rotate(180deg);
-    transition: .5s ease;
-}
-.slide-bttn:focus{
-    outline:none;
-}
-.cd-box-border{
-    border:2px solid #eef1f4; 
-    border-top:none;
-    padding:10px; 
-    background:#fff; 
-    border-radius:0 0 4px 4px !important; 
-    color:#999999;
-    margin:0 20px; 
-    display:none; 
-    height:auto !important;
-}
-.cd-box-border table{margin:0 !important;}
-.tt {
-    transition: .5s ease;
-}
 a:focus, a:hover{
     outline: none;
     text-decoration: none !important;
@@ -922,12 +735,6 @@ p{
 $script = <<< JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
-});
-$(document).on('click','.slide-bttn',function(){
-    $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
-    let fontIcon = this.children;
-    fontIcon[0].classList.toggle('rotate180');    
-    
 });
 JS;
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
