@@ -18,6 +18,8 @@ use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use common\models\RejectionReasons;
+use common\models\ShortlistedApplicants;
+use common\models\UserSkills;
 use http\Params;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -448,7 +450,8 @@ class JobsController extends Controller
             'addedColleges' => $addedColleges,
             'saveCollege' => $saveCollege,
             'jobs' => $this->__getApplications("Jobs"),
-            'primary_fields' => $catModel->getPrimaryFields()
+            'primary_fields' => $catModel->getPrimaryFields(),
+            'shortlistedApplicants' => $this->shortlistedApplicants()
         ]);
     }
 
@@ -1982,5 +1985,60 @@ class JobsController extends Controller
                 ->all();
             return ['status' => 200, 'data'=>$all_application];
         }
+    }
+    private function shortlistedApplicants()
+    {
+        $shortlistedApplicants = ShortlistedApplicants::find()
+            ->alias('a')
+            ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
+                'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
+                'b3.name city'
+            ])
+            ->joinWith(['candidateEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b3'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->groupBy(['a.candidate_enc_id'])
+            ->asArray()
+            ->all();
+
+        $data = [];
+        foreach ($shortlistedApplicants as $key => $val) {
+            $skills = UserSkills::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->joinWith(['skillEnc b'], false)
+                ->where(['a.created_by' => $val['candidate_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $applications = ShortlistedApplicants::find()
+                ->alias('a')
+                ->select(['ee.name title', 'a.application_enc_id','b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc f'], false);
+                }], false)
+                ->where([
+                    'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                    'a.candidate_enc_id' => $val['candidate_enc_id'],
+                    'a.is_deleted' => 0,
+                    'f.name' => 'Jobs'
+                ])
+                ->asArray()
+                ->all();
+
+            if($applications){
+                $shortlistedApplicants[$key]['skills'] = $skills;
+                $shortlistedApplicants[$key]['applications'] = $applications;
+                $data[] = $shortlistedApplicants[$key];
+            }
+
+
+        }
+        return $data;
     }
 }

@@ -7,6 +7,7 @@ use common\models\Cities;
 use common\models\DropResumeApplications;
 use common\models\EmailLogs;
 use common\models\EmployerApplications;
+use common\models\ShortlistedApplicants;
 use common\models\Skills;
 use common\models\Users;
 use Yii;
@@ -222,6 +223,10 @@ class CandidatesController extends Controller
                     'COUNT(DISTINCT(e.experience_enc_id)) as exp_count',
                     'f.name city_name',
                 ])
+                ->joinWith(['shortlistedApplicants bb' => function ($bb) {
+                    $bb->select(['bb.shortlisted_applicant_enc_id', 'bb.candidate_enc_id']);
+                    $bb->onCondition(['bb.is_deleted' => 0]);
+                }])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['userSkills c' => function ($c) {
                     $c->select(['c.created_by', 'c.user_skill_enc_id', 'c.skill_enc_id', 'c1.skill']);
@@ -293,6 +298,7 @@ class CandidatesController extends Controller
                     ] : '',
                     'icon' => $icon,
                     'skills' => [],
+                    'is_shortlisted' => $u['shortlistedApplicants'] ? true : false
                 ]);
                 if ($u['userSkills']) {
                     $plus_count = '';
@@ -353,11 +359,10 @@ class CandidatesController extends Controller
 
             $failure = ['status' => 404];
 
-            $selected_applications = DropResumeApplications::find()
+            $selected_applications = ShortlistedApplicants::find()
                 ->alias('a')
-                ->select(['a.applied_application_enc_id', 'a.user_enc_id', 'a.application_enc_id'])
-                ->joinWith(['applicationEnc b'], false)
-                ->where(['a.user_enc_id' => $user_id, 'b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id user_enc_id', 'a.application_enc_id'])
+                ->where(['a.candidate_enc_id' => $user_id, 'a.is_deleted' => 0, 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->all();
 
@@ -371,15 +376,17 @@ class CandidatesController extends Controller
 
     private function setShortlist($user_id, $app_id)
     {
-        $shortlist = new DropResumeApplications();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $shortlist->applied_application_enc_id = $utilitiesModel->encrypt();
-        $shortlist->user_enc_id = $user_id;
+        $shortlist = new ShortlistedApplicants();
+        $shortlist->shortlisted_applicant_enc_id = $utilitiesModel->encrypt();
+        $shortlist->candidate_enc_id = $user_id;
         $shortlist->application_enc_id = $app_id;
+        $shortlist->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
+        $shortlist->created_on = date('Y-m-d H:i:s');
         $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
-        $shortlist->status = 1;
+        $shortlist->last_updated_on = date('Y-m-d H:i:s');
         if ($shortlist->save()) {
             $this->sendMail($app_id, $user_id);
             return true;
@@ -396,7 +403,7 @@ class CandidatesController extends Controller
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->joinWith(['applicationTypeEnc e'], false)
-            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active','a.application_for'=>1])
 //            ->andWhere(['c.assigned_to' => $type])
             ->asArray()
             ->all();
