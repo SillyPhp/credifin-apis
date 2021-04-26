@@ -1112,6 +1112,7 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
         } else  {
             parentElem.querySelector('.errorMsg').style.display = "none";
             let childDiv = document.querySelector('.child-info-div');
+            childDiv.innerHTML = '';
             let count = 1;
             for (let i = 1; i <= num; i++) {
                 let childForm = childrenInfoForm(count, num);
