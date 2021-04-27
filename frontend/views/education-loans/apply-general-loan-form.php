@@ -42,7 +42,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-start">
-                        <form action="" id="myForm">
+                        <form action="" id="myForm" autocomplete="off">
                             <div class="tab" id="step1">
                                 <div class="row">
                                     <div class="col-md-12">

@@ -2,9 +2,11 @@
 
 use yii\helpers\Url;
 use kartik\date\DatePicker;
+
 $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
+$documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving License'];
 ?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
@@ -66,7 +68,8 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantName" class="input-group-text">
                                                 Name of Applicant
                                             </label>
-                                            <input value="<?= $data['applicant_name'] ?>" type="text" class="form-control" id="applicantName"
+                                            <input value="<?= $data['applicant_name'] ?>" type="text"
+                                                   class="form-control" id="applicantName"
                                                    placeholder="Enter Full Name" disabled>
                                         </div>
                                     </div>
@@ -75,7 +78,8 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantEmail" class="input-group-text">
                                                 Email
                                             </label>
-                                            <input value="<?= $data['email'] ?>" type="text" class="form-control" id="applicantEmail"
+                                            <input value="<?= $data['email'] ?>" type="text" class="form-control"
+                                                   id="applicantEmail"
                                                    placeholder="" disabled>
                                         </div>
                                     </div>
@@ -84,7 +88,8 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantDob" class="input-group-text">
                                                 DOB
                                             </label>
-                                            <input value="<?= date('d/m/Y', strtotime($data['applicant_dob'])) ?>" type="text" class="form-control" id="applicantDob"
+                                            <input value="<?= date('d/m/Y', strtotime($data['applicant_dob'])) ?>"
+                                                   type="text" class="form-control" id="applicantDob"
                                                    placeholder="--/--/----" disabled>
                                         </div>
                                     </div>
@@ -93,27 +98,28 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <label for="applicantNumber" class="input-group-text">
                                                 Mobile Number
                                             </label>
-                                            <input value="<?= $data['phone'] ?>" type="text" class="form-control" id="applicantNumber"
+                                            <input value="<?= $data['phone'] ?>" type="text" class="form-control"
+                                                   id="applicantNumber"
                                                    placeholder="" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
-<!--                                    <div class="col-md-4 padd-20">-->
-<!--                                        <div class="form-group">-->
-<!--                                            <label class="radio-heading input-group-text" for="degreeApplied">-->
-<!--                                                Degree Applied-->
-<!--                                            </label>-->
-<!--                                            <select class="form-control field-req" name="years" id="degreeApplied">-->
-<!--                                                <option value="">Select One</option>-->
-<!--                                                <option>Diploma</option>-->
-<!--                                                <option>Graduation</option>-->
-<!--                                                <option>Post Graduation</option>-->
-<!--                                                <option>Professional Course</option>-->
-<!--                                                <option>Others</option>-->
-<!--                                            </select>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <!--                                    <div class="col-md-4 padd-20">-->
+                                    <!--                                        <div class="form-group">-->
+                                    <!--                                            <label class="radio-heading input-group-text" for="degreeApplied">-->
+                                    <!--                                                Degree Applied-->
+                                    <!--                                            </label>-->
+                                    <!--                                            <select class="form-control field-req" name="years" id="degreeApplied">-->
+                                    <!--                                                <option value="">Select One</option>-->
+                                    <!--                                                <option>Diploma</option>-->
+                                    <!--                                                <option>Graduation</option>-->
+                                    <!--                                                <option>Post Graduation</option>-->
+                                    <!--                                                <option>Professional Course</option>-->
+                                    <!--                                                <option>Others</option>-->
+                                    <!--                                            </select>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
                                             <label for="courseApplied" class="input-group-text">
@@ -131,19 +137,22 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                             <ul class="displayInline applicantGender" id="applicant_gender">
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Male
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="1">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="1">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Female
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="2">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="2">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="container-radio" data-field="gender">Other
-                                                        <input type="radio" name="applicant_gender" class="acnt_gender" value="3">
+                                                        <input type="radio" name="applicant_gender" class="acnt_gender"
+                                                               value="3">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
@@ -167,11 +176,14 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="applicantID0">
-                                                        <option>Aadhaar Card</option>
-                                                        <option>PAN</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                            foreach ($documentOptions as $opt){
+                                                                ?>
+                                                                <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                        <?php
+                                                            }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -214,11 +226,14 @@ Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="applicantID1">
-                                                        <option>Aadhaar Card</option>
-                                                        <option>PAN</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                        foreach ($documentOptions as $opt){
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1808,6 +1823,26 @@ $(document).on('click','.search-names', function() {
     updateValue(input, value);
 })
 
+function documentSelectionDisable(value, slc_id, type){
+    $("#"+slc_id+" option:contains()").prop("disabled", false);
+    if(value != ""){
+        $("#"+slc_id+" option:contains('"+value+"')").prop("disabled", true);
+    }
+}
+
+$(document).on('change','#applicantID0', function() {
+    var elem = $(this);
+    var value = elem.val();
+    documentSelectionDisable(value, "applicantID1","onChange");
+});
+
+$(document).on('change','#applicantID1', function() {
+    var elem = $(this);
+    var value = elem.val();
+    documentSelectionDisable(value, "applicantID0","onChange");
+});
+
+
 $(document).on('change','#mOccupation', function() {
     var elem = $(this);
     var value = elem.val();
@@ -1892,12 +1927,66 @@ $(document).on('keyup','.typeInput', function() {
     });
 });
 
-function aadhaarValidation(x) {
-    var regexp=/^[2-9]{1}[0-9]{3}\s{0}[0-9]{4}\s{0}[0-9]{4}$/;
-    if(regexp.test(x)) {
-        return x;
+function frontInptValidation(x, type) {
+    var regexp = "";
+    switch (type){
+        case "years_in_current_house" :
+            regexp=/^[0-9]{1,3}$/;
+            break;
+        case "annual_income" :
+            regexp=/^\d{4,7}\.{0,1}$/;
+            break;
+        case "Aadhaar Card" :
+            regexp=/^[2-9]{1}[0-9]{3}\s{0}[0-9]{4}\s{0}[0-9]{4}$/;
+            break;
+        case "PAN" :
+            regexp=/^[A-Z]{5}[0-9]{4}\s{0}[A-Z]{1}$/;
+            break;
+        case "Passport" :
+            regexp=/^[A-PR-WY]{1}[1-9]{1}[0-9]{5}[1-9]{1}$/;
+            break;
+        case "phone" :
+            regexp=/^[5-9]{1}[0-9]{9}$/;
+            break;
+        case "email" :
+            regexp=/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            break;
+        default :
+            regexp=/^(?=.*[A-Za-z])[A-Za-z0-9]{3,20}$/;
     }
+    if(regexp.test(x)) {
+        return true;
+    }
+    return false;
 }
+
+function validate_fileupload(file)
+{
+    var extValidate = false;
+    var fileName = file.name;
+    var size=(file.size);
+    console.log(size);
+    if(size > 5000000) {
+        toastr.error("File should be less than 5MB", "Large File");
+        return false;
+    }
+    var allowed_extensions = new Array("jpg","jpeg","png","pdf");
+    var file_extension = fileName.split('.').pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            extValidate = true; // valid file extension
+            break;
+        }
+    }
+
+    if(extValidate == false){
+        toastr.error('Only "jpg","jpeg","png","pdf" Extensions are allowed', "Extension Error");
+    }
+    return extValidate;
+}
+
 $(document).on('blur','input:text', function() {
     var elem = $(this);
     var value = elem.val();
@@ -1909,8 +1998,6 @@ $(document).on('blur','input:text', function() {
 
 function updateValue(elem, value){
     var inptId = elem.attr("id");
-    console.log(value);
-    console.log(objData[inptId]);
     if(value != objData[inptId] && value != ""){
         var data = {};
         var label_name = "";
@@ -1919,14 +2006,48 @@ function updateValue(elem, value){
         } else {
             label_name = elem.prev('label').attr('data-field');
         }
+        if(label_name == "annual_income"){
+            var chkLivingYear = frontInptValidation(value, label_name);
+            if (chkLivingYear == false){
+                toastr.error("Please enter a valid annual income between 1000 to 9999999", "Annual Income");
+                elem.focus();
+                return false;
+            }
+        }
+        if(label_name == "years_in_current_house"){
+            var chkLivingYear = frontInptValidation(value, label_name);
+            if (chkLivingYear == false){
+                toastr.error("Please enter a valid year upto 999", "Current Year");
+                elem.focus();
+                return false;
+            }
+        }
+        if(label_name == "phone"){
+            var chkNum = frontInptValidation(value, label_name);
+            if (chkNum == false){
+                toastr.error("Please enter a valid phone number", label_name);
+                elem.focus();
+                return false;
+            }
+        }
+        if(label_name == "email"){
+            value = String(value).toLowerCase();
+            var chkEmail = frontInptValidation(value, label_name);
+            if (chkEmail == false){
+                toastr.error("Please enter a valid email id", label_name);
+                elem.focus();
+                return false;
+            }
+        }
         if(label_name == "number"){
             var docChilds = elem.closest('.row').children().children();
             var docFieldName = docChilds.children('label').attr('data-field');
             var docName = docChilds.children('select').val();
-            if (docName == "Aadhaar Card" && docFieldName == "proof_name"){
-                var chkAadhaar = aadhaarValidation(value);
-                if (chkAadhaar == "" || typeof chkAadhaar === "undefined"){
-                    toastr.error("Please enter a valid id", "Aadhaar Card");
+            var chkDoc = "";
+            if (docFieldName == "proof_name"){
+                chkDoc = frontInptValidation(value, docName);
+                if (chkDoc == false){
+                    toastr.error("Please enter a valid id", docName);
                     elem.focus();
                     return false;
                 }
@@ -2105,10 +2226,22 @@ $(document).ready(function() {
                 var acntIdName = "";
                 var acntIDNum = "";
                 var acntIDImg = "";
+                var acntChangeElem = "";
+                console.log(loanCertificates);
                 $.each(loanCertificates,function(i, v) {
                     $('#idProofInformation' + i).attr('data-key',v.certificate_enc_id);
                     acntIdName =  "applicantID" + i;
-                    $('#' + acntIdName).val(v.name);
+                    if(i == 1){
+                        acntChangeElem = "applicantID0";
+                    } else {
+                        acntChangeElem = "applicantID1";
+                    }
+                    if($("#"+ acntIdName +" option:contains('"+v.name+"')").prop("disabled") != true){
+                        documentSelectionDisable(v.name, acntChangeElem,"onReady");
+                        $('#' + acntIdName).val(v.name);
+                    } else {
+                        v.number = "";
+                    }
                     objData[acntIdName] = v.name;
                     acntIDNum =  "applicantIDnumber" + i;
                     $('#' + acntIDNum).val(v.number);
@@ -2339,7 +2472,6 @@ $(document).ready(function() {
                         default:
                     }
                 });
-    console.log(objData);
             }
         }
     });
@@ -2358,7 +2490,12 @@ function readURL(input) {
 }
 
  $(document).on('change','input:file', function(e) {
-     var elem = $(this);
+    var elem = $(this);
+    var validateFile = validate_fileupload(e.target.files[0]);
+    if(validateFile == false){
+        elem.val("");
+        return false;
+    }
      var files = e.target.files;
      if(files.length){
          var formData = new FormData();
@@ -2494,7 +2631,6 @@ $this->registerJS($script);
         }
 
         let activeID = event.currentTarget.getAttribute('data-id');
-        console.log(activeID)
         let activeTab = document.getElementById(activeID);
         activeTab.classList.add('tabActive');
         let selectedTp = document.querySelector('[data-id="' + activeID + '"]');

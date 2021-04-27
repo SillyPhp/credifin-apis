@@ -321,7 +321,7 @@ class EducationLoanController extends ApiBaseController
                 'a.email',
                 'c1.course_name',
             ])
-            ->innerJoinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+            ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
                 $c->joinWith(['createdBy b' => function ($b) {
                     $b->joinWith(['userOtherInfo b1']);
                 }], false);
