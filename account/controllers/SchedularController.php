@@ -128,7 +128,7 @@ class SchedularController extends Controller
             ]);
         if ($round != null) {
             $rounds->andWhere(['sequence' => $round]);
-        } else{
+        } else {
             $rounds->andWhere(['<>', 'field_name', 'Get Applications']);
         }
         $rounds = $rounds->asArray()
@@ -687,9 +687,7 @@ class SchedularController extends Controller
                     'o.interview_date_enc_id',
                     'o.interview_date',
                     'z.designation',
-//                    'p.from',
-//                    'p.to',
-//                    'p.interview_date_timing_enc_id',
+                    'q1.field_name round'
                 ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->joinWith(['designationEnc z']);
@@ -710,6 +708,13 @@ class SchedularController extends Controller
                     $o->joinWith(['interviewDateTimings p' => function ($p) {
                         $p->andWhere(['p.is_deleted' => 1]);
                     }]);
+                }])
+                ->joinWith(['interviewOptions q' => function ($q) {
+                    $q->joinWith(['processFieldEnc q1']);
+                }], false)
+                ->joinWith(['interviewers r' => function ($r) {
+                    $r->select(['r.interviewer_enc_id', 'r.scheduled_interview_enc_id', 'r1.name', 'r1.email', 'r1.phone']);
+                    $r->joinWith(['interviewerDetails r1'], false);
                 }])
                 ->where(['a.status' => 1])
                 ->asArray()
@@ -735,6 +740,8 @@ class SchedularController extends Controller
                 $fixed_data['Start'] = $interview_date;
                 $fixed_data['End'] = $interview_date;
                 $fixed_data['application_enc_id'] = $f['application_enc_id'];
+                $fixed_data['round'] = $f['round'];
+                $fixed_data['interviewers'] = $f['interviewers'];
                 $ti = $f['interviewDates'][$i]['interviewDateTimings'];
                 if ($f['interview_type'] == 'fixed') {
                     if ($f['scheduled_interview_enc_id'] == $old_id) {
