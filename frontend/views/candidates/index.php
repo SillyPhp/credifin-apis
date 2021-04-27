@@ -1243,6 +1243,7 @@ function loadCheckboxList(url, val, cls) {
 $(document).on('click', '.shortlist-main', function (event) {
 	event.preventDefault();
 	user_id = $(this).attr('id');
+	$('.application_list:checked').prop('checked',false);
 	$.ajax({
 		type: "POST",
 		url: "candidates/get-data",

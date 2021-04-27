@@ -8,6 +8,7 @@ use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
+use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\InterviewCandidates;
 use common\models\InterviewDates;
@@ -15,6 +16,7 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use common\models\UserSkills;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -51,7 +53,7 @@ class DashboardController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -1149,7 +1151,8 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-    public function actionSafetyPosters(){
+    public function actionSafetyPosters()
+    {
         return $this->render('safety-posters');
     }
 //    public function actionError(){

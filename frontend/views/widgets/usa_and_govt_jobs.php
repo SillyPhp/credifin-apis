@@ -1,36 +1,66 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
-<section class="goven-jobs-sec">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="gov-job">
-                    <a href="/usa-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
-                        <h3 class="link-none">
-                            USA Government Jobs
-                        </h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="gov-job">
-                    <a href="/govt-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
-                        <h3 class="link-none">
-                            Indian Government Jobs
-                        </h3>
-                    </a>
+    <section class="goven-jobs-sec">
+        <div class="container">
+            <div class="row">
+                <div class="carousel-wrap">
+                    <div class="owl-carousel">
+                        <div class="item">
+                            <div class="gov-job">
+                                <a href="/usa-jobs">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Study-usa-bg.jpg') ?>"
+                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                    <h3 class="link-none">
+                                        USA Government Jobs
+                                    </h3>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="gov-job">
+                                <a href="/govt-jobs">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india-hdrr.jpg') ?>"
+                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                    <h3 class="link-none">
+                                        Indian Government Jobs
+                                    </h3>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="gov-job">
+                                <a href="/education-loans">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/mslider1.jpg') ?>"
+                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                    <h3 class="link-none">
+                                        Education Loan
+                                    </h3>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="gov-job">
+                                <a href="/career-advice">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/mslider2.jpg') ?>"
+                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                    <h3 class="link-none">
+                                        Career Advice
+                                    </h3>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php
 $this->registerCss('
 .goven-jobs-sec{
-    background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') . ');
     background-repeat: no-repeat;
     background-size:cover;
     padding: 40px 0px 40px 0px;
@@ -85,6 +115,12 @@ $this->registerCss('
     padding:5px 10px;
     margin:0;
 }
+.owl-carousel .owl-item img{width:auto !important;}
+.owl-theme .owl-dots{display:none !important;}
+.owl-controls .owl-nav > div{background:none;}
+.owl-controls .owl-prev i, .owl-controls .owl-next i{
+    font-size:35px !important;
+}
 @media (max-width:415px){
 .gov-heading{
     font-size:25px;
@@ -95,3 +131,30 @@ $this->registerCss('
 }
 }
 ');
+$script = <<<JS
+$('.owl-carousel').owlCarousel({
+  loop: true,
+  margin: 10,
+  nav: true,
+  navText: [
+    "<i class='fa fa-caret-left'></i>",
+    "<i class='fa fa-caret-right'></i>"
+  ],
+  autoplay: true,
+  autoplayHoverPause: true,
+  responsive: {
+    0: {
+      items: 1
+    },
+    600: {
+      items: 1
+    },
+    1000: {
+      items: 2
+    }
+  }
+})
+JS;
+$this->registerjs($script);
+$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css');
+$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js');
