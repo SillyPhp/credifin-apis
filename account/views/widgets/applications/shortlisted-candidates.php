@@ -1,14 +1,18 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 ?>
-<?php foreach ($shortlistedApplicants as $s) { ?>
+
+<?php Pjax::begin(['id' => 'shortlisted-candidates']);
+foreach ($shortlistedApplicants as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="short-main">
             <div class="remove-btn">
-                <button type="button" class="j-closedd tt" data-toggle="tooltip"
-                        data-original-title="Remove Candidate">
+                <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
+                        data-original-title="Remove Candidate"
+                        data-id="<?= $s['shortlisted_applicant_enc_id'] ?>">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
             </div>
@@ -20,7 +24,8 @@ use yii\helpers\Url;
                         <?php
                     } else {
                         ?>
-                        <canvas class="user-icon img-circle" name="<?= $s['name'] ?>" color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
+                        <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
+                                color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
                     <?php }
                     ?>
                 </div>
@@ -38,13 +43,14 @@ use yii\helpers\Url;
                 } ?>
             </ul>
             <div class="slide-btn">
-                <button class="slide-bttn" type="button" data-toggle="collapse" data-target="#<?= $s['candidate_enc_id']?>">
+                <button class="slide-bttn" type="button" data-toggle="collapse"
+                        data-target="#<?= $s['candidate_enc_id'] ?>">
                     <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
                        title="" data-original-title="View Applications"></i>
                 </button>
             </div>
         </div>
-        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id']?>">
+        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id'] ?>">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -56,7 +62,8 @@ use yii\helpers\Url;
                     foreach ($s['applications'] as $application) {
                         ?>
                         <tr>
-                            <td><a href="<?= Url::to('/'.$type.'/'.$application['slug'])  ?>" class="blue question_list" target="_blank"><?= $application['title'] ?></a>
+                            <td><a href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>"
+                                   class="blue question_list" target="_blank"><?= $application['title'] ?></a>
                             </td>
                         </tr>
                     <?php }
@@ -65,7 +72,8 @@ use yii\helpers\Url;
             </table>
         </div>
     </div>
-<?php } ?>
+<?php }
+Pjax::end(); ?>
 
 <?php
 $this->registerCss('
@@ -195,6 +203,30 @@ $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
     let fontIcon = this.children;
     fontIcon[0].classList.toggle('rotate180');    
+    
+});
+
+$(document).on('click','.remove-candidate',function (e){
+    e.preventDefault()
+    let id = $(this).attr('data-id');
+    
+    $.ajax({
+            url: "/candidates/remove-shortlisted-candidate",
+            method: "POST",
+            data: {shortlisted_applicant_enc_id:id},
+            beforeSend:function(){
+                $("#page-loading").fadeIn(1000);
+            },
+            success: function (response) {
+                $("#page-loading").fadeOut(1000);
+                if (response.status == 200) {
+                    $.pjax.reload({container: '#shortlisted-candidates', async: false});
+                    toastr.success(response.message, 'success');
+                } else {
+                    toastr.error(response.message, 'error');
+                }
+            }
+        });
     
 });
 JS;

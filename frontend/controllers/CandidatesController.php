@@ -403,7 +403,7 @@ class CandidatesController extends Controller
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->joinWith(['applicationTypeEnc e'], false)
-            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active','a.application_for'=>1])
+            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1])
 //            ->andWhere(['c.assigned_to' => $type])
             ->asArray()
             ->all();
@@ -544,7 +544,7 @@ class CandidatesController extends Controller
 
             $success = [
                 'status' => 200,
-                'message' => 'success'
+                'message' => 'successfully removed'
             ];
             $error = [
                 'status' => 500,
@@ -553,9 +553,9 @@ class CandidatesController extends Controller
 
             try {
 
-                $shortlistedCandidate = ShortlistedApplications::findone(['shortlisted_applicant_enc_id' => $id]);
+                $shortlistedCandidate = ShortlistedApplicants::findone(['shortlisted_applicant_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id]);
                 if ($shortlistedCandidate) {
-                    $shortlistedCandidate->is_deleted = 0;
+                    $shortlistedCandidate->is_deleted = 1;
                     $shortlistedCandidate->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     $shortlistedCandidate->last_updated_on = date('Y-m-d H:i:s');
                     if (!$shortlistedCandidate->update()) {
