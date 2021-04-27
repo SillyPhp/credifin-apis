@@ -273,11 +273,11 @@ use yii\widgets\Pjax;
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <div class="set-im">
-                                        <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
-                                           title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    </div>
+<!--                                    <div class="set-im">-->
+<!--                                        <a href="--><?//= Url::toRoute('/internships'); ?><!--" data-toggle="tooltip"-->
+<!--                                           title="View All">-->
+<!--                                            <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?><!--"></a>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                             <div class="portlet-body">
