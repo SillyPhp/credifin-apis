@@ -535,4 +535,41 @@ class CandidatesController extends Controller
         }
     }
 
+    public function actionRemoveShortlistedCandidate()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $id = Yii::$app->request->post('shortlisted_applicant_enc_id');
+
+            $success = [
+                'status' => 200,
+                'message' => 'success'
+            ];
+            $error = [
+                'status' => 500,
+                'message' => 'an error occurred'
+            ];
+
+            try {
+
+                $shortlistedCandidate = ShortlistedApplications::findone(['shortlisted_applicant_enc_id' => $id]);
+                if ($shortlistedCandidate) {
+                    $shortlistedCandidate->is_deleted = 0;
+                    $shortlistedCandidate->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    $shortlistedCandidate->last_updated_on = date('Y-m-d H:i:s');
+                    if (!$shortlistedCandidate->update()) {
+                        return $error;
+                    }
+                    return $success;
+                }
+
+                return $error;
+
+            } catch (\Exception $e) {
+                return $error;
+            }
+        }
+    }
+
 }
