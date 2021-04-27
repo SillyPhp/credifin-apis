@@ -759,7 +759,12 @@ class LoansController extends ApiBaseController
                             if ($address['id']) {
                                 $this->saveAddress($address, $address['id']);
                             } else {
-                                $this->saveAddress($address);
+                                $res = LoanApplicantResidentialInfo::findone(['loan_co_app_enc_id' => $coAppId]);
+                                if ($res) {
+                                    $this->saveAddress($address, $res->loan_app_res_info_enc_id);
+                                } else {
+                                    $this->saveAddress($address);
+                                }
                             }
                         }
                     }
@@ -1080,7 +1085,7 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->phone = $params['phone'];
             $loan_co_applicants->relation = $params['relation'];
             $loan_co_applicants->annual_income = (int)$params['annual_income'];
-            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob']));
+            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['co_applicant_dob']));
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'];
             $loan_co_applicants->occupation = $params['occupation'];
             $loan_co_applicants->address = ($params['address'] == 1) ? 1 : 0;
@@ -1130,7 +1135,7 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->phone = $params['phone'] ? $params['phone'] : $loan_co_applicants->phone;
             $loan_co_applicants->employment_type = $params['employment_type'] ? $params['employment_type'] : $loan_co_applicants->employment_type;
             $loan_co_applicants->annual_income = (int)$params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
-            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['applicant_dob'])) ? date('Y-m-d', strtotime($params['applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
+            $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['co_applicant_dob'])) ? date('Y-m-d', strtotime($params['co_applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
             $loan_co_applicants->years_in_current_house = $params['years_in_current_house'] ? $params['years_in_current_house'] : $loan_co_applicants->years_in_current_house;
             $loan_co_applicants->occupation = $params['occupation'] ? $params['occupation'] : $loan_co_applicants->occupation;
             $loan_co_applicants->address = ($params['address'] == 1) ? 1 : 0;
