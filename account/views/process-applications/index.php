@@ -2374,7 +2374,7 @@ $(document).on('click','.sendReasons', function(e){
                 btn.hide();
                 $.pjax.reload({container: '#pjax_process', async: false});
                    setTimeout(function() {
-                    hiring_process();
+                    hiring_process(); 
                     utilities.initials();
                   }, 100)
             }
