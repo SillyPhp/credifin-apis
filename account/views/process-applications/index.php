@@ -2373,8 +2373,9 @@ $(document).on('click','.sendReasons', function(e){
             if(data==true) {
                 btn.hide();
                 $.pjax.reload({container: '#pjax_process', async: false});
-                  setTimeout(function() {
-                    hiring_process();
+                   setTimeout(function() {
+                    hiring_process(); 
+                    utilities.initials();
                   }, 100)
             }
             else {
