@@ -176,6 +176,7 @@ class BlogController extends Controller
             foreach ($post_categories as $c) {
                 $categories[] = $c['category_enc_id'];
             }
+
             $similar_posts = Posts::find()
                 ->alias('z')
                 ->joinWith(['postTags a' => function ($a) use ($tags) {
@@ -186,8 +187,10 @@ class BlogController extends Controller
                 ->joinWith(['postCategories b'], false)
                 ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
                 ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+//                ->andFilterWhere(['like', 'b.category_enc_id', $categories])
                 ->andWhere(['b.category_enc_id' => $categories])
                 ->orderBy(new Expression('rand()'))
+                ->asArray()
                 ->limit(3)
                 ->all();
 
