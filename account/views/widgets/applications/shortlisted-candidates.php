@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 ?>
 
 <?php Pjax::begin(['id' => 'shortlisted-candidates']);
-foreach ($shortlistedApplicants as $s) { ?>
+foreach ($shortlistedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="short-main">
             <div class="remove-btn">

@@ -1993,6 +1993,14 @@ class JobsController extends Controller
         }
     }
 
+    public function actionShortlistedCandidates()
+    {
+        return $this->render('list/shortlisted-candidates', [
+            'shortlistedApplicants' => $this->shortlistedApplicants()
+        ]);
+
+    }
+
     private function shortlistedApplicants($limit = null)
     {
         $shortlistedApplicants = ShortlistedApplicants::find()
@@ -2009,6 +2017,7 @@ class JobsController extends Controller
             }], false)
             ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'f.name' => 'Jobs'])
             ->groupBy(['a.candidate_enc_id']);
+        $count = $shortlistedApplicants->count();
         if ($limit != null) {
             $shortlistedApplicants->limit($limit);
         }
@@ -2046,6 +2055,7 @@ class JobsController extends Controller
             $shortlistedApplicants[$key]['skills'] = $skills;
             $shortlistedApplicants[$key]['applications'] = $applications;
         }
-        return $shortlistedApplicants;
+
+        return ['data' => $shortlistedApplicants, 'count' => $count];
     }
 }
