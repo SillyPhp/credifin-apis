@@ -926,6 +926,17 @@ width:100% !important;
 
 ');
 $script = <<< JS
+function timer(time,update,complete) {
+    var start = new Date().getTime();
+    var interval = setInterval(function() {
+        var now = time-(new Date().getTime()-start);
+        if( now <= 0) {
+            clearInterval(interval);
+            complete();
+        }
+        else update(Math.floor(now/1000));
+    },100); // the smaller this number, the more accurate the timer will be
+}
 var global_r = false;
 $(document).on('click','input[name="college_taken"]',function(e) {
   var val = $(this).val();
@@ -1502,23 +1513,48 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
             {
                 if (status=="captured"){
                     if (e.response.status=='200'){
-                       swal({
+                         if (userID==''){
+                          swal({
                             title: "",
-                            text: "Your Application Is Submitted Successfully",
+                            text: "Your Application Is Submitted Successfully Please Sign Up To Track and Process Your Application Further, You Can Then Check Status Of Your Application On Dashboard",
                             type:'success',
                             showCancelButton: false,  
                             confirmButtonClass: "btn-primary",
-                            confirmButtonText: "Proceed",
+                            confirmButtonText: "Proceed To Sign Up",
                             closeOnConfirm: false, 
                         },
                             function (isConfirm) { 
-                                window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                                 if (isConfirm==true){
+                                     window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                                 }
                             }
-                        );   
-                        if (userID==''){  
-                            window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                        );
                         } else {
-                            window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                        timer(
+                         8000, // milliseconds
+                         function(timeleft) { // called every step to update the visible countdown
+                         document.getElementById('timer').innerHTML = "<b style='color:#00A0E3 !important'>"+timeleft+"</b> second(s)";
+                        },
+                        function() { // what to do after
+                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                    }
+                        );     
+                          swal({
+                                title: "",
+                                html: true,  
+                                text: "Your Application Is Submitted Successfully, You Will Redirected To Dashboard in <span id='timer'></span> For Document and Information Processing on Further Stage, Don't Close The Page",
+                                type:'success',
+                                showCancelButton: false,  
+                                confirmButtonClass: "btn-primary",
+                                confirmButtonText: "Proceed To Dashboard",
+                                closeOnConfirm: false, 
+                            },
+                                function (isConfirm) { 
+                                  if (isConfirm==true){
+                                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                                    }
+                                  }
+                            );
                         }
                     } else {
                         swal({
@@ -1532,11 +1568,6 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
                 $('#loadBtn').hide();
             }
     })
-}
-
-function ajax_response(e)
-{
-    return e;
 }
 JS;
 $this->registerJs($script);
