@@ -30,7 +30,7 @@ $this->registerCss('
 .cd-box-border {
     position: absolute;
     top: 172px;
-    width: 82%;
+    width: 80%;
     z-index: 111;
     box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 20%);
 }
