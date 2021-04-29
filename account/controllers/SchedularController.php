@@ -546,6 +546,17 @@ class SchedularController extends Controller
 
                 } elseif ($data['type'] == 'flexible') {
 
+                    $interview_options = new InterviewOptions();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
+                    $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_options->process_field_enc_id = $data['selected_round'];
+                    array_push($required_data, $interview_options);
+                    if (!$interview_options->save()) {
+                        $transaction->rollback();
+                        return false;
+                    }
+
                     foreach ($candidate_applications as $application_enc_id) {
                         $candidate_data = [];
                         $interview_candidate = new InterviewCandidates();
@@ -813,7 +824,7 @@ class SchedularController extends Controller
 
             $application_process = $this->findApplicationFields($id);
             $all_data['application_process'] = $application_process;
-            $applied_candidates = $this->findAppliedCandidates($id);
+            $applied_candidates = $this->findAppliedCandidates($id, $data['process_field_enc_id']);
             $all_data['applied_candidates'] = $applied_candidates;
 
             $all_data['application_location'] = $application_locations;
@@ -843,7 +854,7 @@ class SchedularController extends Controller
             ->where(['a.scheduled_interview_enc_id' => $s_id])
             ->groupBy('a.scheduled_interview_enc_id')
             ->asArray()
-            ->all();
+            ->one();
 
         return $data;
     }
