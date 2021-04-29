@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+
+$userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
@@ -40,7 +42,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-start">
-                        <form action="" id="myForm">
+                        <form action="" id="myForm" autocomplete="off">
                             <div class="tab" id="step1">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -52,7 +54,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label for="number" class="input-group-text">
                                             Name of Applicant (Student Name)
                                         </label>
-                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -61,7 +63,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                             Date Of Birth (mm/dd/yyyy)
                                         </label>
                                         <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                            <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
+                                            <input value="<?= ($userDetail->dob)?date('m/d/Y', strtotime($userDetail->dob)) : "" ?>" type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
                                             <div class="input-group-addon">
                                                 <span class=""><i class="fas fa-calendar-alt"></i></span>
                                             </div>
@@ -73,7 +75,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                        <input value="<?= ($userDetail->cityEnc->name)?$userDetail->cityEnc->name : "" ?>" type="text" name="location" id="location" class="form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
                                     </div>
                                 </div>
@@ -221,7 +223,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label for="number" class="input-group-text">
                                             Phone Number (WhatsApp & Call)
                                         </label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                        <input value="<?= ($userDetail->phone)? substr($userDetail->phone, -10) : "" ?>" type="text" class="form-control" id="mobile" name="mobile"
                                                placeholder="Enter Phone Number">
                                     </div>
                                 </div>
@@ -230,7 +232,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label for="email" class="input-group-text">
                                             Email Address
                                         </label>
-                                        <input type="text" class="form-control" id="email" name="email"
+                                        <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
@@ -1501,28 +1503,29 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
                 if (status=="captured"){
                     if (e.response.status=='200'){
                        swal({
-                        title: "",
-                        text: "Your Application Is Submitted Successfully",
-                        type:'success',
-                        showCancelButton: false,  
-                        showConfirmButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
+                            title: "",
+                            text: "Your Application Is Submitted Successfully",
+                            type:'success',
+                            showCancelButton: false,  
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Proceed",
+                            closeOnConfirm: false, 
+                        },
                             function (isConfirm) { 
-                             location.reload(true);
-                         });   
-                     if (userID==''){  
-                        window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
-                     }  
-                     }else{
+                                window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                            }
+                        );   
+                        if (userID==''){  
+                            window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                        } else {
+                            window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                        }
+                    } else {
                         swal({
                          title:"Payment Error",
                          text: 'Your Payment Status Will Be Update In 1-2 Business Day',
                       });
-                     }
+                    }
                 }
                 $('#subBtn').show();     
                 $('#prevBtn').show();     
