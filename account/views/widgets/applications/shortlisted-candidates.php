@@ -20,13 +20,13 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                 <div class="short-logo">
                     <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
                         <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
-                        <a href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list" target="_blank">
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
                             <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
                         </a>
                         <?php
                     } else {
                         ?>
-                        <a href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list" target="_blank">
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue open-link-new-tab" target="_blank">
                             <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
                                     color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
                         </a>
@@ -34,7 +34,7 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                     ?>
                 </div>
                 <div class="short-details">
-                    <a href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list" target="_blank">
+                    <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
                         <p class="short-job"><?= $s['name'] ?></p>
                     </a>
                     <p class="short-name"><i class="fa fa-map-marker"></i> <?= $s['city'] ?></p>
@@ -68,8 +68,7 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                     foreach ($s['applications'] as $application) {
                         ?>
                         <tr>
-                            <td><a href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>"
-                                   class="blue question_list" target="_blank"><?= $application['title'] ?></a>
+                            <td><a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
                             </td>
                         </tr>
                     <?php }
@@ -206,6 +205,10 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
+$(document).on('click','.open-link-new-tab', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
     let fontIcon = this.children;
