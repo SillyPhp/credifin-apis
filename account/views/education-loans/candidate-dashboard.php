@@ -6,7 +6,7 @@ use kartik\date\DatePicker;
 $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
-$documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving License'];
+$documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
 ?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
@@ -201,7 +201,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                             <div class="col-md-12 padd-20 text-center">
                                                 <div class="form-group">
                                                     <div id="applicantIDimage0">
-                                                        <label for="applicantIDpic" class="">
+                                                        <label for="applicantIDpic" class="docLabel">
                                                             <div class="idPhoto">
                                                                 <i class="fa fa-cloud-upload"></i>
                                                                 Upload Photo
@@ -250,7 +250,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                             <div class="col-md-12 padd-20 text-center">
                                                 <div class="form-group">
                                                     <div id="applicantIDimage1">
-                                                        <label for="applicantIDTwoPic" class="">
+                                                        <label for="applicantIDTwoPic" class="docLabel">
                                                             <div class="idPhoto">
                                                                 <i class="fa fa-cloud-upload"></i>
                                                                 Upload Photo
@@ -326,6 +326,24 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                    disabled>
                                         </div>
                                     </div>
+                                    <div class="col-md-3 padd-20">
+                                        <div class="form-group ">
+                                            <div class="radio-heading input-group-text">
+                                                Current Address
+                                            </div>
+                                            <ul class="displayInline">
+                                                <li>
+                                                    <label class="checkcontainer" data-field="is_sane_cur_addr">
+                                                        Same As Permanent Address
+                                                        <input class="same_address acntPerAddr" type="checkbox" data-id="currentAddressInformation"
+                                                               id="addrSamePermanent"
+                                                               onchange="hideAddress()">
+                                                        <span class="Ch-checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                             <section id="currentAddressInformation" data-key="" data-type="address"
@@ -384,77 +402,78 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                 </div>
                             </section>
                             <div class="FormDivider"></div>
-                            <div class="row mt10">
-                                <div class="col-md-12">
-                                    <h4 class="cd-heading-3">Education</h4>
+                            <div id="eduFields">
+                                <div class="row mt10">
+                                    <div class="col-md-12">
+                                        <h4 class="cd-heading-3">Education</h4>
+                                    </div>
                                 </div>
+                                <section id="qualificationInformation0" data-key="" data-type="qualification">
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="eduName0" class="input-group-text" data-field="name">
+                                                    Qualification
+                                                </label>
+                                                <input type="text" class="form-control" id="eduName0"
+                                                       placeholder="10th">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="instituteName0" class="input-group-text"
+                                                       data-field="institution">
+                                                    Name Of Institution
+                                                </label>
+                                                <input type="text" class="form-control" id="instituteName0"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20 hidden">
+                                            <div class="form-group">
+                                                <label for="marksObtained0" class="input-group-text"
+                                                       data-field="obtained_marks">
+                                                    Marks Obtained
+                                                </label>
+                                                <input type="text" class="form-control" id="marksObtained0"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section id="qualificationInformation1" data-key="" data-type="qualification">
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="eduName1" class="input-group-text" data-field="name">
+                                                    Qualification
+                                                </label>
+                                                <input type="text" class="form-control" id="eduName1" placeholder="+2">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="instituteName1" class="input-group-text"
+                                                       data-field="institution">
+                                                    Name Of Institution
+                                                </label>
+                                                <input type="text" class="form-control" id="instituteName1"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20 hidden">
+                                            <div class="form-group">
+                                                <label for="marksObtained1" class="input-group-text"
+                                                       data-field="obtained_marks">
+                                                    Marks Obtained
+                                                </label>
+                                                <input type="text" class="form-control" id="marksObtained1"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
-                            <section id="qualificationInformation0" data-key="" data-type="qualification">
-                                <div class="row mt10">
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="eduName0" class="input-group-text" data-field="name">
-                                                Qualification
-                                            </label>
-                                            <input type="text" class="form-control" id="eduName0"
-                                                   placeholder="10th">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="instituteName0" class="input-group-text"
-                                                   data-field="institution">
-                                                Name Of Institution
-                                            </label>
-                                            <input type="text" class="form-control" id="instituteName0"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="marksObtained0" class="input-group-text"
-                                                   data-field="obtained_marks">
-                                                Marks Obtained
-                                            </label>
-                                            <input type="text" class="form-control" id="marksObtained0"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                            <section id="qualificationInformation1" data-key="" data-type="qualification">
-                                <div class="row mt10">
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="eduName1" class="input-group-text" data-field="name">
-                                                Qualification
-                                            </label>
-                                            <input type="text" class="form-control" id="eduName1" placeholder="+2">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="instituteName1" class="input-group-text"
-                                                   data-field="institution">
-                                                Name Of Institution
-                                            </label>
-                                            <input type="text" class="form-control" id="instituteName1"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="marksObtained1" class="input-group-text"
-                                                   data-field="obtained_marks">
-                                                Marks Obtained
-                                            </label>
-                                            <input type="text" class="form-control" id="marksObtained1"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                            <div id="eduFields"></div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="button" id="addEduBtn" class="eduBtn2" onclick="addEduField(this)"
@@ -552,7 +571,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                     </div>
                                 </div>
                                 <div class="row mt10">
-                                    <div class="col-md-4 padd-20">
+                                    <div class="col-md-4 padd-20 hidden">
                                         <div class="form-group">
                                             <label for="yearsOFoccu" class="input-group-text"
                                                    data-field="years_in_current_house">
@@ -675,11 +694,14 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="fIDproof" data-id="coProofInfo">
-                                                        <option>PAN</option>
-                                                        <option>Aadhaar Card</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                        foreach ($documentOptions as $opt){
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -803,7 +825,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                 Occupation
                                             </label>
                                             <select class="form-control field-req" name="mOccupation" id="mOccupation">
-                                                <option>Select One</option>
+                                                <option value="">Select One</option>
                                                 <option value="Home-maker">Home-maker</option>
                                                 <option value="Salaried">Salaried</option>
                                                 <option value="Self-employed">Self-employed</option>
@@ -913,11 +935,14 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                     </label>
                                                     <select class="form-control field-req" name="years"
                                                             id="MIdProof" data-id="coProofInfo">
-                                                        <option>PAN</option>
-                                                        <option>Aadhaar Card</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                        foreach ($documentOptions as $opt){
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -950,7 +975,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                         </div>
                                     </article>
                                 </div>
-                                <div class="row">
+                                <div class="row hidden">
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
                                             <div class="radio-heading input-group-text">
@@ -970,7 +995,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                     </div>
                                 </div>
                             </section>
-                            <section id="siblingInformation" data-key="" data-type="co_applicant"
+                            <section class="hidden" id="siblingInformation" data-key="" data-type="co_applicant"
                                      data-relation="Sibling">
                                 <div class="row mt10" id="siblingInfo">
                                     <div class="col-md-12">
@@ -1193,11 +1218,14 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                     </label>
                                                     <select class="form-control field-req" name="" id="G1ID"
                                                             data-id="coProofInfo">
-                                                        <option>PAN</option>
-                                                        <option>Aadhaar Card</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                        foreach ($documentOptions as $opt){
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1384,11 +1412,14 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                                     </label>
                                                     <select class="form-control field-req" name="years" id="G2ID"
                                                             data-id="coProofInfo">
-                                                        <option>PAN</option>
-                                                        <option>Aadhaar Card</option>
-                                                        <option>Passport</option>
-                                                        <option>Voter ID</option>
-                                                        <option>Driving License</option>
+                                                        <option value="">Select One</option>
+                                                        <?php
+                                                        foreach ($documentOptions as $opt){
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1425,7 +1456,7 @@ $documentOptions = ['Aadhaar Card', 'PAN', 'Passport', 'Voter ID', 'Driving Lice
                                 <button type="button" class="eduBtn eduBtnLight" data-id="parentsProfile"
                                         onclick="activeTab(event)">Previous
                                 </button>
-                                <button type="button" class="eduBtn" onclick="">Update</button>
+                                <button id="sbt2ndForm" type="button" class="eduBtn">Update</button>
                             </div>
                         </div>
                     </div>
@@ -1787,6 +1818,18 @@ $this->registerCss('
 #Father-other-info, #Mother-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
     display:none;
 }
+.form-control[readonly]{
+    background-color: #fff;
+}
+.docLabel{
+    position: relative;
+}
+.docEditIcon{
+    position: absolute;
+    top: -10px;
+    right: -20px;
+    cursor: pointer;
+}
 ');
 $script = <<<JS
 var apiUrl = '/';
@@ -1809,6 +1852,13 @@ function showImage(input, inp_id) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+$(document).on('click','#sbt2ndForm', function() {
+    toastr.success("Updated Successfully...", "Success");
+    setTimeout(function() {
+        window.open('/account/education-loans/candidate-loan-dashboard', '_self');
+    }, 1500);
+})
 
 $(document).on('click','.search-names', function() {
     var ths = $(this);
@@ -1851,7 +1901,12 @@ $(document).on('change','#mOccupation', function() {
 
 $(document).on('change','.same_address', function() {
     var elem = $(this);
-    var value = (elem.is(":checked"))?1:0;
+    var value = "";
+    if(elem.hasClass('acntPerAddr')){
+        value = (elem.is(":checked"))?2:1;
+    } else {
+        value = (elem.is(":checked"))?1:0;
+    }
     updateValue(elem, value);
 });
 
@@ -1930,11 +1985,14 @@ $(document).on('keyup','.typeInput', function() {
 function frontInptValidation(x, type) {
     var regexp = "";
     switch (type){
+        case "obtained_marks" :
+            regexp=/^\d{1,2}(\.\d{1,2})?$/;
+            break;
         case "years_in_current_house" :
             regexp=/^[0-9]{1,3}$/;
             break;
         case "annual_income" :
-            regexp=/^\d{4,7}\.{0,1}$/;
+            regexp=/^\d{4,7}(\.\d{1,2})?$/;
             break;
         case "Aadhaar Card" :
             regexp=/^[2-9]{1}[0-9]{3}\s{0}[0-9]{4}\s{0}[0-9]{4}$/;
@@ -1951,8 +2009,12 @@ function frontInptValidation(x, type) {
         case "email" :
             regexp=/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             break;
+        case "allOthers" :
+            // regexp=/^(?=.*[A-Za-z])[A-Za-z0-9]{1,5}$/;
+            regexp=/^[a-zA-Z0-9!@#$%\^&*)(+=._-\s]{1,255}$/;
+            break;
         default :
-            regexp=/^(?=.*[A-Za-z])[A-Za-z0-9]{3,20}$/;
+            regexp=/^[a-zA-Z0-9!@#$%\^&*)(+=._-\s]{3,20}$/;
     }
     if(regexp.test(x)) {
         return true;
@@ -1960,17 +2022,21 @@ function frontInptValidation(x, type) {
     return false;
 }
 
-function validate_fileupload(file)
+function validate_fileupload(file, type)
 {
     var extValidate = false;
     var fileName = file.name;
     var size=(file.size);
-    console.log(size);
     if(size > 5000000) {
         toastr.error("File should be less than 5MB", "Large File");
         return false;
     }
-    var allowed_extensions = new Array("jpg","jpeg","png","pdf");
+    var allowed_extensions = "";
+    if(type == "applicant"){
+        allowed_extensions = new Array("jpg","jpeg","png");
+    } else {
+        allowed_extensions = new Array("jpg","jpeg","png","pdf");
+    }
     var file_extension = fileName.split('.').pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
@@ -1982,7 +2048,7 @@ function validate_fileupload(file)
     }
 
     if(extValidate == false){
-        toastr.error('Only "jpg","jpeg","png","pdf" Extensions are allowed', "Extension Error");
+        toastr.error('This extension is not allowed', "File Type Error");
     }
     return extValidate;
 }
@@ -2006,10 +2072,21 @@ function updateValue(elem, value){
         } else {
             label_name = elem.prev('label').attr('data-field');
         }
+        if (frontInptValidation(value, "allOthers") == false){
+            toastr.error("characters should be upto 255, allowed characters !@#$%\^&*)(+=._-", "Limit exceeded");
+            elem.focus();
+            return false;
+        }
         if(label_name == "annual_income"){
-            var chkLivingYear = frontInptValidation(value, label_name);
-            if (chkLivingYear == false){
+            if (frontInptValidation(value, label_name) == false){
                 toastr.error("Please enter a valid annual income between 1000 to 9999999", "Annual Income");
+                elem.focus();
+                return false;
+            }
+        }
+        if(label_name == "obtained_marks"){
+            if (frontInptValidation(value, label_name) == false){
+                toastr.error("Please enter a valid marks in percentage upto 99.99", "Obtained Marks");
                 elem.focus();
                 return false;
             }
@@ -2108,6 +2185,9 @@ function updateValue(elem, value){
                     removeIcons();
                     if(res.response.status == 200){
                         $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
+                        setTimeout(function() {
+                            removeIcons();
+                        }, 3000);
                         objData[inptId] = value;
                         mainSection.attr('data-key', res.response.id);
                         if(data['type'] == 'co_applicant'){
@@ -2185,6 +2265,10 @@ $(document).ready(function() {
                 if(per_addr != ""){
                     $('#permanentAddressInformation').attr('data-key',per_addr.loan_app_res_info_enc_id);
                     $('#houseNo').val(per_addr.address);
+                    if(per_addr.is_sane_cur_addr == 2){
+                        $('#addrSamePermanent').prop('checked',true);
+                        $('#currentAddressInformation').hide();
+                    }
                     objData.houseNo = per_addr.address;
                     if(per_addr.state_name){
                         $('#paState').val(per_addr.state_name);
@@ -2227,7 +2311,7 @@ $(document).ready(function() {
                 var acntIDNum = "";
                 var acntIDImg = "";
                 var acntChangeElem = "";
-                console.log(loanCertificates);
+                var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
                 $.each(loanCertificates,function(i, v) {
                     $('#idProofInformation' + i).attr('data-key',v.certificate_enc_id);
                     acntIdName =  "applicantID" + i;
@@ -2248,7 +2332,13 @@ $(document).ready(function() {
                     objData[acntIDNum] = v.number;
                     if(v.image){
                         acntIDImg =  "applicantIDimage" + i;
-                        $('#' + acntIDImg).children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');;
+                        var fileName = v.image;
+                        var file_extension = fileName.split('.').pop().toLowerCase();
+                        if(file_extension == "pdf"){
+                            $('#' + acntIDImg).children('label').html(docEditIcon + '<i class="fa fa-file-pdf-o" style="font-size: 30px;"></i>');;
+                        } else {
+                            $('#' + acntIDImg).children('label').html(docEditIcon + '<img height="50px" width="50px" src="'+v.image+'" />');;
+                        }
                         objData[acntIDImg] = v.image;
                     }
                 });
@@ -2491,7 +2581,11 @@ function readURL(input) {
 
  $(document).on('change','input:file', function(e) {
     var elem = $(this);
-    var validateFile = validate_fileupload(e.target.files[0]);
+    var section = elem.closest('section');
+    var relation = section.attr('data-relation');
+    var key = section.attr('data-key');
+    var type = section.attr('data-type');
+    var validateFile = validate_fileupload(e.target.files[0], type);
     if(validateFile == false){
         elem.val("");
         return false;
@@ -2505,10 +2599,6 @@ function readURL(input) {
              // console.log(files[i]);
              // formData.append("files[" + i + "]", files[i]);   
          // }
-         var section = elem.closest('section');
-         var relation = section.attr('data-relation');
-         var key = section.attr('data-key');
-         var type = section.attr('data-type');
          formData.append("upload_file", 'test');
          formData.append("user_enc_id", user_enc_id);
          formData.append("loan_app_id", loan_app_id);
@@ -2578,7 +2668,7 @@ $this->registerJS($script);
 ?>
 <script>
     function eduTemp(edu_count) {
-        return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
+        return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
     }
 
     function addEduField(ths) {
@@ -2592,6 +2682,9 @@ $this->registerJS($script);
         eduFields.appendChild(newFields)
         count++;
         ths.setAttribute('data-count', count);
+        if(count >= 3){
+            ths.setAttribute('style', 'display:none');
+        }
     }
 
     function hideAddress() {

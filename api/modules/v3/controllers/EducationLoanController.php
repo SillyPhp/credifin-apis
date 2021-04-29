@@ -372,7 +372,7 @@ class EducationLoanController extends ApiBaseController
                 $f->orderBy(['f.created_on' => SORT_ASC]);
             }])
             ->joinWith(['loanApplicantResidentialInfos g' => function ($g) {
-                $g->select(['g.loan_app_res_info_enc_id', 'g.loan_app_enc_id', 'g.loan_co_app_enc_id', 'g.residential_type', 'g.type', 'g.address', 'g.city_enc_id', 'g.state_enc_id', 'g1.name state_name', 'g2.name city_name']);
+                $g->select(['g.loan_app_res_info_enc_id', 'g.is_sane_cur_addr', 'g.loan_app_enc_id', 'g.loan_co_app_enc_id', 'g.residential_type', 'g.type', 'g.address', 'g.city_enc_id', 'g.state_enc_id', 'g1.name state_name', 'g2.name city_name']);
                 $g->joinWith(['stateEnc g1'], false);
                 $g->joinWith(['cityEnc g2'], false);
                 $g->onCondition(['g.is_deleted' => 0]);
@@ -652,6 +652,7 @@ class EducationLoanController extends ApiBaseController
                 ->one();
 
             if ($update_res_info) {
+                $update_res_info->is_sane_cur_addr = $params['is_sane_cur_addr'] ? $params['is_sane_cur_addr'] : $update_res_info->residential_type;
                 $update_res_info->residential_type = $params['address_type'] ? $params['address_type'] : $update_res_info->residential_type;
                 $update_res_info->type = ($params['res_type'] != null) ? $params['res_type'] : $update_res_info->type;
                 $update_res_info->address = $params['address'] ? $params['address'] : $update_res_info->address;
