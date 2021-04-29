@@ -108,7 +108,6 @@ html {
     font-family: roboto;
     color: #000;
     font-size: 24px;
-    font-weight: 600;
 }
 .teacher {
     display: flex;
@@ -116,15 +115,15 @@ html {
     flex-wrap: wrap;
 }
 .teacher-img {
-    text-align: center;
+    text-align: right;
+}
+.teacher-txt {
+    text-align: left;
 }
 .org-colr {
     color: #ff7803;
     font-size: 60px;
     font-family: lora;
-}
-.teacher-txt{
-    text-align: center;
 }
 .bg-white{
     background-color: #fff;
