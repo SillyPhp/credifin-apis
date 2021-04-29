@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 ?>
 <div class="container">
-    <h3 class="heading-style">Why Choose EmpowerYouth</h3>
+    <h3 class="heading-style">Why Choose Teacher's Loan</h3>
     <div class="row">
         <div class="col-md-6 col-sm-12">
             <div class="detail-div">
@@ -48,14 +48,14 @@ use yii\helpers\Url;
                         Transparency
                     </div>
                 </li>
-                <!--                <li>-->
-                <!--                    <div class="clickedItem"-->
-                <!--                         data-value="Interest paid on teacher loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help to lower down the financial burden."-->
-                <!--                         data-img="--><?//= Url::to('@eyAssets/images/pages/education-loans/tax.png')?><!--">-->
-                <!--                        <i class="fas fa-rupee-sign"></i>-->
-                <!--                        Tax benefits-->
-                <!--                    </div>-->
-                <!--                </li>-->
+                                <li>
+                                    <div class="clickedItem"
+                                         data-value="Interest paid on teacher loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help to lower down the financial burden."
+                                         data-img="<?= Url::to('@eyAssets/images/pages/education-loans/tax.png')?>">
+                                        <i class="fas fa-rupee-sign"></i>
+                                        Tax benefits
+                                    </div>
+                                </li>
                 <li>
                     <div class="clickedItem"
                          data-value="Empower Youth harnesses the power of AI and data science to provide you with the optimum personal loan that will best suit your needs."

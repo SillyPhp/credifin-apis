@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row disFlex">
             <div class="col-md-4 col-sm-12 col-xs-12">
-                <h3 class="loan-style">Benefits of<br> taking <span class="cBlue">Teacher</span> <span class="cOrange">Loan</span> </h3>
+                <h3 class="loan-style">We are here<br> to <span class="cBlue">ease</span> your<br> <span class="cOrange">loan</span> process </h3>
                 <hr>
                 <div class="applyLink">
                     <a href="/education-loans/loan-for-teachers/apply" class="apply-btn">Apply Now <i class="fas fa-arrow-right"></i></a>
@@ -90,11 +90,11 @@ hr{
     flex-wrap: wrap;
 }
 .loan-style{
-    font-size: 35px;
+    font-size: 40px;
     line-height: 50px;
     text-transform: capitalize;
     font-weight: 400;
-    font-family: lobster;
+    font-family: Roboto;
 }
 .cBlue{
     color: #00a0e3;

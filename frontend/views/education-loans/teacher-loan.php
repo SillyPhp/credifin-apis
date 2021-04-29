@@ -11,6 +11,7 @@ use borales\extensions\phoneInput\PhoneInput;
             <div class="col-md-6 col-sm-6">
                 <div class="teacher-txt">
                     <h1>QUICK LOANS FOR<br><span class="org-colr"> TEACHERS</span></h1>
+                    <p>Helping educators to meet their financial goals.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                         <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now">Apply Now</a></li>
@@ -102,6 +103,12 @@ use borales\extensions\phoneInput\PhoneInput;
 $this->registerCss('
 html {
   scroll-behavior: smooth;
+}
+.teacher-txt p {
+    font-family: roboto;
+    color: #000;
+    font-size: 24px;
+    font-weight: 600;
 }
 .teacher {
     display: flex;
@@ -567,6 +574,9 @@ label {
 @media only screen and (max-width: 600px) and (min-width:320px){
 .teacher-img {
     display: none;
+}
+.why-des {
+    margin-top: 15px;
 }
 }
 ');
