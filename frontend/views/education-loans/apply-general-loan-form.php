@@ -75,8 +75,10 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input value="<?= ($userDetail->cityEnc->name)?$userDetail->cityEnc->name : "" ?>" type="text" name="location" id="location" class="form-control text-capitalize"
+                                        <div id="the-basics-city">
+                                        <input value="<?= ($userDetail->cityEnc->name)?$userDetail->cityEnc->name : "" ?>" type="text" name="location" id="location" class="typeahead form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -926,6 +928,37 @@ width:100% !important;
 
 ');
 $script = <<< JS
+function getCities()
+    {
+        var _cities = [];
+         $.ajax({     
+            url : '/api/v3/countries-list/get-cities', 
+            method : 'GET',
+            data:{'country':'India'},
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.cities;
+                $.each(res,function(index,value) 
+                  {   
+                   _cities.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('cities could not fetch');
+                }
+            } 
+        });
+        $('#the-basics-city .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_cities',
+         source: substringMatcher(_cities)
+        }); 
+    }
+getCities();  
 function timer(time,update,complete) {
     var start = new Date().getTime();
     var interval = setInterval(function() {
