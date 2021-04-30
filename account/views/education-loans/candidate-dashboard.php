@@ -7,6 +7,7 @@ $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
 $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
+$occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
 ?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
@@ -267,13 +268,13 @@ $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
                             </div>
 
                             <div class="FormDivider"></div>
-                            <div class="row mt10">
-                                <div class="col-md-12">
-                                    <h4 class="cd-heading-3">Residential Information</h4>
-                                </div>
-                            </div>
                             <section id="permanentAddressInformation" data-key="" data-type="address"
-                                     data-address-type="0">
+                                     data-address-type="0" hidden>
+                                <div class="row mt10">
+                                    <div class="col-md-12">
+                                        <h4 class="cd-heading-3">Residential Information</h4>
+                                    </div>
+                                </div>
                                 <div class="row mt10 addressType">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group">
@@ -408,76 +409,11 @@ $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
                                         <h4 class="cd-heading-3">Education</h4>
                                     </div>
                                 </div>
-                                <section id="qualificationInformation0" data-key="" data-type="qualification">
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="eduName0" class="input-group-text" data-field="name">
-                                                    Qualification
-                                                </label>
-                                                <input type="text" class="form-control" id="eduName0"
-                                                       placeholder="10th">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="instituteName0" class="input-group-text"
-                                                       data-field="institution">
-                                                    Name Of Institution
-                                                </label>
-                                                <input type="text" class="form-control" id="instituteName0"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20 hidden">
-                                            <div class="form-group">
-                                                <label for="marksObtained0" class="input-group-text"
-                                                       data-field="obtained_marks">
-                                                    Marks Obtained
-                                                </label>
-                                                <input type="text" class="form-control" id="marksObtained0"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-                                <section id="qualificationInformation1" data-key="" data-type="qualification">
-                                    <div class="row mt10">
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="eduName1" class="input-group-text" data-field="name">
-                                                    Qualification
-                                                </label>
-                                                <input type="text" class="form-control" id="eduName1" placeholder="+2">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20">
-                                            <div class="form-group">
-                                                <label for="instituteName1" class="input-group-text"
-                                                       data-field="institution">
-                                                    Name Of Institution
-                                                </label>
-                                                <input type="text" class="form-control" id="instituteName1"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 padd-20 hidden">
-                                            <div class="form-group">
-                                                <label for="marksObtained1" class="input-group-text"
-                                                       data-field="obtained_marks">
-                                                    Marks Obtained
-                                                </label>
-                                                <input type="text" class="form-control" id="marksObtained1"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="button" id="addEduBtn" class="eduBtn2" onclick="addEduField(this)"
-                                            data-count="2">Add More
+                                            data-count="0">Add More
                                     </button>
                                 </div>
                             </div>
@@ -587,8 +523,16 @@ $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
                                                    data-field="occupation">
                                                 Occupation
                                             </label>
-                                            <input type="text" class="form-control" id="fOccupation"
-                                                   placeholder="">
+                                            <select class="form-control field-req" name="fOccupation" id="fOccupation">
+                                                <option value="">Select One</option>
+                                                <?php
+                                                foreach ($occupationOptions as $opt){
+                                                    ?>
+                                                    <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 padd-20">
@@ -826,9 +770,13 @@ $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
                                             </label>
                                             <select class="form-control field-req" name="mOccupation" id="mOccupation">
                                                 <option value="">Select One</option>
-                                                <option value="Home-maker">Home-maker</option>
-                                                <option value="Salaried">Salaried</option>
-                                                <option value="Self-employed">Self-employed</option>
+                                                <?php
+                                                foreach ($occupationOptions as $opt){
+                                                    ?>
+                                                    <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                    <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
@@ -1833,23 +1781,27 @@ $this->registerCss('
 ');
 $script = <<<JS
 var apiUrl = '/';
+var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
 if(document.domain != 'empoweryouth.com'){
     apiUrl = 'https://sneh.eygb.me/';
 }
-function showImage(input, inp_id) {
+function showImage(input, inp_id, file_extension) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
-
-        reader.onload = function (e) {
-            var img = $('#'+inp_id).find('img');
-            if(img.length){
-                img.attr('src',e.target.result);
-            } else {
-                $('#'+inp_id).find('label').html('<img src="'+e.target.result+'" height="50px" width="50px">')
+        if(file_extension == "pdf"){
+            // $('#'+inp_id).find('label').html('<img src="'+e.target.result+'" height="50px" width="50px">')
+            $('#'+inp_id).find('label').html(docEditIcon + '<i class="fa fa-file-pdf-o" style="font-size: 30px;"></i>');;
+        } else {
+            reader.onload = function (e) {
+                var img = $('#'+inp_id).find('img');
+                if(img.length){
+                    img.attr('src',e.target.result);
+                } else {
+                    $('#'+inp_id).find('label').html(docEditIcon + '<img src="'+e.target.result+'" height="50px" width="50px">')
+                }
             }
+            reader.readAsDataURL(input.files[0]);
         }
-
-        reader.readAsDataURL(input.files[0]);
     }
 }
 
@@ -1893,7 +1845,7 @@ $(document).on('change','#applicantID1', function() {
 });
 
 
-$(document).on('change','#mOccupation', function() {
+$(document).on('change','#mOccupation, #fOccupation', function() {
     var elem = $(this);
     var value = elem.val();
     updateValue(elem, value);
@@ -2042,7 +1994,7 @@ function validate_fileupload(file, type)
     {
         if(allowed_extensions[i]==file_extension)
         {
-            extValidate = true; // valid file extension
+            extValidate = file_extension; // valid file extension
             break;
         }
     }
@@ -2311,7 +2263,6 @@ $(document).ready(function() {
                 var acntIDNum = "";
                 var acntIDImg = "";
                 var acntChangeElem = "";
-                var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
                 $.each(loanCertificates,function(i, v) {
                     $('#idProofInformation' + i).attr('data-key',v.certificate_enc_id);
                     acntIdName =  "applicantID" + i;
@@ -2343,24 +2294,38 @@ $(document).ready(function() {
                     }
                 });
                 var qualifications = data.loanCandidateEducations;
+                var acntEduImg = "";
                 var acntEduName = "";
                 var acntInsName = "";
                 var acntMarksObt = "";
-                $.each(qualifications, function(i, v) {
-                    if(i > 1){
+                if(qualifications.length > 0){
+                    $.each(qualifications, function(i, v) {
                         $('#addEduBtn').click();
-                    }
-                    $('#qualificationInformation' + i).attr('data-key',v.loan_candidate_edu_enc_id);
-                    acntEduName =  "eduName" + i;
-                    $('#' + acntEduName).val(v.name);
-                    objData[acntEduName] = v.name;
-                    acntInsName =  "instituteName" + i;
-                    $('#' + acntInsName).val(v.institution);
-                    objData[acntInsName] = v.institution;
-                    acntMarksObt =  "marksObtained" + i;
-                    $('#' + acntMarksObt).val(v.obtained_marks);
-                    objData[acntMarksObt] = v.obtained_marks;
-                });
+                        $('#qualificationInformation' + i).attr('data-key',v.loan_candidate_edu_enc_id);
+                        acntEduName =  "eduName" + i;
+                        $('#' + acntEduName).val(v.name);
+                        objData[acntEduName] = v.name;
+                        acntInsName =  "instituteName" + i;
+                        $('#' + acntInsName).val(v.institution);
+                        objData[acntInsName] = v.institution;
+                        acntMarksObt =  "marksObtained" + i;
+                        $('#' + acntMarksObt).val(v.obtained_marks);
+                        objData[acntMarksObt] = v.obtained_marks;
+                        if(v.image){
+                            acntEduImg =  "educationCertFile" + i;
+                            var fileName = v.image;
+                            var file_extension = fileName.split('.').pop().toLowerCase();
+                            if(file_extension == "pdf"){
+                                $('#' + acntEduImg).children('label').html(docEditIcon + '<i class="fa fa-file-pdf-o" style="font-size: 30px;"></i>');;
+                            } else {
+                                $('#' + acntEduImg).children('label').html(docEditIcon + '<img height="50px" width="50px" src="'+v.image+'" />');;
+                            }
+                            objData[acntEduImg] = v.image;
+                        }
+                    });
+                } else {
+                    $('#addEduBtn').click();
+                }
                 $.each(data.loanCoApplicants, function(k,v) {
                     var residenceInfo = v.loanApplicantResidentialInfos[0];
                     if(typeof residenceInfo === "undefined"){
@@ -2585,8 +2550,9 @@ function readURL(input) {
     var relation = section.attr('data-relation');
     var key = section.attr('data-key');
     var type = section.attr('data-type');
-    var validateFile = validate_fileupload(e.target.files[0], type);
-    if(validateFile == false){
+    var file_extension = validate_fileupload(e.target.files[0], type);
+    
+    if(file_extension == false){
         elem.val("");
         return false;
     }
@@ -2645,14 +2611,17 @@ function readURL(input) {
             },
              success: function(res) {
                 removeIcons();
-                 if(res.response.status == 200){
-                     mainSection.attr('data-key', res.response.id);
-                     var inp_id = elem.prev().attr('id');
-                     showImage(elem[0], inp_id);
-                     $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
-                 } else {
+                if(res.response.status == 200){
+                    mainSection.attr('data-key', res.response.id);
+                    var inp_id = elem.prev().attr('id');
+                    showImage(elem[0], inp_id, file_extension);
+                    $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
+                    setTimeout(function() {
+                        removeIcons();
+                    }, 3000);
+                } else {
                      $('<i class="fa fa-exclamation-triangle error_icon"></i>').insertAfter(elem);
-                 }
+                }
                  $('#fadder').fadeOut();
              }
          });
@@ -2667,8 +2636,44 @@ JS;
 $this->registerJS($script);
 ?>
 <script>
+        // eduTemp(0);
+        // eduTemp(1);
+    // for (var i=0; i>3; i++){
+    //     eduTemp(i);
+    // }
     function eduTemp(edu_count) {
-        return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
+        // return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
+        return '<div class="row mt10">' +
+            '<div class="col-md-4 padd-20">' +
+            '<div class="form-group">' +
+            '<label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label>' +
+            '<input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name">' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-md-4 padd-20 hidden">' +
+            '<div class="form-group">' +
+            '<label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label>' +
+            '<input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder="">' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-md-4 padd-20 hidden">' +
+            '<div class="form-group">' +
+            '<label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label>' +
+            '<input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder="">' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-md-4 padd-20 text-center">' +
+            '<div class="form-group">' +
+            '<div id="educationCertFile' + edu_count + '">' +
+            '<label for="eduCertificateFile' + edu_count + '" class="docLabel">' +
+            '<div class="idPhoto">' +
+            '<i class="fa fa-cloud-upload"></i>Upload Photo ' +
+            '</div>' +
+            '</label>' +
+            '</div>' +
+            '<input type="file" class="form-control idProof-input" id="eduCertificateFile' + edu_count + '" placeholder="">' +
+            '</div>' +
+            '</div></div>';
     }
 
     function addEduField(ths) {
