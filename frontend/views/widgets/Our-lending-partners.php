@@ -79,7 +79,8 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .lending-bg {
-    background-color: #f7f7f7;
+    background-color: #fff;
+    padding-bottom: 20px;
 }
 .lp-name {
     text-transform: capitalize;

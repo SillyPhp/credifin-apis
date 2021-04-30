@@ -1,14 +1,18 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 ?>
-<?php foreach ($shortlistedApplicants as $s) { ?>
+
+<?php Pjax::begin(['id' => 'shortlisted-candidates']);
+foreach ($shortlistedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="short-main">
             <div class="remove-btn">
-                <button type="button" class="j-closedd tt" data-toggle="tooltip"
-                        data-original-title="Remove Candidate">
+                <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
+                        data-original-title="Remove Candidate"
+                        data-id="<?= $s['shortlisted_applicant_enc_id'] ?>">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
             </div>
@@ -16,16 +20,23 @@ use yii\helpers\Url;
                 <div class="short-logo">
                     <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
                         <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
-                        <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
+                            <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
+                        </a>
                         <?php
                     } else {
                         ?>
-                        <canvas class="user-icon img-circle" name="<?= $s['name'] ?>" color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue open-link-new-tab" target="_blank">
+                            <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
+                                    color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
+                        </a>
                     <?php }
                     ?>
                 </div>
                 <div class="short-details">
-                    <p class="short-job"><?= $s['name'] ?></p>
+                    <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
+                        <p class="short-job"><?= $s['name'] ?></p>
+                    </a>
                     <p class="short-name"><i class="fa fa-map-marker"></i> <?= $s['city'] ?></p>
                 </div>
             </div>
@@ -38,13 +49,14 @@ use yii\helpers\Url;
                 } ?>
             </ul>
             <div class="slide-btn">
-                <button class="slide-bttn" type="button" data-toggle="collapse" data-target="#<?= $s['candidate_enc_id']?>">
+                <button class="slide-bttn" type="button" data-toggle="collapse"
+                        data-target="#<?= $s['candidate_enc_id'] ?>">
                     <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
                        title="" data-original-title="View Applications"></i>
                 </button>
             </div>
         </div>
-        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id']?>">
+        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id'] ?>">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -56,7 +68,7 @@ use yii\helpers\Url;
                     foreach ($s['applications'] as $application) {
                         ?>
                         <tr>
-                            <td><a href="<?= Url::to('/'.$type.'/'.$application['slug'])  ?>" class="blue question_list" target="_blank"><?= $application['title'] ?></a>
+                            <td><a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
                             </td>
                         </tr>
                     <?php }
@@ -65,7 +77,8 @@ use yii\helpers\Url;
             </table>
         </div>
     </div>
-<?php } ?>
+<?php }
+Pjax::end(); ?>
 
 <?php
 $this->registerCss('
@@ -75,6 +88,7 @@ $this->registerCss('
     position: relative;
     transition: all .3s;
     border-radius: 6px;
+    z-index:1;
 }
 .short-main:hover .remove-btn{opacity:1;}
 .short-main:hover{
@@ -191,10 +205,38 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
+$(document).on('click','.open-link-new-tab', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 $(document).on('click','.slide-bttn',function(){
     $(this).parentsUntil('.pr-user-main').parent().next('.cd-box-border-hide').slideToggle('slow');
     let fontIcon = this.children;
     fontIcon[0].classList.toggle('rotate180');    
+    
+});
+
+$(document).on('click','.remove-candidate',function (e){
+    e.preventDefault()
+    let id = $(this).attr('data-id');
+    
+    $.ajax({
+            url: "/candidates/remove-shortlisted-candidate",
+            method: "POST",
+            data: {shortlisted_applicant_enc_id:id},
+            beforeSend:function(){
+                $("#page-loading").fadeIn(1000);
+            },
+            success: function (response) {
+                $("#page-loading").fadeOut(1000);
+                if (response.status == 200) {
+                    $.pjax.reload({container: '#shortlisted-candidates', async: false});
+                    toastr.success(response.message, 'success');
+                } else {
+                    toastr.error(response.message, 'error');
+                }
+            }
+        });
     
 });
 JS;

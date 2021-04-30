@@ -6,6 +6,7 @@ use account\models\applications\ApplicationReminderForm;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
+use common\models\Interviewers;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
@@ -744,6 +745,7 @@ class DashboardController extends Controller
                     WHEN a.interview_mode = 2 THEN m.name
                     END) as interview_at',
                 'q.name interview_type',
+                'c.field_name round'
             ])
             ->innerJoinWith(['interviewOptions b' => function ($b) {
                 $b->innerJoinWith(['processFieldEnc c' => function ($c) {
@@ -770,6 +772,10 @@ class DashboardController extends Controller
                     $l->joinWith(['cityEnc m'], false);
                 }], false);
             }], false)
+            ->joinWith(['interviewers rr' => function ($r) {
+                $r->select(['rr.interviewer_enc_id', 'rr.scheduled_interview_enc_id', 'r1.name', 'r1.email', 'r1.phone']);
+                $r->joinWith(['interviewerDetails r1'], false);
+            }])
             ->where(new \yii\db\Expression('`e`.`current_round` = `c`.`sequence`'))
             ->andWhere(new \yii\db\Expression('`e`.`application_enc_id` = `a`.`application_enc_id`'))
             ->andWhere(['e.created_by' => Yii::$app->user->identity->user_enc_id])
@@ -816,7 +822,8 @@ class DashboardController extends Controller
                 'a.applied_application_enc_id',
                 'a.interview_candidate_enc_id',
                 'a.status',
-                'z.designation'
+                'z.designation',
+                'g2.field_name round'
             ])
             ->joinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
@@ -838,6 +845,9 @@ class DashboardController extends Controller
                     $h->joinWith(['locationEnc i' => function ($i) {
                         $i->joinWith(['cityEnc j']);
                     }]);
+                }], false);
+                $g->joinWith(['interviewOptions g1' => function ($g1) {
+                    $g1->joinWith(['processFieldEnc g2']);
                 }], false);
             }], true)
             ->where(['q.name' => 'flexible'])
@@ -894,6 +904,8 @@ class DashboardController extends Controller
                 $fixed_data['applied_application_enc_id'] = $f['applied_application_enc_id'];
                 $fixed_data['process_field_enc_id'] = $f['process_field_enc_id'];
                 $fixed_data['status'] = $f['status'];
+                $fixed_data['round'] = $f['round'];
+                $fixed_data['interviewers'] = $f['interviewers'];
                 foreach ($f['interviewDates'] as $dd) {
                     $d['date'] = $dd['interview_date'];
                     foreach ($dd['interviewDateTimings'] as $t) {
@@ -941,6 +953,15 @@ class DashboardController extends Controller
                 $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
                 $data['process_field_enc_id'] = $f['process_field_enc_id'];
                 $data['status'] = $f['status'];
+                $data['round'] = $f['round'];
+                $interviewers = Interviewers::find()
+                    ->alias('a')
+                    ->select(['a.interviewer_enc_id', 'a.scheduled_interview_enc_id', 'b.name', 'b.email', 'b.phone'])
+                    ->joinWith(['interviewerDetails b'], false)
+                    ->where(['a.scheduled_interview_enc_id' => $f['scheduled_interview_enc_id']])
+                    ->asArray()
+                    ->all();
+                $data['interviewers'] = $interviewers;
                 foreach ($f['scheduledInterviewEnc']['interviewDates'] as $dd) {
                     $d['date'] = $dd['interview_date'];
                     foreach ($dd['interviewDateTimings'] as $t) {

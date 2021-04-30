@@ -348,7 +348,7 @@ foreach ($fields as $f) {
                 $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
                 ?>
                 <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
-                    data-id="<?= $p['applied_application_enc_id'] ?>">
+                    data-id="<?= $arr['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
                         <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
@@ -371,7 +371,7 @@ foreach ($fields as $f) {
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
+                                <form class="reasonsForm" id="<?= $arr['applied_application_enc_id'] . 'reasonForm' ?>">
                                     <p>Reason for rejection</p>
                                     <ul class="rejectReasonsList">
                                         <?php
@@ -381,10 +381,10 @@ foreach ($fields as $f) {
                                                 <div class="reasonsReject">
                                                     <input type="checkbox"
                                                            value="<?= $reason['rejection_reason_enc_id'] ?>"
-                                                           name="<?= $p['applied_application_enc_id'] . 'reasons' ?>"
-                                                           id="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"
+                                                           name="<?= $arr['applied_application_enc_id'] . 'reasons' ?>"
+                                                           id="<?= $reason['rejection_reason_enc_id'] . $arr['applied_application_enc_id'] ?>"
                                                            class="">
-                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
+                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $arr['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
                                                 </div>
                                             </li>
                                             <?php
@@ -405,26 +405,26 @@ foreach ($fields as $f) {
                             </div>
                             <div class="rejectReason rejectType"
                                  id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
+                                <form class="reasonsType" id="<?= $arr['applied_application_enc_id'] . 'reasonType' ?>">
                                     <p>Rejection Type</p>
                                     <ul>
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="1"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'permanent' ?>"
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'permanent' ?>">Permanent
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Permanent
                                                     Reject</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="2"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'consider' ?>"
                                                        onclick="showJobsModal()" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'consider' ?>">Consider
                                                     For Other Job</label>
                                                 <!--                                                <button type="button" class="showJobs" >-->
                                                 <!--                                                    Consider For Other Job-->
@@ -434,9 +434,9 @@ foreach ($fields as $f) {
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="3"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'save' ?>" class="">
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'save' ?>">Save For
                                                     Later</label>
                                             </div>
                                         </li>
@@ -2373,8 +2373,9 @@ $(document).on('click','.sendReasons', function(e){
             if(data==true) {
                 btn.hide();
                 $.pjax.reload({container: '#pjax_process', async: false});
-                  setTimeout(function() {
-                    hiring_process();
+                   setTimeout(function() {
+                    hiring_process(); 
+                    utilities.initials();
                   }, 100)
             }
             else {
