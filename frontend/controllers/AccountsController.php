@@ -66,15 +66,12 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-                $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
-                if (Yii::$app->user->identity->organization)
-                {
-                    return $this->redirect('/account/dashboard');
-                }
+                $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',
@@ -88,22 +85,20 @@ class AccountsController extends Controller
                 ];
             }
         }
-        if (!Yii::$app->session->has("backURL")) {
-            Yii::$app->session->set("backURL", Yii::$app->request->referrer);
-        }
+
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
+            if (!Yii::$app->session->has("backURL")) {
+                Yii::$app->session->set("backURL", Yii::$app->request->referrer);
+            }
+            $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            if (Yii::$app->user->identity->organization)
-            {
-                $backUrl = Yii::$app->session->get("backURL");
-                if($backUrl){
-                    return $this->redirect(Yii::$app->session->get("backURL"));
-                }
-                Yii::$app->session->set("backURL", '/account/dashboard');
+            $backUrl = Yii::$app->session->get("backURL");
+            if ($backUrl) {
+                return $this->redirect($backUrl);
             }
+            Yii::$app->session->set("backURL", '/account/dashboard');
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
 
@@ -118,7 +113,7 @@ class AccountsController extends Controller
         return $this->redirect('/login');
     }
 
-    public function actionSignup($type,$loan_id_ref=null)
+    public function actionSignup($type, $loan_id_ref = null)
     {
 
         if (!Yii::$app->user->isGuest) {
@@ -131,9 +126,9 @@ class AccountsController extends Controller
 
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
-            $loan_ref = LoanApplications::find()->where(['loan_app_enc_id'=>$loan_id_ref,'created_by'=>null])->exists();
+            $loan_ref = LoanApplications::find()->where(['loan_app_enc_id' => $loan_id_ref, 'created_by' => null])->exists();
             if (!empty($loan_id_ref)) {
-                if ($loan_ref){
+                if ($loan_ref) {
                     $cookies = Yii::$app->response->cookies;
                     $cookies->add(new \yii\web\Cookie([
                         'name' => 'loan_id_ref',
@@ -274,7 +269,7 @@ class AccountsController extends Controller
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
-            } elseif($model->forgotPassword() === 'User Not Exist') {
+            } elseif ($model->forgotPassword() === 'User Not Exist') {
                 return $this->render('/site/message', [
                     'message' => 'Enter Valid Email Address.'
                 ]);
