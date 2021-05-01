@@ -674,7 +674,7 @@ class SchedularController extends Controller
         return $type->interview_type_enc_id;
     }
 
-    public function actionUpdateInterview()
+    public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('update');

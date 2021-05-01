@@ -1604,13 +1604,21 @@ class InternshipsController extends Controller
         return $applied_users;
     }
 
+    public function actionShortlistedCandidates()
+    {
+        return $this->render('list/shortlisted-candidates', [
+            'shortlistedApplicants' => $this->shortlistedApplicants()
+        ]);
+
+    }
+
     private function shortlistedApplicants($limit = null)
     {
         $shortlistedApplicants = ShortlistedApplicants::find()
             ->alias('a')
             ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
                 'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
-                'b3.name city'
+                'b3.name city', 'b.username'
             ])
             ->joinWith(['candidateEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b3'], false);
@@ -1620,6 +1628,7 @@ class InternshipsController extends Controller
             }], false)
             ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'f.name' => 'Internships'])
             ->groupBy(['a.candidate_enc_id']);
+        $count = $shortlistedApplicants->count();
         if ($limit != null) {
             $shortlistedApplicants->limit($limit);
         }
@@ -1659,6 +1668,6 @@ class InternshipsController extends Controller
 
         }
 
-        return $shortlistedApplicants;
+        return ['data' => $shortlistedApplicants, 'count' => $count];
     }
 }

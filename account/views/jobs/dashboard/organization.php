@@ -264,7 +264,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </div>
                 <?php }
                 ?>
-                <?php if ($shortlistedApplicants) { ?>
+                <?php if ($shortlistedApplicants['count'] > 0) { ?>
                     <div class="col-lg-12 col-xs-12 col-sm-12">
                         <div class="portlet light nd-shadow">
                             <div class="portlet-title">
@@ -274,22 +274,28 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                                 data-toggle="tooltip" title="shortlisted candidates"><i
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
-                                <div class="actions">
-<!--                                    <div class="set-im">-->
-<!--                                        <a href="--><?//= Url::toRoute('/internships'); ?><!--" data-toggle="tooltip"-->
-<!--                                           title="View All">-->
-<!--                                            <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?><!--"></a>-->
-<!--                                    </div>-->
-                                </div>
+                                <?php if ($shortlistedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('shortlisted-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
                             </div>
+
                             <div class="portlet-body">
+
                                 <div class="row">
                                     <?= $this->render('/widgets/applications/shortlisted-candidates', [
                                         'shortlistedApplicants' => $shortlistedApplicants,
-                                        'type' =>'job'
+                                        'type' => 'job'
                                     ]); ?>
                                 </div>
+
                             </div>
+
                         </div>
                     </div>
                 <?php } ?>
