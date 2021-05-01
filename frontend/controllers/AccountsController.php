@@ -98,6 +98,10 @@ class AccountsController extends Controller
             }
             if (Yii::$app->user->identity->organization)
             {
+                $backUrl = Yii::$app->session->get("backURL");
+                if($backUrl){
+                    return $this->redirect(Yii::$app->session->get("backURL"));
+                }
                 Yii::$app->session->set("backURL", '/account/dashboard');
             }
             return $this->redirect(Yii::$app->session->get("backURL"));
