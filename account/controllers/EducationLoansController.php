@@ -467,10 +467,8 @@ class EducationLoansController extends Controller
         return 'updated';
     }
 
-    public function actionCandidateDashboard($id)
-    {
+    public function actionCandidateDashboard($id){
         $data = Yii::$app->userData->loanApplication($id, Yii::$app->user->identity->user_enc_id);;
-//        print_r($data);exit();
         if (!$data) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
@@ -480,8 +478,7 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionLoanProfileView()
-    {
+    public function actionLoanProfileView(){
         return $this->render('loan-profile-view');
     }
     public function actionIndividual(){

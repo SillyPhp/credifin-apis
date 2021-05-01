@@ -286,14 +286,12 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                             </div>
 
                             <div class="portlet-body">
-
                                 <div class="row">
                                     <?= $this->render('/widgets/applications/shortlisted-candidates', [
                                         'shortlistedApplicants' => $shortlistedApplicants,
                                         'type' => 'job'
                                     ]); ?>
                                 </div>
-
                             </div>
 
                         </div>
