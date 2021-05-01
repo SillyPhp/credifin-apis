@@ -8,6 +8,7 @@ Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\Vie
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
 $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
 $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
+$relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardian'];
 ?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
@@ -179,11 +180,11 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                                             id="applicantID0">
                                                         <option value="">Select One</option>
                                                         <?php
-                                                            foreach ($documentOptions as $opt){
-                                                                ?>
-                                                                <option value="<?= $opt ?>"><?= $opt ?></option>
-                                                        <?php
-                                                            }
+                                                        foreach ($documentOptions as $opt) {
+                                                            ?>
+                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                            <?php
+                                                        }
                                                         ?>
                                                     </select>
                                                 </div>
@@ -229,7 +230,7 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                                             id="applicantID1">
                                                         <option value="">Select One</option>
                                                         <?php
-                                                        foreach ($documentOptions as $opt){
+                                                        foreach ($documentOptions as $opt) {
                                                             ?>
                                                             <option value="<?= $opt ?>"><?= $opt ?></option>
                                                             <?php
@@ -336,7 +337,8 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                                 <li>
                                                     <label class="checkcontainer" data-field="is_sane_cur_addr">
                                                         Same As Permanent Address
-                                                        <input class="same_address acntPerAddr" type="checkbox" data-id="currentAddressInformation"
+                                                        <input class="same_address acntPerAddr" type="checkbox"
+                                                               data-id="currentAddressInformation"
                                                                id="addrSamePermanent"
                                                                onchange="hideAddress()">
                                                         <span class="Ch-checkmark"></span>
@@ -424,109 +426,21 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                             </div>
                         </div>
                         <div class="tab" id="parentsProfile">
-                            <section id="fatherInformation" data-key="" data-type="co_applicant"
-                                     data-relation="Father">
+                            <?php
+                            for ($i = 0; $i < 2; $i++) {
+                                ?>
                                 <div class="row mt10">
-                                    <div class="col-md-12">
-                                        <h4 class="cd-heading-3">Father's Information</h4>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-4 padd-20">
-                                        <div class="form-group disFlex">
-                                            <div id="fatherImage">
-                                                <label for="fatherPic" class="input-group-text">
-                                                    <div class="uploadPic">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                    </div>
-                                                </label>
-                                                <div class="ml20"> Upload Photo</div>
-                                            </div>
-                                            <input type="file" class="form-control pic idProof-input" id="fatherPic"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt10">
-                                    <div class="col-md-3 padd-20">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="fatherName" class="input-group-text" data-field="name">
-                                                Name
+                                            <label for="co_borrower_<?= $i ?>" class="input-group-text"
+                                                   data-field="co_borrower">
+                                                Co Borrower <?= $i + 1 ?>
                                             </label>
-                                            <input type="text" class="form-control" id="fatherName"
-                                                   placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="fatherEmail" class="input-group-text" data-field="email">
-                                                Email
-                                            </label>
-                                            <input type="text" class="form-control" id="fatherEmail" placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="fatherDob" class="input-group-text"
-                                                   data-field="co_applicant_dob">
-                                                DOB
-                                            </label>
-                                            <?php
-                                            echo DatePicker::widget([
-                                                'name' => 'check_issue_date',
-                                                'type' => DatePicker::TYPE_INPUT,
-                                                'id' => 'dob',
-                                                'options' => [
-                                                    'placeholder' => 'Select Birth Date',
-                                                ],
-                                                'readonly' => true,
-                                                'pluginOptions' => [
-                                                    'format' => 'dd-M-yyyy',
-                                                    'todayHighlight' => true,
-                                                    'autoclose' => true,
-                                                ],
-                                                'pluginEvents' => [
-                                                    "changeDate" => "function(e) { 
-                                                        var elem = $(this);
-                                                        var value = elem.val();
-                                                        updateValue(elem, value);
-                                                     }",
-                                                ]
-                                            ]);
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="fatherNumber" class="input-group-text" data-field="phone">
-                                                Mobile Number
-                                            </label>
-                                            <input type="text" class="form-control" id="fatherNumber"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt10">
-                                    <div class="col-md-4 padd-20 hidden">
-                                        <div class="form-group">
-                                            <label for="yearsOFoccu" class="input-group-text"
-                                                   data-field="years_in_current_house">
-                                                Years Of Occupancy In Current House
-                                            </label>
-                                            <input type="text" class="form-control" id="yearsOFoccu"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="fOccupation" class="input-group-text"
-                                                   data-field="occupation">
-                                                Occupation
-                                            </label>
-                                            <select class="form-control field-req" name="fOccupation" id="fOccupation">
+                                            <select class="form-control field-req" name="co_borrower_<?= $i ?>"
+                                                    id="co_borrower_<?= $i ?>">
                                                 <option value="">Select One</option>
                                                 <?php
-                                                foreach ($occupationOptions as $opt){
+                                                foreach ($relationOptions as $opt) {
                                                     ?>
                                                     <option value="<?= $opt ?>"><?= $opt ?></option>
                                                     <?php
@@ -535,472 +449,288 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="fIncome" class="input-group-text"
-                                                   data-field="annual_income">
-                                                Annual Income
-                                            </label>
-                                            <input type="text" class="form-control" id="fIncome"
-                                                   placeholder="">
+                                </div>
+                                <section id="co_borrower_info_<?= $i ?>" data-key="" data-type="co_applicant"
+                                         data-relation="" style="display: none">
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4 padd-20">
+                                            <div class="form-group disFlex">
+                                                <div id="co_borrower_image_<?= $i ?>">
+                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text">
+                                                        <div class="uploadPic">
+                                                            <i class="fa fa-cloud-upload"></i>
+                                                        </div>
+                                                    </label>
+                                                    <div class="ml20">Upload Photo</div>
+                                                </div>
+                                                <input type="file" class="form-control pic idProof-input"
+                                                       id="co_borrower_pic_<?= $i ?>"
+                                                       placeholder="">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group ">
-                                            <div class="radio-heading input-group-text">
-                                                Address
-                                            </div>
-                                            <ul class="displayInline">
-                                                <li>
-                                                    <label class="checkcontainer" data-field="address">Same As
-                                                        Applicant
-                                                        <input class="same_address" type="checkbox" data-id="fAddress"
-                                                               id="fSame"
-                                                               onchange="hideAddress()">
-                                                        <span class="Ch-checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="Father-other-info">
-                                    <article id="fatherAddressInfo" data-key="" data-type="address">
-                                        <div class="row mt10" id="fAddress">
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group ">
-                                                    <div class="radio-heading input-group-text">
-                                                        Residence Type
-                                                    </div>
-                                                    <ul class="displayInline residenceType" data-field="res_type"
-                                                        id="Father_Resident_Info">
-                                                        <li>
-                                                            <label class="container-radio">Rented
-                                                                <input type="radio" checked="checked"
-                                                                       name="faddress" value="0"
-                                                                       id="FRT-rented">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="container-radio">Owned
-                                                                <input type="radio" name="faddress" id="FRT-owned"
-                                                                       value="1">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="fHouseNo" class="input-group-text"
-                                                           data-field="address">
-                                                        Address
-                                                    </label>
-                                                    <input type="text" class="form-control" id="fHouseNo"
-                                                           placeholder="" data-id="coResidentInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="fState" class="input-group-text"
-                                                           data-field="state_id">
-                                                        State
-                                                    </label>
-                                                    <input type="text" class="form-control typeInput" id="fState"
-                                                           data-url="states"
-                                                           placeholder="" data-id="coResidentInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="fCity" class="input-group-text"
-                                                           data-field="city_id">
-                                                        City
-                                                    </label>
-                                                    <input type="text" class="form-control typeInput" id="fCity"
-                                                           placeholder="" data-id="coResidentInfo" data-url="cities"
-                                                           disabled>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                    <article id="fatherCertificationEncId" data-key="" data-type="id_proof">
-                                        <div class="row mt10">
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group">
-                                                    <label class="radio-heading input-group-text" for="fIDproof"
-                                                           data-field="proof_name">
-                                                        ID Proof/Address Proof
-                                                    </label>
-                                                    <select class="form-control field-req" name="years"
-                                                            id="fIDproof" data-id="coProofInfo">
-                                                        <option value="">Select One</option>
-                                                        <?php
-                                                        foreach ($documentOptions as $opt){
-                                                            ?>
-                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group">
-
-                                                    <label for="fIDproofnumber" class="input-group-text"
-                                                           data-field="number">
-                                                        Id Proof Number
-                                                    </label>
-                                                    <input type="text" class="form-control" id="fIDproofnumber"
-                                                           placeholder="Number" data-id="coProofInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group text-center">
-                                                    <div id="fIDproofimage">
-                                                        <label for="idProofFather" class="">
-                                                            <div class="idPhoto">
-                                                                <i class="fa fa-cloud-upload"></i>
-                                                                Upload ID Proof's Photo
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <input type="file" class="form-control idProof-input"
-                                                           id="idProofFather"
-                                                           placeholder="" data-id="coProofInfo">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                            </section>
-                            <div class="FormDivider"></div>
-                            <section id="motherInformation" data-key="" data-type="co_applicant"
-                                     data-relation="Mother">
-                                <div class="row mt10">
-                                    <div class="col-md-12">
-                                        <h4 class="cd-heading-3">Mother's Information</h4>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-4 padd-20">
-                                        <div class="form-group disFlex">
-                                            <div id="motherImage">
-                                                <label for="MPic" class="input-group-text">
-                                                    <div class="uploadPic">
-                                                        <i class="fa fa-cloud-upload"></i>
-                                                    </div>
+                                    <div class="row mt10">
+                                        <div class="col-md-3 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_name_<?= $i ?>" class="input-group-text"
+                                                       data-field="name">
+                                                    Name
                                                 </label>
-                                                <div class="ml20"> Upload Photo</div>
+                                                <input type="text" class="form-control" id="co_borrower_name_<?= $i ?>"
+                                                       placeholder="Enter Full Name">
                                             </div>
-                                            <input type="file" class="form-control pic idProof-input" id="MPic"
-                                                   placeholder="">
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mt10">
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="MName" class="input-group-text" data-field="name">
-                                                Name
-                                            </label>
-                                            <input type="text" class="form-control" id="MName"
-                                                   placeholder="Enter Full Name">
+                                        <div class="col-md-3 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_email_<?= $i ?>" class="input-group-text"
+                                                       data-field="email">
+                                                    Email
+                                                </label>
+                                                <input type="text" class="form-control" id="co_borrower_email_<?= $i ?>"
+                                                       placeholder="">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="MEmail" class="input-group-text" data-field="email">
-                                                Email
-                                            </label>
-                                            <input type="text" class="form-control" id="MEmail" placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label for="MDob" class="input-group-text"
-                                                   data-field="co_applicant_dob">
-                                                DOB
-                                            </label>
-                                            <?php
-                                            echo DatePicker::widget([
-                                                'name' => 'check_issue_date',
-                                                'type' => DatePicker::TYPE_INPUT,
-                                                'id' => 'MDob',
-                                                'options' => [
-                                                    'placeholder' => 'Select Birth Date',
-                                                ],
-                                                'readonly' => true,
-                                                'pluginOptions' => [
-                                                    'format' => 'dd-M-yyyy',
-                                                    'todayHighlight' => true,
-                                                    'autoclose' => true,
-                                                ],
-                                                'pluginEvents' => [
-                                                    "changeDate" => "function(e) { 
-                                                        var elem = $(this);
-                                                        var value = elem.val();
-                                                        updateValue(elem, value);
-                                                     }",
-                                                ]
-                                            ]);
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group">
-                                            <label class="input-group-text" for="mMobile" data-field="phone">
-                                                Mobile Number
-                                            </label>
-                                            <input type="text" class="form-control" id="mMobile" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt10">
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="mOccupation" class="input-group-text"
-                                                   data-field="occupation">
-                                                Occupation
-                                            </label>
-                                            <select class="form-control field-req" name="mOccupation" id="mOccupation">
-                                                <option value="">Select One</option>
+                                        <div class="col-md-3 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_dob_<?= $i ?>" class="input-group-text"
+                                                       data-field="co_applicant_dob">
+                                                    DOB
+                                                </label>
                                                 <?php
-                                                foreach ($occupationOptions as $opt){
-                                                    ?>
-                                                    <option value="<?= $opt ?>"><?= $opt ?></option>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="familyIncome" class="input-group-text"
-                                                   data-field="annual_income">
-                                                Family Income(Anually)
-                                            </label>
-                                            <input type="text" class="form-control" id="familyIncome"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 padd-20">
-                                        <div class="form-group ">
-                                            <div class="radio-heading input-group-text">
-                                                Address
-                                            </div>
-                                            <ul class="displayInline">
-                                                <li>
-                                                    <label class="checkcontainer" data-field="address">Same As
-                                                        Applicant
-                                                        <input class="same_address" type="checkbox" data-id="mAddress"
-                                                               id="mSame"
-                                                               onchange="hideAddress()">
-                                                        <span class="Ch-checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="Mother-other-info">
-                                    <article id="motherAddressInfo" data-key="" data-type="address">
-                                        <div class="row mt10" id="mAddress">
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group ">
-                                                    <div class="radio-heading input-group-text">
-                                                        Residence Type
-                                                    </div>
-                                                    <ul class="displayInline residenceType" data-field="res_type"
-                                                        id="Mother_Resident_Info">
-                                                        <li>
-                                                            <label class="container-radio">Rented
-                                                                <input type="radio" checked="checked"
-                                                                       name="maddress" value="0"
-                                                                       id="MRT-rented">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="container-radio">Owned
-                                                                <input type="radio" name="maddress" id="MRT-owned"
-                                                                       value="1">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="MHouseNo" class="input-group-text"
-                                                           data-field="address">
-                                                        Address
-                                                    </label>
-                                                    <input type="text" class="form-control" id="MHouseNo"
-                                                           placeholder="" data-id="coResidentInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="MState" class="input-group-text"
-                                                           data-field="state_id">
-                                                        State
-                                                    </label>
-                                                    <input type="text" class="form-control typeInput" id="MState"
-                                                           data-url="states"
-                                                           placeholder="" data-id="coResidentInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 padd-20">
-                                                <div class="form-group">
-                                                    <label for="MCity" class="input-group-text"
-                                                           data-field="city_id">
-                                                        City
-                                                    </label>
-                                                    <input type="text" class="form-control typeInput" id="MCity"
-                                                           data-url="cities"
-                                                           placeholder="" data-id="coResidentInfo" disabled>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                    <article id="motherCertificateEncId" data-key="" data-type="id_proof">
-                                        <div class="row mt10">
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group">
-                                                    <label class="radio-heading input-group-text" for="MIdProof"
-                                                           data-field="proof_name">
-                                                        ID Proof/Address Proof
-                                                    </label>
-                                                    <select class="form-control field-req" name="years"
-                                                            id="MIdProof" data-id="coProofInfo">
-                                                        <option value="">Select One</option>
-                                                        <?php
-                                                        foreach ($documentOptions as $opt){
-                                                            ?>
-                                                            <option value="<?= $opt ?>"><?= $opt ?></option>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group">
-                                                    <label for="MIdProofNo" class="input-group-text"
-                                                           data-field="number">
-                                                        Id Proof Number
-                                                    </label>
-                                                    <input type="text" class="form-control" id="MIdProofNo"
-                                                           placeholder="Number" data-id="coProofInfo">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 padd-20">
-                                                <div class="form-group text-center">
-                                                    <div id="MIdProofimage">
-                                                        <label for="idProofMother" class="">
-                                                            <div class="idPhoto">
-                                                                <i class="fa fa-cloud-upload"></i>
-                                                                Upload ID Proof's Photo
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <input type="file" class="form-control idProof-input"
-                                                           id="idProofMother"
-                                                           placeholder="" data-id="coProofInfo">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <div class="row hidden">
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <div class="radio-heading input-group-text">
-                                                Siblings
-                                            </div>
-                                            <ul class="displayInline" data-field="has_sibling">
-                                                <li>
-                                                    <label class="checkcontainer">Yes, I have Sibligs.
-                                                        <input type="checkbox" data-id="siblingInfo"
-                                                               id="sibling-avail"
-                                                               onchange="ShowSibling()">
-                                                        <span class="Ch-checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                            <section class="hidden" id="siblingInformation" data-key="" data-type="co_applicant"
-                                     data-relation="Sibling">
-                                <div class="row mt10" id="siblingInfo">
-                                    <div class="col-md-12">
-                                        <p class="cd-heading-2">Sibling Information</p>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="siblingName" class="input-group-text" data-field="name">
-                                                Name
-                                            </label>
-                                            <input type="text" class="form-control" id="siblingName"
-                                                   placeholder="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="siblingDob" class="input-group-text"
-                                                   data-field="co_applicant_dob">
-                                                DOB
-                                            </label>
-                                            <?php
-                                            echo DatePicker::widget([
-                                                'name' => 'check_issue_date',
-                                                'type' => DatePicker::TYPE_INPUT,
-                                                'id' => 'siblingDob',
-                                                'options' => [
-                                                    'placeholder' => 'Select Birth Date',
-                                                ],
-                                                'readonly' => true,
-                                                'pluginOptions' => [
-                                                    'format' => 'dd-M-yyyy',
-                                                    'todayHighlight' => true,
-                                                    'autoclose' => true,
-                                                ],
-                                                'pluginEvents' => [
-                                                    "changeDate" => "function(e) { 
+                                                echo DatePicker::widget([
+                                                    'name' => 'check_issue_date',
+                                                    'type' => DatePicker::TYPE_INPUT,
+                                                    'id' => 'co_borrower_dob_' . $i,
+                                                    'options' => [
+                                                        'placeholder' => 'Select Birth Date',
+                                                    ],
+                                                    'readonly' => true,
+                                                    'pluginOptions' => [
+                                                        'format' => 'dd-M-yyyy',
+                                                        'todayHighlight' => true,
+                                                        'autoclose' => true,
+                                                    ],
+                                                    'pluginEvents' => [
+                                                        "changeDate" => "function(e) { 
                                                         var elem = $(this);
                                                         var value = elem.val();
                                                         updateValue(elem, value);
                                                      }",
-                                                ]
-                                            ]);
-                                            ?>
+                                                    ]
+                                                ]);
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_number_<?= $i ?>" class="input-group-text"
+                                                       data-field="phone">
+                                                    Mobile Number
+                                                </label>
+                                                <input type="text" class="form-control"
+                                                       id="co_borrower_number_<?= $i ?>"
+                                                       placeholder="">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 padd-20">
-                                        <div class="form-group">
-                                            <label for="siblingOccupation" class="input-group-text"
-                                                   data-field="occupation">
-                                                Occupation
-                                            </label>
-                                            <input type="text" class="form-control" id="siblingOccupation"
-                                                   placeholder="">
+                                    <div class="row mt10">
+                                        <div class="col-md-4 padd-20 hidden">
+                                            <div class="form-group">
+                                                <label for="co_borrower_year_occupancy_<?= $i ?>"
+                                                       class="input-group-text"
+                                                       data-field="years_in_current_house">
+                                                    Years Of Occupancy In Current House
+                                                </label>
+                                                <input type="text" class="form-control"
+                                                       id="co_borrower_year_occupancy_<?= $i ?>"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_occupation_<?= $i ?>" class="input-group-text"
+                                                       data-field="occupation">
+                                                    Occupation
+                                                </label>
+                                                <select class="form-control field-req"
+                                                        name="co_borrower_occupation_<?= $i ?>"
+                                                        id="co_borrower_occupation_<?= $i ?>">
+                                                    <option value="">Select One</option>
+                                                    <?php
+                                                    foreach ($occupationOptions as $opt) {
+                                                        ?>
+                                                        <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 padd-20">
+                                            <div class="form-group">
+                                                <label for="co_borrower_income_<?= $i ?>" class="input-group-text"
+                                                       data-field="annual_income">
+                                                    Annual Income
+                                                </label>
+                                                <input type="text" class="form-control"
+                                                       id="co_borrower_income_<?= $i ?>"
+                                                       placeholder="">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </section>
+                                    <div class="row">
+                                        <div class="col-md-3 padd-20">
+                                            <div class="form-group ">
+                                                <div class="radio-heading input-group-text">
+                                                    Address
+                                                </div>
+                                                <ul class="displayInline">
+                                                    <li>
+                                                        <label class="checkcontainer" data-field="address">Same As
+                                                            Applicant
+                                                            <input class="same_address" type="checkbox"
+                                                                   data-id="co_borrower_other_info_<?= $i ?>"
+                                                                   id="co_borrower_same_<?= $i ?>"
+                                                                   onchange="hideAddress()">
+                                                            <span class="Ch-checkmark"></span>
+                                                        </label>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="co_borrower_other_info_<?= $i ?>" class="co-borrower-other-info">
+                                        <article id="co_borrower_address_info_<?= $i ?>" data-key=""
+                                                 data-type="address">
+                                            <div class="row mt10" id="co_borrower_address_<?= $i ?>">
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group ">
+                                                        <div class="radio-heading input-group-text">
+                                                            Residence Type
+                                                        </div>
+                                                        <ul class="displayInline residenceType" data-field="res_type"
+                                                            id="co_borrower_resident_info_<?= $i ?>">
+                                                            <li>
+                                                                <label class="container-radio">Rented
+                                                                    <input type="radio" checked="checked"
+                                                                           name="co_borrower_address_<?= $i ?>"
+                                                                           value="0"
+                                                                           id="FRT-rented">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Owned
+                                                                    <input type="radio"
+                                                                           name="co_borrower_address_<?= $i ?>"
+                                                                           id="FRT-owned"
+                                                                           value="1">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co_borrower_houseNo_<?= $i ?>"
+                                                               class="input-group-text"
+                                                               data-field="address">
+                                                            Address
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               id="co_borrower_houseNo_<?= $i ?>"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co_borrower_state_<?= $i ?>"
+                                                               class="input-group-text"
+                                                               data-field="state_id">
+                                                            State
+                                                        </label>
+                                                        <input type="text" class="form-control typeInput"
+                                                               id="co_borrower_state_<?= $i ?>"
+                                                               data-url="states"
+                                                               placeholder="" data-id="coResidentInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co_borrower_city_<?= $i ?>" class="input-group-text"
+                                                               data-field="city_id">
+                                                            City
+                                                        </label>
+                                                        <input type="text" class="form-control typeInput"
+                                                               id="co_borrower_city_<?= $i ?>"
+                                                               placeholder="" data-id="coResidentInfo" data-url="cities"
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                        <article id="co_borrower_certificationEncId_<?= $i ?>" data-key=""
+                                                 data-type="id_proof">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text"
+                                                               for="co_borrower_IDproof_<?= $i ?>"
+                                                               data-field="proof_name">
+                                                            ID Proof/Address Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="years"
+                                                                id="co_borrower_IDproof_<?= $i ?>"
+                                                                data-id="coProofInfo">
+                                                            <option value="">Select One</option>
+                                                            <?php
+                                                            foreach ($documentOptions as $opt) {
+                                                                ?>
+                                                                <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+
+                                                        <label for="co_borrower_IDproofnumber_<?= $i ?>"
+                                                               class="input-group-text"
+                                                               data-field="number">
+                                                            Id Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               id="co_borrower_IDproofnumber_<?= $i ?>"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <div id="co_borrower_IDproofimage_<?= $i ?>">
+                                                            <label for="idProof_co_borrower_<?= $i ?>" class="">
+                                                                <div class="idPhoto">
+                                                                    <i class="fa fa-cloud-upload"></i>
+                                                                    Upload ID Proof's Photo
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="idProof_co_borrower_<?= $i ?>"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </section>
+                                <div class="FormDivider"></div>
+                                <?php
+                            }
+                            ?>
                             <div class="text-center">
                                 <button type="button" class="eduBtn eduBtnLight" data-id="applicantProfile"
                                         onclick="activeTab(event)">Previous
@@ -1168,7 +898,7 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                                             data-id="coProofInfo">
                                                         <option value="">Select One</option>
                                                         <?php
-                                                        foreach ($documentOptions as $opt){
+                                                        foreach ($documentOptions as $opt) {
                                                             ?>
                                                             <option value="<?= $opt ?>"><?= $opt ?></option>
                                                             <?php
@@ -1362,7 +1092,7 @@ $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
                                                             data-id="coProofInfo">
                                                         <option value="">Select One</option>
                                                         <?php
-                                                        foreach ($documentOptions as $opt){
+                                                        foreach ($documentOptions as $opt) {
                                                             ?>
                                                             <option value="<?= $opt ?>"><?= $opt ?></option>
                                                             <?php
@@ -1763,7 +1493,7 @@ $this->registerCss('
     color: #f4d03f;
     font-size: 18px;
 }
-#Father-other-info, #Mother-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
+.co-borrower-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
     display:none;
 }
 .form-control[readonly]{
@@ -1844,8 +1574,27 @@ $(document).on('change','#applicantID1', function() {
     documentSelectionDisable(value, "applicantID0","onChange");
 });
 
+function chngCoBorrowerType(value, section) {
+    section.attr("data-relation", value);
+    if(value){
+        section.show();
+    } else {
+        section.hide();
+    }
+}
+$(document).on('change','#co_borrower_0', function() {
+    var value = $(this).val();
+    var section = $('#co_borrower_info_0');
+    chngCoBorrowerType(value, section);
+});
 
-$(document).on('change','#mOccupation, #fOccupation', function() {
+$(document).on('change','#co_borrower_1', function() {
+    var value = $(this).val();
+    var section = $('#co_borrower_info_1');
+    chngCoBorrowerType(value, section);
+});
+
+$(document).on('change','#co_borrower_occupation_0, #co_borrower_occupation_1', function() {
     var elem = $(this);
     var value = elem.val();
     updateValue(elem, value);
@@ -2016,7 +1765,7 @@ $(document).on('blur','input:text', function() {
 
 function updateValue(elem, value){
     var inptId = elem.attr("id");
-    if(value != objData[inptId] && value != ""){
+    if(value != objData[inptId] && value !== ""){
         var data = {};
         var label_name = "";
         if(elem.hasClass('same_address') || elem.hasClass('acnt_gender')){
@@ -2335,125 +2084,94 @@ $(document).ready(function() {
                     if(typeof coAppLoanCertificate === "undefined"){
                         coAppLoanCertificate = {};
                     }
+                            
                     switch (v.relation) {
                         case 'Father' :
-                            $('#fatherInformation').attr('data-key',v.loan_co_app_enc_id);
-                            $('#'+ v.relation +'-other-info').show();
-                            if(v.image){
-                                $('#fatherImage').children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
-                                objData.fatherImage = v.image;
-                            }
-                            $('#fatherName').val(v.name);
-                            objData.fatherName = v.name;
-                            $('#fatherEmail').val(v.email);
-                            objData.fatherEmail = v.email;
-                            $('#fatherNumber').val(v.phone);
-                            objData.fatherNumber = v.phone;
-                            $('#dob').val(v.co_applicant_dob);
-                            objData.dob = v.co_applicant_dob;
-                            $('#yearsOFoccu').val(v.years_in_current_house);
-                            objData.yearsOFoccu = v.years_in_current_house;
-                            $('#fOccupation').val(v.occupation);
-                            objData.fOccupation = v.occupation;
-                            $('#fIncome').val(v.annual_income);
-                            objData.fIncome = v.annual_income;
-                            if(v.address == 1){
-                                $('#fSame').prop('checked',true);
-                                $('#fAddress').hide();
-                            }
-                            $('#fatherAddressInfo').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
-                            objData.fatherAddressInfo = residenceInfo.loan_app_res_info_enc_id;
-                            $('#fHouseNo').val(residenceInfo.address);
-                            objData.fHouseNo = residenceInfo.address;
-                            $('#fatherCertificationEncId').attr('data-key', coAppLoanCertificate.certificate_enc_id);
-                            objData.fatherCertificationEncId = coAppLoanCertificate.certificate_enc_id;
-                            $('#fIDproof').val(coAppLoanCertificate.name);
-                            objData.fIDproof = coAppLoanCertificate.name;
-                            $('#fIDproofnumber').val(coAppLoanCertificate.number);
-                            objData.fIDproofnumber = coAppLoanCertificate.number;
-                            if(coAppLoanCertificate.image){
-                                $('#fIDproofimage').children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
-                                objData.fIDproofimage = coAppLoanCertificate.image;
-                            }
-                            if(residenceInfo.type){
-                                $('#Father_Resident_Info').find('input:radio').each(function(){
-                                    if($(this).val() == residenceInfo.type){
-                                        $(this).prop("checked",true);
-                                    }
-                                });
-                            }
-                            if(residenceInfo.state_name){
-                                $('#fState').val(residenceInfo.state_name);
-                                objData.fState = residenceInfo.state_enc_id;
-                                $('#fCity').attr('data-state-id',residenceInfo.state_enc_id);
-                                $('#fCity').attr('disabled',false);
-                            }
-                            $('#fCity').val(residenceInfo.city_name);
-                            objData.fCity = residenceInfo.city_enc_id;
-                            break;
                         case 'Mother' :
-                            $('#motherInformation').attr('data-key',v.loan_co_app_enc_id);
-                            $('#'+ v.relation +'-other-info').show();
-                            $('#MName').val(v.name);
-                            objData.MName = v.name;
+                        case 'Sibling' :
+                        case 'Brother' :
+                        case 'Sister' :
+                        case 'Guardian' :
+                            var co_borrower = "co_borrower_" + k;
+                            var co_borrower_info = "co_borrower_info_" + k;
+                            var co_borrower_other_info = "co_borrower_other_info_" + k;
+                            var co_borrower_image = "co_borrower_image_" + k;
+                            var co_borrower_name = "co_borrower_name_" + k;
+                            var co_borrower_email = "co_borrower_email_" + k;
+                            var co_borrower_number = "co_borrower_number_" + k;
+                            var co_borrower_dob = "co_borrower_dob_" + k;
+                            var co_borrower_year_occupancy = "co_borrower_year_occupancy_" + k;
+                            var co_borrower_occupation = "co_borrower_occupation_" + k;
+                            var co_borrower_income = "co_borrower_income_" + k;
+                            var co_borrower_same = "co_borrower_same_" + k;
+                            var co_borrower_address = "co_borrower_address_" + k;
+                            var co_borrower_other_info = "co_borrower_other_info_" + k;
+                            var co_borrower_address_info = "co_borrower_address_info_" + k;
+                            var co_borrower_houseNo = "co_borrower_houseNo_" + k;
+                            var co_borrower_certificationEncId = "co_borrower_certificationEncId_" + k;
+                            var co_borrower_IDproof = "co_borrower_IDproof_" + k;
+                            var co_borrower_IDproofnumber = "co_borrower_IDproofnumber_" + k;
+                            var co_borrower_IDproofimage = "co_borrower_IDproofimage_" + k;
+                            var co_borrower_resident_info = "co_borrower_resident_info_" + k;
+                            var co_borrower_state = "co_borrower_state_" + k;
+                            var co_borrower_city = "co_borrower_city_" + k;
+                            $('#' + co_borrower).val(v.relation);
+                            var sect = $('#' + co_borrower_info);
+                            chngCoBorrowerType(v.relation, sect);
+                            sect.attr('data-key',v.loan_co_app_enc_id);
+                            $('#'+ co_borrower_other_info).show();
                             if(v.image){
-                                $('#motherImage').children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
-                                objData.motherImage = v.image;
+                                $('#' + co_borrower_image).children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
+                                objData[co_borrower_image] = v.image;
                             }
-                            $('#MEmail').val(v.email);
-                            objData.MEmail = v.email;
-                            $('#mMobile').val(v.phone);
-                            objData.mMobile = v.phone;
-                            $('#MDob').val(v.co_applicant_dob);
-                            objData.MDob = v.co_applicant_dob;
-                            $('#mOccupation').val(v.occupation);
-                            objData.mOccupation = v.occupation;
-                            $('#familyIncome').val(v.annual_income);
-                            objData.familyIncome = v.annual_income;
+                            $('#' + co_borrower_name).val(v.name);
+                            objData[co_borrower_name] = v.name;
+                            $('#' + co_borrower_email).val(v.email);
+                            objData[co_borrower_email] = v.email;
+                            $('#' + co_borrower_number).val(v.phone);
+                            objData[co_borrower_number] = v.phone;
+                            $('#' + co_borrower_dob).val(v.co_applicant_dob);
+                            objData[co_borrower_dob] = v.co_applicant_dob;
+                            $('#' + co_borrower_year_occupancy).val(v.years_in_current_house);
+                            objData[co_borrower_year_occupancy] = v.years_in_current_house;
+                            $('#' + co_borrower_occupation).val(v.occupation);
+                            objData[co_borrower_occupation] = v.occupation;
+                            $('#' + co_borrower_income).val(v.annual_income);
+                            objData[co_borrower_income] = v.annual_income;
                             if(v.address == 1){
-                                $('#mSame').prop('checked',true);
-                                $('#mAddress').hide();
+                                $('#' + co_borrower_same).prop('checked',true);
+                                objData[co_borrower_same] = 1;
+                                $('#' + co_borrower_other_info).hide();
                             }
-                            $('#motherAddressInfo').attr('data-key', residenceInfo.loan_app_res_info_enc_id);
-                            objData.motherAddressInfo = residenceInfo.loan_app_res_info_enc_id;
-                            $('#MHouseNo').val(residenceInfo.address);
-                            objData.MHouseNo = residenceInfo.address;
-                            $('#motherCertificateEncId').attr('data-key', coAppLoanCertificate.certificate_enc_id);
-                            objData.motherCertificateEncId = coAppLoanCertificate.certificate_enc_id;
-                            $('#MIdProof').val(coAppLoanCertificate.name);
-                            objData.MIdProof = coAppLoanCertificate.name;
-                            $('#MIdProofNo').val(coAppLoanCertificate.number);
-                            objData.MIdProofNo = coAppLoanCertificate.number;
+                            $('#' + co_borrower_address_info).attr('data-key', residenceInfo.loan_app_res_info_enc_id);
+                            objData[co_borrower_address_info] = residenceInfo.loan_app_res_info_enc_id;
+                            $('#' + co_borrower_houseNo).val(residenceInfo.address);
+                            objData[co_borrower_houseNo] = residenceInfo.address;
+                            $('#' + co_borrower_certificationEncId).attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                            objData[co_borrower_certificationEncId] = coAppLoanCertificate.certificate_enc_id;
+                            $('#' + co_borrower_IDproof).val(coAppLoanCertificate.name);
+                            objData[co_borrower_IDproof] = coAppLoanCertificate.name;
+                            $('#' + co_borrower_IDproofnumber).val(coAppLoanCertificate.number);
+                            objData[co_borrower_IDproofnumber] = coAppLoanCertificate.number;
                             if(coAppLoanCertificate.image){
-                                $('#MIdProofimage').children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
-                                objData.MIdProofimage = coAppLoanCertificate.image;
+                                $('#' + co_borrower_IDproofimage).children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
+                                objData[co_borrower_IDproofimage] = coAppLoanCertificate.image;
                             }
                             if(residenceInfo.type){
-                                $('#Mother_Resident_Info').find('input:radio').each(function(){
+                                $('#' + co_borrower_resident_info).find('input:radio').each(function(){
                                     if($(this).val() == residenceInfo.type){
                                         $(this).prop("checked",true);
                                     }
                                 });
                             }
                             if(residenceInfo.state_name){
-                                $('#MState').val(residenceInfo.state_name);
-                                objData.MState = residenceInfo.state_enc_id;
-                                $('#MCity').attr('data-state-id',residenceInfo.state_enc_id);
-                                $('#MCity').attr('disabled',false);
+                                $('#' + co_borrower_state).val(residenceInfo.state_name);
+                                objData[co_borrower_state] = residenceInfo.state_enc_id;
+                                $('#' + co_borrower_city).attr('data-state-id',residenceInfo.state_enc_id);
+                                $('#' + co_borrower_city).attr('disabled',false);
                             }
-                            $('#MCity').val(residenceInfo.city_name);
-                            objData.MCity = residenceInfo.city_enc_id;
-                            break;
-                        case 'Sibling' :
-                            $('#sibling-avail').prop('checked',true);
-                            $('#siblingInfo').show();
-                            $('#siblingInformation').attr('data-key',v.loan_co_app_enc_id);
-                            $('#siblingName').val(v.name);
-                            objData.siblingName = v.name;
-                            $('#siblingDob').val(v.co_applicant_dob);
-                            objData.siblingDob = v.co_applicant_dob;
-                            $('#siblingOccupation').val(v.occupation);
-                            objData.siblingOccupation = v.occupation;
+                            $('#' + co_borrower_city).val(residenceInfo.city_name);
+                            objData[co_borrower_city] = residenceInfo.city_enc_id;
                             break;
                         case 'Guarantor' :
                             guarantorCount++;
@@ -2636,8 +2354,8 @@ JS;
 $this->registerJS($script);
 ?>
 <script>
-        // eduTemp(0);
-        // eduTemp(1);
+    // eduTemp(0);
+    // eduTemp(1);
     // for (var i=0; i>3; i++){
     //     eduTemp(i);
     // }
@@ -2687,7 +2405,7 @@ $this->registerJS($script);
         eduFields.appendChild(newFields)
         count++;
         ths.setAttribute('data-count', count);
-        if(count >= 3){
+        if (count >= 3) {
             ths.setAttribute('style', 'display:none');
         }
     }
