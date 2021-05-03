@@ -16,6 +16,7 @@ use frontend\models\EducationalLoans;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 
 
@@ -66,11 +67,15 @@ class EducationLoansController extends Controller
 
     public function actionApply($ref_id = null)
     {
+        if(!Yii::$app->user->identity->organization->organization_enc_id):
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
         return $this->render('apply-general-loan-form', [
             'india' => $india,
             'ref_id' => $ref_id
         ]);
+        else:
+            throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
+        endif;
     }
 
     public function actionApplyLoan($id)
@@ -87,7 +92,11 @@ class EducationLoansController extends Controller
         }
     }
     public function actionLoanForTeachers(){
+        if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('teachers-loan-form');
+        else:
+            throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
+        endif;
     }
     public function actionEducationLoanView()
     {
@@ -104,7 +113,11 @@ class EducationLoansController extends Controller
         return $this->render('loan-college-index');
     }
     public function actionSchoolFeeLoanApply(){
+        if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('school-fee-loan-form');
+    else:
+        throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
+        endif;
     }
     public function actionLeads()
     {
