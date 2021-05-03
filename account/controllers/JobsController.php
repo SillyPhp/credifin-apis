@@ -452,7 +452,7 @@ class JobsController extends Controller
             'jobs' => $this->__getApplications("Jobs"),
             'primary_fields' => $catModel->getPrimaryFields(),
             'shortlistedApplicants' => $this->shortlistedApplicants(3),
-            'savedCandidate' => $this->savedApplicants(3),
+            'savedApplicants' => $this->savedApplicants(3),
         ]);
     }
 
@@ -2066,7 +2066,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select([
                 'a.applied_application_enc_id',
-                'a.status', 'b.username', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'a.status', 'b.username','b.', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
                 'a.created_by', 'b3.name as city'])
             ->joinWith(['applicationEnc bb' => function($bb){
