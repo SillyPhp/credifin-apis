@@ -42,26 +42,59 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                     Profile
                                 </button>
                             </li>
-                            /
-                            <li>
-                                <button data-id="guarantorProfile" class="topTab" onclick="activeTab(event)">Guarantor's
-                                    Profile
-                                </button>
-                            </li>
+                            <?php
+                                if($data['ask_guarantor_info'] == 1){
+                                    ?>
+                                /
+                                <li>
+                                    <button data-id="guarantorProfile" class="topTab" onclick="activeTab(event)">Guarantor's
+                                        Profile
+                                    </button>
+                                </li>
+                            <?php
+                                }
+                            ?>
                         </ul>
                         <div class="tab tabActive" id="applicantProfile">
                             <section id="applicantBasicInformation" data-key="" data-type="applicant">
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 padd-20">
+<!--                                        <div class="form-group disFlex">-->
+<!--                                            <label for="yourPic" class="input-group-text">-->
+<!--                                                <div class="uploadPic" id="applicantImage">-->
+<!--                                                    <i class="fa fa-cloud-upload"></i>-->
+<!--                                                </div>-->
+<!--                                            </label>-->
+<!--                                            <div class="ml20"> Upload Photo</div>-->
+<!--                                            <input type="file" class="form-control pic" id="yourPic" placeholder="">-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group disFlex">-->
+<!--                                            <div id="applicantImage">-->
+<!--                                                <label for="yourPic" class="docLabel">-->
+<!--                                                    <div class="idPhoto">-->
+<!--                                                        <i class="fa fa-cloud-upload"></i>-->
+<!--                                                        Upload Photo-->
+<!--                                                    </div>-->
+<!--                                                </label>-->
+<!--                                            </div>-->
+<!--                                            <input type="file" class="form-control idProof-input"-->
+<!--                                                   id="yourPic" placeholder="">-->
+<!--                                        </div>-->
+
                                         <div class="form-group disFlex">
-                                            <label for="yourPic" class="input-group-text">
-                                                <div class="uploadPic" id="applicantImage">
-                                                    <i class="fa fa-cloud-upload"></i>
-                                                </div>
-                                            </label>
-                                            <div class="ml20"> Upload Photo</div>
-                                            <input type="file" class="form-control pic" id="yourPic" placeholder="">
+                                            <div id="applicantImage">
+                                                <label for="yourPic" class="input-group-text posRel">
+                                                    <div class="uploadPic">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </div>
+                                                </label>
+                                                <div class="ml20">Upload Photo</div>
+                                            </div>
+                                            <input type="file" class="form-control pic idProof-input"
+                                                   id="yourPic"
+                                                   placeholder="">
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="row mt10">
@@ -97,31 +130,31 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="applicantNumber" class="input-group-text">
-                                                Mobile Number
+                                            <label for="applicantNumber" class="input-group-text" data-field="phone">
+                                                Mobile Number (WhatsApp)
                                             </label>
                                             <input value="<?= $data['phone'] ?>" type="text" class="form-control"
                                                    id="applicantNumber"
-                                                   placeholder="" disabled>
+                                                   placeholder="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt10">
-                                    <!--                                    <div class="col-md-4 padd-20">-->
-                                    <!--                                        <div class="form-group">-->
-                                    <!--                                            <label class="radio-heading input-group-text" for="degreeApplied">-->
-                                    <!--                                                Degree Applied-->
-                                    <!--                                            </label>-->
-                                    <!--                                            <select class="form-control field-req" name="years" id="degreeApplied">-->
-                                    <!--                                                <option value="">Select One</option>-->
-                                    <!--                                                <option>Diploma</option>-->
-                                    <!--                                                <option>Graduation</option>-->
-                                    <!--                                                <option>Post Graduation</option>-->
-                                    <!--                                                <option>Professional Course</option>-->
-                                    <!--                                                <option>Others</option>-->
-                                    <!--                                            </select>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
+                                    <div class="col-md-4 padd-20" hidden>
+                                        <div class="form-group">
+                                            <label class="radio-heading input-group-text" for="degreeApplied">
+                                                Degree Applied
+                                            </label>
+                                            <select class="form-control field-req" name="years" id="degreeApplied">
+                                                <option value="">Select One</option>
+                                                <option>Diploma</option>
+                                                <option>Graduation</option>
+                                                <option>Post Graduation</option>
+                                                <option>Professional Course</option>
+                                                <option>Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="col-md-4 padd-20">
                                         <div class="form-group">
                                             <label for="courseApplied" class="input-group-text">
@@ -350,7 +383,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </div>
                             </section>
                             <section id="currentAddressInformation" data-key="" data-type="address"
-                                     data-address-type="1">
+                                     data-address-type="1" class="hidden">
                                 <div class="row mt10 addressType">
                                     <div class="col-md-3 padd-20">
                                         <div class="form-group ">
@@ -456,7 +489,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                         <div class="col-md-4 col-sm-4 padd-20">
                                             <div class="form-group disFlex">
                                                 <div id="co_borrower_image_<?= $i ?>">
-                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text">
+                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text posRel">
                                                         <div class="uploadPic">
                                                             <i class="fa fa-cloud-upload"></i>
                                                         </div>
@@ -735,9 +768,19 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 <button type="button" class="eduBtn eduBtnLight" data-id="applicantProfile"
                                         onclick="activeTab(event)">Previous
                                 </button>
-                                <button type="button" class="eduBtn" data-id="guarantorProfile"
-                                        onclick="activeTab(event)">Next
-                                </button>
+                                <?php
+                                if($data['ask_guarantor_info'] == 1){
+                                    ?>
+                                    <button type="button" class="eduBtn" data-id="guarantorProfile"
+                                            onclick="activeTab(event)">Next
+                                    </button>
+                                <?php
+                                } else {
+                                    ?>
+                                    <button id="sbt2ndForm" type="button" class="eduBtn">Update</button>
+                                <?php
+                                }
+                                ?>
                             </div>
                         </div>
                         <div class="tab" id="guarantorProfile">
@@ -1504,8 +1547,11 @@ $this->registerCss('
 }
 .docEditIcon{
     position: absolute;
-    top: -10px;
+    top: -30px;
     right: -20px;
+    cursor: pointer;
+}
+.previewDocument{
     cursor: pointer;
 }
 ');
@@ -1515,23 +1561,41 @@ var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
 if(document.domain != 'empoweryouth.com'){
     apiUrl = 'https://sneh.eygb.me/';
 }
-function showImage(input, inp_id, file_extension) {
+function showImage(input, inp_id, file_extension, fileUrl) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
-        if(file_extension == "pdf"){
-            // $('#'+inp_id).find('label').html('<img src="'+e.target.result+'" height="50px" width="50px">')
-            $('#'+inp_id).find('label').html(docEditIcon + '<i class="fa fa-file-pdf-o" style="font-size: 30px;"></i>');;
-        } else {
-            reader.onload = function (e) {
-                var img = $('#'+inp_id).find('img');
-                if(img.length){
-                    img.attr('src',e.target.result);
-                } else {
-                    $('#'+inp_id).find('label').html(docEditIcon + '<img src="'+e.target.result+'" height="50px" width="50px">')
-                }
+        $('#'+inp_id).find('label').html(docEditIcon);
+        var imgSource = $('#'+inp_id).find('.previewDocument');
+        console.log(imgSource.prop("tagName"));
+        var tag_name = imgSource.prop("tagName");
+        reader.onload = function (e) {
+            switch (tag_name){
+                case "IMG" :
+                    if(file_extension == "pdf"){
+                        imgSource.remove();
+                        $('<i class="fa fa-file-pdf-o previewDocument" data-source="'+fileUrl+'" style="font-size: 30px;"></i>').insertBefore($('#'+inp_id).find('label'));
+                    } else {
+                        imgSource.attr('src',fileUrl);
+                        imgSource.attr('data-source',fileUrl);
+                    }
+                    break;
+                case "I" :
+                    if(file_extension == "pdf"){
+                        imgSource.attr('data-source', fileUrl);
+                    } else {
+                        imgSource.remove();
+                        $('<img class="previewDocument"  data-source="'+fileUrl+'" src="'+fileUrl+'" height="50px" width="50px">').insertBefore($('#'+inp_id).find('label'));
+                    }
+                    break;
+                default :
+                    if(file_extension == "pdf"){
+                        $('<i class="fa fa-file-pdf-o previewDocument" data-source="'+fileUrl+'" style="font-size: 30px;"></i>').insertBefore($('#'+inp_id).find('label'));
+                    } else {
+                        $('<img class="previewDocument"  data-source="'+fileUrl+'" src="'+fileUrl+'" height="50px" width="50px">').insertBefore($('#'+inp_id).find('label'));
+                    }
             }
-            reader.readAsDataURL(input.files[0]);
         }
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
@@ -1540,6 +1604,10 @@ $(document).on('click','#sbt2ndForm', function() {
     setTimeout(function() {
         window.open('/account/education-loans/candidate-loan-dashboard', '_self');
     }, 1500);
+})
+$(document).on('click','.previewDocument', function() {
+    var previewLink = $(this).attr("data-source");
+    window.open(previewLink);
 })
 
 $(document).on('click','.search-names', function() {
@@ -1930,7 +1998,10 @@ $(document).ready(function() {
             if(res.status == 200){
                 data = res.data;
                 $('#applicantBasicInformation').attr('data-key',data.loan_app_enc_id);
-                $('#applicantImage').html('<img height="50px" width="50px" src="'+ data.image +'" />');
+                if(data.image){
+                    $('#applicantImage').children('label').html(docEditIcon);
+                    $('<img class="previewDocument" height="50px" width="50px" src="'+ data.image +'" data-source="'+ data.image +'" />').insertBefore($('#applicantImage').children('label'));
+                }
                 $('#applicantName').val(data.applicant_name);
                 objData.applicantName = data.applicant_name;
                 if(data.gender && data.gender < 4){
@@ -2034,10 +2105,11 @@ $(document).ready(function() {
                         acntIDImg =  "applicantIDimage" + i;
                         var fileName = v.image;
                         var file_extension = fileName.split('.').pop().toLowerCase();
+                        $('#' + acntIDImg).children('label').html(docEditIcon);
                         if(file_extension == "pdf"){
-                            $('#' + acntIDImg).children('label').html(docEditIcon + '<i class="fa fa-file-pdf-o" style="font-size: 30px;"></i>');;
+                            $('<i class="fa fa-file-pdf-o previewDocument" data-source="'+v.image+'"  style="font-size: 30px;"></i>').insertBefore($('#' + acntIDImg).children('label'));
                         } else {
-                            $('#' + acntIDImg).children('label').html(docEditIcon + '<img height="50px" width="50px" src="'+v.image+'" />');;
+                            $('<img class="previewDocument" height="50px" width="50px" src="'+v.image+'" data-source="'+v.image+'" />').insertBefore($('#' + acntIDImg).children('label'));
                         }
                         objData[acntIDImg] = v.image;
                     }
@@ -2121,7 +2193,8 @@ $(document).ready(function() {
                             sect.attr('data-key',v.loan_co_app_enc_id);
                             $('#'+ co_borrower_other_info).show();
                             if(v.image){
-                                $('#' + co_borrower_image).children('label').html('<img height="50px" width="50px" src="'+v.image+'" />');
+                                $('#' + co_borrower_image).children('label').html(docEditIcon);
+                                $('<img class="previewDocument"  data-source="'+v.image+'" src="'+v.image+'" height="50px" width="50px">').insertBefore($('#' + co_borrower_image).children('label'));
                                 objData[co_borrower_image] = v.image;
                             }
                             $('#' + co_borrower_name).val(v.name);
@@ -2277,12 +2350,7 @@ function readURL(input) {
      var files = e.target.files;
      if(files.length){
          var formData = new FormData();
-         // console.log(readURL(this));
          formData.append("image", files[0]);
-         // for(var i=0; i<files.length; i++){
-             // console.log(files[i]);
-             // formData.append("files[" + i + "]", files[i]);   
-         // }
          formData.append("upload_file", 'test');
          formData.append("user_enc_id", user_enc_id);
          formData.append("loan_app_id", loan_app_id);
@@ -2296,7 +2364,6 @@ function readURL(input) {
          if(typeof co_app_other_info !== "undefined"){
              var articalTag = elem.closest('article');
              type = articalTag.attr('data-type');
-             // formData.append("id", key);
              key = articalTag.attr('data-key');
              mainSection = articalTag;
          }
@@ -2307,12 +2374,7 @@ function readURL(input) {
          if(key){
              formData.append("id", key);
          }
-        
-         // var formm = elem.closest('form');
          var section = elem.closest('section');
-         // console.log(key +" "+ type);
-         // var formData = new FormData();
-         // console.log(formm);
          $.ajax({
              url: apiUrl+'api/v3/education-loan/upload-image',
              method: 'POST',
@@ -2321,18 +2383,19 @@ function readURL(input) {
              contentType: false,
              beforeSend:function(){
                 removeIcons();
-                if(key == "" || typeof key === "undefined" ){
-                    $('#fadder').fadeIn();
-                } else {
-                    $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(readURL(this));
-                }
+                $('#fadder').fadeIn();
+                // if(key == "" || typeof key === "undefined" ){
+                //      $('#fadder').fadeIn();
+                // } else {
+                //     $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                // }
             },
              success: function(res) {
                 removeIcons();
                 if(res.response.status == 200){
                     mainSection.attr('data-key', res.response.id);
                     var inp_id = elem.prev().attr('id');
-                    showImage(elem[0], inp_id, file_extension);
+                    showImage(elem[0], inp_id, file_extension, res.response.fileUrl);
                     $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
                     setTimeout(function() {
                         removeIcons();

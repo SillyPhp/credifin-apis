@@ -176,6 +176,7 @@ class UserDataComponent extends Component
                 'a.image',
                 'a.image_location',
                 'a.email',
+                'a.ask_guarantor_info',
                 'c1.course_name',
             ])
             ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
