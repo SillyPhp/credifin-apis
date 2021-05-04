@@ -2128,8 +2128,6 @@ class JobsController extends Controller
                     ->all();
                     $savedCandidates[$key]['applications'] = $applications;
             }
-//        print_r($savedCandidates);
-//        exit;
         return ['data' => $savedCandidates, 'count' => $count];
     }
 
