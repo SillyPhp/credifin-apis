@@ -308,13 +308,13 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <?php if ($savedApplicants['count'] > 3) { ?>
-<!--                                    <div class="actions">-->
-<!--                                        <div class="set-im">-->
-<!--                                            <a href="--><?//= Url::toRoute('shortlisted-candidates'); ?><!--"-->
-<!--                                               data-toggle="tooltip" title="View All">-->
-<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?><!--"></a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('saved-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
                                 <?php } ?>
                             </div>
 

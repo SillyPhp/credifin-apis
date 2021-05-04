@@ -95,7 +95,7 @@ $this->registerCss('
     position: relative;
     transition: all .3s;
     border-radius: 6px;
-    z-index:1;
+    z-index:0;
 }
 .short-main:hover .remove-btn{
     opacity:1;

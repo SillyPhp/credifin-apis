@@ -10,13 +10,6 @@ foreach ($savedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="divRel">
         <div class="short-main">
-            <div class="remove-btn">
-                <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
-                        data-original-title="Remove Candidate"
-                        data-id="<?= $s['shortlisted_applicant_enc_id'] ?>">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
             <div class="flex-short">
                 <div class="short-logo">
                     <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
@@ -67,7 +60,8 @@ foreach ($savedApplicants['data'] as $s) { ?>
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>Saved From Job</th>
+                    <th width="90%">Saved From Job</th>
+                    <th width="10%">Remove</th>
                 </tr>
                 </thead>
                 <tbody class="qu_data">
@@ -75,7 +69,17 @@ foreach ($savedApplicants['data'] as $s) { ?>
                     foreach ($s['applications'] as $application) {
                         ?>
                         <tr>
-                            <td><a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
+                            <td>
+                                <a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
+                            </td>
+                            <td>
+                                <div class="remove-saved-btn">
+                                    <button type="button" class="remove-saved-candidate" data-toggle="tooltip"
+                                            data-original-title="Remove Candidate"
+                                            data-id="<?= $application['candidate_rejection_enc_id'] ?>">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     <?php }
@@ -101,7 +105,7 @@ $this->registerCss('
     position: relative;
     transition: all .3s;
     border-radius: 6px;
-    z-index:1;
+    z-index:0;
 }
 .short-main:hover .remove-btn{
     opacity:1;
@@ -142,18 +146,20 @@ $this->registerCss('
   -webkit-box-orient: vertical;  
   overflow: hidden;
 }
-.remove-btn {
-    position: absolute;
-    right: 0px;
-    top: 2px;
-    opacity:0;
-    transition:all .3s;
+.remove-saved-btn{
+    position: relative;
+    right: unset;
+    top: unset;
+    opacity: 1 !important;
+    transition: all .3s;
+    text-align: center;
 }
-.remove-btn button {
+.remove-saved-btn button {
     border: none;
     background: none !important;
     color: #d75946;
     line-height: 0;
+    padding: 0px
 }
 .short-skills {
     border-radius: 8px;
@@ -234,14 +240,14 @@ $(document).on('click','.slide-bttn',function(){
     
 });
 
-$(document).on('click','.remove-candidate',function (e){
+$(document).on('click','.remove-saved-candidate',function (e){
     e.preventDefault()
     let id = $(this).attr('data-id');
-    
+    console.log(id);
     $.ajax({
-            url: "/candidates/remove-shortlisted-candidate",
+            url: "remove-saved-candidate",
             method: "POST",
-            data: {shortlisted_applicant_enc_id:id},
+            data: {candidate_rejection_enc_id:id},
             beforeSend:function(){
                 $("#page-loading").fadeIn(1000);
             },
@@ -250,6 +256,7 @@ $(document).on('click','.remove-candidate',function (e){
                 if (response.status == 200) {
                     $.pjax.reload({container: '#saved-candidates', async: false});
                     toastr.success(response.message, 'success');
+                    utilities.initials();
                 } else {
                     toastr.error(response.message, 'error');
                 }
