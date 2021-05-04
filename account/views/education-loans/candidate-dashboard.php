@@ -7,6 +7,7 @@ $user_id = Yii::$app->user->identity->user_enc_id;
 Yii::$app->view->registerJs('var user_enc_id = "' . $user_id . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var loan_app_id = "' . $loan_app_id . '"', \yii\web\View::POS_HEAD);
 $documentOptions = ['PAN', 'Passport', 'Voter ID', 'Driving License'];
+$financeDocumentOptions = ['ITR', 'Bank Statement'];
 $occupationOptions = ['Salaried', 'Self Employed', 'None of above'];
 $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardian'];
 ?>
@@ -612,7 +613,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-3 padd-20">
+                                        <div class="col-md-3 padd-20 hidden">
                                             <div class="form-group ">
                                                 <div class="radio-heading input-group-text">
                                                     Address
@@ -744,7 +745,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                 <div class="col-md-4 padd-20">
                                                     <div class="form-group text-center">
                                                         <div id="co_borrower_IDproofimage_<?= $i ?>">
-                                                            <label for="idProof_co_borrower_<?= $i ?>" class="">
+                                                            <label for="idProof_co_borrower_<?= $i ?>" class="posRel">
                                                                 <div class="idPhoto">
                                                                     <i class="fa fa-cloud-upload"></i>
                                                                     Upload ID Proof's Photo
@@ -753,6 +754,60 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                         </div>
                                                         <input type="file" class="form-control idProof-input"
                                                                id="idProof_co_borrower_<?= $i ?>"
+                                                               placeholder="" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+                                        <article id="co_borrower_financeEncId_<?= $i ?>" data-key=""
+                                                 data-type="id_proof">
+                                            <div class="row mt10">
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group">
+                                                        <label class="radio-heading input-group-text"
+                                                               for="co_borrower_finance_<?= $i ?>"
+                                                               data-field="proof_name">
+                                                            Finance Proof
+                                                        </label>
+                                                        <select class="form-control field-req" name="years"
+                                                                id="co_borrower_finance_<?= $i ?>"
+                                                                data-id="coProofInfo">
+                                                            <option value="">Select One</option>
+                                                            <?php
+                                                            foreach ($financeDocumentOptions as $opt) {
+                                                                ?>
+                                                                <option value="<?= $opt ?>"><?= $opt ?></option>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20 hidden">
+                                                    <div class="form-group">
+
+                                                        <label for="co_borrower_finance_number_<?= $i ?>"
+                                                               class="input-group-text"
+                                                               data-field="number">
+                                                            Proof Number
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               id="co_borrower_finance_number_<?= $i ?>"
+                                                               placeholder="Number" data-id="coProofInfo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 padd-20">
+                                                    <div class="form-group text-center">
+                                                        <div id="co_borrower_finance_image_<?= $i ?>">
+                                                            <label for="finance_co_borrower_<?= $i ?>" class="posRel">
+                                                                <div class="idPhoto">
+                                                                    <i class="fa fa-cloud-upload"></i>
+                                                                    Upload Proof's Photo
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                        <input type="file" class="form-control idProof-input"
+                                                               id="finance_co_borrower_<?= $i ?>"
                                                                placeholder="" data-id="coProofInfo">
                                                     </div>
                                                 </div>
@@ -1566,7 +1621,6 @@ function showImage(input, inp_id, file_extension, fileUrl) {
         var reader = new FileReader();
         $('#'+inp_id).find('label').html(docEditIcon);
         var imgSource = $('#'+inp_id).find('.previewDocument');
-        console.log(imgSource.prop("tagName"));
         var tag_name = imgSource.prop("tagName");
         reader.onload = function (e) {
             switch (tag_name){
@@ -1662,7 +1716,7 @@ $(document).on('change','#co_borrower_1', function() {
     chngCoBorrowerType(value, section);
 });
 
-$(document).on('change','#co_borrower_occupation_0, #co_borrower_occupation_1', function() {
+$(document).on('change','#co_borrower_finance_0, #co_borrower_finance_1, #co_borrower_occupation_0, #co_borrower_occupation_1', function() {
     var elem = $(this);
     var value = elem.val();
     updateValue(elem, value);
@@ -1836,10 +1890,13 @@ function updateValue(elem, value){
     if(value != objData[inptId] && value !== ""){
         var data = {};
         var label_name = "";
-        if(elem.hasClass('same_address') || elem.hasClass('acnt_gender')){
+        if(elem.hasClass('same_address') || elem.hasClass('acnt_gender') || elem.hasClass('tt-input')){
             label_name = elem.closest('label').attr('data-field');
         } else {
             label_name = elem.prev('label').attr('data-field');
+        }
+        if(typeof label_name === "undefined" && elem.hasClass('tt-input')){
+            label_name = elem.parent().parent().prev().attr('data-field');
         }
         if (frontInptValidation(value, "allOthers") == false){
             toastr.error("characters should be upto 255, allowed characters !@#$%\^&*)(+=._-", "Limit exceeded");
@@ -1936,7 +1993,6 @@ function updateValue(elem, value){
         data[label_name] = value;
         data['user_enc_id'] = user_enc_id;
         data['loan_app_id'] = loan_app_id;
-        // console.log("key = "+key +" type= "+ type +" relation = "+ relation +" value = "+ value + " res type = " + address_type);
         if(value != "" || key != ""){
             $.ajax({
                 url: apiUrl+'api/v3/education-loan/loan-second-form',
@@ -2152,9 +2208,9 @@ $(document).ready(function() {
                     if(typeof residenceInfo === "undefined"){
                         residenceInfo = {};
                     }
-                    var coAppLoanCertificate = v.loanCertificates[0];
-                    if(typeof coAppLoanCertificate === "undefined"){
-                        coAppLoanCertificate = {};
+                    var coAppLoanCertificateArray = v.loanCertificates;
+                    if(typeof coAppLoanCertificateArray === "undefined"){
+                        coAppLoanCertificateArray = {};
                     }
                             
                     switch (v.relation) {
@@ -2184,6 +2240,10 @@ $(document).ready(function() {
                             var co_borrower_IDproof = "co_borrower_IDproof_" + k;
                             var co_borrower_IDproofnumber = "co_borrower_IDproofnumber_" + k;
                             var co_borrower_IDproofimage = "co_borrower_IDproofimage_" + k;
+                            var co_borrower_financeEncId = "co_borrower_financeEncId_" + k;
+                            var co_borrower_finance = "co_borrower_finance_" + k;
+                            var co_borrower_finance_number = "co_borrower_finance_number_" + k;
+                            var co_borrower_finance_image = "co_borrower_finance_image_" + k;
                             var co_borrower_resident_info = "co_borrower_resident_info_" + k;
                             var co_borrower_state = "co_borrower_state_" + k;
                             var co_borrower_city = "co_borrower_city_" + k;
@@ -2220,15 +2280,52 @@ $(document).ready(function() {
                             objData[co_borrower_address_info] = residenceInfo.loan_app_res_info_enc_id;
                             $('#' + co_borrower_houseNo).val(residenceInfo.address);
                             objData[co_borrower_houseNo] = residenceInfo.address;
-                            $('#' + co_borrower_certificationEncId).attr('data-key', coAppLoanCertificate.certificate_enc_id);
-                            objData[co_borrower_certificationEncId] = coAppLoanCertificate.certificate_enc_id;
-                            $('#' + co_borrower_IDproof).val(coAppLoanCertificate.name);
-                            objData[co_borrower_IDproof] = coAppLoanCertificate.name;
-                            $('#' + co_borrower_IDproofnumber).val(coAppLoanCertificate.number);
-                            objData[co_borrower_IDproofnumber] = coAppLoanCertificate.number;
-                            if(coAppLoanCertificate.image){
-                                $('#' + co_borrower_IDproofimage).children('label').html('<img height="50px" width="50px" src="'+coAppLoanCertificate.image+'" />');;
-                                objData[co_borrower_IDproofimage] = coAppLoanCertificate.image;
+                            if(coAppLoanCertificateArray.length > 0){
+                                $.each(coAppLoanCertificateArray, function(i, coAppLoanCertificate){
+                                    switch (coAppLoanCertificate.name){
+                                        case 'Bank Statement' :
+                                        case 'ITR' :
+                                            $('#' + co_borrower_financeEncId).attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                                            objData[co_borrower_financeEncId] = coAppLoanCertificate.certificate_enc_id;
+                                            $('#' + co_borrower_finance).val(coAppLoanCertificate.name);
+                                            objData[co_borrower_finance] = coAppLoanCertificate.name;
+                                            $('#' + co_borrower_finance_number).val(coAppLoanCertificate.number);
+                                            objData[co_borrower_finance_number] = coAppLoanCertificate.number;
+                                            if(coAppLoanCertificate.image){
+                                                $('#' + co_borrower_finance_image).children('label').html(docEditIcon);
+                                                var fileName = coAppLoanCertificate.image;
+                                                var file_extension = fileName.split('.').pop().toLowerCase();
+                                                $('#' + co_borrower_finance_image).children('label').html(docEditIcon);
+                                                if(file_extension == "pdf"){
+                                                    $('<i class="fa fa-file-pdf-o previewDocument" data-source="'+fileName+'"  style="font-size: 30px;"></i>').insertBefore($('#' + co_borrower_finance_image).children('label'));
+                                                } else {
+                                                    $('<img class="previewDocument" height="50px" width="50px" src="'+fileName+'" data-source="'+fileName+'" />').insertBefore($('#' + co_borrower_finance_image).children('label'));
+                                                }
+                                                
+                                                objData[co_borrower_finance_image] = coAppLoanCertificate.image;
+                                            }
+                                            break;
+                                        default :
+                                            $('#' + co_borrower_certificationEncId).attr('data-key', coAppLoanCertificate.certificate_enc_id);
+                                            objData[co_borrower_certificationEncId] = coAppLoanCertificate.certificate_enc_id;
+                                            $('#' + co_borrower_IDproof).val(coAppLoanCertificate.name);
+                                            objData[co_borrower_IDproof] = coAppLoanCertificate.name;
+                                            $('#' + co_borrower_IDproofnumber).val(coAppLoanCertificate.number);
+                                            objData[co_borrower_IDproofnumber] = coAppLoanCertificate.number;
+                                            if(coAppLoanCertificate.image){
+                                                $('#' + co_borrower_IDproofimage).children('label').html(docEditIcon);
+                                                var fileName = coAppLoanCertificate.image;
+                                                var file_extension = fileName.split('.').pop().toLowerCase();
+                                                $('#' + co_borrower_IDproofimage).children('label').html(docEditIcon);
+                                                if(file_extension == "pdf"){
+                                                    $('<i class="fa fa-file-pdf-o previewDocument" data-source="'+fileName+'"  style="font-size: 30px;"></i>').insertBefore($('#' + co_borrower_IDproofimage).children('label'));
+                                                } else {
+                                                    $('<img class="previewDocument" height="50px" width="50px" src="'+fileName+'" data-source="'+fileName+'" />').insertBefore($('#' + co_borrower_IDproofimage).children('label'));
+                                                }
+                                                objData[co_borrower_IDproofimage] = coAppLoanCertificate.image;
+                                            }
+                                    }       
+                                })
                             }
                             if(residenceInfo.type){
                                 $('#' + co_borrower_resident_info).find('input:radio').each(function(){
@@ -2415,22 +2512,30 @@ function readURL(input) {
  }
 JS;
 $this->registerJS($script);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    // eduTemp(0);
-    // eduTemp(1);
-    // for (var i=0; i>3; i++){
-    //     eduTemp(i);
-    // }
+    var apiUrl = '/';
+    if(document.domain != 'empoweryouth.com'){
+        apiUrl = 'https://sneh.eygb.me/';
+    }
     function eduTemp(edu_count) {
         // return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
         return '<div class="row mt10">' +
             '<div class="col-md-4 padd-20">' +
             '<div class="form-group">' +
             '<label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label>' +
-            '<input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name">' +
+            '<div id="the-basics-' + edu_count + '">' +
+            '<input type="text" placeholder="Degree Name" class="typeahead form-control text-capitalize" id="eduName' + edu_count + '" name="eduName' + edu_count + '">' +
             '</div>' +
             '</div>' +
+            '</div>' +
+            // '<div class="col-md-4 padd-20">' +
+            // '<div class="form-group">' +
+            // '<label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label>' +
+            // '<input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name">' +
+            // '</div>' +
+            // '</div>' +
             '<div class="col-md-4 padd-20 hidden">' +
             '<div class="form-group">' +
             '<label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label>' +
@@ -2457,6 +2562,58 @@ $this->registerJS($script);
             '</div></div>';
     }
 
+    function substringMatcher (strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+                if (substrRegex.test(str)) {
+                    matches.push(str);
+                }
+            });
+            cb(matches);
+        };
+    }
+
+    var courseList = "";
+    function getCourses(id, count)
+    {
+        if(count <= 0){
+            var _courses = [];
+            $.ajax({
+                url : apiUrl + 'api/v3/education-loan/course-pool-list',
+                method : 'GET',
+                success : function(res) {
+                    if (res.response.status==200){
+                        res = res.response.course;
+                        $.each(res,function(index,value){
+                            _courses.push(value.value);
+                        });
+                    } else {
+                        console.log('courses could not fetch');
+                    }
+                }
+            });
+            courseList = _courses;
+        }
+        $('#'+id+' .typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },{
+            name: '_courses',
+            source: substringMatcher(courseList)
+        });
+    }
+
     function addEduField(ths) {
         let count = ths.getAttribute('data-count');
         let eduFields = document.getElementById('eduFields');
@@ -2466,6 +2623,8 @@ $this->registerJS($script);
         newFields.setAttribute('data-type', 'qualification');
         newFields.innerHTML = eduTemp(count);
         eduFields.appendChild(newFields)
+        var inptId = 'the-basics-' + count;
+        getCourses(inptId, count);
         count++;
         ths.setAttribute('data-count', count);
         if (count >= 3) {
@@ -2495,10 +2654,6 @@ $this->registerJS($script);
             elemHide.style.display = 'none';
         }
     }
-</script>
-
-<script>
-
     function activeTab(event) {
         let tabs = document.getElementsByClassName('tabActive');
         for (var i = 0; i < tabs.length; i++) {
