@@ -70,7 +70,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                         ?>
                         <tr>
                             <td>
-                                <a href="javascript:;" data-href="<?= Url::to('/account/process-applications/'.$application['application_enc_id']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
+                                <a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
                             </td>
                             <td>
                                 <div class="remove-saved-btn">
