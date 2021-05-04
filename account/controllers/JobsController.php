@@ -1552,7 +1552,6 @@ class JobsController extends Controller
         endif;
     }
 
-
     private function __candidateApplications($limit = NULL)
     {
         $candidate_applications = AppliedApplications::find()
@@ -2128,8 +2127,6 @@ class JobsController extends Controller
                     ->all();
                     $savedCandidates[$key]['applications'] = $applications;
             }
-//        print_r($savedCandidates);
-//        exit;
         return ['data' => $savedCandidates, 'count' => $count];
     }
 
