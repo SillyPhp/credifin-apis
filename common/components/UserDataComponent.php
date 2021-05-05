@@ -235,6 +235,9 @@ class UserDataComponent extends Component
                 $g->onCondition(['g.is_deleted' => 0]);
                 $g->orderBy(['g.created_on' => SORT_ASC]);
             }])
+            ->innerJoinWith(['educationLoanPayments elp' => function ($g) {
+                $g->andWhere(['in', 'elp.payment_status', ['captured', 'created']]);
+            }])
             ->andWhere(['a.loan_app_enc_id' => $app_id, 'a.created_by' => $user_id])
             ->asArray()
             ->one();

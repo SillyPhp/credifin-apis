@@ -1591,7 +1591,7 @@ $this->registerCss('
     color: #f4d03f;
     font-size: 18px;
 }
-.co-borrower-other-info, #Guarantor1-other-info, #Guarantor2-other-info{
+#Guarantor1-other-info, #Guarantor2-other-info{
     display:none;
 }
 .form-control[readonly]{
@@ -2344,6 +2344,10 @@ $(document).ready(function() {
                             objData[co_borrower_city] = residenceInfo.city_enc_id;
                             break;
                         case 'Guarantor' :
+                            var coAppLoanCertificate = v.loanCertificates[0];
+                            if(typeof coAppLoanCertificate === "undefined"){
+                                coAppLoanCertificate = {};
+                            }
                             guarantorCount++;
                             if(guarantorCount <= 2){
                                 var gName = "";
@@ -2379,6 +2383,7 @@ $(document).ready(function() {
                                 gAddress = "G"+ guarantorCount + "Address";
                                 $('#'+gAddress).val(residenceInfo.address);
                                 objData[gAddress] = residenceInfo.address;
+                                
                                 $('#Guarantor'+guarantorCount+'-identity-info').attr('data-key', coAppLoanCertificate.certificate_enc_id);
                                 gCertName = "G"+ guarantorCount + "ID";
                                 $('#'+gCertName).val(coAppLoanCertificate.name);

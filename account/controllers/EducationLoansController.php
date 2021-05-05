@@ -469,7 +469,7 @@ class EducationLoansController extends Controller
 
     public function actionCandidateDashboard($id)
     {
-        $data = Yii::$app->userData->loanApplication($id, Yii::$app->user->identity->user_enc_id);;
+        $data = Yii::$app->userData->loanApplication($id, Yii::$app->user->identity->user_enc_id);
 //        print_r($data);exit();
         if (!$data) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
