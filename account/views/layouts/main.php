@@ -36,53 +36,66 @@ $this->beginPage();
                 <div class="container-fluid">
                     <div class="clearfix navbar-fixed-top">
                         <div class="ey-head-main">
-                                <div class="large-container container">
-                                    <div class="ey-header-main">
-                                        <div class="ey-header-logo">
-                                            <a class="ey-logo" href="/">
-                                                <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
-                                                     src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-<!--                                                <span class="logo_beta">Beta</span>-->
-                                            </a>
-                                        </div>
-                                        <div class="ey-menu-main">
-                                            <?= $this->render('@common/widgets/top-header-beta',[
-                                                    'for'=>'Dashboard',
-                                                    'data' => $this->params['sub_header']
+                            <div class="large-container container">
+                                <div class="ey-header-main">
+                                    <div class="ey-header-logo">
+                                        <a class="ey-logo" href="/">
+                                            <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                                 src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                            <!--                                                <span class="logo_beta">Beta</span>-->
+                                        </a>
+                                    </div>
+                                    <div class="ey-menu-main">
+                                        <?php
+                                        if (!Yii::$app->user->identity->organization->organization_enc_id) {
+                                            ?>
+                                            <?= $this->render('@common/widgets/top-header-beta', [
+                                                'for' => 'Dashboard',
+                                                'data' => $this->params['sub_header']
                                             ]); ?>
-                                        </div>
-                                        <div class="ey-nav-actions">
-                                            <div class="ey-menu-login">
-                                                <?php
-                                                $name = $image = $color = NULL;
-                                                if (Yii::$app->user->identity->organization->organization_enc_id) {
-                                                    if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                                                    }
-                                                    $name = Yii::$app->user->identity->organization->name;
-                                                    $color = Yii::$app->user->identity->organization->initials_color;
-                                                } else {
-                                                    if (Yii::$app->user->identity->image) {
-                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                                                    }
-                                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                                    $color = Yii::$app->user->identity->initials_color;
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <?= $this->render('@common/widgets/top-header-account', [
+                                                'for' => 'Dashboard',
+                                                'data' => $this->params['sub_header']
+                                            ]); ?>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="ey-nav-actions">
+                                        <div class="ey-menu-login">
+                                            <?php
+                                            $name = $image = $color = NULL;
+                                            if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                                if (Yii::$app->user->identity->organization->logo) {
+                                                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                 }
-                                                ?>
-                                                <div class="my-profiles-sec">
-                                                    <?php if ($image): ?>
-                                                        <span><img src="<?= $image; ?>" title="<?= $name; ?>"
-                                                                   alt="<?= $name; ?>"/></span>
-                                                    <?php else: ?>
-                                                        <span><canvas class="user-icon" name="<?= $name; ?>"
-                                                                      color="<?= $color; ?>" width="40"
-                                                                      height="40" font="20px"></canvas></span>
-                                                    <?php endif; ?>
-                                                </div>
+                                                $name = Yii::$app->user->identity->organization->name;
+                                                $color = Yii::$app->user->identity->organization->initials_color;
+                                            } else {
+                                                if (Yii::$app->user->identity->image) {
+                                                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                }
+                                                $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                                $color = Yii::$app->user->identity->initials_color;
+                                            }
+                                            ?>
+                                            <div class="my-profiles-sec">
+                                                <?php if ($image): ?>
+                                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                               alt="<?= $name; ?>"/></span>
+                                                <?php else: ?>
+                                                    <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                                  color="<?= $color; ?>" width="40"
+                                                                  height="40" font="20px"></canvas></span>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                         <div class="ey-mobile-menu">
                             <div class="ey-mob-nav-main">
@@ -138,9 +151,22 @@ $this->beginPage();
                             <div class="ey-mobile-content">
                                 <div class="ey-mobile-menu-main-content">
                                     <div class="ey-mobile-menu-inner-content">
-                                        <?= $this->render('@common/widgets/top-header-mobile',[
-                                            'data' => $this->params['sub_header']
-                                        ]); ?>
+                                        <?php
+                                        if (!Yii::$app->user->identity->organization->organization_enc_id) {
+                                            ?>
+                                            <?= $this->render('@common/widgets/top-header-mobile', [
+                                                'data' => $this->params['sub_header']
+                                            ]); ?>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <?= $this->render('@common/widgets/top-header-mobile-account', [
+                                                'for' => 'Dashboard',
+                                                'data' => $this->params['sub_header']
+                                            ]); ?>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +196,7 @@ $this->beginPage();
     </div>
     <?php
     echo $this->render('@common/widgets/chat-main');
-//    echo $this->render('/widgets/chat/main');
+    //    echo $this->render('/widgets/chat/main');
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -22px;color: #fff;}
             .page-loading {
