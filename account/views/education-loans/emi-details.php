@@ -186,6 +186,7 @@ $this->registerCSS('
     color: #CA0B00
 }
 
+
 .repayStats{
     margin-bottom: 20px;
 }

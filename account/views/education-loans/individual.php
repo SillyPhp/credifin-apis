@@ -13,6 +13,9 @@ use yii\helpers\Url;
                                 Loan Details
                             </span>
                         </div>
+                        <div class="actions">
+                            <a href="javascript:;" title="" class="loanAgreement"><i class="fa fa-download"></i> Loan Agreement</a>
+                        </div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
@@ -242,6 +245,20 @@ $this->registerCSS('
     margin-bottom: 25px;
     overflow: hidden;
     border-radius: 2px;
+}
+.loanAgreement{
+    background: #00a0e3;
+    padding: 8px 15px;
+    color: #fff;
+    transition: .3s ease;
+}
+.loanAgreement i{
+    margin-right: 3px;
+}
+.loanAgreement:hover{
+    box-shadow: 2px 3px 5px rgba(0,0,0,.3);
+    color: #fff;
+    transition: .3s ease;
 }
 .heading-style {
     font-family: lobster;
