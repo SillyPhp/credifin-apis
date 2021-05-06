@@ -1,5 +1,8 @@
+
 <?php
+
 use yii\helpers\Url;
+
 ?>
 <section class="goven-jobs-sec">
     <div class="container">
@@ -30,7 +33,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .goven-jobs-sec{
-    background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') . ');
     background-repeat: no-repeat;
     background-size:cover;
     padding: 40px 0px 40px 0px;
@@ -85,6 +88,12 @@ $this->registerCss('
     padding:5px 10px;
     margin:0;
 }
+.owl-carousel .owl-item img{width:auto !important;}
+.owl-theme .owl-dots{display:none !important;}
+.owl-controls .owl-nav > div{background:none;}
+.owl-controls .owl-prev i, .owl-controls .owl-next i{
+    font-size:35px !important;
+}
 @media (max-width:415px){
 .gov-heading{
     font-size:25px;
@@ -95,3 +104,30 @@ $this->registerCss('
 }
 }
 ');
+$script = <<<JS
+$('.owl-carousel').owlCarousel({
+  loop: true,
+  margin: 10,
+  nav: true,
+  navText: [
+    "<i class='fa fa-caret-left'></i>",
+    "<i class='fa fa-caret-right'></i>"
+  ],
+  autoplay: true,
+  autoplayHoverPause: true,
+  responsive: {
+    0: {
+      items: 1
+    },
+    600: {
+      items: 1
+    },
+    1000: {
+      items: 2
+    }
+  }
+})
+JS;
+$this->registerjs($script);
+$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css');
+$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js');
