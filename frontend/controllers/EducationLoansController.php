@@ -364,7 +364,7 @@ class EducationLoansController extends Controller
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,
-            'blogs' => $this->getBlogsByTags(['interest free', 'Study'])
+            'blogs' => $this->getBlogsByTags(['interest free'])
         ]);
     }
 
