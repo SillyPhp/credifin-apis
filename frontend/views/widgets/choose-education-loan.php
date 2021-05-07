@@ -56,14 +56,14 @@ use yii\helpers\Url;
                             Support
                         </div>
                     </li>
-<!--                    <li>-->
-<!--                        <div class="clickedItem"-->
-<!--                             data-value="Interest paid on education loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help ease the financial burden of studying abroad."-->
-<!--                             data-img="--><?//= Url::to('@eyAssets/images/pages/education-loans/tax.png')?><!--">-->
-<!--                            <i class="fas fa-rupee-sign"></i>-->
-<!--                            Tax benefits-->
-<!--                        </div>-->
-<!--                    </li>-->
+                    <li>
+                        <div class="clickedItem"
+                             data-value="Interest paid on education loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help ease the financial burden of studying abroad."
+                             data-img="<?= Url::to('@eyAssets/images/pages/education-loans/tax.png')?>">
+                            <i class="fas fa-rupee-sign"></i>
+                            Tax benefits
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
