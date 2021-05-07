@@ -8,7 +8,10 @@ use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\Organizations;
+use common\models\Posts;
+use common\models\PostTags;
 use common\models\PressReleasePubliser;
+use common\models\Tags;
 use common\models\UnclaimedOrganizations;
 use frontend\models\AdmissionForm;
 use frontend\models\applications\LeadsForm;
@@ -167,6 +170,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionStudyInAustralia(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -208,8 +212,10 @@ class EducationLoansController extends Controller
         return $this->render('study-in-canada',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in canada'])
         ]);
     }
+
     public function actionStudyInIndia(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -231,6 +237,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionStudyInEurope(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -252,6 +259,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionStudyAbroad(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -271,8 +279,10 @@ class EducationLoansController extends Controller
         return $this->render('study-abroad',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study abroad'])
         ]);
     }
+
     public function actionRefinance(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -293,6 +303,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionAnnualFeeFinancing(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -313,6 +324,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionSchoolFeeFinance(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -333,6 +345,7 @@ class EducationLoansController extends Controller
             'data' => $data,
         ]);
     }
+
     public function actionInterestFree(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -348,11 +361,14 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
+
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['interest free'])
         ]);
     }
+
     public function actionEducationInstitutionLoan()
     {
         $model = new AdmissionForm();
@@ -399,5 +415,26 @@ class EducationLoansController extends Controller
             'model' => $model,
             'data' => $data,
         ]);
+    }
+
+    private function getBlogsByTags($tags){
+        $blogs = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.title','a.featured_image','a.featured_image_location','(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug',
+            'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',])
+            ->innerJoinWith(['postTags b' => function($b){
+                $b->joinWith(['tagEnc c']);
+            }],false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => $tags])
+            ->groupBy(['a.post_enc_id']);
+            $count = $blogs->count();
+            $blogs = $blogs
+            ->limit(4)
+            ->asArray()
+            ->all();
+//        print_r($blogs);
+//        exit();
+        return ['blogs' => $blogs, 'count' => $count];
     }
 }
