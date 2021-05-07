@@ -1552,7 +1552,6 @@ class JobsController extends Controller
         endif;
     }
 
-
     private function __candidateApplications($limit = NULL)
     {
         $candidate_applications = AppliedApplications::find()
