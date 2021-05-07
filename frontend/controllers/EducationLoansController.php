@@ -212,6 +212,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-canada',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in canada'])
         ]);
     }
 
