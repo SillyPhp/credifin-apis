@@ -234,7 +234,7 @@ use yii\helpers\Url;
         </div>
     </section>
 <?php
-if($blogs){
+if($blogs['blogs']){
     echo $this->render('/widgets/education-loan/blogs',[
         'blogs' => $blogs,
         'param' => 'interest-free'

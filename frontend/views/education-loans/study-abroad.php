@@ -62,7 +62,7 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <?php
-if($blogs){
+if($blogs['blogs']){
     echo $this->render('/widgets/education-loan/blogs',[
         'blogs' => $blogs,
         'param' => 'study-abroad'
