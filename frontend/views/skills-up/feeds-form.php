@@ -592,7 +592,6 @@ $(document).on('change','select[name="source_id"]',function() {
     var self = this;
 
     setTimeout(function() {
-        console.log(self.getData());
         $('#descriptionElem').html(self.getData());
     }, 10);
 });
