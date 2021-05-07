@@ -79,6 +79,14 @@ use yii\helpers\Url;
 </section>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'annual-fee-finance'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
