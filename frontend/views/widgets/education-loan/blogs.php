@@ -8,7 +8,7 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-4 col-xs-12">
                 <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Related Blogs'); ?></h2>
             </div>
-
+            <?php if($blogs['count'] > 4){   ?>
             <div class="col-md-6 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
@@ -19,10 +19,11 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
+            <?php } ?>
         </div>
         <div class="row">
             <?php
-                foreach ($blogs as $blog){
+                foreach ($blogs['blogs'] as $blog){
                 $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $blog['featured_image_location'] . DIRECTORY_SEPARATOR . $blog['featured_image'];
                 $image = Yii::$app->params->upload_directories->posts->featured_image . $blog['featured_image_location'] . DIRECTORY_SEPARATOR . $blog['featured_image'];
                 if (!file_exists($image_path)) {
@@ -33,7 +34,7 @@ use yii\helpers\Url;
                 <a href="<?= Url::to('/blog/c/'.$blog['slug']) ?>">
                     <div class="col-item">
                         <div class="photo">
-                            <img src="<?= $image ?>" class="" alt="interest free" title="interest free">
+                            <img src="<?= $image ?>" class="" alt="<?= $param ?>" title="<?= $param ?>">
                         </div>
                         <div class="info">
                             <div class="row">
@@ -63,23 +64,49 @@ $this->registerCss('
     min-height: 250px;
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
+.col-item:hover{
+    color: #000;
+}
 .loanBlogs{
-    padding: 0 20px;
+    padding: 0 20px 10px;
 }
 .heading-style{
     color: #000;
 }
-.col-item .photo img {
+.photo{
+    max-width: 255px;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+}
+.photo img{
+    order-radius: 5px 5px 0 0;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    opacity: 1;
+    display: block;
     width: 100%;
     height: 200px;
-    object-fit:cover !important;
+    transition: .5s ease;
+    backface-visibility: hidden;
+    object-fit: fill;
+}
+.col-item:hover .photo img{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    opacity: 1;
+    transition: .5s ease;
 }
 .col-item .info{
-    text-align:center;
+    text-align:left;
     font-family:roboto;
+    color: #333;
 }
 .col-item .price h5{
-    font-size:16px;
+    font-size:14px;
     display: -webkit-box;
     font-family:roboto;
   -webkit-line-clamp: 2;

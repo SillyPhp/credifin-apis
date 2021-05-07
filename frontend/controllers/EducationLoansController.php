@@ -364,7 +364,7 @@ class EducationLoansController extends Controller
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,
-            'blogs' => $this->getBlogsByTags(['interest free'])
+            'blogs' => $this->getBlogsByTags(['interest free', 'Study'])
         ]);
     }
 
@@ -419,17 +419,21 @@ class EducationLoansController extends Controller
     private function getBlogsByTags($tags){
         $blogs = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title','a.featured_image','(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug',
+            ->select(['a.post_enc_id', 'a.title','a.featured_image','a.featured_image_location','(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug',
             'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',])
             ->innerJoinWith(['postTags b' => function($b){
                 $b->joinWith(['tagEnc c']);
             }],false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['c.name' => $tags])
-            ->groupBy(['a.post_enc_id'])
+            ->groupBy(['a.post_enc_id']);
+            $count = $blogs->count();
+            $blogs = $blogs
             ->limit(4)
             ->asArray()
             ->all();
-        return $blogs;
+//        print_r($blogs);
+//        exit();
+        return ['blogs' => $blogs, 'count' => $count];
     }
 }
