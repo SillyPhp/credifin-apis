@@ -729,7 +729,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 padd-20">
+                                                <div class="col-md-4 padd-20 hidden">
                                                     <div class="form-group">
 
                                                         <label for="co_borrower_IDproofnumber_<?= $i ?>"
@@ -1716,7 +1716,7 @@ $(document).on('change','#co_borrower_1', function() {
     chngCoBorrowerType(value, section);
 });
 
-$(document).on('change','#co_borrower_finance_0, #co_borrower_finance_1, #co_borrower_occupation_0, #co_borrower_occupation_1', function() {
+$(document).on('change','#co_borrower_finance_0, #co_borrower_finance_1, #co_borrower_IDproof_0, #co_borrower_IDproof_1, #co_borrower_occupation_0, #co_borrower_occupation_1', function() {
     var elem = $(this);
     var value = elem.val();
     updateValue(elem, value);
@@ -2439,6 +2439,26 @@ function readURL(input) {
 
  $(document).on('change','input:file', function(e) {
     var elem = $(this);
+    var elem_id = elem.attr('id');
+    var cnum = elem_id.replace(/\D/g,'');
+    var cid = elem_id.replace(/[0-9]/g,'');
+    var slctId = slctVal = ""; 
+    switch (cid){
+        case 'idProof_co_borrower_' :
+            slctId = "co_borrower_IDproof_" + cnum;
+            break;
+        case 'finance_co_borrower_' :
+            slctId = "co_borrower_finance_" + cnum;
+            break;
+        default :
+    }
+    if(slctId != ""){
+        slctVal = $('#' + slctId).val();
+        if(slctVal == ""){
+            toastr.warning("Please select document type first", "Alert");
+            return false;
+        }
+    }
     var section = elem.closest('section');
     var relation = section.attr('data-relation');
     var key = section.attr('data-key');
