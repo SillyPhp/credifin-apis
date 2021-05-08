@@ -41,7 +41,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-12 mb-30">
                             <div class="content-t mb-20">Cover Image</div>
                             <div id="image-preview">
-                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image" class="target set-w"/>
+                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                                     class="target set-w"/>
                             </div>
                             <!--                            <img src="-->
                             <? //= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?><!--"-->
@@ -56,7 +57,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <div class="default text">&nbsp;</div>
-                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult','targetElem'=>'titleElem'])->label(false); ?>
+                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -75,7 +76,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult','targetElem'=>'authorElem'])->label(false); ?>
+                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -137,7 +138,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-12">
                             <div class="submit-b">
                                 <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
-                                <a href="">PREVIEW</a>
+                                <a href="javascript:;" id="preview-button">PREVIEW</a>
                             </div>
                         </div>
                     </div>
@@ -148,7 +149,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                 <div class="feed-box dash-inner-box nd-shadow">
                     <!--                    <div class="rec-batch">Recommended</div>-->
                     <div class="feed-img">
-                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image" class="target"/>
+                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                             class="target"/>
                     </div>
                     <h3 class="feed-heading">
                         <a href="javascript:;" id="titleElem">Post Title</a>
@@ -560,6 +562,7 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+let description = '';
 $(document).on('keyup','.setResult',function() {
     $('#'+$(this).attr('targetElem')).html($(this).val());
 });
@@ -588,11 +591,12 @@ $(document).on('change','select[name="source_id"]',function() {
       // Remove the redundant buttons from toolbar groups defined above.
       removeButtons: 'Source,Smiley,Iframe,Strike,Subscript,Superscript,Styles,Specialchar,Flash,'
     });
- CKEDITOR.instances.editor.on('key', function(e) {
+ CKEDITOR.instances.editor.on('change', function(e) {
     var self = this;
 
     setTimeout(function() {
         $('#descriptionElem').html(self.getData());
+        description = self.getData();
     }, 10);
 });
 // $('.test-sem').dropdown();
@@ -666,6 +670,31 @@ $(document).on('change','#source_url',function (e){
                 }
             }
         })
+    })
+    
+    document.querySelector("#file").addEventListener('change',function() {
+      const reader = new FileReader();
+      reader.addEventListener('load',()=>{
+          localStorage.setItem('imgData',reader.result)
+      });
+      reader.readAsDataURL(this.files[0]);
+    });
+    
+    $(document).on('click','#preview-button',function(e) {
+            e.preventDefault();
+            var form = $('#feeds_form');
+            $.ajax({
+                url:'/skills-up/preview',
+                data:form.serialize()+ "&description=" + description,
+                method:'post',
+                success: function(data) {
+                   if(data['status'] === 200){
+                       window.open("http://ravinder.eygb.me/skills-up/feed-preview?id="+data['id']);
+                   }else{
+                       toastr.error(response.message, 'error'); 
+                   }
+                }
+            });
     })
     
     // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
