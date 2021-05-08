@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 
-<div id="loginModal" class="modal fade-scale loginModal" role="dialog">
+<div id="plModal" class="modal fade-scale plModal" role="dialog">
     <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
