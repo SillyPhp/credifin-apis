@@ -17,6 +17,16 @@ button.icon-button>span.bars{
 .event-container>.event-icon>div[class^="event-bullet-"], .event-indicator>.type-bullet>div[class^="type-"]{
     background-color: #ff9665;
 }
+.calendar-inner{
+    max-width: calc(100% - 560px);
+}
+.calendar-events{
+    width: 360px;
+    padding: 70px 10px 60px 20px;
+}
+.sidebar-hide .calendar-inner {
+    max-width: calc(100% - 360px);
+}
 ');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.min.css');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.orange-coral.min.css');

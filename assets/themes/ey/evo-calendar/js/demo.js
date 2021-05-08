@@ -42,8 +42,8 @@ var events = [ {
 } ];
 
 function getTiming(time,start){
-    console.log(time);
-    console.log(start);
+    // console.log(time);
+    // console.log(start);
 
 }
 
@@ -58,7 +58,7 @@ function FetchEventAndRenderCalendar(){
             $.each(data, function(i,v) {
                 let final_timing;
                 let final_interviewers = [];
-                console.log(v.time);
+                // console.log(v.time);
                 $.each(v.interviewers , function (index) {
                     // let tempInterviewers = [];
                     final_interviewers.push(v.interviewers[index].name);
@@ -69,8 +69,8 @@ function FetchEventAndRenderCalendar(){
                         $.each(v.time[index].time , function (underindex) {
                             tempData.push(' '+v.time[index].time[underindex].from + ' to: ' + v.time[index].time[underindex].to);
                         });
-                        console.log(tempData.toString());
-                        console.log('got daata');
+                        // console.log(tempData.toString());
+                        // console.log('got daata');
                         final_timing = tempData.toString();
                     }
                 });
@@ -91,7 +91,7 @@ function FetchEventAndRenderCalendar(){
                     // designation:v.designation,
                 })
             });
-            console.log(c_events);
+            // console.log(c_events);
             $("#demoEvoCalendar").evoCalendar("addCalendarEvent", c_events);
         }
     })
@@ -129,7 +129,7 @@ $(document).ready(function() {
     $("#demoEvoCalendar").evoCalendar({
         format: "MM dd, yyyy",
         titleFormat: "MM",
-        sidebarDisplayDefault:false,
+        sidebarDisplayDefault:true,
         theme: 'Orange Coral',
         calendarEvents: []
     });
