@@ -104,6 +104,7 @@ $this->registerCss('
     text-align:left;
     font-family:roboto;
     color: #333;
+    min-height: 60px;
 }
 .col-item .price h5{
     font-size:14px;

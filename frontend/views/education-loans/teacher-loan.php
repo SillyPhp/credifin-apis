@@ -87,9 +87,17 @@ use borales\extensions\phoneInput\PhoneInput;
 <section class="bg-blue">
     <?= $this->render('/widgets/why-empoweryouth') ?>
 </section>
-<?= $this->render('/widgets/faqs-teacher-loan');?>
 <?php $is_show = 0; ?>
 <?= $this->render('/widgets/Our-lending-partners',['is_show'=>$is_show])?>
+<?= $this->render('/widgets/faqs-teacher-loan');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'teacher-loan'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
