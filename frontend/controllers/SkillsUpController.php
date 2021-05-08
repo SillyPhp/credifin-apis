@@ -69,7 +69,7 @@ class SkillsUpController extends Controller
             return $this->render('feed-preview', ['object' => $object, 'source' => $source, 'skills' => $skills]);
 
         } else {
-            return false;
+            return 'Oops Session not found..!';
         }
     }
 
