@@ -246,6 +246,19 @@ class SkillsUpForm extends Model
                         ->asArray()
                         ->one();
 
+                    $blog_skills = Skills::find()
+                        ->select(['skill'])
+                        ->where(['skill_enc_id' => $this->skills])
+                        ->asArray()
+                        ->all();
+
+                    $skills = [];
+                    foreach ($blog_skills as $skill) {
+                        array_push($skills, $skill['skill']);
+                    }
+
+
+
                     $postModel = new Posts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $postModel->post_enc_id = $utilitiesModel->encrypt();
@@ -255,7 +268,7 @@ class SkillsUpForm extends Model
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $postModel->slug = $utilitiesModel->create_slug();
                     $postModel->description = $this->description;
-                    $meta_arr = array_unique($this->blog_tags);
+                    $meta_arr = array_unique($skills);
                     $meta = implode(", ", $meta_arr);
                     $meta_str = ucwords($meta);
                     $postType = PostTypes::findOne(['post_type' => 'Post']);

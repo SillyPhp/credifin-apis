@@ -143,7 +143,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-12">
                             <div class="submit-b">
                                 <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
-                                <a href="">PREVIEW</a>
+                                <a href="javascript:;" id="preview-button">PREVIEW</a>
                             </div>
                         </div>
                     </div>
@@ -581,6 +581,7 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+let description = '';
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
@@ -612,11 +613,12 @@ $(document).on('change','select[name="source_id"]',function() {
       // Remove the redundant buttons from toolbar groups defined above.
       removeButtons: 'Source,Smiley,Iframe,Strike,Subscript,Superscript,Styles,Specialchar,Flash,'
     });
- CKEDITOR.instances.editor.on('key', function(e) {
+ CKEDITOR.instances.editor.on('change', function(e) {
     var self = this;
 
     setTimeout(function() {
         $('#descriptionElem').html(self.getData());
+        description = self.getData();
     }, 10);
 });
 // $('.test-sem').dropdown();
@@ -690,6 +692,31 @@ $(document).on('change','#source_url',function (e){
                 }
             }
         })
+    })
+    
+    document.querySelector("#file").addEventListener('change',function() {
+      const reader = new FileReader();
+      reader.addEventListener('load',()=>{
+          localStorage.setItem('imgData',reader.result)
+      });
+      reader.readAsDataURL(this.files[0]);
+    });
+    
+    $(document).on('click','#preview-button',function(e) {
+            e.preventDefault();
+            var form = $('#feeds_form');
+            $.ajax({
+                url:'/skills-up/preview',
+                data:form.serialize()+ "&description=" + description,
+                method:'post',
+                success: function(data) {
+                   if(data['status'] === 200){
+                       window.open("http://ravinder.eygb.me/skills-up/feed-preview?id="+data['id']);
+                   }else{
+                       toastr.error(response.message, 'error'); 
+                   }
+                }
+            });
     })
     
     // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
