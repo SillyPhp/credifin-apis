@@ -41,7 +41,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-12 mb-30">
                             <div class="content-t mb-20">Cover Image</div>
                             <div id="image-preview">
-                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image" class="target set-w"/>
+                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                                     class="target set-w"/>
                             </div>
                             <!--                            <img src="-->
                             <? //= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?><!--"-->
@@ -56,10 +57,10 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <div class="default text">&nbsp;</div>
-                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult','targetElem'=>'titleElem'])->label(false); ?>
+                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <div class="default text">Select Source</div>
                                 <?php echo $form->field($model, 'source_id')->dropDownList(
@@ -68,6 +69,11 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 )->label(false); ?>
                             </div>
                         </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-primary mt-50 modal-load-class" value="/skills-up/add-source">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                         <div class="col-md-12">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
@@ -75,7 +81,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult','targetElem'=>'authorElem'])->label(false); ?>
+                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -148,7 +154,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                 <div class="feed-box dash-inner-box nd-shadow">
                     <!--                    <div class="rec-batch">Recommended</div>-->
                     <div class="feed-img">
-                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image" class="target"/>
+                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                             class="target"/>
                     </div>
                     <h3 class="feed-heading">
                         <a href="javascript:;" id="titleElem">Post Title</a>
@@ -188,9 +195,23 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
         </div>
     </div>
 </section>
+<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                     alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.form-group.form-md-line-input{
+    margin-bottom:0px;
+}
 .disabled,.disabled *{
     cursor:not-allowed !important;
 }
@@ -560,6 +581,9 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+$(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 $(document).on('keyup','.setResult',function() {
     $('#'+$(this).attr('targetElem')).html($(this).val());
 });

@@ -6,6 +6,8 @@ use common\models\Industries;
 use common\models\LearningVideos;
 use common\models\Skills;
 use common\models\SkillsUpSources;
+use frontend\models\OrganizationEmployeesForm;
+use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
 use Yii;
@@ -107,5 +109,34 @@ class SkillsUpController extends Controller
             'title' => 'LearningVideo',
             'message' => 'Video id not Found..',
         ];
+    }
+
+    public function actionAddSource()
+    {
+        if (Yii::$app->request->isAjax) {
+            $addSourceForm = new AddSourceForm();
+            if ($addSourceForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
+                print_r($addSourceForm);
+                exit();
+                if ($addSourceForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Source Added.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('add-source-form', [
+                'addSourceForm' => $addSourceForm,
+            ]);
+        }
     }
 }
