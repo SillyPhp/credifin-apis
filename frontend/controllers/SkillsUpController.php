@@ -152,16 +152,16 @@ class SkillsUpController extends Controller
             if ($addSourceForm->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
-                print_r($addSourceForm);
-                exit();
-                if ($addSourceForm->save()) {
-                    return $response = [
+                if ($data = $addSourceForm->save()) {
+                    return [
                         'status' => 200,
                         'title' => 'Success',
                         'message' => 'Source Added.',
+                        'id' => $data['id'],
+                        'val' => $data['val']
                     ];
                 } else {
-                    return $response = [
+                    return [
                         'status' => 201,
                         'title' => 'Error',
                         'message' => 'An error has occurred. Please try again.',
