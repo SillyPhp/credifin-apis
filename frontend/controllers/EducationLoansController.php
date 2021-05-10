@@ -8,7 +8,10 @@ use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\Organizations;
+use common\models\Posts;
+use common\models\PostTags;
 use common\models\PressReleasePubliser;
+use common\models\Tags;
 use common\models\UnclaimedOrganizations;
 use frontend\models\AdmissionForm;
 use frontend\models\applications\LeadsForm;
@@ -62,6 +65,7 @@ class EducationLoansController extends Controller
         return $this->render("education-loan-index", [
             'data' => $data,
             'loan_org' => $loan_org,
+            'blogs' => $this->getBlogsByTags(['education loan'])
         ]);
     }
 
@@ -165,8 +169,10 @@ class EducationLoansController extends Controller
         return $this->render('study-in-usa',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in usa'])
         ]);
     }
+
     public function actionStudyInAustralia(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -186,6 +192,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-australia',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in australia'])
         ]);
     }
 
@@ -208,8 +215,10 @@ class EducationLoansController extends Controller
         return $this->render('study-in-canada',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in canada'])
         ]);
     }
+
     public function actionStudyInIndia(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -229,8 +238,10 @@ class EducationLoansController extends Controller
         return $this->render('study-in-india',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in india'])
         ]);
     }
+
     public function actionStudyInEurope(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -250,8 +261,10 @@ class EducationLoansController extends Controller
         return $this->render('study-in-europe',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in europe'])
         ]);
     }
+
     public function actionStudyAbroad(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -271,8 +284,10 @@ class EducationLoansController extends Controller
         return $this->render('study-abroad',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study abroad', 'study in abroad'])
         ]);
     }
+
     public function actionRefinance(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -291,8 +306,10 @@ class EducationLoansController extends Controller
         return $this->render('refinancing-education-loan',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['refinance', 'refinance education loan'])
         ]);
     }
+
     public function actionAnnualFeeFinancing(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -311,8 +328,10 @@ class EducationLoansController extends Controller
         return $this->render('annual-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['annual fee financing', 'annual fee finance'])
         ]);
     }
+
     public function actionSchoolFeeFinance(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -331,8 +350,10 @@ class EducationLoansController extends Controller
         return $this->render('school-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['school fee financing', 'school fee finance'])
         ]);
     }
+
     public function actionInterestFree(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -348,11 +369,14 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
+
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['interest free'])
         ]);
     }
+
     public function actionEducationInstitutionLoan()
     {
         $model = new AdmissionForm();
@@ -372,6 +396,7 @@ class EducationLoansController extends Controller
         return $this->render('education-institution-loan', [
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['education institution loan'])
         ]);
     }
 
@@ -398,6 +423,28 @@ class EducationLoansController extends Controller
         return $this->render('teacher-loan', [
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['teacher loan'])
         ]);
+    }
+
+    private function getBlogsByTags($tags){
+        $blogs = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.title','a.featured_image','a.featured_image_location','(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug',
+            'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',])
+            ->innerJoinWith(['postTags b' => function($b){
+                $b->joinWith(['tagEnc c']);
+            }],false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => $tags])
+            ->groupBy(['a.post_enc_id']);
+            $count = $blogs->count();
+            $blogs = $blogs
+            ->limit(4)
+            ->asArray()
+            ->all();
+//        print_r($blogs);
+//        exit();
+        return ['blogs' => $blogs, 'count' => $count];
     }
 }
