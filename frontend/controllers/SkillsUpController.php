@@ -2,10 +2,13 @@
 
 namespace frontend\controllers;
 
+use account\models\applications\ApplicationForm;
 use common\models\Industries;
 use common\models\LearningVideos;
 use common\models\Skills;
 use common\models\SkillsUpSources;
+use frontend\models\OrganizationEmployeesForm;
+use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
 use Yii;
@@ -35,8 +38,41 @@ class SkillsUpController extends Controller
 
     public function actionPreview()
     {
-        return $this->render('feed-preview');
+        $model = new SkillsUpForm();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $var = Yii::$app->security->generateRandomString(10);
+            $session = Yii::$app->session;
+            $session->set($var, $model);
+            return ['status' => 200, 'id' => $var];
+        } else {
+            return ['status' => 201];
+        }
+    }
 
+    public function actionFeedPreview($id)
+    {
+        if (!empty($id)) {
+            $session = Yii::$app->session;
+            $object = $session->get($id);
+
+            if (empty($object)) {
+                return 'Oops Session expired..!';
+            }
+
+            $source = SkillsUpSources::findone(['source_enc_id' => $object->source_id])->name;
+
+            $skills = Skills::find()
+                ->select(['skill'])
+                ->where(['skill_enc_id' => $object->skills])
+                ->asArray()
+                ->all();
+
+            return $this->render('feed-preview', ['object' => $object, 'source' => $source, 'skills' => $skills]);
+
+        } else {
+            return 'Oops Session not found..!';
+        }
     }
 
     public function actionIndustryList($q = null, $id = null)
@@ -107,5 +143,34 @@ class SkillsUpController extends Controller
             'title' => 'LearningVideo',
             'message' => 'Video id not Found..',
         ];
+    }
+
+    public function actionAddSource()
+    {
+        if (Yii::$app->request->isAjax) {
+            $addSourceForm = new AddSourceForm();
+            if ($addSourceForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
+                print_r($addSourceForm);
+                exit();
+                if ($addSourceForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Source Added.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('add-source-form', [
+                'addSourceForm' => $addSourceForm,
+            ]);
+        }
     }
 }

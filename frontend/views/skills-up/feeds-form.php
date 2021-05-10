@@ -40,7 +40,10 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-12 mb-30">
                             <div class="content-t mb-20">Cover Image</div>
-                            <div id="image-preview"></div>
+                            <div id="image-preview">
+                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                                     class="target set-w"/>
+                            </div>
                             <!--                            <img src="-->
                             <? //= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?><!--"-->
                             <!--                                 alt="your image" class="target set-w"/>-->
@@ -53,10 +56,11 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control'])->label(false); ?>
+                                <div class="default text">&nbsp;</div>
+                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <div class="default text">Select Source</div>
                                 <?php echo $form->field($model, 'source_id')->dropDownList(
@@ -65,6 +69,11 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 )->label(false); ?>
                             </div>
                         </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-primary mt-50 modal-load-class" value="/skills-up/add-source">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                         <div class="col-md-12">
                             <div class="form-group form-md-line-input form-md-floating-label">
                                 <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
@@ -72,7 +81,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-6">
                             <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control'])->label(false); ?>
+                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -83,10 +92,10 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="col-md-6">
                             <?= $form->field($model, 'skills')->widget(Select2::classname(), [
 //                                'data' => $data,
-                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...'],
+                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
                                 'pluginOptions' => [
 //                                    'allowClear' => true,
-                                    'minimumInputLength' => 2,
+                                    'minimumInputLength' => 1,
                                     'language' => [
                                         'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                     ],
@@ -96,14 +105,21 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                         'data' => new JsExpression('function(params) { return {q:params.term}; }')
                                     ],
                                     'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
+                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
                                 ],
+//                                'pluginEvents' => [
+//                                    'change' => 'function(results){
+//                                           console.log(results.target);
+//                                         }'
+//                                ],
                             ]); ?>
 
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'industry')->widget(Select2::classname(), [
 //                                'data' => $data,
-                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...'],
+                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
                                 'pluginOptions' => [
 //                                    'allowClear' => true,
                                     'minimumInputLength' => 2,
@@ -113,7 +129,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                     'ajax' => [
                                         'url' => '/skills-up/industry-list',
                                         'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                                        'cache' => true
                                     ],
                                     'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                                 ],
@@ -125,8 +142,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="col-md-12">
                             <div class="submit-b">
-                                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
-                                <a href="">PREVIEW</a>
+                                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
+                                <a href="javascript:;" id="preview-button">PREVIEW</a>
                             </div>
                         </div>
                     </div>
@@ -137,49 +154,38 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                 <div class="feed-box dash-inner-box nd-shadow">
                     <!--                    <div class="rec-batch">Recommended</div>-->
                     <div class="feed-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                             alt="your image" class="target"/>
+                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                             class="target"/>
                     </div>
                     <h3 class="feed-heading">
-                        <a href="">post_title</a>
+                        <a href="javascript:;" id="titleElem">Post Title</a>
                     </h3>
                     <div class="author-s">
                         <div class="author list-data">
-                            <i class="fas fa-user"></i><span> Sohal</span>
+                            <i class="fas fa-user"></i><span id="authorElem"> Author</span>
                         </div>
                         <div class="source">
-                            <i class="fas fa-link"></i><Span> Youtube</Span>
+                            <i class="fas fa-link"></i><span id="sourceElem"> Source</span>
                         </div>
                     </div>
-                    <p class="feed-content">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
-                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                        of type and scrambled it to make a type specimen book. It has survived not only five centuries,
-                        but also the leap into electronic typesetting, remaining essentially unchanged. It was
-                        popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-                        and more recently with desktop publishing software like Aldus PageMaker including versions of
-                        Lorem Ipsum
+                    <p class="feed-content" id="descriptionElem">
+
                     </p>
                     <div class="feed-btns">
-                        <div class="like-dis">
+                        <div class="like-dis disabled">
                             <a href="javascript:;" class="like-btn default" title="Like"><i class="fa fa-thumbs-up"></i></a>
                         </div>
-                        <div class="feed-share">
-                            <a href="javascript:;" class="fb"
-                               onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <div class="feed-share disabled">
+                            <a href="javascript:;" class="fb">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="javascript:;" class="wts-app"
-                               onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <a href="javascript:;" class="wts-app">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
-                            <a href="javascript:;"
-                               onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="tw">
+                            <a href="javascript:;" class="tw">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="javascript:;" class="male"
-                               onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <a href="javascript:;" class="male">
                                 <i class="fab fa-linkedin"></i>
                             </a>
                         </div>
@@ -188,11 +194,27 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
             </div>
         </div>
     </div>
-    </div>
 </section>
+<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                     alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.form-group.form-md-line-input{
+    margin-bottom:0px;
+}
+.disabled,.disabled *{
+    cursor:not-allowed !important;
+}
 .checkbox-skill {
   position: relative;
   margin: 0.5rem;
@@ -312,15 +334,24 @@ body{font-family:roboto;}
     font-family: Roboto;
     font-weight:500 !important;
 }
-.dis-flex{
+.dis-flex, #content_type{
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
     margin-bottom: 20px !important;
 }
-.md-radio {
+.md-radio, #content_type > .radio {
     margin: 0px 25px 10px 0;
+}
+#content_type > .radio label{
+    padding-left: 25px;
+}
+#content_type > .radio label input{
+    width: 20px;
+    height: 18px;
+    margin-top: 5px;
+    margin-left: -25px;
 }
 .md-radio input[type="radio"] {
   display: none;
@@ -368,16 +399,21 @@ body{font-family:roboto;}
 }
 .test-sem{height:auto !important;}
 .submit-b {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
-.submit-b a {
+.submit-b a,.submit-b button {
     background-color: #00a0e3;
     color: #fff;
-    padding: 10px 40px;
-    border-radius: 4px;
+    padding: 10px 40px !important;
+    border-radius: 4px !important;
     display: inline-block;
     font-family: Roboto;
-    font-weight: 500;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin: 0px 5px;
 }
 .ui.multiple.dropdown>.label{
     background-color: #00a0e3;
@@ -453,6 +489,9 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
     color: #fff;
     padding: 4px 8px;
     margin-bottom: 10px;
+}
+.author i, .source i{
+    margin-right:5px;
 }
 
 .author {
@@ -542,6 +581,16 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+let description = '';
+$(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
+$(document).on('keyup','.setResult',function() {
+    $('#'+$(this).attr('targetElem')).html($(this).val());
+});
+$(document).on('change','select[name="source_id"]',function() {
+    $('#sourceElem').html(' '+$('select[name="source_id"] option:selected').text());
+});
  CKEDITOR.replace('editor', {
       // Define the toolbar groups as it is a more accessible solution.
       toolbarGroups: [{
@@ -557,14 +606,6 @@ $script = <<<JS
           "groups": ["list", "blocks", "align"]
         },
         {
-          "name": "document",
-          "groups": ["mode"]
-        },
-        {
-          "name": "insert",
-          "groups": ["insert"]
-        },
-        {
           "name": "styles",
           "groups": ["styles"]
         }
@@ -572,10 +613,18 @@ $script = <<<JS
       // Remove the redundant buttons from toolbar groups defined above.
       removeButtons: 'Source,Smiley,Iframe,Strike,Subscript,Superscript,Styles,Specialchar,Flash,'
     });
-$('.test-sem').dropdown();
-$(function () {
+ CKEDITOR.instances.editor.on('change', function(e) {
+    var self = this;
 
-    "use strict";
+    setTimeout(function() {
+        $('#descriptionElem').html(self.getData());
+        description = self.getData();
+    }, 10);
+});
+// $('.test-sem').dropdown();
+// $(function () {
+
+    // "use strict";
 
     function url(input) {
         if (input.files && input.files[0]) {
@@ -583,6 +632,7 @@ $(function () {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $(".target").attr("src", e.target.result);
+                // $('#image-preview').html('<img src="'+e.target.result+'" height="100px" width="auto" class="set-w">');
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -592,7 +642,7 @@ $(function () {
     $("#file").change(function () {
         url(this);
     });
-});
+// });
 
 $(document).on('change','#source_url',function (e){
         e.preventDefault();
@@ -614,23 +664,28 @@ $(document).on('change','#source_url',function (e){
                             success: function(response) {
                                 snippet = response['items'][0]['snippet'];
                                 $('#title').val(snippet['title']);
-                                CKEDITOR.instances.editor.setData(snippet['description'])
+                                $('#titleElem').html(snippet['title']);
+                                CKEDITOR.instances.editor.setData(snippet['description']);
                                 $('input[name="content_type"]').each(function(){
                                     if($(this).val() == 'Video'){
                                         $(this).prop('checked',true);
                                     }
                                 })
+                                $('#sourceElem').html('Youtube');
                                 $('#channel_id').val(snippet['channelId']);
                                 $('#channel_name').val(snippet['channelTitle']);
                                 $('#author').val(snippet['channelTitle']);
+                                $('#authorElem').html(snippet['channelTitle']);
                                 $('#video_duration').val(response['items'][0]['contentDetails']['duration']);
                                 $('#video_id').val(id);
                                 $('#video_tags').val(snippet['tags']);
                                 $('#source_id').val('$source_youtube_key');
                                 var imge = snippet['thumbnails']['high']['url'];
-                                $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
+                                // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
+                                $(".target").attr("src", imge);
                                 $('#image_url').val(imge);
                                 $('#short_desc').val(snippet['description'].substr(0,200) + '...');
+                                $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
                             }
                         });
                     }
@@ -639,15 +694,40 @@ $(document).on('change','#source_url',function (e){
         })
     })
     
-    $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
-    var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
+    document.querySelector("#file").addEventListener('change',function() {
+      const reader = new FileReader();
+      reader.addEventListener('load',()=>{
+          localStorage.setItem('imgData',reader.result)
+      });
+      reader.readAsDataURL(this.files[0]);
+    });
+    
+    $(document).on('click','#preview-button',function(e) {
+            e.preventDefault();
+            var form = $('#feeds_form');
+            $.ajax({
+                url:'/skills-up/preview',
+                data:form.serialize()+ "&description=" + description,
+                method:'post',
+                success: function(data) {
+                   if(data['status'] === 200){
+                       window.open("http://ravinder.eygb.me/skills-up/feed-preview?id="+data['id']);
+                   }else{
+                       toastr.error(response.message, 'error'); 
+                   }
+                }
+            });
+    })
+    
+    // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
+    // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJS($script);
-$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerCssFile('/assets/themes/dashboard/plugins/schedular/css/semantic.min.css');
+//$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+//$this->registerCssFile('/assets/themes/dashboard/plugins/schedular/css/semantic.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('/assets/themes/dashboard/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('/assets/themes/dashboard/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdn.ckeditor.com/4.16.0/full/ckeditor.js');
+$this->registerJsFile('https://cdn.ckeditor.com/4.16.0/full/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
