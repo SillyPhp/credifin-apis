@@ -194,6 +194,7 @@ img + div{
                 <div class="apply">
                     <a href="#"><p class="apply-btn">Apply</p></a>
                 </div>
+
             </div>
         </div>
         <div class="similar-job">
