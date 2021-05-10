@@ -284,7 +284,7 @@ foreach ($fields as $f) {
     ?>
     <div class="set-height">
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
-            <li class="active"
+            <li class="active" id=""
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                 <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
                         foreach ($user_pCount as $v) {
@@ -348,7 +348,7 @@ foreach ($fields as $f) {
                 $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
                 ?>
                 <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
-                    data-id="<?= $p['applied_application_enc_id'] ?>">
+                    data-id="<?= $arr['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
                         <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
@@ -371,7 +371,7 @@ foreach ($fields as $f) {
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
+                                <form class="reasonsForm" id="<?= $arr['applied_application_enc_id'] . 'reasonForm' ?>">
                                     <p>Reason for rejection</p>
                                     <ul class="rejectReasonsList">
                                         <?php
@@ -381,10 +381,10 @@ foreach ($fields as $f) {
                                                 <div class="reasonsReject">
                                                     <input type="checkbox"
                                                            value="<?= $reason['rejection_reason_enc_id'] ?>"
-                                                           name="<?= $p['applied_application_enc_id'] . 'reasons' ?>"
-                                                           id="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"
+                                                           name="<?= $arr['applied_application_enc_id'] . 'reasons' ?>"
+                                                           id="<?= $reason['rejection_reason_enc_id'] . $arr['applied_application_enc_id'] ?>"
                                                            class="">
-                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $p['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
+                                                    <label for="<?= $reason['rejection_reason_enc_id'] . $arr['applied_application_enc_id'] ?>"><?= $reason['reason'] ?></label>
                                                 </div>
                                             </li>
                                             <?php
@@ -405,26 +405,26 @@ foreach ($fields as $f) {
                             </div>
                             <div class="rejectReason rejectType"
                                  id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
+                                <form class="reasonsType" id="<?= $arr['applied_application_enc_id'] . 'reasonType' ?>">
                                     <p>Rejection Type</p>
                                     <ul>
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="1"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'permanent' ?>"
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'permanent' ?>">Permanent
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Permanent
                                                     Reject</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="2"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'consider' ?>"
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'consider' ?>"
                                                        onclick="showJobsModal()" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'consider' ?>">Consider
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'consider' ?>">Consider
                                                     For Other Job</label>
                                                 <!--                                                <button type="button" class="showJobs" >-->
                                                 <!--                                                    Consider For Other Job-->
@@ -434,9 +434,9 @@ foreach ($fields as $f) {
                                         <li>
                                             <div class="reasonsReject">
                                                 <input type="radio" value="3"
-                                                       name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                       id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For
+                                                       name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
+                                                       id="<?= $arr['applied_application_enc_id'] . 'save' ?>" class="">
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'save' ?>">Save For
                                                     Later</label>
                                             </div>
                                         </li>
@@ -2226,7 +2226,10 @@ $(document).on('click', '.approve', function(e) {
                   setTimeout(function() {
                     hiring_process();
                     utilities.initials();
-                    $('#'+listid).find('a').click();
+                    shownotes();
+                    if(listid){
+                        $('#'+listid).find('a').click();
+                    }
                   }, 100)
             } else {
                disable(btn);
@@ -2267,7 +2270,10 @@ $(document).on('click','.multipleRound',function(e) {
                 disable(btn);
                 hiring_process();
                 utilities.initials();
-                $('#'+listid).find('a').click();
+                shownotes();
+                if(listid){
+                    $('#'+listid).find('a').click();
+                }
               }, 100)
         } else {
            alert('something went wrong..');
@@ -2373,8 +2379,9 @@ $(document).on('click','.sendReasons', function(e){
             if(data==true) {
                 btn.hide();
                 $.pjax.reload({container: '#pjax_process', async: false});
-                  setTimeout(function() {
-                    hiring_process();
+                   setTimeout(function() {
+                    hiring_process(); 
+                    utilities.initials();
                   }, 100)
             }
             else {
@@ -2484,13 +2491,17 @@ $(document).on('click','.download-resume',function (e){
             }
         })    
 })
-
+$(document).on('click','.customJobBox', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
 var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
    var pb = new PerfectScrollbar('#skill-sett');
 }
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -2529,6 +2540,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         }, 500);
     }
 
+function shownotes(){
     let noteImg = document.getElementsByClassName('noteImg');
     for (let i = 0; i < noteImg.length; i++) {
         noteImg[i].addEventListener('click', function () {
@@ -2552,60 +2564,58 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             });
         })
     }
+}
+shownotes()
+function showRejectType(e) {
+    let parElem = e.parentElement;
+    let rootElem = parElem.parentElement;
+    let rejectType = rootElem.querySelector('.rejectType');
+    rejectType.style.display = "flex";
+    parElem.style.display = "none";
+}
 
-    function showRejectType(e) {
-        let parElem = e.parentElement;
-        let rootElem = parElem.parentElement;
-        let rejectType = rootElem.querySelector('.rejectType');
-        rejectType.style.display = "flex";
-        parElem.style.display = "none";
-    }
+function showRejectReason(e) {
+    let parElem = e.parentElement;
+    let rootElem = parElem.parentElement;
+    let rejectType = rootElem.querySelector('.rejectRea');
+    rejectType.style.display = "flex";
+    parElem.style.display = "none";
+}
 
-    function showRejectReason(e) {
-        let parElem = e.parentElement;
-        let rootElem = parElem.parentElement;
-        let rejectType = rootElem.querySelector('.rejectRea');
-        rejectType.style.display = "flex";
-        parElem.style.display = "none";
-    }
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+let bdy = document.getElementsByTagName('body');
 
-    var modal = document.getElementById("myModal");
-    var span = document.getElementsByClassName("close")[0];
-    let bdy = document.getElementsByTagName('body');
+function showJobsModal() {
+    modal.style.display = "block";
+    bdy[0].classList.add('modal-open');
+}
 
-    function showJobsModal() {
-        modal.style.display = "block";
-        bdy[0].classList.add('modal-open');
-    }
+function closeModal() {
+    modal.style.display = "none";
+    bdy[0].classList.remove('modal-open');
+}
 
-    function closeModal() {
+let openConJob = document.getElementById('conjobs');
+
+function openConJobs() {
+    openConJob.style.display = "block";
+    bdy[0].classList.remove('modal-open');
+}
+
+function closeConJobsModal() {
+    openConJob.style.display = "none";
+    bdy[0].classList.remove('modal-open');
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
         modal.style.display = "none";
-        bdy[0].classList.remove('modal-open');
-    }
-
-    let openConJob = document.getElementById('conjobs');
-
-    function openConJobs() {
-        openConJob.style.display = "block";
-        bdy[0].classList.remove('modal-open');
-    }
-
-    function closeConJobsModal() {
+    } else if (event.target == openConJob) {
         openConJob.style.display = "none";
-        bdy[0].classList.remove('modal-open');
     }
+}
 
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        } else if (event.target == openConJob) {
-            openConJob.style.display = "none";
-        }
-    }
-    $(document).on('click','.customJobBox', function(e) {
-        e.preventDefault();
-        window.open($(this).attr('data-href'));
-    });
 </script>
 <script id="modalJobCards" type="text/template">
     {{#.}}

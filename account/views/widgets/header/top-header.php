@@ -22,7 +22,7 @@ if (!empty(Yii::$app->user->identity->organization)) {
 
     $schedular = [
         'label' => '<i class=""></i>' . Yii::t('account', 'Interview Schedular'),
-        'url' => Url::toRoute('/schedular/update-interview'),
+        'url' => Url::toRoute('/schedular/dashboard'),
     ];
     array_push($result, $schedular);
 }

@@ -4,7 +4,7 @@ $this->params['header_dark'] = true;
 $this->title = '';
 $keywords = '';
 $description = '';
-$image = Url::to('@eyAssets/images/pages/education-loans/teacher-edu-p.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/school-student-loan.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -47,11 +47,36 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Filling Application As ?
+                                        </label>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">
+                                                    <input type="radio" checked="checked" id="parent" value="1" onclick="showChildren(this)" name="applicantRadio">
+                                                    Parent
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="applicant" value="0" onclick="hideChildren(this)" name="applicantRadio">
+                                                    Student
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name (Parent Name)
+                                            Name
                                         </label>
                                         <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
+                                </div>
+                                <div id="schooInfo">
+
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
@@ -81,7 +106,7 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Annual Income (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
+                                            Annual Income Of Family (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
                                         <input type="text" class="form-control" minlength="4" maxlength="8" id="salary" name="salary"
                                                placeholder="Enter Salary">
@@ -114,15 +139,17 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect02">
-                                           Number Of Children (Applying Loan For)
-                                        </label>
-                                        <input type="text" class="form-control" id="noChild" name="noChild"
-                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
-                                        <p class="errorMsg"></p>
-                                   </div>
+                                <div id="hideDiveChild">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Number Of Children (Applying Loan For)
+                                            </label>
+                                            <input type="text" class="form-control" id="noChild" name="noChild"
+                                                   onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="child-info-div"></div>
@@ -814,7 +841,7 @@ $.validator.addMethod("check_date_of_birth", function (value, element) {
     
     var maxDate = new Date();
     if ((maxDate.getFullYear()-year) <= 18) {
-        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 18 can be covered";
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 2 can be covered";
         return false;
     }
     return true;
@@ -896,9 +923,11 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
 }
 function ajaxSubmit()
 {
+    var applicantRadio = $('input[name="applicantRadio"]:checked').val();
     let child_information = [];
     var obj = {};
-    for (var i= 0; i<$('#noChild').val();i++){
+    if (applicantRadio=='1'){
+        for (var i= 0; i<$('#noChild').val();i++){
         obj['child_name'] = $('.child_name:eq('+i+')').val();
         obj['child_class'] = $('.child_class:eq('+i+')').val();
         if (document.getElementById("checkmark")){
@@ -913,12 +942,19 @@ function ajaxSubmit()
         child_information.push(obj);
         obj = {};
     }
+    }else{
+        obj['child_name'] = $('#applicant_name').val();
+        obj['child_class'] = $('.child_class:eq(0)').val();
+        obj['child_school'] = $('.child_school:eq(0)').val();
+        child_information.push(obj);
+    }
     $.ajax({
             url : '/api/v3/education-loan/save-school-fee-loan',
             method : 'POST', 
             data : {
                 applicant_name:$('#applicant_name').val(),
                 applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,
                 applicant_current_city:$('#location').val(),
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
@@ -1185,5 +1221,53 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
             </div>
         </div>`
         return childInfoForm;
+    }
+function createChild()
+{
+    let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="school_name_1" class="input-group-text">\n' +
+        '                                                School Name\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" minlength="3" class="form-control text-capitalize child_school" id="school_name_1" name="school_name_1" placeholder="School Name">\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="class_name_1" class="input-group-text">\n' +
+        '                                                Class\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" minlength="3" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
+        '                                        </div>\n' +
+        '                                    </div>'
+    return child;
+}
+function removeChild() {
+
+}
+    function showChildren(ths){
+        let radioValue = ths.value;
+        const countryName = document.getElementById('hideDiveChild');
+        const schoolInfo = document.getElementById('schooInfo');
+        if(radioValue == '1'){
+            countryName.style.display = "block";
+            schoolInfo.innerHTML = "";
+        }else{
+            countryName.style.display = "none";
+            schoolInfo.innerHTML = createChild();
+        }
+    }
+
+    function hideChildren(ths){
+        let radioValue = ths.value;
+        const countryName = document.getElementById('hideDiveChild');
+        const schoolInfo = document.getElementById('schooInfo');
+        if(radioValue == '0'){
+            countryName.style.display = "none";
+            schoolInfo.innerHTML = createChild();
+        }else{
+            countryName.style.display = "block";
+            schoolInfo.innerHTML = "";
+        }
     }
 </script>

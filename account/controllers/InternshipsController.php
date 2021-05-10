@@ -1077,7 +1077,7 @@ class InternshipsController extends Controller
             'model' => $model,
             'internships' => $this->__getApplications("Internships"),
             'viewed' => $viewed,
-            'shortlistedApplicants' => $this->shortlistedApplicants()
+            'shortlistedApplicants' => $this->shortlistedApplicants(3)
         ]);
     }
 
@@ -1604,23 +1604,37 @@ class InternshipsController extends Controller
         return $applied_users;
     }
 
-    private function shortlistedApplicants()
+    public function actionShortlistedCandidates()
+    {
+        return $this->render('list/shortlisted-candidates', [
+            'shortlistedApplicants' => $this->shortlistedApplicants()
+        ]);
+
+    }
+
+    private function shortlistedApplicants($limit = null)
     {
         $shortlistedApplicants = ShortlistedApplicants::find()
             ->alias('a')
             ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
                 'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
-                'b3.name city'
+                'b3.name city', 'b.username'
             ])
             ->joinWith(['candidateEnc b' => function ($b) {
                 $b->joinWith(['cityEnc b3'], false);
             }], false)
-            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
-            ->groupBy(['a.candidate_enc_id'])
-            ->asArray()
+            ->joinWith(['applicationEnc c' => function ($c) {
+                $c->joinWith(['applicationTypeEnc f'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'f.name' => 'Internships'])
+            ->groupBy(['a.candidate_enc_id']);
+        $count = $shortlistedApplicants->count();
+        if ($limit != null) {
+            $shortlistedApplicants->limit($limit);
+        }
+        $shortlistedApplicants = $shortlistedApplicants->asArray()
             ->all();
 
-        $data = [];
         foreach ($shortlistedApplicants as $key => $val) {
             $skills = UserSkills::find()
                 ->alias('a')
@@ -1649,13 +1663,11 @@ class InternshipsController extends Controller
                 ->asArray()
                 ->all();
 
-            if($applications){
-                $shortlistedApplicants[$key]['skills'] = $skills;
-                $shortlistedApplicants[$key]['applications'] = $applications;
-                $data[] = $shortlistedApplicants[$key];
-            }
+            $shortlistedApplicants[$key]['skills'] = $skills;
+            $shortlistedApplicants[$key]['applications'] = $applications;
+
         }
 
-        return $data;
+        return ['data' => $shortlistedApplicants, 'count' => $count];
     }
 }

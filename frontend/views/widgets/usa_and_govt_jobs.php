@@ -11,7 +11,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/usa-jobs">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Study-usa-bg.jpg') ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/usa-j.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
                                         USA Government Jobs
@@ -22,7 +22,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/govt-jobs">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india-hdrr.jpg') ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/indian-jobs.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
                                         Indian Government Jobs
@@ -32,22 +32,22 @@ use yii\helpers\Url;
                         </div>
                         <div class="item">
                             <div class="gov-job">
-                                <a href="/education-loans">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/mslider1.jpg') ?>"
+                                <a href="/education-loans/study-in-india">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india-loan.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
-                                        Education Loan
+                                        Indian Education Loan
                                     </h3>
                                 </a>
                             </div>
                         </div>
                         <div class="item">
                             <div class="gov-job">
-                                <a href="/career-advice">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/mslider2.jpg') ?>"
+                                <a href="/education-loans/study-abroad">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
-                                        Career Advice
+                                        Abroad Education Loan
                                     </h3>
                                 </a>
                             </div>
@@ -100,7 +100,7 @@ $this->registerCss('
     border-radius: 10px;
 }
 .gov-job a:hover .link-none{
-    background: rgba(0,0,0,.3);
+    background: rgba(0,0,0,.8);
     transition:.3s ease;
     border-radius:5px;
 }
@@ -108,6 +108,7 @@ $this->registerCss('
     position:absolute;
     top:20px;
     left:20px;
+    background: rgba(0,0,0,.3);
 }
 .link-none{
     color:#fff;
