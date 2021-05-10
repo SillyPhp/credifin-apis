@@ -2,6 +2,7 @@
 
 namespace frontend\models\skillsUp;
 
+use common\models\SkillsUpSources;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -19,9 +20,9 @@ class AddSourceForm extends Model
     public function rules()
     {
         return [
-            [['source_name', 'link','image'], 'required'],
+            [['source_name', 'link'], 'required'],
             [['link'], 'url', 'defaultScheme' => 'http'],
-            [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
             [['source_name', 'link', 'description'], 'trim'],
         ];
     }
@@ -36,13 +37,24 @@ class AddSourceForm extends Model
     }
 
 
-    public function save(){
+    public function save()
+    {
         if (!$this->validate()) {
             return false;
         }
+        $sources = new SkillsUpSources();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $sources->source_enc_id = $utilitiesModel->encrypt();
+        $sources->name = $this->source_name;
+        $sources->url = $this->link;
+        $sources->description = $this->description;
+        $sources->created_on = date('Y-m-d H:i:s');
+        $sources->created_by = Yii::$app->user->identity->user_enc_id;
+        if (!$sources->save()) {
+            return false;
+        }
 
-        return true;
+        return ['id' => $sources->source_enc_id, 'val' => $sources->name];
     }
 }

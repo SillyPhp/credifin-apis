@@ -44,12 +44,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
                                      class="target set-w"/>
                             </div>
-                            <!--                            <img src="-->
-                            <? //= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?><!--"-->
-                            <!--                                 alt="your image" class="target set-w"/>-->
                             <div class="custom-file">
-                                <!--                                <input type="file" id="file" class="imgInp custom-file-input"-->
-                                <!--                                       aria-describedby="inputGroupFileAddon01">-->
                                 <label class="custom-file-label" for="file">Choose Image</label>
                                 <?= $form->field($model, 'image')->fileInput(['id' => 'file', 'class' => 'imgInp custom-file-input'])->label(false) ?>
                             </div>
@@ -70,7 +65,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                         </div>
                         <div class="col-md-1">
-                            <button type="button" class="btn btn-primary mt-50 modal-load-class" value="/skills-up/add-source">
+                            <button type="button" class="btn btn-primary mt-50 modal-load-class"
+                                    value="/skills-up/add-source">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -95,7 +91,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
                                 'pluginOptions' => [
 //                                    'allowClear' => true,
-                                    'minimumInputLength' => 1,
+//                                    'minimumInputLength' => 1,
                                     'language' => [
                                         'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                     ],
@@ -122,7 +118,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
                                 'pluginOptions' => [
 //                                    'allowClear' => true,
-                                    'minimumInputLength' => 2,
+//                                    'minimumInputLength' => 2,
+                                    'multiple' => true,
                                     'language' => [
                                         'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                     ],
