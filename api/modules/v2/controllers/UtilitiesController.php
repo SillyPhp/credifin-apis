@@ -266,9 +266,12 @@ class UtilitiesController extends ApiBaseController
             ->select(['course_enc_id', 'course_name']);
         if ($keyword != null) {
             $courses->andFilterWhere(['like', 'course_name', $keyword]);
+            $courses->limit(10);
+        } else {
+            $courses->limit(35);
+            $courses->orderBy(['course_name' => SORT_ASC]);
         }
-        $courses = $courses->limit(10)
-            ->asArray()
+        $courses = $courses->asArray()
             ->all();
 
         return $courses;
