@@ -86,31 +86,17 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'skills')->widget(Select2::classname(), [
-//                                'data' => $data,
-                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-                                'pluginOptions' => [
-//                                    'allowClear' => true,
-//                                    'minimumInputLength' => 1,
-                                    'language' => [
-                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                    ],
-                                    'ajax' => [
-                                        'url' => '/skills-up/skill-list',
-                                        'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                                    ],
-                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-                                ],
-//                                'pluginEvents' => [
-//                                    'change' => 'function(results){
-//                                           console.log(results.target);
-//                                         }'
-//                                ],
-                            ]); ?>
-
+                            <div class="form-group form-md-line-input form-md-floating-label">
+                                <div class="default text">Skills</div>
+                                <ul class="tags skill_tag_list">
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <?= $form->field($model, 'skills')->textInput(['autocomplete' => 'off', 'placeholder' => 'search skills ...', 'id' => 'search-skill', 'class' => "skill-input"])->label(false); ?>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <?= $form->field($model, 'industry')->widget(Select2::classname(), [
@@ -641,7 +627,7 @@ $(document).on('change','select[name="source_id"]',function() {
     });
 // });
 
-$(document).on('change','#source_url',function (e){
+    $(document).on('change','#source_url',function (e){
         e.preventDefault();
         let url = $(this).val();
         $.ajax({
@@ -715,6 +701,15 @@ $(document).on('change','#source_url',function (e){
                 }
             });
     })
+    
+    $(document).on('keyup','#search-skill',function(e){
+            if(e.which===13)
+                {
+                  add_tags($(this),'skill_tag_list','skills');
+                }
+        });
+    
+    
     
     // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
     // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
