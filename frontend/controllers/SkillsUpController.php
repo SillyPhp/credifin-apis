@@ -6,6 +6,7 @@ use account\models\applications\ApplicationForm;
 use common\models\Industries;
 use common\models\LearningVideos;
 use common\models\Skills;
+use common\models\SkillsUpPosts;
 use common\models\SkillsUpSources;
 use frontend\models\OrganizationEmployeesForm;
 use frontend\models\skillsUp\AddSourceForm;
@@ -172,5 +173,53 @@ class SkillsUpController extends Controller
                 'addSourceForm' => $addSourceForm,
             ]);
         }
+    }
+
+    public function actionTimeLine()
+    {
+        return $this->render('feed-timeline');
+    }
+
+    private function feedList($data)
+    {
+        $feedsList = SkillsUpPosts::find()
+            ->alias('a')
+            ->select([
+                'a.post_enc_id', 'b.name source_name', 'c1.name author_name', 'a.post_title', 'a.post_short_summery',
+                'a.slug', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                'a.post_image_url'])
+            ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors c' => function ($c) {
+                $c->joinWith(['authorEnc c1']);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+
+        if (isset($data['content_type']) && !empty($data['content_type'])) {
+            $feedsList->andWhere(['a.content_type' => $data['content_type']]);
+        }
+
+        if (isset($param['keyword']) && !empty($param['keyword'])) {
+            $feedsList->andFilterWhere(['or',
+//                ['like', 'c1.skill', $param['keyword']],
+                ['like', 'a.post_title', $param['keyword']],
+                ['like', 'a.post_short_summery', $param['keyword']],
+                ['like', 'c1.name', $param['keyword']],
+                ['like', 'b.name', $param['keyword']],
+            ]);
+        }
+
+
+        if (isset($data['limit']) && isset($data['page'])) {
+            $feedsList->limit($data['limit'])->offset(($data['page'] - 1) * $data['limit']);
+        } elseif ($data['limit'] != null) {
+            $feedsList->limit($data['limit']);
+        } else {
+            $feedsList->limit(10);
+        }
+
+        $feedsList = $feedsList->asArray()
+            ->all();
+
+        return $feedsList;
     }
 }
