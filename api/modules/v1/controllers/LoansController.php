@@ -605,6 +605,7 @@ class LoansController extends ApiBaseController
 
             if ($application['loanCoApplicants']) {
                 foreach ($application['loanCoApplicants'] as $i => $c) {
+                    $application['loanCoApplicants'][$i]['finance_proof'] = [];
                     if ($c['image']) {
                         $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $c['image_location'] . '/' . $c['image'];
                         $application['loanCoApplicants'][$i]['image'] = $image;
