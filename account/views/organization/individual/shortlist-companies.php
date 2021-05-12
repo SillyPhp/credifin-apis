@@ -36,6 +36,15 @@ use yii\widgets\Pjax;
 <!--                        <span class="caption-subject font-dark bold uppercase">Similar Companies</span>-->
 <!--                    </div>-->
 <!--                </div>-->
+<!--                <div class="portlet-body">-->
+<!--                    <div class="row">-->
+<!--                        --><?//=
+//                        $this->render('/widgets/organization/card', [
+//                            'organization_data' => $shortlist_org,
+//                        ]);
+//                        ?>
+<!--                    </div>-->
+<!--                </div>-->
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
