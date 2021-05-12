@@ -60,31 +60,9 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                             <section id="applicantBasicInformation" data-key="" data-type="applicant">
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 padd-20">
-<!--                                        <div class="form-group disFlex">-->
-<!--                                            <label for="yourPic" class="input-group-text">-->
-<!--                                                <div class="uploadPic" id="applicantImage">-->
-<!--                                                    <i class="fa fa-cloud-upload"></i>-->
-<!--                                                </div>-->
-<!--                                            </label>-->
-<!--                                            <div class="ml20"> Upload Photo</div>-->
-<!--                                            <input type="file" class="form-control pic" id="yourPic" placeholder="">-->
-<!--                                        </div>-->
-<!--                                        <div class="form-group disFlex">-->
-<!--                                            <div id="applicantImage">-->
-<!--                                                <label for="yourPic" class="docLabel">-->
-<!--                                                    <div class="idPhoto">-->
-<!--                                                        <i class="fa fa-cloud-upload"></i>-->
-<!--                                                        Upload Photo-->
-<!--                                                    </div>-->
-<!--                                                </label>-->
-<!--                                            </div>-->
-<!--                                            <input type="file" class="form-control idProof-input"-->
-<!--                                                   id="yourPic" placeholder="">-->
-<!--                                        </div>-->
-
                                         <div class="form-group disFlex">
                                             <div id="applicantImage">
-                                                <label for="yourPic" class="input-group-text posRel">
+                                                <label for="yourPic" class="input-group-text posRel pull-left">
                                                     <div class="uploadPic">
                                                         <i class="fa fa-cloud-upload"></i>
                                                     </div>
@@ -454,8 +432,8 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="button" class="eduBtn" data-id="parentsProfile"
-                                        onclick="activeTab(event)">Next
+                                <button type="button" class="btn btn-primary custom-buttons2 eduBtn" data-id="parentsProfile"
+                                        onclick="activeTab(event)">Next <i class="fa fa-angle-right"></i>
                                 </button>
                             </div>
                         </div>
@@ -490,7 +468,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                         <div class="col-md-4 col-sm-4 padd-20">
                                             <div class="form-group disFlex">
                                                 <div id="co_borrower_image_<?= $i ?>">
-                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text posRel">
+                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text posRel pull-left">
                                                         <div class="uploadPic">
                                                             <i class="fa fa-cloud-upload"></i>
                                                         </div>
@@ -745,7 +723,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                 <div class="col-md-4 padd-20">
                                                     <div class="form-group text-center">
                                                         <div id="co_borrower_IDproofimage_<?= $i ?>">
-                                                            <label for="idProof_co_borrower_<?= $i ?>" class="posRel">
+                                                            <label for="idProof_co_borrower_<?= $i ?>" class="posRel pull-left">
                                                                 <div class="idPhoto">
                                                                     <i class="fa fa-cloud-upload"></i>
                                                                     Upload ID Proof's Photo
@@ -799,7 +777,7 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                 <div class="col-md-4 padd-20">
                                                     <div class="form-group text-center">
                                                         <div id="co_borrower_finance_image_<?= $i ?>">
-                                                            <label for="finance_co_borrower_<?= $i ?>" class="posRel">
+                                                            <label for="finance_co_borrower_<?= $i ?>" class="posRel pull-left">
                                                                 <div class="idPhoto">
                                                                     <i class="fa fa-cloud-upload"></i>
                                                                     Upload Proof's Photo
@@ -820,19 +798,19 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                             }
                             ?>
                             <div class="text-center">
-                                <button type="button" class="eduBtn eduBtnLight" data-id="applicantProfile"
-                                        onclick="activeTab(event)">Previous
+                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight" data-id="applicantProfile"
+                                        onclick="activeTab(event)"><i class="fa fa-angle-left"></i> Previous
                                 </button>
                                 <?php
                                 if($data['ask_guarantor_info'] == 1){
                                     ?>
-                                    <button type="button" class="eduBtn" data-id="guarantorProfile"
-                                            onclick="activeTab(event)">Next
+                                    <button type="button" class="btn btn-primary custom-buttons2 eduBtn" data-id="guarantorProfile"
+                                            onclick="activeTab(event)">Next <i class="fa fa-angle-right"></i>
                                     </button>
                                 <?php
                                 } else {
                                     ?>
-                                    <button id="sbt2ndForm" type="button" class="eduBtn">Update</button>
+                                    <button id="sbt2ndForm" type="button" class="btn btn-primary custom-buttons2 eduBtn">Update</button>
                                 <?php
                                 }
                                 ?>
@@ -1229,10 +1207,10 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </div>
                             </section>
                             <div class="text-center">
-                                <button type="button" class="eduBtn eduBtnLight" data-id="parentsProfile"
-                                        onclick="activeTab(event)">Previous
+                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight" data-id="parentsProfile"
+                                        onclick="activeTab(event)"><i class="fa fa-angle-left"></i> Previous
                                 </button>
-                                <button id="sbt2ndForm" type="button" class="eduBtn">Update</button>
+                                <button id="sbt2ndForm" type="button" class="btn btn-primary custom-buttons2 eduBtn">Update</button>
                             </div>
                         </div>
                     </div>
@@ -1344,8 +1322,9 @@ $this->registerCss('
     background: #00a0e3;
     color: #fff;
     font-weight: normal;
-    padding: 5px 10px;
-    margin-top: 33px;
+    padding: 8px 20px;
+    margin-top: 30px;
+    border-radius: 6px;
 }
 .idPhoto i{
     font-size: 18px; 
@@ -1601,13 +1580,119 @@ $this->registerCss('
     position: relative;
 }
 .docEditIcon{
+    cursor: pointer;
     position: absolute;
-    top: -30px;
-    right: -20px;
-    cursor: pointer;
+    right: -10px;
+    top: -7px;
+    background-color: #fff;
+    width: 27px;
+    height: 27px;
+    box-shadow: 0px 0px 5px 3px #eee;
+    padding: 6px;
+    font-size: 16px;
+    border-radius: 50%;
 }
-.previewDocument{
+.file-outer-main,.docLabel{
+    float:left;
+}
+.previewDocument, .file-outer-main img, .file-outer-main i.fa-file-pdf-o{
     cursor: pointer;
+    float: left;
+    border: 5px solid #fff;
+    box-shadow: 0px 0px 5px 3px #eee;
+    margin-bottom: 15px;
+    border-radius:4px;
+}
+i.previewDocument, .file-outer-main i.fa-file-pdf-o{
+    width: 95px;
+    height: 105px;
+    padding: 40px 10px;
+    font-size: 73px !important;
+}
+img.previewDocument, .file-outer-main img{
+    width: 140px;
+    height: auto;
+    padding: 5px;
+}
+.custom-buttons2 {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+    -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    -ms-border-radius: 6px !important;
+    -o-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+.custom-buttons3 {
+    background: #ddd !important;
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+    color: #000 !important;
+    border-color: #ddd !important;
+    -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    -ms-border-radius: 6px !important;
+    -o-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+span.twitter-typeahead{
+    width:100%;
+}
+ul > .process_icon, ul > .done_icon{
+    position:unset;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.twitter-typeahead .done_icon, .twitter-typeahead .process_icon{
+    top:38%;
 }
 ');
 $script = <<<JS
@@ -2003,13 +2088,21 @@ function updateValue(elem, value){
                     if(data['id'] == "" || typeof data['id'] === "undefined" ){
                         $('#fadder').fadeIn();
                     } else {
-                        $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                        if(elem.attr('type') == 'radio'){
+                            $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem.parent().parent());
+                        } else{
+                            $('<i class="fa fa-spinner fa-spin process_icon"></i>').insertAfter(elem);
+                        }
                     }
                 },
                 success: function(res) {
                     removeIcons();
                     if(res.response.status == 200){
-                        $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
+                        if(elem.attr('type') == 'radio'){
+                            $('<i class="fa fa-check done_icon"></i>').insertAfter(elem.parent().parent());
+                        } else{
+                            $('<i class="fa fa-check done_icon"></i>').insertAfter(elem);
+                        }
                         setTimeout(function() {
                             removeIcons();
                         }, 3000);
@@ -2575,7 +2668,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
             '</div>' +
             '<div class="col-md-4 padd-20 text-center">' +
             '<div class="form-group">' +
-            '<div id="educationCertFile' + edu_count + '">' +
+            '<div class="file-outer-main" id="educationCertFile' + edu_count + '">' +
             '<label for="eduCertificateFile' + edu_count + '" class="docLabel">' +
             '<div class="idPhoto">' +
             '<i class="fa fa-cloud-upload"></i>Upload Photo ' +
