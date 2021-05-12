@@ -237,6 +237,7 @@ $this->registerCss('
 	   text-align: center;
 	   height: 100vh;
 	   max-height: 700px;
+	   background-position: right bottom;
 }
 .opacity-div{
     position: absolute;
