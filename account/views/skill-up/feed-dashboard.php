@@ -287,9 +287,10 @@ Label the data
 .my-leadd td:nth-of-type(2):before { content: "Title"; }
 .my-leadd td:nth-of-type(3):before { content: "Author Name"; }
 .my-leadd td:nth-of-type(4):before { content: "Source Name"; }
-.my-leadd td:nth-of-type(5):before { content: "Sourcre Link"; }
-.my-leadd td:nth-of-type(6):before { content: "Skills"; }
-.my-leadd td:nth-of-type(7):before { content: "Industries"; }
+.my-leadd td:nth-of-type(5):before { content: "Content Type"; }
+.my-leadd td:nth-of-type(6):before { content: "Sourcre Link"; }
+.my-leadd td:nth-of-type(7):before { content: "Skills"; }
+.my-leadd td:nth-of-type(8):before { content: "Industries"; }
 }
 @media screen and (max-width: 500px) {
 .my-leadd td:before,.my-leadd td{
