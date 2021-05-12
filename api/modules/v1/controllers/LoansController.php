@@ -472,7 +472,7 @@ class LoansController extends ApiBaseController
         if ($application && $application['ask_guarantor_info'] == 1) {
             $data['loan_app_enc_id'] = $params['loan_app_enc_id'];
             $data['relations'] = 'Guarantor';
-            $application['Guarantor'] = $this->getLoanData($data)['loanCoApplicants'];
+            $application['guarantor'] = $this->getLoanData($data)['loanCoApplicants'];
         }
 
         if ($application) {
@@ -815,10 +815,16 @@ class LoansController extends ApiBaseController
             }
 
             $data['loan_app_enc_id'] = $params['loan_app_id'];
-            $data['relations'] = $relations;
-            $data = $this->getLoanData($data);
+            $data['relations'] = array_unique($relations);
 
-            return $this->response(200, ['co_applicants' => $data['loanCoApplicants']]);
+            $d = [];
+            if (in_array("Guarantor", $data['relations'])) {
+                $d['guarantor'] = $this->getLoanData($data)['loanCoApplicants'];
+            } else {
+                $d['co_applicants'] = $this->getLoanData($data)['loanCoApplicants'];
+            }
+
+            return $this->response(200, $d);
         }
 
     }
