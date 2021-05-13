@@ -954,7 +954,7 @@ $(document).on('change','#source_url',function (e){
             var form = $('#feeds_form');
             $.ajax({
                 url:'/skills-up/preview',
-                data:form.serialize()+ "&description=" + description,
+                data:form.serialize()+ "&description=" + encodeURIComponent(description),
                 method:'post',
                 success: function(data) {
                    if(data['status'] === 200){
@@ -965,6 +965,8 @@ $(document).on('change','#source_url',function (e){
                 }
             });
     })
+    
+    localStorage.removeItem("imgData");
     
     // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
     // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');

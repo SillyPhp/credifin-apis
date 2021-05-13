@@ -26,8 +26,7 @@ class SkillsUpController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                print_r('saved');
-                die();
+                $this->redirect('/skills-up/index');
             } else {
                 print_r('an error occurred');
                 die();
