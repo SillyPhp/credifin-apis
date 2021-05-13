@@ -5,10 +5,12 @@ use yii\helpers\Url;
         <div class="study-overlay"></div>
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-7 col-md-5">
+                <div class="col-md-6">
                     <h1>Interest Free Education Loan</h1>
-                    <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil
-                        your dream of studying in your desired College/University.</p>
+                    <p>With our <span class="mota-text">Interest Free Education Loan</span>,
+                        we will make it <span class="mota-text">simple and easier</span> for you to fulfil
+                        your <span class="mota-text">dream of studying
+                        </span> in your <span class="mota-text">desired College/University</span>.</p>
                     <div class="apply-btn">
                     <ul>
                         <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
@@ -233,7 +235,14 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'interest-free'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -243,7 +252,7 @@ use yii\helpers\Url;
     'viewBtn' => true,
 ]) ?>
 
-    <section class="">
+<section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
@@ -290,6 +299,9 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.mota-text{
+    font-weight: bold;
+}
 .apply-btn {
     text-align: left;
 }
@@ -588,11 +600,11 @@ html {
     background: rgb(16 15 15 / 50%);
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/ed-loann.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/itr-free-eduloan.png') . ');
     min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: top left;
+	background-position: top right;
 	display: flex;
 	align-items: center;
 	position: relative;
@@ -602,19 +614,20 @@ html {
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;
-	margin-bottom: 10px;
-	color: #fff;
-	font-weight: bold;
-	font-family: lora;
+    margin-bottom: 10px;
+    color: #ff7803;
+    font-family: roboto;
+    text-align: left;
+    font-weight: bold;
 }
 .study-in-usa-bg p {
     text-align: left;
-	font-size: 20px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-	max-width: 500px;
+    font-size: 18px;
+    font-family: roboto;
+    color: #fff;
+    padding: 0 0 18px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -798,5 +811,11 @@ html {
     .whystudy img {
         max-height: 290px;
     } 
+    .apply-now {
+        margin-bottom: 10px;
+    }
+    .study-in-usa-bg h1 {
+        text-align: left;
+    }
 }
 ');

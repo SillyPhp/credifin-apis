@@ -345,6 +345,14 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'education-loan'
+    ]);
+};
+?>
     <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
