@@ -1252,9 +1252,13 @@ function removeChild() {
         if(radioValue == '1'){
             countryName.style.display = "block";
             schoolInfo.innerHTML = "";
+            document.getElementById('noChild').value = "";
         }else{
             countryName.style.display = "none";
             schoolInfo.innerHTML = createChild();
+            let childFormBox = document.querySelectorAll('.childFormBox');
+            let num = 1;
+            removeChildFormBox(num, childFormBox);
         }
     }
 
@@ -1265,9 +1269,13 @@ function removeChild() {
         if(radioValue == '0'){
             countryName.style.display = "none";
             schoolInfo.innerHTML = createChild();
+            let childFormBox = document.querySelectorAll('.childFormBox');
+            let num = 1;
+            removeChildFormBox(num, childFormBox);
         }else{
             countryName.style.display = "block";
             schoolInfo.innerHTML = "";
+            document.getElementById('noChild').value = "";
         }
     }
 </script>
