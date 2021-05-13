@@ -37,12 +37,7 @@ use yii\widgets\Pjax;
 <!--                    </div>-->
 <!--                </div>-->
 <!--                <div class="portlet-body">-->
-<!--                    <div class="row">-->
-<!--                        --><?//=
-//                        $this->render('/widgets/organization/card', [
-//                            'organization_data' => $shortlist_org,
-//                        ]);
-//                        ?>
+<!--                   
 <!--                    </div>-->
 <!--                </div>-->
 <!--            </div>-->
