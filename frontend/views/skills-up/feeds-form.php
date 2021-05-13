@@ -766,7 +766,7 @@ var language_type = $('#search-language').typeahead(null, {
    $('.language_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      add_tags($(this),'languages_tag_list','industry',datum.id);
+      add_tags(datum.text,'languages_tag_list','industry',datum.id);
       language_type.typeahead('val','');
    }).blur(validateSelection);
 
