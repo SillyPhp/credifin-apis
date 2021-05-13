@@ -15,6 +15,7 @@ use yii\web\Controller;
 use Yii;
 use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\helpers\Url;
 
 class SkillsUpController extends Controller
 {
@@ -180,46 +181,62 @@ class SkillsUpController extends Controller
         return $this->render('feed-timeline');
     }
 
-    private function feedList($data)
+    public function actionFeedList()
     {
-        $feedsList = SkillsUpPosts::find()
-            ->alias('a')
-            ->select([
-                'a.post_enc_id', 'b.name source_name', 'c1.name author_name', 'a.post_title', 'a.post_short_summery',
-                'a.slug', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
-                'a.post_image_url'])
-            ->joinWith(['sourceEnc b'], false)
-            ->joinWith(['skillsUpAuthors c' => function ($c) {
-                $c->joinWith(['authorEnc c1']);
-            }], false)
-            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        if (isset($data['content_type']) && !empty($data['content_type'])) {
-            $feedsList->andWhere(['a.content_type' => $data['content_type']]);
-        }
+            $data = Yii::$app->request->post();
 
-        if (isset($param['keyword']) && !empty($param['keyword'])) {
-            $feedsList->andFilterWhere(['or',
+            $feedsList = SkillsUpPosts::find()
+                ->alias('a')
+                ->select([
+                    'a.post_enc_id', 'b.name source_name', 'c1.name author_name', 'a.post_title', 'a.post_short_summery',
+                    'a.slug', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                    'a.post_image_url'])
+                ->joinWith(['sourceEnc b'], false)
+                ->joinWith(['skillsUpAuthors c' => function ($c) {
+                    $c->joinWith(['authorEnc c1']);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+
+            if (isset($data['content_type']) && !empty($data['content_type'])) {
+                $feedsList->andWhere(['a.content_type' => $data['content_type']]);
+            }
+
+            if (isset($data['keyword']) && !empty($data['keyword'])) {
+                $feedsList->andFilterWhere(['or',
 //                ['like', 'c1.skill', $param['keyword']],
-                ['like', 'a.post_title', $param['keyword']],
-                ['like', 'a.post_short_summery', $param['keyword']],
-                ['like', 'c1.name', $param['keyword']],
-                ['like', 'b.name', $param['keyword']],
-            ]);
+                    ['like', 'a.post_title', $data['keyword']],
+                    ['like', 'a.post_short_summery', $data['keyword']],
+                    ['like', 'c1.name', $data['keyword']],
+                    ['like', 'b.name', $data['keyword']],
+                ]);
+            }
+
+
+            if (isset($data['limit']) && isset($data['page'])) {
+                $feedsList->limit($data['limit'])->offset(($data['page'] - 1) * $data['limit']);
+            } elseif ($data['limit'] != null) {
+                $feedsList->limit($data['limit']);
+            } else {
+                $feedsList->limit(10);
+            }
+
+            $feedsList = $feedsList->asArray()
+                ->all();
+
+            if ($feedsList) {
+                return [
+                    'status' => 200,
+                    'data' => $feedsList
+                ];
+            }
+
+            return [
+                'status' => 201,
+                'message' => 'not found'
+            ];
         }
-
-
-        if (isset($data['limit']) && isset($data['page'])) {
-            $feedsList->limit($data['limit'])->offset(($data['page'] - 1) * $data['limit']);
-        } elseif ($data['limit'] != null) {
-            $feedsList->limit($data['limit']);
-        } else {
-            $feedsList->limit(10);
-        }
-
-        $feedsList = $feedsList->asArray()
-            ->all();
-
-        return $feedsList;
     }
 }
