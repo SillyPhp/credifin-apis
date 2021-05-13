@@ -153,6 +153,14 @@ class SkillsUpController extends Controller
             if ($addSourceForm->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
+                $source_exists = SkillsUpSources::findOne(['name' => $addSourceForm->source_name, 'is_deleted' => 0]);
+                if ($source_exists) {
+                    return [
+                        'status' => 201,
+                        'title' => 'duplication',
+                        'message' => 'This source name already exists',
+                    ];
+                }
                 if ($data = $addSourceForm->save()) {
                     return [
                         'status' => 200,
@@ -163,7 +171,7 @@ class SkillsUpController extends Controller
                     ];
                 } else {
                     return [
-                        'status' => 201,
+                        'status' => 500,
                         'title' => 'Error',
                         'message' => 'An error has occurred. Please try again.',
                     ];
@@ -222,7 +230,7 @@ class SkillsUpController extends Controller
                 $feedsList->limit(10);
             }
 
-            $feedsList = $feedsList->asArray()
+            $feedsList = $feedsList->orderBy(['a.created_on' => SORT_DESC])->asArray()
                 ->all();
 
             if ($feedsList) {

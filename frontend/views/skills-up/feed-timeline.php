@@ -14,7 +14,8 @@ $this->params['header_dark'] = true;
                     <div class="dash-inner-box set-height-s nd-shadow">
                         <div style="padding: 10px 15px;">
                             <h3 class="filterss" style="padding-left: 0px">Search Feed</h3>
-                            <input type="text" class="form-control" placeholder="Enter Keyword to search feed">
+                            <input type="text" class="form-control" placeholder="Enter Keyword to search feed"
+                                   id="keyword-search">
                         </div>
                         <h3 class="filterss">Filters</h3>
                         <div class="filters-main">
@@ -23,21 +24,21 @@ $this->params['header_dark'] = true;
                                     <div class="main-filter">
                                         <ul class="m-filter">
                                             <li>
-                                                <input class="checkbox" id="sort-videos" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-videos" type="checkbox" name="courses"
                                                        value="Video"/>
                                                 <label for="sort-videos">
                                                     <div>Video</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="sort-podcast" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-podcast" type="checkbox" name="courses"
                                                        value="Podcast"/>
                                                 <label for="sort-podcast">
                                                     <div>Podcast</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="sort-webinars" type="checkbox"
+                                                <input class="filter-checkbox" id="sort-webinars" type="checkbox"
                                                        name="courses"
                                                        value="Audio"/>
                                                 <label for="sort-webinars">
@@ -45,28 +46,28 @@ $this->params['header_dark'] = true;
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="sort-news" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-news" type="checkbox" name="courses"
                                                        value="Article"/>
                                                 <label for="sort-news">
                                                     <div>Articles</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="sort-filter" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-filter" type="checkbox" name="courses"
                                                        value="Blog"/>
                                                 <label for="sort-filter">
                                                     <div>Blog</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="news-filter" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="news-filter" type="checkbox" name="courses"
                                                        value="News"/>
                                                 <label for="news-filter">
                                                     <div>News</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="checkbox" id="course-filter" type="checkbox"
+                                                <input class="filter-checkbox" id="course-filter" type="checkbox"
                                                        name="courses"
                                                        value="Course"/>
                                                 <label for="course-filter">
@@ -76,58 +77,29 @@ $this->params['header_dark'] = true;
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-sm-4" style="padding:0;">
-                                    <div class="filters-box">
-                                        <div class="f-head">
-                                            <h3>Skills</h3>
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <label class="control control--checkbox">First checkbox
-                                                    <input type="checkbox" checked="checked"/>
-                                                    <div class="control__indicator"></div>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+<!--                                <div class="col-md-12 col-sm-4" style="padding:0;">-->
+<!--                                    <div class="filters-box">-->
+<!--                                        <div class="f-head">-->
+<!--                                            <h3>Skills</h3>-->
+<!--                                        </div>-->
+<!--                                        <ul>-->
+<!--                                            <li>-->
+<!--                                                <label class="control control--checkbox">First checkbox-->
+<!--                                                    <input type="checkbox" checked="checked"/>-->
+<!--                                                    <div class="control__indicator"></div>-->
+<!--                                                </label>-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="feed-box dash-inner-box nd-shadow">
-                                <div id="feeds">
+                        <div class="col-md-12" id="feeds">
 
-                                </div>
-                                <div class="feed-btns">
-                                    <div class="like-dis">
-                                        <a href="javascript:;" class="like-btn default" title="Like">
-                                            <i class="fa fa-thumbs-up"></i></a>
-                                    </div>
-                                    <div class="feed-share">
-                                        <a href="javascript:;" class="fb"
-                                           onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                            <i class="fab fa-facebook-f"></i>
-                                        </a>
-                                        <a href="javascript:;" class="wts-app"
-                                           onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                            <i class="fab fa-whatsapp"></i>
-                                        </a>
-                                        <a href="javascript:;"
-                                           onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');"
-                                           class="tw">
-                                            <i class="fab fa-twitter"></i>
-                                        </a>
-                                        <a href="javascript:;" class="male"
-                                           onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                            <i class="fab fa-linkedin"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,26 +144,58 @@ $this->params['header_dark'] = true;
 
     <script id="feed-list" type="text/template">
         {{#.}}
-<!--        <div class="rec-batch">Recommended</div>-->
-        <div class="feed-img">
-            {{#cover_image}}
-                <img src="{{cover_image}}" alt="your image" class="target"/>
-            {{/cover_image}}
-            {{^cover_image}}
-                <img src="{{post_image_url}}" alt="your image" class="target"/>
-            {{/cover_image}}
+        <div class="feed-box dash-inner-box nd-shadow">
 
+            <!--        <div class="rec-batch">Recommended</div>-->
+            <div class="feed-img">
+                {{#cover_image}}
+                <img src="{{cover_image}}" alt="your image" class="target"/>
+                {{/
+                cover_image}}
+                {{^
+                cover_image}}
+                <img src="{{post_image_url}}" alt="your image" class="target"/>
+                {{/
+                cover_image}}
+
+            </div>
+            <h3 class="feed-heading">{{post_title}}</h3>
+            <div class="author-s">
+                {{#author_name}}
+                <div class="author list-data"><i class="fas fa-user"></i><span> {{author_name}}</span></div>
+                {{/
+                author_name}}
+                <div class="source"><i class="fas fa-link"></i><Span> {{source_name}}</Span></div>
+            </div>
+            <p class="feed-content">
+                {{post_short_summery}}
+            </p>
+            <div class="feed-btns">
+                <div class="like-dis">
+                    <a href="javascript:;" class="like-btn default" title="Like">
+                        <i class="fa fa-thumbs-up"></i></a>
+                </div>
+                <div class="feed-share">
+                    <a href="javascript:;" class="fb"
+                       onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="javascript:;" class="wts-app"
+                       onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="javascript:;"
+                       onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');"
+                       class="tw">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="javascript:;" class="male"
+                       onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
         </div>
-        <h3 class="feed-heading">{{post_title}}</h3>
-        <div class="author-s">
-            {{#author_name}}
-            <div class="author list-data"><i class="fas fa-user"></i><span> {{author_name}}</span></div>
-            {{/author_name}}
-            <div class="source"><i class="fas fa-link"></i><Span> {{source_name}}</Span></div>
-        </div>
-        <p class="feed-content">
-            {{post_short_summery}}
-        </p>
         {{/.}}
     </script>
 
@@ -532,14 +536,20 @@ $script = <<<JS
 let loadmore = true;
 let page = 1;
 let limit = 20;
-let loading = true
+let loading = false;
 
+vals = {
+    page:page,
+    limit:limit,
+    keyword:null,
+    content_type:null
+}
 
 function feeds(){
     $.ajax({
             url: '/skills-up/feed-list',
             type: 'post',
-            data: {limit:limit,page:page},
+            data: vals,
             success: function (response) {
                 $('#loadMore').addClass("loading_more");
                 $('.loader-main').hide();
@@ -550,10 +560,14 @@ function feeds(){
                     $('#loadMore').hide();
                     loadmore = false;
                 }else{
+                    if(vals.page === 1){
+                        $('#feeds').html('');
+                    }
                     var template = $('#feed-list').html();
                     var rendered = Mustache.render(template,response['data']);
                     $('#feeds').append(rendered);
-                    page += 1
+                    vals.page += 1
+                    loading = true;
                     
                     if(response['data'].length < limit){
                         $('#loadMore').hide();
@@ -587,10 +601,37 @@ $(window).scroll(function() { //detact scroll
 				    setTimeout(
                         function(){
 				            loading = true;
-				    }, 500);
+				    }, 1000);
                 }
 			}
 		});
+
+$('#keyword-search').on('keyup',function(e) {
+    e.preventDefault()
+    if(e.which === 13){
+          let keyword = $(this).val();
+          vals.page = 1;
+          vals.keyword = keyword;
+          feeds();
+    }
+});
+$('.filter-checkbox').on('change',function (e){
+    e.preventDefault();
+    let content_type = []
+    $('.filter-checkbox').each(function () 
+    {
+        if(this.checked){
+            content_type.push($(this).val());
+        }
+    });
+    
+    vals.page = 1;
+    vals.content_type = content_type;
+    feeds();
+    
+});
+
+
 
  var ps = new PerfectScrollbar('.filters-main');
 JS;
