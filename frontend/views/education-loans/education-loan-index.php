@@ -401,6 +401,7 @@ if($blogs['blogs']){
         'viewBtn' => true
     ]) ?>
     <?= $this->render('/widgets/loan-strip') ?>
+<?= $this->render('/widgets/product-offerings') ?>
 
 
 <?php

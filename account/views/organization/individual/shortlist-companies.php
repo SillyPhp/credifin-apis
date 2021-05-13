@@ -38,7 +38,7 @@ use yii\widgets\Pjax;
 <!--                </div>-->
 <!--                <div class="portlet-body">-->
 <!--                   
-<!--                    </div>-->
+                   </div>-->
 <!--                </div>-->
 <!--            </div>-->
 <!--        </div>-->
