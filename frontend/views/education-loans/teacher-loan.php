@@ -11,7 +11,7 @@ use borales\extensions\phoneInput\PhoneInput;
             <div class="col-md-6 col-sm-6">
                 <div class="teacher-txt">
                     <h1>QUICK LOANS FOR<br><span class="org-colr"> TEACHERS</span></h1>
-                    <p>Helping educators to meet their financial goals.</p>
+                    <p>Quick Loans at affordable interest rates to cater all the financial needs of the Educators.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                         <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now">Apply Now</a></li>
@@ -115,7 +115,9 @@ html {
 .teacher-txt p {
     font-family: roboto;
     color: #000;
-    font-size: 24px;
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0.2px;
 }
 .teacher {
     display: flex;
@@ -262,7 +264,7 @@ html {
 	align-items: center;
 	position: relative;
 //	text-align: center;
-	height: 100vh;
+	height: 90vh;
 	max-height: 700px;
 }
 .study-in-usa-bg h1 {
@@ -272,6 +274,10 @@ html {
 	color: #000;
 	font-weight: bold;
 	font-family: roboto;
+}
+.teacher-img img {
+    width: 100%;
+    max-width: 300px;
 }
 .footer{
     margin-top: 0px !important;
