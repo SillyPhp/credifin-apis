@@ -18,70 +18,70 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="loanFlex">
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-annual-fee-f.png') ?>" alt="">
+                            <a href="/education-loans/annual-fee-financing" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-f.png') ?>" alt="">
+                                    </div>
+                                        Annual Fee Finance
                                 </div>
-                                <div class="loan-product-txt">
-                                    <p>Annual Fee Finance</p>
+                            </a>
+                            <a href="/education-loans/study-in-india" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" alt="">
+                                    </div>
+                                        Education Loan With Moratorium
                                 </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" alt="">
+                            </a>
+                            <a href="/education-loans/school-fee-finance" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-f.png') ?>" alt="">
+                                    </div>
+                                        School Fee Finance
                                 </div>
-                                <div class="loan-product-txt">
-                                    <p>Education Loan With Moratorium</p>
+                            </a>
+                            <a href="/education-loans/interest-free" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" alt="">
+                                    </div>
+                                        Interest Free Loan
                                 </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-school-fee-f.png') ?>" alt="">
+                            </a>
+                            <a href="/education-loans/study-abroad" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-edu-loan.png') ?>" alt="">
+                                    </div>
+                                        Abroad Education Loans
                                 </div>
-                                <div class="loan-product-txt">
-                                    <p>School Fee Finance</p>
+                            </a>
+                            <a href="/education-loans/refinance" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Edu-Loan-Refinance.png') ?>" alt="">
+                                    </div>
+                                        Education Loan Refinance
                                 </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" alt="">
+                            </a>
+                            <a href="/education-loans/loan-for-teachers/apply" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan.png') ?>" alt="">
+                                    </div>
+                                        Teacher Loan
                                 </div>
-                                <div class="loan-product-txt">
-                                    <p>Interest Free Loan</p>
+                            </a>
+                            <a href="#" target="_blank">
+                                <div class="loan-product">
+                                    <div class="loan-product-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" alt="">
+                                    </div>
+                                        EdTech Loans
                                 </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-abroad-edu-loan.png') ?>" alt="">
-                                </div>
-                                <div class="loan-product-txt">
-                                    <p>Abroad Education Loans</p>
-                                </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-edu-Loan-Refinance.png') ?>" alt="">
-                                </div>
-                                <div class="loan-product-txt">
-                                    <p>Education Loan Refinance</p>
-                                </div>
-                            </div>
-                            <div class="loan-product">
-                                <div class="loan-product-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-teacher-loan.png') ?>" alt="">
-                                </div>
-                                <div class="loan-product-txt">
-                                    <p>Teacher Loan</p>
-                                </div>
-                            </div>
-                            <div class="loan-product">
-                            <div class="loan-product-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mini-edtech-loans.png') ?>" alt="">
-                            </div>
-                            <div class="loan-product-txt">
-                                <p>EdTech Loans</p>
-                            </div>
-                        </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -96,8 +96,13 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.loan-product:hover {
+    background-color: #00a0e3;
+    color: #fff;
+    transition: 0.2s ease-in;
+}
 .main-bg {
-    background-color: #fff;
+    background-color: #EDF5FF;
     position: relative;
 //    min-height: 500px;
     padding: 20px 0 60px 0;
@@ -131,14 +136,15 @@ $this->registerCss('
     font-family: roboto;
     font-size: 36pt;
     line-height: 46px;
-    font-weight: 400;
-    margin-bottom:0px;
+    font-weight: 600;
+    margin-bottom: 0px;
 }
 .loan-vector-txt p {
     font-size: 20px;
     color: #000;
     font-family: roboto;
     font-weight: 400;
+    margin-top: 10px
 }
 .loan-vector {
     margin-top: 80px;
@@ -154,9 +160,16 @@ $this->registerCss('
     box-shadow: 3px 4px 7px rgb(102 102 102 / 25%);
     margin: 12px 20px 12px 0;
     padding: 10px 12px;
+    font-size: 14px;
+    font-family: roboto;
+    font-weight: 500;
+    color: #000;
+    margin-bottom: 0px !important;
+    letter-spacing: .5px;
+    background-color: #fff;
 }
 .loan-product-icon {
-//    margin-left: 10px;
+    margin-right: 10px;
 }
 .loan-product-icon img{
 //    width: 100%;
@@ -165,13 +178,5 @@ $this->registerCss('
 }
 .loan-product-txt {
    margin: 5px 0px 5px 10px;
-}
-.loan-product-txt p {
-    font-size: 14px;
-    font-family: roboto;
-    font-weight: 400;
-    color: #000;
-    margin-bottom: 0px !important;
-    letter-spacing: .5px;
 }
 ');

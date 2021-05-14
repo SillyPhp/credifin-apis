@@ -25,7 +25,7 @@ use borales\extensions\phoneInput\PhoneInput;
             </div>
             <div class="col-md-6">
                 <div class="india-vector">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-in-india-icon.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india1.png') ?>">
                 </div>
             </div>
         </div>
@@ -237,7 +237,7 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-abroad-bg.png') . ');
+       background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
 	   background-repeat: no-repeat;
 	   background-size: cover;
 	   min-height: 500px;
@@ -245,9 +245,9 @@ $this->registerCss('
 	   align-items: center;
 	   position: relative;
 	   text-align: left;
-	   height: 100vh;
+	   height: 90vh;
 	   max-height: 700px;
-	   background-position: left;
+	   background-position: right;
 }
 .opacity-div{
     position: absolute;
@@ -271,8 +271,12 @@ $this->registerCss('
 	font-weight: 700;
 	font-family: roboto;
 }
+.india-vector {
+    padding-top: 90px;
+}
 .india-vector img {
-    max-width: 115%;
+    width: 115%;
+    max-width: 600px;
 }
 .footer{
     margin-top: 0px !important;
@@ -574,6 +578,16 @@ label {
     }
     .study-in-usa-bg {
         text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+        padding-top: 50px;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
     }
 }
 @media only screen and (max-width: 499px) and (min-width: 320px){
@@ -582,10 +596,22 @@ label {
     }
     .study-in-usa-bg {
         text-align: center;
+        background-position: left;
     }
     .study-in-usa-bg p {
-        font-size: 15px;
-        line-height: 22px;
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        margin-bottom: 10px;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+        padding-top: 50px;
+    }
+    .india-vector {
+        padding-top: 0px;
     }
 }
 @media only screen and (max-width: 1024px) and (min-width: 992px){
