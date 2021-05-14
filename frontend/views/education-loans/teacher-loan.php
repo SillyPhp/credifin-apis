@@ -264,7 +264,7 @@ html {
 	align-items: center;
 	position: relative;
 //	text-align: center;
-	height: 90vh;
+	height: 80vh;
 	max-height: 700px;
 }
 .study-in-usa-bg h1 {
