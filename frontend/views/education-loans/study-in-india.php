@@ -589,10 +589,14 @@ label {
         line-height: 26px;
         font-family: roboto;
     }
+    .apply-now {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
 }
 @media only screen and (max-width: 499px) and (min-width: 320px){
     .india-vector img {
-        max-width: 100%;
+        max-width: 260px;
     }
     .study-in-usa-bg {
         text-align: center;
@@ -605,16 +609,17 @@ label {
     }
     .apply-now {
         margin-bottom: 10px;
+        padding: 8px 10px;
+        font-size: 14px;
     }
     .study-in-usa-bg h1 {
         font-size: 30px;
-        padding-top: 50px;
     }
-    .india-vector {
-        padding-top: 0px;
+    .india-vector img {
+        display: none;
     }
 }
-@media only screen and (max-width: 1024px) and (min-width: 992px){
+@media only screen and (max-width: 1230px) and (min-width: 990px){
     .study-in-usa-bg p {
         font-size: 21px;
         line-height: 28px;
@@ -623,7 +628,7 @@ label {
         max-width: 100%;
     }
     .india-vector {
-        padding-top: 50px;
+        padding-top: 110px;
     }
 }
 ');
