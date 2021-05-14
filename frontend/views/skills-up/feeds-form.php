@@ -86,53 +86,71 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'skills')->widget(Select2::classname(), [
-//                                'data' => $data,
-                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-                                'pluginOptions' => [
-//                                    'allowClear' => true,
-//                                    'minimumInputLength' => 1,
-                                    'language' => [
-                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                    ],
-                                    'ajax' => [
-                                        'url' => '/skills-up/skill-list',
-                                        'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                                    ],
-                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-                                ],
-//                                'pluginEvents' => [
-//                                    'change' => 'function(results){
-//                                           console.log(results.target);
-//                                         }'
+                            <?= $form->field($model, 'skills')->hiddenInput(['id'=>'skills-field']); ?>
+                            <div class="pf-field no-margin">
+                                <ul class="tags skill_tag_list">
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                            <input type="text" id="search-skill" class="skill-input">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+<!--                            --><?//= $form->field($model, 'skills')->widget(Select2::classname(), [
+//                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
+//                                'pluginOptions' => [
+////                                    'allowClear' => true,
+////                                    'minimumInputLength' => 1,
+//                                    'language' => [
+//                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+//                                    ],
+//                                    'ajax' => [
+//                                        'url' => '/skills-up/skill-list',
+//                                        'dataType' => 'json',
+//                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+//                                    ],
+//                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+//                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
+//                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
 //                                ],
-                            ]); ?>
+//                            ]); ?>
 
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'industry')->widget(Select2::classname(), [
-//                                'data' => $data,
-                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
-                                'pluginOptions' => [
-//                                    'allowClear' => true,
-//                                    'minimumInputLength' => 2,
-                                    'multiple' => true,
-                                    'language' => [
-                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                    ],
-                                    'ajax' => [
-                                        'url' => '/skills-up/industry-list',
-                                        'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                                        'cache' => true
-                                    ],
-                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                ],
-                            ]);
-                            ?>
+                            <?= $form->field($model, 'industry')->hiddenInput(['id'=>'industry-field']); ?>
+                            <div class="pf-field no-margin">
+                                <ul class="tags languages_tag_list">
+                                    <li class="tagAdd taglist">
+                                        <div class="language_wrapper">
+                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                            <input type="text" id="search-language"
+                                                   class="skill-input lang-input">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+<!--                            --><?//= $form->field($model, 'industry')->widget(Select2::classname(), [
+////                                'data' => $data,
+//                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
+//                                'pluginOptions' => [
+////                                    'allowClear' => true,
+////                                    'minimumInputLength' => 2,
+//                                    'multiple' => true,
+//                                    'language' => [
+//                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+//                                    ],
+//                                    'ajax' => [
+//                                        'url' => '/skills-up/industry-list',
+//                                        'dataType' => 'json',
+//                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+//                                        'cache' => true
+//                                    ],
+//                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+//                                ],
+//                            ]);
+//                            ?>
                         </div>
                         <div class="col-md-12 mt-20 mb-30">
                             <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
@@ -206,6 +224,132 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.tags {
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+
+    padding: 8px;
+}
+.tags > .addedTag {
+    float: left;
+    background: #f4f5fa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 7px 17px;
+    margin-right: 10px;
+    position: relative;
+}
+.tags > .addedTag > span {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    font-style: normal;
+    background: #fb236a;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    color: #ffffff;
+    text-align: center;
+    line-height: 13px;
+    font-size: 10px;
+    font-family: Open Sans;
+    cursor: pointer;
+}
+.tagAdd.taglist input {
+    float: left;
+    width: auto;
+    background: #ffffff;
+    border: 1px solid #e8ecec;
+    margin-left: 10px;
+    padding: 5px; 
+    margin: 5px 0;
+    margin-left: 15px;
+    padding-left: 15px;
+}
+.tags li {
+    margin: 0;
+}
+.skill_wrapper,.language_wrapper{position:relative;float:left;}
+.skill_wrapper .Typeahead-spinner,.language_wrapper .Typeahead-spinner{
+    position: absolute;
+    right: 5px;
+    top: 13px;
+    z-index: 9;
+    display:none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.form-control.tt-hint {
+  color: #999;
+  opacity: 0 !important;
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+              margin-top: 0px;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.tags > .addedTag{
+    margin-bottom:10px;
+}
+.tags > .addedTag > span{
+    background: #00a0e3;
+}
+
 .form-group.form-md-line-input{
     margin-bottom:0px;
 }
@@ -578,7 +722,118 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+var global = [];
+var skills = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/skills-up/skill-list',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-skill').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list.results;
+        }
+  }
+});    
+
+var languages = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/skills-up/industry-list',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-language').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list.results;
+        }
+  }
+});    
+            
+var language_type = $('#search-language').typeahead(null, {
+  name: 'id',
+  display: 'text',
+  source: languages,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+    $('.language_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+   $('.language_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      add_tags(datum.text,'languages_tag_list','industry',datum.id);
+      language_type.typeahead('val','');
+   }).blur(validateSelection);
+
+function validateSelection() {
+  var theIndex = -1;
+  for (var i = 0; i < global.length; i++) {
+    if (global[i].value == $(this).val()) {
+        theIndex = i;
+        break;
+    }
+  }
+  if (theIndex == -1) {
+    $(this).val(""); 
+    global = [];
+  }
+}
+var skill_type = $('#search-skill').typeahead(null, {
+  name: 'id',
+  display: 'text',
+  source: skills,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+     $('.skill_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+     $('.skill_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum){
+      add_tags(datum.text,'skill_tag_list','skills',datum.id);
+      skill_type.typeahead('val','');
+   }).blur(validateSelection);
+
+var tag_class;
+
+function add_tags(thisObj,tag_class,name,id,duplicates){
+    var duplicates = [];
+    $.each($('.'+tag_class+' li'),function(index,value){
+        duplicates.push($.trim($(this).text()).toUpperCase());
+    });
+    if(jQuery.inArray($.trim(thisObj).toUpperCase(), duplicates) != -1) {
+        alert('Already Added');
+    } else {
+        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fas fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+    }
+    if(document.getElementsByName('skills[]').length){
+        $('#skills-field').val('done');
+    } else {
+        $('#skills-field').val('');
+    }
+    if(document.getElementsByName('industry[]').length){
+        $('#industry-field').val('done');
+    } else {
+        $('#industry-field').val('');
+    }
+}
 let description = '';
+
+$(document).on('click', '.tagRemove', function() {
+    if(document.getElementsByName('skills[]').length){
+        $('#skills-field').val('done');
+    } else {
+        $('#skills-field').val('');
+    }
+    if(document.getElementsByName('industry[]').length){
+        $('#industry-field').val('done');
+    } else {
+        $('#industry-field').val('');
+    }   
+});
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
@@ -618,11 +873,6 @@ $(document).on('change','select[name="source_id"]',function() {
         description = self.getData();
     }, 10);
 });
-// $('.test-sem').dropdown();
-// $(function () {
-
-    // "use strict";
-
     function url(input) {
         if (input.files && input.files[0]) {
 
@@ -639,7 +889,7 @@ $(document).on('change','select[name="source_id"]',function() {
     $("#file").change(function () {
         url(this);
     });
-// });
+
 
 $(document).on('change','#source_url',function (e){
         e.preventDefault();
@@ -704,7 +954,7 @@ $(document).on('change','#source_url',function (e){
             var form = $('#feeds_form');
             $.ajax({
                 url:'/skills-up/preview',
-                data:form.serialize()+ "&description=" + description,
+                data:form.serialize()+ "&description=" + encodeURIComponent(description),
                 method:'post',
                 success: function(data) {
                    if(data['status'] === 200){
@@ -716,15 +966,14 @@ $(document).on('change','#source_url',function (e){
             });
     })
     
+    localStorage.removeItem("imgData");
+    
     // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
     // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJS($script);
-//$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-//$this->registerCssFile('/assets/themes/dashboard/plugins/schedular/css/semantic.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-//$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('/assets/themes/dashboard/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdn.ckeditor.com/4.16.0/full/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
