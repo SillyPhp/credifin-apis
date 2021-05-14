@@ -89,7 +89,7 @@ use yii\helpers\Url;
             <td>{{author_name}}</td>
             <td>{{source}}</td>
             <td>{{content_type}}</td>
-            <td><a href="<{{post_source_url}}"
+            <td><a href="{{post_source_url}}"
                    class="src-link">{{post_source_url}}</a>
             </td>
             <td>
@@ -261,7 +261,7 @@ Label the data
 $script = <<< JS
 let loadmore = true;
 let page = 1;
-let limit = 5;
+let limit = 20;
 let loading = true
 
 
