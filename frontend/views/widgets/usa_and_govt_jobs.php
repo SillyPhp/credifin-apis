@@ -122,12 +122,17 @@ $this->registerCss('
 .owl-controls .owl-prev i, .owl-controls .owl-next i{
     font-size:35px !important;
 }
+@media (max-width:550px){
+.gov-job {
+    width: 85%;
+    margin: 0 auto;
+}
+}
 @media (max-width:415px){
 .gov-heading{
     font-size:25px;
 }
 .gov-job{
-    margin:0;
     margin-bottom:10px;
 }
 }
