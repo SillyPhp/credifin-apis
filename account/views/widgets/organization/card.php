@@ -16,6 +16,9 @@ if ($organization_data) {
             <div class="topic-con">
                 <div class="hr-company-box">
                     <a href="/<?= $shortlist['slug']; ?>">
+                        <div class="hr-com-name">
+                            <?= $shortlist['org_name']; ?>
+                        </div>
                         <div class="hr-com-icon">
                             <?php
                             if (empty($shortlist['logo_location'])) {
@@ -35,9 +38,6 @@ if ($organization_data) {
                                 <?php
                             }
                             ?>
-                        </div>
-                        <div class="hr-com-name">
-                            <?= $shortlist['org_name']; ?>
                         </div>
                         <div class="hr-com-field">
                             <?= $shortlist['industry']; ?>
@@ -69,6 +69,12 @@ if ($organization_data) {
 Pjax::end();
 
 $this->registerCss('
+.hr-company-box {
+    padding: 20px 10px 20px;
+}
+.user-icon {
+    border-radius: 50%;
+}
 .j-grid > button {
     font-family: roboto;
     font-size: 11px;

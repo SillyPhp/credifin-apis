@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 
+
 ?>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -18,23 +19,23 @@ $eform = ActiveForm::begin([
 ]);
 ?>
     <div class="row pt-20">
-        <div class="col-md-5">
-            <div class="office-gallery">
-                <div class="g-image-preview">
-                    <div id="employeeImagePreview"
-                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">
-                    </div>
-                </div>
-                <div class="g-image-edit">
-                    <?= $eform->field($addSourceForm, 'image', [
-                        'template' => '{error}{input}',
-                        ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
-                    ?>
-                    <label for="employeeImageUpload">Select Image</label>
-                    <p class="ot-image help-block help-block-error"></p>
-                </div>
-            </div>
-        </div>
+        <!--        <div class="col-md-5">-->
+        <!--            <div class="office-gallery">-->
+        <!--                <div class="g-image-preview">-->
+        <!--                    <div id="employeeImagePreview"-->
+        <!--                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--                <div class="g-image-edit">-->
+        <!--                    --><? //= $eform->field($addSourceForm, 'image', [
+        //                        'template' => '{error}{input}',
+        //                        ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+        //                    ?>
+        <!--                    <label for="employeeImageUpload">Select Image</label>-->
+        <!--                    <p class="ot-image help-block help-block-error"></p>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
         <div class="col-md-7">
             <div class="col-md-12">
                 <?= $eform->field($addSourceForm, 'source_name')->textInput(['class' => 'capitalize form-control']); ?>
@@ -43,7 +44,7 @@ $eform = ActiveForm::begin([
                 <?= $eform->field($addSourceForm, 'link')->textInput(['class' => 'form-control'])->hint('e.g: https://youtube.com'); ?>
             </div>
             <div class="col-md-12 mt-20">
-                <?= $eform->field($addSourceForm, 'description')->textArea(['rows' => 6,'class' => 'form-control']); ?>
+                <?= $eform->field($addSourceForm, 'description')->textArea(['rows' => 6, 'class' => 'form-control']); ?>
             </div>
         </div>
     </div>
@@ -166,9 +167,14 @@ $(document).on('submit', '#add_source', function(event) {
         success: function (response) {
             $('#page-loading').fadeOut(1000);
             btn.html('Add');
-            if (response.title == 'Success') {
+            if (response.status === 200) {
                 toastr.success(response.message, response.title);
-                // $.pjax.reload({container: '#sourceElem', async: false});
+                var mySelect = $('#source_id');
+                mySelect.append(
+                    $('<option></option>').val(response.id).html(response.val)
+                );
+            } else if(response.status === 201) {
+                toastr.error(response.message, response.title);
             } else {
                 toastr.error(response.message, response.title);
             }

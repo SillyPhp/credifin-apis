@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
-
 ?>
 
     <section>
@@ -14,8 +13,13 @@ $this->params['header_dark'] = true;
                     <div class="video-box-main dash-inner-box nd-shadow">
                         <!--                    <div class="rec-batch">Recommended</div>-->
                         <div class="vid-box">
-                            <img src="https://via.placeholder.com/350x350?text=Cover+Image"
-                                 alt="your image" class="target" id="post-image"/>
+                            <?php if ($object->image_url) { ?>
+                                <img src="<?= $object->image_url?>"
+                                     alt="your image" class="target" id="post-image"/>
+                            <?php } else { ?>
+                                <img src="https://via.placeholder.com/350x350?text=Cover+Image"
+                                     alt="your image" class="target" id="post-image"/>
+                            <?php } ?>
                         </div>
                         <h3><?= $object->title ?></h3>
                         <div class="author-s margin-top-10">
@@ -107,6 +111,11 @@ $this->params['header_dark'] = true;
     </section>
 
 <?php
+$getImage = true;
+if ($object->image_url) {
+    $getImage = false;
+}
+
 $this->registerCss('
 .input-chat textarea {
     height: 45px;
@@ -435,10 +444,11 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-    $( document ).ready(function() {
+console.log($getImage);
+    if($getImage){
         var dataImage = localStorage.getItem('imgData');
         Img = document.getElementById('post-image');
         Img.src = dataImage;
-    });
+    }
 JS;
 $this->registerJS($script);

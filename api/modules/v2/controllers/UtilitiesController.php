@@ -6,6 +6,7 @@ use common\models\AssignedCategories;
 use common\models\AssignedCollegeCourses;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
@@ -257,6 +258,23 @@ class UtilitiesController extends ApiBaseController
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+    }
+
+    public function actionPoolCourses($keyword = null)
+    {
+        $courses = CollegeCoursesPool::find()
+            ->select(['course_enc_id', 'course_name']);
+        if ($keyword != null) {
+            $courses->andFilterWhere(['like', 'course_name', $keyword]);
+            $courses->limit(10);
+        } else {
+            $courses->limit(35);
+            $courses->orderBy(['course_name' => SORT_ASC]);
+        }
+        $courses = $courses->asArray()
+            ->all();
+
+        return $courses;
     }
 
 }
