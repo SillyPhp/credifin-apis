@@ -87,13 +87,13 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12 mb10">
                                     <div class="form-group lp-form">
                                         <label>Choose Job Profile</label>
-                                        <input type="text" class="form-control text-capitalize" id="profile">
+<!--                                        <input type="text" class="form-control text-capitalize" id="profile">-->
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group lp-form">
                                         <label>Select Job Title</label>
-                                        <input type="text" class="form-control text-capitalize" id="job_title">
+<!--                                        <input type="text" class="form-control text-capitalize" id="job_title">-->
                                     </div>
                                 </div>
                             </div>
@@ -108,21 +108,6 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <div class="form-group lp-form">
                                         <label>Experience(M)</label>
                                         <input type="text" class="form-control text-capitalize" id="max_salary">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="gender">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Gender</label>
-                                        <select id="gender" class="form-control"
-                                                name="gender" aria-required="true">
-                                            <option value="">Select Gender</option>
-                                            <option value="0">Male</option>
-                                            <option value="1">Female</option>
-                                            <option value="2">Transgender</option>
-                                            <option value="3">Rather not to say</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -651,7 +636,6 @@ $this->registerCss('
 }
 body.modal-open{
     padding-right:0px !important;
-    overflow:visible;
 }
 .error-occcur{color:red;}
 

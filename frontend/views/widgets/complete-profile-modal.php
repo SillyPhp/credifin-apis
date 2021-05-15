@@ -4,6 +4,25 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
+use yii\helpers\ArrayHelper;
+
+$statesModel = new \common\models\States();
+$states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_enc_id','z.name'])->joinWith(['countryEnc a'],false)->where(['a.name' => 'India'])->orderBy(['z.name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
+
+$primaryfields = \common\models\Categories::find()
+    ->alias('a')
+    ->select(['a.name', 'a.category_enc_id'])
+    ->innerJoin(\common\models\AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+    ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
+    ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+    ->andWhere(['b.status' => 'Approved'])
+    ->andWhere([
+        'or',
+        ['!=', 'a.icon', NULL],
+        ['!=', 'a.icon', ''],
+    ])
+    ->asArray()
+    ->all();
 
 ?>
 
@@ -43,11 +62,11 @@ use borales\extensions\phoneInput\PhoneInput;
                         <form class="completeProfileForm">
                             <div class="row dis-none disShow">
                                 <div class="col-md-12">
-                                    <div class="uploadUserImg posRel">
+                                    <div class="uploadUserImg lp-form posRel">
                                         <div class="displayImg">
                                             <img id="output" src="https://via.placeholder.com/350x350?text=Cover+Image">
                                         </div>
-                                        <input type="file" class="userImg form-control" id="userImg" onchange="loadFile(event)">
+                                        <input type="file" accept="image/jpeg, image/png, image/jpg" data-name="userImg" class="userImg form-control tg-fileinput" id="userImg">
                                         <label for="userImg" class="upload-icon">
                                             <i class="fas fa-pencil-alt"></i>
                                         </label>
@@ -59,13 +78,13 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12">
                                     <div class="form-group lp-form posRel">
                                         <label>Date Of Birth</label>
-                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
+                                        <div class="input-group date datepicker3" data-provide="datepicker">
                                             <input type="text" class="form-control text-capitalize" data-name="dob" id="dob">
                                             <div class="input-group-addon">
                                                 <span class=""><i class="fas fa-calendar-alt"></i></span>
                                             </div>
                                             <div>
-                                                <p class="errorMsg"></p>
+                                                <p class="errorMsg doberror"></p>
                                             </div>
                                         </div>
                                     </div>
@@ -75,15 +94,31 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12 mb10">
                                     <div class="form-group lp-form posRel">
                                         <label>Choose Job Profile</label>
-                                        <input type="text" data-name="profile" class="form-control text-capitalize" id="profile">
+                                        <select id="category_drp" data-name="category" class="chosen form-control text-capitalize">
+                                            <option>Select Profile</option>
+                                            <?php
+                                            if($primaryfields){
+                                            foreach ($primaryfields as $pf){
+                                            ?>
+                                                <option value="<?= $pf['category_enc_id'] ?>"><?= $pf['name'] ?></option>
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group lp-form posRel">
-                                        <label>Select Job Title</label>
-                                        <input type="text" data-name="job_title" class="form-control text-capitalize" id="job_title">
-                                        <p class="errorMsg"></p>
+                                        <div>
+                                            <label>Select Job Title</label>
+                                        </div>
+                                        <div class="cat_wrapper">
+                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                            <input type="text" data-name="job_title" class="form-control text-capitalize" id="job_title">
+                                            <p class="errorMsg"></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -92,14 +127,14 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <div class="form-group lp-form posRel">
                                         <label>Experience(Y)</label>
                                         <input type="text" class="form-control text-capitalize"
-                                              data-name="exp_year" onkeyup="formValidations(event)" id="min_salary">
+                                              data-name="exp_year" onkeyup="formValidations(event)" id="year">
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <div class="form-group lp-form posRel">
                                         <label>Experience(M)</label>
-                                        <input type="text" data-name="month" class="form-control text-capitalize" id="max_salary">
+                                        <input type="text" data-name="exp_month" class="form-control text-capitalize" id="month">
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
@@ -117,7 +152,7 @@ use borales\extensions\phoneInput\PhoneInput;
                                                 </div>
                                             </li>
                                         </ul>
-                                        <p class="errorMsg"></p>
+                                        <p class="errorMsg doberror"></p>
                                     </div>
                                 </div>
                             </div>
@@ -125,12 +160,12 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12">
                                     <div class="form-group lp-form posRel">
                                         <label>Gender</label>
-                                        <select id="gender" class="form-control" name="gender" aria-required="true">
+                                        <select id="gender" data-name="gender" class="form-control" name="gender" aria-required="true">
                                             <option value="">Select Gender</option>
-                                            <option value="0">Male</option>
-                                            <option value="1">Female</option>
-                                            <option value="2">Transgender</option>
-                                            <option value="3">Rather not to say</option>
+                                            <option value="1">Male</option>
+                                            <option value="2">Female</option>
+                                            <option value="3">Transgender</option>
+                                            <option value="4">Rather not to say</option>
                                         </select>
                                         <p class="errorMsg"></p>
                                     </div>
@@ -140,17 +175,30 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12">
                                     <p class="textLabel">Where do you currently live?</p>
                                 </div>
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-12 col-sm-12">
                                     <div class="form-group lp-form posRel">
                                         <label>State</label>
-                                        <input type="text" class="form-control text-capitalize" id="min_salary">
+                                        <select id='states_drp' data-name="state" class="form-control text-capitalize chosen">
+                                            <option>Select State</option>
+                                            <?php
+                                                if($states){
+                                                    foreach ($states as $key=>$state){
+                                            ?>
+                                                <option value="<?= $key ?>"><?= $state?></option>
+                                            <?php
+                                                    }
+                                                }
+                                            ?>
+                                        </select>
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6">
+                                <div class="col-md-12 col-sm-12">
                                     <div class="form-group lp-form posRel">
                                         <label>City</label>
-                                        <input type="text" class="form-control text-capitalize" id="max_salary">
+                                        <select id="cities_drp" data-name="city" class="form-control text-capitalize chosen">
+                                            <option>Select City</option>
+                                        </select>
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
@@ -168,7 +216,7 @@ use borales\extensions\phoneInput\PhoneInput;
                                                     </div>
                                                 </li>
                                             </ul>
-                                            <p class="errorMsg"></p>
+                                            <p class="errorMsg doberror"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -177,14 +225,14 @@ use borales\extensions\phoneInput\PhoneInput;
                                 <div class="col-md-12">
                                     <div class="form-group lp-form posRel">
                                         <label>Availability</label>
-                                        <select id="gender" class="form-control"
+                                        <select id="availability" data-name="availability" class="form-control"
                                                 name="availability" aria-required="true">
                                             <option value="">Select Availability</option>
-                                            <option value="0">Available</option>
-                                            <option value="1">Open</option>
-                                            <option value="2">Actively Looking</option>
-                                            <option value="3">Exploring Possibilities</option>
-                                            <option value="4">Not Available</option>
+                                            <option value="1">Available</option>
+                                            <option value="2">Open</option>
+                                            <option value="3">Actively Looking</option>
+                                            <option value="4">Exploring Possibilities</option>
+                                            <option value="0">Not Available</option>
                                         </select>
                                         <p class="errorMsg"></p>
                                     </div>
@@ -195,7 +243,7 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <div class="form-group lp-form posRel">
                                         <label>About You</label>
                                         <textarea class="aboutTextarea form-control text-capitalize"
-                                                  id="aboutYou"></textarea>
+                                                data-name="description"  id="aboutYou"></textarea>
                                         <p class="errorMsg"></p>
                                     </div>
                                 </div>
@@ -209,6 +257,27 @@ use borales\extensions\phoneInput\PhoneInput;
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">
+                </div>
+                <div class="modal-body">
+                    <div id="demo"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary custom-buttons2 vanilla-result">Done</button>
+                    <button type="button" class="btn btn-default mr-10" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -302,12 +371,15 @@ $this->registerCss('
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border: 2px solid #e8ecec;
+    border-radius: 10px;
 }
 .userImg{
     position: absolute;
     visibility: hidden;
     top:0;
-    right:0;   
+    right:0;
+    height: 100%;   
 }
 .upload-icon{
     position: absolute;
@@ -408,6 +480,7 @@ $this->registerCss('
 }
 .dis-none{
     display: none;
+    margin-bottom: 15px;
 }
 .disShow{
     display: block;
@@ -461,13 +534,46 @@ $this->registerCss('
 .lp-form{
     text-align: left;
     max-width: 350px;
-    margin: 0 auto 20px;
+    margin: 0 auto;
+    float: left;
+    width: 100%;
 }
-.lp-form label, .lp-form p, .textLabel{
+.lp-form input,
+.lp-form select,
+.lp-form textarea{
+    height: auto !important;
+    background: #fff;
+    border: 2px solid #e8ecec;
+    font-family: roboto;
+    font-size: 13px;
+    color: #101010;
+    line-height: 24px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.lp-form .chosen-container-single .chosen-single{
+    padding: 6px 12px !important;
+}
+.lp-form .chosen-container-single .chosen-single div::before{
+    position: absolute;
+    content: "\f078";
+    font-family: "Font Awesome 5 Free";
+    font-size: 13px;
+    right: 15px;
+    top: 50%;
+    margin-top: -13px;
+    font-weight: 900;
+}
+.lp-form label, 
+.lp-form p, .textLabel{
     margin-bottom: 0px;
     font-family: roboto;
     font-size: 14px;
     font-weight: 500;
+}
+.lp-form .input-group-addon{
+    border: none !important;
+    border-radius: 0 8px 8px 0 !important;
 }
 .textLabel{
     text-align: left;
@@ -521,11 +627,15 @@ $this->registerCss('
     color: #CA0B00;
     font-size: 13px !important;
     position: absolute;
-    bottom: -22px;
+    bottom: -10px;
     left: 0;
     font-size: 13px;
     font-weight: 400 !important;
+    margin-bottom: 0px;
  }
+.doberror{
+     bottom: -20px;
+}
  .showError{
     display: block;
  }
@@ -814,7 +924,6 @@ $this->registerCss('
 }
 body.modal-open{
     padding-right:0px !important;
-    overflow:visible;
 }
 .error-occcur{color:red;}
 
@@ -834,26 +943,23 @@ body.modal-open{
 }
 ');
 $script = <<< JS
-loadFile = (event) => {
-	var image = document.getElementById('output');
-	image.src = URL.createObjectURL(event.target.files[0]);
-};
-$(document).on('keyup','#search-language',function(e)
-{
+// loadFile = (event) => {
+// 	var image = document.getElementById('output');
+// 	image.src = URL.createObjectURL(event.target.files[0]);
+// };
+$(document).on('keyup','#search-language',function(e){
     if(e.which==13)
         {
           add_tags($(this),'languages_tag_list','languages');
         }
 });
-$(document).on('keyup','#search-skill',function(e)
-{
+$(document).on('keyup','#search-skill',function(e){
     if(e.which==13)
         {
           add_tags($(this),'skill_tag_list','skills');  
         }
 });
-function add_tags(thisObj,tag_class,name,duplicates)
-{
+function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
                         {
@@ -867,6 +973,23 @@ function add_tags(thisObj,tag_class,name,duplicates)
         }
 }
 var global = [];
+
+var skills = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/account/categories-list/skills-data',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-skill').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list;
+        }
+  }
+});
+
 $('#search-skill').typeahead(null, {
   name: 'skill',
   display: 'value',
@@ -935,12 +1058,12 @@ showNextQues = () =>{
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex]; 
     let inputVal = disShow.querySelectorAll('.form-control');
-    let val = [];
+    let val = {};
+    let valObj = [];
     if(inputVal.length > 0){
-        console.log('hello')
         for(let i = 0; i < inputVal.length; i++){
-            let valObj = {};
-            let inputParent = inputVal[i].parentElement;
+            // let inputParent = inputVal[i].parentElement;
+            let inputParent = getParentUntillLpForm(inputVal[i]);
             let errorMsg = inputParent.querySelector('.errorMsg');
             let field_Name =  inputVal[i].getAttribute('data-name');
             if(inputVal[i].value == ''){
@@ -948,33 +1071,45 @@ showNextQues = () =>{
                 errorMsg.innerHTML = "This field can not Be empty";
                 return false;
             }else{
-                valObj['field_name'] = field_Name;
-                valObj['value'] = inputVal[i].value;            
-                errorMsg.classList.remove('showError');
-                errorMsg.innerHTML = "";
+                if(field_Name != 'userImg' && field_Name != 'state' && field_Name != 'skills' && field_Name != 'languages'){
+                    val[field_Name] = inputVal[i].value;
+                }else if(field_Name == 'skills' || field_Name == 'languages'){
+                    valObj.push(inputVal[i].value);
+                    val[field_Name] = valObj;
+                }else if(field_Name == 'userImg'){
+                    if(disShow){
+                        disShow.classList.remove('disShow')
+                    }
+                    toActive.classList.add('disShow');
+                    return false;
+                }  
             }
-          val.push(valObj);
         }
+    }else{
+        let errorMsg = disShow.querySelector('.errorMsg');
+        errorMsg.classList.add('showError');
+        errorMsg.innerHTML = "This field can not Be empty";
+        return false;
     }
-        console.log(val);
-    if(disShow){
-        disShow.classList.remove('disShow')
-    }
-    toActive.classList.add('disShow');
-
-    return false;
+    sendData(disShow, toActive, val);
+}
+function getParentUntillLpForm(elem){
+    console.log($(elem).parentsUntil('.lp-form').parent());
+}
+sendData = (disShow, toActive, val) => {
     $.ajax({
-        url: 'profile/update-profile',
+        url: '/users/update-basic-detail',
         method: 'POST',
-        data: {},
+        data: val,
         success: function (response){
-            if(response.status == 200){
+            if(response.title == 'Success'){
                if(disShow){
                     disShow.classList.remove('disShow')
                 }
                 toActive.classList.add('disShow');
             }else{
-                toastr.error(response.message, 'error');
+                // toastr.error(response.message, 'error');
+                console.log('error occured')
             }
         }
     })
@@ -996,6 +1131,7 @@ skipToNextQues = () => {
     toActive.classList.add('disShow');
 }
 $('.datepicker3').datepicker({
+    endDate: '0',
     todayHighlight: true
 });
 
@@ -1017,11 +1153,174 @@ formValidations = (event) => {
         }   
     }
 }
+
+$(document).on('change','#states_drp',function() {
+   $("#cities_drp").empty().append($("<option>", { 
+         value: "",
+         text : "Select City" 
+     }));
+   $.ajax({
+        url: '/cities/get-cities-by-state',
+        type: 'POST',
+        data: {id: $(this).val(),_csrf: $("meta[name=csrf-token]").attr("content")},
+        success: function(response) {
+            if (response.status == 200) {
+                drp_down("cities_drp", response.cities);
+                $("#cities_drp").trigger("chosen:updated");
+            }
+        },
+    });
+})
+function drp_down(id, data) {
+    var selectbox = $('#' + id + '');
+    $.each(data, function () {
+        selectbox.append($('<option>', {
+            value: this.id,
+            text: this.name
+        }));
+    });
+}
+var el = document.getElementById('demo');
+var vanilla = new Croppie(el, {
+    viewport: { width: 400, height: 400 },
+    boundary: { width: 500, height: 500 },
+    enforceBoundary: false,
+    showZoomer: true,
+    enableZoom: true,
+    // enableExif: true,
+    mouseWheelZoom: true,
+    maxZoomedCropWidth: 10,
+    // enableOrientation: true
+});
+function readURL(input) {
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        $('#cropImagePop').modal('show');
+        var rawImg = e.target.result;
+        setTimeout(function() {
+            renderCrop(rawImg);
+        }, 500);
+      $('#output').attr('src', e.target.result);
+    }
+    reader.readAsDataURL(input.files[0]);
+    
+  }
+}
+function renderCrop(img){
+    vanilla.bind({
+        url: img,
+        points: [20,20,20,20]
+        // orientation: 4
+    });
+}
+$(".tg-fileinput").change(function() {
+  readURL(this);
+});
+
+document.querySelector('.vanilla-result').addEventListener('click', function (ev) {
+    vanilla.result({
+        type: 'base64',
+        // format:'jpeg',
+    }).then(function (data) {
+        $.ajax({
+            url: "/users/update-profile-picture",
+            method: "POST",
+            data: {data:data},
+            beforeSend:function(){
+                $('.vanilla-result').html("<i class='fas fa-circle-notch fa-spin fa-fw'></i>");
+                $('.vanilla-result').prop('disabled', true);
+            },
+            success: function (response) {
+                $('.vanilla-result').html('Done');
+                $('.vanilla-result').prop('disabled', false);
+                $('#cropImagePop').modal('hide');
+                if (response.title == 'Success') {
+                    // toastr.success(response.message, response.title);
+                    $('#output').attr('src', data);
+                } else {
+                    // toastr.error(response.message, response.title);
+                }
+            }
+        });
+    });
+});
+$(document).on('change','#category_drp',function() {
+      $('#job_title').val('');
+      // $('#job_title').typeahead('destroy');
+      // fetchJobProfile($(this).val());
+  if($(this).val()=='')
+      {
+          $('#job_title').val('');
+          $('#job_title').closest('.field-job_title').removeClass('has-error');
+          $('#job_title').closest('.field-job_title').find('.help-block').remove();
+          $('#job_title').closest('.field-job_title').addClass('has-success');
+      }
+  else {
+      $('#job_title').closest('.field-job_title').removeClass('has-success');
+      $('#job_title').closest('.field-job_title').addClass('has-error');
+  }
+});
+
+// fetchJobProfile(null);
+
+var job_titles = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/job-profiles',  
+    // wildcard: '%QUERY',
+    // ?q=%QUERY&parent=+$("#category_drp").val()
+    prepare: function (query, settings){
+            settings.url += '?q=' +$("#job_title").val() + '&parent=' + $("#category_drp").val()
+            return settings;
+    },
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+})
+        
+$('#job_title').typeahead(null, {
+    name: 'job_title',
+    display: 'value',
+    limit: 6,     
+    hint:false, 
+    minLength: 3,
+    source: job_titles
+}).on('typeahead:asyncrequest', function() {
+    $('.cat_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.cat_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum){
+    
+  })
+
+
 JS;
+$script2 = <<< JS
+function drp_down(id, data) {
+    var data_chosen = $('#' + id + '');
+    var selectbox = $('#' + id + '');
+    $.each(data, function (index) {
+        selectbox.append($('<option>', { 
+            value: this.id,
+            text : this.name 
+        }));
+        
+    });
+    data_chosen.trigger("chosen:updated");
+};
+JS;
+$this->registerJs($script2, yii\web\View::POS_HEAD);
 $this->registerJs($script);
 $this->registerCssFile("@web/assets/themes/jobhunt/css/chosen.css");
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
+$this->registerJsFile("@web/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

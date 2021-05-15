@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\AppliedApplications;
+use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
 use common\models\States;
@@ -398,6 +399,89 @@ class UsersController extends Controller
                     'message' => 'an error occurred'
                 ];
             }
+        }
+    }
+    public function actionUpdateUser()
+    {
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
+            if (isset($params['skills']) && !empty($params['skills'])) {
+
+            } elseif (isset($params['languages']) && !empty($params['languages'])) {
+
+            } elseif (isset($params['job_title']) && !empty($params['job_title'])) {
+                $category_execute = Categories::find()
+                    ->alias('a')
+                    ->where(['name' => $params['job_title']]);
+                $chk_cat = $category_execute->asArray()->one();
+                if (empty($chk_cat)) {
+                    $categoriesModel = new Categories;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                    $categoriesModel->name = $params['job_title'];
+                    $utilitiesModel->variables['name'] = $params['job_title'];
+                    $utilitiesModel->variables['table_name'] = Categories::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $categoriesModel->slug = $utilitiesModel->create_slug();
+                    $categoriesModel->created_on = date('Y-m-d H:i:s');
+                    $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($categoriesModel->save()) {
+                        if($id = $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user)){
+                            $params['job_function'] = $categoriesModel -> category_enc_id;
+                        }
+                        $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $chk_assigned = $category_execute
+                        ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                        ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                        ->andWhere(['not', ['b.parent_enc_id' => null]])
+                        ->andWhere(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => $this->category])
+                        ->asArray()
+                        ->one();
+                    if (empty($chk_assigned)) {
+                        $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user);
+                    } else {
+                        $user->job_function = $chk_assigned['category_enc_id'];
+                        $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
+                    }
+                }
+            } else {
+                if (isset($params['dob']) && !empty($params['dob'])){
+                    $params['dob'] = date('Y-m-d', strtotime($params['dob']));
+                }else if(isset($params['year']) && isset($params['month'])){
+                    $params['experience'] = json_encode([$params['year'], $params['month']]);
+                    unset($params['year']);
+                    unset($params['month']);
+                }
+                if (!$user->updateAttributes($params)) {
+                    return ['status' => 500, 'title' => 'error', 'isSaved' => 0];
+                }
+                return ['status' => 200, 'title' => 'success', 'isSaved' => 1];
+            }
+        }
+    }
+
+    private function addNewAssignedCategory($category_id, $profile)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $profile;
+        $assignedCategoryModel->assigned_to = 'Profiles';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            return $assignedCategoryModel -> assigned_category_enc_id;
+        } else {
+            return false;
         }
     }
 

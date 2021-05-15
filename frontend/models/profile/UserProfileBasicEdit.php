@@ -72,12 +72,12 @@ class UserProfileBasicEdit extends Model
         $user = $usersModel->find()
             ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
             ->one();
-        $user->dob = date('Y-m-d', strtotime($this->dob));
-        $user->city_enc_id = $this->city;
-        $user->is_available = $this->availability;
-        $user->experience = json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']);
-        $user->description = $this->description;
-        $user->gender = $this->gender;
+        $user->dob = $this->dob ? date('Y-m-d', strtotime($this->dob)) : $user->dob;
+        $user->city_enc_id = $this->city ? $this->city : $user->city_enc_id;
+        $user->is_available = $this->availability ? $this->availability : $user->is_available;
+        $user->experience = $this->exp_year ? json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']) : $user->experience;
+        $user->description = $this->description ? $this->description : $user->description;
+        $user->gender = $this->gender ? $this->gender : $user->gender;
         if (!empty($this->job_title)) {
             $category_execute = Categories::find()
                 ->alias('a')

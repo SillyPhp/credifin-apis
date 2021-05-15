@@ -67,33 +67,4 @@ class ProfileController extends Controller
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }
-
-    public function actionUpdateProfile(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-            $param = Yii::$app->request->post();
-            if(!Yii::$app->user->isGuest){
-                $users = Users::findOne(['user_enc_id' => !Yii::$app->user->identity->user_enc_id]);
-                if($users){
-                    if($param['field_name'] == 'skills'){
-
-                    }else if($param['field_name'] == 'languages'){
-
-                    }
-                    if($param['field_name'] == 'dob'){
-                        $users->$param['field_name'] = date('Y-m-d', strtotime($param['value']));
-                    }else{
-                        $users->$param['field_name'] = $param['value'];
-                    }
-                    $users->last_updated_on = date('Y-m-d H:i:s');
-                    if(!$users->update()){
-                        print_r($users->getErrors);
-                        die();
-                    }
-                }
-            }
-
-        }
-    }
 }

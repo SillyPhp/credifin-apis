@@ -18,6 +18,7 @@ $this->registerCSS('
     .p100{
         padding-top: 100px;
     }
+    
 ');
 $script = <<<JS
     $('#completeProfileModal').modal('show');
