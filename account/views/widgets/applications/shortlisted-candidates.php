@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 <?php Pjax::begin(['id' => 'shortlisted-candidates']);
 foreach ($shortlistedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
+        <div class="divRel">
         <div class="short-main">
             <div class="remove-btn">
                 <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
@@ -76,23 +77,31 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                 </tbody>
             </table>
         </div>
+        </div>
     </div>
 <?php }
 Pjax::end(); ?>
 
 <?php
 $this->registerCss('
+.divRel{
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+}
 .short-main {
     border: 2px solid #eef1f5;
     padding: 20px 10px;
     position: relative;
     transition: all .3s;
     border-radius: 6px;
-    z-index:1;
+    z-index:0;
 }
-.short-main:hover .remove-btn{opacity:1;}
+.short-main:hover .remove-btn{
+    opacity:1;
+}
 .short-main:hover{
-    box-shadow:0 0 20px rgb(0 0 0 / 30%);
+    box-shadow:0 0 10px rgb(0 0 0 / 10%);
     border-color:transparent;
 }
 .flex-short {
@@ -195,9 +204,12 @@ $this->registerCss('
     background:#fff; 
     border-radius:0 0 4px 4px !important; 
     color:#999999;
-    margin:0 20px; 
-//    display:none; 
-//    height:auto !important;
+    margin:0; 
+    position: absolute;
+    z-index: 9;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
 }
 .cd-box-border table{margin:0 !important;}
 .tt {

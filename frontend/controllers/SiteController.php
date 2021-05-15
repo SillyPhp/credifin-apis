@@ -1229,6 +1229,11 @@ class SiteController extends Controller
         return $this->render('feed-preview');
     }
 
+    public function actionFeedTimeline()
+    {
+        return $this->render('feed-timeline');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';

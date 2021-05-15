@@ -451,7 +451,8 @@ class JobsController extends Controller
             'saveCollege' => $saveCollege,
             'jobs' => $this->__getApplications("Jobs"),
             'primary_fields' => $catModel->getPrimaryFields(),
-            'shortlistedApplicants' => $this->shortlistedApplicants(3)
+            'shortlistedApplicants' => $this->shortlistedApplicants(3),
+            'savedApplicants' => $this->savedApplicants(3),
         ]);
     }
 
@@ -1551,7 +1552,6 @@ class JobsController extends Controller
         endif;
     }
 
-
     private function __candidateApplications($limit = NULL)
     {
         $candidate_applications = AppliedApplications::find()
@@ -2058,4 +2058,112 @@ class JobsController extends Controller
 
         return ['data' => $shortlistedApplicants, 'count' => $count];
     }
+
+    public function actionSavedCandidates()
+    {
+        return $this->render('list/saved-candidates', [
+              'savedApplicants' => $this->savedApplicants(),
+        ]);
+
+    }
+
+    private function savedApplicants($limit = null){
+        $savedCandidates = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.applied_application_enc_id',
+                'a.status', 'b.username', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
+                'a.created_by', 'b3.name as city'])
+            ->joinWith(['applicationEnc bb' => function($bb){
+                $bb->joinWith(['applicationTypeEnc f'], false);
+            }], false)
+            ->joinWith(['candidateRejections cr'], false)
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->select(['b.user_enc_id']);
+                $b->joinWith(['userSkills b1' => function ($b1) {
+                    $b1->groupBy(['b1.user_skill_enc_id']);
+                    $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id', 'b2.skill', 'b1.created_by']);
+                    $b1->joinWith(['skillEnc b2'], false);
+                    $b1->onCondition(['b1.is_deleted' => 0]);
+                }]);
+                $b->joinWith(['cityEnc b3'], false);
+            }])
+            ->where([
+                'cr.rejection_type' => 3,
+                'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'f.name' => 'Jobs',
+                'cr.is_deleted' => 0
+            ])
+            ->groupBy(['a.created_by']);
+            $count = $savedCandidates->count();
+            if($limit != null){
+                $savedCandidates -> limit($limit);
+            }
+            $savedCandidates = $savedCandidates
+            ->asArray()
+            ->all();
+            foreach ($savedCandidates as $key=>$sc){
+                $applications = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.application_enc_id', 'ee.name as title', 'bb.slug', 'cr.candidate_rejection_enc_id'])
+                    ->joinWith(['applicationEnc bb' => function($bb){
+                        $bb->joinWith(['applicationTypeEnc f'], false);
+                        $bb->joinWith(['title d' => function ($d) {
+                            $d->joinWith(['parentEnc e']);
+                            $d->joinWith(['categoryEnc ee']);
+                        }], false);
+                    }], false)
+                    ->joinWith(['candidateRejections cr'], false)
+                    ->where([
+                        'a.created_by'=>$sc['created_by'],
+                        'cr.rejection_type' => 3,
+                        'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                        'f.name' => 'Jobs',
+                        'cr.is_deleted' => 0
+                    ])
+                    ->asArray()
+                    ->all();
+                    $savedCandidates[$key]['applications'] = $applications;
+            }
+        return ['data' => $savedCandidates, 'count' => $count];
+    }
+
+    public function actionRemoveSavedCandidate(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $id = Yii::$app->request->post('candidate_rejection_enc_id');
+
+            $success = [
+                'status' => 200,
+                'message' => 'successfully removed'
+            ];
+            $error = [
+                'status' => 500,
+                'message' => 'an error occurred'
+            ];
+
+            try {
+
+                $savedCandidate = CandidateRejection::findone(['candidate_rejection_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id]);
+                if ($savedCandidate) {
+                    $savedCandidate->is_deleted = 1;
+                    $savedCandidate->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    $savedCandidate->last_updated_on = date('Y-m-d H:i:s');
+                    if (!$savedCandidate->update()) {
+                        return $error;
+                    }
+                    return $success;
+                }
+
+                return $error;
+
+            } catch (\Exception $e) {
+                return $error;
+            }
+        }
+    }
+
 }

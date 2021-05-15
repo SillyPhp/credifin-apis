@@ -85,6 +85,14 @@ use borales\extensions\phoneInput\PhoneInput;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'study-in-india'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -143,9 +151,6 @@ $this->registerCss('
     max-height: 300px;
     border-radius: 10px;
     padding: 15px;
-}
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
 }
 #typed{
     font-size: 25px;

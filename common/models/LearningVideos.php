@@ -9,10 +9,9 @@ use Yii;
  *
  * @property int $id Primary Key
  * @property string $video_enc_id Video Encrypted ID
+ * @property string $channel_enc_id foreign key for youtube channel
  * @property string $assigned_category_enc_id Foreign Key to Assigned Categories Table
- * @property string $type Type of Video
  * @property string $title Video Titile
- * @property string $channel_name Channel Name
  * @property string $cover_image Cover Image of Video
  * @property string $description Video Description
  * @property string $slug Video Slug
@@ -26,6 +25,7 @@ use Yii;
  * @property string $last_updated_on On which date Video information was updated
  * @property string $last_updated_by By which User Video information was updated
  * @property int $status Video Status (1 as Active, 2 as Inactive, 3 as Pending, 4 as Rejected)
+ * @property int $is_visible 0 as false, 1 as true
  * @property int $is_deleted Is Video Deleted (0 as False, 1 as True)
  *
  * @property LearningVideoComments[] $learningVideoComments
@@ -52,19 +52,15 @@ class LearningVideos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_enc_id', 'assigned_category_enc_id', 'type', 'title', 'cover_image', 'description', 'slug', 'duration', 'youtube_video_id', 'created_by'], 'required'],
+            [['video_enc_id', 'channel_enc_id', 'title', 'cover_image', 'slug', 'duration', 'youtube_video_id', 'created_by'], 'required'],
             [['description'], 'string'],
             [['duration', 'created_on', 'last_updated_on'], 'safe'],
-            [['view_count', 'is_sponsored', 'is_featured', 'status', 'is_deleted'], 'integer'],
-            [['video_enc_id', 'assigned_category_enc_id', 'title', 'channel_name', 'cover_image', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['type'], 'string', 'max' => 30],
+            [['view_count', 'is_sponsored', 'is_featured', 'status', 'is_visible', 'is_deleted'], 'integer'],
+            [['video_enc_id', 'channel_enc_id', 'assigned_category_enc_id', 'title', 'cover_image', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['youtube_video_id'], 'string', 'max' => 50],
             [['video_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['youtube_video_id'], 'unique'],
-            [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
