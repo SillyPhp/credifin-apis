@@ -552,9 +552,9 @@ class LoansController extends ApiBaseController
                 $g->joinWith(['stateEnc g1'], false);
                 $g->joinWith(['cityEnc g2'], false);
                 $g->onCondition(['g.is_deleted' => 0]);
-                $g->orderBy(['g.created_on' => SORT_ASC]);
+//                $g->orderBy(['g.created_on' => SORT_ASC]);
             }])
-            ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.created_by' => $this->userId(), 'a.is_deleted' => 0])
+            ->where(['a.loan_app_enc_id' => $params['loan_app_enc_id'], 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
@@ -814,6 +814,7 @@ class LoansController extends ApiBaseController
                 }
             }
 
+
             $data['loan_app_enc_id'] = $params['loan_app_id'];
             $data['relations'] = array_unique($relations);
 
@@ -911,7 +912,8 @@ class LoansController extends ApiBaseController
                         return $loan_certificates->certificate_enc_id;
                     }
                 } else {
-                    $loan_certificates->getErrors();
+                    print_r($loan_certificates->getErrors());
+                    die();
                     return false;
                 }
             }
@@ -1023,8 +1025,8 @@ class LoansController extends ApiBaseController
                 $update_res_info->address = $params['address'] ? $params['address'] : $update_res_info->address;
                 $update_res_info->city_enc_id = $params['city_id'] ? $params['city_id'] : $update_res_info->city_enc_id;
                 $update_res_info->state_enc_id = $params['state_id'] ? $params['state_id'] : $update_res_info->state_enc_id;
-                $update_res_info->created_by = $this->userId();
-                $update_res_info->created_on = date('Y-m-d H:i:s');
+                $update_res_info->updated_by = $this->userId();
+                $update_res_info->updated_on = date('Y-m-d H:i:s');
                 if ($update_res_info->update()) {
                     return $update_res_info->loan_app_res_info_enc_id;
                 } else {
@@ -1247,6 +1249,7 @@ class LoansController extends ApiBaseController
             $loan_co_applicants->name = $params['name'] ? $params['name'] : $loan_co_applicants->name;
             $loan_co_applicants->email = $params['email'] ? $params['email'] : $loan_co_applicants->email;
             $loan_co_applicants->phone = $params['phone'] ? $params['phone'] : $loan_co_applicants->phone;
+            $loan_co_applicants->relation = $params['relation'] ? $params['relation'] : $loan_co_applicants->relation;
             $loan_co_applicants->employment_type = $params['employment_type'] ? $params['employment_type'] : $loan_co_applicants->employment_type;
             $loan_co_applicants->annual_income = (int)$params['annual_income'] ? $params['annual_income'] : $loan_co_applicants->annual_income;
             $loan_co_applicants->co_applicant_dob = date('Y-m-d', strtotime($params['co_applicant_dob'])) ? date('Y-m-d', strtotime($params['co_applicant_dob'])) : $loan_co_applicants->co_applicant_dob;
