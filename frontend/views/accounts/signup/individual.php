@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
-use borales\extensions\phoneInput\PhoneInput;
+//use borales\extensions\phoneInput\PhoneInput;
 
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 $loan_id = null;
@@ -73,14 +73,19 @@ $form = ActiveForm::begin([
         </div>
         <div class="col-md-6">
             <?=
-            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
-                'jsOptions' => [
-                    'allowExtensions' => true,
-                    'preferredCountries' => ['in'],
-                    'nationalMode' => false,
-                ]
-            ]);
+            $form->field($model, 'phone')->textInput(['id'=>'phone-input']);
             ?>
+            <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
+
+<!--            --><?//=
+//            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+//                'jsOptions' => [
+//                    'allowExtensions' => true,
+//                    'preferredCountries' => ['in'],
+//                    'nationalMode' => false,
+//                ]
+//            ]);
+//            ?>
         </div>
     </div>
     <div class="row">
@@ -136,3 +141,60 @@ $this->registerCss('
 }
 .country-list, .iti__country-list{z-index:99 !important;}
 ');
+$script = <<<JS
+ var input = document.querySelector("#phone-input");
+    var iti = window.intlTelInput(input, {
+        'utilsScript': "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js",
+       'allowExtensions': false,
+       'preferredCountries': ['in'],
+       'nationalMode': false,
+       'separateDialCode':true
+  });
+var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+$(document).on('blur','#phone-input', function() {
+  if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
+    if (iti.isValidNumber()) {
+        validatePhone('phone',iti.getNumber(intlTelInputUtils.numberFormat.E164));
+    } else {
+      input.classList.add("error");
+      var errorCode = iti.getValidationError();
+      $('#phone-error').html(errorMap[errorCode]);
+    }
+  } else {
+      input.classList.add("error");
+      $('#phone-error').html('Invalid Number');
+  }
+});
+function validatePhone(field,value){
+     $.ajax({
+         url:'/validate-field',
+         data:{type:'user',field,value},
+         method:'post',
+         success:function(res){
+             if(res.status === 200){
+                 $('#phone-input').addClass('error');
+                 $('#phone-error').html('Phone Number already exists');
+             }else {
+                 $('#phone-input').removeClass('error');
+                $('#phone-error').html(res);
+             }
+          }
+    })
+}
+function allnumeric(inputtxt){
+  var numbers = /^[0-9]+$/;
+  if(inputtxt.match(numbers)) {
+      return true;
+  }
+  return false;
+} 
+$('#user-form').on('beforeSubmit', function() {
+    if($('input.error').length){
+        return false;
+    }
+    $('#phone-input').val(iti.getNumber(intlTelInputUtils.numberFormat.E164));
+});
+JS;
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs($script);

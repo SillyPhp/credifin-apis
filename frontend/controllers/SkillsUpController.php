@@ -2,15 +2,20 @@
 
 namespace frontend\controllers;
 
+use account\models\applications\ApplicationForm;
 use common\models\Industries;
 use common\models\LearningVideos;
 use common\models\Skills;
+use common\models\SkillsUpPosts;
 use common\models\SkillsUpSources;
+use frontend\models\OrganizationEmployeesForm;
+use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
 use Yii;
 use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\helpers\Url;
 
 class SkillsUpController extends Controller
 {
@@ -21,8 +26,7 @@ class SkillsUpController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                print_r('saved');
-                die();
+                $this->redirect('/skills-up/index');
             } else {
                 print_r('an error occurred');
                 die();
@@ -35,8 +39,41 @@ class SkillsUpController extends Controller
 
     public function actionPreview()
     {
-        return $this->render('feed-preview');
+        $model = new SkillsUpForm();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $var = Yii::$app->security->generateRandomString(10);
+            $session = Yii::$app->session;
+            $session->set($var, $model);
+            return ['status' => 200, 'id' => $var];
+        } else {
+            return ['status' => 201];
+        }
+    }
 
+    public function actionFeedPreview($id)
+    {
+        if (!empty($id)) {
+            $session = Yii::$app->session;
+            $object = $session->get($id);
+
+            if (empty($object)) {
+                return 'Oops Session expired..!';
+            }
+
+            $source = SkillsUpSources::findone(['source_enc_id' => $object->source_id])->name;
+
+            $skills = Skills::find()
+                ->select(['skill'])
+                ->where(['skill_enc_id' => $object->skills])
+                ->asArray()
+                ->all();
+
+            return $this->render('feed-preview', ['object' => $object, 'source' => $source, 'skills' => $skills]);
+
+        } else {
+            return 'Oops Session not found..!';
+        }
     }
 
     public function actionIndustryList($q = null, $id = null)
@@ -107,5 +144,106 @@ class SkillsUpController extends Controller
             'title' => 'LearningVideo',
             'message' => 'Video id not Found..',
         ];
+    }
+
+    public function actionAddSource()
+    {
+        if (Yii::$app->request->isAjax) {
+            $addSourceForm = new AddSourceForm();
+            if ($addSourceForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
+                $source_exists = SkillsUpSources::findOne(['name' => $addSourceForm->source_name, 'is_deleted' => 0]);
+                if ($source_exists) {
+                    return [
+                        'status' => 201,
+                        'title' => 'duplication',
+                        'message' => 'This source name already exists',
+                    ];
+                }
+                if ($data = $addSourceForm->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Source Added.',
+                        'id' => $data['id'],
+                        'val' => $data['val']
+                    ];
+                } else {
+                    return [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('add-source-form', [
+                'addSourceForm' => $addSourceForm,
+            ]);
+        }
+    }
+
+    public function actionTimeLine()
+    {
+        return $this->render('feed-timeline');
+    }
+
+    public function actionFeedList()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $data = Yii::$app->request->post();
+
+            $feedsList = SkillsUpPosts::find()
+                ->alias('a')
+                ->select([
+                    'a.post_enc_id', 'b.name source_name', 'c1.name author_name', 'a.post_title', 'a.post_short_summery',
+                    'a.slug', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                    'a.post_image_url'])
+                ->joinWith(['sourceEnc b'], false)
+                ->joinWith(['skillsUpAuthors c' => function ($c) {
+                    $c->joinWith(['authorEnc c1']);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+
+            if (isset($data['content_type']) && !empty($data['content_type'])) {
+                $feedsList->andWhere(['a.content_type' => $data['content_type']]);
+            }
+
+            if (isset($data['keyword']) && !empty($data['keyword'])) {
+                $feedsList->andFilterWhere(['or',
+//                ['like', 'c1.skill', $param['keyword']],
+                    ['like', 'a.post_title', $data['keyword']],
+                    ['like', 'a.post_short_summery', $data['keyword']],
+                    ['like', 'c1.name', $data['keyword']],
+                    ['like', 'b.name', $data['keyword']],
+                ]);
+            }
+
+
+            if (isset($data['limit']) && isset($data['page'])) {
+                $feedsList->limit($data['limit'])->offset(($data['page'] - 1) * $data['limit']);
+            } elseif ($data['limit'] != null) {
+                $feedsList->limit($data['limit']);
+            } else {
+                $feedsList->limit(10);
+            }
+
+            $feedsList = $feedsList->orderBy(['a.created_on' => SORT_DESC])->asArray()
+                ->all();
+
+            if ($feedsList) {
+                return [
+                    'status' => 200,
+                    'data' => $feedsList
+                ];
+            }
+
+            return [
+                'status' => 201,
+                'message' => 'not found'
+            ];
+        }
     }
 }

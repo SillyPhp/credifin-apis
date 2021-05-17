@@ -27,11 +27,11 @@ use yii\helpers\Url;
                 $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $blog['featured_image_location'] . DIRECTORY_SEPARATOR . $blog['featured_image'];
                 $image = Yii::$app->params->upload_directories->posts->featured_image . $blog['featured_image_location'] . DIRECTORY_SEPARATOR . $blog['featured_image'];
                 if (!file_exists($image_path)) {
-                    $image = '//placehold.it/570x390';
+                    $image = 'https://via.placeholder.com/570x390?text=Image';
                 }
             ?>
             <div class="col-md-3">
-                <a href="<?= Url::to('/blog/c/'.$blog['slug']) ?>">
+                <a href="<?= Url::to('/blog/'.$blog['slug']) ?>"  target="_blank">
                     <div class="col-item">
                         <div class="photo">
                             <img src="<?= $image ?>" class="" alt="<?= $param ?>" title="<?= $param ?>">
@@ -74,7 +74,7 @@ $this->registerCss('
     color: #000;
 }
 .photo{
-    max-width: 255px;
+    width: 100%;
     height: 100%;
     overflow: hidden;
     border-radius: 5px 5px 0 0;
@@ -104,6 +104,7 @@ $this->registerCss('
     text-align:left;
     font-family:roboto;
     color: #333;
+    min-height: 60px;
 }
 .col-item .price h5{
     font-size:14px;
@@ -112,6 +113,7 @@ $this->registerCss('
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+  padding: 0 10px;
 }
 ');
 $script = <<<JS

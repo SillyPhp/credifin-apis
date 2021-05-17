@@ -65,6 +65,7 @@ class EducationLoansController extends Controller
         return $this->render("education-loan-index", [
             'data' => $data,
             'loan_org' => $loan_org,
+            'blogs' => $this->getBlogsByTags(['education loan'])
         ]);
     }
 
@@ -168,6 +169,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-usa',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in usa'])
         ]);
     }
 
@@ -190,6 +192,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-australia',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in australia'])
         ]);
     }
 
@@ -212,6 +215,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-canada',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in canada'])
         ]);
     }
 
@@ -234,6 +238,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-india',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in india'])
         ]);
     }
 
@@ -256,6 +261,7 @@ class EducationLoansController extends Controller
         return $this->render('study-in-europe',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['study in europe'])
         ]);
     }
 
@@ -278,7 +284,7 @@ class EducationLoansController extends Controller
         return $this->render('study-abroad',[
             'model' => $model,
             'data' => $data,
-            'blogs' => $this->getBlogsByTags(['study abroad'])
+            'blogs' => $this->getBlogsByTags(['study abroad', 'study in abroad'])
         ]);
     }
 
@@ -300,6 +306,7 @@ class EducationLoansController extends Controller
         return $this->render('refinancing-education-loan',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['refinance', 'refinance education loan'])
         ]);
     }
 
@@ -321,6 +328,7 @@ class EducationLoansController extends Controller
         return $this->render('annual-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['annual fee financing', 'annual fee finance'])
         ]);
     }
 
@@ -342,6 +350,7 @@ class EducationLoansController extends Controller
         return $this->render('school-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['school fee financing', 'school fee finance'])
         ]);
     }
 
@@ -387,6 +396,7 @@ class EducationLoansController extends Controller
         return $this->render('education-institution-loan', [
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['education institution loan'])
         ]);
     }
 
@@ -413,6 +423,7 @@ class EducationLoansController extends Controller
         return $this->render('teacher-loan', [
             'model' => $model,
             'data' => $data,
+            'blogs' => $this->getBlogsByTags(['teacher loan'])
         ]);
     }
 

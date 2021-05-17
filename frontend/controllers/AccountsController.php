@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\LoanApplications;
+use common\models\Organizations;
 use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
@@ -113,6 +114,46 @@ class AccountsController extends Controller
         return $this->redirect('/login');
     }
 
+    public function actionValidateField()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $field = Yii::$app->request->post('field');
+            $value = Yii::$app->request->post('value');
+            if($type == 'user'){
+                $user = Users::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($user == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            } else{
+                $org = Organizations::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($org == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            }
+        }
+
+    }
+
     public function actionSignup($type, $loan_id_ref = null)
     {
 
@@ -136,6 +177,7 @@ class AccountsController extends Controller
                     ]));
                 }
             }
+
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->load(Yii::$app->request->post());
