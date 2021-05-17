@@ -233,7 +233,14 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+<?php
+if($blogs){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'interest-free'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -243,7 +250,7 @@ use yii\helpers\Url;
     'viewBtn' => true,
 ]) ?>
 
-    <section class="">
+<section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
