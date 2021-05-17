@@ -1,9 +1,10 @@
-    <?php
+<?php
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
+
 //use borales\extensions\phoneInput\PhoneInput;
 
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
@@ -44,92 +45,92 @@ $form = ActiveForm::begin([
 ]);
 ?>
 
-    <div class="row">
-        <div class="col-md-12">
-            <legend><?= Yii::t('frontend', 'I Want To Hire'); ?></legend>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <legend><?= Yii::t('frontend', 'I Want To Hire'); ?></legend>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Name')]); ?>
-        </div>
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Email')]); ?>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Organization_Website')]); ?>
-        </div>
-        <div class="col-md-6 col-sm-6">
-            <?=
-            $form->field($model, 'organization_phone')->textInput(['id'=>'orgphone-input']);
-            ?>
-            <p id="orgphone-error" style="color:red;" class="help-block help-block-error"></p>
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-set-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-set-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <?=
+        $form->field($model, 'organization_phone')->textInput(['id' => 'orgphone-input']);
+        ?>
+        <p id="orgphone-error" style="color:red;" class="help-block help-block-error"></p>
 
-            <!--            --><?//=
-//            $form->field($model, 'organization_phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
-//                'jsOptions' => [
-//                    'allowExtensions' => true,
-//                    'preferredCountries' => ['in'],
-//                    'nationalMode' => false,
-//                ]
-//            ]);
-//            ?>
-        </div>
+        <!--            --><? //=
+        //            $form->field($model, 'organization_phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+        //                'jsOptions' => [
+        //                    'allowExtensions' => true,
+        //                    'preferredCountries' => ['in'],
+        //                    'nationalMode' => false,
+        //                ]
+        //            ]);
+        //            ?>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($model, 'username', ['template' => '<div class="input-group"><span class="input-group-addon">https://empoweryouth.com/</span>{input}</div>{error}', 'enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <?= $form->field($model, 'username', ['template' => '<div class="input-group"><span class="input-group-addon">https://empoweryouth.com/</span>{input}</div>{error}', 'enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'new_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Password')]); ?>
-        </div>
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Confirm_Password')]); ?>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'new_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Password')]); ?>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <legend><?= Yii::t('frontend', 'Contact Person Information'); ?></legend>
-        </div>
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Confirm_Password')]); ?>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('First_Name')]); ?>
-        </div>
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Last_Name')]); ?>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <legend><?= Yii::t('frontend', 'Contact Person Information'); ?></legend>
     </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Email')]); ?>
-        </div>
-        <div class="col-md-6 col-sm-6">
-            <?=
-            $form->field($model, 'phone')->textInput(['id'=>'phone-input']);
-            ?>
-            <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('First_Name')]); ?>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Last_Name')]); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-set-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Email')]); ?>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <?=
+        $form->field($model, 'phone')->textInput(['id' => 'phone-input']);
+        ?>
+        <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
 
-            <!--            --><?//=
-//            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
-//                'jsOptions' => [
-//                    'allowExtensions' => false,
-//                    'preferredCountries' => ['in'],
-//                    'nationalMode' => false,
-//                ]
-//            ]);
-//            ?>
-        </div>
+        <!--            --><? //=
+        //            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+        //                'jsOptions' => [
+        //                    'allowExtensions' => false,
+        //                    'preferredCountries' => ['in'],
+        //                    'nationalMode' => false,
+        //                ]
+        //            ]);
+        //            ?>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
     </div>
+</div>
 <?php ActiveForm::end(); ?>
 
 <?php
@@ -162,31 +163,35 @@ $script = <<<JS
   });
 var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
 $(document).on('blur','#phone-input', function() {
-  if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
-    if (iti.isValidNumber()) {
-        validatePhone('user','phone',iti.getNumber(intlTelInputUtils.numberFormat.E164));
-    } else {
-      input.classList.add("error");
-      var errorCode = iti.getValidationError();
-      $('#phone-error').html(errorMap[errorCode]);
-    }
-  } else {
-      input.classList.add("error");
-      $('#phone-error').html('Invalid Number');
+  if ($('#phone-input').val()) {
+      if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
+        if (iti.isValidNumber()) {
+            validatePhone('user','phone',iti.getNumber(intlTelInputUtils.numberFormat.E164));
+        } else {
+          input.classList.add("error");
+          var errorCode = iti.getValidationError();
+          $('#phone-error').html(errorMap[errorCode]);
+        }
+      } else {
+          input.classList.add("error");
+          $('#phone-error').html('Invalid Phone Number');
+      }
   }
 });
 $(document).on('blur','#orgphone-input', function() {
-  if ($('#orgphone-input').val().trim()&& allnumeric($('#orgphone-input').val().trim())) {
-    if (iti2.isValidNumber()) {
-        validatePhone('organization','phone',iti2.getNumber(intlTelInputUtils.numberFormat.E164));
-    } else {
-      input2.classList.add("error");
-      var errorCode = iti2.getValidationError();
-      $('#orgphone-error').html(errorMap[errorCode]);
-    }
-  } else {
-      input2.classList.add("error");
-      $('#orgphone-error').html('Invalid Number');
+  if ($('#orgphone-input').val()) {
+      if ($('#orgphone-input').val().trim()&& allnumeric($('#orgphone-input').val().trim())) {
+        if (iti2.isValidNumber()) {
+            validatePhone('organization','phone',iti2.getNumber(intlTelInputUtils.numberFormat.E164));
+        } else {
+          input2.classList.add("error");
+          var errorCode = iti2.getValidationError();
+          $('#orgphone-error').html(errorMap[errorCode]);
+        }
+      } else {
+          input2.classList.add("error");
+          $('#orgphone-error').html('Invalid Phone Number');
+      }
   }
 });
 function validatePhone(type,field,value){
@@ -222,6 +227,13 @@ function allnumeric(inputtxt){
   }
   return false;
 } 
+$(document).on('keyup', '.text-set-lowercase', function(){
+   if($(this).val()){
+       $(this).css('text-transform','lowercase');
+   } else{
+       $(this).css('text-transform','unset');
+   } 
+});
 $('#organization-form').on('beforeSubmit', function() {
     if($('input.error').length){
         return false;

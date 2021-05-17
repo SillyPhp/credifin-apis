@@ -69,7 +69,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Email')]); ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-set-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Email')]); ?>
         </div>
         <div class="col-md-6">
             <?=
@@ -152,17 +152,19 @@ $script = <<<JS
   });
 var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
 $(document).on('blur','#phone-input', function() {
-  if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
-    if (iti.isValidNumber()) {
-        validatePhone('phone',iti.getNumber(intlTelInputUtils.numberFormat.E164));
-    } else {
-      input.classList.add("error");
-      var errorCode = iti.getValidationError();
-      $('#phone-error').html(errorMap[errorCode]);
-    }
-  } else {
-      input.classList.add("error");
-      $('#phone-error').html('Invalid Number');
+  if ($('#phone-input').val()) {
+      if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
+        if (iti.isValidNumber()) {
+            validatePhone('phone',iti.getNumber(intlTelInputUtils.numberFormat.E164));
+        } else {
+          input.classList.add("error");
+          var errorCode = iti.getValidationError();
+          $('#phone-error').html(errorMap[errorCode]);
+        }
+      } else {
+          input.classList.add("error");
+          $('#phone-error').html('Invalid Phone Number');
+      }
   }
 });
 function validatePhone(field,value){
@@ -193,6 +195,13 @@ $('#user-form').on('beforeSubmit', function() {
         return false;
     }
     $('#phone-input').val(iti.getNumber(intlTelInputUtils.numberFormat.E164));
+});
+$(document).on('keyup', '.text-set-lowercase', function(){
+   if($(this).val()){
+       $(this).css('text-transform','lowercase');
+   } else{
+       $(this).css('text-transform','unset');
+   } 
 });
 JS;
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css');
