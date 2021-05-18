@@ -1,6 +1,6 @@
 <script id="video-categories" type="text/template">
     {{#.}}
-    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+    <div class="col-md-2 col-sm-4 col-xs-6 pc-main">
         <a href="/learning/videos/category/{{slug}}">
             <div class="newset">
                 <div class="imag">
@@ -23,7 +23,8 @@ $this->registerCss('
     line-height: 210px;
     position: relative;
     width:100%;
-    margin-bottom:20px;
+    margin-bottom:20px !important;
+    margin:0 auto;
 }
 .imag{
     text-align: right;
