@@ -14,38 +14,8 @@ var events = [ {
     description: "Lorem ipsum dolor sit amet.",
     date: today.getMonth() + 1 + "/10/" + today.getFullYear(),
     type: "holiday"
-}, {
-    id: "0g5G6ja",
-    name: "Event #1",
-    description: "Lorem ipsum dolor sit amet.",
-    date: [ today.getMonth() + 1 + "/2/" + today.getFullYear(), today.getMonth() + 1 + "/5/" + today.getFullYear() ],
-    type: "event",
-    everyYear: !0
-}, {
-    id: "y2u7UaF",
-    name: "Holiday #3",
-    description: "Lorem ipsum dolor sit amet.",
-    date: today.getMonth() + 1 + "/23/" + today.getFullYear(),
-    type: "holiday"
-}, {
-    id: "dsu7HUc",
-    name: "Birthday #1",
-    description: "Lorem ipsum dolor sit amet.",
-    date: new Date(),
-    type: "birthday"
-}, {
-    id: "dsu7HUc",
-    name: "Birthday #2",
-    description: "Lorem ipsum dolor sit amet.",
-    date: today.getMonth() + 1 + "/27/" + today.getFullYear(),
-    type: "birthday"
-} ];
-
-function getTiming(time,start){
-    console.log(time);
-    console.log(start);
-
 }
+];
 
 function FetchEventAndRenderCalendar(){
     let c_events = [];
@@ -58,9 +28,7 @@ function FetchEventAndRenderCalendar(){
             $.each(data, function(i,v) {
                 let final_timing;
                 let final_interviewers = [];
-                console.log(v.time);
                 $.each(v.interviewers , function (index) {
-                    // let tempInterviewers = [];
                     final_interviewers.push(v.interviewers[index].name);
                 });
                 $.each(v.time , function (index) {
@@ -69,8 +37,6 @@ function FetchEventAndRenderCalendar(){
                         $.each(v.time[index].time , function (underindex) {
                             tempData.push(' '+v.time[index].time[underindex].from + ' to: ' + v.time[index].time[underindex].to);
                         });
-                        console.log(tempData.toString());
-                        console.log('got daata');
                         final_timing = tempData.toString();
                     }
                 });
@@ -91,7 +57,6 @@ function FetchEventAndRenderCalendar(){
                     // designation:v.designation,
                 })
             });
-            console.log(c_events);
             $("#demoEvoCalendar").evoCalendar("addCalendarEvent", c_events);
         }
     })
@@ -129,7 +94,7 @@ $(document).ready(function() {
     $("#demoEvoCalendar").evoCalendar({
         format: "MM dd, yyyy",
         titleFormat: "MM",
-        sidebarDisplayDefault:false,
+        sidebarDisplayDefault:true,
         theme: 'Orange Coral',
         calendarEvents: []
     });

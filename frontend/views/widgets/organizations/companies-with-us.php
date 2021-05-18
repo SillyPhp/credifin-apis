@@ -38,12 +38,12 @@ $companies = $companies->all();
     <section class="companies">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-4 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="com-grid">
                         <h2 class="heading-style">Featured Companies</h2>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-4 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?= Url::to('/organizations'); ?>" class="btn btn-3">

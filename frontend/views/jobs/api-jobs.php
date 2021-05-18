@@ -103,12 +103,12 @@ if (!Yii::$app->user->isGuest) {
                         <?php if ($get['type']): ?>
                             <div class="job-time"><?= ucwords($get['type']) ?></div>
                         <?php endif; ?>
-                        <?php if ($get['location']) { ?>
-                            <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
-                                <?= $location ?>
-                            </div>
-                        <?php } ?>
                     </div>
+                    <?php if ($get['location']) { ?>
+                        <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
+                             <?= $location ?>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -324,6 +324,12 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.job-location {
+    width: 40%;
+    display: block;
+    margin-top: 20px !important;
+    margin: 0 auto;
+}
 .job-thumb canvas {
     border-radius: 50%;
     width: 125px;
@@ -600,6 +606,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     a.add-or-compare{padding: 10px 5px;}
     .effect.thurio{clear:both;}
 }
+@media only screen and (max-width: 768px) {
+.job-location {
+    width: 100%;
+}
+}
 @media only screen and (max-width: 720px) {
     .actions-main{
         width: 30%;
@@ -828,7 +839,7 @@ $this->registerCss("
         text-align: center;
         position: relative;
         margin-top: 20px;
-        margin-bottom: 50px;
+//        margin-bottom: 50px;
         z-index: 1;
         color: #fff;
         font-size: 18px;

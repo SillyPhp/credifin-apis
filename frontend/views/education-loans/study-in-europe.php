@@ -152,9 +152,6 @@ $this->registerCss('
     border-radius: 10px;
     padding: 15px;
 }
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 #typed{
     font-size: 25px;
     color: #fff;

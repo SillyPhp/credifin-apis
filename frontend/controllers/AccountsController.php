@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\LoanApplications;
+use common\models\Organizations;
 use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
@@ -66,12 +67,16 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
-
+        $loginFormModel->referer = Yii::$app->getUser()->getReturnUrl();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-                $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
+                $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
+                if (Yii::$app->user->identity->organization)
+                {
+                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                }
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',
@@ -85,21 +90,19 @@ class AccountsController extends Controller
                 ];
             }
         }
-
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            if (!Yii::$app->session->has("backURL")) {
+         if (!Yii::$app->session->has("backURL")) {
                 Yii::$app->session->set("backURL", Yii::$app->request->referrer);
             }
-            $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
+            $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            $backUrl = Yii::$app->session->get("backURL");
-            if ($backUrl) {
-                return $this->redirect($backUrl);
+            if (Yii::$app->user->identity->organization)
+            {
+                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
             }
-            Yii::$app->session->set("backURL", '/account/dashboard');
-            return $this->redirect(Yii::$app->session->get("backURL"));
+            return $this->goBack($loginFormModel->referer);
         }
 
         return $this->render('login', [
@@ -111,6 +114,46 @@ class AccountsController extends Controller
     {
         Yii::$app->user->logout();
         return $this->redirect('/login');
+    }
+
+    public function actionValidateField()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $field = Yii::$app->request->post('field');
+            $value = Yii::$app->request->post('value');
+            if($type == 'user'){
+                $user = Users::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($user == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            } else{
+                $org = Organizations::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($org == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            }
+        }
+
     }
 
     public function actionSignup($type, $loan_id_ref = null)
@@ -136,6 +179,7 @@ class AccountsController extends Controller
                     ]));
                 }
             }
+
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->load(Yii::$app->request->post());

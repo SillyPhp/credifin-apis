@@ -57,8 +57,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/expand your content reach(1).png'); ?>"/>
                                 </div>
                                 <h2 class="heading">Expand Your Content Reach</h2>
-                                <P class="paragraph"> By tapping into other relevant and powerful networks help you
-                                    drive new traffic and expand your reach! </P>
+                                <P class="paragraph"> By tapping into other relevant and powerful networks, you
+                                    can drive new traffic and expand your reach! </P>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/cg.png'); ?>"/>
                                 </div>
                                 <h2 class="heading">Channel Growth</h2>
-                                <P class="paragraph">Building relationship and working with Creators is crucial to
+                                <P class="paragraph">Building relationship and working with Creators is crucial for
                                     growing of your channel.</P>
                             </div>
                         </div>
@@ -90,8 +90,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/we promote your content.png'); ?>"/>
                                 </div>
                                 <h2 class="heading">We Promote Your Content</h2>
-                                <P class="paragraph">We Proactively Promote Your Content and use plenty of tools and
-                                    platform to give your content more reach! </P>
+                                <P class="paragraph">We Proactively Promote Your Content and use a lot of tools and
+                                    platforms to give your content more reach! </P>
                             </div>
                         </div>
 
@@ -111,8 +111,8 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/meaningful backlink.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Meaningful Back Link</h2>
-                                <P class="paragraph">We build high-quality back link when Nobody knows your
+                                <h2 class="heading">Meaningful BackLink</h2>
+                                <P class="paragraph">We build high-quality backlinks when Nobody knows your
                                     name.</P>
                             </div>
                         </div>
@@ -122,9 +122,8 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/promote your other service.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Promote Your Other Service</h2>
-                                <P class="paragraph">When it comes to promoting your new service. we also promote
-                                    your other services. </P>
+                                <h2 class="heading">Promote Your Services</h2>
+                                <P class="paragraph">When it comes to promoting, we will promote all your new as well as old services.</P>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6 col-xs-12">
@@ -133,7 +132,7 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/free(1).png'); ?>"/>
                                 </div>
                                 <h2 class="heading">No Cost</h2>
-                                <P class="paragraph">No cost is great way to increase audience traffic and achieve
+                                <P class="paragraph">No cost is a great way to increase audience traffic and achieve
                                     your goals.</P>
                             </div>
                         </div>
@@ -159,12 +158,12 @@ use yii\helpers\Url;
                     <div class="right-text">
                         <h2 class="h2-head">Help The Society</h2>
                         <ul class="list-1">
-                            <li><span class="clr">Your content may just help someone learn new skills. </span></li>
-                            <li><span class="clr">Your Content Never Dies.</span></li>
+                            <li><span class="clr">To learn new skills with your content. </span></li>
+                            <li><span class="clr">By creating a content that never dies.</span></li>
                             <li>
-                                <span class="clr">You help us in our mission of making education free for all.</span>
+                                <span class="clr">By helping us to make education free for all.</span>
                             </li>
-                            <li><span class="clr">We aim to target the wdly segment of the society.</span></li>
+                            <li><span class="clr">By targeting a large segment of the society.</span></li>
                         </ul>
                     </div>
                 </div>
@@ -179,11 +178,10 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="right-heading">
-                        <h3>What can to be contribute?</h3>
-                        <p class="paragraph-set">One of the best parts about doing collaboration<span
-                                    class="text-bold"> is it's completely free!</span>
-                            this makes thing more easy.</p>
-
+                        <h3>What can be contributed?</h3>
+                        <p class="paragraph-set">One of the best parts about doing collaboration with EmpowerYouth is that<span
+                                    class="text-bold"> it is completely free!</span>
+                            You can make your contribution in the form of blogs, articles, videos and other learning material.</p>
                     </div>
                 </div>
 
@@ -480,27 +478,29 @@ textarea:focus{
     transition: 0.5s;
 }
 .img-circle{
-    margin: 41px 35px 0px 0;
+    text-align: center;
 }
 .img-circle img{    
-    max-width:90%;
+    max-width: 100%;
+    width: 150px;
 }
 .img-circle h4{
     text-align: center;
-    font-size: 30px;
+    font-size: 20px;
     font-family: roboto;
  }
 .img-blog{
-    margin-top: 87px;
+    text-align: center;
+    margin-top: 35px;
     margin-left: 25px;
 }
 .img-blog img{ 
-    max-width:80%;
+    width: 100%;
+    max-width: 150px;
 }
 .img-blog h4{ 
     text-align: center;
-    font-size: 30px;
-    padding-right:35px;
+    font-size: 20px;
     font-family: roboto;
 }
 .section4{

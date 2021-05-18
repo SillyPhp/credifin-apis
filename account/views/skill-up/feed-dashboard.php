@@ -13,7 +13,7 @@ use yii\helpers\Url;
                         <i class="fa fa-video-camera"></i>
                         <div class="info">
                             <p>Total Videos</p>
-                            <h3>1,245</h3>
+                            <h3><?= $counts['video'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -22,7 +22,7 @@ use yii\helpers\Url;
                         <i class="fa fa-newspaper-o"></i>
                         <div class="info">
                             <p>Total News</p>
-                            <h3>34</h3>
+                            <h3><?= $counts['news'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@ use yii\helpers\Url;
                         <i class="fa fa-window-restore" aria-hidden="true"></i>
                         <div class="info">
                             <p>Total Articles</p>
-                            <h3>5,245</h3>
+                            <h3><?= $counts['article'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@ use yii\helpers\Url;
                         <i class="fa fa-align-justify"></i>
                         <div class="info">
                             <p>Total Courses</p>
-                            <h3>5,245</h3>
+                            <h3><?= $counts['course'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -48,8 +48,8 @@ use yii\helpers\Url;
                     <div class="box nd-shadow clr5">
                         <i class="fa fa-volume-up"></i>
                         <div class="info">
-                            <p>Total Audio</p>
-                            <h3>5,245</h3>
+                            <p>Total Podcast</p>
+                            <h3><?= $counts['podcast'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@ use yii\helpers\Url;
                         <i class="fa fa-rss" aria-hidden="true"></i>
                         <div class="info">
                             <p>Total Blogs</p>
-                            <h3>5,245</h3>
+                            <h3><?= $counts['blog'] ?></h3>
                         </div>
                     </div>
                 </div>
@@ -72,15 +72,20 @@ use yii\helpers\Url;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">My Contributes</span>
+                        <span class="caption-subject font-dark bold uppercase">My Contributions</span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
-                            <a href="<?= Url::toRoute('/bdo/add-new-lead'); ?>" data-toggle="tooltip"
+                            <a href="<?= Url::to('/skills-up'); ?>" data-toggle="tooltip"
                                title="Add More"
                                class="add-lead">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                            <a href="<?= Url::to('view-all'); ?>" data-toggle="tooltip"
+                               title="View All"
+                               class="add-lead">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         </div>
+
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -92,50 +97,37 @@ use yii\helpers\Url;
                                 <th class="w250">Title</th>
                                 <th class="w200">Author Name</th>
                                 <th class="w150">Source Name</th>
+                                <th class="w150">Content Type</th>
                                 <th class="w300">Source Link</th>
                                 <th class="w300">Skills</th>
                                 <th class="w200">Industries</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>1/05/2021</td>
-                                <td>The Jungle Book</td>
-                                <td>James Matman</td>
-                                <td>Youtube</td>
-                                <td><a href="" class="src-link">https://kulwinder.eygb.me/account/skill-up/dashboard</a></td>
-                                <td>
-                                    <ul>
-                                        <li>skill,</li>
-                                        <li>skill1,</li>
-                                        <li>skill2</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>design</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1/05/2021</td>
-                                <td>The Jungle Book</td>
-                                <td>James Matman</td>
-                                <td>Youtube</td>
-                                <td><a href="" class="src-link">https://kulwinder.eygb.me/account/skill-up/dashboard</a></td>
-                                <td>
-                                    <ul>
-                                        <li>skill,</li>
-                                        <li>skill1,</li>
-                                        <li>skill2</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>design</li>
-                                    </ul>
-                                </td>
-                            </tr>
+                            <?php if ($feeds) {
+                                foreach ($feeds as $f) { ?>
+                                    <tr>
+                                        <td><?= $f['date'] ?></td>
+                                        <td><?= $f['post_title'] ?></td>
+                                        <td><?= $f['author_name'] ?></td>
+                                        <td><?= $f['source'] ?></td>
+                                        <td><?= $f['content_type'] ?></td>
+                                        <td><a href="<?= $f['post_source_url'] ?>"
+                                               class="src-link"><?= $f['post_source_url'] ?></a>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li><?= $f['skills']?></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li><?= $f['industries']?></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                <?php }
+                            } ?>
                             </tbody>
                         </table>
                     </div>
@@ -295,9 +287,10 @@ Label the data
 .my-leadd td:nth-of-type(2):before { content: "Title"; }
 .my-leadd td:nth-of-type(3):before { content: "Author Name"; }
 .my-leadd td:nth-of-type(4):before { content: "Source Name"; }
-.my-leadd td:nth-of-type(5):before { content: "Sourcre Link"; }
-.my-leadd td:nth-of-type(6):before { content: "Skills"; }
-.my-leadd td:nth-of-type(7):before { content: "Industries"; }
+.my-leadd td:nth-of-type(5):before { content: "Content Type"; }
+.my-leadd td:nth-of-type(6):before { content: "Sourcre Link"; }
+.my-leadd td:nth-of-type(7):before { content: "Skills"; }
+.my-leadd td:nth-of-type(8):before { content: "Industries"; }
 }
 @media screen and (max-width: 500px) {
 .my-leadd td:before,.my-leadd td{
