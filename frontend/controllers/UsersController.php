@@ -309,7 +309,7 @@ class UsersController extends Controller
         $basicDetails = new UserProfileBasicEdit();
         if ($basicDetails->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($basicDetails->update()) {
+            if ($basicDetails->update(Yii::$app->request->post())) {
                 $response = [
                     'status' => 'success',
                     'title' => 'Success',

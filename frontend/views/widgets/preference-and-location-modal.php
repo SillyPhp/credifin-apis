@@ -39,122 +39,26 @@ use borales\extensions\phoneInput\PhoneInput;
                 <div class="col-md-8 col-sm-8 padding-0 lp-bg-log">
                     <div class="lp-fom">
                         <div class="lp-icon-bottom"><i class="fas fa-id-card-alt"></i></div>
-                        <h3>Complete Your Profile</h3>
+                        <h3>Update Your Preferences</h3>
                         <form class="updatePreferenceForm">
-                            <div class="row dis-none">
-                                <div class="upload-img-bar">
-                                    <span>
-                                        <img src="" class="preview_img" alt="" width="200" height="150">
-                                        <label class="tg-fileuploadlabel" for="tg-photogallery">
-                                            <span><i class="fas fa-pencil-alt"></i> </span>
-                                            <div class="field-tg-photogallery">
-                                                <input type="hidden" name="profile_image" value="">
-                                                <input type="file" id="tg-photogallery" class="tg-fileinput"
-                                                    name="profile_image" accept="image/*" aria-invalid="true">
-                                                <p class="help-block help-block-error">Please upload a file.</p>
-                                            </div>
-                                        </label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row dis-none disShow">
+<!--                            <div class="row dis-none disShow" data-id="job-prfile-and-title">-->
+<!--                                <div class="col-md-12 mb10">-->
+<!--                                    <div class="form-group lp-form">-->
+<!--                                        <label>Choose Job Profile</label>-->
+<!--                                        <input type="text" class="form-control text-capitalize" id="profiles">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <div class="row dis-none disShow" data-id="industry">
                                 <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <p>What are you looking for?</p>
-                                        <ul class="relationList">
-                                            <li class="service-list lp-radio">
-                                                <input type="radio" class="input_radio_relation" value="job" id="job"
-                                                       onchange="showValForm(event)" name="eType">
-                                                <label for="job">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/jobsi.png') ?>">
-                                                    <p>Job</p>
-                                                </label>
-                                            </li>
-                                            <li class="service-list lp-radio">
-                                                <input type="radio" class="input_radio_relation" value=internship
-                                                       id="internship"
-                                                       onchange="showValForm(event)" name="eType">
-                                                <label for="internship">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/internshipi.png') ?>">
-                                                    <p>Internship</p>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="job-prfile-and-title">
-                                <div class="col-md-12 mb10">
-                                    <div class="form-group lp-form">
-                                        <label>Choose Job Profile</label>
-<!--                                        <input type="text" class="form-control text-capitalize" id="profile">-->
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Select Job Title</label>
-<!--                                        <input type="text" class="form-control text-capitalize" id="job_title">-->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="experience">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Experience(Y)</label>
-                                        <input type="text" class="form-control text-capitalize" id="min_salary">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Experience(M)</label>
-                                        <input type="text" class="form-control text-capitalize" id="max_salary">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="state-city">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Current State</label>
-                                        <input type="text" class="form-control text-capitalize" id="min_salary">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Current City</label>
-                                        <input type="text" class="form-control text-capitalize" id="max_salary">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="skills">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Pick the Skills You Have</label>
-                                        <input type="text" class="form-control text-capitalize" id="skills">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="availability">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Availability</label>
-                                        <select id="gender" class="form-control"
-                                                name="availability" aria-required="true">
-                                            <option value="">Select Availability</option>
-                                            <option value="0">Available</option>
-                                            <option value="1">Open</option>
-                                            <option value="2">Actively Looking</option>
-                                            <option value="3">Exploring Possibilities</option>
-                                            <option value="4">Not Available</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="about">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group lp-form">
-                                        <label>About You</label>
-                                        <textarea class="aboutTextarea form-control text-capitalize"
-                                                  id="aboutYou"></textarea>
+                                    <div class="form-group lp-form with-load">
+                                        <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                        <label>Industry you prefer to work in?</label>
+                                        <input type="text" class="form-control text-capitalize" name="industry" id="industry_data">
                                     </div>
                                 </div>
                             </div>
@@ -172,30 +76,8 @@ use borales\extensions\phoneInput\PhoneInput;
                                     </div>
                                 </div>
                             </div>
-                            <div class="row dis-none" data-id="dob">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Date Of Birth</label>
-                                        <input type="text" class="form-control text-capitalize" id="dob">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="languages">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Pick Some Languages You Can Read,Write,Speak</label>
-                                        <input type="text" class="form-control text-capitalize" id="languages">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="industry">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Industry you prefer to work in?</label>
-                                        <input type="text" class="form-control text-capitalize" id="industry">
-                                    </div>
-                                </div>
-                            </div>
+
+
 
 
                             <div class="row dis-none" data-id="job-type">
@@ -525,6 +407,113 @@ $this->registerCss('
     stroke-dashoffset: 900;
   }
 }
+.tags > .addedTag > span{
+    background: #00a0e3;
+}
+.typeahead,.tt-query{
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.form-wizard .steps>li.done>a.step .number {
+    background-color: #ffac64 !important;
+    color: #fff;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+#job_title{
+    height: 56px;
+    background: #fff;
+    border: 2px solid #e8ecec;
+    font-family: Open Sans;
+    font-size: 13px;
+    color: #101010;
+    line-height: 24px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.twitter-typeahead{
+    width:100%;
+}
+
+.form-control.tt-hint {
+  color: #999;
+  opacity: 0 !important;
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+              margin-top: 0px;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+/*---old---*/
+
+.individual-form::-webkit-scrollbar { 
+    width: 0 !important 
+}
+.individual-form { 
+    overflow: -moz-scrollbars-none; 
+}
+.individual-form { 
+    -ms-overflow-style: none; 
+}
+.individual-form{
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-top:50px;
+    max-height:76vh; 
+}
+.intl-tel-input{
+    display:block !important;
+}
+::placeholder{
+    color:#999;
+}
 
 /*---old---*/
 
@@ -655,6 +644,54 @@ body.modal-open{
 }
 ');
 $script = <<< JS
+var city = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: '',
+    cache: true, 
+    remote: {
+        url: '/cities/get-location?q=%QUERY',
+        wildcard: '%QUERY'
+    }
+});
+city.initialize();
+
+var city_name = $('#city_data,#intern_city_data');
+city_name.materialtags({
+    itemValue: 'id',
+    itemText: 'text',
+    typeaheadjs: {
+        name: 'city',
+        displayKey: 'city_name',
+        source: city.ttAdapter()
+    }
+});
+
+var industries = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    cache: true, 
+    prefetch:{
+        url: '/account/preferences/get-industry?q=com',
+    },
+    remote: {
+        url: '/account/preferences/get-industry?q=%QUERY',
+        wildcard: '%QUERY',
+    }
+});
+industries.initialize();
+
+var industry_name = $('#industry_data');
+industry_name.materialtags({
+    itemValue: 'id',
+    itemText: 'text',
+    typeaheadjs: {
+        name: 'industry',
+        displayKey: 'text',
+        source: industries.ttAdapter()
+    }
+});
+
 showNextQues = () =>{
     let fieldsArr = [];
     let cpForm = document.querySelector('.updatePreferenceForm')
@@ -673,6 +710,8 @@ showNextQues = () =>{
 }
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 ?>
 <script>
     function showValForm(e) {

@@ -7,7 +7,7 @@ use borales\extensions\phoneInput\PhoneInput;
 use yii\helpers\ArrayHelper;
 
 $statesModel = new \common\models\States();
-$states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_enc_id','z.name'])->joinWith(['countryEnc a'],false)->where(['a.name' => 'India'])->orderBy(['z.name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
+$states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_enc_id', 'z.name'])->joinWith(['countryEnc a'], false)->where(['a.name' => 'India'])->orderBy(['z.name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
 
 $primaryfields = \common\models\Categories::find()
     ->alias('a')
@@ -23,7 +23,6 @@ $primaryfields = \common\models\Categories::find()
     ])
     ->asArray()
     ->all();
-
 ?>
 
 <div id="completeProfileModal" class="modal fade-scale plModal" role="dialog">
@@ -42,7 +41,6 @@ $primaryfields = \common\models\Categories::find()
                                 <li>You get more accurate job descriptions.</li>
                             </ul>
                             <div class="lp-icon-top">
-                                <!--                                <i class="far fa-check-circle"></i>-->
                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
                                     <circle class="path circle" fill="none" stroke="#00a0e3" stroke-width="8"
                                             stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
@@ -60,159 +58,121 @@ $primaryfields = \common\models\Categories::find()
                         <div class="lp-icon-bottom"><i class="fas fa-id-card-alt"></i></div>
                         <h3>Complete Your Profile</h3>
                         <form class="completeProfileForm">
-                            <div class="row dis-none disShow">
-                                <div class="col-md-12">
-                                    <div class="uploadUserImg lp-form posRel">
-                                        <div class="displayImg">
-                                            <img id="output" src="https://via.placeholder.com/350x350?text=Cover+Image">
-                                        </div>
-                                        <input type="file" accept="image/jpeg, image/png, image/jpg" data-name="userImg" class="userImg form-control tg-fileinput" id="userImg">
-                                        <label for="userImg" class="upload-icon">
-                                            <i class="fas fa-pencil-alt"></i>
-                                        </label>
-                                        <p class="errorMsg"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="dob">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Date Of Birth</label>
-                                        <div class="input-group date datepicker3" data-provide="datepicker">
-                                            <input type="text" class="form-control text-capitalize" data-name="dob" id="dob">
-                                            <div class="input-group-addon">
-                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                            <?php
+                            if (!$userData['image']) {
+                                ?>
+                                <div class="row dis-none showField">
+                                    <div class="col-md-12">
+                                        <div class="uploadUserImg lp-form posRel">
+                                            <div class="displayImg">
+                                                <img id="output"
+                                                     src="https://via.placeholder.com/350x350?text=Cover+Image">
                                             </div>
-                                            <div>
-                                                <p class="errorMsg doberror"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="job-prfile-and-title">
-                                <div class="col-md-12 mb10">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Choose Job Profile</label>
-                                        <select id="category_drp" data-name="category" class="chosen form-control text-capitalize">
-                                            <option>Select Profile</option>
-                                            <?php
-                                            if($primaryfields){
-                                            foreach ($primaryfields as $pf){
-                                            ?>
-                                                <option value="<?= $pf['category_enc_id'] ?>"><?= $pf['name'] ?></option>
-                                            <?php
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                        <p class="errorMsg"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form posRel">
-                                        <div>
-                                            <label>Select Job Title</label>
-                                        </div>
-                                        <div class="cat_wrapper">
-                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" data-name="job_title" class="form-control text-capitalize" id="job_title">
+                                            <input type="file" accept="image/jpeg, image/png, image/jpg"
+                                                   data-name="userImg" class="userImg form-control tg-fileinput"
+                                                   id="userImg">
+                                            <label for="userImg" class="upload-icon">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </label>
                                             <p class="errorMsg"></p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row dis-none" data-id="experience">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Experience(Y)</label>
-                                        <input type="text" class="form-control text-capitalize"
-                                              data-name="exp_year" onkeyup="formValidations(event)" id="year">
-                                        <p class="errorMsg"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Experience(M)</label>
-                                        <input type="text" data-name="exp_month" class="form-control text-capitalize" id="month">
-                                        <p class="errorMsg"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="languages">
-                                <div class="col-md-12">
-                                    <div class="pf-field no-margin form-group lp-form posRel">
-                                        <label>Pick Some Languages You Can Read,Write,Speak</label>
-                                        <ul class="tags languages_tag_list">
-                                            <li class="tagAdd taglist">
-                                                <div class="language_wrapper">
-                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                                    <input type="text" id="search-language" data-name="language"
-                                                           class="skill-input text-capitalize lp-skill-input lang-input">
+                                <?php
+                            }
+                            if (!$userData['dob']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="dob">
+                                    <div class="col-md-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Date Of Birth</label>
+                                            <div class="input-group date datepicker3" data-provide="datepicker">
+                                                <input type="text" class="form-control text-capitalize" data-name="dob"
+                                                       id="dob">
+                                                <div class="input-group-addon">
+                                                    <span class=""><i class="fas fa-calendar-alt"></i></span>
                                                 </div>
-                                            </li>
-                                        </ul>
-                                        <p class="errorMsg doberror"></p>
+                                                <div>
+                                                    <p class="errorMsg doberror"></p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row dis-none" data-id="gender">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Gender</label>
-                                        <select id="gender" data-name="gender" class="form-control" name="gender" aria-required="true">
-                                            <option value="">Select Gender</option>
-                                            <option value="1">Male</option>
-                                            <option value="2">Female</option>
-                                            <option value="3">Transgender</option>
-                                            <option value="4">Rather not to say</option>
-                                        </select>
-                                        <p class="errorMsg"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="state-city">
-                                <div class="col-md-12">
-                                    <p class="textLabel">Where do you currently live?</p>
-                                </div>
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>State</label>
-                                        <select id='states_drp' data-name="state" class="form-control text-capitalize chosen">
-                                            <option>Select State</option>
-                                            <?php
-                                                if($states){
-                                                    foreach ($states as $key=>$state){
-                                            ?>
-                                                <option value="<?= $key ?>"><?= $state?></option>
-                                            <?php
+                                <?php
+                            }
+                            if (!$userData['job_function']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="job-prfile-and-title">
+                                    <div class="col-md-12 mb10">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Choose Job Profile</label>
+                                            <select id="category_drp" data-name="category"
+                                                    class="chosen form-control text-capitalize">
+                                                <option>Select Profile</option>
+                                                <?php
+                                                if ($primaryfields) {
+                                                    foreach ($primaryfields as $pf) {
+                                                        ?>
+                                                        <option value="<?= $pf['category_enc_id'] ?>"><?= $pf['name'] ?></option>
+                                                        <?php
                                                     }
                                                 }
-                                            ?>
-                                        </select>
-                                        <p class="errorMsg"></p>
+                                                ?>
+                                            </select>
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group lp-form posRel">
+                                            <div>
+                                                <label>Select Job Title</label>
+                                            </div>
+                                            <div class="cat_wrapper">
+                                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                <input type="text" data-name="job_title"
+                                                       class="form-control text-capitalize" id="job_title">
+                                                <p class="errorMsg"></p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>City</label>
-                                        <select id="cities_drp" data-name="city" class="form-control text-capitalize chosen">
-                                            <option>Select City</option>
-                                        </select>
-                                        <p class="errorMsg"></p>
+                                <?php
+                            }
+                            if (!$userData['experience']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="experience">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Experience(Y)</label>
+                                            <input type="text" class="form-control text-capitalize"
+                                                   data-name="exp_year" onkeyup="formValidations(event)" id="year">
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Experience(M)</label>
+                                            <input type="text" data-name="exp_month"
+                                                   class="form-control text-capitalize" id="month">
+                                            <p class="errorMsg"></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row dis-none" data-id="skills">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form posRel">
-                                        <div class="pf-field no-margin">
-                                            <label>Pick the Skills You Have</label>
-                                            <ul class="tags skill_tag_list">
+                                <?php
+                            }
+                            if (!$userData['userSpokenLanguages']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="languages">
+                                    <div class="col-md-12">
+                                        <div class="pf-field no-margin form-group lp-form posRel">
+                                            <label>Pick Some Languages You Can Read,Write,Speak</label>
+                                            <ul class="tags languages_tag_list">
                                                 <li class="tagAdd taglist">
-                                                    <div class="skill_wrapper">
+                                                    <div class="language_wrapper">
                                                         <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                                        <input type="text" id="search-skill" class="skill-input">
+                                                        <input type="text" id="search-language" data-name="language"
+                                                               class="skill-input text-capitalize lp-skill-input lang-input">
                                                     </div>
                                                 </li>
                                             </ul>
@@ -220,35 +180,124 @@ $primaryfields = \common\models\Categories::find()
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row dis-none" data-id="availability">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>Availability</label>
-                                        <select id="availability" data-name="availability" class="form-control"
-                                                name="availability" aria-required="true">
-                                            <option value="">Select Availability</option>
-                                            <option value="1">Available</option>
-                                            <option value="2">Open</option>
-                                            <option value="3">Actively Looking</option>
-                                            <option value="4">Exploring Possibilities</option>
-                                            <option value="0">Not Available</option>
-                                        </select>
-                                        <p class="errorMsg"></p>
+                                <?php
+                            }
+                            if (!$userData['gender']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="gender">
+                                    <div class="col-md-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Gender</label>
+                                            <select id="gender" data-name="gender" class="form-control" name="gender"
+                                                    aria-required="true">
+                                                <option value="">Select Gender</option>
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                                <option value="3">Transgender</option>
+                                                <option value="4">Rather not to say</option>
+                                            </select>
+                                            <p class="errorMsg"></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row dis-none" data-id="about">
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="form-group lp-form posRel">
-                                        <label>About You</label>
-                                        <textarea class="aboutTextarea form-control text-capitalize"
-                                                data-name="description"  id="aboutYou"></textarea>
-                                        <p class="errorMsg"></p>
+                                <?php
+                            }
+                            if (!$userData['city_enc_id']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="state-city">
+                                    <div class="col-md-12">
+                                        <p class="textLabel">Where do you currently live?</p>
                                     </div>
-                                </div>
-                            </div>
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>State</label>
+                                            <select id='states_drp' data-name="state" value=""
+                                                    class="form-control text-capitalize chosen">
+                                                <?php
+                                                if ($states) {
+                                                    foreach ($states as $key => $state) {
+                                                        ?>
+                                                        <option value="<?= $key ?>"><?= $state ?></option>
+                                                        <?php
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>City</label>
+                                            <select id="cities_drp" data-name="city" value=""
+                                                    class="form-control text-capitalize chosen">
 
+                                            </select>
+                                            <p class="errorMsg selectError"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            if (!$userData['userSkills']) {
+                                ?>
+                                <div class="row dis-none showField" data-id="skills">
+                                    <div class="col-md-12">
+                                        <div class="form-group lp-form posRel">
+                                            <div class="pf-field no-margin">
+                                                <label>Pick the Skills You Have</label>
+                                                <ul class="tags skill_tag_list">
+                                                    <li class="tagAdd taglist">
+                                                        <div class="skill_wrapper">
+                                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                            <input type="text" id="search-skill" class="skill-input">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <p class="errorMsg doberror"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            if (!$userData['is_available'] && $userData['is_available'] != 0) {
+                                ?>
+                                <div class="row dis-none showField" data-id="availability">
+                                    <div class="col-md-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>Availability</label>
+                                            <select id="availability" data-name="availability" class="form-control"
+                                                    name="availability" aria-required="true">
+                                                <option value="">Select Availability</option>
+                                                <option value="1">Available</option>
+                                                <option value="2">Open</option>
+                                                <option value="3">Actively Looking</option>
+                                                <option value="4">Exploring Possibilities</option>
+                                                <option value="0">Not Available</option>
+                                            </select>
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            if (!$userData['description']) {
+                                ?>
+                                <div class="row dis-none <?= $userData['description'] ? '' : 'showField' ?>"
+                                     data-id="about">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group lp-form posRel">
+                                            <label>About You</label>
+                                            <textarea class="aboutTextarea form-control text-capitalize"
+                                                      data-name="description" id="aboutYou"></textarea>
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
@@ -285,12 +334,6 @@ $primaryfields = \common\models\Categories::find()
 </div>
 <?php
 $this->registerCss('
-.uploadUserImg{
-    position: relative;
-    height: 150px;
-    width: 150px;
-    margin: 0 auto;
-}
 .lp-skill-input{
     position: relative;
     vertical-align: top;
@@ -352,7 +395,6 @@ $this->registerCss('
     cursor: pointer;
 }
 .tags li {
-    
     margin: 0;
 }
 .taglist {
@@ -424,7 +466,6 @@ $this->registerCss('
 .lp-icon-bottom{
     color: #00a0e3;   
     font-size: 35px;
-    line-height: 0;
 }
 .lp-text-box{
     background: #fff;
@@ -438,6 +479,9 @@ $this->registerCss('
     line-height: 22px;
     margin-bottom: 10px;  
 }
+.lp-text-box ul{
+    padding-inline-start: 0px;
+}
 .lp-text-box ul li{
     position: relative;
     margin-left: 15px;
@@ -446,6 +490,7 @@ $this->registerCss('
     margin-bottom: 10px;
     font-family: roboto;
     text-align: left;
+    list-style-type: none;
 }
 .lp-text-box ul li:before{
     content:"\f111";
@@ -538,6 +583,7 @@ $this->registerCss('
     float: left;
     width: 100%;
 }
+
 .lp-form input,
 .lp-form select,
 .lp-form textarea{
@@ -574,6 +620,13 @@ $this->registerCss('
 .lp-form .input-group-addon{
     border: none !important;
     border-radius: 0 8px 8px 0 !important;
+}
+.uploadUserImg{
+    position: relative;
+    height: 150px;
+    width: 150px !important;
+    margin: 0 auto;
+    float: unset;
 }
 .textLabel{
     text-align: left;
@@ -633,12 +686,12 @@ $this->registerCss('
     font-weight: 400 !important;
     margin-bottom: 0px;
  }
-.doberror{
+.doberror, .selectError{
      bottom: -20px;
 }
- .showError{
+.showError{
     display: block;
- }
+}
  .skill_wrapper,
  .language_wrapper{
     position:relative;
@@ -666,8 +719,8 @@ $this->registerCss('
 .cat_wrapper .Typeahead-spinner{
     position: absolute;
     right: 8px;
-    top: 18px;
-    font-size: 22px;
+    top: 47%;
+    font-size: 18px;
     display:none;
 }
 .twitter-typeahead input{
@@ -841,8 +894,6 @@ $this->registerCss('
     text-align:left;
     padding-left:40px;
 }
-
-
 .fade-scale {
   transform: scale(0);
   opacity: 0;
@@ -869,6 +920,7 @@ $this->registerCss('
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) !important;
+    z-index: 10049 !important;
 }
 .close-lp-modal{
     position: absolute;
@@ -885,6 +937,10 @@ $this->registerCss('
     padding: 0px 5px 5px 9px;
     font-family: "Roboto";
     border-radius: 0 4px 0 10px;
+}
+.languages_tag_list,
+.skill_tag_list{
+    list-style-type: none;
 }
 @media screen and (max-width: 992px){
     .half-bg{
@@ -925,6 +981,10 @@ $this->registerCss('
 body.modal-open{
     padding-right:0px !important;
 }
+.modal-open{
+    overflow-y: hidden !important;
+}
+
 .error-occcur{color:red;}
 
 .rem-input .checkbox{
@@ -943,10 +1003,8 @@ body.modal-open{
 }
 ');
 $script = <<< JS
-// loadFile = (event) => {
-// 	var image = document.getElementById('output');
-// 	image.src = URL.createObjectURL(event.target.files[0]);
-// };
+ $('#completeProfileModal').modal('show');
+
 $(document).on('keyup','#search-language',function(e){
     if(e.which==13)
         {
@@ -1034,24 +1092,44 @@ $('#search-language').typeahead(null, {
    }).blur(validateSelection);
 
 function validateSelection() {
-  var theIndex = -1;
-  for (var i = 0; i < global.length; i++) {
-  if (global[i].value == $(this).val()) {
-  theIndex = i;
- break;
-   }
-  }
-  if (theIndex == -1) {
-   $(this).val(""); 
-   global = [];
-  }
-  }
+    var theIndex = -1;
+    for (var i = 0; i < global.length; i++) {
+        if (global[i].value == $(this).val()) {
+            theIndex = i;
+            break;
+        }
+    }
+    if (theIndex == -1) {
+        $(this).val(""); 
+        global = [];
+    }
+}
+function countFields(){
+    let fieldsArr = [];
+    let cpForm = document.querySelector('.completeProfileForm')
+    let formFields = cpForm.querySelectorAll('.showField');
+    // console.log(formFields);
+    for(let i = 0; i<formFields.length; i++){
+        fieldsArr.push(formFields[i]);      
+    }
+    if(fieldsArr.length){
+        fieldsArr[0].classList.add('disShow');
+        fieldsArr[0].classList.remove('showField')
+        if(fieldsArr.length == 1){
+            cpForm.querySelector('.skipBtn').style.display = "none";
+        }
+    }
+}
+countFields()
 showNextQues = () =>{
     let fieldsArr = [];
     let cpForm = document.querySelector('.completeProfileForm')
-    let formFields = cpForm.querySelectorAll('.dis-none');
+    let formFields = cpForm.querySelectorAll('.showField');
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
+    }
+    if(fieldsArr.length == 1){
+        cpForm.querySelector('.skipBtn').style.display = "none";
     }
     let disShow = cpForm.querySelector('.disShow');
     let indexOfDisShow = fieldsArr.indexOf(disShow);
@@ -1062,11 +1140,11 @@ showNextQues = () =>{
     let valObj = [];
     if(inputVal.length > 0){
         for(let i = 0; i < inputVal.length; i++){
-            // let inputParent = inputVal[i].parentElement;
             let inputParent = getParentUntillLpForm(inputVal[i]);
             let errorMsg = inputParent.querySelector('.errorMsg');
             let field_Name =  inputVal[i].getAttribute('data-name');
-            if(inputVal[i].value == ''){
+            if(inputVal[i].value == '' && !inputVal[i].classList.contains('tt-hint')){
+                console.log(inputVal[i].value, 'value')
                 errorMsg.classList.add('showError');
                 errorMsg.innerHTML = "This field can not Be empty";
                 return false;
@@ -1094,7 +1172,13 @@ showNextQues = () =>{
     sendData(disShow, toActive, val);
 }
 function getParentUntillLpForm(elem){
-    console.log($(elem).parentsUntil('.lp-form').parent());
+    let parElem = $(elem).parentsUntil('.lp-form').parent();
+    if (parElem.length > 0){
+        return parElem[0];
+    }else{
+        parElem = $(elem).parent();
+        return parElem[0];
+    }
 }
 sendData = (disShow, toActive, val) => {
     $.ajax({
@@ -1103,12 +1187,19 @@ sendData = (disShow, toActive, val) => {
         data: val,
         success: function (response){
             if(response.title == 'Success'){
-               if(disShow){
+               if(disShow && toActive){
                     disShow.classList.remove('disShow')
+                    if(disShow.classList.contains('showField')){
+                        disShow.classList.remove('showField')
+                    }
+                    toActive.classList.add('disShow');
+                }else{
+                    console.log('empty');
+                    $('#completeProfileModal').modal('hide');
                 }
-                toActive.classList.add('disShow');
             }else{
                 // toastr.error(response.message, 'error');
+                disShow.classList.add('showField')
                 console.log('error occured')
             }
         }
@@ -1117,11 +1208,12 @@ sendData = (disShow, toActive, val) => {
 skipToNextQues = () => {
     let fieldsArr = [];
     let cpForm = document.querySelector('.completeProfileForm')
-    let formFields = cpForm.querySelectorAll('.dis-none');
+    let formFields = cpForm.querySelectorAll('.showField');
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }
     let disShow = cpForm.querySelector('.disShow');
+    disShow.classList.add('showField');
     let indexOfDisShow = fieldsArr.indexOf(disShow);
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex]; 
@@ -1193,7 +1285,7 @@ var vanilla = new Croppie(el, {
     // enableOrientation: true
 });
 function readURL(input) {
-
+    console.log('enter');
   if (input.files && input.files[0]) {
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -1209,6 +1301,7 @@ function readURL(input) {
   }
 }
 function renderCrop(img){
+    console.log('render')
     vanilla.bind({
         url: img,
         points: [20,20,20,20]
@@ -1216,6 +1309,7 @@ function renderCrop(img){
     });
 }
 $(".tg-fileinput").change(function() {
+    console.log('hello');
   readURL(this);
 });
 
@@ -1295,7 +1389,8 @@ $('#job_title').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.cat_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum){
-    
+        console.log(datum.value);
+        $('#job_title').val(datum.value)
   })
 
 
@@ -1316,11 +1411,11 @@ function drp_down(id, data) {
 JS;
 $this->registerJs($script2, yii\web\View::POS_HEAD);
 $this->registerJs($script);
-$this->registerCssFile("@web/assets/themes/jobhunt/css/chosen.css");
+$this->registerCssFile("/assets/themes/jobhunt/css/chosen.css");
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile("@web/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile("/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

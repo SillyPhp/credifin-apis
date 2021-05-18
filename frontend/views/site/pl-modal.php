@@ -12,7 +12,7 @@
     </a>
 </div>
 <?= $this->render('/widgets/preference-and-location-modal') ?>
-<?= $this->render('/widgets/complete-profile-modal') ?>
+<?= $this->render('@common/widgets/complete-profile-modal') ?>
 <?php
 $this->registerCSS('
     .p100{
@@ -21,6 +21,6 @@ $this->registerCSS('
     
 ');
 $script = <<<JS
-    $('#completeProfileModal').modal('show');
+    $('#plModal').modal('show');
 JS;
 $this->registerJS($script);
