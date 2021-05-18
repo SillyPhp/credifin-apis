@@ -239,7 +239,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 if ($erexx_applications['total'] > 0) {
                                     echo $this->render('/widgets/applications/card', [
                                         'applications' => $erexx_applications['data'],
-                                        'card_type'=>'mec_card',
+                                        'card_type' => 'mec_card',
                                         'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                                     ]);
                                 } else {
@@ -264,12 +264,80 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </div>
                 <?php }
                 ?>
+                <?php if ($shortlistedApplicants['count'] > 0) { ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Shortlisted Candidates'); ?><span
+                                                data-toggle="tooltip" title="shortlisted candidates"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($shortlistedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('shortlisted-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/shortlisted-candidates', [
+                                        'shortlistedApplicants' => $shortlistedApplicants,
+                                        'type' => 'job'
+                                    ]); ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if($savedApplicants['count'] > 0){ ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Saved Candidates'); ?><span
+                                                data-toggle="tooltip" title="shortlisted candidates"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($savedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('saved-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/saved-candidates', [
+                                        'savedApplicants' => $savedApplicants,
+                                        'type' => 'job'
+                                    ]); ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                <?php }?>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
 
                     <?= $this->render('/widgets/drop-resume/drop_resume', [
                         'data' => $primary_fields,
+
                         'type' => 'Jobs'
                     ]); ?>
 
@@ -416,7 +484,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
         </div>
     </div>
     <div class="pos-relative">
-        <?= $this->render('/widgets/college-list-modal')?>
+        <?= $this->render('/widgets/college-list-modal') ?>
     </div>
 <?php
 $this->registerCss('

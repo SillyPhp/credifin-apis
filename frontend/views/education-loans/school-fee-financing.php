@@ -45,6 +45,14 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'refinance'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -130,10 +138,10 @@ $this->registerCss('
 	background-size: cover;
 	display: flex;
 	align-items: center;
-	justify-content: center; 
 	position: relative;
+	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position:center;
 }
 .headerOverlay{
     background: rgba(0,0,0, .8);

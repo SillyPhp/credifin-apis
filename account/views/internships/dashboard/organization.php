@@ -233,7 +233,7 @@ use yii\widgets\Pjax;
                             if ($erexx_applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $erexx_applications['data'],
-                                    'card_type'=>'mec_card',
+                                    'card_type' => 'mec_card',
                                     'per_row' => 4,
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
@@ -261,12 +261,45 @@ use yii\widgets\Pjax;
             <?php }
             ?>
 
+            <?php if ($shortlistedApplicants['count'] > 0) { ?>
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Shortlisted Candidates'); ?><span
+                                                data-toggle="tooltip" title="shortlisted candidates"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($shortlistedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('shortlisted-candidates'); ?>"
+                                               data-toggle="tooltip"
+                                               title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/shortlisted-candidates', [
+                                        'shortlistedApplicants' => $shortlistedApplicants,
+                                        'type' => 'internship'
+                                    ]); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?= $this->render('/widgets/drop-resume/drop_resume', [
-                        'data' => $primary_fields,
-                        'type' => 'Internships'
-                    ]); ?>
+                    <?= $this->render('/widgets/drop-resume/drop_resume', ['data' => $primary_fields,
+                        'type' => 'Internships']); ?>
 
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
@@ -294,11 +327,9 @@ use yii\widgets\Pjax;
                                 <div class="col-lg-12">
                                     <?php
                                     if ($questionnaire['total'] > 0) {
-                                        echo $this->render('/widgets/questionnaire/card', [
-                                            'questionnaire' => $questionnaire['data'],
+                                        echo $this->render('/widgets/questionnaire/card', ['questionnaire' => $questionnaire['data'],
                                             'per_row' => 2,
-                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                                        ]);
+                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',]);
                                     } else {
                                         ?>
                                         <div class="tab-empty">
@@ -337,10 +368,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="portlet-body">
                                 <?php
-                                echo $this->render('/widgets/applications/closed-jobs-cards', [
-                                    'applications' => $closed_application['data'],
-                                    'model' => $model,
-                                ]);
+                                echo $this->render('/widgets/applications/closed-jobs-cards', ['applications' => $closed_application['data'],
+                                    'model' => $model,]);
                                 ?>
                             </div>
                         </div>
@@ -351,10 +380,8 @@ use yii\widgets\Pjax;
                 </div>
                 <div class="col-lg-6 col-xs-12 col-sm-12">
                     <?php
-                    echo $this->render('/widgets/applied-applications/users-card', [
-                        'applied_applications' => $applied_applications,
-                        'type' => 'internships'
-                    ]); ?>
+                    echo $this->render('/widgets/applied-applications/users-card', ['applied_applications' => $applied_applications,
+                        'type' => 'internships']); ?>
 
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
@@ -382,11 +409,9 @@ use yii\widgets\Pjax;
                                 <div class="col-lg-12">
                                     <?php
                                     if ($interview_processes['total'] > 0) {
-                                        echo $this->render('/widgets/processes/card', [
-                                            'processes' => $interview_processes['data'],
+                                        echo $this->render('/widgets/processes/card', ['processes' => $interview_processes['data'],
                                             'per_row' => 2,
-                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                                        ]);
+                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',]);
                                     } else {
                                         ?>
                                         <div class="tab-empty">
@@ -409,7 +434,7 @@ use yii\widgets\Pjax;
         </div>
     </div>
     <div class="pos-relative">
-        <?= $this->render('/widgets/college-list-modal')?>
+        <?= $this->render('/widgets/college-list-modal') ?>
     </div>
 
 <?php

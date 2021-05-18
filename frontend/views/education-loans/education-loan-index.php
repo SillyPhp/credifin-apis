@@ -51,6 +51,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/loan-products')?>
     <?= $this->render('/widgets/loan-why-empower-youth')?>
     <?= $this->render('/widgets/education-loan-internship')?>
+<!--    --><?//= $this->render('/widgets/product-offerings')?>
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -344,6 +345,14 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'education-loan'
+    ]);
+};
+?>
     <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
@@ -376,7 +385,7 @@ use yii\helpers\Url;
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
-                                    alt=""/> Chat With Us
+                                    alt=""> Chat With Us
                         </div>
                         <div class="chat">
                         <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>

@@ -7,25 +7,25 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-12">
                 <div class="detail-div">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/transparency.png')?>">
-                    <p>We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side every step of the way.</p>
+                    <p>We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side at every step of the whole process.</p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <ul>
                     <li>
                         <div class="clickedItem ciActive"
-                             data-value="We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side every step of the way."
+                             data-value="We ensure 100% transparency throughout the education loan process. Our education loan counsellors will stay by your side at every step of the whole process."
                              data-img="<?= Url::to('@eyAssets/images/pages/education-loans/transparency.png')?>">
                             <i class="fas fa-search"></i>
                             Transparency
                         </div>
                     </li>
                     <li>
-                        <div class="clickedItem"
-                             data-value="Interest paid on education loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help ease the financial burden of studying abroad."
-                             data-img="<?= Url::to('@eyAssets/images/pages/education-loans/tax.png')?>">
-                            <i class="fas fa-rupee-sign"></i>
-                            Tax benefits
+                        <div class="clickedItem rightElem"
+                             data-value="At Empower Youth, we deeply value convenience and reliability. All our education loans are 100% secure and are sourced from the safest banks and NBFCs."
+                             data-img="<?= Url::to('@eyAssets/images/pages/education-loans/security.png')?>">
+                            <i class="fas fa-shield-alt"></i>
+                            Secure
                         </div>
                     </li>
                     <li>
@@ -57,11 +57,11 @@ use yii\helpers\Url;
                         </div>
                     </li>
                     <li>
-                        <div class="clickedItem rightElem"
-                             data-value="At Empower Youth, we deeply value convenience and reliability. All our education loans are 100% secure and are sourced from the safest banks and NBFCs."
-                             data-img="<?= Url::to('@eyAssets/images/pages/education-loans/security.png')?>">
-                            <i class="fas fa-shield-alt"></i>
-                            Secure
+                        <div class="clickedItem"
+                             data-value="Interest paid on education loans from our partners is fully eligible for deduction under Section 80E of the Income Tax Act, 1961. This will help ease the financial burden of studying abroad."
+                             data-img="<?= Url::to('@eyAssets/images/pages/education-loans/tax.png')?>">
+                            <i class="fas fa-rupee-sign"></i>
+                            Tax benefits
                         </div>
                     </li>
                 </ul>

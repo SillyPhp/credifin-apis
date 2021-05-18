@@ -5,138 +5,115 @@ use yii\helpers\Url;
 ?>
     <section class="our-backg">
         <div class="container">
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <h1 class="heading-style ">Our Services</h1>-->
-<!--                </div>-->
-<!--            </div>-->
-            <div class="row">
-                <h2 class="heading-style">To Whom We Serve</h2>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <a href="<?= Url::to('/employers'); ?>">
+            <div class="col-md-12">
+                <div class="row">
+                    <h2 class="heading-style">To Whom We Serve</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
+                        <a href="<?= Url::to('/employers'); ?>">
+                            <div class="service-main">
+                                <div class="service-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Employers">
+                                </div>
+                                <div class="service-icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/employerO.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Employers">
+                                </div>
+                                <h2 class="service-txt">Employers</h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
+                        <a href="<?= Url::to('/candidates/features'); ?>">
+                            <div class="service-main">
+                                <div class="service-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Candidates">
+                                </div>
+                                <div class="service-icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatesO.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Candidates">
+                                </div>
+                                <h2 class="service-txt">Candidates</h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
+                        <a href="<?= Url::to('/schools'); ?>">
+                            <div class="service-main">
+                                <div class="service-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="schools">
+                                </div>
+                                <div class="service-icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolsO.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="schools">
+                                </div>
+                                <h2 class="service-txt">Schools</h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
+                        <a href="<?= Url::to('/training-programs'); ?>">
+                            <div class="service-main">
+                                <div class="service-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesB.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Educational Institute">
+                                </div>
+                                <div class="service-icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesO.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Educational Institute">
+                                </div>
+                                <h2 class="service-txt">Educational Institute</h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
+                        <a href="<?= Url::to('/colleges'); ?>">
+                            <div class="service-main">
+                                <div class="service-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Colleges">
+                                </div>
+                                <div class="service-icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesO.png') ?>"
+                                         alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                         title="Colleges">
+                                </div>
+                                <h2 class="service-txt">Universities & Colleges</h2>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6 u-p">
                         <div class="service-main">
                             <div class="service-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Employers">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
+                                     title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                     alt="Recruiters">
                             </div>
                             <div class="service-icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employerO.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Employers">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/RecruitersO.png') ?>"
+                                     title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
+                                     alt="Recruiters">
                             </div>
-                            <h2 class="service-txt">Employers</h2>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <a href="<?= Url::to('/candidates/features'); ?>">
-                        <div class="service-main">
-                            <div class="service-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Candidates">
+                            <h2 class="service-txt">Recruiters</h2>
+                            <div class="overl">
+                                <div class="overl-text">Coming Soon</div>
                             </div>
-                            <div class="service-icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatesO.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Candidates">
-                            </div>
-                            <h2 class="service-txt">Candidates</h2>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <a href="<?= Url::to('/schools'); ?>">
-                        <div class="service-main">
-                            <div class="service-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="schools">
-                            </div>
-                            <div class="service-icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolsO.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="schools">
-                            </div>
-                            <h2 class="service-txt">Schools</h2>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <a href="<?= Url::to('/training-programs'); ?>">
-                        <div class="service-main">
-                            <div class="service-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesB.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Educational Institute">
-                            </div>
-                            <div class="service-icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universitesO.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Educational Institute">
-                            </div>
-                            <h2 class="service-txt">Educational Institute</h2>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <a href="<?= Url::to('/colleges'); ?>">
-                        <div class="service-main">
-                            <div class="service-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Colleges">
-                            </div>
-                            <div class="service-icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesO.png') ?>"
-                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " title="Colleges">
-                            </div>
-                            <h2 class="service-txt">Universities & Colleges</h2>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6 u-p">
-                    <div class="service-main">
-                        <div class="service-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
-                                 title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " alt="Recruiters">
-                        </div>
-                        <div class="service-icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/RecruitersO.png') ?>"
-                                 title="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan " alt="Recruiters">
-                        </div>
-                        <h2 class="service-txt">Recruiters</h2>
-                        <div class="overl">
-                            <div class="overl-text">Coming Soon</div>
                         </div>
                     </div>
                 </div>
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6 u-p">-->
-                <!--                    <a href="--><? //= Url::to('/training-programs'); ?><!--">-->
-                <!--                        <div class="service-main">-->
-                <!--                            <div class="service-icon">-->
-                <!--                                <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?><!--"-->
-                <!--                                     alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">-->
-                <!--                            </div>-->
-                <!--                            <div class="service-icon2">-->
-                <!--                                <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/our-services/training-courses-orange.png') ?><!--"-->
-                <!--                                     alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">-->
-                <!--                            </div>-->
-                <!--                            <div class="service-txt">Training Courses</div>-->
-                <!--                        </div>-->
-                <!--                    </a>-->
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6 u-p">-->
-                <!--                    <a href="--><? //= Url::to('/career-advice'); ?><!--">-->
-                <!--                        <div class="service-main">-->
-                <!--                            <div class="service-icon">-->
-                <!--                                <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/our-services/career-advice-blue.png') ?><!--"-->
-                <!--                                     alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">-->
-                <!--                            </div>-->
-                <!--                            <div class="service-icon2">-->
-                <!--                                <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/our-services/career-advice-orange.png') ?><!--"-->
-                <!--                                     alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">-->
-                <!--                            </div>-->
-                <!--                            <div class="service-txt">Career Advice</div>-->
-                <!--                        </div>-->
-                <!--                    </a>-->
-                <!--                </div>-->
             </div>
         </div>
     </section>

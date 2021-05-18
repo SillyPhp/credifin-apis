@@ -358,6 +358,7 @@
                             $('#select-application-process').html(output);
                             //country selections of max 3 in dropdown
                             $("input[name=country]").val(data.results[0].applied_application_enc_id);
+                            results.selected_candidate = data.results[0].applied_application_enc_id;
                             $('.test-multi').dropdown({
                                 // maxSelections: 3,
                                 placeholder: 'any',
@@ -806,10 +807,10 @@
                     if (data.status == 200) {
                         // console.log(data);
                         toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
-                        window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/dashboard";
                     } else {
                         toastr.error('Some error occured. Please try again', 'Error');
-                        window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/dashboard";
                     }
                 }
             })

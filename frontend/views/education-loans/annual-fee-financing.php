@@ -79,6 +79,14 @@ use yii\helpers\Url;
 </section>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'annual-fee-finance'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
@@ -103,12 +111,13 @@ $this->registerCss('
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: right bottom;
 	display: flex;
 	align-items: center;
 	position: relative;
 //	text-align: center;
+	height: 100vh;
 	max-height: 700px;
-	background-position:left bottom;
 }
 .study-in-usa-bg h1 {
 	font-size: 35px;

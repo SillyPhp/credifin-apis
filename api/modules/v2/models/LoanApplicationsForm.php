@@ -5,6 +5,7 @@ namespace api\modules\v2\models;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
+use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\LoanApplicationSchoolFee;
 use common\models\LoanApplicationsCollegePreference;
@@ -319,7 +320,21 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
-
+             if ($this->_flag){
+                 $loanOptions = new LoanApplicationOptions();
+                 $loanOptions->option_enc_id = Yii::$app->security->generateRandomString(8);
+                 $loanOptions->loan_app_enc_id = $this->loan_app_enc_id;
+                 $loanOptions->application_by = (int)$params['is_applicant'];
+                 $loanOptions->created_by = (($userId) ? $userId : null);
+                 $loanOptions->created_on = date('Y-m-d H:i:s');
+                 if (!$loanOptions->save()) {
+                     $transaction->rollBack();
+                     $this->_flag = false;
+                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false)));
+                 } else{
+                     $this->_flag = true;
+                 }
+             }
             if ($this->_flag) {
                 $transaction->commit();
                 $data = [];
@@ -393,7 +408,7 @@ class LoanApplicationsForm extends LoanApplications
                 $loanTeacherForm->years = $params['years'];
                 $loanTeacherForm->months = (($params['months'])?$params['months']:0);
                 $loanTeacherForm->employement_type = $params['employement_type'];
-                $loanTeacherForm->intitution_name = $params['intitution'];
+                $loanTeacherForm->institution_name = $params['institution'];
                 $loanTeacherForm->created_by = (($userId) ? $userId : null);
                 $loanTeacherForm->created_on = date('Y-m-d H:i:s');
                 if (!$loanTeacherForm->save()) {

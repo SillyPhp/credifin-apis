@@ -694,6 +694,7 @@ $this->registerCss('
     flex: 1 0 100%;
     max-width: 100%;
     padding: 30px;
+    padding-top: 50px;
 }
 
 .ey-mobile-menu .ey-mobile-menu-inner-content nav {

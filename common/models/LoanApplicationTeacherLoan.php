@@ -7,7 +7,7 @@ namespace common\models;
  * @property int $id Primary Key
  * @property string $teacher_loan_enc_id Encrypted ID
  * @property string $loan_app_enc_id
- * @property string $intitution_name
+ * @property string $institution_name
  * @property string $employement_type
  * @property int $years
  * @property int $months
@@ -37,12 +37,12 @@ class LoanApplicationTeacherLoan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['teacher_loan_enc_id', 'loan_app_enc_id', 'intitution_name', 'employement_type', 'years', 'months', 'created_by'], 'required'],
+            [['teacher_loan_enc_id', 'loan_app_enc_id', 'institution_name', 'employement_type', 'years', 'months', 'created_by'], 'required'],
             [['employement_type'], 'string'],
             [['years', 'months', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['teacher_loan_enc_id', 'loan_app_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['intitution_name'], 'string', 'max' => 255],
+            [['institution_name'], 'string', 'max' => 255],
             [['teacher_loan_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

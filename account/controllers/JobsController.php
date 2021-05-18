@@ -18,6 +18,8 @@ use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use common\models\RejectionReasons;
+use common\models\ShortlistedApplicants;
+use common\models\UserSkills;
 use http\Params;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -448,7 +450,9 @@ class JobsController extends Controller
             'addedColleges' => $addedColleges,
             'saveCollege' => $saveCollege,
             'jobs' => $this->__getApplications("Jobs"),
-            'primary_fields' => $catModel->getPrimaryFields()
+            'primary_fields' => $catModel->getPrimaryFields(),
+            'shortlistedApplicants' => $this->shortlistedApplicants(3),
+            'savedApplicants' => $this->savedApplicants(3),
         ]);
     }
 
@@ -506,7 +510,7 @@ class JobsController extends Controller
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
-            'errex'=>true,
+            'errex' => true,
             'limit' => $limit,
         ];
 
@@ -785,60 +789,60 @@ class JobsController extends Controller
             $considerJobs = Yii::$app->request->post('considerJobs');
             $transaction = Yii::$app->db->beginTransaction();
             try {
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model = new CandidateRejection();
-            $model->candidate_rejection_enc_id = $utilitiesModel->encrypt();
-            $model->applied_application_enc_id = $id;
-            $model->rejection_type = $rejectionType;
-            $model->created_on = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->user_enc_id;
-            if(!$model->save()){
-                $transaction->rollBack();
-                return ['status'=>500];
-            }
-
-            foreach ($reasons as $r){
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $rejection_reasons = new CandidateRejectionReasons();
-                $rejection_reasons->candidate_rejection_reasons_enc_id = $utilitiesModel->encrypt();
-                $rejection_reasons->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
-                $rejection_reasons->rejection_reasons_enc_id = $r;
-                $rejection_reasons->created_on = date('Y-m-d H:i:s');
-                $rejection_reasons->created_by = Yii::$app->user->identity->user_enc_id;
-                if(!$rejection_reasons->save()){
+                $model = new CandidateRejection();
+                $model->candidate_rejection_enc_id = $utilitiesModel->encrypt();
+                $model->applied_application_enc_id = $id;
+                $model->rejection_type = $rejectionType;
+                $model->created_on = date('Y-m-d H:i:s');
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$model->save()) {
                     $transaction->rollBack();
-                    return ['status'=>501];
+                    return ['status' => 500];
                 }
-            }
-            if($considerJobs){
-                foreach ($considerJobs as $c){
+
+                foreach ($reasons as $r) {
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $considerJobs = new CandidateConsiderJobs();
-                    $considerJobs->consider_job_enc_id = $utilitiesModel->encrypt();
-                    $considerJobs->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
-                    $considerJobs->application_enc_id = $c;
-                    $considerJobs->created_on = date('Y-m-d H:i:s');
-                    $considerJobs->created_by = Yii::$app->user->identity->user_enc_id;
-                    if(!$considerJobs->save()){
+                    $rejection_reasons = new CandidateRejectionReasons();
+                    $rejection_reasons->candidate_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                    $rejection_reasons->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
+                    $rejection_reasons->rejection_reasons_enc_id = $r;
+                    $rejection_reasons->created_on = date('Y-m-d H:i:s');
+                    $rejection_reasons->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$rejection_reasons->save()) {
                         $transaction->rollBack();
-                        return ['status'=>502];
+                        return ['status' => 501];
                     }
                 }
-            }
+                if ($considerJobs) {
+                    foreach ($considerJobs as $c) {
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $considerJobs = new CandidateConsiderJobs();
+                        $considerJobs->consider_job_enc_id = $utilitiesModel->encrypt();
+                        $considerJobs->candidate_rejection_enc_id = $model->candidate_rejection_enc_id;
+                        $considerJobs->application_enc_id = $c;
+                        $considerJobs->created_on = date('Y-m-d H:i:s');
+                        $considerJobs->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$considerJobs->save()) {
+                            $transaction->rollBack();
+                            return ['status' => 502];
+                        }
+                    }
+                }
 
-            $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
-                ->execute();
-            if ($update == 1) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-                return false;
-            }
+                $update = Yii::$app->db->createCommand()
+                    ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                    ->execute();
+                if ($update == 1) {
+                    $transaction->commit();
+                    return true;
+                } else {
+                    $transaction->rollBack();
+                    return false;
+                }
             } catch (Exception $e) {
                 $transaction->rollBack();
                 return false;
@@ -1548,7 +1552,6 @@ class JobsController extends Controller
         endif;
     }
 
-
     private function __candidateApplications($limit = NULL)
     {
         $candidate_applications = AppliedApplications::find()
@@ -1736,14 +1739,15 @@ class JobsController extends Controller
         }
     }
 
-    public function actionStoreSession(){
+    public function actionStoreSession()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
             $session = Yii::$app->session;
             $session->set('campusPlacementData', $data);
             return [
-                'status'=>200
+                'status' => 200
             ];
         }
     }
@@ -1754,8 +1758,8 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
             $model = new \common\models\extended\EmployerApplications();
-            $app = $model->_cloneApplication($data['applications'],2);
-            if (!$app){
+            $app = $model->_cloneApplication($data['applications'], 2);
+            if (!$app) {
                 return $response = [
                     'status' => 201,
                     'title' => 'Error',
@@ -1779,7 +1783,7 @@ class JobsController extends Controller
                     ];
                 }
             }
-            if ($data['subscribed-to-all']){
+            if ($data['subscribed-to-all']) {
                 if (!$this->__updateApplicationFor($app, $data['subscribed-to-all'])) {
                     return $response = [
                         'status' => 201,
@@ -1802,7 +1806,7 @@ class JobsController extends Controller
     {
         if ($for) {
             $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), [ 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->update(EmployerApplications::tableName(), ['for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
                 ->execute();
         }
         if ($update) {
@@ -1844,7 +1848,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionAppliedApplications(){
+    public function actionAppliedApplications()
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
             $userApplied = new UserAppliedApplication();
             $applied_users = $userApplied->getUserOtherDetails('Jobs');
@@ -1855,16 +1860,17 @@ class JobsController extends Controller
                 ->all();
             return $this->render('applied-applications', [
                 'applied_user' => $applied_users,
-                'reasons'=>$reasons,
+                'reasons' => $reasons,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
-    public function actionAllAppliedApplications($aidk){
+    public function actionAllAppliedApplications($aidk)
+    {
         if (!empty(Yii::$app->user->identity->organization)) {
-            $applied_users = $this->getAllAppliedApplications($aidk,'Jobs');
+            $applied_users = $this->getAllAppliedApplications($aidk, 'Jobs');
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
                 ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
@@ -1872,51 +1878,53 @@ class JobsController extends Controller
                 ->all();
             return $this->render('all-applied-applications', [
                 'fields' => $applied_users,
-                'reasons'=>$reasons,
+                'reasons' => $reasons,
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
-    private function getAllAppliedApplications($aidk,$type){
+
+    private function getAllAppliedApplications($aidk, $type)
+    {
         $application_id = $aidk;
         $applied_users = EmployerApplications::find()
             ->distinct()
             ->alias('z')
-            ->select(['y1.name job_title','z.organization_enc_id','z.application_enc_id','z.slug','x2.name type'])
-            ->joinWith(['appliedApplications a'=>function($a)use($type){
-                $a->select(['a.applied_application_enc_id','a.rejection_window','a.created_on','a.application_enc_id','a.status','COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','a.created_by', 'a.resume_enc_id','e.resume', 'e.resume_location','b.user_enc_id','b.username', 'CONCAT(b.first_name, " ", b.last_name) name','CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
-                $a->andWhere(['a.is_deleted'=>0]);
-                $a->orderBy(['a.created_on'=>SORT_DESC]);
+            ->select(['y1.name job_title', 'z.organization_enc_id', 'z.application_enc_id', 'z.slug', 'x2.name type'])
+            ->joinWith(['appliedApplications a' => function ($a) use ($type) {
+                $a->select(['a.applied_application_enc_id', 'a.rejection_window', 'a.created_on', 'a.application_enc_id', 'a.status', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'a.created_by', 'a.resume_enc_id', 'e.resume', 'e.resume_location', 'b.user_enc_id', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',]);
+                $a->andWhere(['a.is_deleted' => 0]);
+                $a->orderBy(['a.created_on' => SORT_DESC]);
                 $a->groupBy(['a.applied_application_enc_id']);
-                $a->joinWith(['resumeEnc e'],false);
+                $a->joinWith(['resumeEnc e'], false);
                 $a->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
                 }]);
                 $a->joinWith(['createdBy b' => function ($b) {
-                    $b->joinWith(['userSkills b1' =>function($b1){
-                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id','b2.skill', 'b1.created_by']);
+                    $b->joinWith(['userSkills b1' => function ($b1) {
+                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id', 'b2.skill', 'b1.created_by']);
                         $b1->joinWith(['skillEnc b2'], false);
                         $b1->onCondition(['b1.is_deleted' => 0]);
                     }]);
-                    $b->joinWith(['userWorkExperiences b11' => function($b11){
+                    $b->joinWith(['userWorkExperiences b11' => function ($b11) {
                         $b11->select(['b11.created_by', 'b11.company', 'b11.is_current', 'b11.title']);
                     }]);
-                    $b->joinWith(['userEducations b21' => function($b21){
+                    $b->joinWith(['userEducations b21' => function ($b21) {
                         $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
                     }]);
-                    $b->joinWith(['userPreferredIndustries b31' => function($b31){
+                    $b->joinWith(['userPreferredIndustries b31' => function ($b31) {
                         $b31->select(['b31.industry_enc_id', 'b32.industry', 'b31.created_by']);
                         $b31->joinWith(['industryEnc b32'], false);
                         $b31->onCondition(['b31.is_deleted' => 0]);
                     }]);
                 }]);
-                $a->joinWith(['candidateRejections cr' => function($cr){
-                    $cr->select(['cr.rejection_type','cr.applied_application_enc_id', 'cr.candidate_rejection_enc_id']);
-                    $cr->joinWith(['candidateConsiderJobs ccj' => function($ccj){
-                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id','ccj.application_enc_id']);
-                        $ccj->joinWith(['applicationEnc ae' => function($ae){
+                $a->joinWith(['candidateRejections cr' => function ($cr) {
+                    $cr->select(['cr.rejection_type', 'cr.applied_application_enc_id', 'cr.candidate_rejection_enc_id']);
+                    $cr->joinWith(['candidateConsiderJobs ccj' => function ($ccj) {
+                        $ccj->select(['ccj.consider_job_enc_id', 'ccj.candidate_rejection_enc_id', 'ccj.application_enc_id']);
+                        $ccj->joinWith(['applicationEnc ae' => function ($ae) {
                             $ae->select(['ae.application_enc_id', 'ae.slug', 'cc.name job_title', 'pe.icon']);
                             $ae->joinWith(['title bae' => function ($bae) {
                                 $bae->joinWith(['categoryEnc cc'], false);
@@ -1927,19 +1935,19 @@ class JobsController extends Controller
                     $cr->groupBy(['cr.candidate_rejection_enc_id']);
                 }]);
             }])
-            ->joinWith(['applicationInterviewQuestionnaires aiq'=>function($a1){
+            ->joinWith(['applicationInterviewQuestionnaires aiq' => function ($a1) {
                 $a1->groupBy(['aiq.interview_questionnaire_enc_id']);
-                $a1->select(['aiq.application_enc_id','aiq.field_enc_id','aiq.interview_questionnaire_enc_id as id', 'aiq.questionnaire_enc_id as qid', 'aiq1.questionnaire_name as name', 'aiq2.field_label']);
+                $a1->select(['aiq.application_enc_id', 'aiq.field_enc_id', 'aiq.interview_questionnaire_enc_id as id', 'aiq.questionnaire_enc_id as qid', 'aiq1.questionnaire_name as name', 'aiq2.field_label']);
                 $a1->joinWith(['questionnaireEnc aiq1'], false);
                 $a1->joinWith(['fieldEnc aiq2'], false);
             }])
-            ->joinWith(['applicationTypeEnc x2' =>function($x2)use($type){
-                $x2->andWhere(['x2.name'=>$type],false);
-            }],false)
-            ->joinWith(['title0 y' => function($y){
-                $y->joinWith(['categoryEnc y1'],false);
-            }],false)
-            ->andWhere(['z.application_enc_id' => $application_id,'z.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id,'z.is_deleted' => 0])
+            ->joinWith(['applicationTypeEnc x2' => function ($x2) use ($type) {
+                $x2->andWhere(['x2.name' => $type], false);
+            }], false)
+            ->joinWith(['title0 y' => function ($y) {
+                $y->joinWith(['categoryEnc y1'], false);
+            }], false)
+            ->andWhere(['z.application_enc_id' => $application_id, 'z.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'z.is_deleted' => 0])
             ->groupBy(['z.application_enc_id'])
             ->asArray()
             ->one();
@@ -1948,14 +1956,15 @@ class JobsController extends Controller
         return $applied_users;
     }
 
-    public function actionJobsOfCompany(){
+    public function actionJobsOfCompany()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $params = Yii::$app->request->post();
             $app_id = AppliedApplications::find()
                 ->andWhere(['applied_application_enc_id' => $params['app_id']])
                 ->one();
-                $app_id = $app_id->application_enc_id;
+            $app_id = $app_id->application_enc_id;
             $all_application = EmployerApplications::find()
                 ->distinct()
                 ->alias('a')
@@ -1974,13 +1983,187 @@ class JobsController extends Controller
                     $b->distinct();
                 }])
                 ->joinWith(['applicationOptions ao'], false)
-                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0,'ate.name'=>$params['app_type']])
-                ->andWhere(['not',['a.application_enc_id'=>$app_id]])
-                ->andWhere(['not',['a.status' => 'Closed']])
+                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'ate.name' => $params['app_type']])
+                ->andWhere(['not', ['a.application_enc_id' => $app_id]])
+                ->andWhere(['not', ['a.status' => 'Closed']])
                 ->groupBy(['a.application_enc_id'])
                 ->asArray()
                 ->all();
-            return ['status' => 200, 'data'=>$all_application];
+            return ['status' => 200, 'data' => $all_application];
         }
     }
+
+    public function actionShortlistedCandidates()
+    {
+        return $this->render('list/shortlisted-candidates', [
+            'shortlistedApplicants' => $this->shortlistedApplicants()
+        ]);
+
+    }
+
+    private function shortlistedApplicants($limit = null)
+    {
+        $shortlistedApplicants = ShortlistedApplicants::find()
+            ->alias('a')
+            ->select(['a.shortlisted_applicant_enc_id', 'a.candidate_enc_id', 'a.application_enc_id',
+                'CONCAT(b.first_name," ",b.last_name) name', 'b.initials_color', 'b.image', 'b.image_location',
+                'b3.name city', 'b.username'
+            ])
+            ->joinWith(['candidateEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b3'], false);
+            }], false)
+            ->joinWith(['applicationEnc c' => function ($c) {
+                $c->joinWith(['applicationTypeEnc f'], false);
+            }], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'f.name' => 'Jobs'])
+            ->groupBy(['a.candidate_enc_id']);
+        $count = $shortlistedApplicants->count();
+        if ($limit != null) {
+            $shortlistedApplicants->limit($limit);
+        }
+        $shortlistedApplicants = $shortlistedApplicants->asArray()
+            ->all();
+
+        foreach ($shortlistedApplicants as $key => $val) {
+            $skills = UserSkills::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->joinWith(['skillEnc b'], false)
+                ->where(['a.created_by' => $val['candidate_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $applications = ShortlistedApplicants::find()
+                ->alias('a')
+                ->select(['ee.name title', 'a.application_enc_id', 'b.slug'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc f'], false);
+                }], false)
+                ->where([
+                    'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                    'a.candidate_enc_id' => $val['candidate_enc_id'],
+                    'a.is_deleted' => 0,
+                    'f.name' => 'Jobs'
+                ])
+                ->asArray()
+                ->all();
+
+            $shortlistedApplicants[$key]['skills'] = $skills;
+            $shortlistedApplicants[$key]['applications'] = $applications;
+        }
+
+        return ['data' => $shortlistedApplicants, 'count' => $count];
+    }
+
+    public function actionSavedCandidates()
+    {
+        return $this->render('list/saved-candidates', [
+              'savedApplicants' => $this->savedApplicants(),
+        ]);
+
+    }
+
+    private function savedApplicants($limit = null){
+        $savedCandidates = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.applied_application_enc_id',
+                'a.status', 'b.username', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
+                'a.created_by', 'b3.name as city'])
+            ->joinWith(['applicationEnc bb' => function($bb){
+                $bb->joinWith(['applicationTypeEnc f'], false);
+            }], false)
+            ->joinWith(['candidateRejections cr'], false)
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->select(['b.user_enc_id']);
+                $b->joinWith(['userSkills b1' => function ($b1) {
+                    $b1->groupBy(['b1.user_skill_enc_id']);
+                    $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id', 'b2.skill', 'b1.created_by']);
+                    $b1->joinWith(['skillEnc b2'], false);
+                    $b1->onCondition(['b1.is_deleted' => 0]);
+                }]);
+                $b->joinWith(['cityEnc b3'], false);
+            }])
+            ->where([
+                'cr.rejection_type' => 3,
+                'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'f.name' => 'Jobs',
+                'cr.is_deleted' => 0
+            ])
+            ->groupBy(['a.created_by']);
+            $count = $savedCandidates->count();
+            if($limit != null){
+                $savedCandidates -> limit($limit);
+            }
+            $savedCandidates = $savedCandidates
+            ->asArray()
+            ->all();
+            foreach ($savedCandidates as $key=>$sc){
+                $applications = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.application_enc_id', 'ee.name as title', 'bb.slug', 'cr.candidate_rejection_enc_id'])
+                    ->joinWith(['applicationEnc bb' => function($bb){
+                        $bb->joinWith(['applicationTypeEnc f'], false);
+                        $bb->joinWith(['title d' => function ($d) {
+                            $d->joinWith(['parentEnc e']);
+                            $d->joinWith(['categoryEnc ee']);
+                        }], false);
+                    }], false)
+                    ->joinWith(['candidateRejections cr'], false)
+                    ->where([
+                        'a.created_by'=>$sc['created_by'],
+                        'cr.rejection_type' => 3,
+                        'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                        'f.name' => 'Jobs',
+                        'cr.is_deleted' => 0
+                    ])
+                    ->asArray()
+                    ->all();
+                    $savedCandidates[$key]['applications'] = $applications;
+            }
+        return ['data' => $savedCandidates, 'count' => $count];
+    }
+
+    public function actionRemoveSavedCandidate(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $id = Yii::$app->request->post('candidate_rejection_enc_id');
+
+            $success = [
+                'status' => 200,
+                'message' => 'successfully removed'
+            ];
+            $error = [
+                'status' => 500,
+                'message' => 'an error occurred'
+            ];
+
+            try {
+
+                $savedCandidate = CandidateRejection::findone(['candidate_rejection_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id]);
+                if ($savedCandidate) {
+                    $savedCandidate->is_deleted = 1;
+                    $savedCandidate->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    $savedCandidate->last_updated_on = date('Y-m-d H:i:s');
+                    if (!$savedCandidate->update()) {
+                        return $error;
+                    }
+                    return $success;
+                }
+
+                return $error;
+
+            } catch (\Exception $e) {
+                return $error;
+            }
+        }
+    }
+
 }

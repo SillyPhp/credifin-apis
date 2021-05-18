@@ -126,6 +126,7 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
+               
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
@@ -369,8 +370,8 @@ endif;
 
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
-            <!--   <!--               <div class="portlet-title" style="border-bottom:none;">-->
-                              <div class="car-main row">-->
+            <!--                 <div class="portlet-title" style="border-bottom:none;">-->
+                              <div class="car-main row">
             <!--                        <div class="c-head">Careers</div>-->
             <!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
             <!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->

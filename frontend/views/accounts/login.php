@@ -54,6 +54,7 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     'placeholder' => $loginFormModel->getAttributeLabel('password'),
 ]);
 ?>
+<?= $loginForm->field($loginFormModel, 'referer',['template'=>'{input}'])->hiddenInput()->label(false) ?>
     <div class="flex-data">
         <div class="checkbox m-0">
             <?=
