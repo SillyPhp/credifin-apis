@@ -76,16 +76,6 @@ $form = ActiveForm::begin([
             $form->field($model, 'phone')->textInput(['id'=>'phone-input']);
             ?>
             <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
-
-<!--            --><?//=
-//            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
-//                'jsOptions' => [
-//                    'allowExtensions' => true,
-//                    'preferredCountries' => ['in'],
-//                    'nationalMode' => false,
-//                ]
-//            ]);
-//            ?>
         </div>
     </div>
     <div class="row">
