@@ -6,21 +6,27 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+<!--    <div class="opacity-div"></div>-->
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Study In INDIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
+                <p>Don't let <span class="black-bold">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="black-bold">study in your dream college<span class="black-bold">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="india-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india1.png') ?>">
+                </div>
             </div>
         </div>
     </div>
@@ -103,6 +109,9 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.black-bold {
+    font-weight: bold;
+}
 .studyus-head {
     padding: 30px;
 }
@@ -171,6 +180,7 @@ $this->registerCss('
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
+	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -227,16 +237,17 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/india-hdrr.jpg') . ');
-       min-height: 500px;
+       background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
 	   background-repeat: no-repeat;
 	   background-size: cover;
+	   min-height: 500px;
 	   display: flex;
 	   align-items: center;
 	   position: relative;
-	   text-align: center;
-	   height: 100vh;
+	   text-align: left;
+	   height: 90vh;
 	   max-height: 700px;
+	   background-position: right;
 }
 .opacity-div{
     position: absolute;
@@ -249,7 +260,7 @@ $this->registerCss('
 .study-in-usa-bg p{
     font-size: 24px;
 	font-family: roboto;
-	color: #fff;
+	color: #000;
 	padding: 0 0 18px;
 	line-height: 30px;
 }
@@ -259,6 +270,13 @@ $this->registerCss('
 	color: #FF7803;
 	font-weight: 700;
 	font-family: roboto;
+}
+.india-vector {
+    padding-top: 90px;
+}
+.india-vector img {
+    width: 115%;
+    max-width: 600px;
 }
 .footer{
     margin-top: 0px !important;
@@ -553,7 +571,66 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
-
+}
+@media only screen and (max-width: 768px) and (min-width: 500px){
+    .india-vector img {
+        max-width: 75%;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+        padding-top: 50px;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 499px) and (min-width: 320px){
+    .india-vector img {
+        max-width: 260px;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        margin-bottom: 10px;
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+    }
+    .india-vector img {
+        display: none;
+    }
+}
+@media only screen and (max-width: 1230px) and (min-width: 990px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+    .india-vector img {
+        max-width: 100%;
+    }
+    .india-vector {
+        padding-top: 110px;
+    }
+}
 ');
 $script = <<<JS
 setTimeout(function (){
