@@ -246,4 +246,9 @@ class SkillsUpController extends Controller
             ];
         }
     }
+
+    public function actionDetail($slug)
+    {
+        return $this->render('feed-detail');
+    }
 }
