@@ -67,12 +67,16 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
-
+        $loginFormModel->referer = Yii::$app->getUser()->getReturnUrl();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-                $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
+                $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
+                if (Yii::$app->user->identity->organization)
+                {
+                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                }
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',
@@ -86,21 +90,19 @@ class AccountsController extends Controller
                 ];
             }
         }
-
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            if (!Yii::$app->session->has("backURL")) {
+         if (!Yii::$app->session->has("backURL")) {
                 Yii::$app->session->set("backURL", Yii::$app->request->referrer);
             }
-            $loginFormModel->updateUserLogin('EY', Yii::$app->user->identity->user_enc_id);
+            $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            $backUrl = Yii::$app->session->get("backURL");
-            if ($backUrl) {
-                return $this->redirect($backUrl);
+            if (Yii::$app->user->identity->organization)
+            {
+                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
             }
-            Yii::$app->session->set("backURL", '/account/dashboard');
-            return $this->redirect(Yii::$app->session->get("backURL"));
+            return $this->goBack($loginFormModel->referer);
         }
 
         return $this->render('login', [

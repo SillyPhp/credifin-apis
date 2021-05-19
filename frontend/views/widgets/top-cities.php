@@ -5,11 +5,9 @@ use yii\helpers\Url;
 ?>
     <section class="top-bg">
         <div class="container">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="heading-style">Employment in Top Cities</h2>
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Employment in Top Cities</h2>
                 </div>
             </div>
             <div class="row">
@@ -19,10 +17,12 @@ use yii\helpers\Url;
                     foreach ($cities_jobs as $app) {
                         ?>
                         <div class="col-md-4 col-sm-6">
-                            <div class="city-main" style="background: url(<?= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>)">
-<!--                                <div class="city-image">-->
-<!--                                    <img src="--><?//= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?><!--">-->
-<!--                                </div>-->
+                            <div class="city-main"
+                                 style="background: url(<?= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>)">
+                                <!--                                <div class="city-image">-->
+                                <!--                                    <img src="-->
+                                <?//= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?><!--">-->
+                                <!--                                </div>-->
                                 <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
                             </div>
                             <div class="main-set">
