@@ -2273,7 +2273,7 @@ $(document).ready(function() {
                         $('#addEduBtn').click();
                         $('#qualificationInformation' + i).attr('data-key',v.loan_candidate_edu_enc_id);
                         acntEduName =  "eduName" + i;
-                        $('#' + acntEduName).val(v.name);
+                        $('#' + acntEduName).typeahead('val', v.name);
                         objData[acntEduName] = v.name;
                         acntInsName =  "instituteName" + i;
                         $('#' + acntInsName).val(v.institution);
