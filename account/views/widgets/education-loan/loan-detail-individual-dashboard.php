@@ -25,9 +25,10 @@ use yii\helpers\Url;
                         <div class="statsBox">
                             <p class="mb0">Loan Amount</p>
                             <?php
-                                setlocale(LC_MONETARY, 'en_IN');
+                            setlocale(LC_MONETARY, 'en_IN');
                             ?>
-                            <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $loanApplication['amount']) ?>
+                            <h3 class="mt10"><span><i
+                                            class="fa fa-inr"></i></span> <?= money_format('%!i', $loanApplication['amount']) ?>
                             </h3>
                         </div>
                         <div class="statsBox">
@@ -36,7 +37,7 @@ use yii\helpers\Url;
                             $lander = $loanApplication['assignedLoanProviders'][0];
                             $base_path = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
                             $path = $base_path . Yii::$app->params->upload_directories->organizations->logo . $lander['lander_logo_location'] . '/' . $lander['lander_logo'];
-                            if($lander['lander_logo']){
+                            if ($lander['lander_logo']) {
                                 ?>
                                 <div class="vendorImg"><img src="<?= $path ?>"></div>
                                 <?php
@@ -48,10 +49,10 @@ use yii\helpers\Url;
                             <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
                                 Profile</a>
                         </div>
-<!--                        <div class="statsBox">-->
-<!--                            <p class="mb0">Loan Structure</p>-->
-<!--                            <a href="education-loans/emi-details">View Structure</a>-->
-<!--                        </div>-->
+                        <!--                        <div class="statsBox">-->
+                        <!--                            <p class="mb0">Loan Structure</p>-->
+                        <!--                            <a href="education-loans/emi-details">View Structure</a>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -96,6 +97,24 @@ use yii\helpers\Url;
                         </ul>
                     </div>
                 </div>
+                <?php
+                $notifications = $loanApplication['loanApplicationNotifications'];
+                if ($notifications) {
+                    ?>
+                    <div class="col-md-12 hidden">
+                        <ul>
+                            <?php
+                                foreach ($notifications as $notification){
+                                    ?>
+                                    <li><?= $notification['message'] ?></li>
+                                    <?php
+                                }
+                            ?>
+                        </ul>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <div class="row mt20">
                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">

@@ -329,6 +329,10 @@ class UserDataComponent extends Component
                 $alp->onCondition(['alp.is_deleted' => 0]);
                 $alp->orderBy(['alp.created_on' => SORT_ASC]);
             }])
+            ->joinWith(['loanApplicationNotifications lan' => function ($lan) {
+                $lan->onCondition(['lan.is_deleted' => 0]);
+                $lan->orderBy(['lan.created_on' => SORT_DESC]);
+            }])
             ->innerJoinWith(['educationLoanPayments elp' => function ($g) {
                 $g->andWhere(['in', 'elp.payment_status', ['captured', 'created']]);
             }]);
