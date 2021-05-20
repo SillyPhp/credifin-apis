@@ -52,9 +52,20 @@ class AddSourceForm extends Model
         $sources->created_on = date('Y-m-d H:i:s');
         $sources->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$sources->save()) {
-            return false;
+            return [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => array_values($sources->firstErrors)[0],
+            ];
         }
 
-        return ['id' => $sources->source_enc_id, 'val' => $sources->name];
+        return [
+            'status' => 200,
+            'title' => 'Success',
+            'message' => 'Source Added.',
+            'id' => $sources->source_enc_id,
+            'val' => $sources->name
+        ];
+
     }
 }

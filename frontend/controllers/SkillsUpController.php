@@ -25,11 +25,13 @@ class SkillsUpController extends Controller
         $model = new SkillsUpForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save()) {
+            $data = $model->save();
+            if ($data['status'] == 200) {
+                Yii::$app->session->setFlash('success', "Form saved successfully.");
                 $this->redirect('/skills-up/index');
             } else {
-                print_r('an error occurred');
-                die();
+                Yii::$app->session->setFlash('error', $data['message']);
+                $this->redirect('/skills-up/index');
             }
         } else {
             $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
@@ -161,21 +163,10 @@ class SkillsUpController extends Controller
                         'message' => 'This source name already exists',
                     ];
                 }
-                if ($data = $addSourceForm->save()) {
-                    return [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'message' => 'Source Added.',
-                        'id' => $data['id'],
-                        'val' => $data['val']
-                    ];
-                } else {
-                    return [
-                        'status' => 500,
-                        'title' => 'Error',
-                        'message' => 'An error has occurred. Please try again.',
-                    ];
-                }
+
+                return $addSourceForm->save();
+
+
             }
             return $this->renderAjax('add-source-form', [
                 'addSourceForm' => $addSourceForm,
@@ -245,5 +236,10 @@ class SkillsUpController extends Controller
                 'message' => 'not found'
             ];
         }
+    }
+
+    public function actionDetail($slug)
+    {
+        return $this->render('feed-detail');
     }
 }

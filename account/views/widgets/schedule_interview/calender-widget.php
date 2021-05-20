@@ -27,6 +27,40 @@ button.icon-button>span.bars{
 .sidebar-hide .calendar-inner {
     max-width: calc(100% - 360px);
 }
+@media screen and (max-width: 1515px) {
+    tr.calendar-header .calendar-header-day {
+        padding: 10px 5px;
+        font-size: 17px;
+    }
+    tr.calendar-body .calendar-day .day{
+        height: 40px;
+        width: 40px;
+        padding:0px;
+        line-height: 40px;
+    }
+}
+@media screen and (max-width: 1375px) {
+    tr.calendar-header .calendar-header-day {
+        font-size:15px;
+    }
+    tr.calendar-body .calendar-day .day{
+        padding:0px;
+        height: 35px;
+        font-size: 16px;
+        width: 35px;
+        line-height: 35px;
+    }
+    .calendar-inner {
+        max-width: calc(100% - 460px);
+        margin-left: 160px;
+    }
+    .calendar-events {
+        width: 300px;
+    }
+    .calendar-sidebar{
+        width: 160px;
+    }
+}
 ');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.min.css');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.orange-coral.min.css');
