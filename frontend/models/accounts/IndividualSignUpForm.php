@@ -11,8 +11,8 @@ use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
 use common\models\Usernames;
-use borales\extensions\phoneInput\PhoneInputValidator;
-use borales\extensions\phoneInput\PhoneInputBehavior;
+//use borales\extensions\phoneInput\PhoneInputValidator;
+//use borales\extensions\phoneInput\PhoneInputBehavior;
 use frontend\models\events\SignupEvent;
 use frontend\models\events\UserModel;
 use frontend\models\referral\Referral;
@@ -32,15 +32,15 @@ class IndividualSignUpForm extends Model
     public $loan_id_ref;
     public $_flag;
 
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => PhoneInputBehavior::className(),
-                'countryCodeAttribute' => 'countryCode',
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            [
+//                'class' => PhoneInputBehavior::className(),
+//                'countryCodeAttribute' => 'countryCode',
+//            ],
+//        ];
+//    }
 
     public function formName()
     {
@@ -61,12 +61,13 @@ class IndividualSignUpForm extends Model
             [['phone'], 'string', 'max' => 15],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email'], 'email'],
-            [['phone'], PhoneInputValidator::className()],
+//            [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
             ['email', 'unique', 'targetClass' => Users::className(), 'message' => 'This email address has already been used.'],
             ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
+
         ];
     }
 
