@@ -13,6 +13,22 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 
 <section class="feeds-form pt-100">
     <div class="container">
+        <?php if (Yii::$app->session->hasFlash('success')) { ?>
+            <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <h4><i class="icon fa fa-check"></i>Saved!</h4>
+                <?= Yii::$app->session->getFlash('success') ?>
+            </div>
+        <?php } ?>
+
+        <?php if (Yii::$app->session->hasFlash('error')) { ?>
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <h4><i class="icon fa fa-check"></i>Error!</h4>
+                <?= Yii::$app->session->getFlash('error') ?>
+            </div>
+        <?php } ?>
+
         <div class="row">
             <div class="col-md-8">
                 <div class="feed-main nd-shadow">
@@ -86,7 +102,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'skills')->hiddenInput(['id'=>'skills-field']); ?>
+                            <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
                             <div class="pf-field no-margin">
                                 <ul class="tags skill_tag_list">
                                     <li class="tagAdd taglist">
@@ -97,28 +113,28 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                     </li>
                                 </ul>
                             </div>
-<!--                            --><?//= $form->field($model, 'skills')->widget(Select2::classname(), [
-//                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-//                                'pluginOptions' => [
-////                                    'allowClear' => true,
-////                                    'minimumInputLength' => 1,
-//                                    'language' => [
-//                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-//                                    ],
-//                                    'ajax' => [
-//                                        'url' => '/skills-up/skill-list',
-//                                        'dataType' => 'json',
-//                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-//                                    ],
-//                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-//                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-//                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-//                                ],
-//                            ]); ?>
+                            <!--                            --><? //= $form->field($model, 'skills')->widget(Select2::classname(), [
+                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
+                            //                                'pluginOptions' => [
+                            ////                                    'allowClear' => true,
+                            ////                                    'minimumInputLength' => 1,
+                            //                                    'language' => [
+                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                            //                                    ],
+                            //                                    'ajax' => [
+                            //                                        'url' => '/skills-up/skill-list',
+                            //                                        'dataType' => 'json',
+                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                            //                                    ],
+                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                            //                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
+                            //                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
+                            //                                ],
+                            //                            ]); ?>
 
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'industry')->hiddenInput(['id'=>'industry-field']); ?>
+                            <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
                             <div class="pf-field no-margin">
                                 <ul class="tags languages_tag_list">
                                     <li class="tagAdd taglist">
@@ -131,26 +147,26 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 </ul>
                             </div>
 
-<!--                            --><?//= $form->field($model, 'industry')->widget(Select2::classname(), [
-////                                'data' => $data,
-//                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
-//                                'pluginOptions' => [
-////                                    'allowClear' => true,
-////                                    'minimumInputLength' => 2,
-//                                    'multiple' => true,
-//                                    'language' => [
-//                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-//                                    ],
-//                                    'ajax' => [
-//                                        'url' => '/skills-up/industry-list',
-//                                        'dataType' => 'json',
-//                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-//                                        'cache' => true
-//                                    ],
-//                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-//                                ],
-//                            ]);
-//                            ?>
+                            <!--                            --><? //= $form->field($model, 'industry')->widget(Select2::classname(), [
+                            ////                                'data' => $data,
+                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
+                            //                                'pluginOptions' => [
+                            ////                                    'allowClear' => true,
+                            ////                                    'minimumInputLength' => 2,
+                            //                                    'multiple' => true,
+                            //                                    'language' => [
+                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                            //                                    ],
+                            //                                    'ajax' => [
+                            //                                        'url' => '/skills-up/industry-list',
+                            //                                        'dataType' => 'json',
+                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                            //                                        'cache' => true
+                            //                                    ],
+                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                            //                                ],
+                            //                            ]);
+                            //                            ?>
                         </div>
                         <div class="col-md-12 mt-20 mb-30">
                             <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
