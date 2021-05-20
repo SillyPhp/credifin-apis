@@ -97,6 +97,16 @@ use yii\helpers\Url;
                         </ul>
                     </div>
                 </div>
+                <p class="col-md-12 hidden">
+                    <?php
+                        if($lander['status'] < 1){
+                            ?>
+                            <p><h4>Thank you for replying with EmpowerYouth.com</h4></p>
+                            <p><h5>We have shared your case with multiple partners and we will update you soon once one of them accepts your case.</h5></p>
+                            <?php
+                        }
+                    ?>
+                </div>
                 <?php
                 $notifications = $loanApplication['loanApplicationNotifications'];
                 if ($notifications) {
