@@ -61,6 +61,14 @@ button.icon-button>span.bars{
         width: 160px;
     }
 }
+@media screen and (max-width: 1280px) {
+    tr.calendar-header .calendar-header-day, tr.calendar-body .calendar-day {
+        padding: 10px 0px;
+    }
+    tr.calendar-header .calendar-header-day {
+        font-size: 14px;
+    }
+}
 ');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.min.css');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.orange-coral.min.css');
