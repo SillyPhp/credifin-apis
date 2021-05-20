@@ -131,7 +131,13 @@ endif;
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
                 ]); ?>
-
+                <?php
+                    if($userValues['is_complete'] == 0){
+                        echo $this->render('@common/widgets/complete-profile-modal', [
+                            'userData' => $userValues['userVal']
+                        ]);
+                   }
+                ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">

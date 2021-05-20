@@ -306,6 +306,7 @@ class DashboardController extends Controller
             'total_org_applied' => $this->total_applied(),
             'viewed' => $viewed,
             'scriptModel' => $scriptModel,
+            'userValues' => $this->_CompleteProfile(),
         ]);
     }
 
@@ -560,6 +561,38 @@ class DashboardController extends Controller
             ]);
         }
     }
+     private function _CompleteProfile(){
+         $user = Users::find()
+             ->alias('a')
+             ->select([
+                'a.user_enc_id', 'a.dob', 'a.experience', 'a.gender', 'a.city_enc_id',
+                'a.image','a.job_function', 'a.asigned_job_function', 'a.description', 'a.is_available'
+             ])
+         ->joinWith(['userSkills b'=> function($b){
+             $b->onCondition(['b.is_deleted' => 0]);
+         }])
+         ->joinWith(['userSpokenLanguages c'=> function($c){
+             $c->onCondition(['c.is_deleted' => 0]);
+         }])
+         ->where([
+            'a.user_enc_id' => Yii::$app->user->identity->user_enc_id,
+            'a.is_deleted' => 0
+        ])
+         ->asArray()
+         ->one();
+
+         $is_complete = 1;
+         foreach ($user as $val){
+             if($val == '' || $val == null){
+                 $is_complete = 0;
+                 break;
+             }
+         }
+//         print_r($user);
+//         print_r($is_complete);
+//         exit();
+         return ['is_complete' => $is_complete, 'userVal' => $user];
+     }
 
     private function _uploadImage()
     {

@@ -34,7 +34,7 @@ use yii\helpers\Url;
                         </div>
                         <div class="statsBox">
                     <p class="mb0">Loan Structure</p>
-                    <a href="eduaction-loans/emi-details">View Structure</a>
+                    <a href="education-loans/emi-details">View Structure</a>
                 </div>
                     </div>
                 </div>
