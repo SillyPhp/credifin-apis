@@ -142,7 +142,7 @@ use yii\helpers\Url;
                             <div class="new-message-box-success">
                                 <div class="info-tab tip-icon-success" title="success"><i></i></div>
                                 <div class="tip-box-success">
-                                    <h4>Thank you for replying with EmpowerYouth.com</h4>
+                                    <h4>Thank you for applying with EmpowerYouth.com</h4>
                                     <h5>We have shared your case with multiple partners and we will update you soon once one of them accepts your case.</h5>
                                 </div>
                             </div>
