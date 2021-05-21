@@ -230,16 +230,6 @@ use yii\helpers\Url;
                             <h2 class="heading-style"> Our Contributers </h2>
                         </div>
                     </div>
-<!--                    <div class="col-md-4 col-sm-4 col-xs-12">-->
-<!--                        <div class="type-1">-->
-<!--                            <div>-->
-<!--                                <a href="--><?//= Url::to('/jobs/international'); ?><!--" class="btn btn-3">-->
-<!--                                    <span class="txting">--><?//= Yii::t('frontend', 'View all'); ?><!--</span>-->
-<!--                                    <span class="round"><i class="fas fa-chevron-right"></i></span>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
             </div>
             <div class="row" id="contributors">
 
