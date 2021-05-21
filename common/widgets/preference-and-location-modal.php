@@ -55,7 +55,10 @@ $primaryfields = \common\models\Categories::find()
                         <div class="lp-icon-bottom"><i class="fas fa-id-card-alt"></i></div>
                         <h3>Update Your Preferences</h3>
                         <form class="updatePreferenceForm">
-                            <div class="row dis-none showField disShow posRel" data-id="job-prfile-and-title">
+                            <?php
+                                if(!$userPref['userPreferredJobProfiles']){
+                            ?>
+                            <div class="row dis-none showField posRel" data-id="job-prfile-and-title">
                                 <div class="col-md-12 mb10 lp-error">
                                     <div class="form-group lp-form ">
                                         <label>Choose Job Profile</label>
@@ -77,6 +80,10 @@ $primaryfields = \common\models\Categories::find()
                                     <p class="errorMsg"></p>
                                 </div>
                             </div>
+                            <?php
+                                }
+                                if(!$userPref['userPreferredIndustries']){
+                            ?>
                             <div class="row dis-none showField posRel" data-id="industry">
                                 <div class="col-md-12 lp-error">
                                     <div class="form-group lp-form with-load">
@@ -94,6 +101,10 @@ $primaryfields = \common\models\Categories::find()
                                 </div>
 
                             </div>
+                            <?php
+                                }
+                                if(!$userPref['userPreferredLocations']){
+                            ?>
                             <div class="row dis-none showField posRel" data-id="location">
                                 <div class="col-md-12 lp-error">
                                     <div class="form-group lp-form with-load">
@@ -110,6 +121,7 @@ $primaryfields = \common\models\Categories::find()
                                     <p class="errorMsg"></p>
                                 </div>
                             </div>
+                                <?php } ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
@@ -803,7 +815,23 @@ industry_name.materialtags({
         source: industries.ttAdapter()
     }
 });
-
+function countFields(){
+    let fieldsArr = [];
+    let cpForm = document.querySelector('.updatePreferenceForm')
+    let formFields = cpForm.querySelectorAll('.showField');
+    // console.log(formFields);
+    for(let i = 0; i<formFields.length; i++){
+        fieldsArr.push(formFields[i]);      
+    }
+    if(fieldsArr.length){
+        fieldsArr[0].classList.add('disShow');
+        fieldsArr[0].classList.remove('showField')
+        if(fieldsArr.length == 1){
+            cpForm.querySelector('.skipBtn').style.display = "none";
+        }
+    }
+}
+countFields()
 showNextQues = () =>{
     let fieldsArr = [];
     let cpForm = document.querySelector('.updatePreferenceForm')
@@ -815,6 +843,9 @@ showNextQues = () =>{
     let indexOfDisShow = fieldsArr.indexOf(disShow);
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex];
+    if(toActive){
+        toActive.classList.remove('showField');
+    }
     let inputVal =  disShow.querySelectorAll('.form-control')
     let val = {};
     let valObj = [];
@@ -864,7 +895,7 @@ sendData = (disShow, toActive, val) => {
             if(response.title == 'Success'){
                if(disShow && toActive){
                     disShow.classList.remove('disShow')
-                    if(disShow.classList.contains('showField')){
+                     if(disShow.classList.contains('showField')){
                         disShow.classList.remove('showField')
                     }
                     toActive.classList.add('disShow');
@@ -899,7 +930,10 @@ skipToNextQues = () => {
 }
 $('.js-example-basic-multiple').select2();
 $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
-var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
+console.log($('.select2-selection'))
+if($('.select2-selection').length > 0){
+    var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
+}
 
 JS;
 $this->registerJs($script);

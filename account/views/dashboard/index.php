@@ -139,8 +139,10 @@ endif;
                    }
                 ?>
                 <?php
-                    if($userValues['is_complete'] == 1){
-                        echo $this->render('@common/widgets/preference-and-location-modal');
+                    if($userValues['is_complete'] == 1 && $userPref['is_complete'] == 0){
+                        echo $this->render('@common/widgets/preference-and-location-modal',[
+                            'userPref' => $userPref['userPref']
+                        ]);
                     }
                 ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
