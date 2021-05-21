@@ -5,9 +5,23 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
+$primaryfields = \common\models\Categories::find()
+    ->alias('a')
+    ->select(['a.name', 'a.icon', 'a.category_enc_id'])
+    ->innerJoin(\common\models\AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+    ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
+    ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+    ->andWhere(['b.status' => 'Approved'])
+    ->andWhere([
+        'or',
+        ['!=', 'a.icon', NULL],
+        ['!=', 'a.icon', ''],
+    ])
+    ->asArray()
+    ->all();
 ?>
 
-<div id="plModal" class="modal fade-scale plModal" role="dialog">
+<div id="preferenceLocation" class="modal fade-scale plModal" role="dialog">
     <div class="modal-dialog lp-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
@@ -16,7 +30,7 @@ use borales\extensions\phoneInput\PhoneInput;
                 <div class="col-md-4 col-sm-4">
                     <div class="lp-modal-text half-bg half-bg-color">
                         <div class="lp-text-box ">
-                            <p>Why Complete<br> Your Profile</p>
+                            <p>Why Update <br> Your Preferences</p>
                             <ul>
                                 <li>It improves your visibility in search results.</li>
                                 <li>You are 50% more likely to get the right job matches.</li>
@@ -41,16 +55,30 @@ use borales\extensions\phoneInput\PhoneInput;
                         <div class="lp-icon-bottom"><i class="fas fa-id-card-alt"></i></div>
                         <h3>Update Your Preferences</h3>
                         <form class="updatePreferenceForm">
-<!--                            <div class="row dis-none disShow" data-id="job-prfile-and-title">-->
-<!--                                <div class="col-md-12 mb10">-->
-<!--                                    <div class="form-group lp-form">-->
-<!--                                        <label>Choose Job Profile</label>-->
-<!--                                        <input type="text" class="form-control text-capitalize" id="profiles">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-                            <div class="row dis-none disShow" data-id="industry">
-                                <div class="col-md-12">
+                            <div class="row dis-none showField disShow posRel" data-id="job-prfile-and-title">
+                                <div class="col-md-12 mb10 lp-error">
+                                    <div class="form-group lp-form ">
+                                        <label>Choose Job Profile</label>
+                                        <select id="category_drp" data-id="Jobs" data-name="profiles"
+                                                name="job_profiles[]"
+                                                multiple="multiple"
+                                                class="js-example-basic-multiple form-control text-capitalize">
+                                            <?php
+                                            if ($primaryfields) {
+                                                foreach ($primaryfields as $pf) {
+                                                    ?>
+                                                    <option value="<?= $pf['category_enc_id'] ?>"><?= $pf['name'] ?></option>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <p class="errorMsg"></p>
+                                </div>
+                            </div>
+                            <div class="row dis-none showField posRel" data-id="industry">
+                                <div class="col-md-12 lp-error">
                                     <div class="form-group lp-form with-load">
                                         <div class="load-suggestions Typeahead-spinner" style="display: none;">
                                             <span></span>
@@ -58,102 +86,34 @@ use borales\extensions\phoneInput\PhoneInput;
                                             <span></span>
                                         </div>
                                         <label>Industry you prefer to work in?</label>
-                                        <input type="text" class="form-control text-capitalize" name="industry" id="industry_data">
+                                        <input type="text" data-id="Jobs" data-name="industries"
+                                               class="form-control lp-skill-input text-capitalize"
+                                               name="industry" id="industry_data">
                                     </div>
+                                    <p class="errorMsg"></p>
                                 </div>
+
                             </div>
-                            <div class="row dis-none" data-id="salary">
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Min Salary(p.a)</label>
-                                        <input type="text" class="form-control text-capitalize" id="min_salary">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="form-group lp-form">
-                                        <label>Max Salary(p.a)</label>
-                                        <input type="text" class="form-control text-capitalize" id="max_salary">
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                            <div class="row dis-none" data-id="job-type">
-                                <div class="col-md-12">
-                                    <div class="form-group lp-form">
-                                        <label>Job Type</label>
-                                        <select id="candidatepreferenceform-job_type" class="form-control edited"
-                                                name="CandidatePreferenceForm[job_type]" aria-required="true">
-                                            <option value="">Select Job Type</option>
-                                            <option value="Full Time">Full Time</option>
-                                            <option value="Part Time">Part Time</option>
-                                            <option value="Work from Home">Work From Home</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row dis-none" data-id="working-days">
-                                <div class="col-md-12">
-                                    <div class="weekDays-selector">
-                                        <div class="form-group field-intern_weekdays required has-success">
-                                            <p>Select the working days</p>
-                                            <div>
-                                                <input type="hidden" name="CandidateInternshipPreferenceForm[weekdays]"
-                                                       value="">
-                                                <div id="intern_weekdays" aria-required="true" aria-invalid="false">
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="1" id="intern_weekday-0" class="weekday" checked="">
-                                                    <label for="intern_weekday-0">M</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="2" id="intern_weekday-1" class="weekday" checked="">
-                                                    <label for="intern_weekday-1">T</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="3" id="intern_weekday-2" class="weekday" checked="">
-                                                    <label for="intern_weekday-2">W</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="4" id="intern_weekday-3" class="weekday" checked="">
-                                                    <label for="intern_weekday-3">T</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="5" id="intern_weekday-4" class="weekday" checked="">
-                                                    <label for="intern_weekday-4">F</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="6" id="intern_weekday-5" class="weekday">
-                                                    <label for="intern_weekday-5">S</label>
-                                                    <input type="checkbox"
-                                                           name="CandidateInternshipPreferenceForm[weekdays][]"
-                                                           value="7" id="intern_weekday-6" class="weekday">
-                                                    <label for="intern_weekday-6">S</label></div>
-                                            </div>
+                            <div class="row dis-none showField posRel" data-id="location">
+                                <div class="col-md-12 lp-error">
+                                    <div class="form-group lp-form with-load">
+                                        <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
                                         </div>
+                                        <label>Preferred Locations</label>
+                                        <input type="text" data-id="Jobs" data-name="locations"
+                                               class="form-control lp-skill-input text-capitalize"
+                                               name="location" id="city_data">
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="row dis-none" data-id="intern-timing">
-                                <div class="col-md-6">
-                                    <div class="form-group lp-form">
-                                        <label>Job Timing From</label>
-                                        <input type="text" class="form-control text-capitalize" id="profile">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group lp-form">
-                                        <label>Upto</label>
-                                        <input type="text" class="form-control text-capitalize" id="profile">
-                                    </div>
+                                    <p class="errorMsg"></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
+                                    <button type="button" onclick="skipToNextQues()" class="skipBtn">Skip</button>
                                 </div>
                             </div>
                         </form>
@@ -168,15 +128,71 @@ $this->registerCss('
 .mb10{
     margin-bottom: 10px;
 }
-.completeProfileForm{
+.updatePreferenceForm{
     max-width: 350px;
     width: 100%;
     margin: 0 auto;
     text-align: center
 }
-.aboutTextarea{
-    min-height: 130px;
-    resize: none;
+.chip, .select2-selection__choice {
+    display: inline-block;
+    position: relative;
+    height: 32px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: normal;
+    padding: 7px 17px;
+    border-radius: 8px;
+    background-color: #e4e4e4;
+    margin-right: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background: #f4f5fa;
+    color: #333;
+}
+.select2-selection__choice{
+    float: left;
+    margin-right: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.select2-container .select2-search--inline .select2-search__field{
+    margin-top: 0px;
+    margin-left: 0px;
+}
+.chip i, .select2-selection__choice__remove{
+    cursor:pointer;
+    position: absolute;
+    background-color: #00a0e3;
+    padding: 1px;
+    border-radius: 100%;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    color: #fff;
+    font-weight: 100;
+    font-size: 11px;
+}
+.select2-selection__choice__remove{
+    border: none;
+    margin-right: 0px !important;
+    font-size: 14px;
+    line-height: 0px;
+     top: -6px;
+    right: -4px;
+}
+.select2-results__option--highlighted{
+    background: #00a0e3;
+    color: #fff;
+}
+.updatePreferenceForm .select2-search.select2-search--inline{
+    float: left;
+    border: 1px solid #eee;
+    padding: 3px 6px 4px;
+    border-radius: 8px;
+    margin-top: 5px;
 }
 .lp-modal-text{
     text-align: center;
@@ -199,6 +215,7 @@ $this->registerCss('
     color: #00a0e3;   
     font-size: 35px;
     line-height: 0;
+    margin-bottom: 25px;
 }
 .lp-text-box{
     background: #fff;
@@ -212,6 +229,9 @@ $this->registerCss('
     line-height: 22px;
     margin-bottom: 10px;  
 }
+.lp-text-box ul{
+    padding-inline-start: 0px;
+}
 .lp-text-box ul li{
     position: relative;
     margin-left: 15px;
@@ -220,6 +240,7 @@ $this->registerCss('
     margin-bottom: 10px;
     font-family: roboto;
     text-align: left;
+    list-style-type: none;
 }
 .lp-text-box ul li:before{
     content:"\f111";
@@ -231,14 +252,65 @@ $this->registerCss('
     font-weight: 900;
     color: #00a0e3;
 }
-.saveBtn{
+.lp-skill-input, .select2-container{
+    position: relative;
+    vertical-align: top;
+    background-color: transparent;
+    padding: 5px 10px !important;
+    font-size: 15px;
+    border-radius: 7px;
+}
+ .select2-container{
+    float: left;
+    max-width: 350px;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 8px;
+ }
+ .select2-results__options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 200px;
+    overflow-y: scroll;
+}
+.updatePreferenceForm .materialize-tags{
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 0px;
+}
+.updatePreferenceForm .materialize-tags.active{
+    box-shadow: none;
+}
+.updatePreferenceForm .materialize-tags input[type], 
+.updatePreferenceForm .materialize-tags textarea.materialize-textarea{
+    margin-top: 0px; 
+}
+.saveBtn, .skipBtn{
     background: #00a0e3;
     padding: 10px 15px;
-    border: none;
+    border: 1px solid #00a0e3;
     font-size: 14px;
     border-radius: 4px;
     margin-top: 20px;
     color: #fff
+}
+.skipBtn{
+    background: transparent;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
 }
 .relationList{
     padding:0px;
@@ -246,7 +318,21 @@ $this->registerCss('
 .dis-none{
     display: none;
 }
-.disShow{
+.posRel{
+    position: relative;
+}
+.lp-error .errorMsg{
+    display: none;
+    color: #CA0B00;
+    font-size: 13px !important;
+    position: absolute;
+    bottom: -18px;
+    left: 15px;
+    font-size: 13px;
+    font-weight: 400 !important;
+    margin-bottom: 0px;
+ }
+.disShow, .lp-error .showError{
     display: block;
 }
 .lp-radio {
@@ -255,7 +341,6 @@ $this->registerCss('
     text-align: center;
     margin: 0px 10px 0 0;
 }
-
 .lp-radio > label {
     width: 100%;
     display: inline-block;
@@ -411,16 +496,16 @@ $this->registerCss('
     background: #00a0e3;
 }
 .typeahead,.tt-query{
-  width: 396px;
-  height: 30px;
-  padding: 8px 12px;
-  font-size: 18px;
-  line-height: 30px;
-  border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
+    width: 396px;
+    height: 30px;
+    padding: 8px 12px;
+    font-size: 18px;
+    line-height: 30px;
+    border: 2px solid #ccc;
+    -webkit-border-radius: 8px;
      -moz-border-radius: 8px;
           border-radius: 8px;
-  outline: none;
+    outline: none;
 }
 .form-wizard .steps>li.done>a.step .number {
     background-color: #ffac64 !important;
@@ -475,21 +560,21 @@ $this->registerCss('
               margin-top: 0px;
 }
 .tt-suggestion {
-  padding: 3px 20px;
-  font-size: 14px;
-  line-height: 24px;
+    padding: 3px 20px;
+    font-size: 14px;
+    line-height: 24px;
 }
 .tt-suggestion:hover {
-  cursor: pointer;
-  color: #fff;
-  background-color: #0097cf;
+    cursor: pointer;
+    color: #fff;
+    background-color: #0097cf;
 }
 .tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: #0097cf;
+    color: #fff;
+    background-color: #0097cf;
 }
 .tt-suggestion p {
-  margin: 0;
+    margin: 0;  
 }
 /*---old---*/
 
@@ -636,6 +721,32 @@ body.modal-open{
 .rem-input .checkbox label{
     font-size: 14px;
 }
+
+.bootstrap-tagsinput{
+    width: 100%;
+    min-height: 40px;
+    border-radius: 0;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+.bootstrap-tagsinput.focus{
+    border-color:#4aa1e3;
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.bootstrap-tagsinput .tag{
+    line-height: 2;
+}
+.bootstrap-tagsinput input{
+    border: 0px !important;
+    margin-bottom: 0px !important;
+    width: auto !important;
+}
+.bootstrap-tagsinput input:focus{
+    box-shadow:none !important;
+}
 @media only screen and (max-width: 450px) {
     .close-lg-modal{
         right: -5px;
@@ -644,6 +755,7 @@ body.modal-open{
 }
 ');
 $script = <<< JS
+ $('#preferenceLocation').modal('show');
 var city = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -695,7 +807,7 @@ industry_name.materialtags({
 showNextQues = () =>{
     let fieldsArr = [];
     let cpForm = document.querySelector('.updatePreferenceForm')
-    let formFields = cpForm.querySelectorAll('.dis-none');
+    let formFields = cpForm.querySelectorAll('.showField');
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);
     }
@@ -703,22 +815,99 @@ showNextQues = () =>{
     let indexOfDisShow = fieldsArr.indexOf(disShow);
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex];
+    let inputVal =  disShow.querySelectorAll('.form-control')
+    let val = {};
+    let valObj = [];
+     if(inputVal.length > 0){
+         for(let i = 0; i < inputVal.length; i++){
+            let inputParent = getParentUntillLpForm(inputVal[i]);
+            let errorMsg = inputParent.querySelector('.errorMsg');
+            let app_type = inputVal[i].getAttribute('data-id');
+            let field_data_name = inputVal[i].getAttribute('data-name');
+            if(inputVal[i].value != '' || ($('#category_drp').select2('data') != '')){
+                if(field_data_name == 'profiles'){
+                    let str = $('#category_drp').select2('data')
+                    for(let i = 0; i < str.length; i++){
+                        valObj.push(str[i].id)
+                    }
+                }else{
+                    let str = inputVal[i].value
+                    valObj = str.split(',');
+                }
+                val[field_data_name] = valObj;
+                val['type'] = app_type
+                console.log(val);     
+            }else{
+                errorMsg.classList.add('showError');
+                errorMsg.innerHTML = "This field can not Be empty";
+                return false;    
+            }
+        }
+     }
+       sendData(disShow, toActive, val);
+}
+function getParentUntillLpForm(elem){
+    let parElem = $(elem).parentsUntil('.lp-error').parent();
+    if (parElem.length > 0){
+        return parElem[0];
+    }else{
+        parElem = $(elem).parent();
+        return parElem[0];
+    }
+}
+sendData = (disShow, toActive, val) => {
+    $.ajax({
+        url: '/account/preferences/save-preference',
+        method: 'POST',
+        data: val,
+        success: function (response){
+            if(response.title == 'Success'){
+               if(disShow && toActive){
+                    disShow.classList.remove('disShow')
+                    if(disShow.classList.contains('showField')){
+                        disShow.classList.remove('showField')
+                    }
+                    toActive.classList.add('disShow');
+                }else{
+                    console.log('empty');
+                    $('#preferenceLocation').modal('hide');
+                }
+            }else{
+                // toastr.error(response.message, 'error');
+                disShow.classList.add('showField')
+                console.log('error occured')
+            }
+        }
+    })
+}
+skipToNextQues = () => {
+    let fieldsArr = [];
+    let cpForm = document.querySelector('.updatePreferenceForm')
+    let formFields = cpForm.querySelectorAll('.showField');
+    for(let i = 0; i<formFields.length; i++){
+        fieldsArr.push(formFields[i]);      
+    }
+    let disShow = cpForm.querySelector('.disShow');
+    disShow.classList.add('showField');
+    let indexOfDisShow = fieldsArr.indexOf(disShow);
+    let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
+    let toActive = fieldsArr[nxtIndex]; 
     if(disShow){
         disShow.classList.remove('disShow')
     }
     toActive.classList.add('disShow');
 }
+$('.js-example-basic-multiple').select2();
+$('.select2-search__field').css('width',$(".select2-selection__rendered").width());
+var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
+
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/materialized/materialize-tags/css/materialize-tags.css');
+$this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<script>
-    function showValForm(e) {
-        let sRadio = e.currentTarget
-        let valInput = e.currentTarget.value
-        let plform = sRadio.closest('form')
-        plform.querySelector('#show' + valInput).classList.add('showDiv');
-        plform.querySelector('#preftype').classList.add('hideDiv');
-    }
-</script>

@@ -138,6 +138,11 @@ endif;
                         ]);
                    }
                 ?>
+                <?php
+                    if($userValues['is_complete'] == 1){
+                        echo $this->render('@common/widgets/preference-and-location-modal');
+                    }
+                ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">
