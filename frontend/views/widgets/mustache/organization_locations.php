@@ -93,32 +93,6 @@ $(document).on('click', '.edit_location', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));
 });
 
-function initCourse(){
-    if($(".org-location").length <= 6){
-      $('.view-btn').hide();  
-    }
-    var htmlData = $("<div class='maxData'></div>");
-    $( ".org-location" ).each(function(index) {
-          if(index >= 6){
-              htmlData.append('<div class="org-location">'+$(this).html()+'</div>');
-              $(this).remove();
-          }
-    });
-    $('.head-office').append(htmlData);
-}
-$(document).on('click','.view-btn',function(e) {
-    e.preventDefault();
-    $('.tab-content').css('height','auto');
-  $('.view-btn').toggleClass('show');
-  if ($('.view-btn').hasClass('show')) {
-    $(this).children('a').html("View Less <i class='fas fa-angle-up'></i>");
-    $('.maxData').slideDown('fast');
-  } else {
-    $(this).children('a').html("View All <i class='fas fa-angle-down'></i>");
-    $('.maxData').slideUp('fast');
-  }
-});
-
 function getLocations() {
     $.ajax({
         method: "POST",
@@ -161,6 +135,33 @@ function getLocations() {
 
 getLocations();
 JS;
+$script2 = <<<JS
+        function initCourse(){
+            if($(".org-location").length <= 6){
+              $('.view-btn').hide();  
+            }
+            var htmlData = $("<div class='maxData'></div>");
+            $( ".org-location" ).each(function(index) {
+                  if(index >= 6){
+                      htmlData.append('<div class="org-location">'+$(this).html()+'</div>');
+                      $(this).remove();
+                  }
+            });
+            $('.head-office').append(htmlData);
+        }
+        $(document).on('click','.view-btn',function(e) {
+            e.preventDefault();
+            $('.tab-content').css('height','auto');
+          $('.view-btn').toggleClass('show');
+          if ($('.view-btn').hasClass('show')) {
+            $(this).children('a').html("View Less <i class='fas fa-angle-up'></i>");
+            $('.maxData').slideDown('fast');
+          } else {
+            $(this).children('a').html("View All <i class='fas fa-angle-down'></i>");
+            $('.maxData').slideUp('fast');
+          }
+        });
+JS;
 if ($Edit) {
     $this->registerJs("
         $(document).on('click', '.remove_location', function(e) {
@@ -194,6 +195,8 @@ if ($Edit) {
             });
         });
     ");
+} else{
+    $this->registerJs($script2);
 }
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

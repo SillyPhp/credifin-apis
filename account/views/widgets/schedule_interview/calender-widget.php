@@ -27,15 +27,16 @@ button.icon-button>span.bars{
 .sidebar-hide .calendar-inner {
     max-width: calc(100% - 360px);
 }
-@media screen and (max-width: 1475px) {
+@media screen and (max-width: 1515px) {
     tr.calendar-header .calendar-header-day {
-        padding: 10px;
+        padding: 10px 5px;
+        font-size: 17px;
     }
     tr.calendar-body .calendar-day .day{
-        height: 45px;
-        width: 45px;
+        height: 40px;
+        width: 40px;
         padding:0px;
-        line-height: 45px;
+        line-height: 40px;
     }
 }
 @media screen and (max-width: 1375px) {
@@ -58,6 +59,14 @@ button.icon-button>span.bars{
     }
     .calendar-sidebar{
         width: 160px;
+    }
+}
+@media screen and (max-width: 1280px) {
+    tr.calendar-header .calendar-header-day, tr.calendar-body .calendar-day {
+        padding: 10px 0px;
+    }
+    tr.calendar-header .calendar-header-day {
+        font-size: 14px;
     }
 }
 ');
