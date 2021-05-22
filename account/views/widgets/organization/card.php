@@ -69,9 +69,9 @@ if ($organization_data) {
 Pjax::end();
 
 $this->registerCss('
-.hr-company-box {
-    padding: 20px 10px 20px;
-}
+//.hr-company-box {
+//    padding: 20px 10px 20px;
+//}
 .user-icon {
     border-radius: 50%;
 }
