@@ -211,7 +211,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 500px;
-    min-height:200px;
+    min-height:300px;
     display: block;
     overflow-x: scroll;
 }
@@ -352,6 +352,13 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 .ps__rail-x{
     display:none !important;
 }
+@media screen and (max-width: 1200px) and (min-width: 992px) {
+.widget-profile-info .profile-picture {
+    display: inline-table;
+    }
+.widget-profile-info .profile-info{display:block;}
+.edit-btn{float:none !important;}
+}
 ");
 $script = <<< JS
     $(document).on('click', '.edit-org-logo', function() {
@@ -365,6 +372,13 @@ $script = <<< JS
     
     $(document).on('submit', '#task-form', function (e) {
         e.preventDefault();
+        if ($('input[name="task"]').val()==""||$('input[name="task"]').val()==null){
+                 swal({
+                        title:"",
+                        text: "Input Should Not Be Empty.. !!!",
+                        });
+            return false;
+        }
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');

@@ -8,6 +8,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 } else {
     $this->title = 'Total job vacancies available';
 }
+
 $this->params['header_dark'] = true;
 
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
@@ -36,7 +37,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -51,7 +52,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -76,13 +77,6 @@ color: #2b7cb7;
 .main-content{
     min-height:100vh !important;
 }
-.connected-sortable{
-    padding: 15px 0 0 0 !important;
-}
-.close{
-    right: 12px !important;
-    top: -3px !important;
-}
 ');
 ?>
 
@@ -99,6 +93,7 @@ color: #2b7cb7;
                 <?=
                 $this->render('/widgets/search-bar1',['type'=>'jobs']);
                 ?>
+
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>

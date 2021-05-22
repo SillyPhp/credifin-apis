@@ -12,6 +12,7 @@ use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
 use http\Env\Response;
+use yii\helpers\Url;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
@@ -118,11 +119,17 @@ class AuthController extends ApiBaseController
                 return $this->response(409, 'Already Exist');
             } else {
                 $save_user_name = new Usernames();
-                $save_user_name->username = $username;
-                $save_user_name->assigned_to = 2;
+                if (strlen($username) >= 3 && strlen($username) <= 20) {
+                    $save_user_name->username = $username;
+                } else {
+                    return $this->response(409, 'Already Exist');
+                }
+                $save_user_name->assigned_to = 1;
                 if ($save_user_name->save()) {
                     $user->username = $username;
                     $user->last_updated_on = date('Y-m-d H:i:s');
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = 'EYAPP';
                     if (!$user->update()) {
                         return $this->response(500, 'an error occurred');
                     }
@@ -245,6 +252,9 @@ class AuthController extends ApiBaseController
         $user->initials_color = RandomColors::one();
         $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
         $user->status = "Active";
+        $user->last_visit = date('Y-m-d H:i:s');
+        $user->last_visit_through = "EYAPP";
+        $user->signed_up_through = "EYAPP";
         $user->setPassword($model->password);
         $user->generateAuthKey();
         if ($user->save()) {
@@ -379,6 +389,11 @@ class AuthController extends ApiBaseController
             if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
                 if ($model->login()) {
                     $user = $this->findUser($model);
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = "EYAPP";
+                    if (!$user->update()) {
+                        return $this->response(500, 'an error occurred');
+                    }
                     $token = $this->findToken($user, $source);
                     if (empty($token)) {
                         if ($token = $this->newToken($user->user_enc_id, $source)) {
@@ -441,7 +456,9 @@ class AuthController extends ApiBaseController
         ]);
 
         $user = Users::find()
-            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email'])
+            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email', 'initials_color',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END user_image'
+            ])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->one();

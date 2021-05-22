@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -45,38 +46,26 @@ namespace common\models;
  * @property int $is_phone_verified Is User Phone Verified (0 as False, 1 as True)
  * @property int $is_credential_change
  * @property string $status User Status (Active, Inactive, Pending)
+ * @property string $last_visit user last login details
+ * @property string $last_visit_through user last login through which method
+ * @property string $signed_up_through from where user has first signed up
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
  * @property IndianGovtDepartments[] $indianGovtDepartments
  * @property UsaDepartments[] $usaDepartments
  * @property UsaProfileCodes[] $usaProfileCodes
  * @property UsaProfileCodes[] $usaProfileCodes0
+ * @property ApiJobs[] $apiJobs
+ * @property ApiJobsPlacementCities[] $apiJobsPlacementCities
+ * @property ApiJobsPlacementCities[] $apiJobsPlacementCities0
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates0
  * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates
  * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates0
  * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates
  * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates0
- * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements
- * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements0
- * @property ApplicationEmployeeBenefits[] $applicationEmployeeBenefits
- * @property ApplicationEmployeeBenefits[] $applicationEmployeeBenefits0
- * @property ApplicationInterviewLocations[] $applicationInterviewLocations
- * @property ApplicationInterviewLocations[] $applicationInterviewLocations0
- * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires
- * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires0
- * @property ApplicationJobDescription[] $applicationJobDescriptions
- * @property ApplicationJobDescription[] $applicationJobDescriptions0
- * @property ApplicationOptions[] $applicationOptions
- * @property ApplicationOptions[] $applicationOptions0
  * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates
  * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates0
- * @property ApplicationPlacementCities[] $applicationPlacementCities
- * @property ApplicationPlacementCities[] $applicationPlacementCities0
- * @property ApplicationPlacementLocations[] $applicationPlacementLocations
- * @property ApplicationPlacementLocations[] $applicationPlacementLocations0
- * @property ApplicationSkills[] $applicationSkills
- * @property ApplicationSkills[] $applicationSkills0
  * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates
  * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates0
  * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions
@@ -85,21 +74,14 @@ namespace common\models;
  * @property ApplicationTemplates[] $applicationTemplates0
  * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions
  * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions0
- * @property Applications[] $applications
- * @property Applications[] $applications0
- * @property Applications[] $applications1
- * @property AppliedApplicationLocations[] $appliedApplicationLocations
- * @property AppliedApplicationLocations[] $appliedApplicationLocations0
- * @property AppliedApplicationProcess[] $appliedApplicationProcesses
- * @property AppliedApplicationProcess[] $appliedApplicationProcesses0
- * @property AppliedApplications[] $appliedApplications
- * @property AppliedApplications[] $appliedApplications0
  * @property AppliedTrainingApplications[] $appliedTrainingApplications
  * @property AppliedTrainingApplications[] $appliedTrainingApplications0
  * @property AppliedTrainingBatches[] $appliedTrainingBatches
  * @property AppliedTrainingBatches[] $appliedTrainingBatches0
  * @property AssignedCategories[] $assignedCategories
  * @property AssignedCategories[] $assignedCategories0
+ * @property AssignedCollegeCourses[] $assignedCollegeCourses
+ * @property AssignedCollegeCourses[] $assignedCollegeCourses0
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements0
  * @property AssignedIndianJobs[] $assignedIndianJobs
@@ -108,54 +90,48 @@ namespace common\models;
  * @property AssignedIndustries[] $assignedIndustries0
  * @property AssignedJobDescription[] $assignedJobDescriptions
  * @property AssignedJobDescription[] $assignedJobDescriptions0
+ * @property AssignedLoanProvider[] $assignedLoanProviders
+ * @property AssignedLoanProvider[] $assignedLoanProviders0
+ * @property AssignedOrganizationFeeComponent[] $assignedOrganizationFeeComponents
  * @property AssignedSkills[] $assignedSkills
  * @property AssignedSkills[] $assignedSkills0
  * @property AssignedStaticWidgets[] $assignedStaticWidgets
  * @property AssignedTags[] $assignedTags
  * @property AssignedTags[] $assignedTags0
- * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates
- * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates0
- * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
- * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates0
- * @property CandidateJobTitle[] $candidateJobTitles
- * @property CandidateRecords[] $candidateRecords
- * @property CareerAdvise[] $careerAdvises
- * @property CareerAdvise[] $careerAdvises0
- * @property CareerQuestions[] $careerQuestions
- * @property CareerQuestions[] $careerQuestions0
+ * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses
+ * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses0
  * @property AssignedWebinarTo[] $assignedWebinarTos
  * @property Auth[] $auths
+ * @property CandidateConsiderJobs[] $candidateConsiderJobs
+ * @property CandidateRejection[] $candidateRejections
+ * @property CandidateRejection[] $candidateRejections0
+ * @property CandidateRejectionReasons[] $candidateRejectionReasons
  * @property CareerAdvicePostComments[] $careerAdvicePostComments
  * @property CareerAdvisePosts[] $careerAdvisePosts
  * @property CareerAdvisePosts[] $careerAdvisePosts0
  * @property Categories[] $categories
  * @property Categories[] $categories0
- * @property CategoriesList[] $categoriesLists
- * @property CategoriesList[] $categoriesLists0
- * @property CitiesPriority[] $citiesPriorities
- * @property CitiesPriority[] $citiesPriorities0
  * @property CategoryTags[] $categoryTags
  * @property CategoryTags[] $categoryTags0
  * @property ClassAccess[] $classAccesses
  * @property ClassAccess[] $classAccesses0
  * @property ClassNotes[] $classNotes
+ * @property CollectedDocuments[] $collectedDocuments
  * @property CollegeCourses[] $collegeCourses
  * @property CollegeCourses[] $collegeCourses0
+ * @property CollegeCoursesPool[] $collegeCoursesPools
+ * @property CollegeCoursesPool[] $collegeCoursesPools0
+ * @property CollegePlacementHighlights[] $collegePlacementHighlights
+ * @property CollegePlacementHighlights[] $collegePlacementHighlights0
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses0
+ * @property CollegeScholarships[] $collegeScholarships
+ * @property CollegeScholarships[] $collegeScholarships0
  * @property CollegeSections[] $collegeSections
  * @property CollegeSettings[] $collegeSettings
  * @property CollegeSettings[] $collegeSettings0
  * @property CollegeStudentsReview[] $collegeStudentsReviews
  * @property CollegeStudentsReview[] $collegeStudentsReviews0
- * @property Contacts[] $contacts
- * @property ConversationMessages[] $conversationMessages
- * @property ConversationMessages[] $conversationMessages0
- * @property ConversationParticipants[] $conversationParticipants
- * @property ConversationParticipants[] $conversationParticipants0
- * @property ConversationParticipants[] $conversationParticipants1
- * @property Conversations[] $conversations
- * @property Conversations[] $conversations0
- * @property CustomForm[] $customForms
- * @property CustomForm[] $customForms0
  * @property Courses[] $courses
  * @property Currencies[] $currencies
  * @property Designations[] $designations
@@ -163,114 +139,84 @@ namespace common\models;
  * @property DevelopmentTracking[] $developmentTrackings
  * @property DevelopmentTracking[] $developmentTrackings0
  * @property DomainNames[] $domainNames
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations0
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations1
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles0
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles1
- * @property DropResumeApplications[] $dropResumeApplications
- * @property DropResumeApplications[] $dropResumeApplications0
- * @property DropResumeApplications[] $dropResumeApplications1
  * @property DomainNames[] $domainNames0
  * @property DomainRoutes[] $domainRoutes
  * @property DomainRoutes[] $domainRoutes0
+ * @property EducationLoanPayments[] $educationLoanPayments
+ * @property EducationLoanPayments[] $educationLoanPayments0
  * @property EducationalRequirements[] $educationalRequirements
  * @property EducationalRequirements[] $educationalRequirements0
- * @property EducationalStreams[] $educationalStreams
- * @property EducationalStreams[] $educationalStreams0
- * @property EmployeeBenefits[] $employeeBenefits
- * @property EmployeeBenefits[] $employeeBenefits0
- * @property EmployerApplications[] $employerApplications
- * @property EmployerApplications[] $employerApplications0
- * @property EmployerReviews[] $employerReviews
- * @property EmployerReviews[] $employerReviews0
- * @property Feedback[] $feedbacks
- * @property Feedback[] $feedbacks0
- * @property FollowedOrganizations[] $followedOrganizations
- * @property FollowedOrganizations[] $followedOrganizations0
- * @property FollowedOrganizations[] $followedOrganizations1
- * @property Organizations[] $organizationEncs
  * @property EmailLogs[] $emailLogs
  * @property EmailTemplates[] $emailTemplates
  * @property EmailTemplates[] $emailTemplates0
+ * @property EmployerReviews[] $employerReviews
+ * @property EmployerReviews[] $employerReviews0
  * @property ErexxActivityTracks[] $erexxActivityTracks
  * @property ErexxActivityTracks[] $erexxActivityTracks0
+ * @property ErexxCollegeRejectionReasons[] $erexxCollegeRejectionReasons
+ * @property ErexxCollegeRejections[] $erexxCollegeRejections
  * @property ErexxEmployerApplications[] $erexxEmployerApplications
  * @property ErexxEmployerApplications[] $erexxEmployerApplications0
  * @property ErexxWhatsappInvitation[] $erexxWhatsappInvitations
  * @property ExternalNewsUpdate[] $externalNewsUpdates
  * @property ExternalNewsUpdate[] $externalNewsUpdates0
+ * @property FeedSources[] $feedSources
  * @property Files[] $files
  * @property Files[] $files0
  * @property GitApplications[] $gitApplications
  * @property GitApplications[] $gitApplications0
  * @property GitOrganizations[] $gitOrganizations
  * @property GitOrganizations[] $gitOrganizations0
+ * @property HiringProcessNotes[] $hiringProcessNotes
+ * @property HiringProcessNotes[] $hiringProcessNotes0
  * @property HiringProcessTemplateFields[] $hiringProcessTemplateFields
  * @property HiringProcessTemplateFields[] $hiringProcessTemplateFields0
  * @property HiringProcessTemplates[] $hiringProcessTemplates
  * @property HiringProcessTemplates[] $hiringProcessTemplates0
  * @property IndianGovtJobs[] $indianGovtJobs
+ * @property InstituteLeads[] $instituteLeads
+ * @property InstituteLeads[] $instituteLeads0
+ * @property InstituteLeadsPayments[] $instituteLeadsPayments
+ * @property InstituteLeadsPayments[] $instituteLeadsPayments0
  * @property InstituteStudentsReview[] $instituteStudentsReviews
  * @property InstituteStudentsReview[] $instituteStudentsReviews0
- * @property InterviewProcessFields[] $interviewProcessFields
- * @property InterviewProcessFields[] $interviewProcessFields0
- * @property InterviewScheduler[] $interviewSchedulers
- * @property InterviewScheduler[] $interviewSchedulers0
- * @property InterviewerRecords[] $interviewerRecords
- * @property InterviewerRecords[] $interviewerRecords0
  * @property JobDescription[] $jobDescriptions
  * @property JobDescription[] $jobDescriptions0
- * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
- * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions0
- * @property LearningVideoComments[] $learningVideoComments
- * @property LearningVideoLikes[] $learningVideoLikes
- * @property LearningVideoTags[] $learningVideoTags
- * @property LearningVideoTags[] $learningVideoTags0
- * @property LearningVideos[] $learningVideos
- * @property LearningVideos[] $learningVideos0
- * @property MisEmailLogs[] $misEmailLogs
- * @property NewOrganizationReviews[] $newOrganizationReviews
- * @property NewOrganizationReviews[] $newOrganizationReviews0
- * @property OrganizationAssignedCategories[] $organizationAssignedCategories
- * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
- * @property OrganizationBlogInfoLocations[] $organizationBlogInfoLocations
- * @property OrganizationBlogInformation[] $organizationBlogInformations
- * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
- * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
- * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits0
- * @property OrganizationEmployees[] $organizationEmployees
- * @property OrganizationEmployees[] $organizationEmployees0
- * @property OrganizationImages[] $organizationImages
- * @property OrganizationImages[] $organizationImages0
- * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
- * @property OrganizationInterviewProcess[] $organizationInterviewProcesses0
- * @property OrganizationLocations[] $organizationLocations
- * @property OrganizationLocations[] $organizationLocations0
- * @property OrganizationProductImages[] $organizationProductImages
- * @property OrganizationProductImages[] $organizationProductImages0
- * @property OrganizationProducts[] $organizationProducts
- * @property OrganizationProducts[] $organizationProducts0
- * @property OrganizationQuestionnaire[] $organizationQuestionnaires
- * @property OrganizationQuestionnaire[] $organizationQuestionnaires0
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks0
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks1
- * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes
- * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes0
- * @property OrganizationReviews[] $organizationReviews
- * @property OrganizationReviews[] $organizationReviews0
- * @property OrganizationVideos[] $organizationVideos
- * @property OrganizationVideos[] $organizationVideos0
  * @property Labels[] $labels
  * @property Labels[] $labels0
+ * @property LeadApplicationCalling[] $leadApplicationCallings
+ * @property LeadApplicationCalling[] $leadApplicationCallings0
+ * @property LeadsApplications[] $leadsApplications
+ * @property LeadsApplications[] $leadsApplications0
+ * @property LeadsApplications[] $leadsApplications1
+ * @property LeadsApplications[] $leadsApplications2
+ * @property LeadsApplications[] $leadsApplications3
+ * @property LeadsCollegePreference[] $leadsCollegePreferences
+ * @property LeadsCollegePreference[] $leadsCollegePreferences0
+ * @property LeadsParentInformation[] $leadsParentInformations
+ * @property LeadsParentInformation[] $leadsParentInformations0
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos0
+ * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property LoanApplications[] $loanApplications
- * @property LoanCoApplicants[] $tloanCoApplicants
+ * @property LoanApplications[] $loanApplications0
+ * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
+ * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences0
+ * @property LoanCandidateEducation[] $loanCandidateEducations
+ * @property LoanCandidateEducation[] $loanCandidateEducations0
+ * @property LoanCertificates[] $loanCertificates
+ * @property LoanCertificates[] $loanCertificates0
+ * @property LoanCoApplicants[] $loanCoApplicants
+ * @property LoanCoApplicants[] $loanCoApplicants0
+ * @property LoanDocuments[] $loanDocuments
+ * @property LoanPurpose[] $loanPurposes
+ * @property LoanSanctionReports[] $loanSanctionReports
+ * @property LoanSanctionReports[] $loanSanctionReports0
  * @property MisAssignedMenuItems[] $misAssignedMenuItems
  * @property MisAssignedMenuItems[] $misAssignedMenuItems0
  * @property MisAssignedMenus[] $misAssignedMenuses
  * @property MisAssignedMenus[] $misAssignedMenuses0
+ * @property MisEmailLogs[] $misEmailLogs
  * @property MisUserTasks[] $misUserTasks
  * @property MisUserTasks[] $misUserTasks0
  * @property MisUserTasks[] $misUserTasks1
@@ -292,34 +238,31 @@ namespace common\models;
  * @property NewsTags[] $newsTags0
  * @property OnlineClassComments[] $onlineClassComments
  * @property OnlineClassComments[] $onlineClassComments0
+ * @property OpenAssignedTitles[] $openAssignedTitles
+ * @property OpenAssignedTitles[] $openAssignedTitles0
+ * @property OrganizationFeeAmount[] $organizationFeeAmounts
+ * @property OrganizationFeeComponents[] $organizationFeeComponents
  * @property OrganizationLabels[] $organizationLabels
  * @property OrganizationLabels[] $organizationLabels0
+ * @property OrganizationLoanSchemes[] $organizationLoanSchemes
+ * @property OrganizationQuestionnaire[] $organizationQuestionnaires
+ * @property OrganizationQuestionnaire[] $organizationQuestionnaires0
  * @property Organizations[] $organizations
  * @property Organizations[] $organizations0
  * @property OrganizationsDatabase[] $organizationsDatabases
+ * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
+ * @property PathToOpenLeads[] $pathToOpenLeads
  * @property PollCounterr[] $pollCounterrs
  * @property PoolWebinarOutcomes[] $poolWebinarOutcomes
  * @property PostCategories[] $postCategories
  * @property PostCategories[] $postCategories0
  * @property PostComments[] $postComments
- * @property PostEmbeddedImages[] $postEmbeddedImages
- * @property PostEmbeddedImages[] $postEmbeddedImages0
- * @property PostMedia[] $postMedia
- * @property PostMedia[] $postMedia0
- * @property PostTags[] $postTags
- * @property PostTags[] $postTags0
- * @property Posts[] $posts
- * @property Posts[] $posts0
+ * @property QuestionPoolTags[] $questionPoolTags
+ * @property QuestionPoolTags[] $questionPoolTags0
  * @property QuestionnaireFieldOptions[] $questionnaireFieldOptions
  * @property QuestionnaireFieldOptions[] $questionnaireFieldOptions0
  * @property QuestionnaireFields[] $questionnaireFields
  * @property QuestionnaireFields[] $questionnaireFields0
- * @property QuestionnaireTemplateFieldOptions[] $questionnaireTemplateFieldOptions
- * @property QuestionnaireTemplateFieldOptions[] $questionnaireTemplateFieldOptions0
- * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields
- * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields0
- * @property QuestionPoolTags[] $questionPoolTags
- * @property QuestionPoolTags[] $questionPoolTags0
  * @property QuestionnaireTemplates[] $questionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnaireTemplates0
  * @property QuestionsPool[] $questionsPools
@@ -334,20 +277,6 @@ namespace common\models;
  * @property QuizQuestionsPool[] $quizQuestionsPools0
  * @property Quizzes[] $quizzes
  * @property Quizzes[] $quizzes0
- * @property QuizQuestions[] $quizQuestions
- * @property QuizQuestions[] $quizQuestions0
- * @property Referral[] $referrals
- * @property Referral[] $referrals0
- * @property Organizations[] $organizationEncs0
- * @property ReferralSignUpTracking[] $referralSignUpTrackings
- * @property ReviewedApplications[] $reviewedApplications
- * @property ReviewedApplications[] $reviewedApplications0
- * @property Reviews[] $reviews
- * @property ReviewsType[] $reviewsTypes
- * @property RolePrivileges[] $rolePrivileges
- * @property Roles[] $roles
- * @property ScheduledInterview[] $scheduledInterviews
- * @property ScheduledInterview[] $scheduledInterviews0
  * @property RatingQuestions[] $ratingQuestions
  * @property RatingQuestions[] $ratingQuestions0
  * @property RatingSystem[] $ratingSystems
@@ -355,37 +284,42 @@ namespace common\models;
  * @property RatingSystemAnswers[] $ratingSystemAnswers
  * @property RatingSystemAnswers[] $ratingSystemAnswers0
  * @property RawDatabase[] $rawDatabases
+ * @property Referral[] $referrals
+ * @property Referral[] $referrals0
+ * @property Organizations[] $organizationEncs
+ * @property ReferralSignUpTracking[] $referralSignUpTrackings
+ * @property RejectionReasons[] $rejectionReasons
  * @property ResumeTemplates[] $resumeTemplates
+ * @property Reviews[] $reviews
  * @property SalaryReviews[] $salaryReviews
  * @property SalaryReviews[] $salaryReviews0
  * @property SchoolStudentsReview[] $schoolStudentsReviews
  * @property SchoolStudentsReview[] $schoolStudentsReviews0
- * @property SelectedServices[] $selectedServices
- * @property SelectedServices[] $selectedServices0
  * @property Seo[] $seos
  * @property Seo[] $seos0
- * @property SharingLinks[] $sharingLinks
- * @property SharingLinks[] $sharingLinks0
- * @property ShortlistedApplications[] $shortlistedApplications
- * @property ShortlistedApplications[] $shortlistedApplications0
- * @property ShortlistedOrganizations[] $shortlistedOrganizations
- * @property ShortlistedOrganizations[] $shortlistedOrganizations0
- * @property Sitemap[] $sitemaps
- * @property Sitemap[] $sitemaps0
- * @property SitemapComments[] $sitemapComments
- * @property SitemapComments[] $sitemapComments0
+ * @property ShortlistedApplicants[] $shortlistedApplicants
+ * @property ShortlistedApplicants[] $shortlistedApplicants0
+ * @property ShortlistedApplicants[] $shortlistedApplicants1
  * @property Skills[] $skills
  * @property Skills[] $skills0
- * @property SocialOwnedGroups[] $socialOwnedGroups
- * @property SocialOwnedGroups[] $socialOwnedGroups0
- * @property SocialPages[] $socialPages
- * @property SocialPages[] $socialPages0
- * @property SocialProfiles[] $socialProfiles
- * @property SocialProfiles[] $socialProfiles0
- * @property SocialPublicGroups[] $socialPublicGroups
- * @property SocialPublicGroups[] $socialPublicGroups0
- * @property SpokenLanguages[] $spokenLanguages
- * @property SpokenLanguages[] $spokenLanguages0
+ * @property SkillsUpEmbedPosts[] $skillsUpEmbedPosts
+ * @property SkillsUpEmbedPosts[] $skillsUpEmbedPosts0
+ * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs
+ * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs0
+ * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds
+ * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds0
+ * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries
+ * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries0
+ * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews
+ * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews0
+ * @property SkillsUpPostAssignedSkills[] $skillsUpPostAssignedSkills
+ * @property SkillsUpPostAssignedSkills[] $skillsUpPostAssignedSkills0
+ * @property SkillsUpPostAssignedVideo[] $skillsUpPostAssignedVideos
+ * @property SkillsUpPostAssignedVideo[] $skillsUpPostAssignedVideos0
+ * @property SkillsUpPosts[] $skillsUpPosts
+ * @property SkillsUpPosts[] $skillsUpPosts0
+ * @property SkillsUpSources[] $skillsUpSources
+ * @property SkillsUpSources[] $skillsUpSources0
  * @property SocialGroups[] $socialGroups
  * @property SocialGroups[] $socialGroups0
  * @property SocialLinks[] $socialLinks
@@ -395,6 +329,7 @@ namespace common\models;
  * @property SpeakerExpertises[] $speakerExpertises
  * @property Speakers[] $speakers
  * @property Speakers[] $speakers0
+ * @property Speakers[] $speakers1
  * @property StaticWidgets[] $staticWidgets
  * @property StaticWidgets[] $staticWidgets0
  * @property SubmittedVideos[] $submittedVideos
@@ -410,62 +345,14 @@ namespace common\models;
  * @property SuggestionQuestionnaireFields[] $suggestionQuestionnaireFields0
  * @property Tags[] $tags
  * @property Tags[] $tags0
- * @property TopOrganizationsBlogs[] $topOrganizationsBlogs
- * @property TopOrganizationsBlogsList[] $topOrganizationsBlogsLists
- * @property TrainingApplications[] $trainingApplications
  * @property Teachers[] $teachers
+ * @property TitleMergedDb[] $titleMergedDbs
+ * @property TitleMergedDb[] $titleMergedDbs0
  * @property Topics[] $topics
  * @property TrainingProgramApplication[] $trainingProgramApplications
  * @property TrainingProgramApplication[] $trainingProgramApplications0
  * @property TrainingProgramBatches[] $trainingProgramBatches
  * @property TrainingProgramBatches[] $trainingProgramBatches0
- * @property TrainingProgramBatches[] $trainingProgramBatches1
- * @property TrainingPrograms[] $trainingPrograms
- * @property TrainingPrograms[] $trainingPrograms0
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations0
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations1
- * @property UnclaimedOrganizations[] $organizationEncs1
- * @property UnclaimedOrganizations[] $unclaimedOrganizations
- * @property UserAccessTokens[] $userAccessTokens
- * @property UserAchievements[] $userAchievements
- * @property UserAchievements[] $userAchievements0
- * @property UserAchievements[] $userAchievements1
- * @property UserCoachingTutorials[] $userCoachingTutorials
- * @property UserCoachingTutorials[] $userCoachingTutorials0
- * @property UserEducation[] $userEducations
- * @property UserEducation[] $userEducations0
- * @property UserEducation[] $userEducations1
- * @property UserHobbies[] $userHobbies
- * @property UserHobbies[] $userHobbies0
- * @property UserHobbies[] $userHobbies1
- * @property UserInterests[] $userInterests
- * @property UserInterests[] $userInterests0
- * @property UserInterests[] $userInterests1
- * @property UserPreferences[] $userPreferences
- * @property UserPreferences[] $userPreferences0
- * @property UserPreferredIndustries[] $userPreferredIndustries
- * @property UserPreferredIndustries[] $userPreferredIndustries0
- * @property UserPreferredJobProfile[] $userPreferredJobProfiles
- * @property UserPreferredJobProfile[] $userPreferredJobProfiles0
- * @property UserPreferredLocations[] $userPreferredLocations
- * @property UserPreferredLocations[] $userPreferredLocations0
- * @property UserPreferredSkills[] $userPreferredSkills
- * @property UserPreferredSkills[] $userPreferredSkills0
- * @property UserPrivileges[] $userPrivileges
- * @property UserPrivileges[] $userPrivileges0
- * @property UserPrivileges[] $userPrivileges1
- * @property Roles[] $roleEncs
- * @property UserResume[] $userResumes
- * @property UserResume[] $userResumes0
- * @property UserResume[] $userResumes1
- * @property UserSkills[] $userSkills
- * @property UserSkills[] $userSkills0
- * @property UserSpokenLanguages[] $userSpokenLanguages
- * @property UserSpokenLanguages[] $userSpokenLanguages0
- * @property UserTasks[] $userTasks
- * @property UserTasks[] $userTasks0
- * @property UserTasks[] $userTasks1
  * @property TrainingProgramBatchesBk[] $trainingProgramBatchesBks
  * @property TrainingProgramBatchesBk[] $trainingProgramBatchesBks0
  * @property TrainingProgramSkills[] $trainingProgramSkills
@@ -484,33 +371,38 @@ namespace common\models;
  * @property UnclaimOrganizationLabels[] $unclaimOrganizationLabels0
  * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations
  * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations0
+ * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserOtherDetails[] $userOtherDetails
  * @property UserVerificationTokens[] $userVerificationTokens
- * @property UserVerificationTokens[] $userVerificationTokens0
- * @property UserWorkExperience[] $userWorkExperiences
- * @property UserWorkExperience[] $userWorkExperiences0
- * @property UserWorkExperience[] $userWorkExperiences1
- * @property Cities $cityEnc
+ * @property UserWebinarInterest[] $userWebinarInterests
+ * @property UserWebinarInterest[] $userWebinarInterests0
  * @property Organizations $organizationEnc
  * @property UserTypes $userTypeEnc
- * @property Categories $jobFunction
- * @property AssignedCategories $asignedJobFunction
- * @property WhatsappInvitationMessages[] $whatsappInvitationMessages
- * @property WhatsappInvitationMessages[] $whatsappInvitationMessages0
- * @property WhatsappInvitations[] $whatsappInvitations
- * @property WhatsappInvitations[] $whatsappInvitations0
- * @property YoutubeChannels[] $youtubeChannels
- * @property YoutubeChannels[] $youtubeChannels0
- * @property YoutubeChannels[] $youtubeChannels1
+ * @property Cities $cityEnc
  * @property VideoSessions[] $videoSessions
+ * @property Webinar[] $webinars
+ * @property Webinar[] $webinars0
+ * @property WebinarConversationMessages[] $webinarConversationMessages
+ * @property WebinarConversationMessages[] $webinarConversationMessages0
+ * @property WebinarConversations[] $webinarConversations
+ * @property WebinarConversations[] $webinarConversations0
+ * @property WebinarEvents[] $webinarEvents
+ * @property WebinarEvents[] $webinarEvents0
+ * @property WebinarModerators[] $webinarModerators
+ * @property WebinarModerators[] $webinarModerators0
  * @property WebinarOutcomes[] $webinarOutcomes
  * @property WebinarOutcomes[] $webinarOutcomes0
+ * @property WebinarPayments[] $webinarPayments
+ * @property WebinarPayments[] $webinarPayments0
  * @property WebinarRegistrations[] $webinarRegistrations
  * @property WebinarRegistrations[] $webinarRegistrations0
+ * @property WebinarRequest[] $webinarRequests
+ * @property WebinarRequest[] $webinarRequests0
+ * @property WebinarRequestSpeakers[] $webinarRequestSpeakers
+ * @property WebinarRequestSpeakers[] $webinarRequestSpeakers0
+ * @property WebinarSessions[] $webinarSessions
  * @property WebinarSpeakers[] $webinarSpeakers
  * @property WebinarSpeakers[] $webinarSpeakers0
- * @property Webinars[] $webinars
- * @property Webinars[] $webinars0
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -529,8 +421,8 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'initials_color'], 'required'],
-            [['description', 'objective', 'user_of', 'status'], 'string'],
-            [['dob', 'created_on', 'last_updated_on'], 'safe'],
+            [['description', 'objective', 'user_of', 'status', 'last_visit_through', 'signed_up_through'], 'string'],
+            [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
@@ -3192,6 +3084,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Teachers::className(), ['user_enc_id' => 'user_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -4302,5 +4195,29 @@ class Users extends \yii\db\ActiveRecord
     public function getWebinars0()
     {
         return $this->hasMany(Webinars::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['candidate_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants0()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants1()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['last_updated_by' => 'user_enc_id']);
     }
 }

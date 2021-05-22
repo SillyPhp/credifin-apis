@@ -57,17 +57,33 @@ $this->params['header_dark'] = false;
                             </ul>
                             <?php
                         }
+                        if (!Yii::$app->user->identity->organization) {
+                            ?>
+                            <div class="pro-bar">
+                                <div class="pro-text"><?= $profileProcess ?>% Completed</div>
+                                <div class="progress">
+                                    <?php
+                                    if ($profileProcess < 50) {
+                                        $processClr = 'process-clr';
+                                    } else {
+                                        $processClr = 'process-clr1';
+                                    }
+                                    ?>
+                                    <div class="progress-bar <?= $processClr ?>"
+                                         style="width:<?= $profileProcess ?>%"></div>
+                                </div>
+                            </div>
+                            <?php
+                        }
                         if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                             ?>
                             <a href="<?= Url::to('/' . $user['username'] . '/edit'); ?>" class="edit-profile-btn"
                                target="_blank">Edit Profile</a>
                             <?php
-                            if (!empty($userCv)) {
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
-                                ?>
-                                <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
+                            if (!empty($userCv)) { ?>
+                                <a href="javascript:;" class="edit-profile-btn download-resume" target="_blank"
+                                   data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
+                                    CV</a>
                             <?php }
                         }
                         ?>
@@ -143,8 +159,22 @@ $this->params['header_dark'] = false;
                         <?php }
                         if (!empty($user['skype'])) { ?>
                             <li class="skpe">
-                                <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
+                                <a href="skype:<?= Html::encode($user['skype']) ?>?chat" target="_blank">
                                     <i class="fab fa-skype"></i>
+                                </a>
+                            </li>
+                        <?php }
+
+                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone']) && !empty($userApplied)) { ?>
+                            <li class="whatsapp">
+                                <a href="<?= "https://api.whatsapp.com/send?phone=" . $user['phone'] ?>"
+                                   target="_blank">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </li>
+                            <li class="skpe">
+                                <a href="<?= "tel:" . $user['phone'] ?>" id="phone-val" value="<?= $user['phone'] ?>">
+                                    <i class="fa fa-phone"></i>
                                 </a>
                             </li>
                         <?php }
@@ -154,7 +184,7 @@ $this->params['header_dark'] = false;
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
                                        data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
-                                        <i class="fa fa-comment-alt"></i>
+                                        <i class="fa fa-comments"></i>
                                     </a>
                                 </li>
                             <?php }
@@ -165,18 +195,16 @@ $this->params['header_dark'] = false;
                     </ul>
                     <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
                         if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
-                            ?>
-                            <div class="down-res">
-                                <?php
-                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
+                            if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
                                 ?>
-                                <a href="<?= Url::to($cv, true); ?>" target="_blank" title="Download Resume">Download
-                                    Resume<i
-                                            class="fas fa-download"></i></a>
-                            </div>
-                        <?php }
+                                <div class="down-res">
+                                    <a href="javascript:;" target="_blank" title="Download Resume" class="download-resume"
+                                       data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
+                                        Resume<i
+                                                class="fas fa-download"></i></a>
+                                </div>
+                            <?php }
+                        }
                     } ?>
                 </div>
             </div>
@@ -438,6 +466,43 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.pro-text {
+	text-align: right;
+	font-family: roboto;
+	font-weight: 500;
+}
+.progress {
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.08);
+  margin:0px 0 5px 0;
+}
+.process-clr{
+    background-color:#ff7803;
+}
+.process-clr1{
+    background-color:#00a0e3;
+}
+.progress-bar {
+  height: 16px;
+  border-radius: 20px;
+	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  -webkit-transition: 0.4s linear;
+  -moz-transition: 0.4s linear;
+  -o-transition: 0.4s linear;
+  transition: 0.4s linear;
+  -webkit-transition-property: width, background-color;
+  -moz-transition-property: width, background-color;
+  -o-transition-property: width, background-color;
+  transition-property: width, background-color;
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+}
 .down-res{
     text-align:center;
     margin-top: 5px;
@@ -474,6 +539,9 @@ $this->registerCss('
 }
 .skpe a {
 	background-color: #00a0e3;
+}
+.whatsapp a {
+	background-color: #25D366;
 }
 .talking a {
 	background-color: #3b5998;
@@ -643,7 +711,7 @@ body{background-color:#f9f9f9;}
 .left-side-container {
 	width: 100%;
 	background-color: #fff;
-	padding: 50px;
+	padding: 50px 50px 25px;
 	position: relative;
 	margin: auto;
 	border-radius: 8px;
@@ -691,7 +759,7 @@ body{background-color:#f9f9f9;}
 .inner-header-page .header-details li {
     display: inline-block;
     margin-right: 20px;
-    margin-bottom: 12px;
+    margin-bottom: 0px;
     font-family:roboto;
     font-size:16px;
 }
@@ -788,7 +856,7 @@ body{background-color:#f9f9f9;}
 }
 .right-side-detail ul.social-info li{
 	display:inline-block;
-	margin:5px;
+	margin:5px 2px;
 }
 .right-side-detail ul.social-info li a {
     width: 30px;
@@ -1112,4 +1180,62 @@ ul.status-detail li>strong {
         margin: 5px 0 0 0;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
+$script = <<< JS
+$(document).on('click','#phone-val',function(e) {
+  e.preventDefault();
+  var phone = $(this).attr('value');
+                swal({
+                        title: phone,
+                        text: "",
+                        type:"info",
+                        showCancelButton: true,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Call",
+                        cancelButtonText:"Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             if (isConfirm){
+                                 window.open('tel:' + phone);
+                             }
+                         }
+                        );
+})
+
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fas fa-circle-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
+})
+JS;
+$this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');

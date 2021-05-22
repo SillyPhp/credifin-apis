@@ -14,6 +14,7 @@ use common\models\ApplicationTypes;
 use common\models\spaces\Spaces;
 use common\models\UnclaimedOrganizations;
 use common\models\UserAccessTokens;
+use yii\db\Expression;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -60,10 +61,26 @@ class JobsController extends ApiBaseController
     //create, update, delete, view, index
 //    public $modelClass = 'common\models\EmployerApplications';
 
+    private function userId()
+    {
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        return $user;
+    }
+
     public function actionList()
     {
         $parameters = \Yii::$app->request->post();
         $options = [];
+
+        $options['user_id'] = $this->userId();
 
         if ($parameters['page'] && (int)$parameters['page'] >= 1) {
             $options['page'] = $parameters['page'];
@@ -506,7 +523,7 @@ class JobsController extends ApiBaseController
             ->innerJoinWith(['organizationEnc b' => function ($a) {
                 $a->onCondition(['b.status' => 'Active', 'b.is_deleted' => 0]);
             }], false)
-            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'j.name' => $options['type']]);
+            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1, 'j.name' => $options['type']]);
 
         if (!empty($options['keyword'])) {
 
@@ -532,7 +549,7 @@ class JobsController extends ApiBaseController
     {
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color', new Expression('"0" as openings'),])
             ->joinWith(['organizationTypeEnc b' => function ($y) {
                 $y->select(['b.business_activity_enc_id', 'b.business_activity']);
             }])

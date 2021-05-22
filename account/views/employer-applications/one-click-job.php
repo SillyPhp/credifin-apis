@@ -7,7 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
@@ -136,7 +136,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <div id="fixed_stip">
                                 <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary'])->label(false); ?>
                             </div>
-                            <div id="min_max">
+                            <div id="min_max">job-det
                                 <div class="row">
                                     <div class="col-md-6">
                                         <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min'])->label(false) ?>

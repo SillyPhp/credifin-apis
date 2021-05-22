@@ -12,7 +12,7 @@ $description = $video_detail['description'];
 $image = $video_detail['cover_image'];
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -27,7 +27,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -35,7 +35,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
 <section class="bg-blue">
     <div class="large-container">
         <div class="row">
@@ -50,16 +50,16 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
-                <br/>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-2186770765824304"
-                     data-ad-slot="5305796212"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+<!--                <br/>-->
+<!--                <ins class="adsbygoogle"-->
+<!--                     style="display:block"-->
+<!--                     data-ad-client="ca-pub-2186770765824304"-->
+<!--                     data-ad-slot="5305796212"-->
+<!--                     data-ad-format="auto"-->
+<!--                     data-full-width-responsive="true"></ins>-->
+<!--                <script>-->
+<!--                    (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--                </script>-->
             </div>
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
@@ -253,16 +253,16 @@ $this->params['seo_tags'] = [
                     <div class="row" id="r-videos">
                     </div>
                 </div>
-                <br/>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-2186770765824304"
-                     data-ad-slot="6492214366"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+<!--                <br/>-->
+<!--                <ins class="adsbygoogle"-->
+<!--                     style="display:block"-->
+<!--                     data-ad-client="ca-pub-2186770765824304"-->
+<!--                     data-ad-slot="6492214366"-->
+<!--                     data-ad-format="auto"-->
+<!--                     data-full-width-responsive="true"></ins>-->
+<!--                <script>-->
+<!--                    (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--                </script>-->
             </div>
         </div>
     </div>

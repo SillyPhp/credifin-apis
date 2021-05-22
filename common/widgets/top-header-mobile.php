@@ -94,6 +94,7 @@
                                     <a href="/account/dashboard">Dashboard</a>
                                 </div>
                             </div>
+                            <?= $this->render('education-loans-mobile'); ?>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
                                     <a href="/account/jobs/dashboard">Manage Jobs</a>
@@ -258,6 +259,7 @@
                                     <a href="/account/dashboard">Dashboard</a>
                                 </div>
                             </div>
+                            <?= $this->render('education-loans-mobile'); ?>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
                                     <a href="/account/jobs/dashboard">Manage Jobs</a>

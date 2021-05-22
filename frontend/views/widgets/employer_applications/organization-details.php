@@ -3,6 +3,7 @@
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+
 $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -16,7 +17,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 } else {
                     ?>
                     <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                            color="<?= $initial_color; ?>" font="60px"></canvas>
+                            color="<?= $initial_color; ?>" font="48px"></canvas>
                     <?php
                 }
                 ?>
@@ -24,16 +25,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-            <div class="organization-details">
-                <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
-                <?php endif; ?>
-            </div>
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
-                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Apply</a>
+                <div class="btn-parent">
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                       class="apply-job-btn single-btn"><i
+                                class="fas fa-paper-plane"></i>Apply</a>
+                </div>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -42,14 +41,19 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                             Compare Internship</a>
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
+                    <a href="#"
+                       data-toggle="modal" data-target="#loginModal"
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Shortlist</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
-                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
-                                class="fas fa-check"></i>Applied</a>
+                    <div class="btn-parent">
+                        <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
+                                    class="fas fa-check"></i>Applied</a>
+                    </div>
                     <div class="sub-actions">
                         <?php
                         if ($type == 'Internship'): ?>
@@ -66,9 +70,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
                     <div class="btn-parent">
                         <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
-                                    class="fas fa-paper-plane hvr-icon"></i>Apply
-                            for
-                            <?= $type ?></a>
+                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
                         <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
                     </div>
                     <?php if ($shortlist_btn_display): ?>
@@ -79,13 +81,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Saved</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlisted</a>
                                     <?php
                                 } else {
                                     ?>
                                     <a href="#"
                                        class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                                class="far fa-heart hvr-icon"></i>Save</a>
+                                                class="far fa-heart hvr-icon"></i>Shortlist</a>
                                     <?php
                                 }
                             }
@@ -146,10 +148,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
                 </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
             </div>
-<!--            <div class="qr-code">-->
-<!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
-<!--            </div>-->
+            <!--            <div class="qr-code">-->
+            <!--                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg">-->
+            <!--            </div>-->
             <div class="wts-ap">
                 <h3>Share on Whatsapp via Number</h3>
                 <div class="col-md-12 form-whats">
@@ -164,7 +170,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     ?>
                     <?=
                     $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-                        'options' => ['class' => 'wts-txt','placeholder' => '+91 98 XXXX XXXX'],
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
                         'jsOptions' => [
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
@@ -189,7 +195,8 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="down-img">
             <h3>Download Sharing Image</h3>
-            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Download</a>
+            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
         </div>
     </div>
 <?php
@@ -231,6 +238,16 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
+.organization-details p{
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
 .qr-code {
 	width: 100px;
 	margin: 5px auto 20px;
@@ -265,6 +282,9 @@ $this->registerCss('
 	font-family: roboto;
 	font-weight: 500;
 	border-radius:6px;
+	display: inline-block;
+    margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -306,16 +326,21 @@ $this->registerCss('
     text-align: center;
 }
 .follow-btn:hover{color:#fff;}
-.job-thumb a{
+.job-thumb{
     width: 125px !Important;
     height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{
-    margin:5px;
+#logo_img {
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
 }
 .overlay-top{
     width: 80% !Important;
@@ -327,15 +352,11 @@ $this->registerCss('
     padding-top: 20px;
     padding-bottom: 50px;
 }
-#logo_img {
-    width: 115px !Important;
-    height: 115px !Important;
-}
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -343,9 +364,9 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px 0;
+    padding:5px;
     width: 42%;
-    font-size: 14px;
+    font-size: 12px;
     font-family: roboto;
     border-radius: 2px;
     color: #333;
@@ -406,47 +427,45 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin: 0 5px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+	text-decoration: none !important;
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	border-radius: 50%;
+	margin: 0 5px 5px;
+	font-size: 17px;
+	overflow: hidden;
+	position: relative;
+	color: #fff;
+	border: 2px solid #fff;
+	line-height: 26px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
-}
-.effect a i {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0px;
-  margin-top: 2px;
+	font-size: 14px;
 }
 .effect a.facebook-f:hover{
     background:#3b5998;
     border-color:#3b5998;
 } 
 .effect a.twitter-t:hover{
-    background:#6699FF;
-    border-color:#6699FF;
+    background:#1DA1F2;
+    border-color:#1DA1F2;
 } 
 .effect a.linked-l:hover{
-    background:#0e76a8;
-    border-color:#0e76a8;
+    background:#3B5998;
+    border-color:#3B5998;
 }
 .effect a.whatsapp-w:hover{
-    background:#25D366;
-    border-color:#25D366;
+    background:#4FCE5D;
+    border-color:#4FCE5D;
 }
 .effect a.enve-e:hover{
-    background:#00a0e3;
-    border-color:#00a0e3;
+    background:#DB4437;
+    border-color:#DB4437;
+}
+.effect a.tg-tele:hover{
+    background-color:#0088cc;
+    border-color:#0088cc;  
 }
 .intl-tel-input, .iti {
     width: 100%;
@@ -481,36 +500,45 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     display: block;
     color: #ddd;
 }
+
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
         width: 100% !important;
     }
-    .job-single-head.style2 .job-thumb{
-        margin-top:0px;
-        margin-left:10px;
-    }
     .overlay-top{
         padding-bottom:10px;
     }
-    .job-thumb{max-width: 125px;}
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
-    }
-    .job-head-info h4{
-        margin-left:25px !Important;
+//        max-width: 275px;
+        text-align: center;
     }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }
-    a.add-or-compare{padding: 10px 5px;}
-    .effect.thurio{clear:both;}
+    a.add-or-compare{
+        padding: 10px 5px;
+    }
+    .effect.thurio{
+        clear:both;
+    }
+    .showOnTab{
+        display: block;
+    }
+    .btn-parent{
+        position: fixed;
+        bottom:28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
 }
 @media only screen and (max-width: 720px) {
     .actions-main{
@@ -534,9 +562,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;
@@ -546,6 +571,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .job-head-info h4{
         margin-left:0px !Important;
+    }
+    .btn-parent{
+        position: fixed;
+        bottom:0px;
+        left: 0px;
     }
 }
 ');

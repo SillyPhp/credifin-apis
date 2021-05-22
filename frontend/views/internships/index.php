@@ -11,7 +11,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
             </div>
             <div class="col-md-9 col-sm-12 text-center">
                 <h1 class="intern-banner-heading mt-0 heading-text mb-0">
-                    <?= Yii::t('frontend', 'Find the Right Internship'); ?></h1>
+                    <?= Yii::t('frontend', 'Find the Right Internships'); ?></h1>
                 <h3 class="intern-banner-heading mt-0 heading-text">
                     <?= Yii::t('frontend', 'Kickstart your Career & Gain Work Experience'); ?></h3>
                 <div class="search-by-type row">
@@ -78,7 +78,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     <div class="container">
         <div class="row mt-20">
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Internship Profiles'); ?></h1>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="type-1">
@@ -802,7 +802,7 @@ font-weight: 100;}
         width:90%;
     }
 }
-@media only screen and (max-width: 991px) and (min-width: 375px){
+@media only screen and (max-width: 766px) and (min-width: 375px){
 .sett-marg{
 	margin-top: 15px;
 }

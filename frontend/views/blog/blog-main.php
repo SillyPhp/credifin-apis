@@ -6,14 +6,26 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
 ?>
 
     <section class="blog-header">
-        <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12 set-flex">
+                    <div class="blog-txt">
+                        <h1>Blogging</h1>
+                        <h2>100+ Interesting Blogs & Articles to Read</h2>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 blog-icon col-xs-12">
+                    <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-icon.png') ?>"/>
+                </div>
+            </div>
+        </div>
     </section>
     <section class="background-mirror blog-section-0">
         <div class="container">
             <div class="row">
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
+                        <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
                     </div>
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
@@ -258,7 +270,7 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
                 <div class="trending-posts">
                     <div class="row">
                         <div class="col-md-12">
-                            <?= $this->render('/widgets/follow-widget')?>
+                            <?= $this->render('/widgets/follow-widget') ?>
                         </div>
                     </div>
                     <div class="row">
@@ -366,6 +378,42 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.set-flex {
+    display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	padding-left: 60px;
+	min-height: 380px;
+}
+.blog-header{
+    background-image: url(' . Url::to('@eyAssets/images/pages/blog/blog-hdrbg.png') . ');
+    background-repeat: no-repeat;
+    background-position: left top;
+    min-height: 450px;
+    background-size: cover;
+}
+.blog-icon img{
+    width: 580px;
+}
+.blog-icon{
+    text-align: right;
+	padding: 0;
+	min-height: 430px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+.blog-txt h1{
+    font-family: lobster;
+    font-size: 60px;
+    font-weight: 600;
+}
+.blog-txt h2{
+    font-family: lora;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 .col-item {
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
@@ -1060,6 +1108,77 @@ hr {
         border-width: 1px 80px 0px 0px;
     }
 }
+@media screen and (max-width: 767px) {
+    .blog-icon{
+        min-height: 0px;
+    } 
+    .blog-icon img {
+        width: 438px;
+    }
+    .set-flex {
+        min-height: 228px;
+    }
+}
+@media screen and (max-width: 750px) and (min-width: 601px) {
+    .blog-txt h1 {
+        font-size: 47px;
+    }
+    .blog-txt h2 {
+        font-size: 20px;
+    }
+    .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 410px;
+    }
+}
+@media screen and (max-width: 600px) and (min-width: 450px) {
+    .blog-txt h1 {
+        font-size: 47px;
+    }
+    .blog-txt h2 {
+        font-size: 20px;
+    }
+    .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 250px;
+    }
+}
+@media screen and (max-width: 450px) and (min-width: 320px) {
+    .blog-txt h1 {
+        font-size: 34px;
+    }
+    .blog-txt h2 {
+        font-size: 16px;
+    }
+     .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 250px;
+    }
+)
   /*blog-section-1-css*/   
 //.blog-section-1{
 //    padding:0px 0 70px 0;

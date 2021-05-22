@@ -15,6 +15,7 @@ use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\OrganizationTypes;
+use common\models\PressReleasePubliser;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
@@ -30,6 +31,7 @@ use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SignUpCandidateForm;
 use frontend\models\SubscribeNewsletterForm;
+use frontend\widgets\Login;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -132,6 +134,8 @@ class SiteController extends Controller
     {
         $this->layout = 'main-secondary';
         $credentialsSetup = new CredentialsSetup();
+        $login = new LoginForm();
+        $login->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
@@ -185,6 +189,16 @@ class SiteController extends Controller
         return parent::beforeAction($action);
     }
 
+    private function getPressReleasData($option = []){
+        $data = PressReleasePubliser::find()
+            ->andWhere(['is_deleted' => 0])
+            ->orderBy(['sequence' => SORT_ASC]);
+        if($option['limit']){
+            $data->limit($option['limit']);
+        }
+        return $data->asArray()->all();
+    }
+
     public function actionIndex()
     {
         $model = new ClassEnquiryForm();
@@ -195,7 +209,9 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', ['model' => $model]);
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -877,6 +893,61 @@ class SiteController extends Controller
         }
     }
 
+    public function actionLoadCollegeData()
+    {
+        $type = Yii::$app->request->post('type');
+        switch ($type) {
+            case 'getOverview':
+                return $this->renderAjax('/widgets/college-widgets/college-overview');
+                break;
+            case 'getCourses':
+                return $this->renderAjax('/widgets/college-widgets/college-courses');
+                break;
+            case 'getPlacements':
+                return $this->renderAjax('/widgets/college-widgets/college-placements');
+                break;
+            case 'getScholarship':
+                return $this->renderAjax('/widgets/college-widgets/college-scholarship');
+                break;
+            case 'getCutoff':
+                return $this->renderAjax('/widgets/college-widgets/college-cutoff');
+                break;
+            case 'getFaculty':
+                return $this->renderAjax('/widgets/college-widgets/college-faculty');
+                break;
+            case 'getInfrastructure':
+                return $this->renderAjax('/widgets/college-widgets/college-infrastructure');
+                break;
+            case 'getReviews':
+                return $this->renderAjax('/widgets/college-widgets/college-review');
+                break;
+            case 'getLoans':
+                $model = new AdmissionForm();
+                return $this->renderAjax('/widgets/college-widgets/college-loans',[
+                    'model' => $model,
+                ]);
+                break;
+            case 'getGallery':
+                return $this->renderAjax('/widgets/college-widgets/college-gallery');
+                break;
+            default :
+        }
+    }
+    public function actionCollegeLoanEnquiry(){
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $lead_id = Yii::$app->request->post('lead_id');
+                return $model->updateData($lead_id);
+            }
+        }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+    }
     public function actionLoadData()
     {
         $type = Yii::$app->request->post('type');
@@ -955,6 +1026,13 @@ class SiteController extends Controller
             case 'getSafetySigns':
                 return $this->renderAjax('/widgets/safety-signs');
                 break;
+            case 'getPressRelease':
+                $data = self::getPressReleasData(['limit' => 6]);
+                return $this->renderAjax('/widgets/press-releasee', [
+                    'data' => $data,
+                    'viewBtn' => true,
+                ]);
+                break;
             case 'getOnlineClasses':
                 $model = new ClassEnquiryForm();
                 return $this->renderAjax('/widgets/online-classes', [
@@ -982,6 +1060,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getStudentLoan':
+                return $this->renderAjax('/widgets/institutional-loan');
                 break;
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
@@ -1133,6 +1214,26 @@ class SiteController extends Controller
         return $this->render('teachers-handbook');
     }
 
+    public function actionAnsileryDetail()
+    {
+        return $this->render('ansilery-detail');
+    }
+
+    public function actionFeedsForm()
+    {
+        return $this->render('feeds-form');
+    }
+
+    public function actionFeedPreview()
+    {
+        return $this->render('feed-preview');
+    }
+
+    public function actionFeedTimeline()
+    {
+        return $this->render('feed-timeline');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
@@ -1188,6 +1289,24 @@ class SiteController extends Controller
         return $this->render('expired-jobs');
     }
 
+    public function actionCollegeMain()
+    {
+        return $this->render('college-main');
+    }
+    public function actionDetailedCollege()
+    {
+        return $this->render('detailed-college');
+    }
+    public function actionResumeBuilderLandingPage()
+    {
+        return $this->render('resume-builder-landing-page');
+    }
+
+    public function actionDropResumeLandingPage()
+    {
+        return $this->render('drop-resume-landing-page');
+    }
+
     public function actionEducationalInstitutionLoan()
     {
         $this->layout = 'blank-layout';
@@ -1234,7 +1353,25 @@ class SiteController extends Controller
         return $this->render('loan-application', ['model' => $model, 'ownerShipTypes' => $ownerShipTypes]);
     }
 
-    public function actionResumeBuilderLandingPage(){
-        return $this->render('resume-builder-landing-page');
+    function actionEPartners(){
+        return $this->render('e-partners');
     }
+
+    function actionCollegeOver(){
+        $this->layout = 'blank-layout';
+        return $this->render('college-over');
+    }
+    function actionCollegeLoans(){
+        $this->layout = 'blank-layout';
+        $model = new AdmissionForm();
+        return $this->render('college-loans',[
+            'model' => $model,
+        ]);
+    }
+
+    public function actionAsSeenInIndex()
+    {
+        return $this->render('as-seen-in-index');
+    }
+
 }

@@ -16,7 +16,7 @@ use yii\helpers\Url;
                     <div class="m-widget4 m-widget4--progress">
                         <?php if ($applied) { ?>
                             <?php foreach ($applied as $apply) { ?>
-                                <div class="m-widget4__item row">
+                                <div class="m-widget4__item row <?= (in_array($apply['status'],['Rejected','Cancelled'])) ? 'cand_status can-hide': 'can-else'?>">
                                     <div class="m-widget4__img m-widget4__img--pic col-md-1">
                                         <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" alt="">
                                     </div>
@@ -67,6 +67,10 @@ use yii\helpers\Url;
 
                                 </div>
                             <?php } ?>
+                            <?php  ?>
+                            <div class="show-btn-more">
+                                <button class="show-btn-n" id="showmore">Show More</button>
+                            </div>
                         <?php } else {
                                 ?>
                         <div class="col-md-12">
@@ -126,6 +130,22 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 <?php } ?>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="portlet light view_applications nd-shadow">
+    <div class="portlet-title tabbable-line">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase">Scheduled Interviews<span data-toggle="tooltip" title="Here you will find see your scheduled interviews."><i class="fa fa-info-circle"></i></span>
+            </span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <?= $this->render('/widgets/schedule_interview/calender-widget');?>
             </div>
         </div>
     </div>
@@ -221,6 +241,16 @@ use yii\helpers\Url;
 <?php
     }
 $this->registerCss("
+.show-btn-n {
+	background-color: #00a0e3;
+	border: none;
+	color: #fff;
+	padding: 8px 20px;
+	display: block;
+	text-align: center;
+	margin: 10px auto 0;
+	border-radius: 4px;
+}
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
@@ -418,8 +448,26 @@ $this->registerCss("
     }
 }
 /* Application process css ends */
+.can-hide{
+    display:none !important;
+}
+.can-show{
+    display:block !important;
+}
+
 ");
 $script = <<< JS
+$(window).on('load',function() {
+  var can_else_length = $('.can-else').length;
+  var can_hide_length = $('.can-hide').length;
+  if(can_hide_length <= 0){
+      $('.show-btn-more').css('display','none');
+  }
+  if(can_else_length <= 0){
+      $('.cand_status').removeClass('can-hide');
+      $('.show-btn-more').css('display','none');
+  }
+})
 $(document).on('click','.cancel-app',function(e)
        {
           e.preventDefault();
@@ -459,6 +507,20 @@ $(document).on('click','.cancel-app',function(e)
        });
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+});
+$('#showmore').click(function () {
+    var status = $('.cand_status');
+   var chk = status.hasClass('can-hide');
+   var btn = $(this);
+  if(chk){
+      btn.html('Less');
+      status.addClass('can-show');
+      status.removeClass('can-hide');
+  } else {
+      btn.html('Show More');
+      status.removeClass('can-show');
+      status.addClass('can-hide');
+  }
 });
 JS;
 $this->registerJs($script);

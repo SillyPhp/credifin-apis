@@ -3,6 +3,7 @@ namespace frontend\models\script;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\EmployerApplications;
+use common\models\IndianGovtJobs;
 use Yii;
 use yii\base\Widget;
 use yii\db\Expression;
@@ -18,7 +19,6 @@ class ImageScript extends Widget
 
     public function run()
     {
-        $this->content['bg_icon'] = $this->getProfile($this->content['bg_icon']);
         $params = http_build_query($this->content);
         $url = "https://services.empoweryouth.com/script"."?".$params;
         $ch = curl_init();
@@ -34,16 +34,22 @@ class ImageScript extends Widget
         $results = json_decode($results,true);
         if ($results['status']==200)
         {
-            $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), ['image' => $this->content['app_id'].'.png', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
-                 ->execute();
+            if (isset($this->content['is_govt_job'])&&$this->content['is_govt_job']==true){
+                $update = Yii::$app->db->createCommand()
+                    ->update(IndianGovtJobs::tableName(), ['image' => $this->content['app_id'].'.png'], ['job_enc_id' => $this->content['app_id']])
+                    ->execute();
+            }else{
+                $update = Yii::$app->db->createCommand()
+                    ->update(EmployerApplications::tableName(), ['image' => $this->content['app_id'].'.png', 'last_updated_on' => date('Y-m-d H:i:s')], ['application_enc_id' => $this->content['app_id']])
+                    ->execute();
+            }
             return $results['url'];
         }else{
             return Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
         }
     }
 
-    private function getProfile($profile)
+    public static function getProfile($profile)
     {
         $path = Categories::find()
             ->alias('a')

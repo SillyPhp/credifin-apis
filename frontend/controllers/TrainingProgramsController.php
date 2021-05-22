@@ -8,6 +8,7 @@ use common\models\TrainingProgramBatches;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\TrainingAppliedForm;
 use frontend\models\applications\ApplicationCards;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -141,7 +142,7 @@ class TrainingProgramsController extends Controller
                 ->andWhere(['is_deleted' => 0])
                 ->exists();
         }
-
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('details',[
             'org' => $org_details,
             'data' => $data,
@@ -151,6 +152,7 @@ class TrainingProgramsController extends Controller
             'model' => $model,
             'applied' => $applied_jobs,
             'total_seats' => $sum,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 

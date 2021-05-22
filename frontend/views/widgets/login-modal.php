@@ -21,15 +21,15 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                     </div>
                 </div>
@@ -101,11 +101,27 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
 
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
-                                <div class="indi-btn">
-                                    <a href="/signup/individual">Individual / Candidate</a>
-                                </div>
-                                <div class="organ-btn">
-                                    <a href="/signup/organization">Organization / Companies</a>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="indi">
+                                            <div class="indi-img">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/individual-signup1.gif') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                            </div>
+                                            <div class="indi-btn">
+                                                <a href="/signup/individual">Individual / Candidate</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="organ">
+                                            <div class="organ-img">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/isu1.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                            </div>
+                                        <div class="organ-btn">
+                                            <a href="/signup/organization">Organization / Companies</a>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="new-user">
                                     Existing User?
@@ -167,32 +183,62 @@ $this->registerCss('
 }
 .sign-heading{
     padding: 30px 0px 10px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    
+}
+.indi-img, .organ-img {
+    padding: 20px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 3px 3px 10px rgb(0 0 0 / 10%);
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    width: 100px;
+    margin: 0 auto;
+}
+.indi-img img, .organ-img img {
+    width: 100%;
+    max-width: 85px;
+}
+.indi-btn, .organ-btn {
+    margin-top: 20px;
 }
 .indi-btn a{
     background: #00a0e3;
     color: #fff;
-    padding: 7px 42px;
+    padding: 6px 9px;
     border: 1px solid #00a0e3;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 15px;
-    width: 245px;
+    font-size: 11px;
+//    width: 155px;
     margin: auto;
     margin-top: 5px;
     display: block;
 }
-.organ-btn{
-    margin-top:20px;
+.indi-btn a:hover{
+    background: #fff;
+    color: #00a0e3;
+    transition: 0.2s ease-in;
 }
 .organ-btn a{
-    padding: 10px 37px;
     background: #ff7803;
-    border:1px solid #ff7803;
-    margin-top:10px;
-    color:#fff;
+    color: #fff;
+    padding: 6px 4px;
+    border: 1px solid #ff7803;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 14px;
+    font-size: 11px;
+//    width: 160px;
+    margin: auto;
+    margin-top: 5px;
+    display: block;
+}
+.organ-btn a:hover{
+    background: #fff;
+    color: #ff7803;
+    transition: 0.2s ease-in;
 }
 .uname-padd-10{
     padding-top:5px !important;

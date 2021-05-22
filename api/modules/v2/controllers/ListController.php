@@ -110,7 +110,7 @@ class ListController extends ApiBaseController
                         'b.is_deleted' => 0,
                         'f.college_enc_id' => $college_id
                     ]);
-                    $x->andWhere(['in', 'b.application_for', [0, 2]]);
+                    $x->andWhere(['b.application_for' => 2]);
                 }], false)
                 ->where([
                     'a.status' => 'Approved',
@@ -162,7 +162,7 @@ class ListController extends ApiBaseController
                         'b.status' => 'Active',
                         'b.is_deleted' => 0,
                     ]);
-                    $x->andWhere(['in', 'b.application_for', [0, 2]]);
+                    $x->andWhere(['b.application_for' => 2]);
                 }], false)
                 ->where([
                     'a.status' => 'Approved',

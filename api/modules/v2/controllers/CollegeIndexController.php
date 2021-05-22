@@ -9,7 +9,8 @@ use common\models\CollegeSettings;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
-use common\models\ErexxCollegeApplicationRejection;
+use common\models\ErexxCollegeRejectionReasons;
+use common\models\ErexxCollegeRejections;
 use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
@@ -150,7 +151,7 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -160,7 +161,7 @@ class CollegeIndexController extends ApiBaseController
                             'c.is_deleted' => 0,
                             'f.college_enc_id' => $req['college_id']
                         ]);
-                        $y->andWhere(['in', 'c.application_for', [0, 2]]);
+                        $y->andWhere(['in', 'c.application_for', 2]);
                     }], false);
                 }])
                 ->where(['aa.college_enc_id' => $req['college_id'],
@@ -183,7 +184,6 @@ class CollegeIndexController extends ApiBaseController
                         $f->select(['f.created_by', 'e.name', 'e.slug']);
                         $f->joinWith(['applicationEnc d' => function ($d) {
                             $d->joinWith(['organizationEnc e' => function ($e) {
-//                                $e->groupBy('e.organization_enc_id');
                             }], false);
                         }], false);
                     }], true);
@@ -240,7 +240,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.is_deleted' => 0,
                 'b.status' => 'Active',
                 'b.is_deleted' => 0,
-                'b.application_for' => [0, 2],
+                'b.application_for' => 2,
                 'b.for_all_colleges' => 1,
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
@@ -313,7 +313,7 @@ class CollegeIndexController extends ApiBaseController
                 'bb.has_placement_rights' => 1,
                 'bb.is_deleted' => 0,
                 'bb.status' => 'Active',
-                'a.application_for' => [0, 2],
+                'a.application_for' => 2,
                 'a.for_all_colleges' => 1,
             ])
             ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
@@ -362,7 +362,7 @@ class CollegeIndexController extends ApiBaseController
                         'c.status' => 'Active',
                         'c.is_deleted' => 0,
                         'c.for_all_colleges' => 1,
-                        'c.application_for' => [0, 2]
+                        'c.application_for' => 2
                     ]);
                 }])
                 ->joinWith(['industryEnc h'], false)
@@ -458,6 +458,12 @@ class CollegeIndexController extends ApiBaseController
                     $approve->college_approvel = 1;
                 } elseif ($action == 'Reject') {
                     $approve->is_deleted = 1;
+                    $d['collab_enc_id'] = $approve->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $approve->last_updated_by = $user->user_enc_id;
                 $approve->last_updated_on = date('Y-m-d H:i:s');
@@ -481,6 +487,12 @@ class CollegeIndexController extends ApiBaseController
                 } elseif ($action == 'Reject') {
                     $model->college_approvel = 0;
                     $model->is_deleted = 1;
+                    $d['collab_enc_id'] = $model->collaboration_enc_id;
+                    $d['reasons'] = $req['reasons'];
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_by = $user->user_enc_id;
                 $model->created_on = date('Y-m-d H:i:s');
@@ -543,7 +555,8 @@ class CollegeIndexController extends ApiBaseController
                     'dd.designation',
                     'z.name job_type',
                     'b.is_deleted',
-                    'm.positions'
+                    'm.positions',
+                    'a.created_on'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition([
@@ -584,15 +597,17 @@ class CollegeIndexController extends ApiBaseController
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                 ])
+//                ->andWhere(['or', 'a.for_all_colleges', 1])
                 ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
-                ->groupBy(['bb.organization_enc_id'])
-                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
+//                ->groupBy(['bb.organization_enc_id'])
+//                ->orderBy([new \yii\db\Expression('a.status = "Active" desc')])
+                ->orderBy(new Expression('rand()'))
                 ->asArray()
                 ->all();
 
@@ -601,6 +616,11 @@ class CollegeIndexController extends ApiBaseController
                 $data = [];
                 $locations = [];
                 $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
                 $data['name'] = $j['name'];
                 $data['logo'] = $j['logo'];
                 $data['is_deleted'] = $j['is_deleted'];
@@ -625,6 +645,7 @@ class CollegeIndexController extends ApiBaseController
                         $positions += $l['positions'];
                     }
                 }
+                $data['is_exclusive'] = $this->__exclusiveJob($j['application_enc_id']);
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 if ($positions) {
                     $data['positions'] = $positions;
@@ -658,12 +679,34 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+    private function __exclusiveJob($app_id)
+    {
+        $exclusive_job = ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b'])
+            ->where(['a.employer_application_enc_id' => $app_id, 'b.for_all_colleges' => 0])
+            ->count();
+
+        if ($exclusive_job == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function actionGetReasons()
     {
         if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['reason_for']) && empty($params['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reasons = RejectionReasons::find()
                 ->select(['rejection_reason_enc_id', 'reason'])
-                ->where(['is_deleted' => 0, 'reason_by' => 0])
+                ->where(['is_deleted' => 0, 'reason_by' => 0, 'reason_for' => $params['reason_for']])
                 ->andWhere(['or', ['created_by' => $user->user_enc_id], ['status' => 'Approved']])
                 ->all();
 
@@ -696,7 +739,10 @@ class CollegeIndexController extends ApiBaseController
                     $data->is_deleted = 1;
                     $d['erexx_app_id'] = $data->application_enc_id;
                     $d['reasons'] = $req['reasons'];
-                    $this->__rejectReasons($d);
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $data->last_updated_by = $user->user_enc_id;
                 $data->last_updated_on = date('Y-m-d H:i:s');
@@ -720,7 +766,10 @@ class CollegeIndexController extends ApiBaseController
                     $model->is_deleted = 1;
                     $d['erexx_app_id'] = $model->application_enc_id;
                     $d['reasons'] = $req['reasons'];
-                    $this->__rejectReasons($d);
+                    $d['user_id'] = $user->user_enc_id;
+                    if ($d['reasons']) {
+                        $this->__rejectReasons($d, 1);
+                    }
                 }
                 $model->created_on = date('Y-m-d H:i:s');
                 $model->created_by = $user->user_enc_id;
@@ -736,53 +785,69 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    private function __rejectReasons($data)
+    private function __rejectReasons($data, $reason_for)
     {
-        if ($data['reasons']) {
-            foreach ($data['reasons'] as $reason) {
-                $rejection = new ErexxCollegeApplicationRejection();
+        $rejection = new ErexxCollegeRejections();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $rejection->erexx_college_rejection_enc_id = $utilitiesModel->encrypt();
+        if ($reason_for == 0) {
+            $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
+        } elseif ($reason_for == 1) {
+            $rejection->erexx_collab_enc_id = $data['collab_enc_id'];
+        }
+        $rejection->created_by = $data['user_id'];
+        $rejection->created_on = date('Y-m-d H:i:s');
+        if ($rejection->save()) {
+            foreach ($data['reasons'] as $reason_id) {
+                $reason = new ErexxCollegeRejectionReasons();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $rejection->erexx_college_application_rejection_enc_id = $utilitiesModel->encrypt();
-                if (!empty($reason['reason_id'])) {
-                    $rejection->rejection_reason_enc_id = $reason['reason_id'];
-                } else if (!empty($reason['reason'])) {
-                    $data['reason'] = $reason['reason'];
-                    if ($id = $this->__saveReason($data)) {
-                        $rejection->rejection_reason_enc_id = $id;
-                    }
+                $reason->erexx_college_rejection_reasons_enc_id = $utilitiesModel->encrypt();
+                $reason->erexx_college_rejection_enc_id = $rejection->erexx_college_rejection_enc_id;
+                $reason->reason_enc_id = $reason_id;
+                $reason->created_by = $data['user_id'];
+                $reason->created_on = date('Y-m-d H:i:s');
+                if (!$reason->save()) {
+                    print_r($reason->getErrors());
+                    die();
                 }
-                $rejection->erexx_employer_app_enc_id = $data['erexx_app_id'];
-                $rejection->created_by = $data['user_id'];
-                $rejection->created_on = date('Y-m-d H:i:s');
-                $rejection->save();
             }
+        } else {
+            print_r($rejection->getErrors());
+            die();
         }
-
     }
 
-    private function __saveReason($data)
+    public function actionSaveReason()
     {
         if ($user = $this->isAuthorized()) {
-            $reasons = RejectionReasons::find()
-                ->where(['reason' => $data['reason']])
-                ->one();
-            if ($reasons) {
-                return $reasons->rejection_reason_enc_id;
+            $data = Yii::$app->request->post();
+
+            if (!isset($data['reason']) && empty($data['reason'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
+
+            if (!isset($data['reason_for']) && empty($data['reason_for'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $reason = new RejectionReasons();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $reason->rejection_reason_enc_id = $utilitiesModel->encrypt();
             $reason->reason = $data['reason'];
             $reason->reason_by = 0;
+            $reason->reason_for = (int)$data['reason_for'];
             $reason->created_by = $user->user_enc_id;
             $reason->created_on = date('Y-m-d H:i:s');
             if ($reason->save()) {
-                $reason->rejection_reason_enc_id;
+                return $this->response(200, ['status' => 200, 'data' => ['rejection_reason_enc_id' => $reason->rejection_reason_enc_id, 'reason' => $reason->reason]]);
             } else {
-                return false;
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -875,24 +940,14 @@ class CollegeIndexController extends ApiBaseController
             $req = [];
             $req['college_id'] = $organizations['college_id'];
 
-            $candidate = UserOtherDetails::find()
-                ->alias('a')
-                ->select(['b.first_name', 'b.last_name', 'b.user_enc_id', 'a.starting_year', 'a.ending_year', 'a.cgpa', 'a.semester', 'c.name', 'cc.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b' => function ($b) {
-                    $b->joinWith(['cityEnc b1']);
-                }], false)
-                ->joinWith(['courseEnc cc'], false)
-                ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.user_enc_id' => $data['user_id']])
-                ->asArray()
-                ->one();
-
             $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->select(['a.user_other_details_enc_id', 'a.user_enc_id',
                     'a.cgpa', 'a.university_roll_number', 'b.first_name', 'b.last_name',
                     'CONCAT(b.first_name, " " ,b.last_name) user_full_name',
-                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                    'b.email', 'b.phone',
+                    'a.starting_year', 'a.ending_year', 'a.semester', 'c.name',
+                    'c1.course_name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
@@ -916,31 +971,100 @@ class CollegeIndexController extends ApiBaseController
             $candidates = $candidates->asArray()
                 ->all();
 
-            if ($candidate) {
-                $candidate['loan_applied'] = $this->loanApplied($candidate['user_enc_id']);
-                $candidate['applied_companies'] = $this->appliedCompanies($candidate['user_enc_id']);
-            }
             if ($candidates) {
                 foreach ($candidates as $key => $val) {
                     $candidates[$key]['loan_applied'] = $this->loanApplied($val['user_enc_id']);
                     $candidates[$key]['applied_companies'] = $this->appliedCompanies($val['user_enc_id']);
+                    $candidates[$key]['applied_jobs'] = $this->appliedJobs($val['user_enc_id'], 'Jobs');
+                    $candidates[$key]['applied_internships'] = $this->appliedJobs($val['user_enc_id'], 'Internships');
                 }
             }
 
-            return $this->response(200, ['status' => 200, 'data' => $candidate, 'all_candidates' => $candidates]);
+            return $this->response(200, ['status' => 200, 'all_candidates' => $candidates]);
         }
+    }
+
+    private function appliedJobs($user_id, $type)
+    {
+        $applied = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select([
+                'a.applied_application_enc_id',
+                'a.application_enc_id',
+                'a.current_round',
+                'g.name application_type',
+                'b.slug',
+                'b.status',
+                'd.slug comp_slug',
+                'd.name organization_name',
+                'e2.name title',
+                'e1.name profile',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+            ])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->innerJoinWith(['erexxEmployerApplications c']);
+                $b->joinWith(['organizationEnc d']);
+                $b->joinWith(['title e' => function ($e) {
+                    $e->joinWith(['parentEnc e1']);
+                    $e->joinWith(['categoryEnc e2']);
+                }], false);
+                $b->joinWith(['applicationTypeEnc g']);
+            }], false)
+            ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                $f->joinWith(['cityEnc f1'], false);
+            }])
+            ->where([
+                'a.created_by' => $user_id,
+                'a.is_deleted' => 0,
+//                    'b.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => 2,
+                'd.is_erexx_approved' => 1,
+                'd.has_placement_rights' => 1,
+                'd.status' => 'Active',
+                'd.is_deleted' => 0,
+                'c.status' => 'Active',
+                'c.is_deleted' => 0,
+                'c.is_college_approved' => 1
+            ])
+            ->andWhere(['g.name' => $type])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        if ($applied) {
+            foreach ($applied as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied[$i]['cities'] = implode(',', $cities);
+                if ($a['status'] != 'Active') {
+                    $applied[$i]['is_closed'] = true;
+                } else {
+                    $applied[$i]['is_closed'] = false;
+                }
+                $i++;
+            }
+        }
+
+        return $applied;
     }
 
     private function loanApplied($user_id)
     {
         return LoanApplications::find()
             ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.amount', 'a.status'])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->innerJoinWith(['userOtherDetails b1']);
-            }])
-            ->joinWith(['educationLoanPayments c'])
+            }], false)
+            ->joinWith(['educationLoanPayments c'], false)
             ->where(['a.is_deleted' => 0, 'b1.user_enc_id' => $user_id, 'c.payment_status' => ['captured', 'created']])
-            ->exists();
+            ->asArray()
+            ->all();
     }
 
     private function appliedCompanies($user_id)
@@ -949,7 +1073,7 @@ class CollegeIndexController extends ApiBaseController
             ->distinct()
             ->alias('a')
             ->select(['a.applied_application_enc_id',
-                'a.application_enc_id', 'b2.name',
+                'a.application_enc_id', 'b2.name', 'b2.slug',
                 'CASE WHEN b2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b2.logo_location, "/", b2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b2.name, "&size=200&rounded=false&background=", REPLACE(b2.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
             ->joinWith(['applicationEnc b' => function ($b) {
@@ -980,7 +1104,6 @@ class CollegeIndexController extends ApiBaseController
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -1045,7 +1168,7 @@ class CollegeIndexController extends ApiBaseController
                         'c.status' => 'Active',
                         'c.is_deleted' => 0,
                         'c.for_all_colleges' => 1,
-                        'c.application_for' => [0, 2]
+                        'c.application_for' => 2
                     ]);
                 }])
                 ->joinWith(['industryEnc h'], false)
@@ -1063,6 +1186,13 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['erexxCollaborators0 g' => function ($g) use ($college_id) {
                     $g->onCondition(['g.college_enc_id' => $college_id]);
                 }], false)
+                ->joinWith(['organizationLabels h1' => function ($h) {
+                    $h->select(['h1.organization_enc_id', 'h2.name']);
+                    $h->joinWith(['labelEnc h2' => function ($h2) {
+                        $h2->onCondition(['h2.is_deleted' => 0]);
+                    }], false);
+                    $h->onCondition(['h1.is_deleted' => 0, 'h1.label_for' => 1]);
+                }])
                 ->where([
                     'a.is_erexx_approved' => 1,
                     'a.has_placement_rights' => 1,
@@ -1107,6 +1237,22 @@ class CollegeIndexController extends ApiBaseController
                     new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
                     new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
                 ]);
+            }
+
+            if (isset($param['filter']) && !empty($param['filter'])) {
+                if ($param['filter'] == 'Verified') {
+                    $companies->andWhere(['h2.name' => 'Verified']);
+                } elseif ($param['filter'] == 'Hot') {
+                    $companies->andWhere(['h2.name' => 'Hot']);
+                } elseif ($param['filter'] == 'Featured') {
+                    $companies->andWhere(['h2.name' => 'Featured']);
+                } elseif ($param['filter'] == 'New') {
+                    $companies->andWhere(['h2.name' => 'New']);
+                } elseif ($param['filter'] == 'Promoted') {
+                    $companies->andWhere(['h2.name' => 'Promoted']);
+                } elseif ($param['filter'] == 'Trending') {
+                    $companies->andWhere(['h2.name' => 'Trending']);
+                }
             }
 
             if (!empty($company_name)) {
@@ -1746,7 +1892,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.has_placement_rights' => 1,
                     'bb.is_deleted' => 0,
                     'bb.status' => 'Active',
-                    'a.application_for' => [0, 2],
+                    'a.application_for' => 2,
                     'a.for_all_colleges' => 1,
                 ])
                 ->asArray()
@@ -1838,7 +1984,7 @@ class CollegeIndexController extends ApiBaseController
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
                             'c.for_all_colleges' => 1,
-                            'c.application_for' => [0, 2]
+                            'c.application_for' => 2
                         ]);
                     }])
                     ->joinWith(['industryEnc h'], false)
@@ -1968,5 +2114,255 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+    public function actionUserAppliedCompanies()
+    {
+        if ($user = $this->isAuthorized()) {
+            $companies = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.name'])
+                ->joinWith(['employerApplications b' => function ($b) {
+                    $b->innerJoinWith(['appliedApplications c' => function ($c) {
+                        $c->innerJoinWith(['createdBy d' => function ($d) {
+                            $d->innerJoinWith(['userOtherInfo e']);
+                        }]);
+                    }]);
+                }], false)
+                ->groupBy(['a.organization_enc_id'])
+                ->where(['e.organization_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->all();
+            if ($companies) {
+                return $this->response(200, ['status' => 200, 'data' => $companies]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionEmptyJobs()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['limit']) && !empty($param['limit'])) {
+                $limit = Yii::$app->request->post('limit');
+            } else {
+                $limit = 10;
+            }
+
+            if (!isset($param['type']) && empty($param['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $type = $param['type'];
+
+            $jobs = ErexxEmployerApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select([
+                    'bb.name',
+                    'bb.slug org_slug',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'e.name parent_category',
+                    'ee.name title',
+                    'a.employer_application_enc_id',
+                    'a.is_college_approved',
+                    'b.slug',
+                    'b.status',
+                    'b.last_date',
+                    'b.joining_date',
+                    'm.fixed_wage as fixed_salary',
+                    'm.wage_type salary_type',
+                    'm.max_wage as max_salary',
+                    'm.min_wage as min_salary',
+                    'm.wage_duration as salary_duration',
+                    'dd.designation',
+                    'z.name job_type',
+                    'm.positions'
+                ])
+                ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
+                    $b->joinWith(['interviewProcessEnc y' => function ($y) {
+                        $y->select(['y.interview_process_enc_id']);
+                        $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+                            $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
+                        }]);
+                    }]);
+                    $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+                        $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+                        $bc->joinWith(['educationalRequirementEnc cb'], false);
+                    }]);
+                    $b->joinWith(['applicationSkills bbc' => function ($bbc) {
+                        $bbc->select(['bbc.application_enc_id', 'skill']);
+                        $bbc->joinWith(['skillEnc cbb'], false);
+                    }]);
+                    $b->joinWith(['designationEnc dd'], false);
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationOptions m'], false);
+                    $b->joinWith(['applicationPlacementLocations f' => function ($f) {
+                        $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                        $f->joinWith(['locationEnc ff' => function ($z) {
+                            $z->joinWith(['cityEnc g']);
+                        }], false);
+                    }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
+                }], true)
+                ->where([
+                    'a.college_enc_id' => $college_id,
+                    'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'bb.is_deleted' => 0,
+                    'a.status' => 'Active',
+                    'a.is_college_approved' => 1,
+                    'b.application_for' => 2,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1
+                ]);
+            if ($type) {
+                $jobs->andWhere(['z.name' => $type]);
+            }
+            if ($limit) {
+                $jobs->limit($limit);
+            }
+            $result = $jobs
+                ->orderBy([new \yii\db\Expression('b.status = "Active" desc')])
+                ->asArray()
+                ->all();
+
+
+            $i = 0;
+            foreach ($result as $val) {
+                if ($val['salary_type'] == "Fixed") {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                    } else {
+                        $result[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                    }
+                } elseif ($val['salary_type'] == "Negotiable") {
+                    if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                        }
+                    } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                        }
+                    } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                        }
+                    }
+                }
+                $i++;
+            }
+
+            $resultt = [];
+            foreach ($result as $j) {
+
+                $count = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['COUNT(a.applied_application_enc_id) count'])
+                    ->innerJoinWith(['createdBy f' => function ($f) {
+                        $f->innerJoinWith(['userOtherInfo g']);
+                        $f->onCondition(['f.is_deleted' => 0]);
+                    }], false)
+                    ->where(['a.application_enc_id' => $j['employerApplicationEnc']['application_enc_id'],
+                        'a.is_deleted' => 0, 'g.organization_enc_id' => $college_id,
+                        'g.is_deleted' => 0
+                    ])
+                    ->asArray()
+                    ->one();
+
+                $data = [];
+                $locations = [];
+                $educational_requirement = [];
+                $skills = [];
+                $positions = 0;
+                $datetime1 = new \DateTime(date('Y-m-d', strtotime($j['created_on'])));
+                $datetime2 = new \DateTime(date('Y-m-d'));
+
+                $diff = $datetime1->diff($datetime2);
+                $data['filling_soon'] = ($diff->days > 10) ? true : false;
+                $data['name'] = $j['name'];
+                $data['job_type'] = $j['job_type'];
+                $data['logo'] = $j['logo'];
+                $data['org_slug'] = $j['org_slug'];
+                $data['title'] = $j['title'];
+                $data['is_college_approved'] = $j['is_college_approved'];
+                $data['slug'] = $j['slug'];
+                $data['last_date'] = $j['last_date'];
+                $data['joining_date'] = $j['joining_date'];
+                $data['designation'] = $j['designation'];
+                $data['salary'] = $j['salary'];
+                if ($j['status'] != 'Active') {
+                    $data['is_closed'] = true;
+                } else {
+                    $data['is_closed'] = false;
+                }
+                foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                    if (!in_array($l['name'], $locations)) {
+                        array_push($locations, $l['name']);
+                        $positions += $l['positions'];
+                    }
+                }
+
+                foreach ($j['employerApplicationEnc']['applicationEducationalRequirements'] as $a) {
+                    array_push($educational_requirement, $a['educational_requirement']);
+                }
+
+                foreach ($j['employerApplicationEnc']['applicationSkills'] as $s) {
+                    array_push($skills, $s['skill']);
+                }
+
+                $data['is_exclusive'] = $this->__exclusiveJob($j['employer_application_enc_id']);
+                $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
+                $data['positions'] = $positions ? $positions : $j['positions'];
+                $data['education'] = implode(',', $educational_requirement);
+                $data['skills'] = implode(',', $skills);
+                $data['applied_count'] = $count['count'];
+
+                if ($count['count'] == 0) {
+                    array_push($resultt, $data);
+                }
+
+            }
+
+            return $this->response(200, ['status' => 200, 'data' => $resultt]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 
 }

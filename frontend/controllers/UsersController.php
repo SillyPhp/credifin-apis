@@ -16,6 +16,7 @@ use common\models\UserWorkExperience;
 use frontend\models\profile\UserProfileBasicEdit;
 use frontend\models\profile\UserProfilePictureEdit;
 use frontend\models\profile\UserProfileSocialEdit;
+use frontend\models\UserTaskForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
@@ -154,6 +155,8 @@ class UsersController extends Controller
         if (!count($user) > 0) {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
+        $processModel = new UserTaskForm();
+        $profileProcess = $processModel->getProfileCompleted($user['user_enc_id']);
 
         $skills = \common\models\UserSkills::find()
             ->alias('a')
@@ -185,14 +188,14 @@ class UsersController extends Controller
         if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
-                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active','re.resume','re.resume_location'])
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 're.resume', 're.resume_location'])
                 ->joinWith(['applicationEnc ae'], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->joinWith(['resumeEnc re'],false)
+                ->joinWith(['resumeEnc re'], false)
                 ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
@@ -247,6 +250,7 @@ class UsersController extends Controller
             'hobbies' => $hobbies,
             'interests' => $interests,
             'slug' => $slug,
+            'profileProcess' => $profileProcess
         ];
 
         if (Yii::$app->user->isGuest) {
@@ -348,9 +352,10 @@ class UsersController extends Controller
     public function actionUpdateProfilePicture()
     {
         $userProfilePicture = new UserProfilePictureEdit();
-        if ($userProfilePicture->load(Yii::$app->request->post())) {
+        if (Yii::$app->request->post()) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($userProfilePicture->update()) {
+            $image = Yii::$app->request->post('data');
+            if ($userProfilePicture->update($image)) {
                 $response = [
                     'status' => 'success',
                     'title' => 'Success',
@@ -364,6 +369,34 @@ class UsersController extends Controller
                     'message' => 'Already Updated.'
                 ];
                 return $response;
+            }
+        }
+    }
+
+    public function actionResumeLink()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $data = Yii::$app->request->post();
+
+            try {
+
+                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $data['resume_location'] . DIRECTORY_SEPARATOR . $data['resume'], "15 minutes");
+
+                return [
+                    'status' => 200,
+                    'cv_link' => $cv,
+                    'message' => 'success'
+                ];
+
+            } catch (\Exception $e) {
+                return [
+                    'status' => 500,
+                    'message' => 'an error occurred'
+                ];
             }
         }
     }

@@ -252,7 +252,7 @@ Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEA
                     </div>
                 </div>
                 <div class="review-summary mt-40">
-                    <?= $this->render("/widgets/square_ads"); ?>
+                    <!--                    <//= $this->render("/widgets/square_ads"); ?>-->
                 </div>
             </div>
         </div>
@@ -1111,6 +1111,7 @@ width:100%;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
+    color:#333;
 }
 .tt-suggestion
 {

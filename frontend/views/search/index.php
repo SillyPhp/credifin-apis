@@ -150,10 +150,10 @@ use yii\helpers\Url;
 <section id="jobs">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="type-1">
                     <div>
                         <a href="javascript:;" class="btn btn-3 search-jobs-link">
@@ -173,10 +173,10 @@ use yii\helpers\Url;
 <section id="internships">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Internships</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="type-1">
                     <div>
                         <a href="javascript:;" class="btn btn-3 search-internships-link">
@@ -213,12 +213,8 @@ use yii\helpers\Url;
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
-.application-card-img{
-    margin-top: 25px;
-    margin-left:0px;
-}
-.application-card-description{
-    margin: 20px 0px 0px 20px;
+.salary a {
+    color: #2b7cb7;
 }
 .search-bar{
     width:66%;
@@ -608,12 +604,15 @@ a.wn-overlay-text {
 }
 
 .company-name-span{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width:100%;
-    padding:0 10px;
+    width: 100%;
+    padding: 0 10px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 10px;
+    text-overflow: ellipsis;
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {
@@ -885,6 +884,7 @@ $(document).on('click','.application-card-add', function(event){
 });
 
 JS;
+echo $this->render('/widgets/mustache/application-card');
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -892,74 +892,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<script id="application-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-             class="application-card-main">
-            {{#city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                </span>
-            {{/city}}
-            {{^city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
-            {{/city}}
-            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                <div class="application-card-img">
-                    <a href="{{organization_link}}">
-                        {{#logo}}
-                        <img src="{{logo}}">
-                        {{/logo}}
-                        {{^logo}}
-                        <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
-                                color="{{color}}" font="35px"></canvas>
-                        {{/logo}}
-                    </a>
-                </div>
-                <div class="application-card-description">
-                    <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
-                    {{#salary}}
-                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                    {{/salary}}
-                    {{^salary}}
-                    <h5>Negotiable</h5>
-                    {{/salary}}
-                    {{#type}}
-                    <h5>{{type}}</h5>
-                    {{/type}}
-                    {{#experience}}
-                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                    {{/experience}}
-                </div>
-            </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10">
-                {{organization_name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{organization_name}}</h4>
-            </div>
-            {{/last_date}}
-            <div class="application-card-wrapper">
-                <a href="{{link}}" class="application-card-open">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
-            </div>
-        </div>
-    </div>
-    {{/.}}
-</script>
 <script id="un-card" type="text/template">
     {{#.}}
     <div class="col-md-3">

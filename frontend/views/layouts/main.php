@@ -23,7 +23,12 @@ AppAssets::register($this);
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-    <?php
+    <?php if (Yii::$app->params->options->crawl) { ?>
+        <meta name="robots" content="index"/>
+    <?php } else { ?>
+        <meta name="robots" content="noindex,nofollow"/>
+        <meta name="googlebot" content="noindex,nofollow">
+    <?php }
     if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
         foreach ($this->params['seo_tags']['rel'] as $key => $value) {
             $this->registerLinkTag([
@@ -61,6 +66,7 @@ AppAssets::register($this);
                 "query-input": "required name=search_term_string"
             }
         }
+
 
     </script>
 </head>
@@ -112,7 +118,7 @@ AppAssets::register($this);
                                         <?php
                                     }
                                     ?>
-<!--                                    <span class="logo-beta">Beta</span>-->
+                                    <!--                                    <span class="logo-beta">Beta</span>-->
                                 </a>
                             </div>
                             <div class="ey-menu-main">
@@ -233,7 +239,7 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile',[
+                            <?= $this->render('@common/widgets/top-header-mobile', [
                                 'data' => $this->params['sub_header']
                             ]); ?>
                         </div>
@@ -244,9 +250,10 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-<!--        <div id="page-loading" class="page-loading">-->
-<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
-<!--        </div>-->
+        <!--        <div id="page-loading" class="page-loading">-->
+        <!--            <img src="-->
+        <? //= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+        <!--        </div>-->
         <div id="auth_loading_img">
         </div>
         <div class="auth_fader"></div>
@@ -357,7 +364,7 @@ AppAssets::register($this);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="f-logo">
                         <a href="<?= "/"; ?>" title='Empower Youth'>
                             <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
@@ -366,10 +373,10 @@ AppAssets::register($this);
                     </div>
                     <div class="ftxt">Empowering youth and going beyond</div>
                 </div>
-                <div class="col-md-3 col-sm-12">
+                <div class="col-md-3 col-sm-12 col-xs-12">
                     <div class="app-btn">
                         <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
-                           title='Download Empower Youth App on Google Play'>
+                           title='Download Empower Youth App on Google Play' target="_blank">
                             <img alt='Get it on Google Play'
                                  src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
                                  title='Download Empower Youth App on Google Play'/>
@@ -406,45 +413,44 @@ AppAssets::register($this);
 </div>
 <script type="text/javascript">
     function handleCredentialResponse(response) {
-        if (response.credential){
+        if (response.credential) {
             var token = parseJwt(response.credential);
             authLogin(token);
-        }
-        else{
+        } else {
             alert('Server Error');
         }
 
     }
 
-    function parseJwt (token) {
+    function parseJwt(token) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 
         return JSON.parse(jsonPayload);
     };
+
     function authLogin(token) {
         $.ajax({
-            url:'/site/one-tap-auth',
-            method:'POST',
-            data:{token:token,returnUrl:returnUrl},
-            beforeSend:function(e)
-            {
+            url: '/site/one-tap-auth',
+            method: 'POST',
+            data: {token: token, returnUrl: returnUrl},
+            beforeSend: function (e) {
                 $('#auth_loading_img').addClass('show');
-                $('.auth_fader').css('display','block');
+                $('.auth_fader').css('display', 'block');
             },
-            success:function (e) {
+            success: function (e) {
                 $('#auth_loading_img').removeClass('show');
-                $('.auth_fader').css('display','none');
+                $('.auth_fader').css('display', 'none');
                 if (response.status == 201) {
                     toastr.error(response.message, response.title);
                 }
             },
-            complete: function() {
+            complete: function () {
                 $('#auth_loading_img').removeClass('show');
-                $('.auth_fader').css('display','none');
+                $('.auth_fader').css('display', 'none');
             }
         })
     }
@@ -915,7 +921,7 @@ $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 var hasAccessForSubHeader = true;
-var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare"];
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
 for(var jj = 0;jj<preventHeaderFor.length;jj++){
     if(thispageurl == preventHeaderFor[jj]){
         hasAccessForSubHeader = false;

@@ -17,7 +17,7 @@ class JobApply extends Model
 {
     public $id;
     public $check;
-    public $resume_list;
+    public $resume_id;
     public $questionnaire_id;
     public $fill_question;
     public $location_pref;
@@ -26,7 +26,7 @@ class JobApply extends Model
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
+            [['id', 'resume_file', 'status', 'check', 'resume_id', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
         ];
     }
 
@@ -40,41 +40,53 @@ class JobApply extends Model
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
-        $appliedModel = new AppliedApplications();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
-        $appliedModel->application_number = date('ymd') . time();
-        $appliedModel->application_enc_id = $this->id;
-//        $appliedModel->resume_enc_id = $this->resume_list;
-        $appliedModel->status = $this->status;
-        $appliedModel->created_on = date('Y-m-d h:i:s');
-        $appliedModel->created_by = $user->user_enc_id;
-        if ($appliedModel->save()) {
-            if(count($this->location_pref) > 0) {
-                foreach ($this->location_pref as $location) {
-                    $locModel = new AppliedApplicationLocations;
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $locModel->application_location_enc_id = $utilitiesModel->encrypt();
-                    $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
-                    $locModel->city_enc_id = $location;
-                    $locModel->created_on = date('Y-m-d h:i:s');
-                    $locModel->created_by = $user->user_enc_id;
-                    $app_id = $appliedModel->applied_application_enc_id;
-                    $id = $this->id;
-                    $user_enc_id = $user->user_enc_id;
-                    if (!$locModel->save()) {
-                        print_r($locModel->getErrors());
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $appliedModel = new AppliedApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
+            $appliedModel->application_number = date('ymd') . time();
+            $appliedModel->application_enc_id = $this->id;
+            $appliedModel->resume_enc_id = $this->resume_id;
+            $appliedModel->status = $this->status;
+            $appliedModel->created_on = date('Y-m-d h:i:s');
+            $appliedModel->created_by = $user->user_enc_id;
+            if ($appliedModel->save()) {
+                if (count($this->location_pref) > 0) {
+                    foreach ($this->location_pref as $location) {
+                        $locModel = new AppliedApplicationLocations;
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $locModel->application_location_enc_id = $utilitiesModel->encrypt();
+                        $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
+                        $locModel->city_enc_id = $location;
+                        $locModel->created_on = date('Y-m-d h:i:s');
+                        $locModel->created_by = $user->user_enc_id;
+                        if (!$locModel->save()) {
+                            $transaction->rollBack();
+                            print_r($locModel->getErrors());
+                        }
                     }
                 }
+                $app_id = $appliedModel->applied_application_enc_id;
+                $id = $this->id;
+                $status = [
+                    'applied_application_enc_id' => $appliedModel->applied_application_enc_id,
+                ];
+                if ($this->save_process($id, $app_id, $user->user_enc_id)) {
+                    $transaction->commit();
+                    return $status;
+                } else {
+                    $transaction->rollBack();
+                    return false;
+                }
+            } else {
+                $transaction->rollBack();
+                return false;
             }
-            $status = [
-                'applied_application_enc_id' => $appliedModel->applied_application_enc_id,
-            ];
-            $this->save_process($id, $app_id, $user_enc_id);
-            return $status;
-        } else {
+        } catch (Exception $e) {
+            $transaction->rollBack();
             return false;
         }
     }
@@ -103,5 +115,6 @@ class JobApply extends Model
                 return false;
             }
         }
+        return true;
     }
 }

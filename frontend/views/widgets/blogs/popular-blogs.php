@@ -43,19 +43,25 @@ $this->registerCss('
     border-radius:5px; 
     position:relative; 
 }
-.tp-icon img{
-    border-radius:5px; 
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transition: .3s ease-in-out;
-    transition: .3s ease-in-out;  
-    opacity: 1;
-    display: block;
-    width: 100%;
-    height: auto;
+.tp-icon img {
+	border-radius: 5px;
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+	opacity: 1;
+	display: block;
+	width: 100%;
+	height: 50px;
+	object-fit: cover;
 }
-.tp-heading{
-    font-weight:bold;
+.tp-heading {
+	font-size: 14px;
+	font-family: roboto;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .no-padd{
     padding-left:0px !important;

@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <!--light box-->
@@ -8,7 +9,16 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
             <div class="light-box-content">
                 <form id="temProfilesForm">
                 <div class="tab_pane" id="tab_index_1">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="disFlex">
+                                <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
+                                </a>
                                 <h3 class="text-center" style="font-family: roboto;">Select Profile For Your Job</h3>
+                            </div>
+                        </div>
+                    </div>
                                 <div class="row">
                                     <ul class="relationList">
                                         <?php foreach ($primary_cat as $pCat){ ?>
@@ -37,9 +47,9 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                 <div class="row">
                     <div class="col-md-12">
                         <div class="set-pos">
-                            <div class="pull-right btn-next" id="btnNext">
-                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-                            </div>
+<!--                            <div class="pull-right btn-next" id="btnNext">-->
+<!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
+<!--                            </div>-->
                             <div class="pull-right margin_right" id="btnContinue">
                                 <button class="btn btn-primary tab_key_continue" id="tab_key_continue">Continue</button>
                             </div>
@@ -76,6 +86,14 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
 <!--light box-->
 <?php
 $this->registerCss("
+.disFlex{
+    position: relative;
+    text-align: center;
+}
+.disFlex a{
+    position: absolute !important;
+    left:10px;
+}
 .margin_right{
 margin: 0 6px;
 }
@@ -357,7 +375,11 @@ $script = <<< JS
     }
   })
  }
- 
+ $(document).on('click','input[name="pRadio"]',function(e) {
+   var p = $('input[name="pRadio"]:checked').val();
+        $('#hidden_profile').val(p);
+        goNext(p);
+ })
  function goNext(id) {
          tabs1.hide();
          ajaxFunction(id);
@@ -371,9 +393,9 @@ $script = <<< JS
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
     var tabs2 = $('#tab_index_2');
-     $('input[type="radio"]:checked').each(function(){
-      $(this).prop('checked', false);
-  });
+  //    $('input[type="radio"]:checked').each(function(){
+  //     $(this).prop('checked', false);
+  // });
     tabs2.hide();
     tabs1.show();
     Btback.hide(); 
@@ -431,7 +453,7 @@ $script = <<< JS
            $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
        }else {
            $('#choose_temp').hide();
-           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile, <button class="tab_key_continue btn btn-default">Continue</button> Creating Job With Your Current Selected Profile</h3></div>')
+           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile,<br> Creating Job With Your Current Selected Profile</h3><button class="tab_key_continue btn btn-default">Continue</button></div>')
        }
      }
    })

@@ -10,8 +10,8 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h2 class="text-white">The Easiest Way to Find Best Institutes</h2>
-                    <h4 class="text-white">“Learning never exhausts the mind”</h4>
+                    <h1 class="text-white">The Easiest Way to Find Best Institutes</h1>
+                    <h3 class="text-white1">“Learning never exhausts the mind”</h3>
                     <div class="search-by-type">
                         <form class="form-inline" action="<?= Url::to('/training-programs/list?'); ?>">
                             <div class="input-group mb-10 mr-10 col-md-5">
@@ -35,9 +35,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/online-classes', [
-    'model' => $model,
-]) ?>
+
     <section>
         <div class="container">
             <div class="row mt-20">
@@ -106,11 +104,20 @@ $this->registerCss('
     padding-top: 150px;
     background-size: cover;
     background-position: 43%;
+    padding-bottom:30px;
 }
 .text-white{
     color:white;
     font-family:roboto;
+    font-size:40px;
     }
+.text-white1{
+    color:white;
+    font-family:roboto;
+    font-size:25px;
+    margin:0;
+    }    
+    
 .search-by-type {
     width: 84%;
     background-color: #14141459;

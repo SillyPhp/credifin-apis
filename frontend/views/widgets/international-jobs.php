@@ -16,7 +16,7 @@ if ($type == 'internships') {
                     <div class="col-lg-12">
                         <div class="col-md-8 col-sm-8 col-xs-12">
                             <div class="heading-set">
-                                <h1 class="heading-style"> International Employment Opportunities </h1>
+                                <h2 class="heading-style"> International Employment Opportunities </h2>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-4 col-xs-12">
@@ -41,7 +41,7 @@ if ($type == 'internships') {
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
-                                        <a href="<?= Url::to($url . 'us') ?>" title="">
+                                        <a href="<?= Url::to($url . 'usa') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>USA</span>
                                         </a>

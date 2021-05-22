@@ -6,6 +6,7 @@ use common\models\AssignedCategories;
 use common\models\AssignedCollegeCourses;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
@@ -141,8 +142,12 @@ class UtilitiesController extends ApiBaseController
         return $cities;
     }
 
-    public function actionGetCompanies($search = null)
+    public function actionGetCompanies($search = null, $filterby = null, $limit = null)
     {
+        $l = 20;
+        if ($limit) {
+            $l = $limit;
+        }
         $organizations = Organizations::find()
             ->select([
                 'organization_enc_id',
@@ -169,7 +174,10 @@ class UtilitiesController extends ApiBaseController
                 ['like', 'slug', $search]
             ]);
         }
-        $organizations = $organizations->asArray()
+        if ($filterby) {
+            $organizations->andWhere(['like', 'name', $filterby . '%', false]);
+        }
+        $organizations = $organizations->limit($l)->asArray()
             ->all();
 
         $i = 0;
@@ -230,6 +238,43 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, $cities);
+    }
+
+    public function actionFeaturedCompanies()
+    {
+        $org = Organizations::find()
+            ->select(['name', '(CASE
+                WHEN logo IS NULL OR logo = "" THEN
+                CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                ) organization_logo'])
+            ->where(['is_deleted' => 0, 'status' => 'Active', 'is_featured' => 1])
+            ->limit(12)
+            ->asArray()
+            ->all();
+
+        if ($org) {
+            return $this->response(200, ['status' => 200, 'org' => $org]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionPoolCourses($keyword = null)
+    {
+        $courses = CollegeCoursesPool::find()
+            ->select(['course_enc_id', 'course_name']);
+        if ($keyword != null) {
+            $courses->andFilterWhere(['like', 'course_name', $keyword]);
+            $courses->limit(10);
+        } else {
+            $courses->limit(35);
+            $courses->orderBy(['course_name' => SORT_ASC]);
+        }
+        $courses = $courses->asArray()
+            ->all();
+
+        return $courses;
     }
 
 }

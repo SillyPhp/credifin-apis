@@ -29,6 +29,13 @@ endif;
                 'services' => $services,
             ]);
             ?>
+            <?php if (Yii::$app->user->identity->organization->organization_enc_id){ ?>
+            <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
+
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'){ ?>
+                <?= $this->render('/widgets/download-app', ['scriptModel' => $scriptModel]) ?>
+            <?php } ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -111,7 +118,13 @@ endif;
                         </div>
                     </div>
                 </div>
-
+                <?php
+                if($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual'){
+                    echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
+                        'loanApplication' => $loanApplication,
+                    ]);
+                }
+                ?>
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
@@ -119,6 +132,7 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
+
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
@@ -279,7 +293,7 @@ endif;
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['jobs']['data'],
                                 'per_row' => 3,
-                                'col_width' => 'col-lg-4 col-md-4 col-sm-4',
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                             ]);
                         } else {
                             ?>
@@ -339,7 +353,7 @@ endif;
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['internships']['data'],
                                 'per_row' => 3,
-                                'col_width' => 'col-lg-4 col-md-4 col-sm-4',
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                             ]);
                         } else {
                             ?>
@@ -357,11 +371,13 @@ endif;
                         ?>
                     </div>
                 </div>
-                <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
+
+
+
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
-            <!--                <div class="portlet-title" style="border-bottom:none;">-->
-            <!--                    <div class="car-main row">-->
+            <!--                 <div class="portlet-title" style="border-bottom:none;">-->
+                              <div class="car-main row">
             <!--                        <div class="c-head">Careers</div>-->
             <!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
             <!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->
@@ -426,6 +442,10 @@ endif;
     </script>
 <?php
 $this->registerCss("
+a:focus, a:hover{
+    outline: none;
+    text-decoration: none !important;
+}
 .portlet.light.portlet-fit{
     padding:12px 20px 15px;
 }

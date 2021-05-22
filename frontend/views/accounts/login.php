@@ -1,7 +1,9 @@
 <?php
+
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\bootstrap\ActiveForm;
+
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg19.png');
 Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->referrer . '"', \yii\web\View::POS_HEAD);
 ?>
@@ -52,25 +54,28 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     'placeholder' => $loginFormModel->getAttributeLabel('password'),
 ]);
 ?>
-    <div class="checkbox pull-left mt-15">
-        <?=
-        $loginForm->field($loginFormModel, 'rememberMe', [
-            'template' => '{input}{error}',
-        ])->checkbox();
-        ?>
-    </div>
-    <div class="form-group pull-right mt-10">
-        <?= Html::submitButton('Login', ['class' => 'btn main-blue-btn btn-md btn-block', 'name' => 'login-button']); ?>
-    </div>
-    <div class="clear text-center pt-10">
-        <a class="text-theme-colored font-weight-600 font-12"
-           href="<?= Url::to('/forgot-password'); ?>"><?= Yii::t('frontend', 'Forgot Your Password?'); ?></a>
+<?= $loginForm->field($loginFormModel, 'referer',['template'=>'{input}'])->hiddenInput()->label(false) ?>
+    <div class="flex-data">
+        <div class="checkbox m-0">
+            <?=
+            $loginForm->field($loginFormModel, 'rememberMe', [
+                'template' => '{input}{error}',
+            ])->checkbox();
+            ?>
+        </div>
+        <div class="clear">
+            <a class="text-theme-colored font-weight-600 font-12"
+               href="<?= Url::to('/forgot-password'); ?>"><?= Yii::t('frontend', 'Forgot Your Password?'); ?></a>
+        </div>
+        <div class="form-group m-0 log-b">
+            <?= Html::submitButton('Login', ['class' => 'btn main-blue-btn btn-md btn-block m-0 pad-m', 'name' => 'login-button']); ?>
+        </div>
     </div>
     <div class="separator pb-10 text-black">
         <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
     </div>
     <div class="form-group mt-10">
-        <?= \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ]); ?>
+        <?= \yii\authclient\widgets\AuthChoice::widget(['baseAuthUrl' => ['site/auth'], 'popupMode' => true,]); ?>
     </div>
     <div class="separator pb-10 text-black">
         <span><?= Yii::t('frontend', 'Or Signup as'); ?></span>
@@ -89,6 +94,17 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     </div>
 <?php ActiveForm::end();
 $this->registerCss('
+.pad-m{padding: 12px 30px !important;}
+.flex-data {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap:wrap;
+}
+//.flex-data div{flex-basis:50%;}
+.clear {
+    text-align: right;
+}
 .auth-clients{
     display: flex !important;
     justify-content: center !important;
@@ -101,6 +117,14 @@ $this->registerCss('
 }
 .font-weight-600 {
     font-weight: 600 !important;
+}
+@media only screen and (max-width: 500px) {
+.checkbox.m-0, .clear, .log-b {
+    width: 50%;
+}
+.log-b {
+    margin: 0 auto !important;
+}
 }
 ');
 $script = <<< JS

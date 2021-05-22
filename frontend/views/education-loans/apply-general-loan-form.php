@@ -1,26 +1,15 @@
 <?php
 use yii\helpers\Url;
-use kartik\widgets\Select2;
+
+$userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
-//if (Yii::$app->params->paymentGateways->mec->icici) {
-//    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-//    if ($configuration->mode === "production") {
-//        $access_key = $configuration->credentials->production->access_key;
-//        $secret_key = $configuration->credentials->production->secret_key;
-//        $url = $configuration->credentials->production->url;
-//    } else {
-//        $access_key = $configuration->credentials->sandbox->access_key;
-//        $secret_key = $configuration->credentials->sandbox->secret_key;
-//        $url = $configuration->credentials->sandbox->url;
-//    }
-//}
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
 $image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -35,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -43,18 +32,17 @@ $this->params['seo_tags'] = [
     ],
 ];
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
-//Yii::$app->view->registerJs('var access_key = "' .$access_key. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
 ?>
-<!--        <script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>-->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-start">
-                        <form action="" id="myForm">
+                        <form action="" id="myForm" autocomplete="off">
                             <div class="tab" id="step1">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -66,7 +54,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="number" class="input-group-text">
                                             Name of Applicant (Student Name)
                                         </label>
-                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -75,7 +63,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                             Date Of Birth (mm/dd/yyyy)
                                         </label>
                                         <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                            <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
+                                            <input value="<?= ($userDetail->dob)?date('m/d/Y', strtotime($userDetail->dob)) : "" ?>" type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
                                             <div class="input-group-addon">
                                                 <span class=""><i class="fas fa-calendar-alt"></i></span>
                                             </div>
@@ -87,8 +75,10 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label class="input-group-text" for="inputGroupSelect02">
                                             Current city where you live
                                         </label>
-                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                        <div id="the-basics-city">
+                                        <input value="<?= ($userDetail->cityEnc->name)?$userDetail->cityEnc->name : "" ?>" type="text" name="location" id="location" class="typeahead form-control text-capitalize"
                                                autocomplete="off" placeholder="City"/>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -137,7 +127,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="annulIncome" class="input-group-text">
                                             Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
-                                        <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
                                                placeholder="Enter Loan Amount">
                                     </div>
                                 </div>
@@ -235,7 +225,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="number" class="input-group-text">
                                             Phone Number (WhatsApp & Call)
                                         </label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                        <input value="<?= ($userDetail->phone)? substr($userDetail->phone, -10) : "" ?>" type="text" class="form-control" id="mobile" name="mobile"
                                                placeholder="Enter Phone Number">
                                     </div>
                                 </div>
@@ -244,7 +234,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                         <label for="email" class="input-group-text">
                                             Email Address
                                         </label>
-                                        <input type="text" class="form-control" id="email" name="email"
+                                        <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
@@ -331,7 +321,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                                                     <label for="co-anualincome" class="input-group-text">
                                                         Annual Income
                                                     </label>
-                                                    <input type="text" name="co-anualincome[1]" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
                                                 </div>
                                             </div>
                                         </div>
@@ -368,14 +358,61 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
                         <div class="max-300">
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
-                                <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
                                 <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
                                     the students in a particular <span>academic year</span>.</li>
                                 <li>- Loan will be <span>repaid</span> with in the semester</li>
                             </ul>
                             <div class="cl-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
-                                     alt="">
+                                <p>Our Lenders</p>
+                                <ul>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="lender-icon">
+                                            <span class="li-text">+10 More</span>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -389,7 +426,7 @@ Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\Vie
 <?php
 $this->registerCss('
 #loadBtn{
-display:none;
+    display:none;
 }
 
 .padd-20{
@@ -450,9 +487,35 @@ border: 1px solid #ddd !important;
     display:inline-block;
     padding-right:15px;
 }
-.cl-icon img{
-    margin-top: 30px;
-    max-height: 300px;
+.cl-icon{
+    margin-top: 20px;
+}
+.cl-icon p{
+    color:#fff;
+    font-size:20px;
+    padding-top:10px;
+    font-weight:bold;
+    padding-bottom:10px;
+}
+.cl-icon ul li{
+    display: inline-grid;
+    background: #fff;
+    height: 100px;
+    width: 100px; 
+    border-radius: 10px; 
+    margin:0 5px 15px;
+    box-shadow: 0 0 10px rgba(149,139,139, .3);
+}
+.cl-icon ul li img{
+    max-width: 80px;
+    max-height: 60px;
+}
+.lender-icon{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
 }
 .form-start{
     max-width:400px;
@@ -487,7 +550,7 @@ border: 1px solid #ddd !important;
     color: #fff;
 }
 .max-300{
-    max-width:350px;
+    max-width:auto;
     margin:0 auto;
 }
 .sign-up-details {
@@ -544,7 +607,7 @@ border: 1px solid #ddd !important;
 .cl-heading{
     color:#fff;
     font-size:20px;
-    padding-top:30px;
+//    padding-top:30px;
     font-weight:bold;
 }
 .footer{
@@ -865,6 +928,49 @@ width:100% !important;
 
 ');
 $script = <<< JS
+function getCities()
+    {
+        var _cities = [];
+         $.ajax({     
+            url : '/api/v3/countries-list/get-cities', 
+            method : 'GET',
+            data:{'country':'India'},
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.cities;
+                $.each(res,function(index,value) 
+                  {   
+                   _cities.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('cities could not fetch');
+                }
+            } 
+        });
+        $('#the-basics-city .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_cities',
+         source: substringMatcher(_cities)
+        }); 
+    }
+getCities();  
+function timer(time,update,complete) {
+    var start = new Date().getTime();
+    var interval = setInterval(function() {
+        var now = time-(new Date().getTime()-start);
+        if( now <= 0) {
+            clearInterval(interval);
+            complete();
+        }
+        else update(Math.floor(now/1000));
+    },100); // the smaller this number, the more accurate the timer will be
+}
+var global_r = false;
 $(document).on('click','input[name="college_taken"]',function(e) {
   var val = $(this).val();
   if (val==1){
@@ -1056,6 +1162,23 @@ function substringMatcher (strs) {
          source: substringMatcher(_courses)
         }); 
     }
+    $.validator.addMethod("check_date_of_birth", function (value, element) {
+    
+    var dateOfBirth = value;
+    var arr_dateText = dateOfBirth.split("/");
+    day = arr_dateText[1];
+    month = arr_dateText[0];
+    year = arr_dateText[2];
+    var mydate = new Date();
+    mydate.setFullYear(year, month - 1, day);
+    
+    var maxDate = new Date();
+    if ((maxDate.getFullYear()-year) <= 3) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above the age of 3 can be covered";
+        return false;
+    }
+    return true;
+});
     $('#mobile, #loanamount').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
        var form = $("#myForm");  
@@ -1077,6 +1200,7 @@ function substringMatcher (strs) {
 				},
 				'dob':{
 				    required:true,
+				    check_date_of_birth: true
 				},
 				'mobile':{
 				    required:true,
@@ -1101,14 +1225,16 @@ function substringMatcher (strs) {
 				},
 				'loanamount':{ 
 				    required:true,
-				    min:10000
+				    min:10000,
+				    max:5000000
 				},
 				'co-name[1]':{
 				    required:true,
 				},
 				'co-anualincome[1]':{
 				    required:true,
-				    min:500 
+				    min:10000,
+				    max:5000000
 				},
 				'co-relation[1]':{ 
 				    required:true,
@@ -1118,7 +1244,8 @@ function substringMatcher (strs) {
 				},
 				'co-anualincome[2]':{
 				    required:true,
-				    min:500
+				    min:500,
+				    max:5000000
 				},
 				'co-relation[2]':{ 
 				    required:true,
@@ -1228,9 +1355,8 @@ function substringMatcher (strs) {
 		current_fs.hide();
 	});
     
-    $('.datepicker, .datepicker2, .datepicker3').datepicker({
-    format: 'mm/dd/yyyy',
-    startDate: '-3d'
+    $('.datepicker3').datepicker({
+     todayHighlight: true
 });
     
 function ajaxSubmit()
@@ -1282,6 +1408,7 @@ function ajaxSubmit()
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
                 clg_pref:clg_pref,
                 country_enc_id:$('#country_name').val(),
+                refferal_id : refferal_id
                 },  
             beforeSend:function(e)
             {  
@@ -1335,20 +1462,6 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     "order_id": ptoken, 
     "handler": function (response){
         updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
-                swal({
-                        title: "",
-                        text: "Your Application Is Submitted Successfully",
-                        type:'success',
-                        showCancelButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             location.reload(true);
-                         }
-                        );
     },
     "prefill": {
         "name": $('#applicant_name').val(),
@@ -1411,8 +1524,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
                      });
     }
 );
-} 
-
+}
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
@@ -1425,9 +1537,68 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
               status:status, 
               signature:signature,
             },
+            beforeSend:function(e){
+                $('#subBtn').hide();     
+                $('#prevBtn').hide();     
+                $('#loadBtn').show();   
+            },
             success:function(e)
             {
-                //console.log(e);
+                if (status=="captured"){
+                    if (e.response.status=='200'){
+                         if (userID==''){
+                          swal({
+                            title: "",
+                            text: "Your Application Is Submitted Successfully Please Sign Up To Track and Process Your Application Further, You Can Then Check Status Of Your Application On Dashboard",
+                            type:'success',
+                            showCancelButton: false,  
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Proceed To Sign Up",
+                            closeOnConfirm: false, 
+                        },
+                            function (isConfirm) { 
+                                 if (isConfirm==true){
+                                     window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                                 }
+                            }
+                        );
+                        } else {
+                        timer(
+                         8000, // milliseconds
+                         function(timeleft) { // called every step to update the visible countdown
+                         document.getElementById('timer').innerHTML = "<b style='color:#00A0E3 !important'>"+timeleft+"</b> second(s)";
+                        },
+                        function() { // what to do after
+                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                    }
+                        );     
+                          swal({
+                                title: "",
+                                html: true,  
+                                text: "Your Application Is Submitted Successfully, You Will Redirected To Dashboard in <span id='timer'></span> For Document and Information Processing on Further Stage, Don't Close The Page",
+                                type:'success',
+                                showCancelButton: false,  
+                                confirmButtonClass: "btn-primary",
+                                confirmButtonText: "Proceed To Dashboard",
+                                closeOnConfirm: false, 
+                            },
+                                function (isConfirm) { 
+                                  if (isConfirm==true){
+                                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                                    }
+                                  }
+                            );
+                        }
+                    } else {
+                        swal({
+                         title:"Payment Error",
+                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+                      });
+                    }
+                }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
             }
     })
 }

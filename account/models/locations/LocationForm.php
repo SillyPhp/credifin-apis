@@ -4,8 +4,8 @@ namespace account\models\locations;
 
 use Yii;
 use yii\base\Model;
-use borales\extensions\phoneInput\PhoneInputValidator;
-use borales\extensions\phoneInput\PhoneInputBehavior;
+//use borales\extensions\phoneInput\PhoneInputValidator;
+//use borales\extensions\phoneInput\PhoneInputBehavior;
 use common\models\Utilities;
 use account\models\locations\OrganizationLocations;
 
@@ -28,15 +28,15 @@ class LocationForm extends Model {
     public function formName() {
         return '';
     }
-
-    public function behaviors() {
-        return [
-            [
-                'class' => PhoneInputBehavior::className(),
-                'countryCodeAttribute' => 'countryCode',
-            ],
-        ];
-    }
+//
+//    public function behaviors() {
+//        return [
+//            [
+//                'class' => PhoneInputBehavior::className(),
+//                'countryCodeAttribute' => 'countryCode',
+//            ],
+//        ];
+//    }
 
     public function rules() {
         return [
@@ -49,7 +49,7 @@ class LocationForm extends Model {
             [['address'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['postal_code'], 'string', 'max' => 7],
-            [['phone'], PhoneInputValidator::className()],
+//            [['phone'], PhoneInputValidator::className()],
         ];
     }
 

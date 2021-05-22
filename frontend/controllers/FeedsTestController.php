@@ -43,6 +43,7 @@ class FeedsTestController extends Controller {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $results = curl_exec($ch);
             $results = json_decode($results, true);
+            //git
             if (isset($results)&&count($results)>0){
                 foreach ($results as $result)
                 {
@@ -55,10 +56,11 @@ class FeedsTestController extends Controller {
                         $employerApplication = new EmployerApplications();
                         $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $employerApplication->application_enc_id = $utilitiesModel->encrypt();
+                        $employerApplication->application_enc_id = Yii::$app->security->generateRandomString(12);
                         $employerApplication->application_number = rand(1000, 10000) . time();
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s');
+                        $employerApplication->description = $result['description'];
                         $employerApplication->image = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
@@ -69,7 +71,7 @@ class FeedsTestController extends Controller {
                             $categoriesModel = new Categories;
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                            $categoriesModel->category_enc_id = Yii::$app->security->generateRandomString(12);
                             $categoriesModel->name = $result['title'];
                             $utilitiesModel->variables['name'] = $result['title'];
                             $utilitiesModel->variables['table_name'] = Categories::tableName();
@@ -93,7 +95,7 @@ class FeedsTestController extends Controller {
                                 $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company'],$result['title'],null,null,$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
-                                $utilitiesModel->variables['name'] = $result['company'] . '-' . $chk_assigned['name'];
+                                $utilitiesModel->variables['name'] = $result['company'] . '-' . $chk_assigned['name'].'-' . $employerApplication->application_number;
                                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
                                 $utilitiesModel->variables['field_name'] = 'slug';
                                 $employerApplication->slug = $utilitiesModel->create_slug();
@@ -119,7 +121,7 @@ class FeedsTestController extends Controller {
                             $model = new UnclaimedOrganizations();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $model->organization_enc_id = $utilitiesModel->encrypt();
+                            $model->organization_enc_id = Yii::$app->security->generateRandomString(12);
                             $model->organization_type_enc_id = null;
                             $utilitiesModel->variables['name'] = $result['company'].rand(10, 1000);
                             $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
@@ -152,7 +154,7 @@ class FeedsTestController extends Controller {
                             $unclaimOptions = new ApplicationUnclaimOptions();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $unclaimOptions->unclaim_options_enc_id = $utilitiesModel->encrypt();
+                            $unclaimOptions->unclaim_options_enc_id = Yii::$app->security->generateRandomString(12);
                             $unclaimOptions->application_enc_id = $employerApplication->application_enc_id;
                             $unclaimOptions->job_url = $result['url'];
                             $unclaimOptions->job_level = null;
@@ -164,7 +166,7 @@ class FeedsTestController extends Controller {
                             $placementCity = new ApplicationPlacementCities();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $placementCity->placement_cities_enc_id = $utilitiesModel->encrypt();
+                            $placementCity->placement_cities_enc_id = Yii::$app->security->generateRandomString(12);
                             $placementCity->application_enc_id = $employerApplication->application_enc_id;
                             $placementCity->location_name = $result['location'];
                             $placementCity->created_on = date('Y-m-d H:i:s');
@@ -205,7 +207,8 @@ class FeedsTestController extends Controller {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             $result = curl_exec($ch);
             $result = json_decode($result, true);
-            if (isset($result['results'])&&count($result['results']>0)){
+            //muse
+            if (isset($result['results'])&&count($result['results'])>0){
                 foreach ($result['results'] as $result)
                 {
                     $r = EmployerApplications::find()
@@ -217,10 +220,11 @@ class FeedsTestController extends Controller {
                         $employerApplication = new EmployerApplications();
                         $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $employerApplication->application_enc_id = $utilitiesModel->encrypt();
+                        $employerApplication->application_enc_id = Yii::$app->security->generateRandomString(12);
                         $employerApplication->application_number = rand(1000, 10000) . time();
                         $employerApplication->application_type_enc_id = $type->application_type_enc_id;
                         $employerApplication->published_on = date('Y-m-d H:i:s',strtotime($result['publication_date']));
+                        $employerApplication->description = $result['contents'];
                         $employerApplication->image = '1';
                         $employerApplication->status = 'Active';
                         $category_execute = Categories::find()
@@ -231,7 +235,7 @@ class FeedsTestController extends Controller {
                             $categoriesModel = new Categories;
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                            $categoriesModel->category_enc_id = Yii::$app->security->generateRandomString(12);
                             $categoriesModel->name = $result['name'];
                             $utilitiesModel->variables['name'] = $result['name'];
                             $utilitiesModel->variables['table_name'] = Categories::tableName();
@@ -239,7 +243,7 @@ class FeedsTestController extends Controller {
                             $categoriesModel->slug = $utilitiesModel->create_slug();
                             $categoriesModel->created_by = null;
                             if ($categoriesModel->save()) {
-                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
+                                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, 'Jobs',$result['company']['name'],$result['short_name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 print_r($categoriesModel->getErrors());
                             }
@@ -252,10 +256,13 @@ class FeedsTestController extends Controller {
                                 ->asArray()
                                 ->one();
                             if (empty($chk_assigned)) {
-                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['name'],3,$result['short_name'],$othr->category_enc_id);
+                                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, 'Jobs',$result['company']['name'],$result['short_name'],3,$result['short_name'],$othr->category_enc_id);
                             } else {
                                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
-                                $employerApplication->slug = $result['short_name'].'-'.rand(1000,100000);
+                                $utilitiesModel->variables['name'] = $result['company']['name'] . '-' . $result['short_name'].'-' . $employerApplication->application_number;
+                                $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+                                $utilitiesModel->variables['field_name'] = 'slug';
+                                $employerApplication->slug = $utilitiesModel->create_slug();
                             }
                         }
                         $employerApplication->type = 'Full Time';
@@ -278,7 +285,7 @@ class FeedsTestController extends Controller {
                             $model = new UnclaimedOrganizations();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $model->organization_enc_id = $utilitiesModel->encrypt();
+                            $model->organization_enc_id = Yii::$app->security->generateRandomString(12);
                             $model->organization_type_enc_id = null;
                             $model->slug = $result['company']['short_name'];
                             $slug_replace_str = str_replace("-", "", $result['company']['short_name']);
@@ -307,7 +314,7 @@ class FeedsTestController extends Controller {
                             $unclaimOptions = new ApplicationUnclaimOptions();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $unclaimOptions->unclaim_options_enc_id = $utilitiesModel->encrypt();
+                            $unclaimOptions->unclaim_options_enc_id = Yii::$app->security->generateRandomString(12);
                             $unclaimOptions->application_enc_id = $employerApplication->application_enc_id;
                             $unclaimOptions->job_url = $result['refs']['landing_page'];
                             $unclaimOptions->job_level = (($result['levels'][0]['name'])?$result['levels'][0]['name']:null);
@@ -321,7 +328,7 @@ class FeedsTestController extends Controller {
                                     $placementCity = new ApplicationPlacementCities();
                                     $utilitiesModel = new Utilities();
                                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                                    $placementCity->placement_cities_enc_id = $utilitiesModel->encrypt();
+                                    $placementCity->placement_cities_enc_id = Yii::$app->security->generateRandomString(12);
                                     $placementCity->application_enc_id = $employerApplication->application_enc_id;
                                     $placementCity->location_name = $city['name'];
                                     $placementCity->created_on = date('Y-m-d H:i:s');
@@ -351,7 +358,7 @@ class FeedsTestController extends Controller {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->assigned_category_enc_id = Yii::$app->security->generateRandomString(12);
         $assignedCategoryModel->category_enc_id = $category_id;
         $assignedCategoryModel->assigned_to = $typ;
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
@@ -359,17 +366,11 @@ class FeedsTestController extends Controller {
         $assignedCategoryModel->parent_enc_id = $cid;
         $assignedCategoryModel->status = 'Pending';
         if ($assignedCategoryModel->save()) {
-            if ($source==3){
-                $employerApplication->slug = $short_name.'-'.rand(1000, 100000);
-            }
-            else
-            {
-                $utilitiesModel->variables['name'] =  $company. '-' . $title;
+                $utilitiesModel->variables['name'] =  $company. '-' . $title.'-'.$employerApplication->application_number;
                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
                 $utilitiesModel->variables['field_name'] = 'slug';
                 $employerApplication->slug = $utilitiesModel->create_slug();
-            }
-            $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
+                $employerApplication->title = $assignedCategoryModel->assigned_category_enc_id;
         } else {
             print_r($assignedCategoryModel->getErrors());
         }

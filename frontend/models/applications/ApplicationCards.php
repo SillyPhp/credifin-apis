@@ -196,7 +196,7 @@ class ApplicationCards
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-
+        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -208,6 +208,7 @@ class ApplicationCards
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("job/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -256,6 +257,7 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -282,6 +284,7 @@ class ApplicationCards
                 ELSE CONCAT("job/", a.slug)
                 END) as share_link',
                 'CONCAT("/", d.slug,"/reviews") organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -320,6 +323,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
            // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -558,6 +562,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -567,6 +572,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
@@ -638,11 +644,13 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
+        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select([
-                'a.created_on as created_date',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
                 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -679,6 +687,7 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -686,7 +695,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select([
-                'a.created_on as created_date',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
                 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
@@ -716,6 +726,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -835,6 +846,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
+                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -844,7 +856,8 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_date' => SORT_DESC])
+                ->having(['>=', 'created', $from_date_app])
+                ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
         $i = 0;

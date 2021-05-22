@@ -6,6 +6,7 @@ use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
@@ -35,6 +36,7 @@ use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -447,8 +449,8 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','l.name profile_name','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
-            ->where(['a.unique_source_id' => $eaidk])
+            ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -502,13 +504,16 @@ class JobsController extends Controller
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1,
+                'status' => 'ACTIVE'
             ])
             ->one();
-        if (!$application_details) {
-            return 'Not Found';
+        if (empty($application_details)) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
+        $whatsAppForm = new whatsAppShareForm();
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
@@ -587,7 +592,6 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
-        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -830,8 +834,12 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $application_details = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.*', 'b.name org_name', 'b.tag_line', 'b.initials_color color', 'b.slug as org_slug', 'b.email', 'b.website', 'b.logo', 'b.logo_location', 'b.cover_image', 'b.cover_image_location'])
-                ->joinWith(['organizationEnc b'], false)
+                ->select(['a.*',
+                    '(CASE
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("/job/", a.slug)
+                END) as link'])
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
@@ -842,6 +850,25 @@ class JobsController extends Controller
             if (!$application_details) {
                 return 'Not Found';
             }
+
+            $claimedOrg = Organizations::find()
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug','CONCAT("/",slug) as org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            $unclaimedOrg = UnclaimedOrganizations::find()
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug','CONCAT("/",slug,"/reviews") org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            if ($claimedOrg) {
+                $application_details = array_merge($application_details, $claimedOrg);
+            } else {
+                $application_details = array_merge($application_details, $unclaimedOrg);
+            }
+
             $object = new \account\models\applications\ApplicationForm();
 
             return $this->renderAjax('pop_up_detail', [
@@ -1042,7 +1069,7 @@ class JobsController extends Controller
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
@@ -1139,59 +1166,57 @@ class JobsController extends Controller
 
     public function actionGetJobs()
     {
-        $req = Yii::$app->request->post();
-        $query = $req['q'];
-        $id = $req['id'];
-        $applications = $req['applications'];
-        if (!$applications) {
-            $applications = [];
-        }
-        $jobs = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id'])
-            ->distinct()
-            ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
-                $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
-                $x->onCondition([
-//                    'b.status' => 'Active',
-                    'b.is_deleted' => 0
-                ]);
-
-                $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
-
-                $x->joinWith(['title c' => function ($y) use ($query) {
-
-//                    $y->andWhere([
-//                        'c.status' => 'Approved',
-//                        'c.is_deleted' => 0
-//                    ]);
-
-                    $y->andFilterWhere([
-                        'or',
-                        ['like', 'd.name', $query],
-                        ['like', 'e.name', $query],
+        if (Yii::$app->request->isPost) {
+            $req = Yii::$app->request->post();
+            $query = $req['q'];
+            $id = $req['id'];
+            $applications = $req['applications'];
+            if (!$applications) {
+                $applications = [];
+            }
+            $jobs = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id'])
+                ->distinct()
+                ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
+                    $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
+                    $x->onCondition([
+                        'b.is_deleted' => 0
                     ]);
 
-                    $y->joinWith(['categoryEnc d']);
-                    $y->joinWith(['parentEnc e']);
-                }], false);
+                    $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
 
-                $x->joinWith(['applicationTypeEnc z' => function ($zz) {
-                    $zz->andWhere(['z.name' => 'Jobs']);
-                }]);
+                    $x->joinWith(['title c' => function ($y) use ($query) {
 
-                $x->groupBy(['b.application_enc_id']);
 
-                $x->limit(10);
-            }])
-            ->where([
-//                'a.status' => 'Active',
-                'a.is_deleted' => 0,
-                'a.organization_enc_id' => $id
-            ])
-            ->asArray()
-            ->all();
-        return json_encode($jobs[0]['employerApplications']);
+                        $y->andFilterWhere([
+                            'or',
+                            ['like', 'd.name', $query],
+                            ['like', 'e.name', $query],
+                        ]);
+
+                        $y->joinWith(['categoryEnc d']);
+                        $y->joinWith(['parentEnc e']);
+                    }], false);
+
+                    $x->joinWith(['applicationTypeEnc z' => function ($zz) {
+                        $zz->andWhere(['z.name' => 'Jobs']);
+                    }]);
+
+                    $x->groupBy(['b.application_enc_id']);
+
+                    $x->limit(10);
+                }])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.organization_enc_id' => $id
+                ])
+                ->asArray()
+                ->all();
+            return json_encode($jobs[0]['employerApplications']);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
 
     }
 
@@ -1387,6 +1412,45 @@ class JobsController extends Controller
         }
     }
 
+    public function actionTemplate($view)
+    {
+        if (Yii::$app->user->identity->organization) {
+            $whatsAppmodel = new whatsAppShareForm();
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Job',
+                'whatsAppmodel' => $whatsAppmodel,
+            ]);
+        }
+    }
+
     private function getData($type)
     {
         $titles = AssignedCategories::find()
@@ -1507,18 +1571,6 @@ class JobsController extends Controller
                     }
                 }
             }
-        }
-    }
-
-    public function actionClearMyCache()
-    {
-        $cache = Yii::$app->cache->flush();
-
-        if ($cache) {
-            $this->redirect(Yii::$app->request->referrer);
-        } else {
-            $this->redirect('/jobs/clear-my-cache');
-            return 'something went wrong...! please try again later';
         }
     }
 }

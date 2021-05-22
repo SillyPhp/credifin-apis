@@ -5,7 +5,7 @@ use yii\helpers\Html;
 <div class="gallery-view">
     <?php if (!empty($object)) {
         foreach ($object as $obj) {
-            $link = Url::to('question/' . $obj['slug'], true);
+            $link = Url::to('question/' . $obj['slug'], 'https');
             ?>
             <div class="col-md-4 col-sm-6 card-box">
                 <div class="card">

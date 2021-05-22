@@ -3,9 +3,12 @@
 namespace api\modules\v2\models;
 
 use api\modules\v2\models\Candidates;
+use common\models\CollegeSettings;
 use common\models\crud\Referral;
 use common\models\Departments;
 use common\models\EducationalRequirements;
+use common\models\EmailLogs;
+use common\models\ErexxSettings;
 use common\models\ReferralSignUpTracking;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
@@ -96,23 +99,32 @@ class IndividualSignup extends Model
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->status = 'Active';
+            $user->last_visit = date('Y-m-d H:i:s');
+            $user->last_visit_through = 'ECAMPUS';
+            $user->signed_up_through = 'ECAMPUS';
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if (!$user->save()) {
                 $transaction->rollback();
                 return false;
             }
-//            else {
-//                if (!$this->newToken($user->user_enc_id, $this->source)) {
-//                    return false;
-//                }
-//            }
+
+            $auto_approve = CollegeSettings::find()
+                ->alias('a')
+                ->innerJoinWith(['settingEnc b'], false)
+                ->where(['a.college_enc_id' => $this->college, 'b.setting' => 'students_approve', 'a.value' => 2])
+                ->one();
+
 
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
             $user_other_details->organization_enc_id = $this->college;
             $user_other_details->user_enc_id = $user->user_enc_id;
+
+            if ($auto_approve) {
+                $user_other_details->college_actions = 0;
+            }
 
             if ($this->department != '') {
                 $d = Departments::find()
@@ -137,29 +149,9 @@ class IndividualSignup extends Model
                 }
             }
 
-//        $e = EducationalRequirements::find()
-//            ->where([
-//                'educational_requirement' => $this->course_name
-//            ])
-//            ->one();
-//
-//        if ($e) {
-//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
-//        } else {
-//            $eduReq = new EducationalRequirements();
-//            $utilitiesModel = new \common\models\Utilities();
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
-//            $eduReq->educational_requirement = $this->course_name;
-//            $eduReq->created_on = date('Y-m-d H:i:s');
-//            $eduReq->created_by = $user->user_enc_id;
-//            if (!$eduReq->save()) {
-//                return false;
-//            }
-//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
-//        }
-
-            $user_other_details->assigned_college_enc_id = $this->course_id;
+            if ($this->course_id != '') {
+                $user_other_details->assigned_college_enc_id = $this->course_id;
+            }
             $user_other_details->section_enc_id = $this->section_id;
             $user_other_details->semester = $this->semester;
             $user_other_details->starting_year = $this->starting_year;
@@ -168,23 +160,6 @@ class IndividualSignup extends Model
                 $user_other_details->university_roll_number = $this->roll_number;
             }
 
-
-//        if ($this->job_start_month) {
-//            $user_other_details->job_start_month = $this->job_start_month;
-//        }
-//
-//        if ($this->job_year) {
-//            $user_other_details->job_year = $this->job_year;
-//        }
-//
-//        if ($this->internship_duration) {
-//            $user_other_details->internship_duration = $this->internship_duration;
-//        }
-//
-//        if ($this->internship_start_date) {
-//            $user_other_details->internship_start_date = $date = date('Y-m-d', strtotime($this->internship_start_date));
-//        }
-
             if (!$user_other_details->save()) {
                 $transaction->rollback();
                 return false;
@@ -192,6 +167,30 @@ class IndividualSignup extends Model
 
             if ($this->ref != '') {
                 $this->saveRefferal($user->user_enc_id, $this->ref);
+            }
+
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                "name" => $this->first_name ." " . $this->last_name,
+                "email" => $this->email,
+            ];
+            $mail->subject = 'Welcome to My eCampus';
+            $mail->template = 'mec-thank-you';
+            if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $mail_logs->email_type = 5;
+                $mail_logs->user_enc_id = $user->user_enc_id;
+                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_email = $user->email;
+                $mail_logs->receiver_phone = $user->phone;
+                $mail_logs->subject = 'Welcome to My eCampus';
+                $mail_logs->template = 'mec-thank-you';
+                $mail_logs->is_sent = 1;
+                $mail_logs->save();
             }
 
             $transaction->commit();

@@ -11,11 +11,15 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-social-twitter font-dark hide"></i>
-                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Reminder'); ?></span>
+                <span class="caption-subject font-dark bold uppercase fnsz"><?= Yii::t('account', 'Reminder'); ?></span>
             </div>
             <div class="actions">
                 <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
             </div>
+        </div>
+        <div class="descrip">
+            A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
+            Keep a track of all your scheduled  job/internships.
         </div>
         <div class="portlet-body">
             <div class="add-reminder">
@@ -127,12 +131,12 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                                     </div>
                                 </div>
                                 <div class="cross">
-                                    <span id="remove-reminder" class="close" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
+                                    <span id="remove-reminder" class="closed" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
                                 </div>
                             </div>
                             <div class="userdata">
                                 <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
-                                    <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
+                                    <a href="javascript:;" data-href="<?= $app['link']; ?>" target="_blank"class="open-link-new-tab"><?= $app['link']; ?> </a><span class="g"></span>
                                     <textarea class="boxx" id="descriptionField" data-key="description"
                                               data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
                                               placeholder="Write notes here"><?= $app['description']; ?></textarea>
@@ -190,7 +194,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                         <div class="userdata">
                             <div id="demo" class="collapse">
                                 <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
-                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Desscription here.</textarea>
+                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Description here.</textarea>
                             </div>
                         </div>
                     </div>
@@ -203,16 +207,35 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
     </div>
 <?php
 $this->registerCss("
- .review-list-toggler{
-    position: absolute;
-    display: block;
-    top: 4px;
-    left: 43px;
-    pointer-events: all;
-    line-height:36px;
-    transform: rotate(-0deg);
+.innerpart {
+    flex-basis: 60%;
 }
-.innerpart1{margin-left:auto;}
+.closed{font-size:22px;flex-basis: 3%;}
+.fnsz {
+    font-size: 18px;
+}
+.descrip {
+    font-size: 17px;
+    font-family: robotox;
+    color: #000;
+    line-height: 22px;
+}
+.review-list-toggler {
+	position: absolute;
+	display: block;
+	top: 4px;
+	left: 20px;
+	pointer-events: all;
+	line-height: 36px;
+	transform: rotate(-0deg);
+}
+.innerpart1 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	flex-basis: 42%;
+}
 .innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
 .review-list-toggler i{
     display: block;
@@ -231,12 +254,8 @@ $this->registerCss("
     border-top:2px solid;
 }
 .record-text{
-    font-size:28px;
-    margin:10px;
-}
-.cross{
-    padding-top:10px;
-    padding-left:10px;
+    font-size: 20px;
+    margin:15px;
 }
 .e{
     color: black;
@@ -245,11 +264,12 @@ $this->registerCss("
     font-weight:300;
 }
 .reminderbox {
-    width: 90%;
-    padding: 10px 5px;
-    margin:0 auto;
-    display:flex;
-    border-bottom:1px solid #adadad;
+	width: 95%;
+	padding: 10px 5px;
+	margin: 0 auto;
+	display: flex;
+	border-bottom: 1px solid #adadad;
+	align-items: center;
 }
 .reminderbox a{
     color:black;
@@ -277,27 +297,26 @@ $this->registerCss("
     display:inline-block;
 }
 .salarybox, .listing{
-    display:inline-block;
-    width:49%;
+    flex-basis: 40%;
+    text-align: center;
 }
- .salarybox1{
-    width:130px;
-    height:25px;
-    font-size:18px;
-    font-famiy:roboto;
-    padding-left:10px;
-    border-style:none;
-    border-bottom:1px solid;
+.salarybox1 {
+	width: 75px;
+	height: auto;
+	font-size: 16px;
+	font-famiy: roboto;
+	/* padding-left: 10px; */
+	border-style: none;
+	border-bottom: 1px solid #333;
 }
- .listing1{
-    width:130px;
-    height:25px;
-    font-size:16px;
-    font-famiy:roboto !important;
-    padding-left:10px;
-    border-style:none;
-    border-bottom:1px solid;
-}     
+.listing1 {
+	width: 190px;
+	height: auto;
+	font-size: 16px;
+	font-famiy: roboto !important;
+	border-style: none;
+	border-bottom: 1px solid #333;
+} 
  .userdata {
     width: 90%;
     padding: 15px 90px;
@@ -305,6 +324,7 @@ $this->registerCss("
   .boxx{     
     display: inline-block;
     color: #888;
+    width: 100%;
     font-size: 16px;
     line-height: 1.2;
     margin-top: 10px;
@@ -331,8 +351,18 @@ $this->registerCss("
 .datepicker > div {
     display: block;
 }
+@media only screen and (max-width:1200px){
+.innerpart {
+    flex-basis: 50%;
+}
+.innerpart1{flex-basis:45%;}
+}
 ");
 $script = <<<JS
+$(document).on('click','.open-link-new-tab', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 $(document).on('change','#salaryField, #descriptionField, #statusField', function() {
     var type = $(this).attr('data-key');
     var r_id = $(this).attr("data-id");

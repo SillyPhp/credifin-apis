@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="loan">
         <div class="loan-txt">
             <div class="loan-txt1">Take Your <br> Students to Success with our
-                <h1 class="blue-txt"> Educational Institution Loan</h1>
+                <h2 class="blue-txt"> Educational Institution Loan</h2>
                 <a href="<?= Url::to('/educational-institution-loan') ?>" class="btn-set">
                     Apply Now
                 </a>

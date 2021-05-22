@@ -44,16 +44,14 @@ if (!empty($benefit)) { ?>
             $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                    $return .= '<div class="p-category search_benefits">';
+                    $return .= '<div class="pp-cate search_benefits">';
                     $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
                     $return .= '<div class="checkbox-text">';
-                    $return .= '<span class="checkbox-text--title">';
                     $return .= '<img src="' . $label["icon"] . '">';
-                    $return .= '</span><br/>';
-                    $return .= '<span class="checkbox-text--description2">';
+                    $return .= '<div class="checkbox-text--description2">';
                     $return .= $label['benefit'];
-                    $return .= '</span>';
+                    $return .= '</div>';
                     $return .= '</div>';
                     $return .= '</label>';
                     $return .= '</div>';
@@ -81,7 +79,7 @@ $("#search_text").keyup(function (e) {
     $('.search_benefits').each(function () {
         var text = $(this).text(),
             matches = !! text.match(re);
-        $(this).toggle(matches)
+        $(this).parent().toggle(matches)
     });
 });
 $(document).on('keypress','input',function(e)
@@ -181,43 +179,58 @@ max-height:350px;
 overflow-y:scroll;
 overflow-x: hidden;
 }
+.pp-cate{
+    width: 98%;
+    margin: auto;
+}
 .checkbox-label-v2 {
+	width: 100%;
+	cursor: pointer;
+	/* font-weight: 400; */
+	/* margin-bottom: 0px; */
+	display: flex;
+	padding: 20px;
+	border: 1px solid #eee;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin-bottom: 30px;
+}
+.pp-cate:hover {
+	background: #ffffff;
+	-webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	z-index: 10;
+}
+.p-category .checkbox-text {
     width: 100%;
-    cursor: pointer;
-    font-weight: 400;
-    margin-bottom: 0px;
 }
-.p-category img, .checkbox-text--title img{
+.checkbox-text img {
     width: 80px;
-    height: 50px;
+    height: 80px;
+    object-fit: contain;
 }
-.checkbox-label-v2:before {
-  content: '';
-  position: absolute;
-  top: 80px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-  background-color: #00A0E3;
-  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
-  background-position: 80% 80%;
-  background-repeat: no-repeat;
-  background-size: 30px;
-  border-radius: 50%;
-  -webkit-transform: translate(0%, -50%);
-  transform: translate(0%, -50%);
-  transition: all 0.4s ease;
-}
-.checkbox-input:checked + .checkbox-label-v2:before {
-  top: 0;
-  opacity: 1;
+.checkbox-text--description2 {
+	min-height: 41px;
+	margin-top: 5px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
   -webkit-transform: translate(0, -8px);
   transform: translate(0, -8px);
 }
-.p-category:hover .checkbox-label-v2 i{
+.pp-cate:hover .checkbox-label-v2 i{
     color: #f07d1d;
 }
 ");

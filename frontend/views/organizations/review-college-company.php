@@ -17,7 +17,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -32,7 +32,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -178,7 +178,7 @@ $this->params['seo_tags'] = [
                         }
                         ?>
                         <div class="review-summary mt-40">
-                            <?= $this->render("/widgets/square_ads"); ?>
+                            <!--                    <//= $this->render("/widgets/square_ads"); ?>-->
                         </div>
                     </div>
                 </div>
@@ -439,7 +439,7 @@ $this->registerCss('
   white-space: nowrap;
   cursor: pointer;
   font-size: 200%;
-  color: #36c6d3;
+  color: #fa8f01;
   font-family: "FontAwesome";
 }
 .star-rating1 fieldset:not(:checked) label:before {
@@ -447,8 +447,8 @@ $this->registerCss('
 }
 .star-rating1 fieldset:not(:checked) label:hover,
 .star-rating1 fieldset:not(:checked) label:hover ~ label {
-  color:#36c6d3;
-  text-shadow: 0 0 3px #36c6d3;
+  color:#fa8f01;
+  text-shadow: 0 0 3px #fa8f01;
 }
 .star-rating1 fieldset:not(:checked) label:hover:before,
 .star-rating1 fieldset:not(:checked) label:hover ~ label:before {
@@ -541,7 +541,7 @@ border: 2px solid #cadfe8 !important;
 }
 .logo-box img{
     width: 100%;
-   // height: 100%;
+    height: auto !Important;
     object-fit: fill;
     object-position: top center;
     position: absolute;
@@ -918,6 +918,7 @@ border: 2px solid #cadfe8 !important;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
+    color:#333;
 }
 #autocomplete-list div,.tt-dataset{
     padding: 3px;
@@ -2013,6 +2014,7 @@ $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends'
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
+$this->registerCssFile('https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');

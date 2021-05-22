@@ -38,12 +38,12 @@ $companies = $companies->all();
     <section class="companies">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-4 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="com-grid">
-                        <h1 class="heading-style">Featured Companies</h1>
+                        <h2 class="heading-style">Featured Companies</h2>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-4 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?= Url::to('/organizations'); ?>" class="btn btn-3">
@@ -63,7 +63,7 @@ $companies = $companies->all();
                             <div class="cmp-main">
                                 <div class="cmp-log">
                                     <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $c->logo_location . '/' . $c->logo) ?>"
-                                         alt="" title="<?= $c->name ?>"/>
+                                         alt="<?= $c->name ?>" title="<?= $c->name ?>"/>
                                 </div>
                                 <div class="cmp-name"><?= $c->name ?></div>
                             </div>

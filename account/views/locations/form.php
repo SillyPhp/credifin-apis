@@ -3,7 +3,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-use borales\extensions\phoneInput\PhoneInput;
 
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
 $countries = ArrayHelper::map($countriesModel->find()->select(['country_enc_id', 'name'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'country_enc_id', 'name');
@@ -27,14 +26,9 @@ $form = ActiveForm::begin([
     </div>
     <div class="col-md-4">
         <?=
-        $form->field($locationFormModel, 'phone')->widget(PhoneInput::className(), [
-            'jsOptions' => [
-                'allowExtensions' => false,
-                'preferredCountries' => ['in'],
-                'nationalMode' => false,
-            ]
-        ])->label(false);
+        $form->field($locationFormModel , 'phone')->textInput(['id'=>'phone']);
         ?>
+        <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
     </div>
     <div class="col-md-4">
         <?= $form->field($locationFormModel, 'email')->label('<i class="fa fa-envelope"></i> Email')->textInput(['autocomplete' => 'off']); ?>
@@ -159,13 +153,66 @@ $this->registerCss('
     filter: alpha(opacity=100);
    
 }
-.country-list
-{
-z-index:999 !important;
+.country-list{
+    z-index:999 !important;
 }
+label[for="phone"]{
+    display: none;
+}
+//.iti, .intl-tel-input {
+//    width: 100% !important;
+//}
+//.iti input{
+//    padding-left: 46px !important;
+//}
 ');
 $script = <<<JS
+var input = document.querySelector("#phone");
+var iti;
+var myVar = setInterval(myTimer, 300);
 
+function myTimer() {
+  if(intlTelInput){
+      myStopFunction();
+      iti = window.intlTelInput(input, {
+            'utilsScript': "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js",
+           'allowExtensions': false,
+           'preferredCountries': ['in'],
+           'nationalMode': false,
+           'separateDialCode':true
+      });
+  }
+}
+
+function myStopFunction() {
+  clearInterval(myVar);
+}
+var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+$(document).on('blur','#phone', function() {
+  if ($(this).val()) {
+      if ($(this).val().trim()&& allnumeric($(this).val().trim())) {
+        if (iti.isValidNumber()) {
+            $(this).removeClass('error');
+            $('#phone-error').html('');
+        } else {
+          input.classList.add("error");
+          var errorCode = iti.getValidationError();
+          $('#phone-error').html(errorMap[errorCode]);
+        }
+      } else {
+          input.classList.add("error");
+          $('#phone-error').html('Invalid Phone Number');
+      }
+  }
+});
+function allnumeric(inputtxt){
+  var numbers = /^[0-9]+$/;
+  if(inputtxt.match(numbers)) {
+      return true;
+  }
+  return false;
+}
+    // $('.country-list, .iti__country-list').css('width',$('#phone').width());
     function drp_down(id, data) {
         var selectbox = $('#' + id + '');
         $.each(data, function () {
@@ -244,7 +291,12 @@ $script = <<<JS
     
     var tab_count = "";
     tab_count = $('.tab-pane.active').attr('id');
-
+$('#location-form').on('beforeSubmit', function() {
+    if($('input.error').length){
+        return false;
+    }
+    $('#phone').val(iti.getNumber(intlTelInputUtils.numberFormat.E164));
+});
     $(document).on('submit', '#location-form', function (event) {
         var l_btn = $('.sav_loc');
         event.preventDefault();
@@ -273,8 +325,15 @@ $script = <<<JS
                     {
                         $.pjax.reload({container: '#pjax_locations2', async: false});
                     } else{
-                        $.pjax.reload({container: '#pjax_locations1', async: false});
-                        $.pjax.reload({container: '#location_map', async: false});
+                        if($('#pjax_locations2').length){
+                            $.pjax.reload({container: '#pjax_locations2', async: false});
+                        }
+                        if($('#pjax_locations1').length){
+                            $.pjax.reload({container: '#pjax_locations1', async: false});
+                        }
+                        if($('#location_map').length){
+                            $.pjax.reload({container: '#location_map', async: false});
+                        }
                     }
                     $('#modal').modal('hide');
                 } else {
@@ -289,5 +348,7 @@ $script = <<<JS
     });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

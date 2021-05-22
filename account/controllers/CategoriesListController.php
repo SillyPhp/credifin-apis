@@ -125,11 +125,13 @@ class CategoriesListController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $languages = SpokenLanguages::find()
-            ->select(['language_enc_id id', 'language value'])
+            ->select(['language value'])
+            ->distinct()
             ->where('language LIKE "%' . $q . '%"')
             ->andWhere(['status'=>'Publish'])
             ->asArray()
             ->all();
+
         return $languages;
     }
 

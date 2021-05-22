@@ -183,7 +183,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Our Loaning Partners'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h3>
                     <div class="row ml-20 mr-20">
                         <div class="partners-flex">
                             <div id="company-slider" class="owl-carousel-4col" data-dots="false" data-nav="true">
@@ -248,6 +248,7 @@ use yii\helpers\Url;
         </div>
     </section>
     <div class="clearfix"></div>
+<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $script = <<<JS

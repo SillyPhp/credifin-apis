@@ -356,10 +356,62 @@ $EducationalLoanForm = ActiveForm::begin([
             <div class="col-md-12">
                 <div class="max-300">
                     <div class="cl-heading">Get the Best Education Loan</div>
-                    <div class="cl-text"> We tie up with the best providers in the country to help you plan your
-                        education.
+                    <div class="cl-text"> We tie up with the best providers in the country to
+                        help you plan your education.
                         With offers that provide up to 100% of your required loan amount, planning for your education
                         is now more easier than ever.
+                    </div>
+                    <div class="cl-icon">
+                        <p>Our Lenders</p>
+                        <ul>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                            <span>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
+                                            </span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="lender-icon">
+                                    <span class="li-text">+10 More</span>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -412,6 +464,26 @@ $this->registerCss('
     position:absolute;
     min-height:100vh;
 }
+.cl-icon ul li{
+    display: inline-grid;
+    background: #fff;
+    height: 100px;
+    width: 100px; 
+    border-radius: 10px; 
+    margin:0 5px 15px;
+    box-shadow: 0 0 10px rgba(149,139,139, .3);
+}
+.cl-icon ul li img{
+    max-width: 80px;
+    max-height: 60px;
+}
+.lender-icon{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+     font-size: 16px;
+}
 .college-logo {
     margin-left:50vw;
     padding:60px 25px 0 25px;
@@ -422,6 +494,7 @@ $this->registerCss('
     position:fixed;
     background:#00a0e3;
 }
+
 #footer{
     display:none;
 }
