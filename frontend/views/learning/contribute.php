@@ -224,9 +224,12 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Our Contributers</div>
-                </div>
+                <div class="col-lg-12">
+                    <div class="col-md-8 col-sm-8 col-xs-12">
+                        <div class="heading-set">
+                            <h2 class="heading-style"> Our Contributers </h2>
+                        </div>
+                    </div>
             </div>
             <div class="row" id="contributors">
 

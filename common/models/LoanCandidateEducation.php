@@ -58,6 +58,29 @@ class LoanCandidateEducation extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('common', 'ID'),
+            'loan_candidate_edu_enc_id' => Yii::t('common', 'Loan Candidate Edu Enc ID'),
+            'loan_app_enc_id' => Yii::t('common', 'Loan App Enc ID'),
+            'qualification_enc_id' => Yii::t('common', 'Qualification Enc ID'),
+            'institution' => Yii::t('common', 'Institution'),
+            'obtained_marks' => Yii::t('common', 'Obtained Marks'),
+            'proof_image' => Yii::t('common', 'Proof Image'),
+            'proof_image_name' => Yii::t('common', 'Proof Image Name'),
+            'proof_image_location' => Yii::t('common', 'Proof Image Location'),
+            'created_by' => Yii::t('common', 'Created By'),
+            'created_on' => Yii::t('common', 'Created On'),
+            'updated_by' => Yii::t('common', 'Updated By'),
+            'updated_on' => Yii::t('common', 'Updated On'),
+            'is_deleted' => Yii::t('common', 'Is Deleted'),
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getLoanAppEnc()

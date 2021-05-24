@@ -286,7 +286,17 @@ class DashboardController extends Controller
 
         $servicesModel = new \account\models\services\ServiceSelectionForm();
 
+        $loanApplication = Yii::$app->userData->loanApplicationObj();
+        if($loanApplication){
+            $loanApplication = $loanApplication
+                ->andWhere(['not', ['alp.status' => 10]])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->one();
+        }
         return $this->render('index', [
+            'loanApplication' => $loanApplication,
             'applied' => $applied_app,
             'services' => $services,
             'model' => $servicesModel,
