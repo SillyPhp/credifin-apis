@@ -54,7 +54,8 @@ class LoansController extends ApiBaseController
                 'enquiry-form',
                 'study-in-india',
                 'faqs',
-                'press-release-publisher'
+                'press-release-publisher',
+                'save-teachers-loan'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -69,6 +70,7 @@ class LoansController extends ApiBaseController
                 'enquiry-form' => ['POST'],
                 'study-in-india' => ['POST'],
                 'press-release-publisher' => ['POST'],
+                'save-teachers-loan' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -1807,6 +1809,33 @@ class LoansController extends ApiBaseController
             return $this->response(200, $data);
         } else {
             return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionSaveTeachersLoan(){
+        $params = Yii::$app->request->post();
+        if ($params){
+            $model = new LoanApplicationsForm();
+            $orgDate = $params['applicant_dob'];
+            $userId = $this->userId();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->months = (($params['months']) ? $params['months'] : null);
+                if ($model->validate()) {
+                    if ($data = $model->saveTeachersLoan( $userId,'Android',$params)) {
+                        if ($data['status']){
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        }else{
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                }
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
+            }
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information']);
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing information']);
         }
     }
 
