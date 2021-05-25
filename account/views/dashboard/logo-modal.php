@@ -246,7 +246,7 @@ var vanilla = new Croppie(el, {
 function renderCrop(img){
     vanilla.bind({
         url: img,
-        points: [20,20,20,20]
+//        points: [20,20,20,20]
         // orientation: 4
     });
 }
