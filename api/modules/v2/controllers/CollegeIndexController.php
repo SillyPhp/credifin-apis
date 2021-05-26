@@ -963,7 +963,7 @@ class CollegeIndexController extends ApiBaseController
                 $candidates->andWhere(['c1.course_name' => $data['course_name']]);
             }
             if (isset($data['semester']) && !empty($data['semester'])) {
-                $candidates->andWhere(['like', 'a.semester', $data['semester']]);
+                $candidates->andWhere(['a.semester' => $data['semester']]);
             }
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {
                 $candidates->andWhere(['like', 'a.university_roll_number', $data['roll_no']]);
