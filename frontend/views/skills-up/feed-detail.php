@@ -4,8 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
-print_r($detail);
-die();
+
 ?>
 
     <section>
@@ -18,25 +17,25 @@ die();
                             <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
                                  alt="your image" class="target"/>
                         </div>
-                        <h3>post_title</h3>
+                        <h3><?= $detail['post_title'] ?></h3>
                         <div class="author-s margin-top-10">
-                            <div class="author list-data"><i class="fas fa-user"></i><span> sohal </span></div>
-                            <div class="source"><i class="fas fa-link"></i><span> source_name </span></div>
+                            <div class="author list-data"><i
+                                        class="fas fa-user"></i><span> <?= $detail['author_name'] ?> </span></div>
+                            <div class="source"><i class="fas fa-link"></i><span> <?= $detail['source_name'] ?> </span>
+                            </div>
                         </div>
                         <div class="tags-list">
-                            <h5 class="tag-title">Related Topic</h5> :- <span>python</span>
+                            <h5 class="tag-title">Related Topic</h5> :-
+                            <?php foreach ($detail['skillsUpPostAssignedSkills'] as $s) { ?>
+                                <span><?= $s['skill'] ?></span>
+                            <?php } ?>
                         </div>
                         <div class="vid-content">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                            galley of type and scrambled it to make a type specimen book. It has survived not only five
-                            centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
-                            passages, and more recently with desktop publishing software like Aldus PageMaker including
-                            versions of Lorem Ipsum
+                            <?= $detail['post_description'] ?>
                         </div>
                         <div class="original-art">
-                            <a href="" target="_blank">READ ORIGINAL article</a>
+                            <a href="<?= $detail['post_source_url'] ?>"
+                               target="_blank">ORIGINAL <?= $detail['content_type'] ?></a>
                         </div>
                         <div class="share-social-links">
                             <a href="javascript:;" class="fb"
@@ -89,19 +88,22 @@ die();
                     </div>
                     <div class="related-art dash-inner-box nd-shadow">
                         <h3>Related Articles</h3>
-                        <a href="" class="relate-box">
-                            <div class="relate-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                                     alt="your image" class="target"/>
-                            </div>
-                            <div class="relate-name">
-                                <p>title</p>
-                                <div class="author-relate">
-                                    <div class="source"><i class="fas fa-link"></i><Span>source_name</Span>
+                        <?php foreach ($related_posts as $post) { ?>
+                            <a href="<?= Url::to('/skills-up/detail?slug=' . $post['slug']) ?>" class="relate-box">
+                                <div class="relate-icon">
+                                    <img src="<?= $post['post_image_url'] ? $post['post_image_url'] : $post['cover_image'] ?>"
+                                         alt="your image" class="target"/>
+                                </div>
+                                <div class="relate-name">
+                                    <p><?= $post['post_title'] ?></p>
+                                    <div class="author-relate">
+                                        <div class="source"><i
+                                                    class="fas fa-link"></i><Span><?= $post['source_name'] ?></Span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
