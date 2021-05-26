@@ -4,160 +4,166 @@ use yii\helpers\Url;
 
 ?>
     <div class="portlet light portlet-fit nd-shadow">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-social-twitter font-dark hide"></i>
-                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Loan Details'); ?>
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Loan Details'); ?>
                     <span data-toggle="tooltip" title="Here you will see your current loan application detail">
                         <i class="fa fa-info-circle"></i>
                     </span>
                 </span>
-            </div>
         </div>
-        <div class="portlet-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="disFlex">
-                        <div class="statsBox">
-                            <p class="mb0">Loan Type</p>
-                            <h3 class="mt10"><?= $loanApplication['loan_type'] ?></h3>
-                        </div>
-                        <div class="statsBox">
-                            <p class="mb0">Loan Amount</p>
-                            <?php
-                            setlocale(LC_MONETARY, 'en_IN');
-                            ?>
-                            <h3 class="mt10"><span><i
-                                            class="fa fa-inr"></i></span> <?= money_format('%!i', $loanApplication['amount']) ?>
-                            </h3>
-                        </div>
-                        <div class="statsBox">
-                            <p class="mb0">Lender</p>
-                            <?php
-                            $lander = $loanApplication['assignedLoanProviders'][0];
-                            $base_path = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
-                            $path = $base_path . Yii::$app->params->upload_directories->organizations->logo . $lander['lander_logo_location'] . '/' . $lander['lander_logo'];
-                            if ($lander['lander_logo']) {
-                                ?>
-                                <div class="vendorImg"><img src="<?= $path ?>"></div>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                        <div class="statsBox">
-                            <p class="mb0">Loan Profile</p>
-                            <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
-                                Profile</a>
-                        </div>
-                        <!--                        <div class="statsBox">-->
-                        <!--                            <p class="mb0">Loan Structure</p>-->
-                        <!--                            <a href="education-loans/emi-details">View Structure</a>-->
-                        <!--                        </div>-->
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="disFlex">
+                    <div class="statsBox">
+                        <p class="mb0">Loan Type</p>
+                        <h3 class="mt10"><?= $loanApplication['loan_type'] ?></h3>
                     </div>
+                    <div class="statsBox">
+                        <p class="mb0">Loan Amount</p>
+                        <?php
+                        setlocale(LC_MONETARY, 'en_IN');
+                        ?>
+                        <h3 class="mt10"><span><i
+                                        class="fa fa-inr"></i></span> <?= money_format('%!i', $loanApplication['amount']) ?>
+                        </h3>
+                    </div>
+                    <div class="statsBox">
+                        <p class="mb0">Lender</p>
+                        <?php
+                        $lander = $loanApplication['assignedLoanProviders'][0];
+                        $base_path = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
+                        $path = $base_path . Yii::$app->params->upload_directories->organizations->logo . $lander['lander_logo_location'] . '/' . $lander['lander_logo'];
+                        if ($lander['lander_logo']) {
+                            ?>
+                            <div class="vendorImg"><img src="<?= $path ?>"></div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <div class="statsBox">
+                        <p class="mb0">Loan Profile</p>
+                        <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
+                            Profile</a>
+                    </div>
+                    <!--                        <div class="statsBox">-->
+                    <!--                            <p class="mb0">Loan Structure</p>-->
+                    <!--                            <a href="education-loans/emi-details">View Structure</a>-->
+                    <!--                        </div>-->
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <?php
-                    $loanStatusList = [
-                        0 => 'New Lead',
-                        1 => 'Accepted',
-                        2 => 'Pre Verification',
-                        3 => 'Under Process',
-                        4 => 'Sanctioned',
-                        5 => 'Disbursed',
-                    ];
-                    ?>
-                    <div class="status">
-                        <p class="headingP mb0">Loan Status</p>
-                        <ul class="addressLink">
-                            <?php
-                            foreach ($loanStatusList as $key => $value) {
-                                if ($lander['status'] == 5) {
-                                    $cls = "completedTab";
-                                } else {
-                                    switch (true) {
-                                        case ($lander['status'] == $key) :
-                                            $cls = "activeTab";
-                                            break;
-                                        case ($lander['status'] > $key) :
-                                            $cls = "completedTab";
-                                            break;
-                                        default :
-                                            $cls = "pendingTab";
-                                    }
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+                $loanStatusList = [
+                    0 => 'New Lead',
+                    1 => 'Accepted',
+                    2 => 'Pre Verification',
+                    3 => 'Under Process',
+                    4 => 'Sanctioned',
+                    5 => 'Disbursed',
+                ];
+                ?>
+                <div class="status">
+                    <p class="headingP mb0">Loan Status</p>
+                    <ul class="addressLink">
+                        <?php
+                        foreach ($loanStatusList as $key => $value) {
+                            if ($lander['status'] == 5) {
+                                $cls = "completedTab";
+                            } else {
+                                switch (true) {
+                                    case ($lander['status'] == $key) :
+                                        $cls = "activeTab";
+                                        break;
+                                    case ($lander['status'] > $key) :
+                                        $cls = "completedTab";
+                                        break;
+                                    default :
+                                        $cls = "pendingTab";
                                 }
-                                ?>
-                                <li class="<?= $cls ?>" data-id="<?= $key ?>">
-                                    <a href="javascript:;"><?= $value ?></a>
-                                </li>
-                                <?php
+                            }
+                            ?>
+                            <li class="<?= $cls ?>" data-id="<?= $key ?>">
+                                <a href="javascript:;"><?= $value ?></a>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                    </ul>
+                </div>
+            </div>
+            <?php
+            $notifications = $loanApplication['loanApplicationNotifications'];
+            if ($notifications) {
+                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="notifications-list">
+                            <?php
+                            foreach ($notifications as $notification) {
+                                if (!preg_match('/<script>/', $notification['message'], $match)) {
+                                    ?>
+                                    <li>
+                                        <div class="container-fluid ">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="new-message-box">
+                                                        <div class="new-message-box-info">
+                                                            <div class="info-tab tip-icon-info" title="error"><i></i>
+                                                            </div>
+                                                            <div class="tip-box-info">
+                                                                <p class="mb-20"><strong
+                                                                            class="formattedDate"><?= $notification['created_on'] ?>
+                                                                        :</strong>
+                                                                    <?= $notification['message'] ?>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <?php
+                                }
                             }
                             ?>
                         </ul>
                     </div>
                 </div>
                 <?php
-                $notifications = $loanApplication['loanApplicationNotifications'];
-                if ($notifications) {
+            }
+            ?>
+            <div class="col-md-12">
+                <?php
+                if ($lander['status'] < 1) {
                     ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="notifications-list">
-                                <?php
-                                    foreach ($notifications as $notification){
-                                        ?>
-                                        <li>
-                                            <div class="container-fluid ">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <div class="new-message-box">
-                                                            <div class="new-message-box-info">
-                                                                <div class="info-tab tip-icon-info" title="error"><i></i></div>
-                                                                <div class="tip-box-info">
-                                                                    <p class="mb-20"><strong class="formattedDate"><?= $notification['created_on'] ?>:</strong>
-                                                                        <?= $notification['message'] ?>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <?php
-                                    }
-                                ?>
-                            </ul>
+                    <div class="new-message-box">
+                        <div class="new-message-box-success">
+                            <div class="info-tab tip-icon-success" title="success"><i></i></div>
+                            <div class="tip-box-success">
+                                <h4>Thank you for applying with EmpowerYouth.com</h4>
+                                <h5>We have shared your case with multiple partners and we will update you soon once one
+                                    of them accepts your case.</h5>
+                            </div>
                         </div>
                     </div>
                     <?php
                 }
                 ?>
-                <div class="col-md-12">
-                    <?php
-                    if($lander['status'] < 1){
-                        ?>
-                        <div class="new-message-box">
-                            <div class="new-message-box-success">
-                                <div class="info-tab tip-icon-success" title="success"><i></i></div>
-                                <div class="tip-box-success">
-                                    <h4>Thank you for applying with EmpowerYouth.com</h4>
-                                    <h5>We have shared your case with multiple partners and we will update you soon once one of them accepts your case.</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                    ?>
-                </div>
-            </div>
-            <div class="row mt20">
-                <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
-
-                </div>
             </div>
         </div>
+        <div class="row mt20">
+            <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
+
+            </div>
+        </div>
+    </div>
 <?php
 $this->registerCss('
 .mt20{
