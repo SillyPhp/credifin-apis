@@ -1063,4 +1063,9 @@ class LearningController extends Controller
         }
     }
 
+    public function actionOurContributors()
+    {
+        return $this->render('our-contributors');
+    }
+
 }
