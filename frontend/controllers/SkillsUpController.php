@@ -221,7 +221,7 @@ class SkillsUpController extends Controller
                 $feedsList->limit(10);
             }
 
-            $feedsList = $feedsList->orderBy(['a.created_on' => SORT_DESC])->asArray()
+            $feedsList = $feedsList->groupBy(['a.post_enc_id'])->orderBy(['a.created_on' => SORT_DESC])->asArray()
                 ->all();
 
             if ($feedsList) {
@@ -240,6 +240,31 @@ class SkillsUpController extends Controller
 
     public function actionDetail($slug)
     {
-        return $this->render('feed-detail');
+        $postDetail = SkillsUpPosts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.post_title', 'a.post_source_url', 'a.source_enc_id', 'a.content_type', 'a.cover_image', 'a.cover_image_location',
+                'a.post_image_url', 'a.slug', 'a.post_description', 'b.name source_name', 'c1.name', 'e1.body embed_code',
+                'f1.youtube_video_id'])
+            ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors c' => function ($c) {
+                $c->joinWith(['authorEnc c1']);
+            }], false)
+            ->joinWith(['skillsUpPostAssignedSkills d' => function ($d) {
+                $d->select(['d.assigned_skill_enc_id', 'd.skill_enc_id', 'd.post_enc_id', 'd1.skill']);
+                $d->joinWith(['skillEnc d1'], false);
+            }])
+            ->joinWith(['skillsUpPostAssignedEmbeds e' => function ($e) {
+                $e->joinWith(['embedEnc e1']);
+            }], false)
+            ->joinWith(['skillsUpPostAssignedVideos f' => function ($f) {
+                $f->joinWith(['videoEnc f1']);
+            }], false)
+            ->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        
+
+        return $this->render('feed-detail', ['detail' => $postDetail]);
     }
 }

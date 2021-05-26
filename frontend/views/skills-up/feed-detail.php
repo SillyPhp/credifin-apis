@@ -4,7 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
-
+print_r($detail);
+die();
 ?>
 
     <section>
