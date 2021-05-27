@@ -152,18 +152,20 @@ $this->params['header_dark'] = true;
         <div class="feed-box dash-inner-box nd-shadow">
 
             <!--        <div class="rec-batch">Recommended</div>-->
-            <div class="feed-img">
-                {{#cover_image}}
-                <img src="{{cover_image}}" alt="your image" class="target"/>
-                {{/
-                cover_image}}
-                {{^
-                cover_image}}
-                <img src="{{post_image_url}}" alt="your image" class="target"/>
-                {{/
-                cover_image}}
+            <a href="/skills-up/detail/{{slug}}">
+                <div class="feed-img">
+                    {{#cover_image}}
+                    <img src="{{cover_image}}" alt="your image" class="target"/>
+                    {{/
+                    cover_image}}
+                    {{^
+                    cover_image}}
+                    <img src="{{post_image_url}}" alt="your image" class="target"/>
+                    {{/
+                    cover_image}}
 
-            </div>
+                </div>
+            </a>
             <a href="/skills-up/detail/{{slug}}"><h3 class="feed-heading">{{post_title}}</h3></a>
             <div class="author-s">
                 {{#author_name}}

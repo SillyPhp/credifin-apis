@@ -15,8 +15,13 @@ $this->params['header_dark'] = true;
                         <!--                    <div class="rec-batch">Recommended</div>-->
                         <div class="vid-box">
                             <?php if ($detail['content_type'] == 'Video') { ?>
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                                     alt="your image" class="target"/>
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/<?= $detail['youtube_video_id'] ?>"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            <?php } elseif ($detail['content_type'] == 'Podcast') { ?>
+                                <?= $detail['embed_code'] ?>
                             <?php } else { ?>
                                 <?php if ($detail['post_image_url']) { ?>
                                     <img src="<?= $detail['post_image_url'] ?>"
