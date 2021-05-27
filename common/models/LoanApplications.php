@@ -30,24 +30,28 @@ use Yii;
  * @property int $cibil_score cibil score
  * @property int $gender 1 for Male, 2 for Female,3 other
  * @property double $amount
+ * @property double $yearly_income
  * @property double $amount_received
  * @property double $amount_due
  * @property double $scholarship
  * @property string $aadhaar_number
  * @property string $source
+ * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $managed_by_refferal Managed By Application
+ * @property string $deadline application deadline
+ * @property string $intake intake
  * @property string $managed_by
  * @property string $lead_by_refferal Lead By Application
  * @property string $lead_by
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_by
- * @property double $yearly_income
  * @property string $updated_on
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
  * @property string $loan_type
  * @property string $loan_purpose
+ * @property string $lender_reasons
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
@@ -55,7 +59,13 @@ use Yii;
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
+ * @property LoanApplicationCommissions[] $loanApplicationCommissions
  * @property LoanApplicationLogs[] $loanApplicationLogs
+ * @property LoanApplicationNotifications[] $loanApplicationNotifications
+ * @property LoanApplicationOptions[] $loanApplicationOptions
+ * @property LoanApplicationRecords[] $loanApplicationRecords
+ * @property LoanApplicationSchoolFee[] $loanApplicationSchoolFees
+ * @property LoanApplicationTeacherLoan[] $loanApplicationTeacherLoans
  * @property CollegeCourses $collegeCourseEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -68,6 +78,7 @@ use Yii;
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
+ * @property LoanEmiStructure[] $loanEmiStructures
  * @property LoanPurpose[] $loanPurposes
  * @property LoanSanctionReports[] $loanSanctionReports
  * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
@@ -92,10 +103,10 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return [
             [['loan_app_enc_id', 'applicant_name', 'applicant_current_city', 'phone', 'email', 'amount', 'source'], 'required'],
-            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
-            [['employement_type', 'degree', 'candidate_status', 'source', 'loan_type'], 'string'],
-            [['applicant_dob', 'created_on', 'updated_on'], 'safe'],
-            [['amount','yearly_income','amount_received', 'amount_due', 'scholarship'], 'number'],
+            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
+            [['employement_type', 'degree', 'candidate_status', 'source', 'loan_type', 'lender_reasons'], 'string'],
+            [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
+            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -112,6 +123,61 @@ class LoanApplications extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'loan_app_enc_id' => Yii::t('app', 'Loan App Enc ID'),
+            'had_taken_addmission' => Yii::t('app', 'Had Taken Addmission'),
+            'current_scheme_id' => Yii::t('app', 'Current Scheme ID'),
+            'college_enc_id' => Yii::t('app', 'College Enc ID'),
+            'college_course_enc_id' => Yii::t('app', 'College Course Enc ID'),
+            'loan_type_enc_id' => Yii::t('app', 'Loan Type Enc ID'),
+            'applicant_name' => Yii::t('app', 'Applicant Name'),
+            'employement_type' => Yii::t('app', 'Employement Type'),
+            'image' => Yii::t('app', 'Image'),
+            'image_location' => Yii::t('app', 'Image Location'),
+            'applicant_dob' => Yii::t('app', 'Applicant Dob'),
+            'applicant_current_city' => Yii::t('app', 'Applicant Current City'),
+            'degree' => Yii::t('app', 'Degree'),
+            'years' => Yii::t('app', 'Years'),
+            'months' => Yii::t('app', 'Months'),
+            'semesters' => Yii::t('app', 'Semesters'),
+            'phone' => Yii::t('app', 'Phone'),
+            'email' => Yii::t('app', 'Email'),
+            'candidate_status' => Yii::t('app', 'Candidate Status'),
+            'cibil_score' => Yii::t('app', 'Cibil Score'),
+            'gender' => Yii::t('app', 'Gender'),
+            'amount' => Yii::t('app', 'Amount'),
+            'yearly_income' => Yii::t('app', 'Yearly Income'),
+            'amount_received' => Yii::t('app', 'Amount Received'),
+            'amount_due' => Yii::t('app', 'Amount Due'),
+            'scholarship' => Yii::t('app', 'Scholarship'),
+            'aadhaar_number' => Yii::t('app', 'Aadhaar Number'),
+            'source' => Yii::t('app', 'Source'),
+            'ask_guarantor_info' => Yii::t('app', 'Ask Guarantor Info'),
+            'managed_by_refferal' => Yii::t('app', 'Managed By Refferal'),
+            'deadline' => Yii::t('app', 'Deadline'),
+            'intake' => Yii::t('app', 'Intake'),
+            'managed_by' => Yii::t('app', 'Managed By'),
+            'lead_by_refferal' => Yii::t('app', 'Lead By Refferal'),
+            'lead_by' => Yii::t('app', 'Lead By'),
+            'created_by' => Yii::t('app', 'Created By'),
+            'created_on' => Yii::t('app', 'Created On'),
+            'updated_by' => Yii::t('app', 'Updated By'),
+            'updated_on' => Yii::t('app', 'Updated On'),
+            'status' => Yii::t('app', 'Status'),
+            'loan_status' => Yii::t('app', 'Loan Status'),
+            'loan_type' => Yii::t('app', 'Loan Type'),
+            'loan_purpose' => Yii::t('app', 'Loan Purpose'),
+            'lender_reasons' => Yii::t('app', 'Lender Reasons'),
+            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_removed' => Yii::t('app', 'Is Removed'),
+        ];
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -148,9 +214,57 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanApplicationCommissions()
+    {
+        return $this->hasMany(LoanApplicationCommissions::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanApplicationLogs()
     {
         return $this->hasMany(LoanApplicationLogs::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationNotifications()
+    {
+        return $this->hasMany(LoanApplicationNotifications::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationOptions()
+    {
+        return $this->hasMany(LoanApplicationOptions::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationRecords()
+    {
+        return $this->hasMany(LoanApplicationRecords::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationSchoolFees()
+    {
+        return $this->hasMany(LoanApplicationSchoolFee::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationTeacherLoans()
+    {
+        return $this->hasMany(LoanApplicationTeacherLoan::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -247,6 +361,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanCoApplicants()
     {
         return $this->hasMany(LoanCoApplicants::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanEmiStructures()
+    {
+        return $this->hasMany(LoanEmiStructure::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
