@@ -384,7 +384,7 @@ if($blogs['blogs']){
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
-                                    alt=""/> Chat With Us
+                                    alt=""> Chat With Us
                         </div>
                         <div class="chat">
                         <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>

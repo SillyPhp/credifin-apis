@@ -55,10 +55,10 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-8 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Job Profiles'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/profiles'); ?>" class="btn btn-3">

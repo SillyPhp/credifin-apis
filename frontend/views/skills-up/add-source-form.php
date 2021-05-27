@@ -167,12 +167,17 @@ $(document).on('submit', '#add_source', function(event) {
         success: function (response) {
             $('#page-loading').fadeOut(1000);
             btn.html('Add');
-            if (response.title == 'Success') {
+            if (response.status === 200) {
                 toastr.success(response.message, response.title);
                 var mySelect = $('#source_id');
                 mySelect.append(
                     $('<option></option>').val(response.id).html(response.val)
                 );
+                
+                $("#source_id option[value="+response.id+"]").prop("selected", true)
+                
+            } else if(response.status === 201) {
+                toastr.error(response.message, response.title);
             } else {
                 toastr.error(response.message, response.title);
             }

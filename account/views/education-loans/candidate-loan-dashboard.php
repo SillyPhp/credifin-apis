@@ -135,14 +135,14 @@ use borales\extensions\phoneInput\PhoneInput;
                                     <table class="">
                                         <thead class="positionSticky">
                                         <tr>
-                                            <th class="dateApplied">Date Applied</th>
                                             <th class="applicantName">Update</th>
+                                            <th class="dateApplied">Date Applied</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
-                                            <th class="city">City</th>
-                                            <th class="applicantGender">Gender</th>
+<!--                                            <th class="city">City</th>-->
+<!--                                            <th class="applicantGender">Gender</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -157,8 +157,8 @@ use borales\extensions\phoneInput\PhoneInput;
                                                     <td><?= $loan['amount'] ?></td>
                                                     <td><?= $loan['degree'] ?></td>
                                                     <td><?= $loan['course_name'] ?></td>
-                                                    <td><?= $loan['city'] ?></td>
-                                                    <td><?= $loan['gender'] ?></td>
+<!--                                                    <td>--><?//= $loan['city'] ?><!--</td>-->
+<!--                                                    <td>--><?//= $loan['gender'] ?><!--</td>-->
                                                 </tr>
                                                 <?php
                                             }

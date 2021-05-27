@@ -110,8 +110,7 @@ class SkillsUpForm extends Model
                 $result = $my_space->uploadFile($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $model->cover_image, "public");
                 $this->image_url = $result['ObjectURL'];
                 if (!$result) {
-                    print_r($result);
-                    die();
+                    throw new \Exception($result);
                 }
 
             }
@@ -119,8 +118,7 @@ class SkillsUpForm extends Model
             $model->created_on = date('Y-m-d H:i:s');
             if (!$model->validate() || !$model->save()) {
                 $transaction->rollBack();
-                print_r($model->getErrors());
-                die();
+                throw new \Exception(array_values($model->firstErrors)[0]);
             }
 
             $source = SkillsUpSources::findOne(['source_enc_id' => $this->source_id])->name;
@@ -148,8 +146,7 @@ class SkillsUpForm extends Model
                     $externalNewsModel->created_on = date('Y-m-d H:i:s');
                     if (!$externalNewsModel->validate() || !$externalNewsModel->save()) {
                         $transaction->rollBack();
-                        print_r($externalNewsModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($externalNewsModel->firstErrors)[0]);
                     }
 
                     // saving skills of assigned news
@@ -162,8 +159,7 @@ class SkillsUpForm extends Model
                     $assignedNewsModel->created_on = date('Y-m-d H:i:s');
                     if (!$assignedNewsModel->validate() || !$assignedNewsModel->save()) {
                         $transaction->rollBack();
-                        print_r($assignedNewsModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($assignedNewsModel->firstErrors)[0]);
                     }
                     break;
                 case 'Video' :
@@ -203,8 +199,7 @@ class SkillsUpForm extends Model
                         $videosModel->created_on = date('Y-m-d H:i:s');
                         if (!$videosModel->save()) {
                             $transaction->rollBack();
-                            print_r($videosModel->getErrors());
-                            die();
+                            throw new \Exception(array_values($videosModel->firstErrors)[0]);
                         }
 
                         $this->video_enc_id = $videosModel->video_enc_id;
@@ -228,8 +223,7 @@ class SkillsUpForm extends Model
                     $postAssignedVideoModel->created_on = date('Y-m-d H:i:s');
                     if (!$postAssignedVideoModel->validate() || !$postAssignedVideoModel->save()) {
                         $transaction->rollBack();
-                        print_r($postAssignedVideoModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($postAssignedVideoModel->firstErrors)[0]);
                     }
                     break;
                 case  'Podcast':
@@ -258,7 +252,6 @@ class SkillsUpForm extends Model
                     }
 
 
-
                     $postModel = new Posts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $postModel->post_enc_id = $utilitiesModel->encrypt();
@@ -284,9 +277,7 @@ class SkillsUpForm extends Model
 
                     if (!$postModel->validate() || !$postModel->save()) {
                         $transaction->rollBack();
-                        print_r($postModel->getErrors());
-                        echo 'sadf';
-                        die();
+                        throw new \Exception(array_values($postModel->firstErrors)[0]);
                     }
 
                     // save post categories
@@ -299,8 +290,7 @@ class SkillsUpForm extends Model
                     $postCategoriesModel->created_on = date('Y-m-d H:i:s');
                     if (!$postCategoriesModel->validate() || !$postCategoriesModel->save()) {
                         $transaction->rollBack();
-                        print_r($postCategoriesModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($postCategoriesModel->firstErrors)[0]);
                     }
 
                     // post assigned blog
@@ -313,8 +303,7 @@ class SkillsUpForm extends Model
                     $assignedBlogModel->created_on = date('Y-m-d H:i:s');
                     if (!$assignedBlogModel->validate() || !$assignedBlogModel->save()) {
                         $transaction->rollBack();
-                        print_r($assignedBlogModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($assignedBlogModel->firstErrors)[0]);
                     }
                     break;
                 case 'Course':
@@ -331,8 +320,7 @@ class SkillsUpForm extends Model
                     $courses->last_updated_on = date('Y-m-d H:i:s');
                     if (!$courses->validate() || !$courses->save()) {
                         $transaction->rollBack();
-                        print_r($courses->getErrors());
-                        die();
+                        throw new \Exception(array_values($courses->firstErrors)[0]);
                     }
 
                     $skillsUpCourse = new SkillsUpPostAssignedCourses();
@@ -346,16 +334,11 @@ class SkillsUpForm extends Model
                     $skillsUpCourse->last_updated_by = $this->user_id;
                     if (!$skillsUpCourse->validate() || !$skillsUpCourse->save()) {
                         $transaction->rollBack();
-                        print_r($skillsUpCourse->getErrors());
-                        die();
+                        throw new \Exception(array_values($skillsUpCourse->firstErrors)[0]);
                     }
                     break;
                 default :
-                    return [
-                        'status' => 201,
-                        'title' => 'Content Type Error',
-                        'message' => 'Content type not validate'
-                    ];
+                    throw new \Exception('content type not found');
             }
 
             // save author
@@ -377,9 +360,7 @@ class SkillsUpForm extends Model
                     $authorModel->created_on = date('Y-m-d H:i:s');
                     if (!$authorModel->validate() || !$authorModel->save()) {
                         $transaction->rollBack();
-                        print_r($authorModel->getErrors());
-                        echo 'as';
-                        die();
+                        throw new \Exception(array_values($authorModel->firstErrors)[0]);
                     }
                 }
 
@@ -394,9 +375,7 @@ class SkillsUpForm extends Model
                     $skillsUpAuthorsModel->created_on = date('Y-m-d H:i:s');
                     if (!$skillsUpAuthorsModel->validate() || !$skillsUpAuthorsModel->save()) {
                         $transaction->rollBack();
-                        print_r($skillsUpAuthorsModel->getErrors());
-                        echo 'sdf';
-                        die();
+                        throw new \Exception(array_values($skillsUpAuthorsModel->firstErrors)[0]);
                     }
                 }
             }
@@ -412,8 +391,7 @@ class SkillsUpForm extends Model
                 $embedModel->created_on = date('Y-m-d H:i:s');
                 if (!$embedModel->validate() || !$embedModel->save()) {
                     $transaction->rollBack();
-                    print_r($embedModel->getErrors());
-                    die();
+                    throw new \Exception(array_values($embedModel->firstErrors)[0]);
                 }
 
                 // saving skills up assigned embeds
@@ -426,8 +404,7 @@ class SkillsUpForm extends Model
                 $embedAssignedModel->created_on = date('Y-m-d H:i:s');
                 if (!$embedAssignedModel->validate() || !$embedAssignedModel->save()) {
                     $transaction->rollBack();
-                    print_r($embedAssignedModel->getErrors());
-                    die();
+                    throw new \Exception(array_values($embedAssignedModel->firstErrors)[0]);
                 }
             }
 
@@ -443,8 +420,7 @@ class SkillsUpForm extends Model
                     $postAssignedIndustriesModel->created_on = date('Y-m-d H:i:s');
                     if (!$postAssignedIndustriesModel->validate() || !$postAssignedIndustriesModel->save()) {
                         $transaction->rollBack();
-                        print_r($postAssignedIndustriesModel->getErrors());
-                        die();
+                        throw new \Exception(array_values($postAssignedIndustriesModel->firstErrors)[0]);
                     }
                 }
             }
@@ -462,25 +438,18 @@ class SkillsUpForm extends Model
                     $postAssignedSkills->created_on = date('Y-m-d H:i:s');
                     if (!$postAssignedSkills->validate() || !$postAssignedSkills->save()) {
                         $transaction->rollBack();
-                        print_r($postAssignedSkills->getErrors());
-                        die();
+                        throw new \Exception(array_values($postAssignedSkills->firstErrors)[0]);
                     }
                 }
             }
 
             $transaction->commit();
 
-            return true;
+            return ['status' => 200];
 
         } catch (\Exception $e) {
             $transaction->rollBack();
-            print_r($e->getMessage());
-            die();
-            return [
-                'status' => 201,
-                'title' => 'Exception',
-                'message' => $e->getMessage()
-            ];
+            return ['status' => 500, 'message' => $e->getMessage()];
         }
     }
 
@@ -496,7 +465,7 @@ class SkillsUpForm extends Model
         $youtubeModel->created_by = $this->user_id;
         if (!$youtubeModel->validate() || !$youtubeModel->save()) {
             $transaction->rollBack();
-            return false;
+            throw new \Exception(array_values($youtubeModel->firstErrors)[0]);
         } else {
             return $youtubeModel->channel_enc_id;
         }
@@ -567,8 +536,7 @@ class SkillsUpForm extends Model
         $tag->created_on = date('Y-m-d H:i:s');
         if (!$tag->save()) {
             $transaction->rollBack();
-            print_r($tag->getErrors());
-            die();
+            throw new \Exception(array_values($tag->firstErrors)[0]);
         }
         return $tag->tag_enc_id;
     }
@@ -586,8 +554,7 @@ class SkillsUpForm extends Model
         $assigned_tag->created_on = date('Y-m-d H:i:s');
         if (!$assigned_tag->save()) {
             $transaction->rollBack();
-            print_r($assigned_tag->getErrors());
-            die();
+            throw new \Exception(array_values($assigned_tag->firstErrors)[0]);
         }
 
         return $assigned_tag->assigned_tag_enc_id;
@@ -605,8 +572,7 @@ class SkillsUpForm extends Model
         $video_tag->created_on = date('Y-m-d H:i:s');
         if (!$video_tag->save()) {
             $transaction->rollBack();
-            print_r($video_tag->getErrors());
-            die();
+            throw new \Exception(array_values($video_tag->firstErrors)[0]);
         }
 
         return true;
