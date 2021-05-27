@@ -959,11 +959,11 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['name']) && !empty($data['name'])) {
                 $candidates->having(['like', 'user_full_name', $data['name']]);
             }
-            if (isset($data['course_name']) && !empty($data['course_name'])) {
-                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
+            if (isset($data['courses']) && !empty($data['courses'])) {
+                $candidates->andWhere(['c1.course_name' => $data['courses']]);
             }
-            if (isset($data['semester']) && !empty($data['semester'])) {
-                $candidates->andWhere(['a.semester' => $data['semester']]);
+            if (isset($data['semesters']) && !empty($data['semesters'])) {
+                $candidates->andWhere(['a.semester' => $data['semesters']]);
             }
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {
                 $candidates->andWhere(['like', 'a.university_roll_number', $data['roll_no']]);
