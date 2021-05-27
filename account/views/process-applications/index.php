@@ -140,7 +140,7 @@ foreach ($fields as $f) {
                                                                                                    onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
-                                        hred="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                        href="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
                             <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
