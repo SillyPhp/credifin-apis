@@ -75,7 +75,7 @@ $industries = Json::encode($industries);
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px">
+                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="95px">
                                         <?php
                                         $form = ActiveForm::begin([
                                             'id' => 'upload-logo',
@@ -1643,7 +1643,7 @@ var cover_vanilla = new Croppie(cr, {
 function renderCrop(img){
     vanilla.bind({
         url: img,
-        points: [20,20,20,20]
+        // points: [20,20,20,20]
         // orientation: 4
     });
 }
