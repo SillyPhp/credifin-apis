@@ -136,19 +136,19 @@ foreach ($fields as $f) {
                         </div>
 
                         <div class="j-share">
-                            <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href=""
+                            <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href="javascript:;"
                                                                                                    onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
-                                        hred-mainonclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                        hred="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
-                            <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href=""
+                            <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-twitter"></i></a></span>
-                            <span class="mail" data-toggle="tooltip" title="Share via Email"><a href=""
+                            <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href=""
+                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
                                                                                                   onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
                         </div>
