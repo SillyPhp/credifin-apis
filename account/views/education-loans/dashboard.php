@@ -395,10 +395,13 @@ if (isset($_GET['filter'])) {
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'rate_of_interest')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
                                     <?= $form->field($model, 'approved_by')->textInput(['autocomplete' => 'off']); ?>
                                 </div>
-                                <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="col-md-4 col-sm-4 padd-20">
                                     <?= $form->field($model, 'fldg')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %'])->label('FLDG'); ?>
                                 </div>
                             </div>
