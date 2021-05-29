@@ -106,8 +106,13 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <ul class="notifications-list">
                             <?php
+                            $count = 0;
                             foreach ($notifications as $notification) {
                                 if (!preg_match('/<script>/', $notification['message'], $match)) {
+                                    $count++;
+                                    if($count > 1){
+                                        break;
+                                    }
                                     ?>
                                     <li>
                                         <div class="container-fluid ">
