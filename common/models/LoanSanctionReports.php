@@ -14,6 +14,7 @@ use Yii;
  * @property string $file_number
  * @property double $loan_amount
  * @property double $processing_fee
+ * @property double $rate_of_interest
  * @property int $total_installments
  * @property int $discounting
  * @property string $approved_by
@@ -24,6 +25,7 @@ use Yii;
  * @property string $updated_on
  *
  * @property CollectedDocuments[] $collectedDocuments
+ * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property LoanApplications $loanAppEnc
  * @property Organizations $loanProvider
  * @property Users $createdBy
@@ -32,7 +34,7 @@ use Yii;
 class LoanSanctionReports extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -40,13 +42,13 @@ class LoanSanctionReports extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['report_enc_id', 'loan_app_enc_id', 'loan_provider_id', 'file_number', 'loan_amount', 'processing_fee', 'total_installments', 'discounting', 'approved_by', 'fldg'], 'required'],
-            [['loan_amount', 'processing_fee'], 'number'],
+            [['report_enc_id', 'loan_app_enc_id', 'loan_provider_id', 'file_number', 'loan_amount', 'processing_fee', 'rate_of_interest', 'total_installments', 'discounting', 'approved_by', 'fldg'], 'required'],
+            [['loan_amount', 'processing_fee', 'rate_of_interest'], 'number'],
             [['total_installments', 'discounting', 'fldg'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['report_enc_id', 'loan_app_enc_id', 'loan_provider_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
@@ -65,6 +67,14 @@ class LoanSanctionReports extends \yii\db\ActiveRecord
     public function getCollectedDocuments()
     {
         return $this->hasMany(CollectedDocuments::className(), ['sanctioned_report_id' => 'report_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationLogs()
+    {
+        return $this->hasMany(LoanApplicationLogs::className(), ['sanctioned_report_id' => 'report_enc_id']);
     }
 
     /**
