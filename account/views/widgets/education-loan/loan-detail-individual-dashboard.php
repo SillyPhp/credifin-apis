@@ -48,6 +48,7 @@ use yii\helpers\Url;
                         <p class="mb0">Loan Profile</p>
                         <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
                             Profile</a>
+                        <a href="#" class="secondary hidden">Disbursement</a>
                     </div>
                     <!--                        <div class="statsBox">-->
                     <!--                            <p class="mb0">Loan Structure</p>-->
@@ -117,9 +118,8 @@ use yii\helpers\Url;
                                                             <div class="info-tab tip-icon-info" title="error"><i></i>
                                                             </div>
                                                             <div class="tip-box-info">
-                                                                <p class="mb-20"><strong
-                                                                            class="formattedDate"><?= $notification['created_on'] ?>
-                                                                        :</strong>
+                                                                <p class="mb-20">
+                                                                    <h6 class="text-right formattedDate"><?= $notification['created_on'] ?></h6>
                                                                     <?= $notification['message'] ?>
                                                                 </p>
                                                             </div>
@@ -226,6 +226,7 @@ $this->registerCss('
           
 .addressLink li {
     float: left;
+    width:16%;
 }
           
 .addressLink li a {
@@ -235,7 +236,8 @@ $this->registerCss('
     padding: 10px 15px 10px 30px;
     position: relative;
     float: left;
-    pointer-events: none
+    pointer-events: none;
+    width:100%;
 }          
 .addressLink li a:after,
 .addressLink li.activeTab a:after{
@@ -317,6 +319,11 @@ $this->registerCss('
     .addressLink li.activeTab a:after,
     .addressLink li.activeTab a:before {
         border: none;
+    }
+}
+@media screen and (max-width: 1150px){         
+    .addressLink li {
+        width:auto;
     }
 }
 .new-message-box {
@@ -447,13 +454,14 @@ $this->registerCss('
 .formattedDate{
     font-size: 13px;
     color: #ff7803;
+    font-weight:600;
 }
 ');
 $script = <<<JS
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
 $('.formattedDate').each(function(){
     var d = new Date($(this).text());
-    $(this).html(d.getDate() + " " + months[d.getMonth()] + ", " + d.getFullYear()+ ' : ');
+    $(this).html(d.getDate() + " " + months[d.getMonth()] + ", " + d.getFullYear());
 });
 JS;
 $this->registerJs($script);
