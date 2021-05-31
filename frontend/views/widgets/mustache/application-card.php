@@ -651,5 +651,22 @@ text-overflow: ellipsis;
     .hide-resp{display:none;}
 }
 /*cards-box css*/
+
+@media screen and (max-width: 1024px) and (min-width: 992px) {
+    .wts-app, .fb, .tw, .linkd, .male, .tele {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        margin: 0px 2px;
+    }
+}
+@media screen and (max-width: 576px) and (min-width: 320px) {
+    .wts-app, .fb, .tw, .linkd, .male, .tele {
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+        margin: 0px 2px;
+    }
+}
 ');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
