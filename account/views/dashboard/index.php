@@ -3,9 +3,9 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Dashboard',
-]);
+//echo $this->render('/widgets/header/secondary-header', [
+//    'for' => 'Dashboard',
+//]);
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):
     if (!Yii::$app->user->identity->organization->is_email_verified):
