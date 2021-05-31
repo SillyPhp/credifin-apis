@@ -69,9 +69,9 @@ if ($organization_data) {
 Pjax::end();
 
 $this->registerCss('
-.hr-company-box {
-    padding: 20px 10px 20px;
-}
+//.hr-company-box {
+//    padding: 20px 10px 20px;
+//}
 .user-icon {
     border-radius: 50%;
 }
@@ -118,7 +118,7 @@ $this->registerCss('
     padding: 20px 0px 0px 0px !important;
     text-align: center;
 }
-.hr-com-field{min-height:21px;}
+.hr-com-field{min-height:22px;}
 .hr-com-icon{height:120px;}
 ');
 $script = <<<JS

@@ -24,14 +24,16 @@ $this->params['header_dark'] = true;
                                     <div class="main-filter">
                                         <ul class="m-filter">
                                             <li>
-                                                <input class="filter-checkbox" id="sort-videos" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-videos" type="checkbox"
+                                                       name="courses"
                                                        value="Video"/>
                                                 <label for="sort-videos">
                                                     <div>Video</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="filter-checkbox" id="sort-podcast" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-podcast" type="checkbox"
+                                                       name="courses"
                                                        value="Podcast"/>
                                                 <label for="sort-podcast">
                                                     <div>Podcast</div>
@@ -46,21 +48,24 @@ $this->params['header_dark'] = true;
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="filter-checkbox" id="sort-news" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-news" type="checkbox"
+                                                       name="courses"
                                                        value="Article"/>
                                                 <label for="sort-news">
                                                     <div>Articles</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="filter-checkbox" id="sort-filter" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="sort-filter" type="checkbox"
+                                                       name="courses"
                                                        value="Blog"/>
                                                 <label for="sort-filter">
                                                     <div>Blog</div>
                                                 </label>
                                             </li>
                                             <li>
-                                                <input class="filter-checkbox" id="news-filter" type="checkbox" name="courses"
+                                                <input class="filter-checkbox" id="news-filter" type="checkbox"
+                                                       name="courses"
                                                        value="News"/>
                                                 <label for="news-filter">
                                                     <div>News</div>
@@ -77,21 +82,21 @@ $this->params['header_dark'] = true;
                                         </ul>
                                     </div>
                                 </div>
-<!--                                <div class="col-md-12 col-sm-4" style="padding:0;">-->
-<!--                                    <div class="filters-box">-->
-<!--                                        <div class="f-head">-->
-<!--                                            <h3>Skills</h3>-->
-<!--                                        </div>-->
-<!--                                        <ul>-->
-<!--                                            <li>-->
-<!--                                                <label class="control control--checkbox">First checkbox-->
-<!--                                                    <input type="checkbox" checked="checked"/>-->
-<!--                                                    <div class="control__indicator"></div>-->
-<!--                                                </label>-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                                <!--                                <div class="col-md-12 col-sm-4" style="padding:0;">-->
+                                <!--                                    <div class="filters-box">-->
+                                <!--                                        <div class="f-head">-->
+                                <!--                                            <h3>Skills</h3>-->
+                                <!--                                        </div>-->
+                                <!--                                        <ul>-->
+                                <!--                                            <li>-->
+                                <!--                                                <label class="control control--checkbox">First checkbox-->
+                                <!--                                                    <input type="checkbox" checked="checked"/>-->
+                                <!--                                                    <div class="control__indicator"></div>-->
+                                <!--                                                </label>-->
+                                <!--                                            </li>-->
+                                <!--                                        </ul>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -147,19 +152,21 @@ $this->params['header_dark'] = true;
         <div class="feed-box dash-inner-box nd-shadow">
 
             <!--        <div class="rec-batch">Recommended</div>-->
-            <div class="feed-img">
-                {{#cover_image}}
-                <img src="{{cover_image}}" alt="your image" class="target"/>
-                {{/
-                cover_image}}
-                {{^
-                cover_image}}
-                <img src="{{post_image_url}}" alt="your image" class="target"/>
-                {{/
-                cover_image}}
+            <a href="/skills-up/detail/{{slug}}">
+                <div class="feed-img">
+                    {{#cover_image}}
+                    <img src="{{cover_image}}" alt="your image" class="target"/>
+                    {{/
+                    cover_image}}
+                    {{^
+                    cover_image}}
+                    <img src="{{post_image_url}}" alt="your image" class="target"/>
+                    {{/
+                    cover_image}}
 
-            </div>
-            <h3 class="feed-heading">{{post_title}}</h3>
+                </div>
+            </a>
+            <a href="/skills-up/detail/{{slug}}"><h3 class="feed-heading">{{post_title}}</h3></a>
             <div class="author-s">
                 {{#author_name}}
                 <div class="author list-data"><i class="fas fa-user"></i><span> {{author_name}}</span></div>
