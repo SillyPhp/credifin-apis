@@ -14,8 +14,23 @@ $this->params['header_dark'] = true;
                     <div class="video-box-main dash-inner-box nd-shadow">
                         <!--                    <div class="rec-batch">Recommended</div>-->
                         <div class="vid-box">
-                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                                 alt="your image" class="target"/>
+                            <?php if ($detail['content_type'] == 'Video') { ?>
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/<?= $detail['youtube_video_id'] ?>"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            <?php } elseif ($detail['content_type'] == 'Podcast') { ?>
+                                <?= $detail['embed_code'] ?>
+                            <?php } else { ?>
+                                <?php if ($detail['post_image_url']) { ?>
+                                    <img src="<?= $detail['post_image_url'] ?>"
+                                         alt="your image" class="target"/>
+                                <?php } else { ?>
+                                    <img src="<?= $detail['cover_image'] ?>"
+                                         alt="your image" class="target"/>
+                                <?php } ?>
+                            <?php } ?>
                         </div>
                         <h3><?= $detail['post_title'] ?></h3>
                         <div class="author-s margin-top-10">
@@ -89,7 +104,7 @@ $this->params['header_dark'] = true;
                     <div class="related-art dash-inner-box nd-shadow">
                         <h3>Related Articles</h3>
                         <?php foreach ($related_posts as $post) { ?>
-                            <a href="<?= Url::to('/skills-up/detail?slug=' . $post['slug']) ?>" class="relate-box">
+                            <a href="<?= Url::to('/skills-up/detail/' . $post['slug']) ?>" class="relate-box">
                                 <div class="relate-icon">
                                     <img src="<?= $post['post_image_url'] ? $post['post_image_url'] : $post['cover_image'] ?>"
                                          alt="your image" class="target"/>
