@@ -55,7 +55,6 @@ class LoansController extends ApiBaseController
                 'study-in-india',
                 'faqs',
                 'press-release-publisher',
-                'save-teachers-loan'
             ],
             'class' => HttpBearerAuth::className()
         ];
