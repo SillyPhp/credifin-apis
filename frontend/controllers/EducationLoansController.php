@@ -43,6 +43,7 @@ class EducationLoansController extends Controller
             }
         return $data->asArray()->all();
     }
+
     public function beforeAction($action)
     {
         $route = ltrim(Yii::$app->request->url, '/');
@@ -58,7 +59,8 @@ class EducationLoansController extends Controller
     {
         $data = self::getPressReleasData(['limit' => 6]);
         $loan_org = Organizations::find()
-            ->select(['organization_enc_id', 'name', 'logo', 'logo_location', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->select(['organization_enc_id', 'name', 'logo', 'logo_location',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
             ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
             ->asArray()
             ->all();
@@ -73,9 +75,14 @@ class EducationLoansController extends Controller
     {
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
+        $referrerUrl = trim(Yii::$app->request->referrer, '/');
+        $urlParts = parse_url($referrerUrl);
+        $action_name = explode('/', $urlParts['path'])[2];
+
         return $this->render('apply-general-loan-form', [
             'india' => $india,
-            'ref_id' => $ref_id
+            'ref_id' => $ref_id,
+            'action_name' => $action_name
         ]);
         else:
             throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
@@ -86,15 +93,17 @@ class EducationLoansController extends Controller
     {
         $this->layout = 'widget-layout';
         $wid = Organizations::find()
-            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name'])
+            ->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as name', 'logo', 'logo_location',
+            'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END college_logo'])
             ->where(['organization_enc_id' => $id])
             ->asArray()->one();
         if ($wid) {
-            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id'], 'title' => $wid['name']]);
+            return $this->render('/framed-widgets/education-loan', ['wid' => $wid['organization_enc_id'], 'title' => $wid['name'], 'college_logo' => $wid['college_logo']]);
         } else {
             return 'Unauthorized';
         }
     }
+
     public function actionLoanForTeachers(){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('teachers-loan-form');
@@ -102,6 +111,7 @@ class EducationLoansController extends Controller
             throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
         endif;
     }
+
     public function actionEducationLoanView()
     {
         return $this->render('education-loan-view');
@@ -116,6 +126,7 @@ class EducationLoansController extends Controller
     {
         return $this->render('loan-college-index');
     }
+
     public function actionSchoolFeeLoanApply(){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('school-fee-loan-form');
@@ -123,6 +134,7 @@ class EducationLoansController extends Controller
         throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
         endif;
     }
+
     public function actionLeads()
     {
         $this->layout = 'main-secondary';
