@@ -652,7 +652,7 @@ text-overflow: ellipsis;
 }
 /*cards-box css*/
 
-@media screen and (max-width: 1024px) and (min-width: 992px) {
+@media screen and (max-width: 1250px) and (min-width: 992px) {
     .wts-app, .fb, .tw, .linkd, .male, .tele {
         width: 22px;
         height: 22px;
