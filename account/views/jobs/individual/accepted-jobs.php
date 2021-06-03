@@ -119,7 +119,7 @@ $this->registerCss('
     color:#999999; 
     padding-top:20px;
 }
-.hr-com-field{height:21px;}
+.hr-com-field{height:22px;}
 .overlay2 {
   position: absolute;
   top: 0px;

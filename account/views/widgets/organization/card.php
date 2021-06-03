@@ -118,7 +118,7 @@ $this->registerCss('
     padding: 20px 0px 0px 0px !important;
     text-align: center;
 }
-.hr-com-field{min-height:21px;}
+.hr-com-field{min-height:22px;}
 .hr-com-icon{height:120px;}
 ');
 $script = <<<JS

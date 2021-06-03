@@ -3,9 +3,9 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Dashboard',
-]);
+//echo $this->render('/widgets/header/secondary-header', [
+//    'for' => 'Dashboard',
+//]);
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):
     if (!Yii::$app->user->identity->organization->is_email_verified):
@@ -118,7 +118,13 @@ endif;
                         </div>
                     </div>
                 </div>
-
+                <?php
+                if($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual'){
+                    echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
+                        'loanApplication' => $loanApplication,
+                    ]);
+                }
+                ?>
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
@@ -126,7 +132,7 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
-               
+
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
