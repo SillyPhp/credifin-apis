@@ -337,8 +337,7 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
             <div class="row">
                 <div class="col-md-12">
                     <div class="el-pos-rel">
-                        <div class="max-300">
-
+                        <div class="righDivDetails">
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
                                 <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
@@ -348,8 +347,32 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                 <li>- Loan will be <span>repaid</span> with in the semester</li>
                             </ul>
                             <div class="cl-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
-                                     alt="">
+                               <div class="row">
+                                   <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                            <p>Minimal Paper Work</p>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                           <p>Faster Processing Time</p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                           <p>Approval In Minutes</p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                           <p>Quick Disbursement</p>
+                                       </div>
+                                   </div>
+                               </div>
                             </div>
                         </div>
                     </div>
@@ -361,6 +384,11 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
 $this->registerCss('
 #loadBtn{
     display:none;
+}
+.righDivDetails{
+    text-align: left;
+    max-width: 550px;
+    margin: auto;
 }
 .heading-style {
     font-family: lobster;
@@ -398,6 +426,23 @@ $this->registerCss('
 .ey_partner_div p{
     margin: 10px 0;
 }
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px;
+    line-height: 20px;
+    
+} 
 .padd-20{
     padding-bottom: 5px;
 }
@@ -406,7 +451,8 @@ $this->registerCss('
 }
 .loan-benefits li{
     color:#f3f3f2;
-    font-size: 16px;    
+    font-size: 16px;   
+    margin-bottom: 5px; 
 }
 .loan-benefits{
     list-style:none
@@ -460,10 +506,6 @@ $this->registerCss('
 .displayInline li{
     display:inline-block;
     padding-right:20px;
-}
-.cl-icon img{
-    margin-top: 30px;
-    max-height: 300px;
 }
 .form-start{
     max-width:420px;
@@ -566,8 +608,9 @@ $this->registerCss('
 }
 .cl-heading{
     color:#fff;
-    font-size:20px;
+    font-size:30px;
     padding-top:30px;
+    margin-bottom: 10px;
     font-weight:bold;
 }
 .footer{
