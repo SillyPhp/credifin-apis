@@ -37,7 +37,7 @@ $this->params['header_dark'] = false;
                                 </div>
                                 <div class="hcHidden" id="reviewsHeaderContent">
                                     <h1>Get Invaluable source of feedback</h1>
-                                    <h2>Know everything about schools, colleges, universities, and companies.</h2>
+                                    <h2>Know everything about Schools, Colleges, Universities and Companies.</h2>
                                 </div>
                                 <div class="hcHidden" id="coursesHeaderContent">
                                     <h1>Top Courses To Develop Your Skills</h1>
@@ -1330,7 +1330,7 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
                     break;
                 case 'reviewsHeaderContent':
                     searchForm.setAttribute('action', '/reviews/search');
-                    searchInput.setAttribute('placeholder', 'Enter Organization Name');
+                    searchInput.setAttribute('placeholder', 'Search School, College, University or Company Name');
                     break;
                 case 'coursesHeaderContent':
                     searchForm.setAttribute('action', '/courses/courses-list');
