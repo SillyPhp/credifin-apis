@@ -15,7 +15,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 //    'for' => 'Jobs',
 //]);
 ?>
-    <div class="row padd-top-20">
+    <div class="row">
         <div class="col-md-2 col-sm-3">
             <div class="new-card-container">
                 <div class="card">

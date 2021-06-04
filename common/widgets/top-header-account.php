@@ -144,6 +144,84 @@
                 </div>
             </div>
         </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/account/jobs/create">Create Job</a>
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li>
+                                    <a href="/account/jobs/create">Create AI Job</a>
+                                </li>
+                                <?php
+                                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                    ?>
+                                    <li>
+                                        <a href="/account/jobs/campus-placement">
+                                            Campus Hiring
+                                        </a>
+                                    </li>
+                                    <?php
+                                }
+                                ?>
+                                <li>
+                                    <a href="/tweets/job/create">
+                                        Post Job Tweet
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/account/jobs/quick-job">
+                                        Create Quick Job
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/account/internships/create">Create Internships</a>
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li>
+                                    <a href="/account/internships/create">
+                                        Create AI Internship
+                                    </a>
+                                </li>
+                                <?php
+                                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                    ?>
+                                    <li>
+                                        <a href="/account/internships/campus-placement">
+                                            Campus Hiring
+                                        </a>
+                                    </li>
+                                    <?php
+                                }
+                                ?>
+                                <li>
+                                    <a href="/tweets/internship/create">
+                                        Post Internship Tweet
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/account/internships/quick-internship">
+                                        Create Quick Internship
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </li>
         <?php
         if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
             ?>
