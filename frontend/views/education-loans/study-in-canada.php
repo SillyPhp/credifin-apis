@@ -6,21 +6,29 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+<!--    <div class="opacity-div"></div>-->
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-5 col-sm-12 col-xs-12">
+                <div class="padd-top">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Study In CANADA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
+                <p>Don't let <span class="black-bold">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="black-bold">study in your dream college<span class="black-bold">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="canada-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-in-canada-vctr.png') ?>">
+                </div>
             </div>
         </div>
     </div>
@@ -102,6 +110,22 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.padd-top {
+    padding-top: 70px;
+}
+.canada-vector {
+    padding-left: 100px;
+     display: flex;
+    align-items: flex-end;
+    min-height: 530px;
+}
+.canada-vector img {
+    width: 115%;
+    max-width: 600px;
+}
+.black-bold {
+    font-weight: bold;
+}
 .studyus-head {
     padding: 30px;
 }
@@ -160,6 +184,7 @@ $this->registerCss('
     margin-right: 10px;
 }
 .apply-now{
+    text-align: center;
     padding: 10px 15px;
 	background: #00A0E3;
 	color: #fff;
@@ -225,17 +250,17 @@ $this->registerCss('
     transition: .3s ease;
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/canada-hdr.png') . ');
-	min-height: 500px;
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-in-canada-bg.png') . ');
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: top right;
+	min-height: 550px;
 	display: flex;
 	align-items: center;
 	position: relative;
-	text-align: center;
-	height: 100vh;
+	text-align: left;
+	height: 75vh;
 	max-height: 700px;
+	background-position: right;
 }
 .opacity-div{
     position: absolute;
@@ -246,11 +271,11 @@ $this->registerCss('
 	background: rgba(0,0,0,.4);
 }
 .study-in-usa-bg p{
-    font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
+    font-size: 21px;
+    font-family: roboto;
+    color: #000;
+    padding: 0 0 18px;
+    line-height: 30px;
 }
 .study-in-usa-bg h1{
     font-size: 45px;
@@ -540,9 +565,6 @@ label {
 
 
 @media only screen and (max-width: 767px) {
-.study-in-usa-bg h1{
-    font-size: 30px;
-}
 .h-point1 {
     width: 50%;
 }
@@ -552,7 +574,79 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
-
+}
+@media only screen and (max-width: 768px) and (min-width: 690px){
+    .canada-vector {
+        padding-left: 195px;
+        min-height: 180px;
+    }
+    .canada-vector img {
+        max-width: 65%;
+    }
+    .padd-top {
+        padding-top: 0px;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+        padding-top: 50px;
+    }
+    .study-in-usa-bg p {
+        font-size: 20px;
+        line-height: 30px;
+        font-family: roboto;
+    }
+    .apply-now {
+        padding: 8px 10px;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+}
+@media only screen and (max-width: 680px) and (min-width: 320px){
+    .canada-vector{
+        display: none;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        margin-bottom: 10px;
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+    }
+    .india-vector img {
+        display: none;
+    }
+}
+@media only screen and (max-width: 1230px) and (min-width: 990px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+    .canada-vector img {
+        max-width: 100%;
+    }
+    .study-in-usa-bg p {
+        font-size: 17px;
+        line-height: 25px;
+        font-family: roboto;
+    }
+    .padd-top {
+        padding-top: 100px;
+    }
+}
 ');
 $script = <<<JS
 setTimeout(function (){

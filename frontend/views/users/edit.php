@@ -125,14 +125,14 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <div class="col-lg-8">
                                     <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
                                     <div class="pf-field no-margin">
+                                        <input type="hidden" name="languages" value=""/>
                                         <ul class="tags languages_tag_list">
                                             <?php if (!empty($userLanguage)) {
                                                 foreach ($userLanguage as $language) { ?>
-                                                    <li class="addedTag"><?= $language['language'] ?><span
-                                                                onclick="$(this).parent().remove();"
-                                                                class="tagRemove">x</span><input type="hidden"
-                                                                                                 name="languages[]"
-                                                                                                 value="<?= $language['language'] ?>">
+                                                    <li class="addedTag">
+                                                        <?= $language['language'] ?>
+                                                        <span onclick="$(this).parent().remove();" class="tagRemove">x</span>
+                                                        <input type="hidden" name="languages[]" value="<?= $language['language'] ?>">
                                                     </li>
                                                 <?php }
                                             } ?>
@@ -151,6 +151,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <div class="col-lg-12">
                                     <span class="pf-title">Pick the Skills You Have</span>
                                     <div class="pf-field no-margin">
+                                        <input type="hidden" name="skills" value=""/>
                                         <ul class="tags skill_tag_list">
                                             <?php if (!empty($userSkills)) {
                                                 foreach ($userSkills as $skill) { ?>
@@ -750,15 +751,15 @@ function add_tags(thisObj,tag_class,name,duplicates)
 {
     var duplicates = [];
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
-                        {
-                         duplicates.push($.trim($(this).val()).toUpperCase());
-                        });
+        {
+         duplicates.push($.trim($(this).val()).toUpperCase());
+        });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-                thisObj.val('');
-                    } else {
-                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-                     thisObj.val('');
-                }
+        thisObj.val('');
+            } else {
+             $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+             thisObj.val('');
+        }
 }    
 $(document).on('submit','#basicDetailForm',function(event)
 {
@@ -962,7 +963,7 @@ function readURL(input) {
 function renderCrop(img){
     vanilla.bind({
         url: img,
-        points: [20,20,20,20]
+        // points: [20,20,20,20]
         // orientation: 4
     });
 }

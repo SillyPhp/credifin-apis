@@ -366,13 +366,14 @@ class JobsController extends Controller
 
         $shortlist1 = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd1.icon'])
             ->joinWith(['appliedApplications e' => function ($y) {
                 $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
+                $x->joinWith(['parentEnc d1'], false);
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->asArray()

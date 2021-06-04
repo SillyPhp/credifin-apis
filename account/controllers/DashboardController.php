@@ -17,6 +17,7 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use common\models\UserPreferences;
 use common\models\UserSkills;
 use frontend\models\script\scriptModel;
 use Yii;
@@ -316,6 +317,8 @@ class DashboardController extends Controller
             'total_org_applied' => $this->total_applied(),
             'viewed' => $viewed,
             'scriptModel' => $scriptModel,
+            'userValues' => $this->_CompleteProfile(),
+            'userPref' => $this->_CompletePreference(),
         ]);
     }
 
@@ -569,6 +572,71 @@ class DashboardController extends Controller
                 'services' => $services,
             ]);
         }
+    }
+
+    private function _CompleteProfile(){
+         $user = Users::find()
+             ->alias('a')
+             ->select([
+                'a.user_enc_id', 'a.dob', 'a.experience', 'a.gender', 'a.city_enc_id',
+                'a.image','a.job_function', 'a.asigned_job_function', 'a.description', 'a.is_available'
+             ])
+         ->joinWith(['userSkills b'=> function($b){
+             $b->onCondition(['b.is_deleted' => 0]);
+         }])
+         ->joinWith(['userSpokenLanguages c'=> function($c){
+             $c->onCondition(['c.is_deleted' => 0]);
+         }])
+         ->where([
+            'a.user_enc_id' => Yii::$app->user->identity->user_enc_id,
+            'a.is_deleted' => 0
+        ])
+         ->asArray()
+         ->one();
+
+         $is_complete = 1;
+         foreach ($user as $val){
+             if($val == '' || $val == null){
+                 $is_complete = 0;
+                 break;
+             }
+         }
+         return ['is_complete' => $is_complete, 'userVal' => $user];
+     }
+
+    private function _CompletePreference(){
+        $userPref = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id', 'a.assigned_to'])
+            ->joinWith(['userPreferredJobProfiles b' => function($b){
+                $b->select(['b.preferred_job_profile_enc_id', 'b.preference_enc_id']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredLocations c' => function($c) {
+                $c->select(['c.preferred_location_enc_id', 'c.preference_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredIndustries d' => function($d) {
+                $d->select(['d.preferred_industry_enc_id', 'd.preference_enc_id']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0, 'a.assigned_to' => 'Jobs'])
+            ->asArray()
+            ->one();
+
+            $is_complete = 1;
+            if(empty($userPref['userPreferredJobProfiles'])){
+                $is_complete = 0;
+            }
+            if(empty($userPref['userPreferredLocations'])){
+                $is_complete = 0;
+            }
+            if(empty($userPref['userPreferredIndustries'])){
+                $is_complete = 0;
+            }
+//        print_r($userPref);
+//        exit();
+        return ['is_complete' => $is_complete, 'userPref' => $userPref];
     }
 
     private function _uploadImage()
