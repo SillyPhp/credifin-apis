@@ -46,7 +46,12 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                             <div class="tab" id="step1">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h1 class="heading-style">Education Loan</h1>
+                                        <h1 class="heading-style"><?php
+                                            if($action_name == 'interest-free'){
+                                                echo 'Interest Free Education Loan';
+                                            }else if($action_name == 'study-abroad'){
+                                                echo 'StudyAbroad Education Loan';
+                                            }else{ echo 'Education Loan';}  ?></h1>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -352,72 +357,13 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
             </div>
         </div>
         <div class="college-logo" id="cl">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="el-pos-rel">
-                        <div class="max-300">
-                            <div class="cl-heading">Get the Best Education Loan</div>
-                            <ul class="loan-benefits">
-                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
-                                    the students in a particular <span>academic year</span>.</li>
-                                <li>- Loan will be <span>repaid</span> with in the semester</li>
-                            </ul>
-                            <div class="cl-icon">
-                                <p>Our Lenders</p>
-                                <ul>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span class="li-text">+10 More</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+                if($action_name == 'interest-free'){
+                    echo $this->render('/widgets/education-loan/interest-free-loan-content');
+                }else{
+                    echo $this->render('/widgets/education-loan/loan-form-content');
+                }
+            ?>
         </div>
     </section>
 <input type="hidden" name="colg_text" id="colg_text">
@@ -428,9 +374,15 @@ $this->registerCss('
 #loadBtn{
     display:none;
 }
-
 .padd-20{
-    padding-bottom: 20px;
+    padding-bottom: 10px;
+}
+.heading-style{
+    font-size: 24px;
+    margin-top: 0;
+}
+.heading-style:before {
+    top: -4px;
 }
 .loan-benefits li{
     color:#f3f3f2;
@@ -493,9 +445,9 @@ border: 1px solid #ddd !important;
 .cl-icon p{
     color:#fff;
     font-size:20px;
-    padding-top:10px;
+    padding-top:5px;
     font-weight:bold;
-    padding-bottom:10px;
+//    padding-bottom:10px;
 }
 .cl-icon ul li{
     display: inline-grid;
@@ -554,7 +506,7 @@ border: 1px solid #ddd !important;
     margin:0 auto;
 }
 .sign-up-details {
-    padding: 60px 25px 0 25px;
+    padding: 20px 25px 0 25px;
     background: linear-gradient(to bottom, #e9f5f5 0%, #fefefe 100%);
     min-height: 100%;
     width:50vw;
@@ -928,6 +880,7 @@ width:100% !important;
 
 ');
 $script = <<< JS
+console.log(refferal_id);
 function getCities()
     {
         var _cities = [];
