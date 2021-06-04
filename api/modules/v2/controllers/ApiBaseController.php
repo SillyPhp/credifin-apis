@@ -37,9 +37,9 @@ class ApiBaseController extends Controller
 
         $this->setHeader($code);
 
-        return $response;
-//        echo json_encode($response);
-//        die();
+//        return $response;
+        echo json_encode($response);
+        die();
     }
 
     private function getStatusCodeMessage($status)
@@ -67,9 +67,9 @@ class ApiBaseController extends Controller
     private function setHeader($status)
     {
         $status_header = 'HTTP/2 ' . $status . ' ' . $this->getStatusCodeMessage($status);
-//        $content_type = "application/json; charset=utf-8";
+        $content_type = "application/json; charset=utf-8";
         header($status_header);
-//        header('Content-type: ' . $content_type);
+        header('Content-type: ' . $content_type);
         header('X-Powered-By: ' . "Empower Youth Foundation");
     }
 
