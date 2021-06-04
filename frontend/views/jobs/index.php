@@ -41,7 +41,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         <div class="row">
             <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
                 <div class="container">
-                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/jobs/list" data-hover="Desultory">All Jobs</a>
                     <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                     <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
                     <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
