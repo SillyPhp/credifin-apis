@@ -42,7 +42,18 @@ if ($organization_data) {
                         <div class="hr-com-field">
                             <?= $shortlist['industry']; ?>
                         </div>
-                        <div class="job-pos">120 Jobs</div>
+                        <?php
+                        if ($shortlist['organizationEnc']['employerApplications']) {
+                            foreach ($shortlist['organizationEnc']['employerApplications'] as $c){
+                                if($c['name'] == $for){
+                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
+                                    break;
+                                }
+                            ?>
+                            <?php
+                        }
+                        }
+                        ?>
                     </a>
                     <div class="hr-com-jobs hr-unfollow j-grid">
                         <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">UNFOLLOW</button>

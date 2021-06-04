@@ -493,6 +493,7 @@ use yii\widgets\Pjax;
                         <?=
                         $this->render('/widgets/organization/card', [
                             'organization_data' => $shortlist_org,
+                            'for'=>'Jobs'
                         ]);
                         ?>
                     </div>
