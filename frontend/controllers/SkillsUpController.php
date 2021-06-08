@@ -40,6 +40,66 @@ class SkillsUpController extends Controller
         }
     }
 
+    private function getMetaInfo($url){
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $html = $this->getCurlData($url);
+
+//parsing begins here:
+        $doc = new \DOMDocument();
+        @$doc->loadHTML($html);
+        $nodes = $doc->getElementsByTagName('title');
+
+//get and display what you need:
+        $title = $nodes->item(0)->nodeValue;
+
+        $metas = $doc->getElementsByTagName('meta');
+
+        for ($i = 0; $i < $metas->length; $i++)
+        {
+            $meta = $metas->item($i);
+            if($meta->getAttribute('name') == 'description') {
+                $description = $meta->getAttribute('content');
+            }
+            if($meta->getAttribute('name') == 'keywords') {
+                $keywords = $meta->getAttribute('content');
+            }
+            if($meta->getAttribute('name') == 'twitter:image') {
+                $image = $meta->getAttribute('content');
+            }
+            if(!$image){
+                if($meta->getAttribute('property') == 'og:image') {
+                    $image = $meta->getAttribute('content');
+                }
+            }
+        }
+
+//        echo "Title: $title". '<br/><br/>';
+//        echo "Description: $description". '<br/><br/>';
+//        echo "Image: $image". '<br/><br/>';
+//        echo "Keywords: $keywords";
+        return [
+            'status' =>203,
+            'title' => $title,
+            'keywords' => $keywords,
+            'image' => $image,
+            'description' => $description,
+        ];
+    }
+
+    private function getCurlData($url){
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
+
     public function actionPreview()
     {
         $model = new SkillsUpForm();
@@ -121,7 +181,13 @@ class SkillsUpController extends Controller
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $url = Yii::$app->request->post('url');
-            return $this->youTubeVideoID($url);
+            $data = $this->youTubeVideoID($url);
+
+            if($data['status'] === 200){
+                return $data;
+            } else{
+                return $this->getMetaInfo(Yii::$app->request->post('url'));
+            }
         }
     }
 
