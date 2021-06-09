@@ -459,4 +459,8 @@ class EducationLoansController extends Controller
 //        exit();
         return ['blogs' => $blogs, 'count' => $count];
     }
+
+    public function actionTermsAndConditions(){
+        return $this->render('terms-and-conditions');
+    }
 }

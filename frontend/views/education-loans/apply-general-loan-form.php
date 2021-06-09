@@ -334,6 +334,10 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
                                         <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
                                     </div>
+
+                                    <div class="col-md-12 padd-20">
+                                        <p class="termsText">By clicking submit you agree to our <a href="<?= Url::to('terms-and-conditions')?>">terms and conditions</a> </p>
+                                    </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
@@ -373,6 +377,19 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
 $this->registerCss('
 #loadBtn{
     display:none;
+}
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
+
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
 }
 .padd-20{
     padding-bottom: 10px;

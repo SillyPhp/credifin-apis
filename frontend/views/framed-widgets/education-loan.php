@@ -310,6 +310,10 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                                 Multiple If You Want)
                                             </button>
                                         </div>
+                                        <div class="col-md-12 padd-20">
+                                            <p class="termsText">By clicking submit you agree to our
+                                                <a href="<?= Url::to('/education-loans/terms-and-conditions')?>">terms and conditions</a> </p>
+                                        </div>
                                     </div>
                                     <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
@@ -384,6 +388,19 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
 $this->registerCss('
 #loadBtn{
     display:none;
+}
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
+
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
 }
 .righDivDetails{
     text-align: left;
