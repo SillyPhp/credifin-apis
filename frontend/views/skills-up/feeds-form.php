@@ -961,7 +961,7 @@ $(document).on('change','#source_url',function (e){
                                 // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
                                 $(".target").attr("src", imge);
                                 $('#image_url').val(imge);
-                                $('#short_desc').val(snippet['description'].substr(0,200) + '...');
+                                $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
                                 $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
                             }
                         });
@@ -971,7 +971,7 @@ $(document).on('change','#source_url',function (e){
                     $(".target").attr("src", res['image']);
                     $('#title').val(res['title']);
                     $('#titleElem').html(res['title']);
-                    $('#short_desc').val(res['description'].substr(0,200) + '...');
+                    $('#short_desc').val(res['description'] ? res['description'].substr(0,200) + '...' : '');
                     CKEDITOR.instances.editor.setData(res['description']);
                 }
             }
