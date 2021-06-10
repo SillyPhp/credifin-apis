@@ -153,10 +153,10 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 </div>
                             </div>
                             <div class="child-info-div"></div>
-                            <div class="col-md-12 padd-20">
-                                <p class="termsText">By clicking submit you agree to our
-                                    <a href="<?= Url::to('/education-loans/terms-and-conditions')?>">terms and conditions</a> </p>
-                            </div>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <p class="termsText">By clicking submit you agree to our-->
+<!--                                    <a href="--><?//= Url::to('/education-loans/terms-and-conditions')?><!--">terms and conditions</a> </p>-->
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
