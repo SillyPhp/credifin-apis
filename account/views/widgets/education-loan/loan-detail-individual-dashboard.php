@@ -241,6 +241,7 @@ $this->registerCss('
           
 .addressLink li {
     float: left;
+    min-width:16%;
 }
           
 .addressLink li a {
@@ -335,6 +336,11 @@ $this->registerCss('
         border: none;
     }
 }
+@media screen and (max-width: 1300px){
+    .addressLink li {
+        min-width:15%;
+    }
+}         
 @media screen and (max-width: 1150px){         
     .addressLink li {
         width:auto;
