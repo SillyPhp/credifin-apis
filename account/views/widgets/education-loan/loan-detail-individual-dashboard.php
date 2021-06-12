@@ -48,12 +48,22 @@ use yii\helpers\Url;
                         <p class="mb0">Loan Profile</p>
                         <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
                             Profile</a>
-                        <a href="#" class="secondary hidden">Disbursement</a>
                     </div>
-                    <!--                        <div class="statsBox">-->
-                    <!--                            <p class="mb0">Loan Structure</p>-->
-                    <!--                            <a href="education-loans/emi-details">View Structure</a>-->
-                    <!--                        </div>-->
+                    <?php
+                        $sanctionReport = \common\models\LoanSanctionReports::find()
+                            ->andWhere(['loan_app_enc_id' => $loanApplication['loan_app_enc_id']])
+                            ->orderBy(['created_on' => SORT_DESC])
+                            ->asArray()
+                            ->one();
+                        if($sanctionReport['report_enc_id']){
+                            ?>
+                            <div class="statsBox">
+                                <p class="mb0">Loan Structure</p>
+                                <a target="_blank" href="education-loans/emi-details?id=<?= $sanctionReport['report_enc_id'] ?>">View Structure</a>
+                            </div>
+                            <?php
+                        }
+                    ?>
                 </div>
             </div>
         </div>
@@ -110,7 +120,7 @@ use yii\helpers\Url;
                             foreach ($notifications as $notification) {
                                 if (!preg_match('/<script>/', $notification['message'], $match)) {
                                     $count++;
-                                    if($count > 1){
+                                    if ($count > 1) {
                                         break;
                                     }
                                     ?>
@@ -124,8 +134,8 @@ use yii\helpers\Url;
                                                             </div>
                                                             <div class="tip-box-info">
                                                                 <p class="mb-20">
-                                                                    <h6 class="text-right formattedDate"><?= $notification['created_on'] ?></h6>
-                                                                    <?= $notification['message'] ?>
+                                                                <h6 class="text-right formattedDate"><?= $notification['created_on'] ?></h6>
+                                                                <?= $notification['message'] ?>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -231,7 +241,6 @@ $this->registerCss('
           
 .addressLink li {
     float: left;
-    width:16%;
 }
           
 .addressLink li a {

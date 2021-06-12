@@ -26,6 +26,7 @@ use Yii;
  *
  * @property CollectedDocuments[] $collectedDocuments
  * @property LoanApplicationLogs[] $loanApplicationLogs
+ * @property LoanEmiStructure[] $loanEmiStructures
  * @property LoanApplications $loanAppEnc
  * @property Organizations $loanProvider
  * @property Users $createdBy
@@ -47,7 +48,7 @@ class LoanSanctionReports extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['report_enc_id', 'loan_app_enc_id', 'loan_provider_id', 'file_number', 'loan_amount', 'processing_fee', 'rate_of_interest', 'total_installments', 'discounting', 'approved_by', 'fldg'], 'required'],
+            [['report_enc_id', 'loan_app_enc_id', 'loan_provider_id', 'file_number', 'loan_amount', 'processing_fee', 'rate_of_interest', 'total_installments'], 'required'],
             [['loan_amount', 'processing_fee', 'rate_of_interest'], 'number'],
             [['total_installments', 'discounting', 'fldg'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
@@ -75,6 +76,14 @@ class LoanSanctionReports extends \yii\db\ActiveRecord
     public function getLoanApplicationLogs()
     {
         return $this->hasMany(LoanApplicationLogs::className(), ['sanctioned_report_id' => 'report_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanEmiStructures()
+    {
+        return $this->hasMany(LoanEmiStructure::className(), ['sanction_report_enc_id' => 'report_enc_id']);
     }
 
     /**

@@ -7,6 +7,7 @@ use common\models\AssignedLoanProvider;
 use common\models\LoanApplicationLogs;
 use common\models\LoanApplications;
 use common\models\LoanDocuments;
+use common\models\LoanSanctionReports;
 use common\models\Organizations;
 use common\models\SelectedServices;
 use common\models\Services;
@@ -484,7 +485,11 @@ class EducationLoansController extends Controller
     public function actionIndividual(){
         return $this->render('individual');
     }
-    public function actionEmiDetails(){
-        return $this->render('emi-details');
+    public function actionEmiDetails($id){
+        setlocale(LC_MONETARY, 'en_IN');
+        $data = LoanSanctionReports::findOne(['report_enc_id' => $id]);
+        return $this->render('emi-details', [
+            'data' => $data,
+        ]);
     }
 }
