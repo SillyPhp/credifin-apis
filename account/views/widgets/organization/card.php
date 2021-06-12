@@ -45,6 +45,9 @@ if ($organization_data) {
                         <?php
                         if ($shortlist['organizationEnc']['employerApplications']) {
                             foreach ($shortlist['organizationEnc']['employerApplications'] as $c){
+                                if($for == 'all'){
+                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
+                                }
                                 if($c['name'] == $for){
                                     echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
                                     break;
