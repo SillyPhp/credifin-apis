@@ -88,6 +88,8 @@ $this->registerCss('
     font-family: Roboto;
     color: #999;
     font-weight: 500;
+    display: inline-block;
+    margin: 0px 10px;
 }
 //.hr-company-box {
 //    padding: 20px 10px 20px;
