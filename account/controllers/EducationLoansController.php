@@ -90,7 +90,7 @@ class EducationLoansController extends Controller
         print_r($loansApplications);
     }
 
-    public function actionDashboard($filter = null)
+    public function actionDashboard($filter = null, $search = null)
     {
         $model = new LoanSanctionedForm();
         $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Loans");
@@ -166,6 +166,28 @@ class EducationLoansController extends Controller
                 $filter = explode(',', $filter);
                 $loans->andWhere(['in', 'i.status', $filter]);
             }
+        }
+        if ($search != null) {
+            $loans->andFilterHaving([
+                'or',
+                ['like', 'apply_date', $search],
+                ['like', 'loan_status', $search],
+                ['like', 'applicant_name', $search],
+                ['like', 'amount', $search],
+                ['like', 'amount_received', $search],
+                ['like', 'amount_due', $search],
+                ['like', 'scholarship', $search],
+                ['like', 'degree', $search],
+                ['like', 'course_name', $search],
+                ['like', 'org_name', $search],
+                ['like', 'semesters', $search],
+                ['like', 'years', $search],
+                ['like', 'phone', $search],
+                ['like', 'email', $search],
+                ['like', 'city', $search],
+                ['like', 'gender', $search],
+                ['like', 'dob', $search],
+            ]);
         }
         $loans = $loans->asArray()->all();
         $stats = LoanApplications::find()
