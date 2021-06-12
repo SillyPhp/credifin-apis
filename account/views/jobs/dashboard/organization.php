@@ -519,7 +519,7 @@ $this->registerCss('
 	font-size: 20px;
 }
 .padd-top-20{
-    padding-top:30px; 
+    padding-top:10px; 
 }
 /*---- new code-----*/
 .new-card-container .card {

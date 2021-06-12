@@ -155,6 +155,9 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     </div>
                                 </div>
                             </div>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <p class="termsText">By clicking submit you agree to our <a href="--><?//= Url::to('terms-and-conditions')?><!--">terms and conditions</a> </p>-->
+<!--                            </div>-->
                             <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
                                     <div class="btn-center">
@@ -245,7 +248,19 @@ $this->registerCss('
 #loadBtn{
     display:none;
 }
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
 
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
 .padd-20{
     padding-bottom: 20px;
 }
