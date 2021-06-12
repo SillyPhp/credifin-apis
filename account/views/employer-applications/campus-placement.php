@@ -11,7 +11,7 @@ $ucType = ucwords($type);
                             <div class="wizard-header">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                        <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="wizard-back-cont">
                                             <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
                                         </a>
                                     </div>
@@ -33,7 +33,7 @@ $ucType = ucwords($type);
                                                     <a href="<?= Url::toRoute('/'.$type.'/create'); ?>" data-toggle="tooltip"
                                                        title="Create AI Job" class="ai">
                                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
-                                                        <h3>Create AI <?= $ucType ?></h3>
+                                                        <h3>Create New <?= $ucType ?></h3>
                                                     </a>
                                                 </div>
                                             </div>
@@ -253,7 +253,11 @@ $this->registerCss('
 	color: #ff7803;
 	font-family: roboto;
 	margin-left: 5px;
+	transition: all 0.4s ease 0s;
 } 
+.ai h3:hover {
+    font-weight: 500;
+}
 .page-content {
     background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
     background-size: auto 100% !important;
