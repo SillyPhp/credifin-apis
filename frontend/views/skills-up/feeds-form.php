@@ -116,25 +116,6 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                         </li>
                                     </ul>
                                 </div>
-                                <!--                            --><? //= $form->field($model, 'skills')->widget(Select2::classname(), [
-                                //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-                                //                                'pluginOptions' => [
-                                ////                                    'allowClear' => true,
-                                ////                                    'minimumInputLength' => 1,
-                                //                                    'language' => [
-                                //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                //                                    ],
-                                //                                    'ajax' => [
-                                //                                        'url' => '/skills-up/skill-list',
-                                //                                        'dataType' => 'json',
-                                //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                                //                                    ],
-                                //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                //                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-                                //                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-                                //                                ],
-                                //                            ]); ?>
-
                             </div>
                             <div class="col-md-6">
                                 <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
@@ -149,27 +130,6 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                         </li>
                                     </ul>
                                 </div>
-
-                                <!--                            --><? //= $form->field($model, 'industry')->widget(Select2::classname(), [
-                                ////                                'data' => $data,
-                                //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
-                                //                                'pluginOptions' => [
-                                ////                                    'allowClear' => true,
-                                ////                                    'minimumInputLength' => 2,
-                                //                                    'multiple' => true,
-                                //                                    'language' => [
-                                //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                //                                    ],
-                                //                                    'ajax' => [
-                                //                                        'url' => '/skills-up/industry-list',
-                                //                                        'dataType' => 'json',
-                                //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                                //                                        'cache' => true
-                                //                                    ],
-                                //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                //                                ],
-                                //                            ]);
-                                //                            ?>
                             </div>
                             <div class="col-md-12 mt-20 mb-30">
                                 <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
@@ -745,12 +705,11 @@ $script = <<<JS
 $(document).on('change','input[name=content_type]', function(e) {
     $('.source-field').removeClass('hidden');
 })
-//
-// jQuery.ajaxPrefilter(function(options) {
-//     if (options.crossDomain && jQuery.support.cors) {
-//         options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
-//     }
-// });
+$(document).on('keyup','#search-skill',function(e){
+    if(e.which==13) {
+      add_tags($(this).val(),'skill_tag_list','skills',$(this).val());  
+    }
+});
 var global = [];
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -822,7 +781,7 @@ var skill_type = $('#search-skill').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
      $('.skill_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum){
-      add_tags(datum.text,'skill_tag_list','skills',datum.id);
+      add_tags(datum.text,'skill_tag_list','skills',datum.text);
       skill_type.typeahead('val','');
    }).blur(validateSelection);
 
