@@ -26,7 +26,7 @@ use yii\bootstrap\ActiveForm;
                                         </div>
                                         <input type="text" id="search_company" class="form-control"
                                                placeholder="Search Companies, Colleges, Schools, Educational Institutes"
-                                               name="keywords">
+                                               name="keyword">
                                         <div class="input-group-btn">
                                             <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>

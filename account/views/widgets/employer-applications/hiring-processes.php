@@ -89,6 +89,7 @@ let process_radio = document.querySelectorAll('.process_radio');
 if(process_radio.length){
     process_radio[0].querySelector('input[type=radio]').checked = true
 }
+
 $('.process_radio')
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();

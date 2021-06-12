@@ -250,10 +250,21 @@ class JobsController extends Controller
 
         $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['az.organization_enc_id', 'a.organization_enc_id', 'az.establishment_year', 'a.followed_enc_id', 'az.name as org_name', 'c.industry', 'az.logo', 'az.logo_location', 'az.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->joinWith(['organizationEnc az'=> function($az){
+                $az->joinWith(['employerApplications b' => function ($x) {
+                    $x->select(['b.organization_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                    $x->joinWith(['applicationTypeEnc h' => function ($x) {
+                        $x->groupBy(['h.name']);
+                        $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                    }], true);
+                    $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
+                }], true);
+            }])
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
+            ->groupBy(['a.followed_enc_id'])
+            ->distinct()
             ->orderBy(['a.id' => SORT_DESC])
             ->limit(8)
             ->asArray()
@@ -1692,7 +1703,9 @@ class JobsController extends Controller
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
+                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color',
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo',
+                    'e.name city'])
                 ->innerJoinWith(['businessActivityEnc b' => function ($b) {
                     $b->onCondition(["b.business_activity" => "College"]);
                 }], false)
@@ -1700,6 +1713,7 @@ class JobsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
+                    "a.is_erexx_approved" => 1,
                     "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
