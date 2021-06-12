@@ -481,9 +481,11 @@ class EducationLoansController extends Controller
     public function actionLoanProfileView(){
         return $this->render('loan-profile-view');
     }
+
     public function actionIndividual(){
         return $this->render('individual');
     }
+
     public function actionEmiDetails(){
         return $this->render('emi-details');
     }

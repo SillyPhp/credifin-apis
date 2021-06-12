@@ -663,22 +663,26 @@ const checkButtons = (activeStep, stepsCount) => {
   const prevBtn = $(".wizard-prev");
   const nextBtn = $(".wizard-next");
   const submBtn = $(".wizard-subm");
-
+  const createJob = $(".cr-job");
+  
   switch (activeStep / stepsCount) {
     case 0: // First Step
       prevBtn.hide();
       submBtn.hide();
       nextBtn.show();
+      createJob.show();
       break;
     case 1: // Last Step
       nextBtn.hide();
       prevBtn.show();
       submBtn.show();
+      createJob.hide();
       break;
     default:
       submBtn.hide();
       prevBtn.show();
       nextBtn.show();
+      createJob.hide();
   }
 };
 
