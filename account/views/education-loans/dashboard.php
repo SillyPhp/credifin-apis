@@ -133,7 +133,7 @@ if (isset($_GET['filter'])) {
                         }
                         ?>
                     </ul>
-                    <span class="hidden" id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></span>
+                    <span id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="Type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></span>
                 </div>
             </div>
         </div>
@@ -453,6 +453,16 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+#search-filter-span{
+    display: flex;
+    margin-bottom: 10px;
+}
+#search-filter-span input{
+    border: 1px solid #ddd;
+    padding: 0px 15px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
 .form-group{
     margin-bottom: 5px;
 }
