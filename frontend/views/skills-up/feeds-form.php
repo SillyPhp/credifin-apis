@@ -706,6 +706,7 @@ $(document).on('change','input[name=content_type]', function(e) {
     $('.source-field').removeClass('hidden');
 })
 $(document).on('keyup','#search-skill',function(e){
+    e.preventDefault();
     if(e.which==13) {
       add_tags($(this).val(),'skill_tag_list','skills',$(this).val());  
     }
@@ -922,16 +923,18 @@ $(document).on('change','#source_url',function (e){
                                 $('#image_url').val(imge);
                                 $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
                                 $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
+                                $('#editor').html(CKEDITOR.instances.editor.getData());
                             }
                         });
                     }
                 } else if(res['status'] === 203){
                     $('#image_url').val(res['image']);
+                    CKEDITOR.instances.editor.setData(res['description']);
                     $(".target").attr("src", res['image']);
                     $('#title').val(res['title']);
                     $('#titleElem').html(res['title']);
                     $('#short_desc').val(res['description'] ? res['description'].substr(0,200) + '...' : '');
-                    CKEDITOR.instances.editor.setData(res['description']);
+                    $('#editor').html(CKEDITOR.instances.editor.getData());
                 }
             }
         })
