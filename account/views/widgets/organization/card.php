@@ -42,21 +42,23 @@ if ($organization_data) {
                         <div class="hr-com-field">
                             <?= $shortlist['industry']; ?>
                         </div>
-                        <?php
-                        if ($shortlist['organizationEnc']['employerApplications']) {
-                            foreach ($shortlist['organizationEnc']['employerApplications'] as $c){
-                                if($for == 'all'){
-                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
-                                }
-                                if($c['name'] == $for){
-                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
-                                    break;
-                                }
-                            ?>
+                        <div class="ji-set">
                             <?php
-                        }
-                        }
-                        ?>
+                            if ($shortlist['organizationEnc']['employerApplications']) {
+                                foreach ($shortlist['organizationEnc']['employerApplications'] as $c) {
+                                    if ($for == 'all') {
+                                        echo '<p class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</p>';
+                                    }
+                                    if ($c['name'] == $for) {
+                                        echo '<p class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</p>';
+                                        break;
+                                    }
+                                    ?>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </div>
                     </a>
                     <div class="hr-com-jobs hr-unfollow j-grid">
                         <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">UNFOLLOW</button>
@@ -140,7 +142,7 @@ $this->registerCss('
     padding: 20px 0px 0px 0px !important;
     text-align: center;
 }
-.hr-com-field{min-height:22px;}
+.hr-com-field, .ji-set{min-height:22px;}
 .hr-com-icon{height:120px;}
 ');
 $script = <<<JS
