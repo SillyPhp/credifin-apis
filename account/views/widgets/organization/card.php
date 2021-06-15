@@ -42,7 +42,21 @@ if ($organization_data) {
                         <div class="hr-com-field">
                             <?= $shortlist['industry']; ?>
                         </div>
-                        <div class="job-pos">120 Jobs</div>
+                        <?php
+                        if ($shortlist['organizationEnc']['employerApplications']) {
+                            foreach ($shortlist['organizationEnc']['employerApplications'] as $c){
+                                if($for == 'all'){
+                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
+                                }
+                                if($c['name'] == $for){
+                                    echo '<div class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</div>';
+                                    break;
+                                }
+                            ?>
+                            <?php
+                        }
+                        }
+                        ?>
                     </a>
                     <div class="hr-com-jobs hr-unfollow j-grid">
                         <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">UNFOLLOW</button>
@@ -74,6 +88,8 @@ $this->registerCss('
     font-family: Roboto;
     color: #999;
     font-weight: 500;
+    display: inline-block;
+    margin: 0px 10px;
 }
 //.hr-company-box {
 //    padding: 20px 10px 20px;
