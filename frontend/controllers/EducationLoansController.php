@@ -127,6 +127,13 @@ class EducationLoansController extends Controller
         return $this->render('loan-college-index');
     }
 
+
+    public function actionEducationLoanUniversity()
+    {
+        $this->layout = 'widget-layout';
+        return $this->render('education-loan-university');
+    }
+
     public function actionSchoolFeeLoanApply(){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('school-fee-loan-form');
