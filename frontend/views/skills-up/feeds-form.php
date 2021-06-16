@@ -705,9 +705,14 @@ $script = <<<JS
 $(document).on('change','input[name=content_type]', function(e) {
     $('.source-field').removeClass('hidden');
 })
-$(document).on('keyup','#search-skill',function(e){
-    e.preventDefault();
+$(document).on('keypress','#search-skill',function(e){
     if(e.which==13) {
+        e.preventDefault();
+    }
+});
+$(document).on('keyup','#search-skill',function(e){
+    if(e.which==13 && $(this).val()) {
+        e.preventDefault();
       add_tags($(this).val(),'skill_tag_list','skills',$(this).val());  
     }
 });
