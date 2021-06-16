@@ -82,9 +82,9 @@ switch ([$controller_id, $action_id]) {
                                 {{#sector}}
                                 <h5 class="salary"><i class="fas fa-puzzle-piece"></i> : {{sector}}</h5>
                                 {{/sector}}
-                                {{#created_on}}
-                                <h5 class="salary fbold" title="Created On">Created On : {{created_on}}</h5>
-                                {{/created_on}}
+<!--                                {{#created_on}}-->
+<!--                                <h5 class="salary fbold" title="Created On">Created On : {{created_on}}</h5>-->
+<!--                                {{/created_on}}-->
                             </div>
                             <div class="clear"></div>
                         </div>
