@@ -46,135 +46,99 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <?= $form->field($model, 'image_url')->hiddenInput(['id' => 'image_url'])->label(false); ?>
                     <div class="feeds-data row">
                         <div class="col-md-12">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
                             <div class="content-t">Content Type</div>
                             <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Course' => 'Course'])->label(false); ?>
                         </div>
-                        <div class="col-md-12 mb-30">
-                            <div class="content-t mb-20">Cover Image</div>
-                            <div id="image-preview">
-                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
-                                     class="target set-w"/>
-                            </div>
-                            <div class="custom-file">
-                                <label class="custom-file-label" for="file">Choose Image</label>
-                                <?= $form->field($model, 'image')->fileInput(['id' => 'file', 'class' => 'imgInp custom-file-input'])->label(false) ?>
+                        <div class="source-field hidden">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <div class="default text">&nbsp;</div>
-                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
+                        <div class="all-fields hidden">
+                            <div class="col-md-12 mb-30">
+                                <div class="content-t mb-20">Cover Image</div>
+                                <div id="image-preview">
+                                    <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                                         class="target set-w"/>
+                                </div>
+                                <div class="custom-file">
+                                    <label class="custom-file-label" for="file">Choose Image</label>
+                                    <?= $form->field($model, 'image')->fileInput(['id' => 'file', 'class' => 'imgInp custom-file-input'])->label(false) ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <div class="default text">Select Source</div>
-                                <?php echo $form->field($model, 'source_id')->dropDownList(
-                                    $source_list,
-                                    ['prompt' => 'Choose...']
-                                )->label(false); ?>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <div class="default text">&nbsp;</div>
+                                    <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-primary mt-50 modal-load-class"
-                                    value="/skills-up/add-source">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
+                            <div class="col-md-5">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <div class="default text">Select Source</div>
+                                    <?php echo $form->field($model, 'source_id')->dropDownList(
+                                        $source_list,
+                                        ['prompt' => 'Choose...']
+                                    )->label(false); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-primary mt-50 modal-load-class"
+                                        value="/skills-up/add-source">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'short_description')->textInput(['placeholder' => 'Short Description', 'class' => 'form-control', 'id' => 'short_desc'])->label(false); ?>
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
-                            <div class="pf-field no-margin">
-                                <ul class="tags skill_tag_list">
-                                    <li class="tagAdd taglist">
-                                        <div class="skill_wrapper">
-                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" id="search-skill" class="skill-input">
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
+                                </div>
                             </div>
-                            <!--                            --><? //= $form->field($model, 'skills')->widget(Select2::classname(), [
-                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-                            //                                'pluginOptions' => [
-                            ////                                    'allowClear' => true,
-                            ////                                    'minimumInputLength' => 1,
-                            //                                    'language' => [
-                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                            //                                    ],
-                            //                                    'ajax' => [
-                            //                                        'url' => '/skills-up/skill-list',
-                            //                                        'dataType' => 'json',
-                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                            //                                    ],
-                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            //                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-                            //                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-                            //                                ],
-                            //                            ]); ?>
-
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
-                            <div class="pf-field no-margin">
-                                <ul class="tags languages_tag_list">
-                                    <li class="tagAdd taglist">
-                                        <div class="language_wrapper">
-                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" id="search-language"
-                                                   class="skill-input lang-input">
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'short_description')->textInput(['placeholder' => 'Short Description', 'class' => 'form-control', 'id' => 'short_desc'])->label(false); ?>
+                                </div>
                             </div>
-
-                            <!--                            --><? //= $form->field($model, 'industry')->widget(Select2::classname(), [
-                            ////                                'data' => $data,
-                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
-                            //                                'pluginOptions' => [
-                            ////                                    'allowClear' => true,
-                            ////                                    'minimumInputLength' => 2,
-                            //                                    'multiple' => true,
-                            //                                    'language' => [
-                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                            //                                    ],
-                            //                                    'ajax' => [
-                            //                                        'url' => '/skills-up/industry-list',
-                            //                                        'dataType' => 'json',
-                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                            //                                        'cache' => true
-                            //                                    ],
-                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            //                                ],
-                            //                            ]);
-                            //                            ?>
-                        </div>
-                        <div class="col-md-12 mt-20 mb-30">
-                            <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="submit-b">
-                                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
-                                <a href="javascript:;" id="preview-button">PREVIEW</a>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags skill_tag_list">
+                                        <li class="tagAdd taglist">
+                                            <div class="skill_wrapper">
+                                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-skill" class="skill-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags languages_tag_list">
+                                        <li class="tagAdd taglist">
+                                            <div class="language_wrapper">
+                                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-language"
+                                                       class="skill-input lang-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20 mb-30">
+                                <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="submit-b">
+                                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
+                                    <a href="javascript:;" id="preview-button">PREVIEW</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -738,6 +702,14 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
+$(document).on('change','input[name=content_type]', function(e) {
+    $('.source-field').removeClass('hidden');
+})
+$(document).on('keyup','#search-skill',function(e){
+    if(e.which==13) {
+      add_tags($(this).val(),'skill_tag_list','skills',$(this).val());  
+    }
+});
 var global = [];
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -809,7 +781,7 @@ var skill_type = $('#search-skill').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
      $('.skill_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum){
-      add_tags(datum.text,'skill_tag_list','skills',datum.id);
+      add_tags(datum.text,'skill_tag_list','skills',datum.text);
       skill_type.typeahead('val','');
    }).blur(validateSelection);
 
@@ -909,6 +881,7 @@ $(document).on('change','select[name="source_id"]',function() {
 
 $(document).on('change','#source_url',function (e){
         e.preventDefault();
+        $('.all-fields').removeClass('hidden');
         let url = $(this).val();
         $.ajax({
             url:'/skills-up/validate-url',
@@ -947,11 +920,18 @@ $(document).on('change','#source_url',function (e){
                                 // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
                                 $(".target").attr("src", imge);
                                 $('#image_url').val(imge);
-                                $('#short_desc').val(snippet['description'].substr(0,200) + '...');
+                                $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
                                 $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
                             }
                         });
                     }
+                } else if(res['status'] === 203){
+                    $('#image_url').val(res['image']);
+                    $(".target").attr("src", res['image']);
+                    $('#title').val(res['title']);
+                    $('#titleElem').html(res['title']);
+                    $('#short_desc').val(res['description'] ? res['description'].substr(0,200) + '...' : '');
+                    CKEDITOR.instances.editor.setData(res['description']);
                 }
             }
         })

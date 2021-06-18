@@ -171,6 +171,7 @@ use yii\helpers\Url;
                         $this->render('/widgets/organization/card', [
                             'organization_data' => $shortlist_org,
                             'column_size' => 'col-md-4',
+                            'for'=>'all'
                         ]);
                         ?>
                     </div>

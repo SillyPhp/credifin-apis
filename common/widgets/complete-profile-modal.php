@@ -29,7 +29,7 @@ $primaryfields = \common\models\Categories::find()
     <div class="modal-dialog lp-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
-            <button type="button" class="close-lp-modal" data-dismiss="modal" aria-hidden="true">✕</button>
+            <button type="button" class="close-lp-modal" onclick="setCookie()" data-dismiss="modal" aria-hidden="true">✕</button>
             <div class="row margin-0">
                 <div class="col-md-4 col-sm-4">
                     <div class="lp-modal-text half-bg half-bg-color">
@@ -1003,7 +1003,20 @@ body.modal-open{
 }
 ');
 $script = <<< JS
- $('#completeProfileModal').modal('show');
+setCookie = () => {
+    let date = new Date();
+    date.setTime(date.getTime() + (6 * 24 * 60 * 60 * 1000));
+    let maxAge = 6 * 24 * 60 * 60 * 1000;
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = "ModalisViewed=modalViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
+}
+function checkCookie(){
+    let hasCookie = document.cookie;
+    if (document.cookie.indexOf('ModalisViewed') == -1) {
+        $('#completeProfileModal').modal('show');
+    }
+}
+checkCookie()
 
 $(document).on('keyup','#search-language',function(e){
     if(e.which==13)
@@ -1135,6 +1148,9 @@ showNextQues = () =>{
     let indexOfDisShow = fieldsArr.indexOf(disShow);
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex]; 
+     if(toActive){
+        toActive.classList.remove('showField');
+    }
     let inputVal = disShow.querySelectorAll('.form-control');
     let val = {};
     let valObj = [];
@@ -1419,3 +1435,7 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile("/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script>
+
+
+</script>

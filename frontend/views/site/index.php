@@ -17,34 +17,64 @@ $this->params['header_dark'] = false;
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
-                        <div class="job-search-sec">
-                            <div class="job-search style2">
-                                <h1>The World's First Integrated Career Platform</h1>
-                                <h2>The Easiest Way to Build Your Career</h2>
-                                <div class="search-job2">
-                                    <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
-                                        <div class="row no-gape">
-                                            <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
-                                                <div class="job-field">
-                                                    <input id="search-input" type="text" name="keyword"
-                                                           placeholder="Keywords"/>
+                        <div class="job-search-sec headerContent">
+                            <div class="job-search style2" >
+                                <div class="hcHidden hcActive">
+                                    <h1>The World's First Integrated Career Platform</h1>
+                                    <h2>The Easiest Way to Build Your Career</h2>
+                                </div>
+                                <div class="hcHidden" id="jobHeaderContent">
+                                    <h1>Thousands Of Jobs In Just One Click.</h1>
+                                    <h2>Get into your dream job and build a strong business network</h2>
+                                </div>
+                                <div class="hcHidden" id="internshipHeaderContent">
+                                    <h1>Gain Experience with The Best Internships</h1>
+                                    <h2>Build your skills by interning with the best companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="learningHeaderContent">
+                                    <h1>Creative and Innovative Learning Environment</h1>
+                                    <h2>Videos, blogs, and articles to boost your knowledge.</h2>
+                                </div>
+                                <div class="hcHidden" id="reviewsHeaderContent">
+                                    <h1>Get Invaluable source of feedback</h1>
+                                    <h2>Know everything about Schools, Colleges, Universities and Companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="coursesHeaderContent">
+                                    <h1>Top Courses To Develop Your Skills</h1>
+                                    <h2>Improve your performance at your workspace by learning new things.</h2>
+                                </div>
+                                <div class="hcHidden" id="loanHeaderContent">
+                                    <h1>Education Loan To Fulfil Your Dreams</h1>
+                                    <h2>Get personalized Education loan at lower interest rates for all your educational needs.</h2>
+                                </div>
+                                <div class="header-search-bar">
+                                    <div class="search-job2">
+                                        <form id="search_jobs_internships"
+                                              action="<?= Url::to('/search'); ?>">
+                                            <div class="row no-gape">
+                                                <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
+                                                    <div class="job-field">
+                                                        <input id="search-input" type="text" name="keyword"
+                                                               placeholder="Keywords"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
+                                                    <button type="submit" id="search-submit">Search <i
+                                                                class="fas fa-search"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit" id="search-submit">Search <i
-                                                            class="fas fa-search"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div><!-- Job Search 2 -->
-                                <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
+                                        </form>
+                                    </div><!-- Job Search 2 -->
+                                    <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
                                     <a href="/jobs">Jobs,</a> <a href="/internships">Internships,</a>
                                     <a href="/reviews">Reviews,</a> <a href="/learning">Learning Hub,</a> <a
                                             href="/courses">Courses,</a> <a href="/career-advice">Career Advice,</a>
                                     <a href="/education-loans">Education Loans</a>
                                 </span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -54,7 +84,8 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="box-border fade-in one">
+                <div class="box-border fade-in one" data-name="jobHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -64,7 +95,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Jobs</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in two">
+                <div class="box-border fade-in two" data-name="internshipHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -75,7 +107,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Internships</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in two">
+                <div class="box-border fade-in two" data-name="learningHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -86,7 +119,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Learning Hub</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in three">
+                <div class="box-border fade-in three" data-name="reviewsHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -97,7 +131,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Reviews</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in three">
+                <div class="box-border fade-in three" data-name="coursesHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -108,7 +143,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Courses</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in four">
+                <div class="box-border fade-in four" data-name="loanHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -142,8 +178,49 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+.headerContent .job-search .feature-links{
+    float: left;
+    width: 100%;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 400;
+    color: #d5d8f3;
+    text-align: center;
+    margin-top: 10px;
+}
+.job-search-sec .job-search.style2 span {
+    opacity: 1;
+}
+.headerContent .job-search h1 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 46px;
+    font-weight: normal;
+    color: #ffffff;
+    letter-spacing: 0px;
+    text-align: center;
+    line-height: 50px;
+    margin-bottom: 13px;
+}
+.headerContent .job-search h2 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 30px;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 10px;
+}
 #app-data{
     overflow-x: hidden;
+}
+.hcHidden{
+    display: none;
+}
+.hcActive{
+    display: block;
 }
 .loan{
     margin-top: 0px !important;
@@ -1162,6 +1239,16 @@ document.getElementById('search-submit').addEventListener('click',(evt)=> {
       return false; 
   }
 });
+
+$(document).on('submit', '#search_jobs_internships', function() {
+    if($(this).attr('action') === '/jobs'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-jobs';
+        return false;
+    }else if($(this).attr('action') === '/internships'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-internships';
+        return false;
+    }
+});
 JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
@@ -1225,6 +1312,55 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
+    function showHeaderContent(e){
+        let showDiv = e.getAttribute('data-name');
+        let headerContent = document.querySelector('.headerContent');
+        let divActive = headerContent.querySelector('#'+showDiv);
+        let hcActive = headerContent.getElementsByClassName('hcActive')
+        let searchForm = headerContent.querySelector('#search_jobs_internships');
+        let searchInput = document.getElementById('search-input')
+        if(hcActive.length > 0){
+            hcActive[0].classList.remove('hcActive');
+        }
+        console.log(searchForm.values);
+        if(divActive.classList.contains('hcActive')){
+           return false
+        }else{
+           divActive.classList.add('hcActive');
+            switch (showDiv) {
+                case 'jobHeaderContent':
+                    searchForm.setAttribute('action', '/jobs')
+                    searchInput.setAttribute('placeholder', 'Search Jobs');
+                    break;
+                case 'internshipHeaderContent':
+                    searchForm.setAttribute('action', '/internships');
+                    searchInput.setAttribute('placeholder', 'Search Internships');
+                    break;
+                case 'learningHeaderContent':
+                    searchForm.setAttribute('action', '/learning/search-video');
+                    searchInput.setAttribute('placeholder', 'Search Learning Videos');
+                    break;
+                case 'reviewsHeaderContent':
+                    searchForm.setAttribute('action', '/reviews/search');
+                    searchInput.setAttribute('placeholder', 'Search School, College, University or Company Name');
+                    break;
+                case 'coursesHeaderContent':
+                    searchForm.setAttribute('action', '/courses/courses-list');
+                    searchInput.setAttribute('placeholder', 'Search Courses');
+                    break;
+                default:
+                    searchForm.setAttribute('action', '/search');
+                    searchInput.setAttribute('placeholder', 'Keyword');
+                    console.log(showDiv);
+            }
+           if(showDiv == 'loanHeaderContent') {
+               headerContent.querySelector('.header-search-bar').style.display = 'none';
+           }else{
+               headerContent.querySelector('.header-search-bar').style.display = 'block';
+           }
+        }
+    }
+
     window.addEventListener("pageshow", function() {
     var form = document.getElementsByTagName("form");
     // let the browser natively reset defaults

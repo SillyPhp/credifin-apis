@@ -218,9 +218,9 @@ $ucType = ucwords($type);
                                                     class="btn btn-default wizard-prev">
                                                 Previous
                                             </button>
-                                            <button id="wizard-next" type="button" class="btn btn-primary wizard-next">
-                                                Continue
-                                            </button>
+<!--                                            <button id="wizard-next" type="button" class="btn btn-primary wizard-next">-->
+<!--                                                Continue-->
+<!--                                            </button>-->
                                             <button id="wizard-subm" style="display:none" type="submit"
                                                     class="btn btn-primary submit-applications-inErexx wizard-subm">
                                                 Submit
@@ -667,22 +667,26 @@ const checkButtons = (activeStep, stepsCount) => {
   const prevBtn = $(".wizard-prev");
   const nextBtn = $(".wizard-next");
   const submBtn = $(".wizard-subm");
-
+  const createJob = $(".cr-job");
+  
   switch (activeStep / stepsCount) {
     case 0: // First Step
       prevBtn.hide();
       submBtn.hide();
       nextBtn.show();
+      createJob.show();
       break;
     case 1: // Last Step
       nextBtn.hide();
       prevBtn.show();
       submBtn.show();
+      createJob.hide();
       break;
     default:
       submBtn.hide();
       prevBtn.show();
       nextBtn.show();
+      createJob.hide();
   }
 };
 
@@ -773,6 +777,42 @@ $(function() {
            // $('.error-list').html('<p>Please Select An Application</p>');
         }
   });
+  
+  $(".app-list-main").click(() => {
+       var validated = false;
+      $('.app-list-main').each(function() {
+            if($(this).is(':checked')){
+                validated = true;
+                return true;
+            }
+        });
+        if(validated){
+            setTimeout( function (){
+                $('.error-list').html('');
+                // Sliding out current step
+                $(steps[activeStep]).removeClass("inital").addClass("off").removeClass("active");
+                $(wizardSteps[activeStep]).removeClass("active");
+            
+                // Next step
+                activeStep++;
+                
+                // Sliding in next step
+                $(steps[activeStep]).addClass("active");
+                $(wizardSteps[activeStep]).addClass("active");
+            
+                activeStepHeight = $(steps[activeStep]).height();
+                setWizardHeight(activeStepHeight);
+                checkButtons(activeStep, stepsCount);
+            }, 300)
+        } else {
+            swal({
+               title:"Wait !!!",
+               text: "Please Select An Application To Proceed",
+               type:'warning',
+               });
+           // $('.error-list').html('<p>Please Select An Application</p>');
+        }
+  })
 });
 
 $(document).on('submit', '#add-applications-inErexx', function (event) {
