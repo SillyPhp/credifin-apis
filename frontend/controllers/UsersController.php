@@ -200,6 +200,34 @@ class UsersController extends Controller
                 ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
+            $userAppliedData = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
+                ->joinWith(['applicationEnc bb' => function ($bb) {
+                    $bb->joinWith(['applicationTypeEnc aa'], false);
+                    $bb->joinWith(['title ac' => function ($ac) {
+                        $ac->joinWith(['categoryEnc ag']);
+                        $ac->joinWith(['parentEnc af']);
+                    }], false);
+                }], false)
+                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
+                ->asArray()
+                ->all();
+        } else{
+            $userAppliedData = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
+                ->joinWith(['applicationEnc bb' => function ($bb) {
+                    $bb->joinWith(['applicationTypeEnc aa']);
+                    $bb->joinWith(['title ac' => function ($ac) {
+                        $ac->joinWith(['categoryEnc ag']);
+                        $ac->joinWith(['parentEnc af']);
+                    }]);
+                }], false)
+                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->all();
         }
         $education = UserEducation::find()
             ->where(['user_enc_id' => $user['user_enc_id']])
@@ -236,13 +264,15 @@ class UsersController extends Controller
 
         $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
         $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
-
+//        print_r($userAppliedData);
+//        exit();
         $dataProvider = [
             'user' => $user,
             'skills' => $skills,
             'language' => $language,
             'userCv' => $userCv,
             'userApplied' => $userApplied,
+            'userAppliedData' => $userAppliedData,
             'job_preference' => $job_preference,
             'internship_preference' => $internship_preference,
             'education' => $education,

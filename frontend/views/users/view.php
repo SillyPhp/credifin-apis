@@ -198,7 +198,8 @@ $this->params['header_dark'] = false;
                             if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
                                 ?>
                                 <div class="down-res">
-                                    <a href="javascript:;" target="_blank" title="Download Resume" class="download-resume"
+                                    <a href="javascript:;" target="_blank" title="Download Resume"
+                                       class="download-resume"
                                        data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
                                         Resume<i
                                                 class="fas fa-download"></i></a>
@@ -451,10 +452,56 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
+            if ($userAppliedData) {
+                ?>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-lg-12 col-xs-12 col-sm-12">
+                            <div class="portlet light margin-top-40">
+                                <div class="portlet-title tabbable-line">
+                                    <div class="caption">
+                                        <?php
+                                        if ($_GET['id']) {
+                                            echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+                                        } else {
+                                            echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="mt-comments">
+                                        <?php
+                                        foreach ($userAppliedData as $data) {
+                                            ?>
+                                            <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
+                                               class="mt-comment">
+                                                <div class="mt-comment-img">
+                                                    <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
+                                                </div>
+                                                <div class="mt-comment-body">
+                                                    <div class="mt-comment-info">
+                                                        <span class="mt-comment-author"><?= $data['category'] ?></span>
+                                                        <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                    </div>
+                                                    <div class="mt-comment-text"> <?= $data['parent'] ?></div>
+                                                </div>
+                                            </a>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
             ?>
         </div>
         <!--End Sidebar-->
-        </div>
+        <!--        </div>-->
     </section>
 <?php
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
@@ -1148,6 +1195,74 @@ ul.status-detail li>strong {
     -webkit-transition: .3s all;
     transition: .3s all;
 }
+.portlet {
+        margin-bottom: 25px;
+        padding: 12px 20px 15px;
+        background-color: #fff;
+    }
+    .portlet>.portlet-title {
+        border-bottom: 1px solid #eee;
+        padding: 0;
+        margin-bottom: 10px;
+        min-height: 48px;
+    }
+    .portlet>.portlet-title>.caption {
+        float: left;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 18px;
+        padding: 10px 0;
+        color: #666;
+    }
+    .portlet.light>.portlet-title>.caption>.caption-subject {
+        font-size: 16px;
+        color: #2f353b;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+    .portlet.light .portlet-body {
+        padding-top: 8px;
+        clear: both;
+    }
+    .mt-comments .mt-comment {
+        padding: 10px;
+        margin: 0 0 10px;
+        display:block;
+    }
+    .mt-comments .mt-comment .mt-comment-img {
+        width: 40px;
+        float: left;
+        margin-right: 8px;
+    }
+    .mt-comments .mt-comment .mt-comment-img>img {
+        border-radius: 50%!important;
+        width:40px;
+        height: 40px;
+    }
+    .mt-comments .mt-comment .mt-comment-body {
+        padding-left: 10px;
+        position: relative;
+        /*overflow: hidden;*/
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-author {
+        display: inline-block;
+        /*float: left;*/
+        margin: 0px;
+        color: #060606;
+        font-weight: 600;
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-date {
+        display: inline-block;
+        float: right;
+        background: #00a0e3;
+        color: #fff;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 12px;
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-text {
+        color: #999;
+    }
 @media screen and (max-width: 525px){
     .header-details {
         margin-top: 0px;
