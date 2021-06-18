@@ -264,8 +264,7 @@ class UsersController extends Controller
 
         $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
         $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
-//        print_r($userAppliedData);
-//        exit();
+
         $dataProvider = [
             'user' => $user,
             'skills' => $skills,
