@@ -505,7 +505,6 @@ $(document).on('click','.j-closed',function(e){
             event.preventDefault();
             var link = $(this).attr('data-link');
             CopyToClipboard(link, true, "Link copied");
-            console.log(link)
         });
 
     function CopyToClipboard(value, showNotification, notificationText) {
