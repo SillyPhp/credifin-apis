@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+
 $userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
@@ -34,7 +35,6 @@ Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->p
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\View::POS_HEAD);
 ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
@@ -51,121 +51,23 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect01">
-                                            Filling Application As ?
+                                        <label for="number" class="input-group-text">
+                                            Name of Applicant (Student Name)
                                         </label>
-                                        <ul class="displayInline">
-                                            <li>
-                                                <label class="container-radios"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent</label>
-                                            </li>
-                                            <li>
-                                                <label class="container-radios"><input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student</label>
-                                            </li>
-                                        </ul>
+                                        <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
-                                    <span id="applicantRadio"></span>
-                                </div>
-                                        <div id="addAnotherCo">
-                                            <div class="coapplicant">
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <div class="radio-heading input-group-text">
-                                                            Relation With Student
-                                                        </div>
-                                                        <ul id="co-relation-ul-1" class="displayInline">
-                                                            <li>
-                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
-                                                                <label for="co-father-1">Father</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                                <label for="co-mother-1">Mother</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                                <label for="co-brother-1">Brother</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                                <label for="co-sister-1">Sister</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                                <label for="co-guardian-1">Guardian</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <label for="co-name[]" class="input-group-text">
-                                                            Name
-                                                        </label>
-                                                        <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <div class="radio-heading input-group-text">
-                                                            Employment type ?
-                                                        </div>
-                                                        <ul class="displayInline">
-                                                            <li>
-                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="sal-1">Salaried</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="self-1">Self-Employed</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="non-1">Non-Working</label>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <label for="co-anualincome" class="input-group-text">
-                                                            Annual Income
-                                                        </label>
-                                                        <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                            <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
-                                        </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect01">
-                                            Which Type Of Loan Is This ?
-                                        </label>
-                                        <ul class="displayInline">
-                                            <li>
-                                                <label class="container-radios">
-                                                    <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
-                                                    School Fee Loan
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <label class="container-radios">
-                                                    <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
-                                                    College/University Fee Loan
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <span id="applicantTypeRadio"></span>
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name of Applicant (Customer/Student Name)
+                                            Date Of Birth (mm/dd/yyyy)
                                         </label>
-                                        <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
+                                            <input value="<?= ($userDetail->dob)?date('m/d/Y', strtotime($userDetail->dob)) : "" ?>" type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
+                                            <div class="input-group-addon">
+                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -181,6 +83,47 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Choose Country where you want to study
+                                        </label>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">India
+                                                    <input type="radio" checked="checked" id="india" value="1" onclick="showCountry(this)" name="countryRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">Outside India
+                                                    <input type="radio" id="othercountry" value="0" onclick="showCountry(this)" name="countryRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20" id="countryName">
+                                    <div class="form-group">
+                                        <div class="radio-heading input-group-text">
+                                            Select Country
+                                        </div>
+                                        <select class="form-control" name="country_name" id="country_name">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="course_name" class="input-group-text">
+                                           Field Of Study / Course Name
+                                        </label>
+                                        <div id="the-basics">
+                                            <input type="text" placeholder="Enter Field / Course Name" class="typeahead form-control text-capitalize" id="course_name_text" name="course_name_text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
                                             Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
@@ -188,109 +131,32 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                                placeholder="Enter Loan Amount">
                                     </div>
                                 </div>
-
-                                <div class="col-md-12 padd-20">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Phone Number (WhatsApp & Call)
-                                        </label>
-                                        <input value="<?= ($userDetail->phone)? substr($userDetail->phone, -10) : "" ?>" type="text" class="form-control" id="mobile" name="mobile"
-                                               placeholder="Enter Phone Number">
+                                        <div class="radio-heading input-group-text">
+                                            Have You Taken The Addmission?
+                                        </div>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
+                                                <label for="yc">Yes</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
+                                                <label for="nc">No</label>
+                                            </li>
+                                        </ul>
+                                        <span id="college_taken_error"></span>
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="email" class="input-group-text">
-                                            Email Address
-                                        </label>
-                                        <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
-                                               placeholder="Enter Email Address">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="input-group padd-20">
-                                        <div class="btn-center">
-                                            <button type="button" class="button-slide" id="nextBtn">
-                                                Next
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab" id="step2">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h1 class="heading-style">Educational Details</h1>
-                                    </div>
-                                </div>
-                                <div id="collegeLoanBox">
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label class="input-group-text" for="inputGroupSelect01">
-                                                Choose Country where you want to study
-                                            </label>
-                                            <ul class="displayInline">
-                                                <li>
-                                                    <label class="container-radio">India
-                                                        <input type="radio" checked="checked" id="india" value="1" onclick="showCountry(this)" name="countryRadio">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="container-radio">Outside India
-                                                        <input type="radio" id="othercountry" value="0" onclick="showCountry(this)" name="countryRadio">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20" id="countryName">
-                                        <div class="form-group">
-                                            <div class="radio-heading input-group-text">
-                                                Select Country
-                                            </div>
-                                            <select class="form-control" name="country_name" id="country_name">
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="course_name" class="input-group-text">
-                                                Field Of Study / Course Name
-                                            </label>
-                                            <div id="the-basics">
-                                                <input type="text" placeholder="Enter Field / Course Name" class="typeahead form-control text-capitalize" id="course_name_text" name="course_name_text">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <div class="radio-heading input-group-text">
-                                                Have You Taken The Addmission?
-                                            </div>
-                                            <ul class="displayInline">
-                                                <li>
-                                                    <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
-                                                    <label for="yc">Yes</label>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
-                                                    <label for="nc">No</label>
-                                                </li>
-                                            </ul>
-                                            <span id="college_taken_error"></span>
-                                        </div>
-                                    </div>
                                     <div id="college_box">
                                         <div class="col-md-12 padd-20">
-                                            <label for="course_name" class="input-group-text">
-                                                College / University Name (You Can Add Custom If Not Available in List)
-                                            </label>
-                                            <select  id="college_name" name="college_name">
+                                                <label for="course_name" class="input-group-text">
+                                                    College / University Name (You Can Add Custom If Not Available in List)
+                                                </label>
+                                                <select  id="college_name" name="college_name">
 
-                                            </select>
+                                                </select>
                                         </div>
                                         <div class="col-md-6 padd-20">
                                             <div class="form-group">
@@ -328,9 +194,9 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                     </div>
                                     <div id="college_preference_box">
                                         <div class="col-md-12 padd-20">
-                                            <label for="course_name" class="input-group-text">
-                                                Any College Preference ?
-                                            </label>
+                                        <label for="course_name" class="input-group-text">
+                                           Any College Preference ?
+                                        </label>
                                         </div>
                                         <div class="col-md-12 padd-20">
                                             <div class="form-group">
@@ -354,23 +220,116 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                             </div>
                                         </div>
                                     </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Phone Number (WhatsApp & Call)
+                                        </label>
+                                        <input value="<?= ($userDetail->phone)? substr($userDetail->phone, -10) : "" ?>" type="text" class="form-control" id="mobile" name="mobile"
+                                               placeholder="Enter Phone Number">
+                                    </div>
                                 </div>
-                                <div id="schooInfo">
-
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="email" class="input-group-text">
+                                            Email Address
+                                        </label>
+                                        <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
+                                               placeholder="Enter Email Address">
+                                    </div>
                                 </div>
-                                <div id="hideDiveChild">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="input-group-text" for="inputGroupSelect02">
-                                                Number Of Children (Applying Loan For)
-                                            </label>
-                                            <input type="text" class="form-control" id="noChild" name="noChild"
-                                                   onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
-                                            <p class="errorMsg"></p>
+                                <div class="col-md-12 padd-20">
+                                    <div class="input-group padd-20">
+                                        <div class="btn-center">
+                                            <button type="button" class="button-slide" id="nextBtn">
+                                                Next
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="child-info-div"></div>
+                            </div>
+                            <div class="tab" id="step2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h1 class="heading-style">Additional Details</h1>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div id="addAnotherCo">
+                                        <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-name[]" class="input-group-text">
+                                                        Name
+                                                    </label>
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Relation
+                                                    </div>
+                                                    <ul id="co-relation-ul-1" class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                            <label for="co-father-1">Father</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                            <label for="co-mother-1">Mother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                            <label for="co-brother-1">Brother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                            <label for="co-sister-1">Sister</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                            <label for="co-guardian-1">Guardian</label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Employment type ?
+                                                    </div>
+                                                    <ul class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="sal-1">Salaried</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="self-1">Self-Employed</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="non-1">Non-Working</label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-anualincome" class="input-group-text">
+                                                        Annual Income
+                                                    </label>
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
+                                        <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
                                         <div class="btn-center">
@@ -966,26 +925,9 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-#collegeLoanBox,#hideDiveChild{
-display:none;
-}
+
 ');
 $script = <<< JS
-referenceFunction(reference);
-        function referenceFunction(reference) {
-            let a = document.getElementById('applicant');
-            if (reference=='schools'){
-               let b = document.getElementById('TypeSchool');
-               a.checked = true;
-               b.checked = true;
-               showChildren(b);
-            }else if (reference=='college'){
-                let c = document.getElementById('TypeCollege');
-                a.checked = true;
-                c.checked = true;
-                hideChildren(c);
-            }
-        }
 function getCities()
     {
         var _cities = [];
@@ -1237,15 +1179,6 @@ function substringMatcher (strs) {
     }
     return true;
 });
-jQuery.validator.addClassRules('child_name', {
-        required: true
-    });
-jQuery.validator.addClassRules('child_class', {
-        required: true 
-    });
-jQuery.validator.addClassRules('child_school', {
-        required: true 
-    });
     $('#mobile, #loanamount').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
        var form = $("#myForm");  
@@ -1284,9 +1217,6 @@ jQuery.validator.addClassRules('child_school', {
 				'college_name':{
 				    required:true,
 				},
-				'applicantRadio':{
-				    required:true,
-				},
 				'course_name_text':{
 				    required:true,
 				},
@@ -1299,9 +1229,6 @@ jQuery.validator.addClassRules('child_school', {
 				    max:5000000
 				},
 				'co-name[1]':{
-				    required:true,
-				},
-				'co-relation':{
 				    required:true,
 				},
 				'co-anualincome[1]':{
@@ -1322,25 +1249,11 @@ jQuery.validator.addClassRules('child_school', {
 				},
 				'co-relation[2]':{ 
 				    required:true,
-				},
-				'applicantTypeRadio':{ 
-				    required:true,
-				},
-				'salary':{ 
-				    required:true,
-				    min:5000,
-				    max:5000000
-				},
+				}
 			},
 			messages: {
-           'salary':{
-				    required:'Salary Amount Cannot Be Blank',
-				},
 				'applicant_name': {
 					required: "Applicant Name Required",
-				},
-				'applicantRadio': {
-					required: "Please Select Option",
 				},
 				'course_name_text': {
 					required: "Course Name Cannot Be Blank",
@@ -1385,13 +1298,8 @@ jQuery.validator.addClassRules('child_school', {
 				'co-anualincome[2]':{
 				    required:'Enter Annual income',
 				},
-				'applicantTypeRadio':{
-				    required:'Please Select Loan Type',
-				},
+				
 				'co-relation[2]':{
-				    required:'Select Relation',
-				}, 
-				'co-relation':{
 				    required:'Select Relation',
 				}, 
 				
@@ -1417,18 +1325,6 @@ jQuery.validator.addClassRules('child_school', {
                     else if (element.attr("name") == "college_taken")
                     { 
                          error.insertAfter("#college_taken_error");   
-                    }
-                    else if (element.attr("name") == "co-relation")
-                    { 
-                         error.insertAfter("#co-relation-ul");   
-                    }
-                    else if (element.attr("name") == "applicantRadio")
-                    { 
-                         error.insertAfter("#applicantRadio");   
-                    } 
-                    else if (element.attr("name") == "applicantTypeRadio")
-                    { 
-                         error.insertAfter("#applicantTypeRadio");   
                     }
                     else if (element.attr("name") == element.attr("name"))
                     { 
@@ -1754,139 +1650,6 @@ $this->registerJs($script);
             }
             showTab(currentTab);
         }
-        function createChild()
-        {
-            let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
-                '                                        <div class="form-group">\n' +
-                '                                            <label for="school_name_1" class="input-group-text">\n' +
-                '                                                School Name\n' +
-                '                                            </label>\n' +
-                '                                            <input type="text" minlength="3" class="form-control text-capitalize child_school" id="school_name_1" name="school_name_1" placeholder="School Name">\n' +
-                '                                        </div>\n' +
-                '                                    </div>\n' +
-                '                                    <div class="col-md-12 padd-20">\n' +
-                '                                        <div class="form-group">\n' +
-                '                                            <label for="class_name_1" class="input-group-text">\n' +
-                '                                                Class\n' +
-                '                                            </label>\n' +
-                '                                            <input type="text" minlength="3" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
-                '                                        </div>\n' +
-                '                                    </div>'
-            return child;
-        }
-        function removeChild() {
-
-        }
-        showChildInfo = (event) =>{
-            let eventValue  = event.currentTarget.value;
-            if(eventValue == 1){
-                document.querySelector('.child-info-div').style.display = 'block';
-                document.querySelector('#childTwo').style.display = 'none';
-                document.querySelector('#schoolAttend').style.display = 'none';
-            }else if(eventValue == 2){
-                document.querySelector('.child-info-div').style.display = 'block';
-                document.querySelector('#childTwo').style.display = 'block';
-                document.querySelector('#schoolAttend').style.display = 'block';
-            }
-        }
-        showSchoolField = () => {
-            let schoolNameField = document.querySelectorAll('.schoolNameField')
-            if(event.target.checked){
-                for(let i = 0; i < schoolNameField.length; i++){
-                    schoolNameField[i].classList.add('displayNone');
-                }
-                schoolNameField[0].classList.remove('displayNone');
-            }else {
-                for(let i = 0; i < schoolNameField.length; i++){
-                    schoolNameField[i].classList.remove('displayNone');
-                }
-            };
-        }
-        checkChildInfo = (event) => {
-            let num = parseInt(event.value);
-            let parentElem = event.parentElement;
-            let childFormBox = document.querySelectorAll('.childFormBox');
-            if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
-                parentElem.querySelector('.errorMsg').style.display = "block";
-                parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
-                removeChildFormBox(num, childFormBox)
-            } else  {
-                parentElem.querySelector('.errorMsg').style.display = "none";
-                let childDiv = document.querySelector('.child-info-div');
-                childDiv.innerHTML = '';
-                let count = 1;
-                for (let i = 1; i <= num; i++) {
-                    let childForm = childrenInfoForm(count, num);
-                    childDiv.innerHTML += childForm;
-                    count++
-                }
-            }
-        }
-        errorMsgText = (num) => {
-            switch (num){
-                case (num > 9):
-                    return 'Number Should Be Less Than 9';
-                    break;
-                case 0:
-                    return 'Number Should Be Greater Than 0';
-                    break;
-                case NaN:
-                    return 'This Field Can Not Be Empty';
-                    break;
-                default:
-                    return 'Please Enter A Number';
-            }
-        }
-        removeChildFormBox = (num, childFormBox) => {
-            if(childFormBox.length > 0){
-                for(let i=0; i<childFormBox.length; i++){
-                    childFormBox[i].remove();
-                }
-            }
-        }
-        childrenInfoForm = (count, num) => {
-            let childInfoForm = `<div class="row childFormBox">
-            <div class="col-md-12">
-                <h6 class="heading-style">${count}${count == 1 ? 'st' : count == 2 ? 'nd' : count == 3 ? 'rd' : 'th'} Child's Information</h6>
-            </div>
-            <div class="col-md-12 padd-20">
-                <div class="form-group">
-                    <label for="applicant_name_${count}" class="input-group-text">
-                        Name
-                    </label>
-                    <input type="text" minlength="3" minlength="50" class="form-control text-capitalize child_name" id="applicant_name_${count}"
-                     name="applicant_name_${count}" placeholder="Full Name">
-                </div>
-            </div>
-            <div class="col-md-12 padd-20 schoolNameField">
-                <div class="form-group">
-                    <label for="school_name_${count}" class="input-group-text">
-                        School Name
-                    </label>
-                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_school" id="school_name_${count}"
-                        name="school_name_${count}" placeholder="School Name">
-                </div>
-                ${num > 1 && count == 1 ? `
-                <div class="form-group" id="schoolAttend" >
-                    <label class="check-container">All Attend The Same School
-                      <input id="checkmark" name="checkmark" type="checkbox" onchange="showSchoolField()">
-                      <span class="checkmark"></span>
-                    </label>
-                </div>
-                `: ''}
-            </div>
-            <div class="col-md-12 padd-20">
-                <div class="form-group">
-                    <label for="class_name_${count}" class="input-group-text">
-                        Class
-                    </label>
-                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
-                        name="class_name_${count}" placeholder="Class Name">
-                </div>
-            </div>
-        </div>`
-            return childInfoForm;
-        }
         function addAnotherCo(randomVal){
             var coApplicant = ['<div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Other Co-Borrower\'s Details (Optional)</span><button type="button" class="addAnotherCo input-group-text float-right" onclick="RemoveAnotherCo(this)"> Remove</button>\n' +
             '                                    </div>\n' +
@@ -1986,101 +1749,6 @@ $this->registerJs($script);
                 countryName.style.display = "block";
             }else{
                 countryName.style.display = "none";
-            }
-        }
-
-        function showChildren(ths){
-            const applicantRadio = $('input[name="applicantRadio"]:checked').val();
-            if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
-                swal({
-                    title:"Warning",
-                    text: 'Please Select Relation First !!'
-                });
-                ths.checked = false;
-                return false;
-            }
-            let radioValue = ths.value;
-            const countryName = document.getElementById('hideDiveChild');
-            const schoolInfo = document.getElementById('schooInfo');
-            const collegeLoanBox = document.getElementById('collegeLoanBox');
-            if(radioValue == '1'){
-                collegeLoanBox.style.display = "none";
-                if (applicantRadio==1){
-                    countryName.style.display = "block";
-                    schoolInfo.innerHTML = "";
-                    document.getElementById('noChild').value = "";
-                }else if (applicantRadio==0){
-                    countryName.style.display = "none";
-                    schoolInfo.innerHTML = createChild();
-                    let childFormBox = document.querySelectorAll('.childFormBox');
-                    let num = 1;
-                    removeChildFormBox(num, childFormBox);
-                }
-            }else{
-                schoolInfo.innerHTML = "";
-                document.getElementById('noChild').value = "";
-                countryName.style.display = "none";
-                collegeLoanBox.style.display = "block";
-            }
-        }
-        function hideChildren(ths){
-            const applicantRadio = $('input[name="applicantRadio"]:checked').val();
-            if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
-                swal({
-                    title:"Warning",
-                    text: 'Please Select Relation First !!'
-                });
-                ths.checked = false;
-                return false;
-            }
-            let radioValue = ths.value;
-            const countryName = document.getElementById('hideDiveChild');
-            const schoolInfo = document.getElementById('schooInfo');
-            const collegeLoanBox = document.getElementById('collegeLoanBox');
-            if(radioValue == '0'){
-                schoolInfo.innerHTML = "";
-                document.getElementById('noChild').value = "";
-                countryName.style.display = "none";
-                collegeLoanBox.style.display = "block";
-            }else{
-                collegeLoanBox.style.display = "none";
-                if (applicantRadio==1){
-                    countryName.style.display = "block";
-                    schoolInfo.innerHTML = "";
-                    document.getElementById('noChild').value = "";
-                }else if (applicantRadio==0){
-                    countryName.style.display = "none";
-                    schoolInfo.innerHTML = createChild();
-                    let childFormBox = document.querySelectorAll('.childFormBox');
-                    let num = 1;
-                    removeChildFormBox(num, childFormBox);
-                }
-            }
-        }
-        function showRelation(ths){
-            const applicantRadio = $('input[name="applicantTypeRadio"]:checked').val();
-            let radioValue = ths.value;
-            const countryName = document.getElementById('hideDiveChild');
-            const schoolInfo = document.getElementById('schooInfo');
-            const collegeLoanBox = document.getElementById('collegeLoanBox');
-            if(radioValue == '1'){
-                if (applicantRadio=='1'){
-                    countryName.style.display = "block";
-                    schoolInfo.innerHTML = "";
-                    document.getElementById('noChild').value = "";
-                }
-            }
-        }
-        function hideRelation(ths){
-            const applicantRadio = $('input[name="applicantTypeRadio"]:checked').val();
-            let radioValue = ths.value;
-            const countryName = document.getElementById('hideDiveChild');
-            const schoolInfo = document.getElementById('schooInfo');
-            const collegeLoanBox = document.getElementById('collegeLoanBox');
-            if(radioValue == '0'){
-                if (applicantRadio=='0') {
-                    countryName.style.display = "none";
-                }
             }
         }
     </script>

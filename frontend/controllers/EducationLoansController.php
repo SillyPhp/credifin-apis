@@ -69,13 +69,14 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionApply($ref_id = null)
+    public function actionApply($ref_id = null,$reference=null)
     {
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
         return $this->render('apply-general-loan-form', [
             'india' => $india,
-            'ref_id' => $ref_id
+            'ref_id' => $ref_id,
+            'reference' => $reference
         ]);
         else:
             throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
