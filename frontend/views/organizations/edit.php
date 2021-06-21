@@ -771,7 +771,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;
