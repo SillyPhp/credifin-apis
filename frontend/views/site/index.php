@@ -1155,6 +1155,17 @@ how-icon{
         float: left;
         width: 100%;
     }
+    .headerContent .job-search h1{
+        font-size: 26px;
+        line-height: 30px;
+        padding: 0 15px;
+        
+    }
+    .headerContent .job-search h2{
+        font-size: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;    
+    }
 }
 
 ');
