@@ -689,10 +689,12 @@ $script = <<<JS
         
         var single_user_id = $(this).attr('data-id');
         var single_user_name = $(this).attr('data-key');
+        var single_user_img = $(this).attr('data-img');
         
         var d = {
             user_enc_id: single_user_id,
-            name: single_user_name
+            name: single_user_name,
+            image: single_user_img
         };
     
         var template = $('#message-box').html();
