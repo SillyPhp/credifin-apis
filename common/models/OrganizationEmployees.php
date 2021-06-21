@@ -23,6 +23,8 @@ namespace common\models;
  * @property string $designation
  *
  * @property Organizations $organizationEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
  */
 class OrganizationEmployees extends \yii\db\ActiveRecord
 {
@@ -49,6 +51,8 @@ class OrganizationEmployees extends \yii\db\ActiveRecord
             [['designation'], 'string', 'max' => 50],
             [['employee_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
