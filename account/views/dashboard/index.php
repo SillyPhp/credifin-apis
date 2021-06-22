@@ -3,9 +3,9 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Dashboard',
-]);
+//echo $this->render('/widgets/header/secondary-header', [
+//    'for' => 'Dashboard',
+//]);
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):
     if (!Yii::$app->user->identity->organization->is_email_verified):
@@ -137,7 +137,20 @@ endif;
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
                 ]); ?>
-
+                <?php
+                    if($userValues['is_complete'] == 0){
+                        echo $this->render('@common/widgets/complete-profile-modal', [
+                            'userData' => $userValues['userVal']
+                        ]);
+                   }
+                ?>
+                <?php
+                    if($userValues['is_complete'] == 1 && $userPref['is_complete'] == 0){
+                        echo $this->render('@common/widgets/preference-and-location-modal',[
+                            'userPref' => $userPref['userPref']
+                        ]);
+                    }
+                ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">

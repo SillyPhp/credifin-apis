@@ -82,9 +82,9 @@ switch ([$controller_id, $action_id]) {
                                 {{#sector}}
                                 <h5 class="salary"><i class="fas fa-puzzle-piece"></i> : {{sector}}</h5>
                                 {{/sector}}
-                                {{#created_on}}
-                                <h5 class="salary fbold" title="Created On">Created On : {{created_on}}</h5>
-                                {{/created_on}}
+<!--                                {{#created_on}}-->
+<!--                                <h5 class="salary fbold" title="Created On">Created On : {{created_on}}</h5>-->
+<!--                                {{/created_on}}-->
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -652,7 +652,7 @@ text-overflow: ellipsis;
 }
 /*cards-box css*/
 
-@media screen and (max-width: 1024px) and (min-width: 992px) {
+@media screen and (max-width: 1250px) and (min-width: 992px) {
     .wts-app, .fb, .tw, .linkd, .male, .tele {
         width: 22px;
         height: 22px;

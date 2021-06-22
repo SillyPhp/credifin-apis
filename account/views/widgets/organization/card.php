@@ -24,7 +24,7 @@ if ($organization_data) {
                             if (empty($shortlist['logo_location'])) {
                                 ?>
                                 <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="100" height="100"
-                                        font="35px" color="<?= $shortlist['initials_color']; ?>"></canvas>
+                                        font="30px" color="<?= $shortlist['initials_color']; ?>"></canvas>
                                 <?php
                             } else {
                                 $logo_location = $shortlist['logo_location'];
@@ -41,6 +41,23 @@ if ($organization_data) {
                         </div>
                         <div class="hr-com-field">
                             <?= $shortlist['industry']; ?>
+                        </div>
+                        <div class="ji-set">
+                            <?php
+                            if ($shortlist['organizationEnc']['employerApplications']) {
+                                foreach ($shortlist['organizationEnc']['employerApplications'] as $c) {
+                                    if ($for == 'all') {
+                                        echo '<a href="/' . strtolower($c['name']) . '/list?keyword=' .$shortlist['org_name'] . '" class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</a>';
+                                    }
+                                    if ($c['name'] == $for) {
+                                        echo '<a href="/' . strtolower($c['name']) . '/list?keyword=' .$shortlist['org_name'] . '" class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</a>';
+                                        break;
+                                    }
+                                    ?>
+                                    <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </a>
                     <div class="hr-com-jobs hr-unfollow j-grid">
@@ -69,9 +86,16 @@ if ($organization_data) {
 Pjax::end();
 
 $this->registerCss('
-.hr-company-box {
-    padding: 20px 10px 20px;
+.job-pos {
+    font-family: Roboto;
+    color: #999;
+    font-weight: 500;
+    display: inline-block;
+    margin: 0px 10px;
 }
+//.hr-company-box {
+//    padding: 20px 10px 20px;
+//}
 .user-icon {
     border-radius: 50%;
 }
@@ -118,7 +142,7 @@ $this->registerCss('
     padding: 20px 0px 0px 0px !important;
     text-align: center;
 }
-.hr-com-field{min-height:21px;}
+.hr-com-field, .ji-set{min-height:22px;}
 .hr-com-icon{height:120px;}
 ');
 $script = <<<JS

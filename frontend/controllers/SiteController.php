@@ -1374,4 +1374,8 @@ class SiteController extends Controller
         return $this->render('as-seen-in-index');
     }
 
+    public function actionPlModal(){
+        return $this->render('pl-modal');
+    }
+
 }

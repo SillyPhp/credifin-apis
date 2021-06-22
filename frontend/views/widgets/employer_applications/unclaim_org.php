@@ -193,6 +193,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <h3>Download Sharing Image</h3>
             <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
             <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
+            <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
         </div>
     </div>
 <?php
