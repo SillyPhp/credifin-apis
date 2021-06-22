@@ -6,14 +6,14 @@ use yii\helpers\Url;
     <section class="study-in-usa-bg">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
-                    <h1>STUDENT LOAN<br> PROGRAM</h1>
-                    <p>With our <span class="mota-text">Interest Free Education Loan</span>,
-                        we will make it <span class="mota-text">simple and easier</span> for you to fulfil
-                        your <span class="mota-text">dream of studying
-                        </span> in your <span class="mota-text">desired College/University</span>.</p>
+                <div class="col-md-7">
+                    <h1>Pay School / College fees MONTHLY at ZERO cost*</h1>
+                    <p>Don't pay in advance for Education</p>
+                    <div class="apply-btn">
+                        <a href="">Apply Now</a>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="loan-side-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>" alt="">
                     </div>
@@ -22,17 +22,59 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <section class="education-overview">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="education-wrap"><h1>Why pay fees in Advance? Just pay MONTHLY at ZERO cost*</h1>
+                            <ul>
+                                <li>We pay School in Advance. You repay monthly</li>
+                                <li>Repay timely &amp; get up to 100% cash back on Referral</li>
+                                <li>Get up to Rs. 8,500+ cash back on shopping &amp; referral*</li>
+                                <li>Lifetime account of monthly payment &amp; savings</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
     <section class="loan-process">
         <div class="container">
             <div class="row">
                 <h3 class="heading-s">Loan Process</h3>
             </div>
-            <div class="row">
-                <div class="col-md-3">Fill The Loan Application Form</div>
-                <div class="col-md-3">Pay The Processing Fee</div>
-                <div class="col-md-3">Valuation Of The Documents</div>
-                <div class="col-md-3">The Sanction/Approval Process</div>
-                <div class="col-md-3">The Loan Disbursal</div>
+            <div class="row flex-process">
+                <div class="col-md-2 col-md-offset-1 col-sm-4 col-xs-12">
+                    <div class="loan-steps loan-line1">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step1.png') ?>" alt="">
+                        <p>Fill The Loan Application Form</p>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="loan-steps marg-top loan-line2">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step2.png') ?>" alt="">
+                        <p>Pay The Processing Fee</p>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="loan-steps loan-line1">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step3.png') ?>" alt="">
+                        <p>Valuation Of The Documents</p>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="loan-steps marg-top loan-line2">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step4.png') ?>" alt="">
+                        <p>The Sanction/Approval Process</p>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="loan-steps">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step5.png') ?>" alt="">
+                        <p>The Loan Disbursal</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -43,25 +85,25 @@ use yii\helpers\Url;
                 <h3 class="heading-s">Benefits</h3>
             </div>
             <div class="row">
-                <div class="col-md-2 col-md-offset-1 col-sm-3 col-xs-12">
+                <div class="col-md-2 col-md-offset-1 col-sm-3 col-xs-6">
                     <div class="bene-img">
                         <i class="fa fa-file-signature"></i>
                         <p>Minimal Paper Work</p>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3 col-xs-12">
+                <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="bene-img">
                         <i class="fa fa-book-open"></i>
                         <p>0% Interest Loan</p>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3 col-xs-12">
+                <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="bene-img">
                         <i class="fas fa-clock"></i>
                         <p>Approval In Minutes</p>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-3 col-xs-12">
+                <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="bene-img">
                         <i class="fa fa-hand-holding-usd"></i>
                         <p>No Prepayment Charges</p>
@@ -71,6 +113,47 @@ use yii\helpers\Url;
                     <div class="bene-img">
                         <i class="fas fa-rupee-sign"></i>
                         <p>Repay In Easy Monthly Installments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="table-view">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="table-head">Pay education fees MONTHLY, <br>not lumpsum across any college. Over life
+                    </h3>
+                </div>
+            </div>
+            <div class="row flex-w">
+                <div class="col-md-6">
+                    <div class="table-view">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fee-graph3.png') ?>" alt="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="table-view">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fee-graph4.png') ?>" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ey-branding">
+        <div class="study-overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="branding-logo">
+                    <img src="<?= Url::to('/assets/common/logos/logo.svg') ?>" alt="">
+                </div>
+                <div class="col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-4">
+                    <div class="brand-data">
+                        <h3>EmpowerYouth.com</h3>
+                        <p>Empoweryouth is The World's First Integrated Career Platform.Here is The Easiest Way to Build
+                            Your Career</p>
                     </div>
                 </div>
             </div>
@@ -156,29 +239,14 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section class="ey-branding">
-        <div class="study-overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="branding-logo">
-                    <img src="<?= Url::to('/assets/common/logos/logo.svg') ?>" alt="">
-                </div>
-                <div class="col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-4">
-                    <div class="brand-data">
-                        <h3>EmpowerYouth.com</h3>
-                        <p>Empoweryouth is The World's First Integrated Career Platform.Here is The Easiest Way to Build
-                            Your Career</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
 <?php
 $this->registerCss('
+.loan-process, .table-view {
+    margin: 40px 0;
+}
+.marg-top{margin-top:50px;}
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
-    min-height: 450px;
+//	background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: top right;
@@ -186,14 +254,18 @@ $this->registerCss('
 	align-items: center;
 	position: relative;
 	text-align: center;
+    height: 100vh;
+    max-height: 600px;
 }
 .study-in-usa-bg h1 {
-	font-size: 45px;
+	font-size: 34px;
     margin-bottom: 10px;
+    margin-top: 50px;
     color: #3ab4ec;
-    font-family: lora;
+    font-family: roboto;
     text-align: left;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 50px;
 }
 .study-in-usa-bg p {
     text-align: left;
@@ -203,6 +275,18 @@ $this->registerCss('
     padding: 0 0 18px;
     line-height: 24px;
     letter-spacing: 0.5px;
+}
+.apply-btn {
+    text-align: left;
+}
+.apply-btn a {
+    background: #00a0e3;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #ffffff;
+    border: none;
+    outline: none;
 }
 .loan-side-img img {
     width: 100%;
@@ -218,6 +302,45 @@ $this->registerCss('
     top: 0;
     right: 0;
     background: rgb(16 15 15 / 50%);
+}
+.loan-steps p {
+    font-size: 14px;
+    font-family: roboto;
+    font-weight: 500;
+    margin-bottom:30px;
+}
+.loan-steps img {
+    width: 90px;
+    margin-bottom: 15px;
+    position:relative;
+    z-index:999;
+}
+.loan-steps {
+    text-align: center;
+    position:relative;
+}
+.loan-line1::before {
+    content: "";
+    display: block;
+    width: 140px;
+    height: 2px;
+    background: #dbdbdb;
+    left: 66%;
+    top: 48%;
+    position: absolute;
+    transform: rotate(41deg);
+}
+
+.loan-line2::before {
+    content: "";
+    display: block;
+    width: 140px;
+    height: 2px;
+    background: #dbdbdb;
+    left: 67%;
+    top: 16%;
+    position: absolute;
+    transform: rotate(-40deg);
 }
 .benefit-bg {
     background-color: #edf4fc;
@@ -237,7 +360,7 @@ $this->registerCss('
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 4px;
     margin: 0 auto;
     box-shadow: 0 0 15px 0px rgb(0 0 0 / 50%);
 }
@@ -245,7 +368,7 @@ $this->registerCss('
     font-size: 14px;
     font-family: roboto;
     font-weight: 500;
-    margin: 20px 0;
+    margin: 20px 0 0;
 }
 .other-loan {
     padding: 20px 0 50px;
@@ -280,6 +403,18 @@ $this->registerCss('
     margin-bottom: 10px;
 }
 .text-center{text-align:center;}
+.table-head {
+    text-align: center;
+    font-family: lobster;
+    font-size: 34px;
+    line-height: 38px;
+    color: #00a0e3;
+}
+.table-view {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.table-view img{width:100%;}
 .ey-branding {
     background: url(' . Url::to('@eyAssets/images/pages/index2/com-intern-bg.png') . ');
     position: relative;
@@ -310,5 +445,58 @@ $this->registerCss('
     font-size: 16px;
     font-family: Roboto;
     color:#fff;
+}
+.education-overview{
+    padding: 80px 0 ;
+    background: #0082ca url(' . Url::to('@eyAssets/images/pages/education-loans/scback.png') . ');
+//    background-size: 58%;
+    -ms-transform: skewY(-3deg);
+    transform: skewY(-3deg);
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+.education-wrap {
+    -ms-transform: skewY(3deg);
+    transform: skewY(3deg);
+}
+.education-wrap h1 {
+    color: #ffffff;
+    font-family: lora;
+    font-weight: bold;
+    line-height: 54px;
+}
+.education-wrap ul {
+    list-style: none;
+    margin-top: 32px;
+    padding:0;
+}
+.education-wrap ul li {
+    color: #ffffff;
+//    padding-left: 40px;
+    margin-bottom: 20px;
+    font-size: 1.25em;
+    line-height: 26px;
+}
+.flex-w {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+@media screen and (max-width: 992px){
+.loan-line1::before, .loan-line2::before{display:none;}
+.marg-top{margin:0;}
+.flex-process {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+}
+@media screen and (max-width: 515px) and (min-width: 300px) {
+.branding-logo{position:relative;}
+.marg-top {
+    margin-top: 0px;
+}
 }
 ');
