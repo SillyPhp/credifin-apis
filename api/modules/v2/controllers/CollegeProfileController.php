@@ -1652,12 +1652,12 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
             }
 
-            $org_other_detail->affiliated_to = $params['affiliated_to'];
-            $org_other_detail->accredited_to = $params['accredited_to'];
-            $org_other_detail->entrance_exam = $params['entrance_exam'];
-            $org_other_detail->total_programs = $params['total_programs'];
-            $org_other_detail->popular_course = $params['popular_course'];
-            $org_other_detail->top_recruiter = $params['top_recruiter'];
+            $org_other_detail->affiliated_to = $params['affiliated_to'] ? $params['affiliated_to'] : $org_other_detail->affiliated_to;
+            $org_other_detail->accredited_to = $params['accredited_to'] ? $params['accredited_to'] : $org_other_detail->accredited_to;
+            $org_other_detail->entrance_exam = $params['entrance_exam'] ? $params['entrance_exam'] : $org_other_detail->entrance_exam;
+            $org_other_detail->total_programs = $params['total_programs'] ? $params['total_programs'] : $org_other_detail->total_programs;
+            $org_other_detail->popular_course = $params['popular_course'] ? $params['popular_course'] : $org_other_detail->popular_course;
+            $org_other_detail->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $org_other_detail->top_recruiter;
 //            $org_other_detail->brochure = $params['brochure'];
             $org_other_detail->updated_on = date('Y-m-d H:i:s');
             if (!$org_other_detail->update()) {
