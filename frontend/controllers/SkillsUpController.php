@@ -17,12 +17,23 @@ use yii\web\UploadedFile;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\db\Expression;
+use yii\web\HttpException;
 
 class SkillsUpController extends Controller
 {
 
     public function actionIndex()
     {
+
+        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
+        if (!$permissions) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+
         $model = new SkillsUpForm();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -40,7 +51,8 @@ class SkillsUpController extends Controller
         }
     }
 
-    private function getMetaInfo($url){
+    private function getMetaInfo($url)
+    {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $html = $this->getCurlData($url);
 
@@ -54,20 +66,19 @@ class SkillsUpController extends Controller
 
         $metas = $doc->getElementsByTagName('meta');
 
-        for ($i = 0; $i < $metas->length; $i++)
-        {
+        for ($i = 0; $i < $metas->length; $i++) {
             $meta = $metas->item($i);
-            if($meta->getAttribute('name') == 'description') {
+            if ($meta->getAttribute('name') == 'description') {
                 $description = $meta->getAttribute('content');
             }
-            if($meta->getAttribute('name') == 'keywords') {
+            if ($meta->getAttribute('name') == 'keywords') {
                 $keywords = $meta->getAttribute('content');
             }
-            if($meta->getAttribute('name') == 'twitter:image') {
+            if ($meta->getAttribute('name') == 'twitter:image') {
                 $image = $meta->getAttribute('content');
             }
-            if(!$image){
-                if($meta->getAttribute('property') == 'og:image') {
+            if (!$image) {
+                if ($meta->getAttribute('property') == 'og:image') {
                     $image = $meta->getAttribute('content');
                 }
             }
@@ -78,7 +89,7 @@ class SkillsUpController extends Controller
 //        echo "Image: $image". '<br/><br/>';
 //        echo "Keywords: $keywords";
         return [
-            'status' =>203,
+            'status' => 203,
             'title' => $title,
             'keywords' => $keywords,
             'image' => $image,
@@ -86,7 +97,8 @@ class SkillsUpController extends Controller
         ];
     }
 
-    private function getCurlData($url){
+    private function getCurlData($url)
+    {
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -183,9 +195,9 @@ class SkillsUpController extends Controller
             $url = Yii::$app->request->post('url');
             $data = $this->youTubeVideoID($url);
 
-            if($data['status'] === 200){
+            if ($data['status'] === 200) {
                 return $data;
-            } else{
+            } else {
                 return $this->getMetaInfo(Yii::$app->request->post('url'));
             }
         }
