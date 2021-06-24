@@ -44,12 +44,12 @@ class SkillsUpController extends Controller
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $html = $this->getCurlData($url);
 
-//parsing begins here:
+        //parsing begins here:
         $doc = new \DOMDocument();
         @$doc->loadHTML($html);
         $nodes = $doc->getElementsByTagName('title');
 
-//get and display what you need:
+        //get and display what you need:
         $title = $nodes->item(0)->nodeValue;
 
         $metas = $doc->getElementsByTagName('meta');

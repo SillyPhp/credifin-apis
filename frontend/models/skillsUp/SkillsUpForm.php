@@ -240,16 +240,16 @@ class SkillsUpForm extends Model
                         ->asArray()
                         ->one();
 
-                    $blog_skills = Skills::find()
-                        ->select(['skill'])
-                        ->where(['skill_enc_id' => $this->skills])
-                        ->asArray()
-                        ->all();
-
-                    $skills = [];
-                    foreach ($blog_skills as $skill) {
-                        array_push($skills, $skill['skill']);
-                    }
+//                    $blog_skills = Skills::find()
+//                        ->select(['skill'])
+//                        ->where(['skill_enc_id' => $this->skills])
+//                        ->asArray()
+//                        ->all();
+//
+//                    $skills = [];
+//                    foreach ($blog_skills as $skill) {
+//                        array_push($skills, $skill['skill']);
+//                    }
 
 
                     $postModel = new Posts();
@@ -261,7 +261,7 @@ class SkillsUpForm extends Model
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $postModel->slug = $utilitiesModel->create_slug();
                     $postModel->description = $this->description;
-                    $meta_arr = array_unique($skills);
+                    $meta_arr = array_unique($this->skills);
                     $meta = implode(", ", $meta_arr);
                     $meta_str = ucwords($meta);
                     $postType = PostTypes::findOne(['post_type' => 'Post']);
@@ -428,18 +428,11 @@ class SkillsUpForm extends Model
             // save feed skills
             if (!empty($this->skills)) {
                 $skills = array_unique($this->skills);
+
                 foreach ($skills as $skill) {
-                    $postAssignedSkills = new SkillsUpPostAssignedSkills();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $postAssignedSkills->assigned_skill_enc_id = $utilitiesModel->encrypt();
-                    $postAssignedSkills->skill_enc_id = $skill;
-                    $postAssignedSkills->post_enc_id = $model->post_enc_id;
-                    $postAssignedSkills->created_by = $this->user_id;
-                    $postAssignedSkills->created_on = date('Y-m-d H:i:s');
-                    if (!$postAssignedSkills->validate() || !$postAssignedSkills->save()) {
-                        $transaction->rollBack();
-                        throw new \Exception(array_values($postAssignedSkills->firstErrors)[0]);
-                    }
+
+                    $this->saveSkills($skill, $model->post_enc_id, $transaction);
+
                 }
             }
 
@@ -450,6 +443,52 @@ class SkillsUpForm extends Model
         } catch (\Exception $e) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => $e->getMessage()];
+        }
+    }
+
+    private function saveSkills($skill_name, $post_id, $transaction)
+    {
+        $skill = Skills::findOne(['skill' => $skill_name]);
+
+        if ($skill) {
+            $postAssignedSkills = new SkillsUpPostAssignedSkills();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $postAssignedSkills->assigned_skill_enc_id = $utilitiesModel->encrypt();
+            $postAssignedSkills->skill_enc_id = $skill->skill_enc_id;
+            $postAssignedSkills->post_enc_id = $post_id;
+            $postAssignedSkills->created_by = $this->user_id;
+            $postAssignedSkills->created_on = date('Y-m-d H:i:s');
+            if (!$postAssignedSkills->validate() || !$postAssignedSkills->save()) {
+                $transaction->rollBack();
+                throw new \Exception(array_values($postAssignedSkills->firstErrors)[0]);
+            }
+        } else {
+            $skills = new Skills();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $skills->skill_enc_id = $utilitiesModel->encrypt();
+            $skills->skill = $skill_name;
+            $skills->created_by = $this->user_id;
+            $skills->created_on = date('Y-m-d H:i:s');
+            if (!$skills->validate() || !$skills->save()) {
+                $transaction->rollBack();
+                throw new \Exception(array_values($skills->firstErrors)[0]);
+            }
+
+            $postAssignedSkills = new SkillsUpPostAssignedSkills();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $postAssignedSkills->assigned_skill_enc_id = $utilitiesModel->encrypt();
+            $postAssignedSkills->skill_enc_id = $skills->skill_enc_id;
+            $postAssignedSkills->post_enc_id = $post_id;
+            $postAssignedSkills->created_by = $this->user_id;
+            $postAssignedSkills->created_on = date('Y-m-d H:i:s');
+            if (!$postAssignedSkills->validate() || !$postAssignedSkills->save()) {
+                $transaction->rollBack();
+                throw new \Exception(array_values($postAssignedSkills->firstErrors)[0]);
+            }
+
         }
     }
 
