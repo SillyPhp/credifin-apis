@@ -135,8 +135,10 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                            <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
+                                        <div id="addAnotherCoButton">
+                                            <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
+                                                <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
+                                            </div>
                                         </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
@@ -966,7 +968,7 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-#collegeLoanBox,#hideDiveChild{
+#collegeLoanBox,#hideDiveChild,#addAnotherCo,#addAnotherCoButton{
 display:none;
 }
 ');
