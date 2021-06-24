@@ -1057,7 +1057,7 @@ $this->registerCss('
     margin: 0px !important;
 }
 .highlight-item{
-    background-color: #ff7803;
+    background-color: #f07704;
     padding: 5px 15px !Important;
     z-index: 9;
 }
