@@ -55,6 +55,12 @@ if (empty($app['square_image']) || $app['square_image'] == 1) {
 } else {
     $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
 }
+
+if (empty($app['story_image']) || $app['story_image'] == 1) {
+    $Storyimage = \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+} else {
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['story_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -243,6 +249,8 @@ if (!Yii::$app->user->isGuest) {
                             (1250*650)</a>
                         <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
                             Size (800*800)</a>
+                        <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story
+                            Size (Default)</a>
                     </div>
                 </div>
                 <!--  org details-->

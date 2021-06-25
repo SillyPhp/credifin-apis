@@ -37,6 +37,7 @@ use Yii;
  * @property string $published_on On which date application was published
  * @property string $image Application Image
  * @property string $square_image Application Square Image
+ * @property string $story_image
  * @property string $image_location Application Image Path
  * @property int $application_for 0 for Both, 1 for Empower Youth, 2 for Erexx
  * @property int $for_all_colleges 0 for choosed colleges, 1 for all colleges
@@ -96,7 +97,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
             [['application_number','source','is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
             [['description', 'body', 'type', 'experience','minimum_exp','maximum_exp','preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
-            [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'square_image','image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'square_image','story_image','image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['unique_source_id'], 'string', 'max' => 500],
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
