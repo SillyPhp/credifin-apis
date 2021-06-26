@@ -1267,6 +1267,7 @@ if (!Yii::$app->user->isGuest) {
         'getOurServices',
         'getFeaturedApplications',
         'getStats',
+        'getProductOffering',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
