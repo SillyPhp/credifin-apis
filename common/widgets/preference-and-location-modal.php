@@ -204,7 +204,7 @@ $this->registerCss('
     border: 1px solid #eee;
     padding: 3px 6px 4px;
     border-radius: 8px;
-    margin-top: 5px;
+    margin-top: 1px;
 }
 .lp-modal-text{
     text-align: center;
@@ -231,15 +231,15 @@ $this->registerCss('
 }
 .lp-text-box{
     background: #fff;
-    padding: 10px 8px;
+    padding: 20px 10px;
     border-radius: 10px;
     color: #000;
 }
 .lp-text-box p{
     color: #00a0e3;
     font-size: 18px;
-    line-height: 22px;
-    margin-bottom: 10px;  
+    line-height: 25px;
+    margin-bottom: 10px !important;  
 }
 .lp-text-box ul{
     padding-inline-start: 0px;
@@ -249,7 +249,7 @@ $this->registerCss('
     margin-left: 15px;
     line-height: 18px;
     padding: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-family: roboto;
     text-align: left;
     list-style-type: none;
