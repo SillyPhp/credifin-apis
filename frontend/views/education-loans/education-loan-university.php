@@ -28,10 +28,11 @@ use yii\helpers\Url;
                     <div class="col-md-6">
                         <div class="education-wrap"><h1>Why pay fees in Advance? Just pay MONTHLY at ZERO cost*</h1>
                             <ul>
-                                <li>We pay School in Advance. You repay monthly</li>
-                                <li>Repay timely &amp; get up to 100% cash back on Referral</li>
-                                <li>Get up to Rs. 8,500+ cash back on shopping &amp; referral*</li>
-                                <li>Lifetime account of monthly payment &amp; savings</li>
+                                <li>100% full fee financing</li>
+                                <li>Easy monthly installments</li>
+                                <li>Hassle-free disbursal of loan</li>
+                                <li>Fulfill your dreams with our funds and seize your success</li>
+                                <li>Repay up to one year of course completion/long and flexible tenure of repayment</li>
                             </ul>
                         </div>
                     </div>
@@ -160,84 +161,84 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section class="other-loan">
-        <div class="container">
-            <div class="row">
-                <h3 class="loan-head">Other Loan Options</h3>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>study in India loan</p>
-                        <div class="desc">India is land of diverse cultures, traditions and languages. Its unique and
-                            well recognized
-                            education system makes it a must choice for many students. There are many places for
-                            students to explore while studying which makes it a great experience for them. It has a wide
-                            variety of courses in many fields like Computer, Philosophy and Politics. India's higher
-                            education system has 575 university-level institutions for students to select from.
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>study in Abroad loan</p>
-                        <div class="desc">No doubt that U.S.A is the most famous worldwide study destination for Indian
-                            students. It is just because of the large pool of opportunities that it provides like
-                            Endless Degree Options in Business, Engineering, Medicine, Liberal Arts, Education, Law and
-                            many more. USA is famous for its latest technology and cultural diversity. Studying in such
-                            an environment will surely proved to stand you out of the crowd.
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>Teacher loan</p>
-                        <div class="desc">
-                            Get considerable loan amount with our loan for teachers, you can get a loan upto 50% of your
-                            salary amount to help you meet your urgent financial needs.
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>School Fee Finance</p>
-                        <div class="desc">With increasing inflation, gone are the days when school fees was affordable
-                            without financial planning. To make your child study in top schools has become a task.
-                            Schools' fees are high and most schools need to be paid in annual modes. Today, school fees
-                            can have a major impact on a family’s financial plans and require a financial solution as
-                            well. To make it easier and less worrisome for the parents, EmpowerYouth has introduced
-                            school fee financing which is beneficial for both parents and schools. We believe everyone
-                            has a right to a great education and we can help turn aspirations into reality.
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>Refinance</p>
-                        <div class="desc">Are you tired of making interest rate payments that are sky high? Do you want
-                            to reduce your monthly payments on your existing education loan? Or are you looking to shift
-                            into an income-based repayment program?
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="loan-types">
-                        <p>Annual fee Finance</p>
-                        <div class="desc">Our annual fee financing solution provides loan to parents and students on
-                            annual basis with easy monthly installments designed in a way to make it easier for the
-                            borrowers to repay.
-                        </div>
-                        <a href="" class="app-btn">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="other-loan">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <h3 class="loan-head">Other Loan Options</h3>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>study in India loan</p>-->
+<!--                        <div class="desc">India is land of diverse cultures, traditions and languages. Its unique and-->
+<!--                            well recognized-->
+<!--                            education system makes it a must choice for many students. There are many places for-->
+<!--                            students to explore while studying which makes it a great experience for them. It has a wide-->
+<!--                            variety of courses in many fields like Computer, Philosophy and Politics. India's higher-->
+<!--                            education system has 575 university-level institutions for students to select from.-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>study in Abroad loan</p>-->
+<!--                        <div class="desc">No doubt that U.S.A is the most famous worldwide study destination for Indian-->
+<!--                            students. It is just because of the large pool of opportunities that it provides like-->
+<!--                            Endless Degree Options in Business, Engineering, Medicine, Liberal Arts, Education, Law and-->
+<!--                            many more. USA is famous for its latest technology and cultural diversity. Studying in such-->
+<!--                            an environment will surely proved to stand you out of the crowd.-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>Teacher loan</p>-->
+<!--                        <div class="desc">-->
+<!--                            Get considerable loan amount with our loan for teachers, you can get a loan upto 50% of your-->
+<!--                            salary amount to help you meet your urgent financial needs.-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>School Fee Finance</p>-->
+<!--                        <div class="desc">With increasing inflation, gone are the days when school fees was affordable-->
+<!--                            without financial planning. To make your child study in top schools has become a task.-->
+<!--                            Schools' fees are high and most schools need to be paid in annual modes. Today, school fees-->
+<!--                            can have a major impact on a family’s financial plans and require a financial solution as-->
+<!--                            well. To make it easier and less worrisome for the parents, EmpowerYouth has introduced-->
+<!--                            school fee financing which is beneficial for both parents and schools. We believe everyone-->
+<!--                            has a right to a great education and we can help turn aspirations into reality.-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>Refinance</p>-->
+<!--                        <div class="desc">Are you tired of making interest rate payments that are sky high? Do you want-->
+<!--                            to reduce your monthly payments on your existing education loan? Or are you looking to shift-->
+<!--                            into an income-based repayment program?-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="loan-types">-->
+<!--                        <p>Annual fee Finance</p>-->
+<!--                        <div class="desc">Our annual fee financing solution provides loan to parents and students on-->
+<!--                            annual basis with easy monthly installments designed in a way to make it easier for the-->
+<!--                            borrowers to repay.-->
+<!--                        </div>-->
+<!--                        <a href="" class="app-btn">Apply Now</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 <?php
 $this->registerCss('
@@ -281,9 +282,9 @@ $this->registerCss('
 }
 .apply-btn a {
     background: #00a0e3;
-    padding: 12px 20px;
+    padding: 16px 40px;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 18px;
     color: #ffffff;
     border: none;
     outline: none;
@@ -473,7 +474,7 @@ $this->registerCss('
 .education-wrap ul li {
     color: #ffffff;
 //    padding-left: 40px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.25em;
     line-height: 26px;
 }
