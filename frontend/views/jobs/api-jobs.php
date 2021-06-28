@@ -1452,7 +1452,7 @@ $this->registerCss("
     }
     @media only screen and (max-width: 649px) {
       .btn-parent{
-            left: 0px;
+            left: 28px;
             bottom: 28px;
             transform: unset;
             border-radius: 0px 10px 0 0;
@@ -1462,7 +1462,11 @@ $this->registerCss("
     .btn-parent{
         position: fixed;
         bottom:0px;
-        left: 0px;
+        }
+    }
+     @media only screen and (max-width: 380px) {
+    .btn-parent{
+        left:0px;
         }
     }
     @media only screen and (max-width: 575px) {
