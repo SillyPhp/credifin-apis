@@ -5,12 +5,23 @@ namespace account\controllers;
 use common\models\SkillsUpPosts;
 use Yii;
 use yii\web\Controller;
+use yii\web\HttpException;
 
 class SkillUpController extends Controller
 {
 
     public function actionDashboard()
     {
+
+        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
+        if (!$permissions) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
         $counts['video'] = $this->getFeedCounts('Video');
         $counts['audio'] = $this->getFeedCounts('Audio');
         $counts['blog'] = $this->getFeedCounts('Blog');

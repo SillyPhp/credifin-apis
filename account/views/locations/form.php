@@ -159,6 +159,9 @@ $this->registerCss('
 label[for="phone"]{
     display: none;
 }
+.iti__flag-container{
+    z-index:9 !important;
+}
 //.iti, .intl-tel-input {
 //    width: 100% !important;
 //}

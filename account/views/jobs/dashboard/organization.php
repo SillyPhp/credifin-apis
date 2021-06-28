@@ -393,7 +393,6 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
                     <?php
                     Pjax::begin(['id' => 'pjax_closed_jobs']);
-                    if ($closed_application['total'] > 0) {
                         ?>
                         <div class="portlet light nd-shadow">
                             <div class="portlet-title">
@@ -418,7 +417,6 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                             </div>
                         </div>
                         <?php
-                    }
                     Pjax::end();
                     ?>
                 </div>

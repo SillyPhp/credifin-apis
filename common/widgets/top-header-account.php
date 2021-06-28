@@ -183,7 +183,7 @@
             </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/account/internships/create">Create Internships</a>
+            <a href="/account/internships/create">Create Internship</a>
             <i class="fa fa-caret-down" aria-hidden="true"></i>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
