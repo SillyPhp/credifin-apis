@@ -1155,8 +1155,31 @@ how-icon{
         float: left;
         width: 100%;
     }
+    .headerContent .job-search h1{
+        font-size: 26px;
+        line-height: 30px;
+        padding: 0 15px;
+        
+    }
+    .headerContent .job-search h2{
+        font-size: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;    
+    }
 }
-
+@media only screen and (max-width: 520px) and (min-width: 360px) {
+    .job-search > h1 {
+        font-size: 24px;
+        line-height: 30px;
+        padding: 0px 11px 0px;
+    }
+    .search-job2 {
+        padding: 4px 40px;
+    }
+    .feature-links {
+        padding: 0 14px;
+    }  
+} 
 ');
 $script = <<< JS
 $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -1268,6 +1291,7 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
+        'getProductOffering',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',

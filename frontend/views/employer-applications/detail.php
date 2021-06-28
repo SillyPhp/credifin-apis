@@ -187,6 +187,11 @@ if (empty($application_details['square_image']) || $application_details['square_
 } else {
     $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['square_image'];
 }
+if (empty($application_details['story_image']) || $application_details['story_image'] == 1) {
+    $Storyimage = \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+} else {
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['story_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -356,6 +361,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'org_logo' => $org['logo'],
                         'image' => $image,
                         'Instaimage' => $Instaimage,
+                        'Storyimage' => $Storyimage,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -373,6 +379,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'org_logo' => $org['logo'],
                         'image' => $image,
                         'Instaimage' => $Instaimage,
+                        'Storyimage' => $Storyimage,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],

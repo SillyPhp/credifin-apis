@@ -47,10 +47,10 @@ if ($organization_data) {
                             if ($shortlist['organizationEnc']['employerApplications']) {
                                 foreach ($shortlist['organizationEnc']['employerApplications'] as $c) {
                                     if ($for == 'all') {
-                                        echo '<p class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</p>';
+                                        echo '<a href="/' . strtolower($c['name']) . '/list?keyword=' .$shortlist['org_name'] . '" class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</a>';
                                     }
                                     if ($c['name'] == $for) {
-                                        echo '<p class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</p>';
+                                        echo '<a href="/' . strtolower($c['name']) . '/list?keyword=' .$shortlist['org_name'] . '" class="job-pos">' . $c['total_application'] . ' ' . $c['name'] . '</a>';
                                         break;
                                     }
                                     ?>
