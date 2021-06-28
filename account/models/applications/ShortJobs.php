@@ -456,7 +456,7 @@ class ShortJobs extends Model
     {
         $modelData = EmployerApplications::find()
             ->alias('a')
-            ->select(['title', 'type', 'h.name country_name', 'positions', 'application_type_enc_id', 'description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type', 'wage_duration', 'currency_enc_id'])
+            ->select(['title', 'type', 'h.name country_name', 'positions', 'application_type_enc_id', 'a.description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type', 'wage_duration', 'currency_enc_id'])
             ->where(['a.application_enc_id' => $editid])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationPlacementCities d' => function ($b) {
