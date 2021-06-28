@@ -586,7 +586,7 @@ $this->registerCss('
     height: 320px;
     margin: 0 auto;
     padding: 50px 0;
-    top:-10px;
+    top:-10px;i
     left:-10px;
     transition-timing-function: linear;
     z-index:300;
