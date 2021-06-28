@@ -100,7 +100,7 @@ if (!empty($total_applications)) {
                                title="Share on Telegram">
                                 <i class="fa fa-telegram"></i>
                             </a>
-                            <a href="javascript:;" class="clipb j-clipboard tt" type="button" data-toggle="tooltip"
+                            <a href="javascript:;" class="clipb tt" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
