@@ -1001,6 +1001,9 @@ class CollegeIndexController extends ApiBaseController
                 'e2.name title',
                 'e1.name profile',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                'a.current_round',
+//                'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
+//                'COUNT(cc.is_completed) total',
             ])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c']);
@@ -1014,6 +1017,11 @@ class CollegeIndexController extends ApiBaseController
             ->joinWith(['appliedApplicationLocations f' => function ($f) {
                 $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
                 $f->joinWith(['cityEnc f1'], false);
+            }])
+            ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
+                $cc->joinWith(['fieldEnc dd'], false);
+                $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon', 'dd.sequence']);
+                $cc->orderBy('dd.sequence');
             }])
             ->where([
                 'a.created_by' => $user_id,

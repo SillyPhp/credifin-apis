@@ -10,6 +10,7 @@ use common\models\ApplicationEducationalRequirements;
 use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\Cities;
+use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\CollegeCutoff;
 use common\models\CollegeFaculty;
@@ -25,6 +26,7 @@ use common\models\InterviewProcessFields;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
 use common\models\ReferralReviewTracking;
+use common\models\spaces\Spaces;
 use common\models\Teachers;
 use common\models\User;
 use common\models\Users;
@@ -1644,7 +1646,7 @@ class CollegeProfileController extends ApiBaseController
                 $org_other_detail->total_programs = $params['total_programs'];
                 $org_other_detail->popular_course = $params['popular_course'];
                 $org_other_detail->top_recruiter = $params['top_recruiter'];
-//                $org_other_detail->brochure = $params['brochure'];
+                $org_other_detail->brochure = $params['brochure'];
                 $org_other_detail->updated_on = date('Y-m-d H:i:s');
                 if (!$org_other_detail->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1658,7 +1660,7 @@ class CollegeProfileController extends ApiBaseController
             $org_other_detail->total_programs = $params['total_programs'] ? $params['total_programs'] : $org_other_detail->total_programs;
             $org_other_detail->popular_course = $params['popular_course'] ? $params['popular_course'] : $org_other_detail->popular_course;
             $org_other_detail->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $org_other_detail->top_recruiter;
-//            $org_other_detail->brochure = $params['brochure'];
+            $org_other_detail->brochure = $params['brochure'] ? $params['brochure'] : $org_other_detail->brochure;
             $org_other_detail->updated_on = date('Y-m-d H:i:s');
             if (!$org_other_detail->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1701,6 +1703,24 @@ class CollegeProfileController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
+            $cutoff = CollegeCutoff::findOne(['assgined_course_enc_id' => $params['course_id'], 'college_enc_id' => $this->getOrgId()]);
+
+            if ($cutoff) {
+                $cutoff->general = $params['general'];
+                $cutoff->obc = $params['obc'];
+                $cutoff->sc = $params['sc'];
+                $cutoff->st = $params['st'];
+                $cutoff->pwd = $params['pwd'];
+                $cutoff->ews = $params['ews'];
+                $cutoff->last_updated_by = $user->user_enc_id;
+                $cutoff->last_updated_on = date('Y-m-d H:i:s');
+                if (!$cutoff->update()) {
+                    return $this->response(500, $cutoff->getErrors());
+                }
+
+                return $this->response(200, ['status' => 200, 'successfully updated']);
+            }
+
             $cutoff = new CollegeCutoff();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1716,6 +1736,8 @@ class CollegeProfileController extends ApiBaseController
             $cutoff->created_by = $user->user_enc_id;
             $cutoff->created_on = date('Y-m-d H:i:s');
             if (!$cutoff->save()) {
+                print_r($cutoff->getErrors());
+                die();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
@@ -1730,16 +1752,38 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
+            $image = UploadedFile::getInstanceByName('image');
+
             $faculty = new CollegeFaculty();
-            $faculty->college_faculty_enc_id = '';
-            $faculty->college_enc_id = '';
-            $faculty->faculty_name = '';
-            $faculty->designation_enc_id = '';
-            $faculty->department = '';
-            $faculty->experience = '';
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $faculty->college_faculty_enc_id = $utilitiesModel->encrypt();
+            $faculty->college_enc_id = $this->getOrgId();
+            $faculty->faculty_name = $params['name'];
+            $faculty->designation_enc_id = $this->saveDesignation($params['designation']);
+            $faculty->department_enc_id = $this->saveDepartment($params['department']);
+            $faculty->experience = $params['experience'];
             $faculty->created_by = $user->user_enc_id;
             $faculty->created_on = date('Y-m-d H:i:s');
+            if ($image) {
+
+                $faculty->image_location = \Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->collegeProfile->faculty_image . $faculty->image_location . '/';
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $faculty->image = $encrypted_string . '.png';
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFile($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public");
+            }
             if (!$faculty->save()) {
+                print_r($faculty->getErrors());
+                die();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
@@ -1779,15 +1823,71 @@ class CollegeProfileController extends ApiBaseController
         return false;
     }
 
-    private function saveDepartment($department)
+    private function saveDepartment($departmentt)
     {
+
+        $department = Departments::findOne(['name' => $departmentt]);
+
+        if ($department) {
+            return $department->department_enc_id;
+        }
+
         $department = new Departments();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $department->department_enc_id = $utilitiesModel->encrypt();
-        $department->name = $department;
+        $department->name = $departmentt;
         if (!$department->save()) {
+            print_r($department->getErrors());
+            die();
+            return false;
+        }
 
+        return $department->department_enc_id;
+    }
+
+    public function actionSaveCoursesFee()
+    {
+        if ($user = $this->isAuthorized()) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $params = Yii::$app->request->post();
+
+                $course = CollegeCoursesPool::findOne(['course_name' => $params['course_name']]);
+
+                if (!$course) {
+                    $course = new CollegeCoursesPool();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $course->course_enc_id = $utilitiesModel->encrypt();
+                    $course->course_name = $params['course_name'];
+                    $course->created_by = $user->user_enc_id;
+                    $course->created_on = date('Y-m-d H:i:s');
+                    if (!$course->save()) {
+                        return $this->response(500, $course->getErrors());
+                    }
+
+                    if (isset($params['stream_id']) && !empty($params['stream_id'])) {
+                        $stream = new CollegeCoursesPool();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $stream->course_enc_id = $utilitiesModel->encrypt();
+                        $stream->parent_enc_id = $params['stream_id'];
+                        if (!$stream->save()) {
+                            
+                        }
+                    }
+                }
+
+
+                $transaction->commit();
+
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                return $this->response(500, ['message' => $e->getMessage()]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
