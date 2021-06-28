@@ -350,7 +350,6 @@ use yii\widgets\Pjax;
 
                     <?php
                     Pjax::begin(['id' => 'pjax_closed_jobs']);
-                    if ($closed_application['total'] > 0) {
                         ?>
                         <div class="portlet light nd-shadow">
                             <div class="portlet-title">
@@ -374,7 +373,6 @@ use yii\widgets\Pjax;
                             </div>
                         </div>
                         <?php
-                    }
                     Pjax::end();
                     ?>
                 </div>
