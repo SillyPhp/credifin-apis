@@ -19,23 +19,23 @@ $eform = ActiveForm::begin([
 ]);
 ?>
     <div class="row pt-20">
-        <!--        <div class="col-md-5">-->
-        <!--            <div class="office-gallery">-->
-        <!--                <div class="g-image-preview">-->
-        <!--                    <div id="employeeImagePreview"-->
-        <!--                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--                <div class="g-image-edit">-->
-        <!--                    --><? //= $eform->field($addSourceForm, 'image', [
-        //                        'template' => '{error}{input}',
-        //                        ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
-        //                    ?>
-        <!--                    <label for="employeeImageUpload">Select Image</label>-->
-        <!--                    <p class="ot-image help-block help-block-error"></p>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="col-md-5">
+            <div class="office-gallery">
+                <div class="g-image-preview">
+                    <div id="employeeImagePreview"
+                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">
+                    </div>
+                </div>
+                <div class="g-image-edit">
+                    <?= $eform->field($addSourceForm, 'image', [
+                        'template' => '{error}{input}',
+                    ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                    ?>
+                    <label for="employeeImageUpload">Select Image</label>
+                    <p class="ot-image help-block help-block-error"></p>
+                </div>
+            </div>
+        </div>
         <div class="col-md-7">
             <div class="col-md-12">
                 <?= $eform->field($addSourceForm, 'source_name')->textInput(['class' => 'capitalize form-control']); ?>
