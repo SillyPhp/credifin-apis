@@ -86,10 +86,6 @@ class SkillUpController extends Controller
             }
         }
 
-//        echo "Title: $title". '<br/><br/>';
-//        echo "Description: $description". '<br/><br/>';
-//        echo "Image: $image". '<br/><br/>';
-//        echo "Keywords: $keywords";
         return [
             'status' => 203,
             'title' => $title,
@@ -382,6 +378,29 @@ class SkillUpController extends Controller
         $related_posts = $this->feedsList($data);
 
         return $this->render('feed-detail', ['detail' => $postDetail, 'related_posts' => $related_posts]);
+    }
+
+    public function actionGetSources($keywords)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $keywords = Yii::$app->request->post('keywords');
+
+        $sources = SkillsUpSources::find()
+            ->select(['source_enc_id', 'name', 'description', 'url source_url',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", image_location, "/", image) ELSE NULL END source_image'
+            ])
+            ->where(['is_deleted' => 0]);
+        if ($keywords) {
+            $sources->andWhere(['like', 'name', $keywords]);
+        }
+        $sources = $sources
+            ->limit(10)
+            ->asArray()
+            ->all();
+
+        return ['status' => 200, 'sources' => $sources];
+
     }
 
 }
