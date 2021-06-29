@@ -1976,6 +1976,10 @@ class CollegeProfileController extends ApiBaseController
 
             $admissionDetail = CollegeAdmissionDetail::findOne(['assigned_course_id' => $params['college_course_id']]);
 
+            if (isset($params['duration']) && !empty($params['duration'])) {
+//                $assignedCourse =
+            }
+
             if ($admissionDetail) {
                 $admissionDetail->fees = $params['fees'];
                 $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
