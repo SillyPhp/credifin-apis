@@ -152,7 +152,7 @@ $this->params['header_dark'] = true;
         <div class="feed-box dash-inner-box nd-shadow">
 
             <!--        <div class="rec-batch">Recommended</div>-->
-            <a href="/skills-up/detail/{{slug}}">
+            <a href="/skill-up/detail/{{slug}}">
                 <div class="feed-img">
                     {{#cover_image}}
                     <img src="{{cover_image}}" alt="your image" class="target"/>
@@ -166,7 +166,7 @@ $this->params['header_dark'] = true;
 
                 </div>
             </a>
-            <a href="/skills-up/detail/{{slug}}"><h3 class="feed-heading">{{post_title}}</h3></a>
+            <a href="/skill-up/detail/{{slug}}"><h3 class="feed-heading">{{post_title}}</h3></a>
             <div class="author-s">
                 {{#author_name}}
                 <div class="author list-data"><i class="fas fa-user"></i><span> {{author_name}}</span></div>
@@ -554,7 +554,7 @@ vals = {
 
 function feeds(){
     $.ajax({
-            url: '/skills-up/feed-list',
+            url: '/skill-up/feed-list',
             type: 'post',
             data: vals,
             success: function (response) {

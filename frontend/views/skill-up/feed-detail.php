@@ -104,7 +104,7 @@ $this->params['header_dark'] = true;
                     <div class="related-art dash-inner-box nd-shadow">
                         <h3>Related Articles</h3>
                         <?php foreach ($related_posts as $post) { ?>
-                            <a href="<?= Url::to('/skills-up/detail/' . $post['slug']) ?>" class="relate-box">
+                            <a href="<?= Url::to('/skill-up/detail/' . $post['slug']) ?>" class="relate-box">
                                 <div class="relate-icon">
                                     <img src="<?= $post['post_image_url'] ? $post['post_image_url'] : $post['cover_image'] ?>"
                                          alt="your image" class="target"/>

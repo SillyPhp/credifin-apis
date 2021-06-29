@@ -153,7 +153,7 @@ $(document).on('submit', '#add_source', function(event) {
     }
     btn.data('requestRunning', true);
     $.ajax({
-        url: "/skills-up/add-source",
+        url: "/skill-up/add-source",
         method: "POST",
         data: new FormData(this),
         contentType: false,

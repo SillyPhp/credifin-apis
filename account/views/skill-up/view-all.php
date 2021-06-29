@@ -14,7 +14,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="actions">
                         <div class="set-im">
-                            <a href="<?= Url::to('/skills-up'); ?>" data-toggle="tooltip"
+                            <a href="<?= Url::to('/skill-up'); ?>" data-toggle="tooltip"
                                title="Add More"
                                class="add-lead">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
