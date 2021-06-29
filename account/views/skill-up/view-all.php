@@ -85,12 +85,12 @@ use yii\helpers\Url;
         {{#.}}
         <tr>
             <td>{{date}}</td>
-            <td>{{post_title}}</td>
+            <td><a href="/skill-up/detail/{{slug}}" target="_blank">{{post_title}}</a></td>
             <td>{{author_name}}</td>
             <td>{{source}}</td>
             <td>{{content_type}}</td>
             <td><a href="{{post_source_url}}"
-                   class="src-link">{{post_source_url}}</a>
+                   class="src-link" target="_blank">{{post_source_url}}</a>
             </td>
             <td>
                 <ul>
