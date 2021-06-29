@@ -22,14 +22,14 @@ class SkillUpController extends Controller
     public function actionIndex()
     {
 
-//        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
-//            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-//        }
-//
-//        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
-//        if (!$permissions) {
-//            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-//        }
+        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
+        if (!$permissions) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
 
         $model = new SkillsUpForm();
 
