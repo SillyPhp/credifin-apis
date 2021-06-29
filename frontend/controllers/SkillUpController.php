@@ -18,10 +18,15 @@ use yii\web\HttpException;
 
 class SkillUpController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
 
     public function actionIndex()
     {
-
         if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
