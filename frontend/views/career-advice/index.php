@@ -582,11 +582,11 @@ $this->registerCss('
 }
 .zoom {
     transition: transform .4s;
-    width: 253px;
+    max-width: 253px;
     height: 320px;
     margin: 0 auto;
     padding: 50px 0;
-    top:-10px;
+    top:-10px;i
     left:-10px;
     transition-timing-function: linear;
     z-index:300;

@@ -561,6 +561,9 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .actions-main {
         width: 100%;
     }
+    .btn-parent{
+        left:28px;
+        }
 }
 @media only screen and (max-width: 430px) {
     .job-head-info {
@@ -576,7 +579,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .btn-parent{
         position: fixed;
         bottom:0px;
-        left: 0px;
+    }
+}
+@media only screen and (max-width: 380px) {
+.btn-parent{
+    left:0px;
     }
 }
 ');

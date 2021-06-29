@@ -1381,4 +1381,8 @@ class SiteController extends Controller
         return $this->render('pl-modal');
     }
 
+    public function actionRankedCollege(){
+        return $this->render('ranked-college');
+    }
+
 }
