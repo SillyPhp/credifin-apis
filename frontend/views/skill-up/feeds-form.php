@@ -77,13 +77,9 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             <div class="col-md-5">
                                 <div class="form-group form-md-line-input form-md-floating-label">
                                     <div class="form-group pt-20 mt-5">
-<!--                                    <div class="default text">Select Source</div>-->
-<!--                                    --><?php //echo $form->field($model, 'source_id')->dropDownList(
-//                                        $source_list,
-//                                        ['prompt' => 'Choose...']
-//                                    )->label(false); ?>
-                                    <input type="text" name="sourceElem" class="form-control" id="sourceInputElem" placeholder="Enter Source Name"/>
-                                    <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
+                                        <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
+                                               placeholder="Enter Source Name"/>
+                                        <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
                                     </div>
                                 </div>
                             </div>
