@@ -17,6 +17,8 @@ use Yii;
  * @property string $other_details course other details
  * @property string $created_by created_by
  * @property string $created_on
+ * @property string $updated_by
+ * @property string $updated_on
  *
  * @property AssignedCollegeCourses $assignedCourse
  * @property Users $createdBy
@@ -40,8 +42,8 @@ class CollegeAdmissionDetail extends \yii\db\ActiveRecord
             [['admission_detail_enc_id', 'assigned_course_id', 'created_by'], 'required'],
             [['fees'], 'number'],
             [['selection_process', 'eligibility_criteria', 'other_details'], 'string'],
-            [['created_on'], 'safe'],
-            [['admission_detail_enc_id', 'assigned_course_id', 'scholarship_enc_id', 'created_by'], 'string', 'max' => 100],
+            [['created_on', 'updated_on'], 'safe'],
+            [['admission_detail_enc_id', 'assigned_course_id', 'scholarship_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['admission_detail_enc_id'], 'unique'],
             [['assigned_course_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCollegeCourses::className(), 'targetAttribute' => ['assigned_course_id' => 'assigned_college_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

@@ -10,6 +10,7 @@ use common\models\ApplicationEducationalRequirements;
 use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\Cities;
+use common\models\CollegeAdmissionDetail;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\CollegeCutoff;
@@ -1846,12 +1847,43 @@ class CollegeProfileController extends ApiBaseController
         return $department->department_enc_id;
     }
 
+    public function actionGetScholarships()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $scholarship = CollegeScholarships::find()
+                ->select(['college_scholarship_enc_id', 'title', 'amount', 'detail', 'apply_link'])
+                ->where(['college_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->all();
+
+            if ($scholarship) {
+                return $this->response(200, ['status' => 200, 'scholarships' => $scholarship]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionSaveCoursesFee()
     {
         if ($user = $this->isAuthorized()) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $params = Yii::$app->request->post();
+
+                $already_have = AssignedCollegeCourses::find()
+                    ->alias('a')
+                    ->joinWith(['courseEnc b'])
+                    ->where(['a.organization_enc_id' => $this->getOrgId(), 'b.course_name' => $params['course_name'], 'a.is_deleted' => 0])
+                    ->one();
+
+                if ($already_have) {
+                    return $this->response(409, ['status' => 409, 'message' => 'conflict, course already exists']);
+                }
 
                 $course = CollegeCoursesPool::findOne(['course_name' => $params['course_name']]);
 
@@ -1864,28 +1896,104 @@ class CollegeProfileController extends ApiBaseController
                     $course->created_by = $user->user_enc_id;
                     $course->created_on = date('Y-m-d H:i:s');
                     if (!$course->save()) {
-                        return $this->response(500, $course->getErrors());
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => $course->getErrors()]);
                     }
 
                     if (isset($params['stream_id']) && !empty($params['stream_id'])) {
-                        $stream = new CollegeCoursesPool();
-                        $utilitiesModel = new \common\models\Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $stream->course_enc_id = $utilitiesModel->encrypt();
+                        $stream = CollegeCoursesPool::findOne(['course_enc_id' => $course->course_enc_id]);
                         $stream->parent_enc_id = $params['stream_id'];
-                        if (!$stream->save()) {
-                            
+                        $stream->updated_by = $user->user_enc_id;
+                        $stream->updated_on = date('Y-m-d H:i:s');
+                        if (!$stream->update()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => $stream->getErrors()]);
                         }
                     }
+                } else {
+
+                    if (isset($params['stream_id']) && !empty($params['stream_id'])) {
+                        if ($course->parent_enc_id == null) {
+                            $stream = CollegeCoursesPool::findOne(['course_enc_id' => $course->course_enc_id]);
+                            $stream->parent_enc_id = $params['stream_id'];
+                            $stream->updated_by = $user->user_enc_id;
+                            $stream->updated_on = date('Y-m-d H:i:s');
+                            if (!$stream->update()) {
+                                $transaction->rollback();
+                                return $this->response(500, ['status' => 500, 'message' => $stream->getErrors()]);
+                            }
+                        }
+                    }
+
+                }
+
+                $assigned_college_courses = new AssignedCollegeCourses();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $assigned_college_courses->assigned_college_enc_id = $utilitiesModel->encrypt();
+                $assigned_college_courses->course_enc_id = $course->course_enc_id;
+                $assigned_college_courses->organization_enc_id = $this->getOrgId();
+                $assigned_college_courses->course_duration = $params['duration'];
+                $assigned_college_courses->created_by = $user->user_enc_id;
+                $assigned_college_courses->created_on = date('Y-m-d H:i:s');
+                if (!$assigned_college_courses->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => $assigned_college_courses->getErrors()]);
+                }
+
+                $college_admission_detail = new CollegeAdmissionDetail();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $college_admission_detail->admission_detail_enc_id = $utilitiesModel->encrypt();
+                $college_admission_detail->assigned_course_id = $assigned_college_courses->assigned_college_enc_id;
+                $college_admission_detail->fees = $params['fees'];
+                $college_admission_detail->scholarship_enc_id = $params['scholarship_id'];
+                $college_admission_detail->created_by = $user->user_enc_id;
+                $college_admission_detail->created_on = date('Y-m-d H:i:s');
+                if (!$college_admission_detail->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => $college_admission_detail->getErrors()]);
                 }
 
 
                 $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
             } catch (\Exception $e) {
                 $transaction->rollback();
-                return $this->response(500, ['message' => $e->getMessage()]);
+                return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionEditAdmissionDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $admissionDetail = CollegeAdmissionDetail::findOne(['assigned_course_id' => $params['college_course_id']]);
+
+            if ($admissionDetail) {
+                $admissionDetail->fees = $params['fees'];
+                $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
+                $admissionDetail->selection_process = $params['selection_process'];
+                $admissionDetail->eligibility_criteria = $params['eligibility_criteria'];
+                $admissionDetail->other_details = $params['other_details'];
+                $admissionDetail->updated_by = $user->user_enc_id;
+                $admissionDetail->updated_on = date('Y-m-d H:i:s');
+                if (!$admissionDetail->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => $admissionDetail->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
