@@ -85,7 +85,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-primary mt-50 modal-load-class"
-                                        value="/skills-up/add-source">
+                                        value="/skill-up/add-source">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -721,7 +721,7 @@ var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skills-up/skill-list',
+    url:'/skill-up/skill-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
@@ -737,7 +737,7 @@ var languages = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skills-up/industry-list',
+    url:'/skill-up/industry-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-language').val();
              return settings;
@@ -890,7 +890,7 @@ $(document).on('change','#source_url',function (e){
         $('.all-fields').removeClass('hidden');
         let url = $(this).val();
         $.ajax({
-            url:'/skills-up/validate-url',
+            url:'/skill-up/validate-url',
             data:{url:url},
             method:'post',
             success:function(res){
@@ -957,12 +957,12 @@ $(document).on('change','#source_url',function (e){
             e.preventDefault();
             var form = $('#feeds_form');
             $.ajax({
-                url:'/skills-up/preview',
+                url:'/skill-up/preview',
                 data:form.serialize()+ "&description=" + encodeURIComponent(description),
                 method:'post',
                 success: function(data) {
                    if(data['status'] === 200){
-                       window.open("http://ravinder.eygb.me/skills-up/feed-preview?id="+data['id']);
+                       window.open("/skill-up/feed-preview?id="+data['id']);
                    }else{
                        toastr.error(response.message, 'error'); 
                    }

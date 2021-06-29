@@ -2,13 +2,10 @@
 
 namespace frontend\controllers;
 
-use account\models\applications\ApplicationForm;
 use common\models\Industries;
-use common\models\LearningVideos;
 use common\models\Skills;
 use common\models\SkillsUpPosts;
 use common\models\SkillsUpSources;
-use frontend\models\OrganizationEmployeesForm;
 use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
@@ -19,7 +16,7 @@ use yii\helpers\Url;
 use yii\db\Expression;
 use yii\web\HttpException;
 
-class SkillsUpController extends Controller
+class SkillUpController extends Controller
 {
 
     public function actionIndex()
@@ -40,10 +37,10 @@ class SkillsUpController extends Controller
             $data = $model->save();
             if ($data['status'] == 200) {
                 Yii::$app->session->setFlash('success', "Form saved successfully.");
-                $this->redirect('/skills-up/index');
+                $this->redirect('/skill-up/index');
             } else {
                 Yii::$app->session->setFlash('error', $data['message']);
-                $this->redirect('/skills-up/index');
+                $this->redirect('/skill-up/index');
             }
         } else {
             $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
@@ -381,4 +378,5 @@ class SkillsUpController extends Controller
 
         return $this->render('feed-detail', ['detail' => $postDetail, 'related_posts' => $related_posts]);
     }
+
 }
