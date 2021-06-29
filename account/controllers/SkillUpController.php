@@ -46,7 +46,7 @@ class SkillUpController extends Controller
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
-                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries'])
+                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug'])
             ->joinWith(['skillsUpAuthors b' => function ($b) {
                 $b->joinWith(['authorEnc b1']);
             }], false)
