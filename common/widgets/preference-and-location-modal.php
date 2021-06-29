@@ -25,7 +25,7 @@ $primaryfields = \common\models\Categories::find()
     <div class="modal-dialog lp-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
-            <button type="button" class="close-lp-modal" data-dismiss="modal" aria-hidden="true">✕</button>
+            <button type="button" class="close-lp-modal" onclick="setCookie()" data-dismiss="modal" aria-hidden="true">✕</button>
             <div class="row margin-0">
                 <div class="col-md-4 col-sm-4">
                     <div class="lp-modal-text half-bg half-bg-color">
