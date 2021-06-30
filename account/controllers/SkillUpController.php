@@ -12,21 +12,19 @@ class SkillUpController extends Controller
 
     public function beforeAction($action)
     {
+
+
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
+        if (!$permissions) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
     public function actionDashboard()
     {
-
-        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
-        }
-
-        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
-        if (!$permissions) {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
-        }
 
         $counts['video'] = $this->getFeedCounts('Video');
         $counts['audio'] = $this->getFeedCounts('Audio');

@@ -82,7 +82,7 @@ class DashboardController extends Controller
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
-            return $this->_services();
+            return $this->actionServices();
         }
 
         if (Yii::$app->user->identity->organization) {
@@ -562,7 +562,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function _services()
+    public function actionServices()
     {
         $model = new \account\models\services\ServiceSelectionForm();
 
@@ -645,8 +645,6 @@ class DashboardController extends Controller
             if(empty($userPref['userPreferredIndustries'])){
                 $is_complete = 0;
             }
-//        print_r($userPref);
-//        exit();
         return ['is_complete' => $is_complete, 'userPref' => $userPref];
     }
 
