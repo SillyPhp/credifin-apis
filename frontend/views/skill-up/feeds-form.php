@@ -47,7 +47,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <div class="feeds-data row">
                         <div class="col-md-12">
                             <div class="content-t">Content Type</div>
-                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Course' => 'Course'])->label(false); ?>
+                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast'])->label(false); ?>
                         </div>
                         <div class="source-field hidden">
                             <div class="col-md-12">
@@ -76,11 +76,11 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group form-md-line-input form-md-floating-label">
-                                    <div class="default text">Select Source</div>
-                                    <?php echo $form->field($model, 'source_id')->dropDownList(
-                                        $source_list,
-                                        ['prompt' => 'Choose...']
-                                    )->label(false); ?>
+                                    <div class="form-group pt-20 mt-5">
+                                        <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
+                                               placeholder="Enter Source Name"/>
+                                        <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-1">
@@ -89,7 +89,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 embed_code_field hidden">
                                 <div class="form-group form-md-line-input form-md-floating-label">
                                     <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
                                 </div>
@@ -700,10 +700,18 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
     font-size: 14px;
     cursor: pointer;
 }
+.twitter-typeahead{
+    width: 100%;
+}
 ');
 $script = <<<JS
 $(document).on('change','input[name=content_type]', function(e) {
     $('.source-field').removeClass('hidden');
+    if($(this).val() != 'Video'){
+        $('.embed_code_field').removeClass('hidden');
+    } else {
+        $('.embed_code_field').addClass('hidden');
+    }
 })
 $(document).on('keypress','#search-skill',function(e){
     if(e.which==13) {
@@ -717,6 +725,7 @@ $(document).on('keyup','#search-skill',function(e){
     }
 });
 var global = [];
+var global2 = [];
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -748,7 +757,39 @@ var languages = new Bloodhound({
         }
   }
 });    
+
+var sources = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/skill-up/get-sources',
+    prepare: function (query, settings) {
+             settings.url += '?keywords=' +$('#sourceInputElem').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+                global2 = list.sources;
+             return list.sources;
+        }
+  }
+});    
             
+var sourceElem = $('#sourceInputElem').typeahead(null, {
+  name: 'source_enc_id',
+  display: 'name',
+  source: sources,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+    // $('.language_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+   // $('.language_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      $('#source_id').val(datum.source_enc_id)
+  }).blur(validateSelection2);
+   // });
+
 var language_type = $('#search-language').typeahead(null, {
   name: 'id',
   display: 'text',
@@ -775,6 +816,20 @@ function validateSelection() {
   if (theIndex == -1) {
     $(this).val(""); 
     global = [];
+  }
+}
+
+function validateSelection2() {
+  var theIndex = -1;
+  for (var i = 0; i < global2.length; i++) {
+    if (global2[i].name == $(this).val()) {
+        theIndex = i;
+        break;
+    }
+  }
+  if (theIndex == -1) {
+    $(this).val("");
+    $('#source_id').val("");
   }
 }
 var skill_type = $('#search-skill').typeahead(null, {
@@ -884,9 +939,17 @@ $(document).on('change','select[name="source_id"]',function() {
         url(this);
     });
 
+function validURL(str) {
+  var regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+  return regexp.test(str);
+}
 
 $(document).on('change','#source_url',function (e){
         e.preventDefault();
+        if(!validURL($(this).val())){
+            alert('Invalid URL');
+            return false;
+        }
         $('.all-fields').removeClass('hidden');
         let url = $(this).val();
         $.ajax({
@@ -913,7 +976,9 @@ $(document).on('change','#source_url',function (e){
                                         $(this).prop('checked',true);
                                     }
                                 })
+                                $('.embed_code_field').addClass('hidden');
                                 $('#sourceElem').html('Youtube');
+                                $('#sourceInputElem').val('Youtube');
                                 $('#channel_id').val(snippet['channelId']);
                                 $('#channel_name').val(snippet['channelTitle']);
                                 $('#author').val(snippet['channelTitle']);
@@ -938,8 +1003,8 @@ $(document).on('change','#source_url',function (e){
                     $(".target").attr("src", res['image']);
                     $('#title').val(res['title']);
                     $('#titleElem').html(res['title']);
-                    $('#short_desc').val(res['description'] ? res['description'].substr(0,200) + '...' : '');
-                    $('#editor').html(CKEDITOR.instances.editor.getData());
+                    $('#short_desc').val(res['description']);
+                    // $('#editor').html(CKEDITOR.instances.editor.getData());
                 }
             }
         })
