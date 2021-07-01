@@ -2,13 +2,10 @@
 
 namespace frontend\controllers;
 
-use account\models\applications\ApplicationForm;
 use common\models\Industries;
-use common\models\LearningVideos;
 use common\models\Skills;
 use common\models\SkillsUpPosts;
 use common\models\SkillsUpSources;
-use frontend\models\OrganizationEmployeesForm;
 use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
@@ -19,31 +16,27 @@ use yii\helpers\Url;
 use yii\db\Expression;
 use yii\web\HttpException;
 
-class SkillsUpController extends Controller
+class SkillUpController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
 
     public function actionIndex()
     {
-
-        if (!Yii::$app->user->identity->user_enc_id && !Yii::$app->user->identity->organization) {
-            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-        }
-
-        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
-        if (!$permissions) {
-            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-        }
-
         $model = new SkillsUpForm();
 
         if ($model->load(Yii::$app->request->post())) {
             $data = $model->save();
             if ($data['status'] == 200) {
                 Yii::$app->session->setFlash('success', "Form saved successfully.");
-                $this->redirect('/skills-up/index');
+                $this->redirect('/skill-up/index');
             } else {
                 Yii::$app->session->setFlash('error', $data['message']);
-                $this->redirect('/skills-up/index');
+                $this->redirect('/skill-up/index');
             }
         } else {
             $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
@@ -84,10 +77,6 @@ class SkillsUpController extends Controller
             }
         }
 
-//        echo "Title: $title". '<br/><br/>';
-//        echo "Description: $description". '<br/><br/>';
-//        echo "Image: $image". '<br/><br/>';
-//        echo "Keywords: $keywords";
         return [
             'status' => 203,
             'title' => $title,
@@ -381,4 +370,28 @@ class SkillsUpController extends Controller
 
         return $this->render('feed-detail', ['detail' => $postDetail, 'related_posts' => $related_posts]);
     }
+
+    public function actionGetSources($keywords)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $keywords = Yii::$app->request->post('keywords');
+
+        $sources = SkillsUpSources::find()
+            ->select(['source_enc_id', 'name', 'description', 'url source_url',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", image_location, "/", image) ELSE NULL END source_image'
+            ])
+            ->where(['is_deleted' => 0]);
+        if ($keywords) {
+            $sources->andWhere(['like', 'name', $keywords]);
+        }
+        $sources = $sources
+            ->limit(10)
+            ->asArray()
+            ->all();
+
+        return ['status' => 200, 'sources' => $sources];
+
+    }
+
 }
