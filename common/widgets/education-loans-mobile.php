@@ -1,7 +1,7 @@
 <?php
 $loan_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Loans");
 $dsa_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
-$skillUp_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skills-Up");
+$skillUp_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
 
 if ($loan_permission) {
     ?>

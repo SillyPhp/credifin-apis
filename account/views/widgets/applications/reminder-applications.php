@@ -226,6 +226,7 @@ $this->registerCss("
 	pointer-events: all;
 	line-height: 36px;
 	transform: rotate(-0deg);
+    transition: all .3s;
 }
 .innerpart1 {
     display: flex;
@@ -234,7 +235,7 @@ $this->registerCss("
     flex-wrap: wrap;
     flex-basis: 35%;
 }
-.innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
+.innerpart a[aria-expanded='true'] span{transform: rotate(90deg);}
 .review-list-toggler i{
     display: block;
     line-height: 33px;
