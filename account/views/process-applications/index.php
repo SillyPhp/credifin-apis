@@ -582,11 +582,11 @@ foreach ($fields as $f) {
                                   <span class="past-title">
                                     Edu
                                   </span>
-                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
+                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?> </h5>
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
-                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                            &nbsp <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
                                         ?>
