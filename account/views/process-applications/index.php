@@ -683,7 +683,7 @@ foreach ($fields as $f) {
                                         </li>
                                         <li>
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                               data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                               data-key="<?= $arr['name']; ?>" data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>" title="Chat Now"
                                                data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
