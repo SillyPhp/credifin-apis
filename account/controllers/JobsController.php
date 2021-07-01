@@ -254,13 +254,17 @@ class JobsController extends Controller
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->joinWith(['organizationEnc az'=> function($az){
                 $az->joinWith(['employerApplications b' => function ($x) {
-                    $x->select(['b.organization_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
-                    $x->joinWith(['applicationTypeEnc h' => function ($x) {
-                        $x->groupBy(['h.name']);
-                        $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                    $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                    $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                        $x2->distinct();
+                        $x2->groupBy(['h.name']);
+                        $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                     }], true);
+                    $x->groupBy(['b.application_enc_id']);
                     $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                 }], true);
+                $az->groupBy(['az.organization_enc_id']);
+                $az->distinct();
             }])
             ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
             ->groupBy(['a.followed_enc_id'])
@@ -405,7 +409,30 @@ class JobsController extends Controller
             'shortlist1' => $shortlist1,
         ]);
     }
-
+    public function actionGetFollowedCompaniesJobs(){
+        if (Yii::$app->request->isAjax & Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $org_id = Yii::$app->request->post('organization_enc_id');
+            $type = Yii::$app->request->post('type');
+            $applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.slug', 'e2.name title', 'e1.name parent_category', 'e1.icon', 'ae.name type',
+                    'CASE WHEN e1.icon IS NOT NULL THEN CONCAT("' . Url::to('@commonAssets/categories/') . '", e1.icon) ELSE NULL END icon'])
+                ->joinWith(['title e' => function ($e) {
+                    $e->joinWith(['parentEnc e1']);
+                    $e->joinWith(['categoryEnc e2']);
+                }], false)
+                ->joinWith(['applicationTypeEnc ae'], false)
+                ->where(['a.organization_enc_id' => $org_id,'a.status'=>'Active','a.is_deleted'=>0, 'a.application_for' => 1]);
+                if($type != 'all'){
+                    $applications->andWhere(['ae.name' => $type]);
+                }
+                $applications = $applications
+                ->asArray()
+                ->all();
+                return ['status'=>200,'data'=>$applications];
+        }
+    }
     public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization) {
