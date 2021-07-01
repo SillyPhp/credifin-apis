@@ -183,7 +183,7 @@ $this->params['header_dark'] = false;
                                 ?>
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
-                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>" data-img="<?= (($image) ? $image : "https://ui-avatars.com/api/?name=" . $user['first_name'] . " " . $user['last_name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $user['initials_color']) . "&color=ffffff"); ?>">
                                         <i class="fa fa-comments"></i>
                                     </a>
                                 </li>

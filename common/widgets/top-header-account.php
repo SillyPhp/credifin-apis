@@ -5,7 +5,9 @@
                 Dashboard
             </a>
         </li>
-        <?= $this->render('education-loans'); ?>
+        <?= $this->render('education-loans', [
+                'li_class'=>'ey-nav-item ey-header-item ey-header-item-is-menu'
+        ]); ?>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/account/jobs/dashboard">Manage Jobs</a>
             <i class="fa fa-caret-down" aria-hidden="true"></i>
