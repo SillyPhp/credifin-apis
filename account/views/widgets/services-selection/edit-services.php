@@ -10,6 +10,10 @@ use yii\helpers\ArrayHelper;
         'id' => 'services_form',
         'enableClientValidation' => true,
         'validateOnBlur' => false,
+        'action' => [
+            '/dashboard/services'
+        ],
+        'method' => 'post',
         'fieldConfig' => [
             'template' => "",
         ]
