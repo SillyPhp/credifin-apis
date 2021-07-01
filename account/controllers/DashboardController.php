@@ -122,19 +122,23 @@ class DashboardController extends Controller
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
                 ->joinWith(['organizationEnc az'=> function($az){
                     $az->joinWith(['employerApplications b' => function ($x) {
-                        $x->select(['b.organization_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
-                        $x->joinWith(['applicationTypeEnc h' => function ($x) {
-                            $x->groupBy(['h.name']);
-                            $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                        $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                        $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                            $x2->distinct();
+                            $x2->groupBy(['h.name']);
+                            $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                         }], true);
+                        $x->groupBy(['b.application_enc_id']);
                         $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                     }], true);
+                    $az->groupBy(['az.organization_enc_id']);
+                    $az->distinct();
                 }])
                 ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
                 ->groupBy(['a.followed_enc_id'])
                 ->distinct()
                 ->orderBy(['a.id' => SORT_DESC])
-                ->limit(8)
+                ->limit(6)
                 ->asArray()
                 ->all();
 

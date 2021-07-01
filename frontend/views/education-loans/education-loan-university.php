@@ -374,12 +374,12 @@ $this->registerCss('
 //.other-loan {
 //    padding: 20px 0 50px;
 //}
-//.loan-head, .heading-s {
-//    text-align: center;
-//    margin: 0 0 30px;
-//    font-family: lobster;
-//    font-size: 34px;
-//}
+.loan-head, .heading-s {
+    text-align: center;
+    margin: 0 0 30px;
+    font-family: lobster;
+    font-size: 34px;
+}
 //.loan-types {
 //    margin-bottom: 20px;
 //    padding: 40px;
