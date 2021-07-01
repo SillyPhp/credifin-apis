@@ -14,7 +14,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     <p>Quick Loans at affordable interest rates to cater all the financial needs of the Educators.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                        <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now">Apply Now</a></li>
+                        <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now" target="_blank">Apply Now</a></li>
                     </ul>
                 </div>
             </div>
