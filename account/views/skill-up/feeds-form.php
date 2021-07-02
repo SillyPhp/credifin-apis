@@ -76,7 +76,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group form-md-line-input form-md-floating-label">
-                                    <div class="form-group pt-20 mt-5">
+                                    <div class="form-group pt-20 mt-20">
                                         <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
                                                placeholder="Enter Source Name"/>
                                         <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
@@ -84,7 +84,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 </div>
                             </div>
                             <div class="col-md-1">
-                                <button type="button" class="btn btn-primary mt-50 modal-load-class"
+                                <button type="button" class="btn btn-primary mt-40 modal-load-class"
                                         value="/account/skill-up/add-source">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -204,11 +204,17 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.mt-20{
+    margin-top:20px;
+}
+.mt-40{
+    margin-top:40px;
+}
 .tags {
     float: left;
     width: 100%;
     border: 2px solid #e8ecec;
-    
+    list-style:none;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
@@ -467,11 +473,13 @@ body{font-family:roboto;}
 }
 #content_type > .radio label{
     padding-left: 25px;
+    display: flex;
+    align-items: center;
 }
 #content_type > .radio label input{
     width: 20px;
     height: 18px;
-    margin-top: 5px;
+    margin-top: 0px;
     margin-left: -25px;
 }
 .md-radio input[type="radio"] {
@@ -856,7 +864,7 @@ function add_tags(thisObj,tag_class,name,id,duplicates){
     if(jQuery.inArray($.trim(thisObj).toUpperCase(), duplicates) != -1) {
         alert('Already Added');
     } else {
-        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fas fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
     }
     if(document.getElementsByName('skills[]').length){
         $('#skills-field').val('done');
@@ -1019,8 +1027,15 @@ $(document).on('change','#source_url',function (e){
     });
     
     $(document).on('click','#preview-button',function(e) {
-            e.preventDefault();
-            var form = $('#feeds_form');
+        e.preventDefault();
+        $('#feeds_form').data('yiiActiveForm').submitting = true;
+        $('#feeds_form').yiiActiveForm('validate');
+        var form = $('#feeds_form');
+        setTimeout(function() {
+            if(form.find('.has-error').length) {
+                alert('Please Enter required fields');
+                return false;
+            }
             $.ajax({
                 url:'/account/skill-up/preview',
                 data:form.serialize()+ "&description=" + encodeURIComponent(description),
@@ -1033,6 +1048,7 @@ $(document).on('change','#source_url',function (e){
                    }
                 }
             });
+        }, 1000)
     })
     
     localStorage.removeItem("imgData");
