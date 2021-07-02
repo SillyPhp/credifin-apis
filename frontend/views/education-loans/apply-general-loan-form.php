@@ -65,81 +65,78 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                     </div>
                                     <span id="applicantRadio"></span>
                                 </div>
-                                        <div id="addAnotherCo">
-                                            <div class="coapplicant">
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <div class="radio-heading input-group-text">
-                                                            Relation With Student
-                                                        </div>
-                                                        <ul id="co-relation-ul-1" class="displayInline">
-                                                            <li>
-                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
-                                                                <label for="co-father-1">Father</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                                <label for="co-mother-1">Mother</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                                <label for="co-brother-1">Brother</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                                <label for="co-sister-1">Sister</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                                <label for="co-guardian-1">Guardian</label>
-                                                            </li>
-                                                        </ul>
+                                <div id="parent_co_borrower">
+                                    <div id="addAnotherCo">
+                                        <div class="coapplicant">
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Relation With Student
                                                     </div>
+                                                    <ul id="co-relation-ul-1" class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                            <label for="co-father-1">Father</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                            <label for="co-mother-1">Mother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                            <label for="co-brother-1">Brother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                            <label for="co-sister-1">Sister</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                            <label for="co-guardian-1">Guardian</label>
+                                                        </li>
+                                                    </ul>
                                                 </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <label for="co-name[]" class="input-group-text">
-                                                            Name
-                                                        </label>
-                                                        <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
-                                                    </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-name[]" class="input-group-text">
+                                                        Name
+                                                    </label>
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
                                                 </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <div class="radio-heading input-group-text">
-                                                            Employment type ?
-                                                        </div>
-                                                        <ul class="displayInline">
-                                                            <li>
-                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="sal-1">Salaried</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="self-1">Self-Employed</label>
-                                                            </li>
-                                                            <li>
-                                                                <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <label for="non-1">Non-Working</label>
-                                                            </li>
-                                                        </ul>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Employment type ?
                                                     </div>
+                                                    <ul class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="sal-1">Salaried</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="self-1">Self-Employed</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="non-1">Non-Working</label>
+                                                        </li>
+                                                    </ul>
                                                 </div>
-                                                <div class="col-md-12 padd-20">
-                                                    <div class="form-group">
-                                                        <label for="co-anualincome" class="input-group-text">
-                                                            Annual Income
-                                                        </label>
-                                                        <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
-                                                    </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-anualincome" class="input-group-text">
+                                                        Annual Income
+                                                    </label>
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="addAnotherCoButton">
-                                            <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                                <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
@@ -207,6 +204,88 @@ Yii::$app->view->registerJs('var reference = "' . $reference . '"', \yii\web\Vie
                                         </label>
                                         <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
                                                placeholder="Enter Email Address">
+                                    </div>
+                                </div>
+                                <div id="student_co_borrower">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h1 class="heading-style">Borrowers Details</h1>
+                                        </div>
+                                    </div>
+                                    <div id="addAnotherCo">
+                                        <div class="coapplicant">
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Relation With Student
+                                                    </div>
+                                                    <ul id="co-relation-ul-1" class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                            <label for="co-father-1">Father</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                            <label for="co-mother-1">Mother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                            <label for="co-brother-1">Brother</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                            <label for="co-sister-1">Sister</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                            <label for="co-guardian-1">Guardian</label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-name[]" class="input-group-text">
+                                                        Name
+                                                    </label>
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Employment type ?
+                                                    </div>
+                                                    <ul class="displayInline">
+                                                        <li>
+                                                            <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="sal-1">Salaried</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="self-1">Self-Employed</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                            <label for="non-1">Non-Working</label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-anualincome" class="input-group-text">
+                                                        Annual Income
+                                                    </label>
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="addAnotherCoButton">
+                                        <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
+                                            <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -968,7 +1047,7 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-#collegeLoanBox,#hideDiveChild,#addAnotherCo,#addAnotherCoButton{
+#collegeLoanBox,#hideDiveChild,#parent_co_borrower,#student_co_borrower{
 display:none;
 }
 ');
@@ -2065,7 +2144,11 @@ $this->registerJs($script);
             const countryName = document.getElementById('hideDiveChild');
             const schoolInfo = document.getElementById('schooInfo');
             const collegeLoanBox = document.getElementById('collegeLoanBox');
+            const ParentCoBorrower = document.getElementById('parent_co_borrower');
+            const StudentCoBorrower = document.getElementById('student_co_borrower');
             if(radioValue == '1'){
+                ParentCoBorrower.style.display = "block";
+                StudentCoBorrower.style.display = "none";
                 if (applicantRadio=='1'){
                     countryName.style.display = "block";
                     schoolInfo.innerHTML = "";
@@ -2079,7 +2162,11 @@ $this->registerJs($script);
             const countryName = document.getElementById('hideDiveChild');
             const schoolInfo = document.getElementById('schooInfo');
             const collegeLoanBox = document.getElementById('collegeLoanBox');
+            const ParentCoBorrower = document.getElementById('parent_co_borrower');
+            const StudentCoBorrower = document.getElementById('student_co_borrower');
             if(radioValue == '0'){
+                ParentCoBorrower.style.display = "none";
+                StudentCoBorrower.style.display = "block";
                 if (applicantRadio=='0') {
                     countryName.style.display = "none";
                 }
