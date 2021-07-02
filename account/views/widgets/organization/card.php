@@ -56,10 +56,10 @@ if ($organization_data) {
                                     ?>
                                     <?php
                                 }
-                                if ($for == 'all' || $for == 'Jobs') {
+                                if ($for == 'all' || $for == 'Jobs' && $jobsCount > 0) {
                                     echo '<a href="#" data-toggle="modal" data-url="Jobs" data-target="#myModal" data-type="all" data-id="' . $shortlist['organizationEnc']['employerApplications'][0]['organization_enc_id'] . '" class="job-pos getsJobsData">' . $jobsCount . ' Jobs</a>';
                                 }
-                                if ($for == 'all' || $for == 'Internships') {
+                                if ($for == 'all' || $for == 'Internships' && $internshipsCount > 0) {
                                     echo '<a href="#" data-toggle="modal" data-url="Internships" data-target="#myModal" data-type="all" data-id="' . $shortlist['organizationEnc']['employerApplications'][0]['organization_enc_id'] . '" class="job-pos getsJobsData">' . $internshipsCount . ' Internships</a>';
                                 }
                             }

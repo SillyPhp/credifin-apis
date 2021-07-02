@@ -61,10 +61,32 @@ $this->params['header_dark'] = truex;
                         <div class="row">
                             <div class="col-md-6 col-sm-6">
                                 <div class="college-main">
-                                    <div class="rank-branding">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?>"
-                                             alt="" data-toggle="tooltip" title="hello">
+                                    <div class="header-college">
+                                        <div class="carousel-wrap">
+                                            <div class="owl-carousel">
+                                                <div class="item">
+                                                    <div class="college-carousel">
+                                                        <img src="<?= Url::to('https://cracku.in/top-mba-colleges/wp-content/uploads/2018/04/VGSOM.jpg') ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <div class="college-carousel">
+                                                        <img src="<?= Url::to('http://www.iitg.ac.in/icord17/images/IITG.jpg') ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <div class="college-carousel">
+                                                        <img src="<?= Url::to('https://static.theprint.in/wp-content/uploads/2020/03/IITG.jpg') ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <!--                                    <div class="rank-branding">-->
+                                    <!--                                        <img src="-->
+                                    <? //= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?><!--"-->
+                                    <!--                                             alt="" data-toggle="tooltip" title="hello">-->
+                                    <!--                                    </div>-->
                                     <div class="use-flex">
                                         <div class="step1">
                                             <div class="ranked-first">
@@ -72,14 +94,13 @@ $this->params['header_dark'] = truex;
                                                 <p>Nirf</p>
                                             </div>
                                             <div class="rank-img">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
+                                                <img src="<?= Url::to('https://www.iitg.ac.in/core/img/iitglogo.jpg') ?>"
                                                      alt="">
                                             </div>
                                         </div>
                                         <div class="step2">
                                             <div class="rank-name">IIT Guwahati - Indian Institute of Technology</div>
                                             <div class="rank-fee">
-                                                <span>4/5 Rating</span> &nbsp &nbsp &nbsp
                                                 Fees : <span>23 lakh </span> &nbsp &nbsp &nbsp
                                                 Salary : <span>12 lakh</span>
                                             </div>
@@ -109,7 +130,6 @@ $this->params['header_dark'] = truex;
                                             </div>
                                         </div>
                                         <div class="brochure">
-                                            <a href="" class="blue-clr">Brochure</a>
                                             <a href="" class="orange-clr">Apply Education Loan</a>
                                         </div>
                                     </div>
@@ -117,10 +137,16 @@ $this->params['header_dark'] = truex;
                             </div>
                             <div class="col-md-6 col-sm-6">
                                 <div class="college-main">
-                                    <div class="rank-branding">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?>"
-                                             alt="">
+                                    <div class="header-college">
+                                        <div class="college-carousel">
+                                            <img src="<?= Url::to('https://cracku.in/top-mba-colleges/wp-content/uploads/2018/04/VGSOM.jpg') ?>">
+                                        </div>
                                     </div>
+                                    <!--                                    <div class="rank-branding">-->
+                                    <!--                                        <img src="-->
+                                    <? //= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?><!--"-->
+                                    <!--                                             alt="">-->
+                                    <!--                                    </div>-->
                                     <div class="use-flex">
                                         <div class="step1">
                                             <div class="ranked-first">
@@ -128,14 +154,15 @@ $this->params['header_dark'] = truex;
                                                 <p>Nirf</p>
                                             </div>
                                             <div class="rank-img">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
+                                                <img src="<?= Url::to('https://www.iimraipur.ac.in/IR/images/centrum.jpg') ?>"
                                                      alt="">
                                             </div>
                                         </div>
                                         <div class="step2">
-                                            <div class="rank-name">IIM Raipur - Indian Institute of Management,Chhattisgarh</div>
+                                            <div class="rank-name">IIM Raipur - Indian Institute of
+                                                Management,Chhattisgarh
+                                            </div>
                                             <div class="rank-fee">
-                                                <span>4/5 Rating</span> &nbsp &nbsp &nbsp
                                                 Fees : <span>23 lakh </span> &nbsp &nbsp &nbsp
                                                 Salary : <span>12 lakh</span>
                                             </div>
@@ -165,7 +192,7 @@ $this->params['header_dark'] = truex;
                                             </div>
                                         </div>
                                         <div class="brochure">
-                                            <a href="" class="blue-clr">Brochure</a>
+<!--                                            <a href="" class="blue-clr">Brochure</a>-->
                                             <a href="" class="orange-clr">Apply Education Loan</a>
                                         </div>
                                     </div>
@@ -173,10 +200,26 @@ $this->params['header_dark'] = truex;
                             </div>
                             <div class="col-md-6 col-sm-6">
                                 <div class="college-main">
-                                    <div class="rank-branding">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?>"
-                                             alt="">
+                                    <div class="header-college">
+                                        <div class="carousel-wrap">
+                                            <div class="owl-carousel">
+                                                <div class="item">
+                                                    <div class="college-carousel">
+                                                        <img src="<?= Url::to('https://cracku.in/top-mba-colleges/wp-content/uploads/2018/04/VGSOM.jpg') ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <div class="college-carousel">
+                                                        <img src="<?= Url::to('https://cdn1.byjus.com/wp-content/uploads/2018/11/free-cat-prep/2016/06/23113136/5.jpg') ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+<!--                                    <div class="rank-branding">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/eybrandd.png') ?><!--"-->
+<!--                                             alt="">-->
+<!--                                    </div>-->
                                     <div class="use-flex">
                                         <div class="step1">
                                             <div class="ranked-first">
@@ -184,14 +227,15 @@ $this->params['header_dark'] = truex;
                                                 <p>Nirf</p>
                                             </div>
                                             <div class="rank-img">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>"
+                                                <img src="<?= Url::to('https://som.iitkgp.ac.in/images/nirf-rank-2020.png') ?>"
                                                      alt="">
                                             </div>
                                         </div>
                                         <div class="step2">
-                                            <div class="rank-name">VGSOM IIT Kharagpur - Vinod Gupta School of Management</div>
+                                            <div class="rank-name">VGSOM IIT Kharagpur - Vinod Gupta School of
+                                                Management
+                                            </div>
                                             <div class="rank-fee">
-                                                <span>4/5 Rating</span> &nbsp &nbsp &nbsp
                                                 Fees : <span>23 lakh </span> &nbsp &nbsp &nbsp
                                                 Salary : <span>12 lakh</span>
                                             </div>
@@ -221,7 +265,7 @@ $this->params['header_dark'] = truex;
                                             </div>
                                         </div>
                                         <div class="brochure">
-                                            <a href="" class="blue-clr">Brochure</a>
+<!--                                            <a href="" class="blue-clr">Brochure</a>-->
                                             <a href="" class="orange-clr">Apply Education Loan</a>
                                         </div>
                                     </div>
@@ -235,6 +279,18 @@ $this->params['header_dark'] = truex;
     </Section>
 <?php
 $this->registerCss('
+.owl-carousel .owl-item img{width:auto !important;}
+.owl-theme .owl-dots{display:none !important;}
+.owl-controls .owl-nav > div{background:none;}
+.owl-controls .owl-prev i, .owl-controls .owl-next i{
+    font-size:35px !important;
+    color:#eee;
+}
+.college-carousel {
+    width: 100%;
+    height: 260px;
+    overflow:hidden;
+}
 .rank-data {
     background-color: #f3f9ff;
     padding: 20px;
@@ -409,9 +465,14 @@ $this->registerCss('
     text-align:center; width:100%;
     margin-top:10px;
 }
+.brochure {
+    text-align: right;
+}
 .brochure a {
+    width: 38%;
+    text-align: center;
     color: #fff;
-    padding: 4px 20px;
+    padding: 6px 20px;
     display: inline-block;
     font-family: roboto;
 }
@@ -442,3 +503,30 @@ $this->registerCss('
 .rank-flex {justify-content: center;}
 }
 ');
+$script = <<<JS
+$('.owl-carousel').owlCarousel({
+  loop: true,
+  margin: 10,
+  nav: true,
+  navText: [
+    "<i class='fa fa-caret-left'></i>",
+    "<i class='fa fa-caret-right'></i>"
+  ],
+  autoplay: true,
+  autoplayHoverPause: true,
+  responsive: {
+    0: {
+      items: 1
+    },
+    600: {
+      items: 1
+    },
+    1000: {
+      items: 1
+    }
+  }
+})
+JS;
+$this->registerjs($script);
+$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css');
+$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js');
