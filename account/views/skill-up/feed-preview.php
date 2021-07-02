@@ -30,7 +30,7 @@ $this->params['header_dark'] = true;
                         <div class="tags-list">
                             <h5 class="tag-title">Related Topic</h5> :-
                             <?php foreach ($skills as $s) { ?>
-                                <span><?= $s['skill'] ?></span>
+                                <span><?= $s ?></span>
                             <?php } ?>
                         </div>
                         <div class="vid-content">
@@ -444,8 +444,8 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-console.log($getImage);
-    if($getImage){
+console.log("$getImage");
+    if("$getImage"){
         var dataImage = localStorage.getItem('imgData');
         Img = document.getElementById('post-image');
         Img.src = dataImage;

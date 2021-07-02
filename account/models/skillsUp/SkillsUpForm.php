@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models\skillsUp;
+namespace account\models\skillsUp;
 
 use common\models\AssignedTags;
 use common\models\Authors;
