@@ -12,10 +12,9 @@ foreach ($savedApplicants['data'] as $s) { ?>
         <div class="short-main">
             <div class="flex-short">
                 <div class="short-logo">
-                    <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
-                        <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
+                    <?php if (!empty($s['image'])) { ?>
                         <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
-                            <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
+                            <img src="<?= $s['image']; ?>" width="60px" height="60" class="img-circle"/>
                         </a>
                         <?php
                     } else {
@@ -31,11 +30,9 @@ foreach ($savedApplicants['data'] as $s) { ?>
                     <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
                         <p class="short-job"><?= $s['name'] ?></p>
                     </a>
-                    <?php if($s['city']){ ?>
-                    <p class="short-name"><i class="fa fa-map-marker"></i> <?= $s['city'] ?></p>
-                    <?php } else { ?>
-                        <p class="short-name">Location Not Added</p>
-                    <?php } ?>
+                    <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>'.$s['city'].'</p>' :
+                        '<p class="shortText">location not added<p>'?>
+
                 </div>
             </div>
             <ul class="short-skills">
@@ -45,7 +42,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                         <li> <?= $skill['skill'] ?></li>
                     <?php }
                 }else { ?>
-                    <p>No Skills Added</p>
+                    <p class="shortText">No Skills Added</p>
                 <?php } ?>
             </ul>
             <div class="slide-btn">
@@ -107,6 +104,10 @@ $this->registerCss('
     border-radius: 6px;
     z-index:0;
 }
+.shortText{
+    text-transform: capitalize;
+    font-size: 13px;
+}
 .short-main:hover .remove-btn{
     opacity:1;
 }
@@ -145,6 +146,9 @@ $this->registerCss('
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+}
+.short-name i{
+    margin-right: 5px;
 }
 .remove-saved-btn{
     position: relative;
