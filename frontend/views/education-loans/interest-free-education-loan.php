@@ -158,19 +158,18 @@ use yii\helpers\Url;
                 <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="Avanse Financial Services">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="We Pay India">
                         </div>
-                        <div class="lp-name">Avanse Financial Services</div>
+                        <div class="lp-name">We Pay India</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     <div class="lp-box">
                         <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/global-logo.png') ?>"
                                  alt="InCred">
                         </div>
-                        <div class="lp-name">InCred</div>
+                        <div class="lp-name">Global Financial Services</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
@@ -229,6 +228,16 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
                             </div>
                             <p>Rayat Bahra Hoshiarpur Campus</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+<!--                        <a href="#" target="_blank">-->
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>" alt="">
+                            </div>
+                            <p>St Soldier Group Of Institutions</p>
                         </a>
                     </div>
                 </div>
