@@ -415,8 +415,7 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Permanent
-                                                    Reject</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
                                             </div>
                                         </li>
                                         <li>

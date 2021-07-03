@@ -7,10 +7,10 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6">
                     <h1>Interest Free Education Loan</h1>
-                    <p>With our <span class="mota-text">Interest Free Education Loan</span>,
-                        we will make it <span class="mota-text">simple and easier</span> for you to fulfil
-                        your <span class="mota-text">dream of studying
-                        </span> in your <span class="mota-text">desired College/University</span>.</p>
+                    <p>With our <span class="bold-font">Interest Free Education Loan</span>,
+                        we will make it <span class="bold-font">simple and easier</span> for you to fulfil
+                        your <span class="bold-font">dream of studying
+                        </span> in your <span class="bold-font">desired College/University</span>.</p>
                     <div class="apply-btn">
                     <ul>
                         <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
@@ -148,37 +148,49 @@ use yii\helpers\Url;
             </div>
             <div class="row">
                 <div class="col-md-3 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
+                    <div class="college-card">
+                        <div class="college-img">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
                         </div>
-                        <div class="lp-name">Agile Finserv</div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>Agile Finserv</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
+                    <div class="college-card">
+                        <div class="college-img">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
                                  alt="Avanse Financial Services">
                         </div>
-                        <div class="lp-name">Avanse Financial Services</div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>Avanse Financial Services</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
+                    <div class="college-card">
+                        <div class="college-img">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
                                  alt="InCred">
                         </div>
-                        <div class="lp-name">InCred</div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>InCred</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
+                    <div class="college-card">
+                        <div class="college-img">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
                         </div>
-                        <div class="lp-name">EZ Capital</div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>EZ Capital</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,44 +205,48 @@ use yii\helpers\Url;
             </div>
             <div class="row">
                 <div class="col-md-3 col-sm-4">
-                    <div class="loan-college">
-                        <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
-                            <div class="loan-college-img">
+                    <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
                             </div>
+                            <div class="img-back-partner"></div>
                             <p>GNA University</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-md-3 col-sm-4">
-                    <div class="loan-college">
-                        <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
-                            <div class="loan-college-img">
+                    <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
                             </div>
+                            <div class="img-back-partner"></div>
                             <p>Rayat Bahra University</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-md-3 col-sm-4">
-                    <div class="loan-college">
-                        <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
-                            <div class="loan-college-img">
+                    <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
                             </div>
+                            <div class="img-back-partner"></div>
                             <p>Bahra University, Shimla</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-md-3 col-sm-4">
-                    <div class="loan-college">
-                        <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
-                            <div class="loan-college-img">
+                    <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
                                 <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
                             </div>
+                            <div class="img-back-partner"></div>
                             <p>Rayat Bahra Hoshiarpur Campus</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -299,7 +315,129 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
-.mota-text{
+.college-card-partner {
+    position: relative;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    text-align: center;
+    padding: 1rem;
+    overflow: hidden;
+    transition: 300ms all linear;
+    margin-bottom: 30px;
+    background-color:#fff;
+}
+.college-img-partner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px 6px;
+    background-color: #fff;
+    z-index: 2;
+}
+.college-card-partner img {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+.img-back-partner{
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border:1px solid #91c8ff;
+  top:22%;
+  left:50%;
+  border-radius: 50%;
+  transform: translate(-50%, -38%);
+  z-index: 1;
+  transition: 300ms all linear;
+}
+
+
+//.college-card-partner:hover{
+//  transform: scale(0.9);  
+//}
+
+.college-card-partner:hover > .img-back-partner{
+ border-width: 150px; 
+}
+
+.college-card-partner p{
+  position: relative;
+  z-index: 3;
+  transition: 500ms all linear;
+  font-weight: 700;
+  line-height: 18px;
+  margin-top: 1rem;
+}
+
+.college-card-partner:hover > p{
+  color: #fff;
+}
+.college-card {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    transition: 300ms all linear;
+    background-color: #fff;
+    border-radius:4px;
+    overflow:hidden;
+}
+.college-img{
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    line-height: 65px;
+    transition: 300ms all linear;
+    overflow:hidden;
+}
+.partner-name{
+  width: fit-content;
+  position: relative;
+}
+
+.partner-name .text-effect, .text-effect-content{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #FB7D0D;
+  transition: 200ms all linear;
+  z-index: 1;
+}
+
+.college-card p {
+    text-align: left;
+    margin: 10px 0 0 0;
+    padding: 2px 15px 2px 8px;
+    position: relative;
+    z-index: 2;
+    transition: 300ms all linear;
+    font-size: 15px;
+    font-family: roboto;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.college-card:hover{
+  transform: scale(0.95);
+}
+
+.college-card:hover > .partner-name > .text-effect{
+  width: 100%;
+  transform: skewX(-17deg);
+  margin-left: -8px;
+}
+
+.college-card:hover > .partner-name > p{
+  color: #fff;
+}
+.bold-font{
     font-weight: bold;
 }
 .apply-btn {
