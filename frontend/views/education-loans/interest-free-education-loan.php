@@ -245,8 +245,18 @@ use yii\helpers\Url;
                             </div>
                             <div class="img-back-partner"></div>
                             <p>Rayat Bahra Hoshiarpur Campus</p>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="loan-college">
+<!--                        <a href="#" target="_blank">-->
+                            <div class="loan-college-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>" alt="">
+                            </div>
+                            <p>St Soldier Group Of Institutions</p>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

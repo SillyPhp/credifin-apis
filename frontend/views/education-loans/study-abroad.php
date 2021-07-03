@@ -234,8 +234,12 @@ $this->registerCss('
 	height: 100%;
 	background: rgba(0,0,0,.4);
 }
+.abroad-vector {
+    padding-left: 40px;
+}
 .abroad-vector img {
-    max-width: 115%;
+    max-width: 100%;
+    transform: scale(1.3);
 }
 .study-in-usa-bg p{
     font-size: 24px;
