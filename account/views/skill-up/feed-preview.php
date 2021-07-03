@@ -24,13 +24,13 @@ $this->params['header_dark'] = true;
                         <h3><?= $object->title ?></h3>
                         <div class="author-s margin-top-10">
                             <div class="author list-data"><i
-                                        class="fas fa-user"></i><span> <?= $object->author ?> </span></div>
-                            <div class="source"><i class="fas fa-link"></i><span> <?= $source ?> </span></div>
+                                        class="fa fa-user"></i><span> <?= $object->author ?> </span></div>
+                            <div class="source"><i class="fa fa-link"></i><span> <?= $source ?> </span></div>
                         </div>
                         <div class="tags-list">
                             <h5 class="tag-title">Related Topic</h5> :-
                             <?php foreach ($skills as $s) { ?>
-                                <span><?= $s['skill'] ?></span>
+                                <span><?= $s ?></span>
                             <?php } ?>
                         </div>
                         <div class="vid-content">
@@ -43,24 +43,24 @@ $this->params['header_dark'] = true;
                         <div class="share-social-links">
                             <a href="javascript:;" class="fb"
                                onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-facebook-f"></i></a>
+                                <i class="fa fa-facebook"></i></a>
                             <a href="javascript:;" class="wts-app"
                                onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-whatsapp"></i></a>
+                                <i class="fa fa-whatsapp"></i></a>
                             <a href="javascript:;" class="tw"
                                onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-twitter"></i></a>
+                                <i class="fa fa-twitter"></i></a>
                             <a :href="'mailto:https://myecampus.in'+this.$route.fullPath" class="male">
-                                <i class="far fa-envelope"></i></a>
+                                <i class="fa fa-envelope"></i></a>
                             <a href="javascript:;" class="fb"
                                onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-linkedin"></i></a>
+                                <i class="fa fa-linkedin"></i></a>
                             <a href="javascript:;" class="male"
                                onclick="window.open('http://pinterest.com/pin/create/link/?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-pinterest"></i></a>
+                                <i class="fa fa-pinterest"></i></a>
                             <a href="javascript:;" class="tw"
                                onclick="window.open('https://telegram.me/share/url?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
-                                <i class="fab fa-telegram"></i></a>
+                                <i class="fa fa-telegram"></i></a>
                         </div>
                         <div class="discussion-box">
                             <h3>Comments</h3>
@@ -79,32 +79,7 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="live-chat dash-inner-box nd-shadow">
-                        <h3>Chatting</h3>
-                        <div id="skillup-chat-main" class="chatting-live">
 
-                        </div>
-                        <div class="input-chat">
-                            <textarea type="text" class="form-control"></textarea>
-                            <a href="javascript:;" class="disabled">Send</a>
-                        </div>
-                    </div>
-                    <div class="related-art dash-inner-box nd-shadow">
-                        <h3>Related Articles</h3>
-                        <a href="" class="relate-box">
-                            <div class="relate-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                                     alt="your image" class="target"/>
-                            </div>
-                            <div class="relate-name">
-                                <p>title</p>
-                                <div class="author-relate">
-                                    <div class="source"><i class="fas fa-link"></i><Span>source_name</Span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -444,8 +419,8 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-console.log($getImage);
-    if($getImage){
+console.log("$getImage");
+    if("$getImage"){
         var dataImage = localStorage.getItem('imgData');
         Img = document.getElementById('post-image');
         Img.src = dataImage;

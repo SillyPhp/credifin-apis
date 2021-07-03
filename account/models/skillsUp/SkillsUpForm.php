@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models\skillsUp;
+namespace account\models\skillsUp;
 
 use common\models\AssignedTags;
 use common\models\Authors;
@@ -85,14 +85,14 @@ class SkillsUpForm extends Model
             $model = new SkillsUpPosts();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->post_enc_id = $utilitiesModel->encrypt();
-            $model->post_title = $this->title;
+            $model->post_title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
             $model->post_source_url = $this->source_url;
             $model->post_image_url = $this->image_url;
             $model->source_enc_id = $this->source_id;
             if ($this->content_type != 'Video') {
-                $model->post_description = $this->description;
+                $model->post_description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
             }
-            $model->post_short_summery = $this->short_description;
+            $model->post_short_summery = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->short_description);
             $utilitiesModel->variables['name'] = $model->post_title;
             $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
@@ -130,10 +130,10 @@ class SkillsUpForm extends Model
                     $externalNewsModel = new ExternalNewsUpdate();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $externalNewsModel->news_enc_id = $utilitiesModel->encrypt();
-                    $externalNewsModel->title = $this->title;
+                    $externalNewsModel->title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                     $externalNewsModel->link = $this->source_url;
                     $externalNewsModel->source = $source;
-                    $externalNewsModel->description = $this->description;
+                    $externalNewsModel->description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
                     $utilitiesModel->variables['name'] = $externalNewsModel->title;
                     $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
                     $utilitiesModel->variables['field_name'] = 'slug';
@@ -184,10 +184,10 @@ class SkillsUpForm extends Model
                         }
 
                         $videosModel->channel_enc_id = $channel_enc_id;
-                        $videosModel->title = $this->title;
+                        $videosModel->title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                         $videosModel->cover_image = $this->image_url;
-                        $videosModel->description = $this->description;
-                        $utilitiesModel->variables['name'] = $this->title;
+                        $videosModel->description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
+                        $utilitiesModel->variables['name'] = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                         $utilitiesModel->variables['table_name'] = LearningVideos::tableName();
                         $utilitiesModel->variables['field_name'] = 'slug';
                         $videosModel->slug = $utilitiesModel->create_slug();
@@ -255,12 +255,12 @@ class SkillsUpForm extends Model
                     $postModel = new Posts();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $postModel->post_enc_id = $utilitiesModel->encrypt();
-                    $postModel->title = $this->title;
+                    $postModel->title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                     $utilitiesModel->variables['name'] = $postModel->title;
                     $utilitiesModel->variables['table_name'] = Posts::tableName();
                     $utilitiesModel->variables['field_name'] = 'slug';
                     $postModel->slug = $utilitiesModel->create_slug();
-                    $postModel->description = $this->description;
+                    $postModel->description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
                     $meta_arr = array_unique($this->skills);
                     $meta = implode(", ", $meta_arr);
                     $meta_str = ucwords($meta);
@@ -311,7 +311,7 @@ class SkillsUpForm extends Model
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $courses->course_enc_id = $utilitiesModel->encrypt();
                     $courses->source_enc_id = $this->source_id;
-                    $courses->title = $this->title;
+                    $courses->title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                     $courses->url = $this->source_url;
                     $courses->image = $this->image_url;
                     $courses->is_paid = 0;
