@@ -779,6 +779,7 @@ body{background-color:#f9f9f9;}
 	left: -19%;
 	top: 5%;
 	width: 240px;
+	overflow:hidden;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
 //	max-width:140px;
