@@ -151,8 +151,7 @@ class JobsController extends Controller
         return $applications->getApplications($options);
     }
 
-    private function __individualDashboard()
-    {
+    private function __individualDashboard(){
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
@@ -409,6 +408,7 @@ class JobsController extends Controller
             'shortlist1' => $shortlist1,
         ]);
     }
+
     public function actionGetFollowedCompaniesJobs(){
         if (Yii::$app->request->isAjax & Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -433,8 +433,8 @@ class JobsController extends Controller
                 return ['status'=>200,'data'=>$applications];
         }
     }
-    public function actionDashboard()
-    {
+
+    public function actionDashboard(){
         if (Yii::$app->user->identity->organization) {
             return $this->__organizationDashboard();
         } else {

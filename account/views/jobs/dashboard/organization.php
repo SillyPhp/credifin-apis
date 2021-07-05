@@ -362,10 +362,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
-
                     <?= $this->render('/widgets/drop-resume/drop_resume', [
                         'data' => $primary_fields,
-
                         'type' => 'Jobs'
                     ]); ?>
 
