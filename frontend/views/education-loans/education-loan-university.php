@@ -6,16 +6,16 @@ use yii\helpers\Url;
     <section class="study-in-usa-bg">
         <div class="container">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-6">
                     <h1>Pay School / College fees MONTHLY at ZERO cost*</h1>
                     <p>Don't pay in advance for Education</p>
                     <div class="apply-btn">
                         <a href="">Apply Now</a>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="loan-side-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-ins-loan.png') ?>" alt="">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/education-loan-university.png') ?>" alt="">
                     </div>
                 </div>
             </div>
@@ -259,9 +259,9 @@ $this->registerCss('
     max-height: 600px;
 }
 .study-in-usa-bg h1 {
-	font-size: 34px;
+	font-size: 32px;
     margin-bottom: 10px;
-    margin-top: 50px;
+    margin-top: 70px;
     color: #3ab4ec;
     font-family: roboto;
     text-align: left;

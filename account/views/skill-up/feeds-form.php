@@ -76,7 +76,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group form-md-line-input form-md-floating-label">
-                                    <div class="form-group pt-20 mt-5">
+                                    <div class="form-group pt-20 mt-20">
                                         <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
                                                placeholder="Enter Source Name"/>
                                         <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
@@ -84,9 +84,9 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 </div>
                             </div>
                             <div class="col-md-1">
-                                <button type="button" class="btn btn-primary mt-50 modal-load-class"
-                                        value="/skill-up/add-source">
-                                    <i class="fas fa-plus"></i>
+                                <button type="button" class="btn btn-primary mt-40 modal-load-class"
+                                        value="/account/skill-up/add-source">
+                                    <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                             <div class="col-md-12 embed_code_field hidden">
@@ -195,8 +195,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
         <div class="modal-content">
             <div class="modal-body">
                 <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                     alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                     alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
             </div>
         </div>
     </div>
@@ -204,11 +204,17 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.mt-20{
+    margin-top:20px;
+}
+.mt-40{
+    margin-top:40px;
+}
 .tags {
     float: left;
     width: 100%;
     border: 2px solid #e8ecec;
-    
+    list-style:none;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
@@ -467,11 +473,13 @@ body{font-family:roboto;}
 }
 #content_type > .radio label{
     padding-left: 25px;
+    display: flex;
+    align-items: center;
 }
 #content_type > .radio label input{
     width: 20px;
     height: 18px;
-    margin-top: 5px;
+    margin-top: 0px;
     margin-left: -25px;
 }
 .md-radio input[type="radio"] {
@@ -730,7 +738,7 @@ var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skill-up/skill-list',
+    url:'/account/skill-up/skill-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
@@ -746,7 +754,7 @@ var languages = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skill-up/industry-list',
+    url:'/account/skill-up/industry-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-language').val();
              return settings;
@@ -762,7 +770,7 @@ var sources = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skill-up/get-sources',
+    url:'/account/skill-up/get-sources',
     prepare: function (query, settings) {
              settings.url += '?keywords=' +$('#sourceInputElem').val();
              return settings;
@@ -856,7 +864,7 @@ function add_tags(thisObj,tag_class,name,id,duplicates){
     if(jQuery.inArray($.trim(thisObj).toUpperCase(), duplicates) != -1) {
         alert('Already Added');
     } else {
-        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fas fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
     }
     if(document.getElementsByName('skills[]').length){
         $('#skills-field').val('done');
@@ -953,7 +961,7 @@ $(document).on('change','#source_url',function (e){
         $('.all-fields').removeClass('hidden');
         let url = $(this).val();
         $.ajax({
-            url:'/skill-up/validate-url',
+            url:'/account/skill-up/validate-url',
             data:{url:url},
             method:'post',
             success:function(res){
@@ -993,18 +1001,18 @@ $(document).on('change','#source_url',function (e){
                                 $('#image_url').val(imge);
                                 $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
                                 $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
-                                $('#editor').html(CKEDITOR.instances.editor.getData());
+                                $('#editor').val(CKEDITOR.instances.editor.getData());
                             }
                         });
                     }
                 } else if(res['status'] === 203){
                     $('#image_url').val(res['image']);
-                    CKEDITOR.instances.editor.setData(res['description']);
+                    CKEDITOR.instances.editor.setData("");
                     $(".target").attr("src", res['image']);
                     $('#title').val(res['title']);
                     $('#titleElem').html(res['title']);
                     $('#short_desc').val(res['description']);
-                    // $('#editor').html(CKEDITOR.instances.editor.getData());
+                    $('#editor').val("");
                 }
             }
         })
@@ -1019,20 +1027,28 @@ $(document).on('change','#source_url',function (e){
     });
     
     $(document).on('click','#preview-button',function(e) {
-            e.preventDefault();
-            var form = $('#feeds_form');
+        e.preventDefault();
+        $('#feeds_form').data('yiiActiveForm').submitting = true;
+        $('#feeds_form').yiiActiveForm('validate');
+        var form = $('#feeds_form');
+        setTimeout(function() {
+            if(form.find('.has-error').length) {
+                alert('Please Enter required fields');
+                return false;
+            }
             $.ajax({
-                url:'/skill-up/preview',
+                url:'/account/skill-up/preview',
                 data:form.serialize()+ "&description=" + encodeURIComponent(description),
                 method:'post',
                 success: function(data) {
                    if(data['status'] === 200){
-                       window.open("/skill-up/feed-preview?id="+data['id']);
+                       window.open("/account/skill-up/feed-preview?id="+data['id']);
                    }else{
                        toastr.error(response.message, 'error'); 
                    }
                 }
             });
+        }, 1000)
     })
     
     localStorage.removeItem("imgData");
