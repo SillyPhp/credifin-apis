@@ -22,6 +22,7 @@ use Yii;
  *
  * @property AssignedCollegeCourses $assignedCourse
  * @property Users $createdBy
+ * @property CollegeScholarships $scholarshipEnc
  */
 class CollegeAdmissionDetail extends \yii\db\ActiveRecord
 {
@@ -47,6 +48,7 @@ class CollegeAdmissionDetail extends \yii\db\ActiveRecord
             [['admission_detail_enc_id'], 'unique'],
             [['assigned_course_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCollegeCourses::className(), 'targetAttribute' => ['assigned_course_id' => 'assigned_college_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['scholarship_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeScholarships::className(), 'targetAttribute' => ['scholarship_enc_id' => 'college_scholarship_enc_id']],
         ];
     }
 
@@ -64,5 +66,13 @@ class CollegeAdmissionDetail extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScholarshipEnc()
+    {
+        return $this->hasOne(CollegeScholarships::className(), ['college_scholarship_enc_id' => 'scholarship_enc_id']);
     }
 }

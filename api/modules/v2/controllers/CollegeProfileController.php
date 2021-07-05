@@ -1978,7 +1978,7 @@ class CollegeProfileController extends ApiBaseController
 
             if (isset($params['duration']) && !empty($params['duration'])) {
                 $assignedCourse = AssignedCollegeCourses::findOne(['assigned_course_id' => $params['college_course_id']]);
-                $assignedCourse->duration ='';
+                $assignedCourse->duration = '';
             }
 
             if ($admissionDetail) {
@@ -1998,6 +1998,35 @@ class CollegeProfileController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetAdmissionCourses()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $courses = AssignedCollegeCourses::find()
+                ->alias('a')
+                ->select(['a.assigned_college_enc_id', 'a.course_enc_id', 'b.course_name', 'a.course_duration', 'b1.course_name stream',
+                    'c.selection_process', 'c.eligibility_criteria', 'c.other_details', 'c.fees', 'c.assigned_course_id', 'c.scholarship_enc_id', 'c1.title scholarship_title'])
+                ->joinWith(['courseEnc b' => function ($b) {
+                    $b->joinWith(['parentEnc b1']);
+                }], false)
+                ->joinWith(['collegeAdmissionDetails c' => function ($c) {
+                    $c->joinWith(['scholarshipEnc c1']);
+                }], false)
+                ->where(['a.organization_enc_id' => $this->getOrgId(), 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($courses) {
+                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
