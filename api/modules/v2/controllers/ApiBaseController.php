@@ -37,9 +37,9 @@ class ApiBaseController extends Controller
 
         $this->setHeader($code);
 
-//        return $response;
-        echo json_encode($response);
-        die();
+        return $response;
+//        echo json_encode($response);
+//        die();
     }
 
     private function getStatusCodeMessage($status)
