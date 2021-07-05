@@ -7,7 +7,7 @@ use yii\helpers\Url;
     <div class="col-md-12">
         <div class="loan-app-main">
             <div class="loan-mail-logo">
-                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check-mail.png') ?>">
+                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/loan-complete.png') ?>">
             </div>
             <div class="loan-text-data">
                 <div class="upper-loan">
@@ -40,6 +40,7 @@ $this->registerCss('
 }
 .loan-text-data {
     flex-basis: 65%;
+    margin-left: 50px;
 }
 .upper-loan img {
     width: 70px;
@@ -70,5 +71,21 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
     font-size: 18px;
+}
+@media screen and (max-width: 768px) {
+    .loan-app-main{
+        flex-direction: column;
+        text-align: center;
+    }
+    .loan-mail-logo{
+        order: 2;
+        margin-top: 20px;
+    }
+    .loan-mail-logo img{
+        max-width: 200px;
+    }
+    .loan-text-data{
+        margin-left: 0px; 
+    }
 }
 ');
