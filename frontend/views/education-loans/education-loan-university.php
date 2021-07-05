@@ -247,16 +247,11 @@ $this->registerCss('
 }
 .marg-top{margin-top:50px;}
 .study-in-usa-bg {
-//	background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: top right;
 	display: flex;
 	align-items: center;
 	position: relative;
 	text-align: center;
-    height: 80vh;
-    max-height: 600px;
+    min-height: 550px;
 }
 .study-in-usa-bg h1 {
 	font-size: 32px;
@@ -288,9 +283,11 @@ $this->registerCss('
     color: #ffffff;
     border: none;
     outline: none;
+    display:inline-block;
 }
 .loan-side-img img {
     width: 100%;
+    margin:20px 0;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -495,9 +492,17 @@ $this->registerCss('
 }
 }
 @media screen and (max-width: 515px) and (min-width: 300px) {
-.branding-logo{position:relative;}
+.branding-logo{
+    position:relative;
+    }
 .marg-top {
     margin-top: 0px;
-}
+    }
+.education-overview{
+    background-position: top left;
+    }
+.education-wrap h1, .table-head{
+    font-size:24px;
+    }
 }
 ');
