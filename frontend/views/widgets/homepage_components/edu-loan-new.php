@@ -89,7 +89,7 @@ $this->registerCss('
     overflow: hidden;
 }
 .heading-data-set {
-	padding: 40px 0 35px;
+	padding: 60px 0 35px;
 }
 .m0{
     margin-left: 0px;
