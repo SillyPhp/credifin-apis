@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <section class="study-in-usa-bg">
         <div class="study-overlay"></div>
@@ -12,10 +14,10 @@ use yii\helpers\Url;
                         your <span class="bold-font">dream of studying
                         </span> in your <span class="bold-font">desired College/University</span>.</p>
                     <div class="apply-btn">
-                    <ul>
-                        <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
-                        <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                    </ul>
+                        <ul>
+                            <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
+                            <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -27,20 +29,22 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-5 tac">
                     <div class="whystudy">
-                        <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free-lon.png')?>" alt="">
+                        <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free-lon.png') ?>" alt="">
                     </div>
                 </div>
                 <div class="col-md-7">
                     <h3 class="heading-style">Why Interest Free Education Loan?</h3>
                     <p class="why-des">Going for an Education Loan lowers down the burden on your family savings.
                         On the same hand, think of an education loan that is <span class="org">INTEREST FREE</span>.
-                        At EmpowerYouth, we have come up with Interest Free Education Loan to meet all your financial needs
+                        At EmpowerYouth, we have come up with Interest Free Education Loan to meet all your financial
+                        needs
                         and help you get your dream education.</p>
                     <div class="row">
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-loan.png')?>" alt="quick-loan">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/quick-loan.png') ?>"
+                                         alt="quick-loan">
                                 </div>
                                 <div class="opp-txt"> Quick & Simple Loan Process</div>
                             </div>
@@ -48,15 +52,17 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/less-paperwork.png')?>" alt="less-paperwork">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/less-paperwork.png') ?>"
+                                         alt="less-paperwork">
                                 </div>
-                                <div class="opp-txt">Minimal Amount Of Paperwork </div>
+                                <div class="opp-txt">Minimal Amount Of Paperwork</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/tracking.png')?>" alt="tracking">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/tracking.png') ?>"
+                                         alt="tracking">
                                 </div>
                                 <div class="opp-txt"> Live Tracking of Loan Application</div>
                             </div>
@@ -64,7 +70,8 @@ use yii\helpers\Url;
                         <div class="col-md-3 col-sm-3">
                             <div class="opportunity">
                                 <div class="opp-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free.png')?>" alt="interest-free">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/interest-free.png') ?>"
+                                         alt="interest-free">
                                 </div>
                                 <div class="opp-txt"> Any Semester Interest Free Loan</div>
                             </div>
@@ -132,7 +139,8 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="partner-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/partner-loan-icon.png') ?>" alt="">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/partner-loan-icon.png') ?>"
+                             alt="">
                     </div>
                 </div>
             </div>
@@ -161,24 +169,24 @@ use yii\helpers\Url;
                 <div class="col-md-3 col-sm-3">
                     <div class="college-card">
                         <div class="college-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="Avanse Financial Services">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>"
+                                 alt="we pay">
                         </div>
                         <div class="partner-name">
                             <div class="text-effect"></div>
-                            <p>Avanse Financial Services</p>
+                            <p>We Pay India</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-3">
                     <div class="college-card">
                         <div class="college-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
-                                 alt="InCred">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/global-logo.png') ?>"
+                                 alt="global financial services">
                         </div>
                         <div class="partner-name">
                             <div class="text-effect"></div>
-                            <p>InCred</p>
+                            <p>Global Financial Services</p>
                         </div>
                     </div>
                 </div>
@@ -245,40 +253,42 @@ use yii\helpers\Url;
                             </div>
                             <div class="img-back-partner"></div>
                             <p>Rayat Bahra Hoshiarpur Campus</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-md-3 col-sm-4">
-                    <div class="loan-college">
-<!--                        <a href="#" target="_blank">-->
-                            <div class="loan-college-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>" alt="">
+                    <a href="#" target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
+                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>"
+                                     alt="">
                             </div>
+                            <div class="img-back-partner"></div>
                             <p>St Soldier Group Of Institutions</p>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 <?php
-if($blogs['blogs']){
-    echo $this->render('/widgets/education-loan/blogs',[
+if ($blogs['blogs']) {
+    echo $this->render('/widgets/education-loan/blogs', [
         'blogs' => $blogs,
         'param' => 'interest-free'
     ]);
 };
 ?>
-<?= $this->render('/widgets/loan-form-detail',[
+<?= $this->render('/widgets/loan-form-detail', [
     'model' => $model
 ]); ?>
 
-<?= $this->render('/widgets/press-releasee',[
+<?= $this->render('/widgets/press-releasee', [
     'data' => $data,
     'viewBtn' => true,
 ]) ?>
 
-<section class="">
+    <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
             <div class="row">
@@ -313,8 +323,10 @@ if($blogs['blogs']){
                                     alt=""/> Chat With Us
                         </div>
                         <div class="chat">
-                            <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>
-                            <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i class="fab fa-telegram-plane"></i>  Telegram</a></div>
+                            <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888"
+                                                      target="_blank"><i class="fab fa-whatsapp"></i> Whatsapp</a></div>
+                            <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i
+                                            class="fab fa-telegram-plane"></i> Telegram</a></div>
                         </div>
                     </div>
                 </div>
