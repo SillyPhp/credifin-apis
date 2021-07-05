@@ -179,6 +179,11 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <?= $this->render('/widgets/loan-applied') ?>
+    </div>
+
 <?php
     if($viewed == 0){
 ?>
