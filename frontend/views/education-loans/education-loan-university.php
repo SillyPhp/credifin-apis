@@ -342,9 +342,9 @@ $this->registerCss('
 }
 .benefit-bg {
     background-color: #edf4fc;
+    padding:30px 0;
 }
 .bene-img {
-    padding: 15px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -353,20 +353,31 @@ $this->registerCss('
     margin-bottom: 8px;
     width: 90px;
     height: 90px;
-    color: #fff;
-    background-color: #00a0e3;
+    color: #00a0e3;
+    border: 6px solid #00a0e3;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 50%;
     margin: 0 auto;
-    box-shadow: 0 0 15px 0px rgb(0 0 0 / 50%);
+    position:relative;
+    box-shadow: inset 2px 2px 8px 0px #696969;
+}
+.bene-img i:after{
+    content: "";
+    left: 32px;
+    bottom: -22px;
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-right: 15px solid #00A0E3;
+    border-bottom: 10px solid transparent;
+    transform: rotate(-90deg);
 }
 .bene-img p {
     font-size: 14px;
     font-family: roboto;
     font-weight: 500;
-    margin: 20px 0 0;
+    margin: 25px 0 0;
 }
 //.other-loan {
 //    padding: 20px 0 50px;
