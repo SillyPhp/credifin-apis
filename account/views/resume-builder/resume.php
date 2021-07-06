@@ -513,7 +513,7 @@ function random_color()
                                 <div class="row" style="margin-top: 30px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
-                                        <div class="rounded-experience-period">
+                                        <div class="rounded-experience-period border-rad">
                                             <canvas class="user-icon company-logo" name="<?= $ex['company']; ?>" width="100" height="100" color="" font="50px"></canvas>
                                         </div>
                                     </div>
@@ -1486,6 +1486,7 @@ $('#update_school').typeahead(null, {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.border-rad canvas{border-radius:50%;}
 .pre-btn {
     text-align: center;
     padding-top: 10px;
@@ -1733,7 +1734,7 @@ ul.widget-todo-list li label.line-through span {
     border-radius: 100%;
     margin: auto;
     overflow:hidden;
-    box-shadow: 2px 2px 6px #333;
+    box-shadow: 0 0px 8px 1px #999;
 }
 .experience-title{
     font-size: 58px;
