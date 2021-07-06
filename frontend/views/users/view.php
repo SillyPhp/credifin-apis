@@ -457,7 +457,7 @@ $this->params['header_dark'] = false;
                 <div class="col-md-4">
                     <div class="row">
                         <div class="col-lg-12 col-xs-12 col-sm-12">
-                            <div class="portlet light margin-top-40">
+                            <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
                                         <?php
@@ -481,8 +481,8 @@ $this->params['header_dark'] = false;
                                                 </div>
                                                 <div class="mt-comment-body">
                                                     <div class="mt-comment-info">
-                                                        <span class="mt-comment-author"><?= $data['category'] ?></span>
-                                                        <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                        <span class="mt-comment-author"><?= $data['category'] ?> (<?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?>)</span>
+<!--                                                        <span class="mt-comment-date">< (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>-->
                                                     </div>
                                                     <div class="mt-comment-text"> <?= $data['parent'] ?></div>
                                                 </div>
