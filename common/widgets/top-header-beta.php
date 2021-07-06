@@ -533,7 +533,7 @@ $this->registerCss('
     left: 50%;
     position: absolute;
     right: 0;
-    top: 63px;
+    top: 62px;
     z-index: 4;
     height:0px;
     width: 100vw;
