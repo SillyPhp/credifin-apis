@@ -93,7 +93,7 @@ $this->registerCss("
     position:fixed;
     bottom:10px;
     right:30px;
-    z-index:1;
+    z-index:999;
 }
 #chat-icon button{
     background:none;
