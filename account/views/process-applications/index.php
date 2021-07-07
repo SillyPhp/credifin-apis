@@ -539,25 +539,24 @@ foreach ($fields as $f) {
                                                     break;
                                                 }
                                             }
-                                        }
-                                        ?>
-                                        <?php
-                                        $crexperience = [];
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 1) {
-                                                array_push($crexperience, $exp);
-                                            }
-                                        }
-                                        if (count($crexperience) > 1) {
-                                            ?>
-                                            <div class="all-data">
-                                                <?php
-                                                foreach ($crexperience as $exp) {
-                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+
+                                            $crexperience = [];
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    array_push($crexperience, $exp);
                                                 }
+                                            }
+                                            if (count($crexperience) > 1) {
                                                 ?>
-                                            </div>
-                                            <?php
+                                                <div class="all-data">
+                                                    <?php
+                                                    foreach ($crexperience as $exp) {
+                                                        echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                                <?php
+                                            }
                                         }
                                         ?>
                                     </div>
