@@ -275,8 +275,9 @@ $this->registerCss('
     padding-top: 90px;
 }
 .india-vector img {
-    width: 115%;
+    width: 100%;
     max-width: 600px;
+    transform: scale(1.3);
 }
 .footer{
     margin-top: 0px !important;

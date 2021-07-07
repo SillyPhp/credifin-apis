@@ -32,10 +32,15 @@ class ReviewCardsMod
         if (Yii::$app->user->identity->user_enc_id) {
             $is_login = 1;
         }
+        $is_org = 1;
+        if(Yii::$app->user->identity->organization){
+            $is_org = "";
+        }
+
         $q1 = Organizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "1" as is_claimed'), '(CASE
+            ->select([new Expression('"' . $is_login . '" as login'), new Expression ('"'. $is_org .'" as is_org'), new Expression(' "1" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -119,7 +124,7 @@ class ReviewCardsMod
         $q2 = UnclaimedOrganizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "0" as is_claimed'), '(CASE
+            ->select([new Expression('"' . $is_login . '" as login'), new Expression ('"'. $is_org .'" as is_org'), new Expression(' "0" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -206,7 +211,7 @@ class ReviewCardsMod
         $data = array_merge($data, $q2);
         return [
             'total' => $count,
-            'cards' => $data
+            'cards' => $data,
         ];
     }
 

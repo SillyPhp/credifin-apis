@@ -33,11 +33,11 @@ class StoriesImageScript extends Widget
         {
             if (isset($this->content['is_govt_job'])&&$this->content['is_govt_job']==true){
                 $update = Yii::$app->db->createCommand()
-                    ->update(IndianGovtJobs::tableName(), ['square_image' => 'square-'.$this->content['app_id'].'.png'], ['job_enc_id' => $this->content['app_id']])
+                    ->update(IndianGovtJobs::tableName(), ['story_image' => 'story-'.$this->content['app_id'].'.png'], ['job_enc_id' => $this->content['app_id']])
                     ->execute();
             }else{
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmployerApplications::tableName(), ['square_image' => 'square-'.$this->content['app_id'].'.png'], ['application_enc_id' => $this->content['app_id']])
+                    ->update(EmployerApplications::tableName(), ['story_image' => 'story-'.$this->content['app_id'].'.png'], ['application_enc_id' => $this->content['app_id']])
                     ->execute();
             }
             return $results['url'];

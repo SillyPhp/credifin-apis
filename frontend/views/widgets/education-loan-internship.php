@@ -15,7 +15,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6 text-center">
                 <div class="internshipHeading">
-                    <a href="https://www.empoweryouth.com/internship/marketing-education-loan-28751616658499">Apply Now</a>
+                    <a href="https://www.empoweryouth.com/internship/marketing-education-loan-28751616658499" target="_blank">Apply Now</a>
                 </div>
             </div>
         </div>

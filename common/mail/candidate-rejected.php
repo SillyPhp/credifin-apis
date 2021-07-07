@@ -177,7 +177,7 @@ img + div{
             <p>With a heavy heart, we wanted to let you know that <span class="darktext">we have chosen to move forward with a different candidate</span> for the [Job_title] position.</p>
         </div>
         <div class="job-img">
-            <img src="https://www.empoweryouth.com/assets/themes/email/images/k4x1rvbEZd3yl59L1bgjRaY7p5gXMV.png">
+            <img src="https://www.empoweryouth.com/assets/themes/email/images/6mMpL8zN9QqG9KeNwlbkoAxKOrBbnw.png">
         </div>
         <div class="content">
             <p>We appreciate all you efforts but the skill set that you have does not fit well with this job role. Below, <span class="darktext">keeping your skill set in mind</span>, we are listing some <span class="darktext">similar jobs where you can apply</span>.</p>

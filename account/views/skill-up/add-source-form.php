@@ -8,7 +8,7 @@ use yii\bootstrap\ActiveForm;
 ?>
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title"><?= Yii::t('frontend', 'Add New Source'); ?></h4>
+        <h4 class="modal-title"><?= Yii::t('account', 'Add New Source'); ?></h4>
     </div>
 <?php
 $eform = ActiveForm::begin([
@@ -19,23 +19,23 @@ $eform = ActiveForm::begin([
 ]);
 ?>
     <div class="row pt-20">
-        <!--        <div class="col-md-5">-->
-        <!--            <div class="office-gallery">-->
-        <!--                <div class="g-image-preview">-->
-        <!--                    <div id="employeeImagePreview"-->
-        <!--                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--                <div class="g-image-edit">-->
-        <!--                    --><? //= $eform->field($addSourceForm, 'image', [
-        //                        'template' => '{error}{input}',
-        //                        ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
-        //                    ?>
-        <!--                    <label for="employeeImageUpload">Select Image</label>-->
-        <!--                    <p class="ot-image help-block help-block-error"></p>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="col-md-5">
+            <div class="office-gallery">
+                <div class="g-image-preview">
+                    <div id="employeeImagePreview"
+                         style="background-image: url('https://via.placeholder.com/200x200?text=Logo');">
+                    </div>
+                </div>
+                <div class="g-image-edit">
+                    <?= $eform->field($addSourceForm, 'image', [
+                        'template' => '{error}{input}',
+                    ])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                    ?>
+                    <label for="employeeImageUpload">Select Image</label>
+                    <p class="ot-image help-block help-block-error"></p>
+                </div>
+            </div>
+        </div>
         <div class="col-md-7">
             <div class="col-md-12">
                 <?= $eform->field($addSourceForm, 'source_name')->textInput(['class' => 'capitalize form-control']); ?>
@@ -153,7 +153,7 @@ $(document).on('submit', '#add_source', function(event) {
     }
     btn.data('requestRunning', true);
     $.ajax({
-        url: "/skills-up/add-source",
+        url: "/account/skill-up/add-source",
         method: "POST",
         data: new FormData(this),
         contentType: false,
@@ -170,11 +170,9 @@ $(document).on('submit', '#add_source', function(event) {
             if (response.status === 200) {
                 toastr.success(response.message, response.title);
                 var mySelect = $('#source_id');
-                mySelect.append(
-                    $('<option></option>').val(response.id).html(response.val)
-                );
-                
-                $("#source_id option[value="+response.id+"]").prop("selected", true)
+                var source_text = $('#sourceInputElem');
+                mySelect.attr('value',response.id);
+                source_text.val(response.val);
                 
             } else if(response.status === 201) {
                 toastr.error(response.message, response.title);

@@ -107,7 +107,7 @@ $this->registerCss('
     margin:10px 0;
     padding: 6px 12px;  
 }
-.hr-com-field{height:21px;}
+.hr-com-field{height:22px;}
 .opening-txt {
     padding-top: 2px;
     padding-bottom: 10px;

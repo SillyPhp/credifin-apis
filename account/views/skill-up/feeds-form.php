@@ -46,135 +46,99 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <?= $form->field($model, 'image_url')->hiddenInput(['id' => 'image_url'])->label(false); ?>
                     <div class="feeds-data row">
                         <div class="col-md-12">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
                             <div class="content-t">Content Type</div>
-                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Course' => 'Course'])->label(false); ?>
+                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast'])->label(false); ?>
                         </div>
-                        <div class="col-md-12 mb-30">
-                            <div class="content-t mb-20">Cover Image</div>
-                            <div id="image-preview">
-                                <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
-                                     class="target set-w"/>
-                            </div>
-                            <div class="custom-file">
-                                <label class="custom-file-label" for="file">Choose Image</label>
-                                <?= $form->field($model, 'image')->fileInput(['id' => 'file', 'class' => 'imgInp custom-file-input'])->label(false) ?>
+                        <div class="source-field hidden">
+                            <div class="col-md-12">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <div class="default text">&nbsp;</div>
-                                <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
+                        <div class="all-fields hidden">
+                            <div class="col-md-12 mb-30">
+                                <div class="content-t mb-20">Cover Image</div>
+                                <div id="image-preview">
+                                    <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
+                                         class="target set-w"/>
+                                </div>
+                                <div class="custom-file">
+                                    <label class="custom-file-label" for="file">Choose Image</label>
+                                    <?= $form->field($model, 'image')->fileInput(['id' => 'file', 'class' => 'imgInp custom-file-input'])->label(false) ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <div class="default text">Select Source</div>
-                                <?php echo $form->field($model, 'source_id')->dropDownList(
-                                    $source_list,
-                                    ['prompt' => 'Choose...']
-                                )->label(false); ?>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <div class="default text">&nbsp;</div>
+                                    <?= $form->field($model, 'title')->textInput(['placeholder' => 'Title', 'class' => 'form-control setResult', 'targetElem' => 'titleElem'])->label(false); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-primary mt-50 modal-load-class"
-                                    value="/skills-up/add-source">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
+                            <div class="col-md-5">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <div class="form-group pt-20 mt-20">
+                                        <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
+                                               placeholder="Enter Source Name"/>
+                                        <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-primary mt-40 modal-load-class"
+                                        value="/account/skill-up/add-source">
+                                    <i class="fa fa-plus"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <?= $form->field($model, 'short_description')->textInput(['placeholder' => 'Short Description', 'class' => 'form-control', 'id' => 'short_desc'])->label(false); ?>
+                            <div class="col-md-12 embed_code_field hidden">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
-                            <div class="pf-field no-margin">
-                                <ul class="tags skill_tag_list">
-                                    <li class="tagAdd taglist">
-                                        <div class="skill_wrapper">
-                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" id="search-skill" class="skill-input">
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'author')->textInput(['placeholder' => 'Author', 'class' => 'form-control setResult', 'targetElem' => 'authorElem'])->label(false); ?>
+                                </div>
                             </div>
-                            <!--                            --><? //= $form->field($model, 'skills')->widget(Select2::classname(), [
-                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a skills ...', 'class' => 'form-control'],
-                            //                                'pluginOptions' => [
-                            ////                                    'allowClear' => true,
-                            ////                                    'minimumInputLength' => 1,
-                            //                                    'language' => [
-                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                            //                                    ],
-                            //                                    'ajax' => [
-                            //                                        'url' => '/skills-up/skill-list',
-                            //                                        'dataType' => 'json',
-                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                            //                                    ],
-                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            //                                    'templateResult' => new JsExpression('function(data) { return data.text; }'),
-                            //                                    'templateSelection' => new JsExpression('function (data) { return data.text; }'),
-                            //                                ],
-                            //                            ]); ?>
-
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
-                            <div class="pf-field no-margin">
-                                <ul class="tags languages_tag_list">
-                                    <li class="tagAdd taglist">
-                                        <div class="language_wrapper">
-                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" id="search-language"
-                                                   class="skill-input lang-input">
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input form-md-floating-label">
+                                    <?= $form->field($model, 'short_description')->textInput(['placeholder' => 'Short Description', 'class' => 'form-control', 'id' => 'short_desc'])->label(false); ?>
+                                </div>
                             </div>
-
-                            <!--                            --><? //= $form->field($model, 'industry')->widget(Select2::classname(), [
-                            ////                                'data' => $data,
-                            //                                'options' => ['multiple' => true, 'placeholder' => 'Search for a industry ...', 'class' => 'form-control'],
-                            //                                'pluginOptions' => [
-                            ////                                    'allowClear' => true,
-                            ////                                    'minimumInputLength' => 2,
-                            //                                    'multiple' => true,
-                            //                                    'language' => [
-                            //                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                            //                                    ],
-                            //                                    'ajax' => [
-                            //                                        'url' => '/skills-up/industry-list',
-                            //                                        'dataType' => 'json',
-                            //                                        'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                            //                                        'cache' => true
-                            //                                    ],
-                            //                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                            //                                ],
-                            //                            ]);
-                            //                            ?>
-                        </div>
-                        <div class="col-md-12 mt-20 mb-30">
-                            <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="submit-b">
-                                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
-                                <a href="javascript:;" id="preview-button">PREVIEW</a>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags skill_tag_list">
+                                        <li class="tagAdd taglist">
+                                            <div class="skill_wrapper">
+                                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-skill" class="skill-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags languages_tag_list">
+                                        <li class="tagAdd taglist">
+                                            <div class="language_wrapper">
+                                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-language"
+                                                       class="skill-input lang-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20 mb-30">
+                                <?= $form->field($model, 'description')->textArea(['placeholder' => 'Description', 'class' => 'form-control', 'id' => 'editor'])->label(false); ?>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="submit-b">
+                                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
+                                    <a href="javascript:;" id="preview-button">PREVIEW</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -231,8 +195,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
         <div class="modal-content">
             <div class="modal-body">
                 <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                     alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                     alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
             </div>
         </div>
     </div>
@@ -240,11 +204,17 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.mt-20{
+    margin-top:20px;
+}
+.mt-40{
+    margin-top:40px;
+}
 .tags {
     float: left;
     width: 100%;
     border: 2px solid #e8ecec;
-    
+    list-style:none;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
@@ -503,11 +473,13 @@ body{font-family:roboto;}
 }
 #content_type > .radio label{
     padding-left: 25px;
+    display: flex;
+    align-items: center;
 }
 #content_type > .radio label input{
     width: 20px;
     height: 18px;
-    margin-top: 5px;
+    margin-top: 0px;
     margin-left: -25px;
 }
 .md-radio input[type="radio"] {
@@ -736,14 +708,37 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
     font-size: 14px;
     cursor: pointer;
 }
+.twitter-typeahead{
+    width: 100%;
+}
 ');
 $script = <<<JS
+$(document).on('change','input[name=content_type]', function(e) {
+    $('.source-field').removeClass('hidden');
+    if($(this).val() != 'Video'){
+        $('.embed_code_field').removeClass('hidden');
+    } else {
+        $('.embed_code_field').addClass('hidden');
+    }
+})
+$(document).on('keypress','#search-skill',function(e){
+    if(e.which==13) {
+        e.preventDefault();
+    }
+});
+$(document).on('keyup','#search-skill',function(e){
+    if(e.which==13 && $(this).val()) {
+        e.preventDefault();
+      add_tags($(this).val(),'skill_tag_list','skills',$(this).val());  
+    }
+});
 var global = [];
+var global2 = [];
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skills-up/skill-list',
+    url:'/account/skill-up/skill-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
@@ -759,7 +754,7 @@ var languages = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/skills-up/industry-list',
+    url:'/account/skill-up/industry-list',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-language').val();
              return settings;
@@ -770,7 +765,39 @@ var languages = new Bloodhound({
         }
   }
 });    
+
+var sources = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/account/skill-up/get-sources',
+    prepare: function (query, settings) {
+             settings.url += '?keywords=' +$('#sourceInputElem').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+                global2 = list.sources;
+             return list.sources;
+        }
+  }
+});    
             
+var sourceElem = $('#sourceInputElem').typeahead(null, {
+  name: 'source_enc_id',
+  display: 'name',
+  source: sources,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+    // $('.language_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+   // $('.language_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      $('#source_id').val(datum.source_enc_id)
+  }).blur(validateSelection2);
+   // });
+
 var language_type = $('#search-language').typeahead(null, {
   name: 'id',
   display: 'text',
@@ -799,6 +826,20 @@ function validateSelection() {
     global = [];
   }
 }
+
+function validateSelection2() {
+  var theIndex = -1;
+  for (var i = 0; i < global2.length; i++) {
+    if (global2[i].name == $(this).val()) {
+        theIndex = i;
+        break;
+    }
+  }
+  if (theIndex == -1) {
+    $(this).val("");
+    $('#source_id').val("");
+  }
+}
 var skill_type = $('#search-skill').typeahead(null, {
   name: 'id',
   display: 'text',
@@ -809,7 +850,7 @@ var skill_type = $('#search-skill').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
      $('.skill_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum){
-      add_tags(datum.text,'skill_tag_list','skills',datum.id);
+      add_tags(datum.text,'skill_tag_list','skills',datum.text);
       skill_type.typeahead('val','');
    }).blur(validateSelection);
 
@@ -823,7 +864,7 @@ function add_tags(thisObj,tag_class,name,id,duplicates){
     if(jQuery.inArray($.trim(thisObj).toUpperCase(), duplicates) != -1) {
         alert('Already Added');
     } else {
-        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fas fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+        $('<li class="addedTag">' + thisObj + '<span class="tagRemove '+name+'remove" onclick="$(this).parent().remove();"><i class="fa fa-times"></i></span><input type="hidden" value="' + id + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
     }
     if(document.getElementsByName('skills[]').length){
         $('#skills-field').val('done');
@@ -906,12 +947,21 @@ $(document).on('change','select[name="source_id"]',function() {
         url(this);
     });
 
+function validURL(str) {
+  var regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+  return regexp.test(str);
+}
 
 $(document).on('change','#source_url',function (e){
         e.preventDefault();
+        if(!validURL($(this).val())){
+            alert('Invalid URL');
+            return false;
+        }
+        $('.all-fields').removeClass('hidden');
         let url = $(this).val();
         $.ajax({
-            url:'/skills-up/validate-url',
+            url:'/account/skill-up/validate-url',
             data:{url:url},
             method:'post',
             success:function(res){
@@ -934,7 +984,9 @@ $(document).on('change','#source_url',function (e){
                                         $(this).prop('checked',true);
                                     }
                                 })
+                                $('.embed_code_field').addClass('hidden');
                                 $('#sourceElem').html('Youtube');
+                                $('#sourceInputElem').val('Youtube');
                                 $('#channel_id').val(snippet['channelId']);
                                 $('#channel_name').val(snippet['channelTitle']);
                                 $('#author').val(snippet['channelTitle']);
@@ -947,11 +999,20 @@ $(document).on('change','#source_url',function (e){
                                 // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
                                 $(".target").attr("src", imge);
                                 $('#image_url').val(imge);
-                                $('#short_desc').val(snippet['description'].substr(0,200) + '...');
+                                $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
                                 $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
+                                $('#editor').val(CKEDITOR.instances.editor.getData());
                             }
                         });
                     }
+                } else if(res['status'] === 203){
+                    $('#image_url').val(res['image']);
+                    CKEDITOR.instances.editor.setData("");
+                    $(".target").attr("src", res['image']);
+                    $('#title').val(res['title']);
+                    $('#titleElem').html(res['title']);
+                    $('#short_desc').val(res['description']);
+                    $('#editor').val("");
                 }
             }
         })
@@ -966,20 +1027,28 @@ $(document).on('change','#source_url',function (e){
     });
     
     $(document).on('click','#preview-button',function(e) {
-            e.preventDefault();
-            var form = $('#feeds_form');
+        e.preventDefault();
+        $('#feeds_form').data('yiiActiveForm').submitting = true;
+        $('#feeds_form').yiiActiveForm('validate');
+        var form = $('#feeds_form');
+        setTimeout(function() {
+            if(form.find('.has-error').length) {
+                alert('Please Enter required fields');
+                return false;
+            }
             $.ajax({
-                url:'/skills-up/preview',
+                url:'/account/skill-up/preview',
                 data:form.serialize()+ "&description=" + encodeURIComponent(description),
                 method:'post',
                 success: function(data) {
                    if(data['status'] === 200){
-                       window.open("http://ravinder.eygb.me/skills-up/feed-preview?id="+data['id']);
+                       window.open("/account/skill-up/feed-preview?id="+data['id']);
                    }else{
                        toastr.error(response.message, 'error'); 
                    }
                 }
             });
+        }, 1000)
     })
     
     localStorage.removeItem("imgData");

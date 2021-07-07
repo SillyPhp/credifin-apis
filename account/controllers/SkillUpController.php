@@ -2,15 +2,36 @@
 
 namespace account\controllers;
 
+use account\models\skillsUp\AddSourceForm;
+use account\models\skillsUp\SkillsUpForm;
+use common\models\Industries;
+use common\models\Skills;
 use common\models\SkillsUpPosts;
+use common\models\SkillsUpSources;
 use Yii;
 use yii\web\Controller;
+use yii\web\HttpException;
+use yii\web\UploadedFile;
+use yii\web\Response;
+use yii\helpers\Url;
 
 class SkillUpController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
+        if (!$permissions) {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionDashboard()
     {
+
         $counts['video'] = $this->getFeedCounts('Video');
         $counts['audio'] = $this->getFeedCounts('Audio');
         $counts['blog'] = $this->getFeedCounts('Blog');
@@ -29,7 +50,7 @@ class SkillUpController extends Controller
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
-                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries'])
+                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug'])
             ->joinWith(['skillsUpAuthors b' => function ($b) {
                 $b->joinWith(['authorEnc b1']);
             }], false)
@@ -59,7 +80,6 @@ class SkillUpController extends Controller
         return $feedList;
     }
 
-
     private function getFeedCounts($type)
     {
         return SkillsUpPosts::find()->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'content_type' => $type, 'is_deleted' => 0])->count();
@@ -88,5 +108,237 @@ class SkillUpController extends Controller
                 'message' => 'not found'
             ];
         }
+    }
+
+    public function actionCreate()
+    {
+        $model = new SkillsUpForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $data = $model->save();
+            if ($data['status'] == 200) {
+                Yii::$app->session->setFlash('success', "Form saved successfully.");
+                $this->redirect('/account/skill-up/create');
+            } else {
+                Yii::$app->session->setFlash('error', $data['message']);
+                $this->redirect('/account/skill-up/create');
+            }
+        } else {
+            $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
+            return $this->render('feeds-form', ['model' => $model, 'sources' => $sources]);
+        }
+    }
+
+    private function getMetaInfo($url)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $html = $this->getCurlData($url);
+
+        //parsing begins here:
+        $doc = new \DOMDocument();
+        @$doc->loadHTML($html);
+        $nodes = $doc->getElementsByTagName('title');
+
+        //get and display what you need:
+        $title = $nodes->item(0)->nodeValue;
+
+        $metas = $doc->getElementsByTagName('meta');
+
+        for ($i = 0; $i < $metas->length; $i++) {
+            $meta = $metas->item($i);
+            if ($meta->getAttribute('name') == 'description') {
+                $description = $meta->getAttribute('content');
+            }
+            if ($meta->getAttribute('name') == 'keywords') {
+                $keywords = $meta->getAttribute('content');
+            }
+            if ($meta->getAttribute('name') == 'twitter:image') {
+                $image = $meta->getAttribute('content');
+            }
+            if (!$image) {
+                if ($meta->getAttribute('property') == 'og:image') {
+                    $image = $meta->getAttribute('content');
+                }
+            }
+        }
+
+        return [
+            'status' => 203,
+            'title' => $title,
+            'keywords' => $keywords,
+            'image' => $image,
+            'description' => $description,
+        ];
+    }
+
+    private function getCurlData($url)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
+
+    public function actionPreview()
+    {
+        $model = new SkillsUpForm();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $var = Yii::$app->security->generateRandomString(10);
+            $session = Yii::$app->session;
+            $session->set($var, $model);
+            return ['status' => 200, 'id' => $var];
+        } else {
+            return ['status' => 201];
+        }
+    }
+
+    public function actionFeedPreview($id)
+    {
+        if (!empty($id)) {
+            $session = Yii::$app->session;
+            $object = $session->get($id);
+
+            if (empty($object)) {
+                return 'Oops Session expired..!';
+            }
+
+            $source = SkillsUpSources::findone(['source_enc_id' => $object->source_id])->name;
+
+            return $this->render('feed-preview', ['object' => $object, 'source' => $source, 'skills' => $object->skills]);
+
+        } else {
+            return 'Oops Session not found..!';
+        }
+    }
+
+    public function actionIndustryList($q = null, $id = null)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $data = Industries::find()
+                ->select('industry_enc_id AS id, industry AS text')
+                ->andFilterWhere(['like', 'industry', $q])
+                ->limit(10)
+                ->asArray()
+                ->all();
+            $out['results'] = array_values($data);
+        } elseif ($id != null) {
+            $out['results'] = ['id' => $id, 'text' => Industries::find()->where(['industry_enc_id' => $id])->name];
+        }
+        return $out;
+    }
+
+    public function actionSkillList($q = null, $id = null)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $data = Skills::find()
+                ->select('skill_enc_id AS id, skill AS text')
+                ->where(['status' => 'Publish', 'is_deleted' => 0])
+                ->andFilterWhere(['like', 'skill', $q])
+                ->limit(10)
+                ->asArray()
+                ->all();
+            $out['results'] = array_values($data);
+        } elseif ($id != null) {
+            $out['results'] = ['id' => $id, 'text' => Industries::find()->where(['industry_enc_id' => $id])->name];
+        }
+        return $out;
+    }
+
+    public function actionValidateUrl()
+    {
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $url = Yii::$app->request->post('url');
+            $data = $this->youTubeVideoID($url);
+
+            if ($data['status'] === 200) {
+                return $data;
+            } else {
+                return $this->getMetaInfo(Yii::$app->request->post('url'));
+            }
+        }
+    }
+
+    private function youTubeVideoID($url)
+    {
+        $queryString = parse_url($url, PHP_URL_QUERY);
+        parse_str($queryString, $params);
+        $id = "";
+        if (isset($params['v']) && strlen($params['v']) > 0) {
+            $id = $params['v'];
+            if ($id != "") {
+                return [
+                    'status' => 200,
+                    'title' => 'success!',
+                    'video_id' => $id,
+                    'message' => 'Successfully',
+                ];
+            }
+        }
+
+        return [
+            'status' => 201,
+            'title' => 'LearningVideo',
+            'message' => 'Video id not Found..',
+        ];
+    }
+
+    public function actionAddSource()
+    {
+        if (Yii::$app->request->isAjax) {
+            $addSourceForm = new AddSourceForm();
+            if ($addSourceForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $addSourceForm->image = UploadedFile::getInstance($addSourceForm, 'image');
+                $source_exists = SkillsUpSources::findOne(['name' => $addSourceForm->source_name, 'is_deleted' => 0]);
+                if ($source_exists) {
+                    return [
+                        'status' => 201,
+                        'title' => 'duplication',
+                        'message' => 'This source name already exists',
+                    ];
+                }
+
+                return $addSourceForm->save();
+
+
+            }
+            return $this->renderAjax('add-source-form', [
+                'addSourceForm' => $addSourceForm,
+            ]);
+        }
+    }
+
+    public function actionGetSources($keywords = null)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $sources = SkillsUpSources::find()
+            ->select(['source_enc_id', 'name', 'description', 'url source_url',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->feed_sources->image, 'https') . '", image_location, "/", image) ELSE NULL END source_image'
+            ])
+            ->where(['is_deleted' => 0]);
+        if ($keywords != null) {
+            $sources->andWhere(['like', 'name', $keywords]);
+        }
+        $sources = $sources
+            ->limit(10)
+            ->asArray()
+            ->all();
+
+        return ['status' => 200, 'sources' => $sources];
+
     }
 }

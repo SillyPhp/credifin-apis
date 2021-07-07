@@ -420,17 +420,21 @@ function getReviews(){
     })
 }
 getReviews();
+$('.showReviews').on('click', function (e){
+   getUserReviews(3,"",e.target.getAttribute('data-id')); 
+});
 var count = 0;
 var page = 1;
-function getUserReviews(limit=3, page=null){
+function getUserReviews(limit=3, page=null, type){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:'employee', user_enc_id:user_id},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:type, user_enc_id:user_id},
         success: function (res){
             if(res.response.status == 200){
                 var reviews_data = $('#organization-reviews').html();
+                $("#org-reviews").html('')
                 let dataRev = res.response.data.reviews
                 for(var i = 0; i < dataRev.length; i++){
                     if(dataRev[i]['feedback_type'] == 1){
@@ -464,7 +468,8 @@ function getUserReviews(limit=3, page=null){
         }
     })
 }
-getUserReviews();
+getUserReviews(3,"",'employee');
+
 $(document).on('click','#load_more_btn',function(e){
     e.preventDefault();
     page = page + 1;
@@ -643,3 +648,6 @@ $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['dep
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
 ?>
+<script>
+
+</script>

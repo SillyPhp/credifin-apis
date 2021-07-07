@@ -55,7 +55,6 @@ class LoansController extends ApiBaseController
                 'study-in-india',
                 'faqs',
                 'press-release-publisher',
-                'save-teachers-loan'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -1824,6 +1823,10 @@ class LoansController extends ApiBaseController
                 if ($model->validate()) {
                     if ($data = $model->saveTeachersLoan( $userId,'Android',$params)) {
                         if ($data['status']){
+                            $data["name"] = "Empower Youth";
+                            $data["description"] = "Application Processing Fee";
+                            $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+                            $data['theme_color'] = "#ff7803";
                             return $this->response(200, ['status' => 200, 'data' => $data]);
                         }else{
                             return $this->response(500, ['status' => 500, 'message' => $data['message']]);
