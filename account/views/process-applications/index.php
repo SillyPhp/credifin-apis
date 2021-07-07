@@ -681,6 +681,14 @@ foreach ($fields as $f) {
                                         }
                                         ?>
                                         <li>
+                                            <?php
+                                               $phoneArr = explode('+', $arr['phone']);
+                                               $phone = $phoneArr[1]
+                                            ?>
+                                            <a href="https://api.whatsapp.com/send?phone=<?= $phone ?>"
+                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
+                                        </li>
+                                        <li>
                                             <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
                                                title="Schedule Interview" data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
@@ -906,6 +914,13 @@ foreach ($fields as $f) {
 $this->registerCss('
 .clamp-c{
   position:relative;
+}
+.shareBtn{
+    font-size: 30px;
+    color: #128c7e;
+}
+.shareBtn:hover{
+    color: #128c7e;
 }
 .all-data {
     position: absolute;
@@ -2146,6 +2161,7 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
+console.log('$phone')
 window.onscroll = function() {myFunction()};
 
 var header = document.getElementById("myHeader");
