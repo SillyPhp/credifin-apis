@@ -152,6 +152,15 @@ foreach ($fields as $f) {
                             <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
                                                                                                   onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
+                            <span class="j-">
+                            <?php
+                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
+                            ?>
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
+                        </span>
                         </div>
                     </div>
                 </div>
@@ -256,16 +265,7 @@ foreach ($fields as $f) {
                                title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
                                value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
                         </span>
-                        <span class="j-">
-                            <?php
 
-                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
-                            ?>
-                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
-                               title="Copy Link" data-link="<?= $link ?>">
-                                <i class="fa fa-clipboard"></i>
-                            </a>
-                        </span>
                     </div>
                     <div class="scd-btn">
                         <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
@@ -472,6 +472,9 @@ foreach ($fields as $f) {
                                         case 3:
                                             $msg = "Candidate's CV has been saved for later. Please check CV in 
                                                     drop resume";
+                                            break;
+                                        case 4:
+                                            $msg = "This candidate has been rejected";
                                             break;
                                     }
                                     ?>
@@ -1000,7 +1003,10 @@ $this->registerCss('
     font-size:20px;
     color: #fff;
 }
-
+.clipb i{
+    font-size: 11px; 
+    color: #ff7803
+}
 .page-content {
    position:relative;
     padding:0px 0px 0px 0px!important;
