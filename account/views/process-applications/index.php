@@ -274,19 +274,19 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-<!--            <div class="col-md-12 use-ff">-->
-<!--                <div class="job-txt">Invite Candidates via:</div>-->
+            <div class="col-md-12 use-ff">
+                <div class="job-txt">Invite Candidates via:</div>
             <!--                            <div class="job-mail">-->
             <!--                                <input type="email" class="form-control" id="email" name="email"-->
             <!--                                       placeholder="Email">-->
             <!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
             <!--                            </div>-->
-<!--            <div class="job-whatsapp">-->
-<!--                <input type="text" class="form-control" id="text" name="text"-->
-<!--                       placeholder="Whatsapp">-->
-<!--                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-<!--            </div>-->
-<!--        </div>-->
+                <div class="job-whatsapp">
+                    <input type="text" class="form-control" id="whatsAppNum" name="text"
+                           placeholder="Whatsapp">
+                    <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>"><i class="fa fa-whatsapp"></i></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -687,11 +687,11 @@ foreach ($fields as $f) {
                                         ?>
                                         <li>
                                             <?php
-                                            if($arr['phone']){
-                                               $phoneArr = explode('+', $arr['phone']);
-                                               $phone = $phoneArr[1]
+                                            if(!empty($arr['phone']) && $arr['phone']){
+//                                               $phoneArr = explode('+', $arr['phone']);
+//                                               $phone = $phoneArr[1]
                                             ?>
-                                            <a href="https://api.whatsapp.com/send?phone=<?= $phone ?>" target="_blank"
+                                            <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
                                                title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
                                             <?php
                                                 }
@@ -2181,6 +2181,11 @@ $script = <<<JS
 console.log('$phone')
 window.onscroll = function() {myFunction()};
 
+$('.share_Btn_whats').on('click', function (){
+    if($('#whatsAppNum').val() != ''){
+        window.open('https://api.whatsapp.com/send?phone=' +$('#whatsAppNum').val() + '&text=' + $(this).attr('data-link'));
+    }
+})
 var header = document.getElementById("myHeader");
 var sticky = header.offsetTop - 55;
 
