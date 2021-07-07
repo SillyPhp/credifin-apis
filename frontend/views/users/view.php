@@ -1072,7 +1072,6 @@ img.img-responsive.payment-img {
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
-	cursor:pointer;
 }
 .sidebar-box{
     text-align: center;
