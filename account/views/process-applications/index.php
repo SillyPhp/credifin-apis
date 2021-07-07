@@ -284,6 +284,7 @@ foreach ($fields as $f) {
                     <input type="text" class="form-control" id="whatsAppNum" name="text"
                            placeholder="Whatsapp">
                     <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>"><i class="fa fa-whatsapp"></i></button>
+                    <p class="errorMsg">Please enter a valid number</p>
                 </div>
             </div>
         </div>
@@ -686,8 +687,6 @@ foreach ($fields as $f) {
                                         <li>
                                             <?php
                                             if(!empty($arr['phone']) && $arr['phone']){
-//                                               $phoneArr = explode('+', $arr['phone']);
-//                                               $phone = $phoneArr[1]
                                             ?>
                                             <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
                                                title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
@@ -920,6 +919,16 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.errorMsg{
+    position: absolute;
+    margin: 0;
+    font-size: 12px;
+    display: none;
+    color: #df4759;
+}
+.showError{
+    display: block;
+}
 .clamp-c{
   position:relative;
 }
@@ -2172,10 +2181,19 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
-console.log('$phone')
 window.onscroll = function() {myFunction()};
-
-$('.share_Btn_whats').on('click', function (){
+$('.share_Btn_whats').on('click', function (e){  
+    let inputElem = e.target.parentElement;
+    let parentElem = inputElem.parentElement;
+    let inputVal = parentElem.querySelector('#whatsAppNum').value;
+    let errorMsg = parentElem.querySelector('.errorMsg');
+    const num = /^[0-9-+]+$/;
+    if(!inputVal.match(num) && inputVal != ''){
+      errorMsg.classList.add('showError');
+      return false;
+    }else{
+      errorMsg.classList.remove('showError');
+    }
     if($('#whatsAppNum').val() != ''){
         window.open('https://api.whatsapp.com/send?phone=' +$('#whatsAppNum').val() + '&text=' + $(this).attr('data-link'));
     }
