@@ -751,6 +751,7 @@ foreach ($fields as $f) {
                                             <?php
                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
+                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#"
@@ -761,7 +762,7 @@ foreach ($fields as $f) {
                                                            }
                                                        } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                        <?= $p['field_name'] ?>
+                                                        <?= $roundName ?>
                                                     </a>
                                                 </div>
                                                 <?php
