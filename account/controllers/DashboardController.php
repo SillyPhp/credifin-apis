@@ -7,6 +7,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\Interviewers;
+use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
@@ -260,6 +261,18 @@ class DashboardController extends Controller
                     $question[] = $array;
                 }
             }
+
+            $loan = LoanApplications::find()
+                ->select(['loan_app_enc_id','loan_status'])
+                ->where([
+                    'created_by'=>Yii::$app->user->identity->user_enc_id,
+                    'loan_status'=>6,
+                    'parent_application_enc_id' => null,
+                    'is_deleted' => 0
+                ])
+                ->asArray()
+                ->all();
+
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
@@ -334,6 +347,7 @@ class DashboardController extends Controller
             'scriptModel' => $scriptModel,
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
+            'loan' => $loan,
         ]);
     }
 

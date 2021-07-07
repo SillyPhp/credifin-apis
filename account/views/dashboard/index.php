@@ -130,7 +130,8 @@ endif;
                     'applied' => $applied,
                     'question_list' => $question_list,
                     'shortlist_org' => $shortlist_org,
-                    'viewed' => $viewed
+                    'viewed' => $viewed,
+                    'loan' => $loan,
                 ]); ?>
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
