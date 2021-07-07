@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 <section class="study-in-usa-bg">
+    <div class="opacity-div"></div>
     <div class="container">
         <div class="row teacher">
             <div class="col-md-6 col-sm-6">
@@ -14,7 +15,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     <p>Quick Loans at affordable interest rates to cater all the financial needs of the Educators.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                        <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now">Apply Now</a></li>
+                        <li><a href="/education-loans/loan-for-teachers/apply" class="apply-now" target="_blank">Apply Now</a></li>
                     </ul>
                 </div>
             </div>
@@ -109,6 +110,14 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.opacity-div{
+    position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.4);
+}
 html {
   scroll-behavior: smooth;
 }

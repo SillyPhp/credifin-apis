@@ -1017,6 +1017,9 @@ class SiteController extends Controller
             case 'getLearningTopics':
                 return $this->renderAjax('/widgets/homepage_components/learning_topics');
                 break;
+            case 'getProductOffering':
+                return $this->renderAjax('/widgets/product-offerings');
+                break;
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
                 break;
@@ -1376,6 +1379,10 @@ class SiteController extends Controller
 
     public function actionPlModal(){
         return $this->render('pl-modal');
+    }
+
+    public function actionRankedCollege(){
+        return $this->render('ranked-college');
     }
 
 }

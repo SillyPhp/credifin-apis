@@ -140,7 +140,8 @@ foreach ($fields as $f) {
                                                                                                    onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
-                                        href="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
                             <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
@@ -414,8 +415,7 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Permanent
-                                                    Reject</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
                                             </div>
                                         </li>
                                         <li>
@@ -506,7 +506,8 @@ foreach ($fields as $f) {
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank">
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"
+                                       target="_blank">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"
                                                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
@@ -517,16 +518,39 @@ foreach ($fields as $f) {
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank"><?= $arr['name'] ?></a>
-                                    <?php
-                                    if ($arr['createdBy']['userWorkExperiences']) {
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 1) {
-                                                echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"
+                                       target="_blank"><?= $arr['name'] ?></a>
+                                    <div class="clamp-c">
+                                        <?php
+                                        if ($arr['createdBy']['userWorkExperiences']) {
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                    ?>
+                                        ?>
+                                        <?php
+                                        $crexperience = [];
+                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                            if ($exp['is_current'] == 1) {
+                                                array_push($crexperience, $exp);
+                                            }
+                                        }
+                                        if (count($crexperience) > 1) {
+                                            ?>
+                                            <div class="all-data">
+                                                <?php
+                                                foreach ($crexperience as $exp) {
+                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                }
+                                                ?>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                                 <div class="pr-user-past">
                                     <?php
@@ -557,11 +581,11 @@ foreach ($fields as $f) {
                                   <span class="past-title">
                                     Edu
                                   </span>
-                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
+                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?> </h5>
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
-                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                            &nbsp <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
                                         ?>
@@ -658,7 +682,7 @@ foreach ($fields as $f) {
                                         </li>
                                         <li>
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                               data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                               data-key="<?= $arr['name']; ?>" data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>" title="Chat Now"
                                                data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
@@ -757,11 +781,11 @@ foreach ($fields as $f) {
                                 </thead>
                                 <tbody class="qu_data">
                                 <?php foreach ($que as $list_que) {
-                                    $linkQ = "/account/questionnaire/display-answers/".$list_que["qid"]."/".$arr["applied_application_enc_id"];
+                                    $linkQ = "/account/questionnaire/display-answers/" . $list_que["qid"] . "/" . $arr["applied_application_enc_id"];
                                     ?>
                                     <tr>
                                         <td><a class="blue question_list"
-                                               href="<?= Url::to($linkQ,'https') ?>"
+                                               href="<?= Url::to($linkQ, 'https') ?>"
                                                data-questionId="<?= $list_que['qid']; ?>"
                                                data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
                                                target="_blank"><?= $list_que['name']; ?></a>
@@ -870,6 +894,31 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.clamp-c{
+  position:relative;
+}
+.all-data {
+    position: absolute;
+    background-color: #fff;
+    display: none;
+    border-radius:4px;
+    padding:8px 15px;
+    top: 30px;
+    box-shadow:0px 1px 6px 2px #ddd;
+}
+.all-data:before {
+    content: "";
+    left: 12px;
+    top: -18px;
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-right: 15px solid #00A0E3;
+    border-bottom: 10px solid transparent;
+    transform: rotate(90deg);
+}
+.clamp-c:hover .all-data {
+    display: block;
+}
 .activeJov{
     background: #fbfbfb;
     border: 1px solid #eee;
@@ -2540,81 +2589,83 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         }, 500);
     }
 
-function shownotes(){
-    let noteImg = document.getElementsByClassName('noteImg');
-    for (let i = 0; i < noteImg.length; i++) {
-        noteImg[i].addEventListener('click', function () {
-            let noteForm = document.querySelectorAll('.noteForm');
-            if (noteForm.length > 0) {
-                noteForm[0].remove();
-            }
-            var note_val = noteImg[i].getAttribute('data-val');
-            let parentElem = this.parentElement;
-            let rootElem = parentElem.parentElement;
-            let div = document.createElement('div');
-            div.setAttribute('class', 'noteForm');
-            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
-            div.innerHTML = notesTemp;
-            parentElem.insertAdjacentElement('afterend', div);
+    function shownotes() {
+        let noteImg = document.getElementsByClassName('noteImg');
+        for (let i = 0; i < noteImg.length; i++) {
+            noteImg[i].addEventListener('click', function () {
+                let noteForm = document.querySelectorAll('.noteForm');
+                if (noteForm.length > 0) {
+                    noteForm[0].remove();
+                }
+                var note_val = noteImg[i].getAttribute('data-val');
+                let parentElem = this.parentElement;
+                let rootElem = parentElem.parentElement;
+                let div = document.createElement('div');
+                div.setAttribute('class', 'noteForm');
+                let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
+                div.innerHTML = notesTemp;
+                parentElem.insertAdjacentElement('afterend', div);
 
-            let closeNotes = document.getElementById('closeNotes');
-            closeNotes.addEventListener('click', function () {
-                let noteInput = closeNotes.closest('.noteForm');
-                noteInput.remove();
-            });
-        })
+                let closeNotes = document.getElementById('closeNotes');
+                closeNotes.addEventListener('click', function () {
+                    let noteInput = closeNotes.closest('.noteForm');
+                    noteInput.remove();
+                });
+            })
+        }
     }
-}
-shownotes()
-function showRejectType(e) {
-    let parElem = e.parentElement;
-    let rootElem = parElem.parentElement;
-    let rejectType = rootElem.querySelector('.rejectType');
-    rejectType.style.display = "flex";
-    parElem.style.display = "none";
-}
 
-function showRejectReason(e) {
-    let parElem = e.parentElement;
-    let rootElem = parElem.parentElement;
-    let rejectType = rootElem.querySelector('.rejectRea');
-    rejectType.style.display = "flex";
-    parElem.style.display = "none";
-}
+    shownotes()
 
-var modal = document.getElementById("myModal");
-var span = document.getElementsByClassName("close")[0];
-let bdy = document.getElementsByTagName('body');
+    function showRejectType(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectType');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
+    }
 
-function showJobsModal() {
-    modal.style.display = "block";
-    bdy[0].classList.add('modal-open');
-}
+    function showRejectReason(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectRea');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
+    }
 
-function closeModal() {
-    modal.style.display = "none";
-    bdy[0].classList.remove('modal-open');
-}
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    let bdy = document.getElementsByTagName('body');
 
-let openConJob = document.getElementById('conjobs');
+    function showJobsModal() {
+        modal.style.display = "block";
+        bdy[0].classList.add('modal-open');
+    }
 
-function openConJobs() {
-    openConJob.style.display = "block";
-    bdy[0].classList.remove('modal-open');
-}
-
-function closeConJobsModal() {
-    openConJob.style.display = "none";
-    bdy[0].classList.remove('modal-open');
-}
-
-window.onclick = function (event) {
-    if (event.target == modal) {
+    function closeModal() {
         modal.style.display = "none";
-    } else if (event.target == openConJob) {
-        openConJob.style.display = "none";
+        bdy[0].classList.remove('modal-open');
     }
-}
+
+    let openConJob = document.getElementById('conjobs');
+
+    function openConJobs() {
+        openConJob.style.display = "block";
+        bdy[0].classList.remove('modal-open');
+    }
+
+    function closeConJobsModal() {
+        openConJob.style.display = "none";
+        bdy[0].classList.remove('modal-open');
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        } else if (event.target == openConJob) {
+            openConJob.style.display = "none";
+        }
+    }
 
 </script>
 <script id="modalJobCards" type="text/template">

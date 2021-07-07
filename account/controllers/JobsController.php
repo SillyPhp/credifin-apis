@@ -254,13 +254,17 @@ class JobsController extends Controller
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->joinWith(['organizationEnc az'=> function($az){
                 $az->joinWith(['employerApplications b' => function ($x) {
-                    $x->select(['b.organization_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
-                    $x->joinWith(['applicationTypeEnc h' => function ($x) {
-                        $x->groupBy(['h.name']);
-                        $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                    $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                    $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                        $x2->distinct();
+                        $x2->groupBy(['h.name']);
+                        $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                     }], true);
+                    $x->groupBy(['b.application_enc_id']);
                     $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                 }], true);
+                $az->groupBy(['az.organization_enc_id']);
+                $az->distinct();
             }])
             ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
             ->groupBy(['a.followed_enc_id'])
@@ -405,7 +409,30 @@ class JobsController extends Controller
             'shortlist1' => $shortlist1,
         ]);
     }
-
+    public function actionGetFollowedCompaniesJobs(){
+        if (Yii::$app->request->isAjax & Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $org_id = Yii::$app->request->post('organization_enc_id');
+            $type = Yii::$app->request->post('type');
+            $applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.slug', 'e2.name title', 'e1.name parent_category', 'e1.icon', 'ae.name type',
+                    'CASE WHEN e1.icon IS NOT NULL THEN CONCAT("' . Url::to('@commonAssets/categories/') . '", e1.icon) ELSE NULL END icon'])
+                ->joinWith(['title e' => function ($e) {
+                    $e->joinWith(['parentEnc e1']);
+                    $e->joinWith(['categoryEnc e2']);
+                }], false)
+                ->joinWith(['applicationTypeEnc ae'], false)
+                ->where(['a.organization_enc_id' => $org_id,'a.status'=>'Active','a.is_deleted'=>0, 'a.application_for' => 1]);
+                if($type != 'all'){
+                    $applications->andWhere(['ae.name' => $type]);
+                }
+                $applications = $applications
+                ->asArray()
+                ->all();
+                return ['status'=>200,'data'=>$applications];
+        }
+    }
     public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization) {
@@ -465,6 +492,7 @@ class JobsController extends Controller
             'primary_fields' => $catModel->getPrimaryFields(),
             'shortlistedApplicants' => $this->shortlistedApplicants(3),
             'savedApplicants' => $this->savedApplicants(3),
+            'blacklistedApplicants' => $this->blacklistedCandidates(3)
         ]);
     }
 
@@ -2180,5 +2208,103 @@ class JobsController extends Controller
             }
         }
     }
+    public function actionBlacklistedCandidates(){
+        return $this->render('list/blacklisted-candidates', [
+            'blacklistedApplicants' => $this->blacklistedCandidates()
+        ]);
+    }
+    private function blacklistedCandidates($limit = null){
+        $blockedCandidates = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id', 'cr.applied_application_enc_id as cr_applied_application_enc_id',
+                'cr.candidate_rejection_enc_id', 'a.status','b.username', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
+                'a.created_by', 'b3.name as city', 'cr.rejection_type'])
+            ->joinWith(['applicationEnc bb' => function($bb){
+                $bb->joinWith(['applicationTypeEnc f'], false);
+            }], false)
+            ->joinWith(['candidateRejections cr'], false)
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->select(['b.user_enc_id']);
+                $b->joinWith(['userSkills b1' => function ($b1) {
+                    $b1->groupBy(['b1.user_skill_enc_id']);
+                    $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id', 'b2.skill', 'b1.created_by']);
+                    $b1->joinWith(['skillEnc b2'], false);
+                    $b1->onCondition(['b1.is_deleted' => 0]);
+                }]);
+                $b->joinWith(['cityEnc b3'], false);
+            }])
+            ->where([
+                'cr.rejection_type' => 1,
+                'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'f.name' => 'Jobs',
+                'cr.is_deleted' => 0
+            ])
+            ->groupBy(['a.created_by']);
+            $count = $blockedCandidates->count();
+            if($limit != null){
+                $blockedCandidates -> limit($limit);
+            }
+            $blockedCandidates = $blockedCandidates
+            ->asArray()
+            ->all();
+//            print_r($blockedCandidates);
+//            die();
+            foreach ($blockedCandidates as $key=>$sc){
+                $applications = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.application_enc_id', 'ee.name as title', 'bb.slug', 'cr.candidate_rejection_enc_id'])
+                    ->joinWith(['applicationEnc bb' => function($bb){
+                        $bb->joinWith(['applicationTypeEnc f'], false);
+                        $bb->joinWith(['title d' => function ($d) {
+                            $d->joinWith(['parentEnc e']);
+                            $d->joinWith(['categoryEnc ee']);
+                        }], false);
+                    }], false)
+                    ->joinWith(['candidateRejections cr'], false)
+                    ->where([
+                        'a.created_by'=>$sc['created_by'],
+                        'cr.rejection_type' => 1,
+                        'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                        'f.name' => 'Jobs',
+                        'cr.is_deleted' => 0
+                    ])
+                    ->asArray()
+                    ->all();
+                $blockedCandidates[$key]['applications'] = $applications;
+            }
+            return['data' => $blockedCandidates, 'count' => $count];
+    }
 
+    public function actionUnblockCandidate(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $id = Yii::$app->request->post('id');
+            $success = [
+                'status' => 200,
+                'message' => 'successfully unblocked'
+            ];
+            $error = [
+                'status' => 500,
+                'message' => 'an error occurred'
+            ];
+            try {
+                $blockedCandidate = CandidateRejection::findOne(['candidate_rejection_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id]);
+                if($blockedCandidate){
+                    $blockedCandidate->rejection_type = 4;
+                    $blockedCandidate->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    $blockedCandidate->last_updated_on = date('Y-m-d H:i:s');
+                    if(!$blockedCandidate->update()){
+                        return $error;
+                    }
+                    return $success;
+                }
+                return $error;
+            }catch (\Exception $e){
+                return $error;
+            }
+        }
+    }
 }

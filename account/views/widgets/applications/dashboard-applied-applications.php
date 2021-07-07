@@ -171,6 +171,7 @@ use yii\helpers\Url;
                         $this->render('/widgets/organization/card', [
                             'organization_data' => $shortlist_org,
                             'column_size' => 'col-md-4',
+                            'for'=>'all'
                         ]);
                         ?>
                     </div>
@@ -178,6 +179,11 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <?= $this->render('/widgets/loan-applied') ?>
+    </div>
+
 <?php
     if($viewed == 0){
 ?>

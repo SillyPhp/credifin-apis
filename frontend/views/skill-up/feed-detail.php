@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
+
 ?>
 
     <section>
@@ -13,32 +14,43 @@ $this->params['header_dark'] = true;
                     <div class="video-box-main dash-inner-box nd-shadow">
                         <!--                    <div class="rec-batch">Recommended</div>-->
                         <div class="vid-box">
-                            <?php if ($object->image_url) { ?>
-                                <img src="<?= $object->image_url?>"
-                                     alt="your image" class="target" id="post-image"/>
+                            <?php if ($detail['content_type'] == 'Video') { ?>
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/<?= $detail['youtube_video_id'] ?>"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            <?php } elseif ($detail['content_type'] == 'Podcast') { ?>
+                                <?= $detail['embed_code'] ?>
                             <?php } else { ?>
-                                <img src="https://via.placeholder.com/350x350?text=Cover+Image"
-                                     alt="your image" class="target" id="post-image"/>
+                                <?php if ($detail['post_image_url']) { ?>
+                                    <img src="<?= $detail['post_image_url'] ?>"
+                                         alt="your image" class="target"/>
+                                <?php } else { ?>
+                                    <img src="<?= $detail['cover_image'] ?>"
+                                         alt="your image" class="target"/>
+                                <?php } ?>
                             <?php } ?>
                         </div>
-                        <h3><?= $object->title ?></h3>
+                        <h3><?= $detail['post_title'] ?></h3>
                         <div class="author-s margin-top-10">
                             <div class="author list-data"><i
-                                        class="fas fa-user"></i><span> <?= $object->author ?> </span></div>
-                            <div class="source"><i class="fas fa-link"></i><span> <?= $source ?> </span></div>
+                                        class="fas fa-user"></i><span> <?= $detail['author_name'] ?> </span></div>
+                            <div class="source"><i class="fas fa-link"></i><span> <?= $detail['source_name'] ?> </span>
+                            </div>
                         </div>
                         <div class="tags-list">
                             <h5 class="tag-title">Related Topic</h5> :-
-                            <?php foreach ($skills as $s) { ?>
+                            <?php foreach ($detail['skillsUpPostAssignedSkills'] as $s) { ?>
                                 <span><?= $s['skill'] ?></span>
                             <?php } ?>
                         </div>
                         <div class="vid-content">
-                            <?= $object->description ?>
+                            <?= $detail['post_description'] ?>
                         </div>
                         <div class="original-art">
-                            <a href="<?= $object->source_url ?>"
-                               target="_blank">ORIGINAL <?= $object->content_type ?></a>
+                            <a href="<?= $detail['post_source_url'] ?>"
+                               target="_blank">ORIGINAL <?= $detail['content_type'] ?></a>
                         </div>
                         <div class="share-social-links">
                             <a href="javascript:;" class="fb"
@@ -79,31 +91,24 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="live-chat dash-inner-box nd-shadow">
-                        <h3>Chatting</h3>
-                        <div id="skillup-chat-main" class="chatting-live">
-
-                        </div>
-                        <div class="input-chat">
-                            <textarea type="text" class="form-control"></textarea>
-                            <a href="javascript:;" class="disabled">Send</a>
-                        </div>
-                    </div>
                     <div class="related-art dash-inner-box nd-shadow">
                         <h3>Related Articles</h3>
-                        <a href="" class="relate-box">
-                            <div class="relate-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/schoolfee-financing.png') ?>"
-                                     alt="your image" class="target"/>
-                            </div>
-                            <div class="relate-name">
-                                <p>title</p>
-                                <div class="author-relate">
-                                    <div class="source"><i class="fas fa-link"></i><Span>source_name</Span>
+                        <?php foreach ($related_posts as $post) { ?>
+                            <a href="<?= Url::to('/skill-up/detail/' . $post['slug']) ?>" class="relate-box">
+                                <div class="relate-icon">
+                                    <img src="<?= $post['post_image_url'] ? $post['post_image_url'] : $post['cover_image'] ?>"
+                                         alt="your image" class="target"/>
+                                </div>
+                                <div class="relate-name">
+                                    <p><?= $post['post_title'] ?></p>
+                                    <div class="author-relate">
+                                        <div class="source"><i
+                                                    class="fas fa-link"></i><Span><?= $post['source_name'] ?></Span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -111,11 +116,6 @@ $this->params['header_dark'] = true;
     </section>
 
 <?php
-$getImage = true;
-if ($object->image_url) {
-    $getImage = false;
-}
-
 $this->registerCss('
 .input-chat textarea {
     height: 45px;
@@ -442,13 +442,3 @@ $this->registerCss('
         opacity: 1;
     }
 ');
-
-$script = <<<JS
-console.log($getImage);
-    if($getImage){
-        var dataImage = localStorage.getItem('imgData');
-        Img = document.getElementById('post-image');
-        Img.src = dataImage;
-    }
-JS;
-$this->registerJS($script);

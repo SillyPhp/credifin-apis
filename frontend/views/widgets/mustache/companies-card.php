@@ -6,7 +6,7 @@ use yii\helpers\Url;
     <script id="companies-card-all" type="text/template">
         {{#.}}
         <div class="col-md-4 col-sm-6">
-            <div class="company-main">
+            <div class="company-main {{#is_org}}company-main-height{{/is_org}}">
                 <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_new}}
@@ -75,6 +75,7 @@ use yii\helpers\Url;
                         <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{jobs_cnt}} Jobs</span></a>
                         <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{internships_cnt}} Internships</span></a>
                     </div>
+                    {{#is_org}}
                     <div class="flw-rvw">
                         {{#login}}
                         {{#is_followed}}
@@ -92,6 +93,7 @@ use yii\helpers\Url;
                         <a href="/{{review_link}}" target="_blank">Review</a>
                         <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
                     </div>
+                    {{/is_org}}
                 </a>
             </div>
         </div>
@@ -127,7 +129,10 @@ $this->registercss('
 	margin:10px 0 20px;
 	padding: 30px 0px 10px;
 	transition:all .3s;
-	min-height: 390px !important;
+	min-height: 350px !important;
+}
+.company-main-height{
+    min-height: 390px !important;
 }
 .company-main:hover{
 //    transform:scale(1.01);

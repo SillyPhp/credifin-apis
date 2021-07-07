@@ -23,12 +23,25 @@ class OrganizationController extends Controller
     {
         $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year','a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['az.organization_enc_id', 'a.organization_enc_id', 'az.establishment_year', 'a.followed_enc_id', 'az.name as org_name', 'az.initials_color', 'c.industry', 'az.logo', 'az.logo_location', 'az.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-            ->joinWith(['organizationEnc b'=>function($a){
-                $a->where(['is_deleted'=>0]);
-            }],false)
-            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->joinWith(['organizationEnc az'=> function($az){
+                $az->joinWith(['employerApplications b' => function ($x) {
+                    $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                    $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                        $x2->distinct();
+                        $x2->groupBy(['h.name']);
+                        $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                    }], true);
+                    $x->groupBy(['b.application_enc_id']);
+                    $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
+                }], true);
+                $az->groupBy(['az.organization_enc_id']);
+                $az->distinct();
+            }])
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
+            ->groupBy(['a.followed_enc_id'])
+            ->distinct()
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();

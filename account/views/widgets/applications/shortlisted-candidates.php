@@ -38,8 +38,9 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                     <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
                         <p class="short-job"><?= $s['name'] ?></p>
                     </a>
-                    <p class="short-name"><i class="fa fa-map-marker"></i> <?= $s['city'] ?></p>
-                </div>
+                    <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>'.$s['city'].'</p>' :
+                            '<p class="shortText">location not added<p>'?>
+                    </div>
             </div>
             <ul class="short-skills">
                 <?php if ($s['skills']) {
@@ -47,7 +48,9 @@ foreach ($shortlistedApplicants['data'] as $s) { ?>
                         ?>
                         <li> <?= $skill['skill'] ?></li>
                     <?php }
-                } ?>
+                }else { ?>
+                <p class="shortText">Skills Not Added</p>
+                <?php } ?>
             </ul>
             <div class="slide-btn">
                 <button class="slide-bttn" type="button" data-toggle="collapse"
@@ -88,6 +91,10 @@ $this->registerCss('
     position: relative;
     width: 100%;
     margin-bottom: 30px;
+}
+.shortText{
+    text-transform: capitalize;
+    font-size: 13px;
 }
 .short-main {
     border: 2px solid #eef1f5;
@@ -135,6 +142,9 @@ $this->registerCss('
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+}
+.short-name i{
+    margin-right: 5px;
 }
 .remove-btn {
     position: absolute;
