@@ -152,6 +152,15 @@ foreach ($fields as $f) {
                             <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
                                                                                                   onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
+                            <span class="j-">
+                            <?php
+                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
+                            ?>
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
+                        </span>
                         </div>
                     </div>
                 </div>
@@ -236,26 +245,27 @@ foreach ($fields as $f) {
             <div class="col-md-3 col-sm-12">
                 <div class="ed-main">
                     <div class="option-1">
-                            <span class="j-edt">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
-                            </span>
+                        <span class="j-edt">
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
+                        </span>
                         <span class="j-cln">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
-                            </span>
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
+                        </span>
                         <span class="j-delt">
-                                <a href="#" id="j-delete" data-toggle="tooltip"
-                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                            class="fa fa-trash-o"></i></a>
-                            </span>
+                            <a href="#" id="j-delete" data-toggle="tooltip"
+                               title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
+                                class="fa fa-trash-o"></i></a>
+                        </span>
                         <span class="j-cls">
-                                <a href="#" id="j-closed" data-toggle="tooltip"
-                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
-                                   value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
-                            </span>
+                            <a href="#" id="j-closed" data-toggle="tooltip"
+                               title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
+                               value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
+                        </span>
+
                     </div>
                     <div class="scd-btn">
                         <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
@@ -297,11 +307,12 @@ foreach ($fields as $f) {
             <?php
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
                            aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
@@ -463,6 +474,9 @@ foreach ($fields as $f) {
                                             $msg = "Candidate's CV has been saved for later. Please check CV in 
                                                     drop resume";
                                             break;
+                                        case 4:
+                                            $msg = "This candidate has been rejected";
+                                            break;
                                     }
                                     ?>
                                     <p><?= $msg ?></p>
@@ -529,25 +543,24 @@ foreach ($fields as $f) {
                                                     break;
                                                 }
                                             }
-                                        }
-                                        ?>
-                                        <?php
-                                        $crexperience = [];
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 1) {
-                                                array_push($crexperience, $exp);
-                                            }
-                                        }
-                                        if (count($crexperience) > 1) {
-                                            ?>
-                                            <div class="all-data">
-                                                <?php
-                                                foreach ($crexperience as $exp) {
-                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+
+                                            $crexperience = [];
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    array_push($crexperience, $exp);
                                                 }
+                                            }
+                                            if (count($crexperience) > 1) {
                                                 ?>
-                                            </div>
-                                            <?php
+                                                <div class="all-data">
+                                                    <?php
+                                                    foreach ($crexperience as $exp) {
+                                                        echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                                <?php
+                                            }
                                         }
                                         ?>
                                     </div>
@@ -671,6 +684,14 @@ foreach ($fields as $f) {
                                         }
                                         ?>
                                         <li>
+                                            <?php
+                                               $phoneArr = explode('+', $arr['phone']);
+                                               $phone = $phoneArr[1]
+                                            ?>
+                                            <a href="https://api.whatsapp.com/send?phone=<?= $phone ?>"
+                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
+                                        </li>
+                                        <li>
                                             <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
                                                title="Schedule Interview" data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
@@ -730,6 +751,7 @@ foreach ($fields as $f) {
                                             <?php
                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
+                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#"
@@ -740,7 +762,7 @@ foreach ($fields as $f) {
                                                            }
                                                        } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                        <?= $p['field_name'] ?>
+                                                        <?= $roundName ?>
                                                     </a>
                                                 </div>
                                                 <?php
@@ -897,6 +919,13 @@ $this->registerCss('
 .clamp-c{
   position:relative;
 }
+.shareBtn{
+    font-size: 30px;
+    color: #128c7e;
+}
+.shareBtn:hover{
+    color: #128c7e;
+}
 .all-data {
     position: absolute;
     background-color: #fff;
@@ -976,10 +1005,13 @@ $this->registerCss('
     font-size:20px;
     color: #fff;
 }
-
+.clipb i{
+    font-size: 11px; 
+    color: #ff7803
+}
 .page-content {
    position:relative;
-    padding:50px 0px 0px 0px!important;
+    padding:0px 0px 0px 0px!important;
 }
 .bg-img{
     position: absolute;
@@ -1276,18 +1308,18 @@ $this->registerCss('
     background: #fff;
     height: auto;
     position: fixed;
-    top: 105px;
+    top: 62px;
     left: 0;
     border: 1px solid #eee;
     width: 0px;
-    height: calc(100vh - 105px);
+    height: calc(100vh - 62px);
     transition: .3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
     z-index: 999;
 }
 .pa-sidebar{
     width: 100%;
-    height: calc(100vh - 105px);
+    height: calc(100vh - 70px);
     overflow-x: hidden;
     z-index: 999;
 }
@@ -1430,7 +1462,7 @@ $this->registerCss('
 .set-height{height:55px;}
 .sticky {
     position: fixed;
-    top: 104px;
+    top: 65px;
     width: 83.45vw;
     z-index: 99;
     background: rgb(255, 255, 255);
@@ -2136,6 +2168,7 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
+console.log('$phone')
 window.onscroll = function() {myFunction()};
 
 var header = document.getElementById("myHeader");
@@ -2147,6 +2180,19 @@ function myFunction() {
   } else {
     header.classList.remove("sticky");
   }
+}
+$(document).on('click', '.jj-clipboard',function (event) {
+    event.preventDefault();
+    var link = $(this).attr('data-link');
+    CopyToClipboard(link, true, "Link copied");
+});
+function CopyToClipboard(value, showNotification, notificationText) {
+    var temp = $("<input>");
+    $("body").append(temp);
+    temp.val(value).select();
+    document.execCommand("copy");
+    temp.remove();
+    toastr.success("", "Link Copy to Clipboard");
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
